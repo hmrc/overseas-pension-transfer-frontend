@@ -14,6 +14,11 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.titleNoForm
+@import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+
 @this(
     layout: templates.Layout,
     govukButton: GovukButton
@@ -34,7 +39,7 @@
 
     <p class="govuk-body">
         @govukButton(
-            ButtonViewModel(messages("site.signIn"))
+            ButtonViewModel(Text(messages("site.signIn")))
                 .asLink(routes.IndexController.onPageLoad().url)
         )
     </p>

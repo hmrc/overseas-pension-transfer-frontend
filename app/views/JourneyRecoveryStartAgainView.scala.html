@@ -14,6 +14,11 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.titleNoForm
+@import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+
 @this(
     layout: templates.Layout,
     govukButton: GovukButton
@@ -29,7 +34,7 @@
 
     <p class="govuk-body">
         @govukButton(
-            ButtonViewModel(messages("site.startAgain"))
+            ButtonViewModel(Text(messages("site.startAgain")))
                 .asLink(routes.IndexController.onPageLoad().url)
         )
     </p>
