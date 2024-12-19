@@ -37,10 +37,10 @@ class HelloWorldControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[HelloWorldView]
 
-        val nextPage = controllers.routes.HelloWorldController.onPageLoad().url
+        val content = "Hello world!"
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(nextPage)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(content)(request, messages(application)).toString
       }
     }
   }
