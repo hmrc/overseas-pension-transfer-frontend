@@ -16,6 +16,7 @@
 
 package base
 
+import connectors.HelloWorldConnector
 import controllers.actions._
 import models.UserAnswers
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -47,6 +48,7 @@ trait SpecBase
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[HelloWorldConnector].to[FakeHelloWorldConnector]
       )
 }
