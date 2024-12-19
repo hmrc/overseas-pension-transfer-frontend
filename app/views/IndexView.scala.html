@@ -15,12 +15,16 @@
  *@
 
 @import views.ViewUtils.titleNoForm
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import viewmodels.govuk.all.ButtonViewModel
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.govuk.all.FluentButton
 
 @this(
-    layout: templates.Layout
+    layout: templates.Layout,
+    govukButton: GovukButton
 )
-
-@()(implicit request: Request[_], messages: Messages)
+@(nextPage: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("index.title")),
@@ -28,6 +32,13 @@
 ) {
 
     <h1 class="govuk-heading-xl">@messages("index.heading")</h1>
+
+    <p class="govuk-body">
+    @govukButton(
+        ButtonViewModel(Text(messages("site.continue")))
+        .asLink(nextPage)
+    )
+    </p>
 
     <p class="govuk-body">@messages("index.guidance")</p>
 }

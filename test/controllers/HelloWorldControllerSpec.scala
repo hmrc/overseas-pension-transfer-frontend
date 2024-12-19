@@ -19,28 +19,28 @@ package controllers
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.IndexView
+import views.html.HelloWorldView
 
-class IndexControllerSpec extends SpecBase {
+class HelloWorldControllerSpec extends SpecBase {
 
-  "Index Controller" - {
+
+  "HelloWorld Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.HelloWorldController.onPageLoad().url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[IndexView]
+        val view = application.injector.instanceOf[HelloWorldView]
 
-        val nextPage = controllers.routes.HelloWorldController.onPageLoad().url
+        val content = "Hello world!"
 
         status(result) mustEqual OK
-
-        contentAsString(result) mustEqual view(nextPage)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(content)(request, messages(application)).toString
       }
     }
   }
