@@ -40,9 +40,7 @@ class HelloWorldConnectorISpec extends BaseISpec with Logging {
 
       HelloWorldStub.stubResponse(HelloWorldStub.helloWorldUri)(OK, Json.toJson(expectedResponse))
 
-      // The backend is currently not set up to send json so it's necessary to serialise the response
-      // in order to work with wire mock!
-      val result = Json.toJson(await(connector.getHelloWorld))
+      val result = await(connector.getHelloWorld)
 
       result shouldBe expectedResponse
     }
