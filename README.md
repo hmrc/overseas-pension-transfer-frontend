@@ -1,7 +1,7 @@
 
 # overseas-pension-transfer-frontend
 
-This is a placeholder README.md for a new repository
+This app is the part of the Managing Pensions Schemes service concerned with moving pensions abroad. It is connected to the MPS dashboard.
 
 ### License
 
