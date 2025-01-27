@@ -1,5 +1,5 @@
-/*
- * Copyright 2024 HM Revenue & Customs
+@*
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,21 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package generators
+@import play.twirl.api.Html
+@import uk.gov.hmrc.hmrcfrontend.views.Utils.toClasses
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+@this()
 
-trait ModelGenerators {
+@()
 
-  implicit lazy val arbitraryMemberName: Arbitrary[MemberName] =
-    Arbitrary {
-      for {
-        memberFirstName <- arbitrary[String]
-        memberLastName <- arbitrary[String]
-      } yield MemberName(memberFirstName, memberLastName)
-    }
-}
+<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+<a
+ class="@toClasses("govuk-link")"
+ target="_blank"
+ href=""
+>
+ Return to task list
+</a>
+
+<hr class="govuk-section-break govuk-section-break--l">
+
+
+
+
