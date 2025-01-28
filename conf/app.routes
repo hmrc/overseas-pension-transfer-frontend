@@ -36,3 +36,8 @@ GET        /date-of-birth                                controllers.DateOfBirth
 POST       /date-of-birth                                controllers.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
 GET        /change-date-of-birth                         controllers.DateOfBirthController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-date-of-birth                         controllers.DateOfBirthController.onSubmit(mode: Mode = CheckMode)
+
+GET        /dateOfBirth                  controllers.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
+POST       /dateOfBirth                  controllers.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
+GET        /changeDateOfBirth                        controllers.DateOfBirthController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeDateOfBirth                        controllers.DateOfBirthController.onSubmit(mode: Mode = CheckMode)
