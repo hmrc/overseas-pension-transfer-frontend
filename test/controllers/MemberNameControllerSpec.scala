@@ -93,7 +93,7 @@ class MemberNameControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, memberNameRoute)
-            .withFormUrlEncodedBody(("memberFirstName", "value 1"), ("memberLastName", "value 2"))
+            .withFormUrlEncodedBody(("memberFirstName", "first name"), ("memberLastName", "last name"))
 
         val result = route(application, request).value
 

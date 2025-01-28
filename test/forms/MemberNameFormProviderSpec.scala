@@ -23,6 +23,8 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
 
   val form = new MemberNameFormProvider()()
 
+  val nameRegex = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+
   ".memberFirstName" - {
 
     val fieldName = "memberFirstName"
@@ -33,7 +35,7 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringWithMaxLengthFromRegex(nameRegex, 35)
     )
 
     behave like fieldWithMaxLength(
@@ -60,7 +62,7 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringWithMaxLengthFromRegex(nameRegex, 35)
     )
 
     behave like fieldWithMaxLength(
