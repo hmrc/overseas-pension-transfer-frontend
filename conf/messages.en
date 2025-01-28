@@ -60,5 +60,7 @@ memberName.error.memberFirstName.required = Enter the member''s first name
 memberName.error.memberLastName.required = Enter the member''s last name
 memberName.error.memberFirstName.length = Member''s first name must be 35 characters or less
 memberName.error.memberLastName.length = Member''s last name must be 35 characters or less
+memberName.error.memberFirstName.pattern = The member''s first name must only include letters, apostrophes and hyphens
+memberName.error.memberLastName.pattern = The member''s last name must only include letters, apostrophes and hyphens
 memberName.memberFirstName.change.hidden = Member''s first name
 memberName.memberLastName.change.hidden = Member''s last name

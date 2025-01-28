@@ -28,9 +28,11 @@ class MemberNameFormProvider @Inject() extends Mappings {
    def apply(): Form[MemberName] = Form(
      mapping(
       "memberFirstName" -> text("memberName.error.memberFirstName.required")
-        .verifying(maxLength(35, "memberName.error.memberFirstName.length")),
+        .verifying(maxLength(35, "memberName.error.memberFirstName.length"))
+        .verifying(regexp("^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'-]*$", "memberName.error.memberFirstName.pattern")),
       "memberLastName" -> text("memberName.error.memberLastName.required")
         .verifying(maxLength(35, "memberName.error.memberLastName.length"))
+        .verifying(regexp("^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'-]*$", "memberName.error.memberFirstName.pattern")),
     )(MemberName.apply)(x => Some((x.memberFirstName, x.memberLastName)))
    )
  }
