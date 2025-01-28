@@ -6,6 +6,7 @@ site.change = Change
 site.no = No
 site.yes = Yes
 site.continue = Continue
+site.saveAndContinue = Save and continue
 site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
@@ -50,3 +51,14 @@ unauthorised.heading = You can’t access this service with this account
 
 helloWorld.title = helloWorld
 helloWorld.heading = helloWorld
+
+dateOfBirth.title = DateOfBirth
+dateOfBirth.heading = What is undefined`s date of birth?
+dateOfBirth.hint = For example, 31 03 1980.
+dateOfBirth.checkYourAnswersLabel = DateOfBirth
+dateOfBirth.error.required.all = Enter the date of birth
+dateOfBirth.error.required.two = The dateOfBirth must include {0} and {1}
+dateOfBirth.error.required = The dateOfBirth must include {0}
+dateOfBirth.error.invalid = Enter Day/Month/Year in the correct format
+dateOfBirth.error.invalidCharacter = The Day/Month/Year Field must only include numbers
+dateOfBirth.change.hidden = DateOfBirth

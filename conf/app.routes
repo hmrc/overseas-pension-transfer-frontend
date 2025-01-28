@@ -21,3 +21,8 @@ GET         /account/signed-out                          controllers.auth.Signed
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad()
 
 GET         /hello-world                                 controllers.HelloWorldController.onPageLoad()
+
+GET        /dateOfBirth                  controllers.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
+POST       /dateOfBirth                  controllers.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
+GET        /changeDateOfBirth                        controllers.DateOfBirthController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeDateOfBirth                        controllers.DateOfBirthController.onSubmit(mode: Mode = CheckMode)
