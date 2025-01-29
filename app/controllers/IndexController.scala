@@ -17,11 +17,11 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
+import pages.IndexPage
 
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
-import play.api.libs.json.JsObject
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -34,14 +34,14 @@ class IndexController @Inject()(
                                  identify: IdentifierAction,
                                  view: IndexView,
                                  sessionRepository: SessionRepository
-                               ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                               ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport{
 
   def onPageLoad(): Action[AnyContent] = identify.async  { implicit request =>
 
-    val nextPage = controllers.routes.HelloWorldController.onPageLoad().url
+    val userAnswers = UserAnswers(request.userId)
 
-    sessionRepository.set(UserAnswers(request.userId)).map { _ =>
-      Ok(view(nextPage))
+    sessionRepository.set(userAnswers).map { _ =>
+      Ok(view(IndexPage.nextPage(mode = NormalMode, userAnswers).url))
     }
   }
 }

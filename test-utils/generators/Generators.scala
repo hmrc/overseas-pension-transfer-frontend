@@ -17,14 +17,24 @@
 package generators
 
 import java.time.{Instant, LocalDate, ZoneOffset}
-
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Gen, Shrink}
+import wolfendale.scalacheck.regexp.RegexpGen
 
 trait Generators extends ModelGenerators {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
+
+  private val validCharacters: Seq[Char] =
+    ('A' to 'Z') ++
+      ('a' to 'z') ++
+      ('À' to 'Ö') ++
+      ('Ø' to 'ö') ++
+      ('ø' to 'ÿ')
+
+  def genValidChar: Gen[Char] =
+    Gen.oneOf(validCharacters)
 
   def genIntersperseString(gen: Gen[String],
                            value: String,
@@ -87,13 +97,16 @@ trait Generators extends ModelGenerators {
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
       length <- choose(1, maxLength)
-      chars <- listOfN(length, arbitrary[Char])
+      chars <- listOfN(length, genValidChar)
     } yield chars.mkString
+
+  def stringWithMaxLengthFromRegex(regex: String, maxLength: Int): Gen[String] =
+    RegexpGen.from(regex) suchThat (str => str.length <= maxLength) retryUntil (s => s.matches(regex))
 
   def stringsLongerThan(minLength: Int): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
     length    <- Gen.chooseNum(minLength + 1, maxLength)
-    chars     <- listOfN(length, arbitrary[Char])
+    chars     <- listOfN(length, genValidChar)
   } yield chars.mkString
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
