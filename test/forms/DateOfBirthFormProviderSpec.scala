@@ -13,7 +13,7 @@ class DateOfBirthFormProviderSpec extends DateBehaviours {
   ".value" - {
 
     val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
+      min = LocalDate.of(1900, 1, 1),
       max = LocalDate.now(ZoneOffset.UTC)
     )
 
