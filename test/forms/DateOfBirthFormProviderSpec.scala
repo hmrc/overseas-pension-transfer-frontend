@@ -63,6 +63,5 @@ class DateOfBirthFormProviderSpec extends DateBehaviours {
     )
 
     behave like mandatoryDateField(form, "value", "dateOfBirth.error.required.all")
-
   }
 }
