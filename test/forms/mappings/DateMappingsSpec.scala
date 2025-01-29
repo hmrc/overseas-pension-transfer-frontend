@@ -494,6 +494,21 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
     )
   }
 
+  "must fail to bind an future date" in {
+
+    val data = Map(
+      "value.day" -> "30",
+      "value.month" -> "2",
+      "value.year" -> "3000"
+    )
+
+    val result = form.bind(data)
+
+    result.errors must contain(
+      FormError("value", "error.invalid", List.empty)
+    )
+  }
+
   "must unbind a date" in {
 
     forAll(validData -> "valid date") {
