@@ -24,6 +24,7 @@ import java.time.{LocalDate, Month}
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
+                                            invalidCharacter: String,
                                             invalidKey: String,
                                             allRequiredKey: String,
                                             twoRequiredKey: String,
@@ -46,7 +47,7 @@ private[mappings] class LocalDateFormatter(
     val int = intFormatter(
       requiredKey = invalidKey,
       wholeNumberKey = invalidKey,
-      nonNumericKey = invalidKey,
+      nonNumericKey = invalidCharacter,
       args
     )
 
