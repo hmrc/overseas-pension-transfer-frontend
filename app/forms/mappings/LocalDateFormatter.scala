@@ -24,6 +24,7 @@ import java.time.{LocalDate, Month}
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
+                                            invalidCharacter: String,
                                             invalidKey: String,
                                             allRequiredKey: String,
                                             twoRequiredKey: String,
@@ -46,7 +47,7 @@ private[mappings] class LocalDateFormatter(
     val int = intFormatter(
       requiredKey = invalidKey,
       wholeNumberKey = invalidKey,
-      nonNumericKey = invalidKey,
+      nonNumericKey = invalidCharacter,
       args
     )
 
@@ -62,6 +63,7 @@ private[mappings] class LocalDateFormatter(
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
+
     val fields = fieldKeys.map {
       field =>
         field -> data.get(s"$key.$field").filter(_.nonEmpty)
@@ -73,11 +75,14 @@ private[mappings] class LocalDateFormatter(
       .toList
       .map(field => messages(s"date.error.$field"))
 
+
     fields.count(_._2.isDefined) match {
       case 3 =>
         formatDate(key, data).left.map {
           _.map(_.copy(key = key, args = args))
         }
+
+
       case 2 =>
         Left(List(FormError(key, requiredKey, missingFields ++ args)))
       case 1 =>

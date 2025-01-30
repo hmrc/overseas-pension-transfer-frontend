@@ -38,7 +38,8 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
       requiredKey    = "error.required",
       allRequiredKey = "error.required.all",
       twoRequiredKey = "error.required.two",
-      invalidKey     = "error.invalid"
+      invalidKey     = "error.invalid",
+      invalidCharacter =  "error.invalid.character"
     )
   )
 
@@ -181,13 +182,32 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
     }
   }
 
-  "must fail to bind a date with an invalid day" in {
+  "must fail to bind a date with a non numeric day" in {
 
     forAll(validData -> "valid date", invalidField -> "invalid field") {
       (date, field) =>
 
         val data = Map(
           "value.day" -> field,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year" -> date.getYear.toString
+        )
+
+        val result = form.bind(data)
+
+        result.errors must contain(
+          FormError("value", "error.invalid.character", List.empty)
+        )
+    }
+  }
+
+  "must fail to bind a date with an impossible day value" in {
+
+    forAll(validData -> "valid date") {
+      (date) =>
+
+        val data = Map(
+          "value.day" -> "50",
           "value.month" -> date.getMonthValue.toString,
           "value.year" -> date.getYear.toString
         )
@@ -221,7 +241,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
     }
   }
 
-  "must fail to bind a date with an invalid month" in {
+  "must fail to bind a date with an invalid non-numeric month" in {
 
     forAll(validData -> "valid data", invalidField -> "invalid field") {
       (date, field) =>
@@ -239,6 +259,25 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
         )
     }
   }
+
+    "must fail to bind a date with an impossible month value" in {
+
+      forAll(validData -> "valid data") {
+        (date) =>
+
+          val data = Map(
+            "value.day" -> date.getDayOfMonth.toString,
+            "value.month" -> "50",
+            "value.year" -> date.getYear.toString
+          )
+
+          val result = form.bind(data)
+
+          result.errors must contain(
+            FormError("value", "error.invalid", List.empty)
+          )
+      }
+    }
 
   "must fail to bind a date with a missing year" in {
 
@@ -261,7 +300,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
     }
   }
 
-  "must fail to bind a date with an invalid year" in {
+  "must fail to bind a date with a non-numeric year" in {
 
     forAll(validData -> "valid data", invalidField -> "invalid field") {
       (date, field) =>
@@ -275,7 +314,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
         val result = form.bind(data)
 
         result.errors must contain(
-          FormError("value", "error.invalid", List.empty)
+          FormError("value", "error.invalid.character", List.empty)
         )
     }
   }
@@ -355,7 +394,24 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
     }
   }
 
-  "must fail to bind an invalid day and month" in {
+  "must fail to bind an impossible day and month value" in {
+
+    forAll(validData -> "valid date") {
+      (date) =>
+
+        val data = Map(
+          "value.day" -> "50",
+          "value.month" -> "50",
+          "value.year" -> date.getYear.toString
+        )
+
+        val result = form.bind(data)
+
+        result.errors must contain only FormError("value", "error.invalid", List.empty)
+    }
+  }
+
+  "must fail to bind an invalid non numeric day and month" in {
 
     forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid month") {
       (date, day, month) =>
@@ -368,11 +424,11 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List.empty)
+        result.errors must contain only FormError("value", "error.invalid.character", List.empty)
     }
   }
 
-  "must fail to bind an invalid day and year" in {
+  "must fail to bind an invalid non-numeric day and year" in {
 
     forAll(validData -> "valid date", invalidField -> "invalid day", invalidField -> "invalid year") {
       (date, day, year) =>
@@ -385,11 +441,11 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List.empty)
+        result.errors must contain only FormError("value", "error.invalid.character", List.empty)
     }
   }
 
-  "must fail to bind an invalid month and year" in {
+  "must fail to bind an invalid invalid month and year" in {
 
     forAll(validData -> "valid date", invalidField -> "invalid month", invalidField -> "invalid year") {
       (date, month, year) =>
@@ -406,7 +462,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
     }
   }
 
-  "must fail to bind an invalid day, month and year" in {
+  "must fail to bind an invalid non-numeric day, month and year" in {
 
     forAll(invalidField -> "valid day", invalidField -> "invalid month", invalidField -> "invalid year") {
       (day, month, year) =>
@@ -419,7 +475,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid", List.empty)
+        result.errors must contain only FormError("value", "error.invalid.character", List.empty)
     }
   }
 

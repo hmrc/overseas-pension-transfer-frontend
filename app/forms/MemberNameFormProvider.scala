@@ -27,8 +27,8 @@ class MemberNameFormProvider @Inject() extends Mappings {
 
   val nameRegex = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
-   def apply(): Form[MemberName] = Form(
-     mapping(
+  def apply(): Form[MemberName] = Form(
+    mapping(
       "memberFirstName" -> text("memberName.error.memberFirstName.required")
         .verifying(maxLength(35, "memberName.error.memberFirstName.length"))
         .verifying(regexp(nameRegex, "memberName.error.memberFirstName.pattern")),
@@ -36,5 +36,5 @@ class MemberNameFormProvider @Inject() extends Mappings {
         .verifying(maxLength(35, "memberName.error.memberLastName.length"))
         .verifying(regexp(nameRegex, "memberName.error.memberLastName.pattern")),
     )(MemberName.apply)(x => Some((x.memberFirstName, x.memberLastName)))
-   )
- }
+  )
+}
