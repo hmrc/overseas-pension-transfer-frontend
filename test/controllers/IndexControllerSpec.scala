@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.IndexView
@@ -36,7 +37,7 @@ class IndexControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[IndexView]
 
-        val nextPage = controllers.routes.HelloWorldController.onPageLoad().url
+        val nextPage = controllers.routes.MemberNameController.onPageLoad(mode = NormalMode).url
 
         status(result) mustEqual OK
 

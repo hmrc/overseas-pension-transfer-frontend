@@ -21,3 +21,13 @@ GET         /account/signed-out                          controllers.auth.Signed
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad()
 
 GET         /hello-world                                 controllers.HelloWorldController.onPageLoad()
+
+GET         /member-name                                 controllers.MemberNameController.onPageLoad(mode: Mode = NormalMode)
+POST        /member-name                                 controllers.MemberNameController.onSubmit(mode: Mode = NormalMode)
+GET         /change-member-name                          controllers.MemberNameController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-member-name                          controllers.MemberNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /date-of-birth                                controllers.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
+POST       /date-of-birth                                controllers.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
+GET        /change-date-of-birth                         controllers.DateOfBirthController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-date-of-birth                         controllers.DateOfBirthController.onSubmit(mode: Mode = CheckMode)
