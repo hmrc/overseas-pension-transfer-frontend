@@ -18,23 +18,53 @@ package forms
 
 import java.time.{LocalDate, ZoneOffset}
 import forms.behaviours.DateBehaviours
+import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+
+import java.time.format.DateTimeFormatter
 
 class DateOfBirthFormProviderSpec extends DateBehaviours {
 
   private implicit val messages: Messages = stubMessages()
   private val form = new DateOfBirthFormProvider()()
 
+
+  private val minDate = LocalDate.of(1900, 1, 1)
+  private val maxDate = LocalDate.now(ZoneOffset.UTC)
+
+  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+
+
   ".value" - {
 
-    val validData = datesBetween(
-      min = LocalDate.of(1900, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
-    )
+    val validData = datesBetween(minDate, maxDate)
 
     behave like dateField(form, "value", validData)
 
+    behave like dateFieldWithMax(
+      form = form,
+      key = "value",
+      max = maxDate,
+      formError = FormError(
+        "value",
+        "dateOfBirth.error.invalid",
+        Seq(maxDate.format(dateFormatter))
+      )
+    )
+
+    behave like dateFieldWithMin(
+      form = form,
+      key = "value",
+      min = minDate,
+      formError = FormError(
+        "value",
+        "dateOfBirth.error.invalid",
+        Seq(minDate.format(dateFormatter))
+      )
+    )
+
     behave like mandatoryDateField(form, "value", "dateOfBirth.error.required.all")
+
   }
 }
