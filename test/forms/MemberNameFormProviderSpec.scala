@@ -30,19 +30,27 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "memberFirstName"
     val requiredKey = "memberName.error.memberFirstName.required"
     val lengthKey = "memberName.error.memberFirstName.length"
+    val patternKey = "memberName.error.memberFirstName.pattern"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringWithMaxLengthFromRegex(nameRegex, 35)
+      stringsMatchingRegex(nameRegex, maybeMaxLength = Some(maxLength))
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(nameRegex)),
+      maybeMaxLength = Some(maxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
       maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength)),
     )
 
     behave like mandatoryField(
@@ -57,12 +65,20 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "memberLastName"
     val requiredKey = "memberName.error.memberLastName.required"
     val lengthKey = "memberName.error.memberLastName.length"
+    val patternKey = "memberName.error.memberLastName.pattern"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringWithMaxLengthFromRegex(nameRegex, 35)
+      stringsMatchingRegex(nameRegex, maybeMaxLength = Some(maxLength))
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(nameRegex)),
+      maybeMaxLength = Some(maxLength)
     )
 
     behave like fieldWithMaxLength(
