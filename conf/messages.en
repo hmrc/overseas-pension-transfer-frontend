@@ -64,3 +64,11 @@ memberName.error.memberFirstName.pattern = The member''s first name must only in
 memberName.error.memberLastName.pattern = The member''s last name must only include letters, apostrophes and hyphens
 memberName.memberFirstName.change.hidden = Member''s first name
 memberName.memberLastName.change.hidden = Member''s last name
+
+memberNino.title = Enter member''s National Insurance number
+memberNino.heading = What is undefined undefined''s National Insurance number?
+memberNino.checkYourAnswersLabel = Member''s National Insurance number
+memberNino.error.required = Enter the member’'s National Insurance number
+memberNino.error.pattern = Enter the member’'s National Insurance number in the correct format
+memberNino.change.hidden = Member''s National Insurance number
+memberNino.hint = For example, AB123456B

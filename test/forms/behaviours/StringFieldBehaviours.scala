@@ -34,4 +34,17 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
   }
-}
+
+  def fieldThatRejectsInvalidCharacters(form: Form[_],
+                                        fieldName: String,
+                                        patternError: FormError,
+                                        maybeMaxLength: Option[Int] = None): Unit
+ = {
+    s"not bind strings with invalid regex" in {
+      forAll(stringsWithInvalidCharacters(maybeMaxLength = maybeMaxLength) -> "invalidString") {
+        (string: String) =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.errors must contain only patternError
+      }
+    }
+  }}

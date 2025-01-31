@@ -20,12 +20,8 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.title
-@import viewmodels.govuk.all.ErrorSummaryViewModel
-@import viewmodels.govuk.all.InputViewModel
-@import viewmodels.govuk.all.FluentInput
-@import viewmodels.govuk.all.LabelViewModel
-@import viewmodels.govuk.all.ButtonViewModel
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.govuk.all._
+@import viewmodels.LabelSize.Large
 
 @this(
     layout: templates.Layout,
@@ -37,35 +33,25 @@
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("memberName.title")), showReturnToTaskListLink = true) {
+@layout(pageTitle = title(form, messages("memberNino.title")), showReturnToTaskListLink = true) {
 
-    @formHelper(action = routes.MemberNameController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.MemberNinoController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("memberName.heading")</h1>
-
         @govukInput(
             InputViewModel(
-                field = form("memberFirstName"),
-                label = LabelViewModel(Text(messages("memberName.memberFirstName")))
+                field = form("value"),
+                label = LabelViewModel(messages("memberNino.heading")).asPageHeading(size = Large)
             )
-            .withWidth(OneHalf)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("memberLastName"),
-                label = LabelViewModel(Text(messages("memberName.memberLastName")))
-            )
+            .withHint(HintViewModel(messages("memberNino.hint")))
             .withWidth(OneHalf)
         )
 
         @govukButton(
-            ButtonViewModel(Text(messages("site.continue")))
+            ButtonViewModel(messages("site.continue"))
         )
-
     }
 }

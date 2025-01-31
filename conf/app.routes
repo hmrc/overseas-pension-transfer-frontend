@@ -26,3 +26,8 @@ GET         /member-name                                 controllers.MemberNameC
 POST        /member-name                                 controllers.MemberNameController.onSubmit(mode: Mode = NormalMode)
 GET         /change-member-name                          controllers.MemberNameController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-member-name                          controllers.MemberNameController.onSubmit(mode: Mode = CheckMode)
+
+GET         /member-nino                                 controllers.MemberNinoController.onPageLoad(mode: Mode = NormalMode)
+POST        /member-nino                                 controllers.MemberNinoController.onSubmit(mode: Mode = NormalMode)
+GET         /change-member-nino                          controllers.MemberNinoController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-member-nino                          controllers.MemberNinoController.onSubmit(mode: Mode = CheckMode)

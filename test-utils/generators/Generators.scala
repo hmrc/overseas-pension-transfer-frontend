@@ -33,8 +33,14 @@ trait Generators extends ModelGenerators {
       ('Ø' to 'ö') ++
       ('ø' to 'ÿ')
 
+  private val invalidCharacters: Seq[Char] = Seq('<', '>', '=','|', '&', '^')
+
+
   def genValidChar: Gen[Char] =
     Gen.oneOf(validCharacters)
+
+  def genInvalidChar: Gen[Char] =
+    Gen.oneOf(invalidCharacters)
 
   def genIntersperseString(gen: Gen[String],
                            value: String,
@@ -92,7 +98,7 @@ trait Generators extends ModelGenerators {
       .suchThat (_ != "false")
 
   def nonEmptyString: Gen[String] =
-    arbitrary[String] suchThat (_.nonEmpty)
+    stringOf(genValidChar) suchThat (_.nonEmpty)
 
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
@@ -100,8 +106,35 @@ trait Generators extends ModelGenerators {
       chars <- listOfN(length, genValidChar)
     } yield chars.mkString
 
-  def stringWithMaxLengthFromRegex(regex: String, maxLength: Int): Gen[String] =
-    RegexpGen.from(regex) suchThat (str => str.length <= maxLength) retryUntil (s => s.matches(regex))
+  def stringsMatchingRegex(
+                            regex: String,
+                            maybeMinLength: Option[Int] = None,
+                            maybeMaxLength: Option[Int] = None
+                          ): Gen[String] = {
+
+    val baseGen: Gen[String] = RegexpGen.from(regex)
+
+    val lengthFilteredGen: Gen[String] =
+      baseGen suchThat { s =>
+        maybeMinLength.forall(min => s.length >= min) &&
+          maybeMaxLength.forall(max => s.length <= max)
+      }
+
+    lengthFilteredGen retryUntil (_.matches(regex))
+  }
+
+  def stringsWithInvalidCharacters(
+                               maybeMinLength: Option[Int] = None,
+                               maybeMaxLength: Option[Int] = None
+                             ): Gen[String] = {
+    val minLen = maybeMinLength.getOrElse(1)
+    val maxLen = maybeMaxLength.getOrElse(100)
+
+    for {
+      length <- Gen.chooseNum(minLen, maxLen)
+      chars  <- Gen.listOfN(length, genInvalidChar)
+    } yield chars.mkString
+  }
 
   def stringsLongerThan(minLength: Int): Gen[String] = for {
     maxLength <- (minLength * 2).max(100)
