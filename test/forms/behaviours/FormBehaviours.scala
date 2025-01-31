@@ -205,7 +205,7 @@ trait FormBehaviours extends FormSpec {
 
     s"fail to bind when the $field is invalid" in {
       val data = validData + (s"$field.day" -> "30") + (s"$field.month" -> "2")
-      val expectedError = error("dateOfBirth", "error.invalid_date")
+      val expectedError = error("memberDateOfBirth", "error.invalid_date")
       checkForError(form, data, expectedError)
     }
   }
