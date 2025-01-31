@@ -34,7 +34,7 @@
     hmrcStandardPage: HmrcStandardPage
 )
 
-@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true, showHmrcBanner: Boolean = false, showReturnToTaskListLink: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
+@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true, showHmrcBanner: Boolean = false, showReturnToTaskListLink: Boolean = true)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
 
 @head = {
 

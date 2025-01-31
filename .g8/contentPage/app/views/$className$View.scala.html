@@ -1,3 +1,6 @@
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.titleNoForm
+
 @this(
         layout: templates.Layout,
         govukButton: GovukButton
@@ -7,5 +10,5 @@
 
 @layout(pageTitle = titleNoForm(messages("$className;format="decap"$.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("$className;format="decap"$.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("$className;format="decap"$.heading")</h1>
 }
