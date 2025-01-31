@@ -1,4 +1,12 @@
 @import viewmodels.InputWidth._
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.title
+@import viewmodels.govuk.all._
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.LegendSize.Large
 
 @this(
     layout: templates.Layout,
@@ -21,13 +29,13 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("$className;format="decap"$.heading")).asPageHeading()
+                label = LabelViewModel(Text(messages("$className;format="decap"$.heading"))).asPageHeading(size = Large)
             )
-            .withWidth(Full)
+            .withWidth(OneHalf)
         )
 
         @govukButton(
-            ButtonViewModel(messages("site.continue"))
+            ButtonViewModel(Text(messages("site.continue")))
         )
     }
 }

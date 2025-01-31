@@ -1,4 +1,13 @@
 @import viewmodels.InputWidth._
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import viewmodels.govuk.all._
+@import views.ViewUtils.title
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.LabelSize.Large
+
 
 @this(
     layout: templates.Layout,
@@ -12,7 +21,7 @@
 
 @layout(pageTitle = title(form, messages("$className;format="decap"$.title"))) {
 
-    @formHelper(action = routes.$className$Controller.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.$className$Controller.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -21,14 +30,14 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("$className;format="decap"$.heading")).asPageHeading()
+                label = LabelViewModel(Text(messages("$className;format="decap"$.heading"))).asPageHeading(size = Large)
             )
             .asNumeric()
             .withWidth(Fixed10)
         )
 
         @govukButton(
-            ButtonViewModel(messages("site.continue"))
+            ButtonViewModel(Text(messages("site.continue")))
         )
     }
 }
