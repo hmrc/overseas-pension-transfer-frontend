@@ -18,27 +18,27 @@ package viewmodels.checkAnswers
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.DateOfBirthPage
+import pages.MemberDateOfBirthPage
 import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.DateTimeFormats.dateTimeFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DateOfBirthSummary  {
+object MemberDateOfBirthSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DateOfBirthPage).map {
+    answers.get(MemberDateOfBirthPage).map {
       answer =>
 
         implicit val lang: Lang = messages.lang
 
         SummaryListRowViewModel(
-          key     = "dateOfBirth.checkYourAnswersLabel",
+          key     = "memberDateOfBirth.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DateOfBirthController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("dateOfBirth.change.hidden"))
+            ActionItemViewModel("site.change", routes.MemberDateOfBirthController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("memberDateOfBirth.change.hidden"))
           )
         )
     }

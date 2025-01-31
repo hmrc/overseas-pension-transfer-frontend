@@ -24,10 +24,10 @@ import play.api.test.Helpers.stubMessages
 
 import java.time.format.DateTimeFormatter
 
-class DateOfBirthFormProviderSpec extends DateBehaviours {
+class MemberDateOfBirthFormProviderSpec extends DateBehaviours {
 
   private implicit val messages: Messages = stubMessages()
-  private val form = new DateOfBirthFormProvider()()
+  private val form = new MemberDateOfBirthFormProvider()()
 
 
   private val minDate = LocalDate.of(1900, 1, 1)

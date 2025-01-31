@@ -17,18 +17,30 @@
 package pages
 
 import controllers.routes
-import models.UserAnswers
-import play.api.mvc.Call
-import play.api.libs.json.JsPath
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-import java.time.LocalDate
+class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers {
 
-case object DateOfBirthPage extends QuestionPage[LocalDate] {
+  ".nextPage" - {
 
-  override def path: JsPath = JsPath \ toString
+    val emptyAnswers = UserAnswers("id")
 
-  override def toString: String = "dateOfBirth"
+    "in Normal Mode" - {
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+      "must go to Index" in {
+
+        MemberDateOfBirthPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+      }
+    }
+
+    "in Check Mode" - {
+
+      "must go to Check Answers" in {
+
+        MemberDateOfBirthPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+      }
+    }
+  }
 }

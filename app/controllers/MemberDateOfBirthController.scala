@@ -17,27 +17,28 @@
 package controllers
 
 import controllers.actions._
-import forms.DateOfBirthFormProvider
+import forms.MemberDateOfBirthFormProvider
+
 import javax.inject.Inject
 import models.Mode
-import pages.DateOfBirthPage
+import pages.MemberDateOfBirthPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.DateOfBirthView
+import views.html.MemberDateOfBirthView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DateOfBirthController @Inject()(
+class MemberDateOfBirthController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: DateOfBirthFormProvider,
+                                        formProvider: MemberDateOfBirthFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        view: DateOfBirthView
+                                        view: MemberDateOfBirthView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
@@ -45,7 +46,7 @@ class DateOfBirthController @Inject()(
 
       val form = formProvider()
 
-      val preparedForm = request.userAnswers.get(DateOfBirthPage) match {
+      val preparedForm = request.userAnswers.get(MemberDateOfBirthPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -64,9 +65,9 @@ class DateOfBirthController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfBirthPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(DateOfBirthPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(MemberDateOfBirthPage.nextPage(mode, updatedAnswers))
       )
   }
 }
