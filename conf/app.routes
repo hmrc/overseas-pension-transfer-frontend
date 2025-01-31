@@ -32,7 +32,7 @@ POST        /member-nino                                 controllers.MemberNinoC
 GET         /change-member-nino                          controllers.MemberNinoController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-member-nino                          controllers.MemberNinoController.onSubmit(mode: Mode = CheckMode)
 
-GET        /date-of-birth                                controllers.DateOfBirthController.onPageLoad(mode: Mode = NormalMode)
-POST       /date-of-birth                                controllers.DateOfBirthController.onSubmit(mode: Mode = NormalMode)
-GET        /change-date-of-birth                         controllers.DateOfBirthController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-date-of-birth                         controllers.DateOfBirthController.onSubmit(mode: Mode = CheckMode)
+GET        /member-date-of-birth                         controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-date-of-birth                         controllers.MemberDateOfBirthController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-date-of-birth                  controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-date-of-birth                  controllers.MemberDateOfBirthController.onSubmit(mode: Mode = CheckMode)

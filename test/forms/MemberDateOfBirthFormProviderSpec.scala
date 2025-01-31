@@ -48,7 +48,7 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours {
       max = maxDate,
       formError = FormError(
         "value",
-        "dateOfBirth.error.invalid",
+        "memberDateOfBirth.error.invalid",
         Seq(maxDate.format(dateFormatter))
       )
     )
@@ -59,12 +59,12 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours {
       min = minDate,
       formError = FormError(
         "value",
-        "dateOfBirth.error.invalid",
+        "memberDateOfBirth.error.invalid",
         Seq(minDate.format(dateFormatter))
       )
     )
 
-    behave like mandatoryDateField(form, "value", "dateOfBirth.error.required.all")
+    behave like mandatoryDateField(form, "value", "memberDateOfBirth.error.required.all")
 
   }
 }

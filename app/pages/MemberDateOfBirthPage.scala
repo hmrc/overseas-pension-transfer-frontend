@@ -27,7 +27,7 @@ case object MemberDateOfBirthPage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "dateOfBirth"
+  override def toString: String = "memberDateOfBirth"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()

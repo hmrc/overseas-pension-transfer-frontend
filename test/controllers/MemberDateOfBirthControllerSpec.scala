@@ -30,7 +30,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.DateOfBirthView
+import views.html.MemberDateOfBirthView
 
 import scala.concurrent.Future
 
@@ -55,7 +55,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         "value.year"  -> validAnswer.getYear.toString
       )
 
-  "DateOfBirth Controller" - {
+  "MemberDateOfBirth Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -64,7 +64,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val result = route(application, getRequest()).value
 
-        val view = application.injector.instanceOf[DateOfBirthView]
+        val view = application.injector.instanceOf[MemberDateOfBirthView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(getRequest(), messages(application)).toString
@@ -78,7 +78,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val view = application.injector.instanceOf[DateOfBirthView]
+        val view = application.injector.instanceOf[MemberDateOfBirthView]
 
         val result = route(application, getRequest()).value
 
@@ -119,7 +119,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[DateOfBirthView]
+        val view = application.injector.instanceOf[MemberDateOfBirthView]
 
         val result = route(application, request).value
 
