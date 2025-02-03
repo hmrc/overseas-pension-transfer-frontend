@@ -28,7 +28,7 @@ class MemberDateOfBirthFormProvider @Inject() extends Mappings {
 
   def minDate: LocalDate    =  LocalDate of(1900, 1, 1)
   def maxDate: LocalDate    = LocalDate.now(ZoneOffset.UTC)
-  private def dateFormatter = DateTimeFormatter.ofPattern("DD MM yyyy")
+  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
