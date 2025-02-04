@@ -34,16 +34,16 @@ object MemberIsResidentSummary  {
 
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"memberIsResident.$answer"))
+            HtmlFormat.escape(messages(s"memberIsResidentUk.$answer"))
           )
         )
 
         SummaryListRowViewModel(
-          key     = "memberIsResident.checkYourAnswersLabel",
+          key     = "memberIsResidentUk.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberIsResidentController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberIsResident.change.hidden"))
+            ActionItemViewModel("site.change", routes.MemberIsResidentControllerUK.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("memberIsResidentUk.change.hidden"))
           )
         )
     }

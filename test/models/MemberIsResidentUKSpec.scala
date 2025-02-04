@@ -10,38 +10,38 @@ import play.api.libs.json.{JsError, JsString, Json}
 
 class MemberIsResidentSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "MemberIsResident" - {
+  "MemberIsResidentUK" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(MemberIsResident.values.toSeq)
+      val gen = Gen.oneOf(MemberIsResidentUK.values.toSeq)
 
       forAll(gen) {
-        memberIsResident =>
+        memberIsResidentUk =>
 
-          JsString(memberIsResident.toString).validate[MemberIsResident].asOpt.value mustEqual memberIsResident
+          JsString(memberIsResidentUk.toString).validate[MemberIsResidentUK].asOpt.value mustEqual memberIsResidentUk
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!MemberIsResident.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!MemberIsResidentUK.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
 
-          JsString(invalidValue).validate[MemberIsResident] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[MemberIsResidentUK] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(MemberIsResident.values.toSeq)
+      val gen = Gen.oneOf(MemberIsResidentUK.values.toSeq)
 
       forAll(gen) {
-        memberIsResident =>
+        memberIsResidentUk =>
 
-          Json.toJson(memberIsResident) mustEqual JsString(memberIsResident.toString)
+          Json.toJson(memberIsResidentUk) mustEqual JsString(memberIsResidentUk.toString)
       }
     }
   }

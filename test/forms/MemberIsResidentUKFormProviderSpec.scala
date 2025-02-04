@@ -1,22 +1,22 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import models.MemberIsResident
+import models.MemberIsResidentUK
 import play.api.data.FormError
 
 class MemberIsResidentFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new MemberIsResidentFormProvider()()
+  val form = new MemberIsResidentUKFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
-    val requiredKey = "memberIsResident.error.required"
+    val requiredKey = "memberIsResidentUk.error.required"
 
-    behave like optionsField[MemberIsResident](
+    behave like optionsField[MemberIsResidentUK](
       form,
       fieldName,
-      validValues  = MemberIsResident.values,
+      validValues  = MemberIsResidentUK.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

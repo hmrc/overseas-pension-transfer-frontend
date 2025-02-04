@@ -1,8 +1,8 @@
 package controllers
 
 import base.SpecBase
-import forms.MemberIsResidentFormProvider
-import models.{NormalMode, MemberIsResident}
+import forms.MemberIsResidentUKFormProvider
+import models.{NormalMode, MemberIsResidentUK}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -18,12 +18,12 @@ import scala.concurrent.Future
 
 class MemberIsResidentControllerSpec extends SpecBase with MockitoSugar {
 
-  private lazy val memberIsResidentRoute = routes.MemberIsResidentController.onPageLoad(NormalMode).url
+  private lazy val memberIsResidentRoute = routes.MemberIsResidentControllerUK.onPageLoad(NormalMode).url
 
-  private val formProvider = new MemberIsResidentFormProvider()
+  private val formProvider = new MemberIsResidentUKFormProvider()
   private val form = formProvider()
 
-  "MemberIsResident Controller" - {
+  "MemberIsResidentUK Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -43,7 +43,7 @@ class MemberIsResidentControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(MemberIsResidentPage, MemberIsResident.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(MemberIsResidentPage, MemberIsResidentUK.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -55,7 +55,7 @@ class MemberIsResidentControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(MemberIsResident.values.head), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(MemberIsResidentUK.values.head), NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -75,7 +75,7 @@ class MemberIsResidentControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, memberIsResidentRoute)
-            .withFormUrlEncodedBody(("value", MemberIsResident.values.head.toString))
+            .withFormUrlEncodedBody(("value", MemberIsResidentUK.values.head.toString))
 
         val result = route(application, request).value
 
@@ -125,7 +125,7 @@ class MemberIsResidentControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, memberIsResidentRoute)
-            .withFormUrlEncodedBody(("value", MemberIsResident.values.head.toString))
+            .withFormUrlEncodedBody(("value", MemberIsResidentUK.values.head.toString))
 
         val result = route(application, request).value
 
