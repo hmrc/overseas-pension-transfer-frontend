@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import controllers.routes
+import models.{MemberIsResident, UserAnswers}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-trait ModelGenerators {
+case object MemberIsResidentPage extends QuestionPage[MemberIsResident] {
 
-  implicit lazy val arbitraryMemberIsResident: Arbitrary[MemberIsResident] =
-    Arbitrary {
-      Gen.oneOf(MemberIsResident.values.toSeq)
-    }
+  override def path: JsPath = JsPath \ toString
 
-  implicit lazy val arbitraryMemberName: Arbitrary[MemberName] =
-    Arbitrary {
-      for {
-        memberFirstName <- arbitrary[String]
-        memberLastName <- arbitrary[String]
-      } yield MemberName(memberFirstName, memberLastName)
-    }
+  override def toString: String = "memberIsResident"
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
 }

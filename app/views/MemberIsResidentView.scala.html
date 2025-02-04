@@ -20,33 +20,33 @@
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukDateInput: GovukDateInput,
+    govukRadios: GovukRadios,
     govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("memberDateOfBirth.title")),
+@layout(pageTitle = title(form, messages("memberIsResident.title")),
     showBackLink = true,
     showReturnToTaskListLink = true) {
 
-
-    @formHelper(action = routes.MemberDateOfBirthController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.MemberIsResidentController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value.day")))
+            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        @govukDateInput(
-            DateViewModel(
+        @govukRadios(
+            RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(messages("memberDateOfBirth.heading")).asPageHeading(LegendSize.Large)
+                legend = LegendViewModel(messages("memberIsResident.heading")).asPageHeading(LegendSize.Large),
+                items  = MemberIsResident.options
             )
-            .withHint(HintViewModel(messages("memberDateOfBirth.hint")))
+            .withHint(HintViewModel(messages("memberIsResident.hint")))
         )
 
         @govukButton(
-            ButtonViewModel(messages("site.saveAndContinue"))
+            ButtonViewModel(messages("site.continue"))
         )
     }
 }
