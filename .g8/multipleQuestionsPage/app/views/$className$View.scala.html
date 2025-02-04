@@ -1,4 +1,11 @@
 @import viewmodels.InputWidth._
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.title
+@import viewmodels.govuk.all._
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @this(
     layout: templates.Layout,
@@ -12,32 +19,32 @@
 
 @layout(pageTitle = title(form, messages("$className;format="decap"$.title"))) {
 
-    @formHelper(action = routes.$className$Controller.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.$className$Controller.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-xl">@messages("$className;format="decap"$.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("$className;format="decap"$.heading")</h1>
 
         @govukInput(
             InputViewModel(
                 field = form("$field1Name$"),
-                label = LabelViewModel(messages("$className;format="decap"$.$field1Name$"))
+                label = LabelViewModel(Text(messages("$className;format="decap"$.$field1Name$")))
             )
-            .withWidth(Full)
+            .withWidth(OneHalf)
         )
 
         @govukInput(
             InputViewModel(
                 field = form("$field2Name$"),
-                label = LabelViewModel(messages("$className;format="decap"$.$field2Name$"))
+                label = LabelViewModel(Text(messages("$className;format="decap"$.$field2Name$")))
             )
-            .withWidth(Full)
+            .withWidth(OneHalf)
         )
 
         @govukButton(
-            ButtonViewModel(messages("site.continue"))
+            ButtonViewModel(Text(messages("site.continue")))
         )
     }
 }
