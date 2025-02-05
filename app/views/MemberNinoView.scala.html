@@ -22,6 +22,7 @@
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
 @import viewmodels.LabelSize.Large
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @this(
     layout: templates.Layout,
@@ -44,14 +45,16 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("memberNino.heading")).asPageHeading(size = Large)
+                label = LabelViewModel(Text(messages("memberNino.heading")))
+                    .withCssClass("govuk-!-margin-bottom-5")
+                    .asPageHeading(size = Large)
             )
             .withHint(HintViewModel(messages("memberNino.hint")))
             .withWidth(OneHalf)
         )
 
         @govukButton(
-            ButtonViewModel(messages("site.continue"))
+            ButtonViewModel(messages("site.saveAndContinue"))
         )
     }
 }

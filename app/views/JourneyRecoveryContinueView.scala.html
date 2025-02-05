@@ -20,15 +20,15 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 @this(
-    layout: templates.Layout,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        govukButton: GovukButton
 )
 
 @(continueUrl: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("journeyRecovery.continue.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("journeyRecovery.continue.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("journeyRecovery.continue.heading")</h1>
 
     <p class="govuk-body">@messages("journeyRecovery.continue.guidance")</p>
 
