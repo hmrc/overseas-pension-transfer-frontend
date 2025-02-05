@@ -17,37 +17,37 @@
 package controllers
 
 import controllers.actions._
-import forms.MemberIsResidentFormProvider
+import forms.MemberIsResidentUKFormProvider
 
 import javax.inject.Inject
-import models.{MemberIsResident, Mode}
-import pages.MemberIsResidentPage
+import models.{MemberIsResidentUK, Mode}
+import pages.MemberIsResidentUKPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.MemberIsResidentView
+import views.html.MemberIsResidentUKView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MemberIsResidentController @Inject()(
+class MemberIsResidentUKController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       formProvider: MemberIsResidentFormProvider,
+                                       formProvider: MemberIsResidentUKFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: MemberIsResidentView
+                                       view: MemberIsResidentUKView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[MemberIsResident] = formProvider()
+  val form: Form[MemberIsResidentUK] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(MemberIsResidentPage) match {
+      val preparedForm = request.userAnswers.get(MemberIsResidentUKPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -64,9 +64,9 @@ class MemberIsResidentController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberIsResidentPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MemberIsResidentPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(MemberIsResidentUKPage.nextPage(mode, updatedAnswers))
       )
   }
 }

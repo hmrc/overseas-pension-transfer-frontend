@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberIsResidentPage
+import pages.MemberIsResidentUKPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,10 +26,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberIsResidentSummary  {
+object MemberIsResidentUKSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberIsResidentPage).map {
+    answers.get(MemberIsResidentUKPage).map {
       answer =>
 
         val value = ValueViewModel(
@@ -42,7 +42,7 @@ object MemberIsResidentSummary  {
           key     = "memberIsResidentUk.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberIsResidentControllerUK.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.MemberIsResidentUKController.onPageLoad(CheckMode).url)
               .withVisuallyHiddenText(messages("memberIsResidentUk.change.hidden"))
           )
         )

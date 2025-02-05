@@ -37,7 +37,7 @@ POST       /member-date-of-birth                         controllers.MemberDateO
 GET        /change-member-date-of-birth                  controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-date-of-birth                  controllers.MemberDateOfBirthController.onSubmit(mode: Mode = CheckMode)
 
-GET        /member-is-resident                        controllers.MemberIsResidentController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-is-resident                        controllers.MemberIsResidentController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-is-resident                  controllers.MemberIsResidentController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-is-resident                  controllers.MemberIsResidentController.onSubmit(mode: Mode = CheckMode)
+GET        /member-is-resident-uk                        controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-is-resident-uk                        controllers.MemberIsResidentUKController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-is-resident-uk                  controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-is-resident-uk                  controllers.MemberIsResidentUKController.onSubmit(mode: Mode = CheckMode)

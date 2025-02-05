@@ -20,12 +20,12 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.MemberIsResident
+import models.MemberIsResidentUK
 
-class MemberIsResidentFormProvider @Inject() extends Mappings {
+class MemberIsResidentUKFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[MemberIsResident] =
+  def apply(): Form[MemberIsResidentUK] =
     Form(
-      "value" -> enumerable[MemberIsResident]("memberIsResident.error.required")
+      "value" -> enumerable[MemberIsResidentUK]("memberIsResidentUk.error.required")
     )
 }
