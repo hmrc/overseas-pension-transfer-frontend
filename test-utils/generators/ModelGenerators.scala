@@ -22,6 +22,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryMemberIsResident: Arbitrary[MemberIsResidentUK] =
+    Arbitrary {
+      Gen.oneOf(MemberIsResidentUK.values.toSeq)
+    }
+
   implicit lazy val arbitraryMemberName: Arbitrary[MemberName] =
     Arbitrary {
       for {
