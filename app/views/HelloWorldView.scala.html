@@ -14,6 +14,9 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.titleNoForm
+
 @this(
         layout: templates.Layout,
         govukButton: GovukButton
@@ -23,5 +26,5 @@
 
 @layout(pageTitle = titleNoForm(messages("helloWorld.title"))) {
 
-    <h1 class="govuk-heading-xl">@helloWorld</h1>
+    <h1 class="govuk-heading-l">@helloWorld</h1>
 }

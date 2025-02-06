@@ -19,15 +19,15 @@
 @import views.ViewUtils.titleNoForm
 
 @this(
-    layout: templates.Layout,
-    govukSummaryList: GovukSummaryList
+        layout: templates.Layout,
+        govukSummaryList: GovukSummaryList
 )
 
 @(list: SummaryList)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("checkYourAnswers.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("checkYourAnswers.heading")</h1>
 
     @govukSummaryList(list)
 }
