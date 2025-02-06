@@ -30,24 +30,24 @@ import views.html.MemberDateOfBirthView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MemberDateOfBirthController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: MemberDateOfBirthFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: MemberDateOfBirthView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class MemberDateOfBirthController @Inject() (
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: MemberDateOfBirthFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: MemberDateOfBirthView
+  )(implicit ec: ExecutionContext
+  ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-
       val form = formProvider()
 
       val preparedForm = request.userAnswers.get(MemberDateOfBirthPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -56,13 +56,11 @@ class MemberDateOfBirthController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
       val form = formProvider()
 
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfBirthPage, value))

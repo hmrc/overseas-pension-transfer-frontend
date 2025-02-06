@@ -25,10 +25,9 @@ class MemberNinoFormProvider @Inject() extends Mappings {
 
   val ninoRegex = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
 
-
   def apply(): Form[String] =
     Form(
       "value" -> text("memberNino.error.required")
-        .verifying(regexp(ninoRegex, "memberNino.error.pattern")),
+        .verifying(regexp(ninoRegex, "memberNino.error.pattern"))
     )
 }

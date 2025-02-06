@@ -26,13 +26,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberNameSummary  {
+object MemberNameSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberNamePage).map {
       answer =>
-
-      val value = HtmlFormat.escape(answer.memberFirstName).toString + "<br/>" + HtmlFormat.escape(answer.memberLastName).toString
+        val value = HtmlFormat.escape(answer.memberFirstName).toString + "<br/>" + HtmlFormat.escape(answer.memberLastName).toString
 
         SummaryListRowViewModel(
           key     = "memberName.checkYourAnswersLabel",

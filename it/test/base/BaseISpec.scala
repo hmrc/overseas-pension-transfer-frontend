@@ -44,15 +44,15 @@ import utils.WireMockHelper
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable}
 
-trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with OptionValues with
-  BeforeAndAfterAll with BeforeAndAfterEach with GuiceOneServerPerSuite {
+trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with OptionValues with BeforeAndAfterAll with BeforeAndAfterEach
+    with GuiceOneServerPerSuite {
 
   def servicesConfig: Map[String, String] = Map(
-    "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
+    "play.filters.csrf.header.bypassHeaders.Csrf-Token"            -> "nocheck",
     "microservice.services.overseas-pension-transfer-backend.host" -> WireMockHelper.wireMockHost,
     "microservice.services.overseas-pension-transfer-backend.port" -> WireMockHelper.wireMockPort.toString,
-    "microservice.services.auth.host" -> WireMockHelper.wireMockHost,
-    "microservice.services.auth.port" -> WireMockHelper.wireMockPort.toString,
+    "microservice.services.auth.host"                              -> WireMockHelper.wireMockHost,
+    "microservice.services.auth.port"                              -> WireMockHelper.wireMockPort.toString
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -61,7 +61,7 @@ trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with O
     .build()
 
   lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
-  val appRouteContext: String = "/overseas-pension-transfer-frontend"
+  val appRouteContext: String     = "/overseas-pension-transfer-frontend"
 
   override def beforeAll(): Unit = {
     super.beforeAll()

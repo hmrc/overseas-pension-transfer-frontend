@@ -27,11 +27,11 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
 
   ".memberFirstName" - {
 
-    val fieldName = "memberFirstName"
+    val fieldName   = "memberFirstName"
     val requiredKey = "memberName.error.memberFirstName.required"
-    val lengthKey = "memberName.error.memberFirstName.length"
-    val patternKey = "memberName.error.memberFirstName.pattern"
-    val maxLength = 35
+    val lengthKey   = "memberName.error.memberFirstName.length"
+    val patternKey  = "memberName.error.memberFirstName.pattern"
+    val maxLength   = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -42,15 +42,15 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatRejectsInvalidCharacters(
       form,
       fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(nameRegex)),
+      patternError   = FormError(fieldName, patternKey, Seq(nameRegex)),
       maybeMaxLength = Some(maxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength)),
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
@@ -62,11 +62,11 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
 
   ".memberLastName" - {
 
-    val fieldName = "memberLastName"
+    val fieldName   = "memberLastName"
     val requiredKey = "memberName.error.memberLastName.required"
-    val lengthKey = "memberName.error.memberLastName.length"
-    val patternKey = "memberName.error.memberLastName.pattern"
-    val maxLength = 35
+    val lengthKey   = "memberName.error.memberLastName.length"
+    val patternKey  = "memberName.error.memberLastName.pattern"
+    val maxLength   = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -77,14 +77,14 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatRejectsInvalidCharacters(
       form,
       fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(nameRegex)),
+      patternError   = FormError(fieldName, patternKey, Seq(nameRegex)),
       maybeMaxLength = Some(maxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

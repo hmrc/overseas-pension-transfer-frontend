@@ -26,7 +26,7 @@ class MemberIsResidentUKFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "memberIsResidentUk.error.required"
 
     behave like optionsField[MemberIsResidentUK](
