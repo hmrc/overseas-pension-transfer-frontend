@@ -3,7 +3,7 @@ import sbt.Def
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
-lazy val appName: String = "overseas-pension-transfer-frontend"
+lazy val appName: String = "Report an overseas pension transfer"
 
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := "2.13.12"

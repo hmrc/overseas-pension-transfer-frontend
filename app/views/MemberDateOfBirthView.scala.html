@@ -24,17 +24,16 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukDateInput: GovukDateInput,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukDateInput: GovukDateInput,
+        govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("memberDateOfBirth.title")),
-    showReturnToTaskListLink = true) {
+@layout(pageTitle = title(form, messages("memberDateOfBirth.title"))) {
 
 
     @formHelper(action = routes.MemberDateOfBirthController.onSubmit(mode), Symbol("autoComplete") -> "on") {
