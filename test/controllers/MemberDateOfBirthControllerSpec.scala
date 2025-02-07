@@ -36,12 +36,12 @@ import scala.concurrent.Future
 
 class MemberDateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
-  private implicit val messages: Messages = stubMessages()
+  implicit private val messages: Messages = stubMessages()
 
   private val formProvider = new MemberDateOfBirthFormProvider()
-  private def form = formProvider()
+  private def form         = formProvider()
 
-  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private val validAnswer                 = LocalDate.now(ZoneOffset.UTC)
   private lazy val memberDateOfBirthRoute = routes.MemberDateOfBirthController.onPageLoad(NormalMode).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =

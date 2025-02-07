@@ -36,7 +36,7 @@ class MemberIsResidentUKControllerSpec extends SpecBase with MockitoSugar {
   private lazy val memberIsResidentRoute = routes.MemberIsResidentUKController.onPageLoad(NormalMode).url
 
   private val formProvider = new MemberIsResidentUKFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   "MemberIsResidentUK Controller" - {
 

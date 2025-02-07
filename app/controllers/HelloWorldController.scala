@@ -28,15 +28,16 @@ import views.html.HelloWorldView
 
 import scala.concurrent.ExecutionContext
 
-class HelloWorldController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       helloWorldConnector: HelloWorldConnector,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: HelloWorldView,
-                                     )(implicit ex: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class HelloWorldController @Inject() (
+    override val messagesApi: MessagesApi,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    helloWorldConnector: HelloWorldConnector,
+    val controllerComponents: MessagesControllerComponents,
+    view: HelloWorldView
+  )(implicit ex: ExecutionContext
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>

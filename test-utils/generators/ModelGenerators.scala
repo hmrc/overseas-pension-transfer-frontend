@@ -31,7 +31,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         memberFirstName <- arbitrary[String]
-        memberLastName <- arbitrary[String]
+        memberLastName  <- arbitrary[String]
       } yield MemberName(memberFirstName, memberLastName)
     }
 }

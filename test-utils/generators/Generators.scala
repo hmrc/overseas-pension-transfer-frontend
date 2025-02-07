@@ -33,8 +33,7 @@ trait Generators extends ModelGenerators {
       ('Ø' to 'ö') ++
       ('ø' to 'ÿ')
 
-  private val invalidCharacters: Seq[Char] = Seq('<', '>', '=','|', '&', '^')
-
+  private val invalidCharacters: Seq[Char] = Seq('<', '>', '=', '|', '&', '^')
 
   def genValidChar: Gen[Char] =
     Gen.oneOf(validCharacters)
@@ -42,10 +41,7 @@ trait Generators extends ModelGenerators {
   def genInvalidChar: Gen[Char] =
     Gen.oneOf(invalidCharacters)
 
-  def genIntersperseString(gen: Gen[String],
-                           value: String,
-                           frequencyV: Int = 1,
-                           frequencyN: Int = 10): Gen[String] = {
+  def genIntersperseString(gen: Gen[String], value: String, frequencyV: Int = 1, frequencyN: Int = 10): Gen[String] = {
 
     val genValue: Gen[Option[String]] = Gen.frequency(frequencyN -> None, frequencyV -> Gen.const(Some(value)))
 
@@ -56,7 +52,7 @@ trait Generators extends ModelGenerators {
       seq1.toSeq.zip(seq2).foldLeft("") {
         case (acc, (n, Some(v))) =>
           acc + n + v
-        case (acc, (n, _)) =>
+        case (acc, (n, _))       =>
           acc + n
       }
     }
@@ -68,13 +64,13 @@ trait Generators extends ModelGenerators {
   }
 
   def intsLargerThanMaxValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x > Int.MaxValue)
+    arbitrary[BigInt] suchThat (x => x > Int.MaxValue)
 
   def intsSmallerThanMinValue: Gen[BigInt] =
-    arbitrary[BigInt] suchThat(x => x < Int.MinValue)
+    arbitrary[BigInt] suchThat (x => x < Int.MinValue)
 
   def nonNumerics: Gen[String] =
-    alphaStr suchThat(_.size > 0)
+    alphaStr suchThat (_.size > 0)
 
   def decimals: Gen[String] =
     arbitrary[BigDecimal]
@@ -83,19 +79,19 @@ trait Generators extends ModelGenerators {
       .map("%f".format(_))
 
   def intsBelowValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ < value)
+    arbitrary[Int] suchThat (_ < value)
 
   def intsAboveValue(value: Int): Gen[Int] =
-    arbitrary[Int] suchThat(_ > value)
+    arbitrary[Int] suchThat (_ > value)
 
   def intsOutsideRange(min: Int, max: Int): Gen[Int] =
-    arbitrary[Int] suchThat(x => x < min || x > max)
+    arbitrary[Int] suchThat (x => x < min || x > max)
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
-      .suchThat (_.nonEmpty)
-      .suchThat (_ != "true")
-      .suchThat (_ != "false")
+      .suchThat(_.nonEmpty)
+      .suchThat(_ != "true")
+      .suchThat(_ != "false")
 
   def nonEmptyString: Gen[String] =
     stringOf(genValidChar) suchThat (_.nonEmpty)
@@ -103,30 +99,30 @@ trait Generators extends ModelGenerators {
   def stringsWithMaxLength(maxLength: Int): Gen[String] =
     for {
       length <- choose(1, maxLength)
-      chars <- listOfN(length, genValidChar)
+      chars  <- listOfN(length, genValidChar)
     } yield chars.mkString
 
   def stringsMatchingRegex(
-                            regex: String,
-                            maybeMinLength: Option[Int] = None,
-                            maybeMaxLength: Option[Int] = None
-                          ): Gen[String] = {
+      regex: String,
+      maybeMinLength: Option[Int] = None,
+      maybeMaxLength: Option[Int] = None
+    ): Gen[String] = {
 
     val baseGen: Gen[String] = RegexpGen.from(regex)
 
     val lengthFilteredGen: Gen[String] =
       baseGen suchThat { s =>
         maybeMinLength.forall(min => s.length >= min) &&
-          maybeMaxLength.forall(max => s.length <= max)
+        maybeMaxLength.forall(max => s.length <= max)
       }
 
     lengthFilteredGen retryUntil (_.matches(regex))
   }
 
   def stringsWithInvalidCharacters(
-                               maybeMinLength: Option[Int] = None,
-                               maybeMaxLength: Option[Int] = None
-                             ): Gen[String] = {
+      maybeMinLength: Option[Int] = None,
+      maybeMaxLength: Option[Int] = None
+    ): Gen[String] = {
     val minLen = maybeMinLength.getOrElse(1)
     val maxLen = maybeMaxLength.getOrElse(100)
 

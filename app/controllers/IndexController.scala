@@ -29,15 +29,15 @@ import views.html.IndexView
 
 import scala.concurrent.ExecutionContext
 
-class IndexController @Inject()(
-                                 val controllerComponents: MessagesControllerComponents,
-                                 identify: IdentifierAction,
-                                 view: IndexView,
-                                 sessionRepository: SessionRepository
-                               ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport{
+class IndexController @Inject() (
+    val controllerComponents: MessagesControllerComponents,
+    identify: IdentifierAction,
+    view: IndexView,
+    sessionRepository: SessionRepository
+  )(implicit ec: ExecutionContext
+  ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = identify.async  { implicit request =>
-
+  def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
     val userAnswers = UserAnswers(request.userId)
 
     sessionRepository.set(userAnswers).map { _ =>

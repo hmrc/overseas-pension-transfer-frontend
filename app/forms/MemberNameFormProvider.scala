@@ -32,9 +32,9 @@ class MemberNameFormProvider @Inject() extends Mappings {
       "memberFirstName" -> text("memberName.error.memberFirstName.required")
         .verifying(maxLength(35, "memberName.error.memberFirstName.length"))
         .verifying(regexp(nameRegex, "memberName.error.memberFirstName.pattern")),
-      "memberLastName" -> text("memberName.error.memberLastName.required")
+      "memberLastName"  -> text("memberName.error.memberLastName.required")
         .verifying(maxLength(35, "memberName.error.memberLastName.length"))
-        .verifying(regexp(nameRegex, "memberName.error.memberLastName.pattern")),
+        .verifying(regexp(nameRegex, "memberName.error.memberLastName.pattern"))
     )(MemberName.apply)(x => Some((x.memberFirstName, x.memberLastName)))
   )
 }
