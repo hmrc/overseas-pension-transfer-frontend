@@ -38,9 +38,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
       requiredKey      = "error.required",
       allRequiredKey   = "error.required.all",
       twoRequiredKey   = "error.required.two",
-      invalidKey       = "error.invalid",
-      invalidCharacter = "error.invalid.character"
-    )
+      invalidKey       = "error.invalid")
   )
 
   val validData = datesBetween(
@@ -188,7 +186,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
         val result = form.bind(data)
 
         result.errors must contain(
-          FormError("value", "error.invalid.character", List.empty)
+          FormError("value", "error.invalid", List.empty)
         )
     }
   }
@@ -300,7 +298,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
         val result = form.bind(data)
 
         result.errors must contain(
-          FormError("value", "error.invalid.character", List.empty)
+          FormError("value", "error.invalid", List.empty)
         )
     }
   }
@@ -405,7 +403,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid.character", List.empty)
+        result.errors must contain only FormError("value", "error.invalid", List.empty)
     }
   }
 
@@ -421,7 +419,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid.character", List.empty)
+        result.errors must contain only FormError("value", "error.invalid", List.empty)
     }
   }
 
@@ -453,7 +451,7 @@ class DateMappingsSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
         val result = form.bind(data)
 
-        result.errors must contain only FormError("value", "error.invalid.character", List.empty)
+        result.errors must contain only FormError("value", "error.invalid", List.empty)
     }
   }
 

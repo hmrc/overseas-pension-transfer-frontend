@@ -38,7 +38,6 @@ class DateFluencySpec extends AnyFreeSpec with Matchers with Mappings with Optio
     val form: Form[LocalDate] =
       Form(
         "value" -> localDate(
-          invalidCharacter = "fieldName.error.invalid.character",
           invalidKey       = "fieldName.error.invalid",
           allRequiredKey   = "fieldName.error.required.all",
           twoRequiredKey   = "fieldName.error.required.two",
