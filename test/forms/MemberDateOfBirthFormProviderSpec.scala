@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter
 
 class MemberDateOfBirthFormProviderSpec extends DateBehaviours {
 
-  private implicit val messages: Messages = stubMessages()
+  implicit private val messages: Messages = stubMessages()
   private val form                        = new MemberDateOfBirthFormProvider()()
 
   private val minDate = LocalDate.of(1900, 1, 1)
