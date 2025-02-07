@@ -81,9 +81,9 @@ memberDateOfBirth.checkYourAnswersLabel = Date of Birth
 memberDateOfBirth.error.required.all = Enter the date of birth
 memberDateOfBirth.error.required.two = Enter a {0} and a {1}
 memberDateOfBirth.error.required = Enter a {0}
-memberDateOfBirth.error.invalid = Enter Day/Month/Year in the correct format
-memberDateOfBirth.error.invalid.character = The Day/Month/Year Field must only include numbers
+memberDateOfBirth.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 1970
 memberDateOfBirth.change.hidden = Date of Birth
+memberDateOfBirth.error.invalidDate = Date cannot be before the year 1901, or in the future
 
 memberIsResidentUk.title = Is the member a resident of the UK for tax purposes?
 memberIsResidentUk.heading = Is undefined currently a resident of UK for tax purposes?
