@@ -26,20 +26,21 @@ import javax.inject.Inject
 
 class MemberDateOfBirthFormProvider @Inject() extends Mappings {
 
-  def minDate: LocalDate    = LocalDate of (1900, 1, 1)
+  def minDate: LocalDate    =  LocalDate of(1900, 1, 1)
   def maxDate: LocalDate    = LocalDate.now(ZoneOffset.UTC)
   private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey       = "memberDateOfBirth.error.invalid",
-        allRequiredKey   = "memberDateOfBirth.error.required.all",
-        twoRequiredKey   = "memberDateOfBirth.error.required.two",
-        requiredKey      = "memberDateOfBirth.error.required"
+        invalidKey     = "memberDateOfBirth.error.invalid",
+        allRequiredKey = "memberDateOfBirth.error.required.all",
+        twoRequiredKey = "memberDateOfBirth.error.required.two",
+        requiredKey    = "memberDateOfBirth.error.required"
       ).verifying(
         maxDate(maxDate, "memberDateOfBirth.error.invalidDate", maxDate.format(dateFormatter)),
         minDate(minDate, "memberDateOfBirth.error.invalidDate", minDate.format(dateFormatter))
       )
+
     )
 }
