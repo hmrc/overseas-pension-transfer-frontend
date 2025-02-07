@@ -12,7 +12,6 @@ class $className$FormProvider @Inject() extends Mappings {
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidCharacter     = "$className;format="decap"$.error.invalid.character",
         invalidKey     = "$className;format="decap"$.error.invalid",
         allRequiredKey = "$className;format="decap"$.error.required.all",
         twoRequiredKey = "$className;format="decap"$.error.required.two",
