@@ -28,8 +28,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.MemberHasANinoView
 
-import uk.gov.hmrc.govukfrontend.views.html.components.CharacterCount
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class MemberHasANinoController @Inject()(
