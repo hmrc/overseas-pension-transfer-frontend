@@ -138,3 +138,18 @@ membersCurrentAddress.city.change.hidden = City (optional)
 membersCurrentAddress.country.change.hidden = Country (optional)
 membersCurrentAddress.postcode.change.hidden = Postcode (optional)
 
+
+memberHasANino.title = Does undefined have a National Insurance number?
+memberHasANino.heading = Does undefined have a National Insurance number?
+memberHasANino.checkYourAnswersLabel = Does Undefined has a National Insurance number
+memberHasANino.error.required = Select one option
+memberHasANino.change.hidden = MemberHasANino
+memberHasANino.hint = Select one
+
+memberDoesNotHaveNino.title = memberDoesNotHaveNino
+memberDoesNotHaveNino.heading = Why doesn’t Undefined Undefined have a National Insurance number?
+memberDoesNotHaveNino.checkYourAnswersLabel = Other HMRC reference
+memberDoesNotHaveNino.error.required = Enter reference details
+memberDoesNotHaveNino.error.length = MemberDoesNotHaveNino must be 160 characters or less
+memberDoesNotHaveNino.change.hidden = MemberDoesNotHaveNino
+memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, for example, a Unique Taxpayer Reference (UTR), please give that number.
