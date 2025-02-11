@@ -22,9 +22,9 @@ import play.api.data.FormError
 class MemberNinoFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "memberNino.error.required"
-  val lengthKey = "memberNino.error.length"
-  val patternKey = "memberNino.error.pattern"
-  val maxLength = 9
+  val lengthKey   = "memberNino.error.length"
+  val patternKey  = "memberNino.error.pattern"
+  val maxLength   = 9
 
   val ninoRegex = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
 

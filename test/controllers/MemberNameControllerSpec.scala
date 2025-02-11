@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.MemberNameFormProvider
-import models.{NormalMode, MemberName}
+import models.{MemberName, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class MemberNameControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new MemberNameFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   private lazy val memberNameRoute = routes.MemberNameController.onPageLoad(NormalMode).url
 

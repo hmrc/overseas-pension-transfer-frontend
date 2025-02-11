@@ -34,7 +34,6 @@ class MemberIsResidentSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
       forAll(gen) {
         memberIsResidentUk =>
-
           JsString(memberIsResidentUk.toString).validate[MemberIsResidentUK].asOpt.value mustEqual memberIsResidentUk
       }
     }
@@ -45,7 +44,6 @@ class MemberIsResidentSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
       forAll(gen) {
         invalidValue =>
-
           JsString(invalidValue).validate[MemberIsResidentUK] mustEqual JsError("error.invalid")
       }
     }
@@ -56,7 +54,6 @@ class MemberIsResidentSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
       forAll(gen) {
         memberIsResidentUk =>
-
           Json.toJson(memberIsResidentUk) mustEqual JsString(memberIsResidentUk.toString)
       }
     }

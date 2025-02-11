@@ -41,10 +41,10 @@ import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.http.Status.OK
 
 object WireMockHelper {
-  val wireMockHost = "localhost"
-  val wireMockPort = 11111
+  val wireMockHost                        = "localhost"
+  val wireMockPort                        = 11111
   val wireMockConf: WireMockConfiguration = new WireMockConfiguration().port(wireMockPort)
-  val wireMockServer = new WireMockServer(wireMockConf)
+  val wireMockServer                      = new WireMockServer(wireMockConf)
 }
 
 trait WireMockHelper {
@@ -66,8 +66,7 @@ trait WireMockHelper {
         aResponse()
           .withBody(response)
           .withStatus(status)
-      )
-    )
+      ))
   }
 
   def stubPost(url: String, response: String, status: Int = OK): StubMapping = {
@@ -76,7 +75,6 @@ trait WireMockHelper {
         aResponse()
           .withBody(response)
           .withStatus(status)
-      )
-    )
+      ))
   }
 }

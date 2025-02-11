@@ -30,7 +30,6 @@ class DateBehaviours extends FieldBehaviours {
 
       forAll(validData -> "valid date") {
         (date: LocalDate) =>
-
           val data = Map(
             s"$key.day"   -> date.getDayOfMonth.toString,
             s"$key.month" -> date.getMonthValue.toString,
@@ -53,7 +52,6 @@ class DateBehaviours extends FieldBehaviours {
 
       forAll(generator -> "invalid dates") {
         (date: LocalDate) =>
-
           val data = Map(
             s"$key.day"   -> date.getDayOfMonth.toString,
             s"$key.month" -> date.getMonthValue.toString,
@@ -75,7 +73,6 @@ class DateBehaviours extends FieldBehaviours {
 
       forAll(generator -> "invalid dates") {
         (date: LocalDate) =>
-
           val data = Map(
             s"$key.day"   -> date.getDayOfMonth.toString,
             s"$key.month" -> date.getMonthValue.toString,

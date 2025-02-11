@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import scala.concurrent.{ExecutionContext, Future}
 
 // THIS IS NOT GOOD PRACTICE AND IS ONLY HERE BECAUSE A FULL IMPLEMENTATION IS BEYOND THE SCOPE OF THIS TICKET
-class FakeHelloWorldConnector extends HelloWorldConnector(null, null){
+class FakeHelloWorldConnector extends HelloWorldConnector(null, null) {
 
   override def getHelloWorld()(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[String] = {
     Future.successful("Hello world!")

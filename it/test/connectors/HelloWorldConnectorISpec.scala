@@ -26,7 +26,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
 class HelloWorldConnectorISpec extends BaseISpec with Logging {
 
   val connector: HelloWorldConnector = app.injector.instanceOf[HelloWorldConnector]

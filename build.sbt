@@ -3,14 +3,14 @@ import sbt.Def
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
-lazy val appName: String = "Report an overseas pension transfer"
+lazy val appName: String = "overseas-pension-transfer-frontend"
 
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := "2.13.12"
 
 lazy val microservice = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(inConfig(Test)(testSettings): _*)
   .settings(ThisBuild / useSuperShell := false)
   .settings(

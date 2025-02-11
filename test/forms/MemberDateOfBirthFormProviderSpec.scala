@@ -26,15 +26,13 @@ import java.time.format.DateTimeFormatter
 
 class MemberDateOfBirthFormProviderSpec extends DateBehaviours {
 
-  private implicit val messages: Messages = stubMessages()
-  private val form = new MemberDateOfBirthFormProvider()()
-
+  implicit private val messages: Messages = stubMessages()
+  private val form                        = new MemberDateOfBirthFormProvider()()
 
   private val minDate = LocalDate.of(1900, 1, 1)
   private val maxDate = LocalDate.now(ZoneOffset.UTC)
 
   private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
-
 
   ".value" - {
 
@@ -43,9 +41,9 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours {
     behave like dateField(form, "value", validData)
 
     behave like dateFieldWithMax(
-      form = form,
-      key = "value",
-      max = maxDate,
+      form      = form,
+      key       = "value",
+      max       = maxDate,
       formError = FormError(
         "value",
         "memberDateOfBirth.error.invalid",
@@ -54,9 +52,9 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours {
     )
 
     behave like dateFieldWithMin(
-      form = form,
-      key = "value",
-      min = minDate,
+      form      = form,
+      key       = "value",
+      min       = minDate,
       formError = FormError(
         "value",
         "memberDateOfBirth.error.invalid",

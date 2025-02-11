@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class MemberNinoControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new MemberNinoFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   private lazy val memberNinoRoute = routes.MemberNinoController.onPageLoad(NormalMode).url
 
@@ -88,7 +88,7 @@ class MemberNinoControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, memberNinoRoute)
-      .withFormUrlEncodedBody(("value", "AB123456A"))
+            .withFormUrlEncodedBody(("value", "AB123456A"))
 
         val result = route(application, request).value
 

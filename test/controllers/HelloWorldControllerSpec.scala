@@ -23,7 +23,6 @@ import views.html.HelloWorldView
 
 class HelloWorldControllerSpec extends SpecBase {
 
-
   "HelloWorld Controller" - {
 
     "must return OK and the correct view for a GET" in {
