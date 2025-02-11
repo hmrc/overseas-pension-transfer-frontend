@@ -75,7 +75,7 @@ class MemberHasANinoControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data (Yes) is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -96,7 +96,32 @@ class MemberHasANinoControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MemberHasANinoPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual routes.MemberNinoController.onPageLoad(mode = NormalMode).url
+      }
+    }
+
+    "must redirect to the next page when valid data (No) is submitted" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, memberHasANinoRoute)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.MemberDoesNotHaveNinoController.onPageLoad(mode = NormalMode).url
       }
     }
 

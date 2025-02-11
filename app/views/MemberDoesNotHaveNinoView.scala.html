@@ -47,21 +47,12 @@
         }
 
         @govukCharacterCount(CharacterCount(
-            id = "other-unique-reference",
-            name = "other-unique-reference",
+            id = "value",
+            name = "value",
             maxLength = Some(160),
             label = Label(isPageHeading = true, classes = "govuk-label--l", content = Text(messages("memberDoesNotHaveNino.heading"))),
             hint = Some(Hint(content = Text(messages("memberDoesNotHaveNino.hint"))))
         ))
-
-        @*
-        @govukInput(
-                InputViewModel(
-                field = form("value"),
-                        label = LabelViewModel(Text(messages("memberDoesNotHaveNino.heading"))).asPageHeading(size = Large)
-                )
-                .withWidth(OneHalf)
-        )*@
 
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))

@@ -26,7 +26,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.MemberDoesNotHaveNinoView
-import uk.gov.hmrc.govukfrontend.views.html.components.CharacterCount
 
 import scala.concurrent.{ExecutionContext, Future}
 
