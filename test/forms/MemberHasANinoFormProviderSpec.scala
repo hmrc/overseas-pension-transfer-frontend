@@ -22,7 +22,7 @@ import play.api.data.FormError
 class MemberHasANinoFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "memberHasANino.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey  = "error.boolean"
 
   val form = new MemberHasANinoFormProvider()()
 

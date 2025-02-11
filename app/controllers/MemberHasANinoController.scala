@@ -20,7 +20,8 @@ import controllers.actions._
 import forms.MemberHasANinoFormProvider
 
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.{CheckMode, Mode, NormalMode}
+import navigation.Navigator
 import pages.MemberHasANinoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,24 +31,25 @@ import views.html.MemberHasANinoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MemberHasANinoController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         sessionRepository: SessionRepository,
-                                         identify: IdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: MemberHasANinoFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: MemberHasANinoView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class MemberHasANinoController @Inject() (
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: MemberHasANinoFormProvider,
+    navigator: Navigator,
+    val controllerComponents: MessagesControllerComponents,
+    view: MemberHasANinoView
+  )(implicit ec: ExecutionContext
+  ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(MemberHasANinoPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -56,23 +58,14 @@ class MemberHasANinoController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberHasANinoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(
-            if (value) {
-              routes.MemberNinoController.onPageLoad(mode = NormalMode)
-            }
-            else {
-              routes.MemberDoesNotHaveNinoController.onPageLoad(mode = NormalMode)
-            }
-          )
+          } yield Redirect(navigator.nextPage(MemberHasANinoPage, mode, updatedAnswers, value))
       )
   }
 }

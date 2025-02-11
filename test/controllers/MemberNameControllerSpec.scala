@@ -98,7 +98,7 @@ class MemberNameControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MemberNamePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual routes.MemberNinoController.onPageLoad(NormalMode).url
       }
     }
 

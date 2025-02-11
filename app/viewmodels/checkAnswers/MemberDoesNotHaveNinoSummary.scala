@@ -25,12 +25,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberDoesNotHaveNinoSummary  {
+object MemberDoesNotHaveNinoSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberDoesNotHaveNinoPage).map {
       answer =>
-
         SummaryListRowViewModel(
           key     = "memberDoesNotHaveNino.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),

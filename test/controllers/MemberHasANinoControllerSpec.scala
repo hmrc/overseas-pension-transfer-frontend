@@ -35,9 +35,9 @@ import scala.concurrent.Future
 class MemberHasANinoControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new MemberHasANinoFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
-  private lazy val memberHasANinoRoute = routes.MemberHasANinoController.onPageLoad(NormalMode).url
+  private lazy val memberHasANinoRoute = routes.MemberHasANinoController.onPageLoad().url
 
   "MemberHasANino Controller" - {
 

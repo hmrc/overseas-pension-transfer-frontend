@@ -22,8 +22,8 @@ import play.api.data.FormError
 class MemberDoesNotHaveNinoFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "memberDoesNotHaveNino.error.required"
-  val lengthKey = "memberDoesNotHaveNino.error.length"
-  val maxLength = 160
+  val lengthKey   = "memberDoesNotHaveNino.error.length"
+  val maxLength   = 160
 
   val form = new MemberDoesNotHaveNinoFormProvider()()
 
@@ -40,7 +40,7 @@ class MemberDoesNotHaveNinoFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

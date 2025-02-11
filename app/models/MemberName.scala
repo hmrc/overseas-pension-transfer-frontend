@@ -22,5 +22,6 @@ case class MemberName(memberFirstName: String, memberLastName: String)
 
 object MemberName {
 
-  implicit val format: OFormat[MemberName] = Json.format
+  implicit val format: OFormat[MemberName]    = Json.format
+  def getFullName(member: MemberName): String = s"${member.memberFirstName} ${member.memberLastName}"
 }
