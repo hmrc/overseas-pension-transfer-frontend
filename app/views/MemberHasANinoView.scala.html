@@ -36,7 +36,7 @@
 
 @layout(pageTitle = title(form, messages("memberHasANino.title"))) {
 
-    @formHelper(action = routes.MemberHasANinoController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.MemberHasANinoController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

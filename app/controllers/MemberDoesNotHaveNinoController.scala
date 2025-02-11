@@ -18,9 +18,12 @@ package controllers
 
 import controllers.actions._
 import forms.MemberDoesNotHaveNinoFormProvider
+import models.requests.DataRequest
+
 import javax.inject.Inject
-import models.Mode
-import pages.MemberDoesNotHaveNinoPage
+import models.{MemberName, Mode, NormalMode}
+import navigation.Navigator
+import pages.{MemberDoesNotHaveNinoPage, MemberNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -29,42 +32,44 @@ import views.html.MemberDoesNotHaveNinoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MemberDoesNotHaveNinoController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: MemberDoesNotHaveNinoFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: MemberDoesNotHaveNinoView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class MemberDoesNotHaveNinoController @Inject() (
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    navigator: Navigator,
+    formProvider: MemberDoesNotHaveNinoFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: MemberDoesNotHaveNinoView
+  )(implicit ec: ExecutionContext
+  ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(MemberDoesNotHaveNinoPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, memeberFullName(request), mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          Future.successful(BadRequest(view(formWithErrors, memeberFullName(request), mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MemberDoesNotHaveNinoPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(MemberDoesNotHaveNinoPage, mode, updatedAnswers))
       )
+  }
+
+  private def memeberFullName(request: DataRequest[AnyContent]) = {
+    MemberName.getFullName(request.userAnswers.get(MemberNamePage).get)
   }
 }

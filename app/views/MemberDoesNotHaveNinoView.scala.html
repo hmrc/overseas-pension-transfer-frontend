@@ -16,27 +16,25 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukCharacterCount
 @import uk.gov.hmrc.govukfrontend.views.html.components.CharacterCount
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-@import viewmodels.InputWidth._
 @import views.ViewUtils.title
-@import viewmodels.govuk.all._
-@import viewmodels.LegendSize.Large
+@import viewmodels.govuk.all.CharacterCountViewModel
+@import viewmodels.LabelSize
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
     govukButton: GovukButton,
     govukCharacterCount: GovukCharacterCount
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("memberDoesNotHaveNino.title"))) {
 
@@ -46,13 +44,14 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukCharacterCount(CharacterCount(
-            id = "value",
-            name = "value",
-            maxLength = Some(160),
-            label = Label(isPageHeading = true, classes = "govuk-label--l", content = Text(messages("memberDoesNotHaveNino.heading"))),
-            hint = Some(Hint(content = Text(messages("memberDoesNotHaveNino.hint"))))
-        ))
+        @govukCharacterCount(
+            CharacterCountViewModel(
+                field = form("value"),
+                label = LabelViewModel(messages("memberDoesNotHaveNino.heading", memberName)).asPageHeading(LabelSize.Large)
+            )
+            .withMaxLength(160)
+            .withHint(HintViewModel(messages("memberDoesNotHaveNino.hint")))
+        )
 
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))

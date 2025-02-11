@@ -21,6 +21,7 @@ import forms.MemberNameFormProvider
 
 import javax.inject.Inject
 import models.Mode
+import navigation.Navigator
 import pages.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,6 +39,7 @@ class MemberNameController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: MemberNameFormProvider,
+    navigator: Navigator,
     val controllerComponents: MessagesControllerComponents,
     view: MemberNameView
   )(implicit ec: ExecutionContext
@@ -64,7 +66,7 @@ class MemberNameController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(MemberNamePage, mode, updatedAnswers))
       )
   }
 }

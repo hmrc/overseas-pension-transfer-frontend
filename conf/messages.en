@@ -75,7 +75,7 @@ memberNino.change.hidden = Member''s National Insurance number
 memberNino.hint = For example, AB123456B
 
 memberDateOfBirth.title = DateOfBirth
-memberDateOfBirth.heading = What is undefined`s date of birth?
+memberDateOfBirth.heading = What is {0}’s date of birth?
 memberDateOfBirth.hint = For example, 31 03 1980.
 memberDateOfBirth.checkYourAnswersLabel = Date of Birth
 memberDateOfBirth.error.required.all = Enter the date of birth
@@ -86,7 +86,7 @@ memberDateOfBirth.error.invalid.character = The Day/Month/Year Field must only i
 memberDateOfBirth.change.hidden = Date of Birth
 
 memberIsResidentUk.title = Is the member a resident of the UK for tax purposes?
-memberIsResidentUk.heading = Is undefined currently a resident of UK for tax purposes?
+memberIsResidentUk.heading = Is {0} currently a resident of UK for tax purposes?
 memberIsResidentUk.yes = Yes
 memberIsResidentUk.no = No
 memberIsResidentUk.checkYourAnswersLabel = memberIsResident
@@ -102,9 +102,9 @@ memberHasANino.change.hidden = MemberHasANino
 memberHasANino.hint = Select one
 
 memberDoesNotHaveNino.title = Why the member doesn’t have a National Insurance number?
-memberDoesNotHaveNino.heading = Why doesn’t Undefined Undefined have a National Insurance number?
+memberDoesNotHaveNino.heading = Why doesn’t {0} have a National Insurance number?
 memberDoesNotHaveNino.checkYourAnswersLabel = Other HMRC reference
-memberDoesNotHaveNino.error.required = Enter other HMRC reference details
-memberDoesNotHaveNino.error.length = Reference details must be within 160 characters or less
+memberDoesNotHaveNino.error.required = Enter the reason the member does not have a National Insurance number and a reference we can use to identify them
+memberDoesNotHaveNino.error.length = The reason for not having a National Insurance number and reference in its place must be must be 160 characters or fewer
 memberDoesNotHaveNino.change.hidden = MemberDoesNotHaveNino
-memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, for example, a Unique Taxpayer Reference (UTR), please give that number.
+memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
