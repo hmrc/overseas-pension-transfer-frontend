@@ -18,10 +18,11 @@ package models
 
 import play.api.libs.json._
 
-case class MemberName(memberFirstName: String, memberLastName: String)
+case class MemberName(memberFirstName: String, memberLastName: String) {
+  def fullName: String = s"$memberFirstName $memberLastName".trim
+}
 
 object MemberName {
 
-  implicit val format: OFormat[MemberName]    = Json.format
-  def getFullName(member: MemberName): String = s"${member.memberFirstName} ${member.memberLastName}"
+  implicit val format: OFormat[MemberName] = Json.format
 }

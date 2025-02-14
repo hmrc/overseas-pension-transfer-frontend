@@ -40,11 +40,6 @@ POST       /member-is-resident-uk                        controllers.MemberIsRes
 GET        /change-member-is-resident-uk                  controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-is-resident-uk                  controllers.MemberIsResidentUKController.onSubmit(mode: Mode = CheckMode)
 
-GET        /member-has-a-nino                        controllers.MemberHasANinoController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-has-a-nino                        controllers.MemberHasANinoController.onSubmit(mode: Mode = CheckMode)
-GET        /change-member-has-a-nino                  controllers.MemberHasANinoController.onPageLoad(mode: Mode = NormalMode)
-POST       /change-member-has-a-nino                  controllers.MemberHasANinoController.onSubmit(mode: Mode = CheckMode)
-
 GET        /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
