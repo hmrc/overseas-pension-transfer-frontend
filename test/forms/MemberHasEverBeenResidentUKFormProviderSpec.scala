@@ -16,16 +16,30 @@
 
 package forms
 
-import javax.inject.Inject
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import models.MemberIsResidentUK
+class MemberHasEverBeenResidentUKFormProviderSpec extends BooleanFieldBehaviours {
 
-class MemberIsResidentUKFormProvider @Inject() extends Mappings {
+  val requiredKey = "memberHasEverBeenResidentUK.error.required"
+  val invalidKey  = "error.boolean"
 
-  def apply(): Form[MemberIsResidentUK] =
-    Form(
-      "value" -> enumerable[MemberIsResidentUK]("memberIsResidentUK.error.required")
+  val form = new MemberHasEverBeenResidentUKFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

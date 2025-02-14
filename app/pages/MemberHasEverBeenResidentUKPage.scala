@@ -17,15 +17,15 @@
 package pages
 
 import controllers.routes
-import models.{MemberIsResidentUK, UserAnswers}
+import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MemberIsResidentUKPage extends QuestionPage[MemberIsResidentUK] {
+case object MemberHasEverBeenResidentUKPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "memberIsResidentUK"
+  override def toString: String = "memberHasEverBeenResidentUK"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()

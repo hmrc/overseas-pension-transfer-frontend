@@ -1,43 +1,48 @@
 # microservice specific routes
 
-->          /hmrc-frontend                               hmrcfrontend.Routes
+->         /hmrc-frontend                                            hmrcfrontend.Routes
 
-GET         /                                            controllers.IndexController.onPageLoad()
+GET        /                                                         controllers.IndexController.onPageLoad()
 
-GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET        /assets/*file                                             controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET        /language/:lang                                           controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive()
+GET        /refresh-session                                          controllers.KeepAliveController.keepAlive()
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET        /there-is-a-problem                                       controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad()
+GET        /check-your-answers                                       controllers.CheckYourAnswersController.onPageLoad()
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut()
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey()
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad()
+GET        /account/sign-out-survey                                  controllers.auth.AuthController.signOut()
+GET        /account/sign-out                                         controllers.auth.AuthController.signOutNoSurvey()
+GET        /account/signed-out                                       controllers.auth.SignedOutController.onPageLoad()
 
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad()
+GET        /unauthorised                                             controllers.UnauthorisedController.onPageLoad()
 
-GET         /hello-world                                 controllers.HelloWorldController.onPageLoad()
+GET        /hello-world                                              controllers.HelloWorldController.onPageLoad()
 
-GET         /member-name                                 controllers.MemberNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /member-name                                 controllers.MemberNameController.onSubmit(mode: Mode = NormalMode)
-GET         /change-member-name                          controllers.MemberNameController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-member-name                          controllers.MemberNameController.onSubmit(mode: Mode = CheckMode)
+GET        /member-name                                              controllers.MemberNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-name                                              controllers.MemberNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-name                                       controllers.MemberNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-name                                       controllers.MemberNameController.onSubmit(mode: Mode = CheckMode)
 
-GET         /member-nino                                 controllers.MemberNinoController.onPageLoad(mode: Mode = NormalMode)
-POST        /member-nino                                 controllers.MemberNinoController.onSubmit(mode: Mode = NormalMode)
-GET         /change-member-nino                          controllers.MemberNinoController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-member-nino                          controllers.MemberNinoController.onSubmit(mode: Mode = CheckMode)
+GET        /member-nino                                              controllers.MemberNinoController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-nino                                              controllers.MemberNinoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-nino                                       controllers.MemberNinoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-nino                                       controllers.MemberNinoController.onSubmit(mode: Mode = CheckMode)
 
-GET        /member-date-of-birth                         controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-date-of-birth                         controllers.MemberDateOfBirthController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-date-of-birth                  controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-date-of-birth                  controllers.MemberDateOfBirthController.onSubmit(mode: Mode = CheckMode)
+GET        /member-date-of-birth                                     controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-date-of-birth                                     controllers.MemberDateOfBirthController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-date-of-birth                              controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-date-of-birth                              controllers.MemberDateOfBirthController.onSubmit(mode: Mode = CheckMode)
 
-GET        /member-is-resident-uk                        controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-is-resident-uk                        controllers.MemberIsResidentUKController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-is-resident-uk                  controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-is-resident-uk                  controllers.MemberIsResidentUKController.onSubmit(mode: Mode = CheckMode)
+GET        /member-is-resident-uk                                    controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-is-resident-uk                                    controllers.MemberIsResidentUKController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-is-resident-uk                             controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-is-resident-uk                             controllers.MemberIsResidentUKController.onSubmit(mode: Mode = CheckMode)
+
+GET        /member-has-ever-been-resident-uk                         controllers.MemberHasEverBeenResidentUKController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-has-ever-been-resident-uk                         controllers.MemberHasEverBeenResidentUKController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-has-ever-been-resident-uk                  controllers.MemberHasEverBeenResidentUKController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-has-ever-been-resident-uk                  controllers.MemberHasEverBeenResidentUKController.onSubmit(mode: Mode = CheckMode)
