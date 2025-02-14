@@ -21,8 +21,7 @@ import forms.MemberDoesNotHaveNinoFormProvider
 import models.requests.DataRequest
 
 import javax.inject.Inject
-import models.{MemberName, Mode, NormalMode}
-import navigation.Navigator
+import models.{Mode, NormalMode}
 import pages.{MemberDoesNotHaveNinoPage, MemberNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +37,6 @@ class MemberDoesNotHaveNinoController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    navigator: Navigator,
     formProvider: MemberDoesNotHaveNinoFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDoesNotHaveNinoView
@@ -53,23 +51,26 @@ class MemberDoesNotHaveNinoController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, memeberFullName(request), mode))
+      Ok(view(preparedForm, memberFullName(request), mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, memeberFullName(request), mode))),
+          Future.successful(BadRequest(view(formWithErrors, memberFullName(request), mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(MemberDoesNotHaveNinoPage, mode, updatedAnswers))
+          } yield Redirect(routes.MemberDateOfBirthController.onPageLoad(NormalMode))
       )
   }
 
-  private def memeberFullName(request: DataRequest[AnyContent]) = {
-    MemberName.getFullName(request.userAnswers.get(MemberNamePage).get)
+  private def memberFullName(request: DataRequest[AnyContent]): Option[String] = {
+    request.userAnswers.get(MemberNamePage) match {
+      case Some(memberName) => Some(memberName.fullName)
+      case None             => None
+    }
   }
 }
