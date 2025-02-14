@@ -18,12 +18,11 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukCharacterCount
-@import uk.gov.hmrc.govukfrontend.views.html.components.CharacterCount
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @import views.ViewUtils.title
-@import viewmodels.govuk.all.CharacterCountViewModel
+@import viewmodels.govuk.all.TextareaViewModel
 @import viewmodels.LabelSize
 
 @this(
@@ -31,7 +30,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukButton: GovukButton,
-    govukCharacterCount: GovukCharacterCount
+    govukTextarea: GovukTextarea
 )
 
 @(form: Form[_], memberName: Option[String], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -44,8 +43,8 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukCharacterCount(
-            CharacterCountViewModel(
+        @govukTextarea(
+            TextareaViewModel(
                 field = form("value"),
                 label = LabelViewModel(messages("memberDoesNotHaveNino.heading", memberName.getOrElse("undefined undefined"))).asPageHeading(LabelSize.Large)
             )
