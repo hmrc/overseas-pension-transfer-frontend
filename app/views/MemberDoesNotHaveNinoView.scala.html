@@ -17,20 +17,19 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukCharacterCount
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukTextarea
+@import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import viewmodels.govuk.all.TextareaViewModel
 @import viewmodels.LabelSize
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukButton: GovukButton,
-    govukTextarea: GovukTextarea
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukButton: GovukButton,
+        govukTextarea: GovukTextarea
 )
 
 @(form: Form[_], memberName: Option[String], mode: Mode)(implicit request: Request[_], messages: Messages)
