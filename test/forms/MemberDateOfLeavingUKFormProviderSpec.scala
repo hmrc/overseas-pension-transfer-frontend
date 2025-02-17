@@ -23,8 +23,8 @@ import play.api.test.Helpers.stubMessages
 
 class MemberDateOfLeavingUKFormProviderSpec extends DateBehaviours {
 
-  private implicit val messages: Messages = stubMessages()
-  private val form = new MemberDateOfLeavingUKFormProvider()()
+  implicit private val messages: Messages = stubMessages()
+  private val form                        = new MemberDateOfLeavingUKFormProvider()()
 
   ".value" - {
 
