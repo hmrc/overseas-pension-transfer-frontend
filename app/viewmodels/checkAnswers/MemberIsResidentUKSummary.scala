@@ -20,26 +20,21 @@ import controllers.routes
 import models.{CheckMode, UserAnswers}
 import pages.MemberIsResidentUKPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberIsResidentUKSummary {
+object MemberIsResidentUKSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberIsResidentUKPage).map {
       answer =>
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"memberIsResidentUK.$answer"))
-          )
-        )
+
+        val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
           key     = "memberIsResidentUK.checkYourAnswersLabel",
-          value   = value,
+          value   = ValueViewModel(value),
           actions = Seq(
             ActionItemViewModel("site.change", routes.MemberIsResidentUKController.onPageLoad(CheckMode).url)
               .withVisuallyHiddenText(messages("memberIsResidentUK.change.hidden"))
