@@ -24,12 +24,11 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberIsResidentUKSummary  {
+object MemberIsResidentUKSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberIsResidentUKPage).map {
       answer =>
-
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
