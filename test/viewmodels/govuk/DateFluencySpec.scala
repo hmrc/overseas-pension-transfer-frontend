@@ -29,16 +29,15 @@ import java.time.LocalDate
 
 class DateFluencySpec extends AnyFreeSpec with Matchers with Mappings with OptionValues {
 
-  ".apply" - {
+  ".apply"- {
 
     implicit val messages: Messages = stubMessages()
 
     val fieldset = FieldsetViewModel(LegendViewModel("foo"))
 
-    val form: Form[LocalDate] =
+    val form : Form[LocalDate] =
       Form(
         "value" -> localDate(
-          invalidCharacter = "fieldName.error.invalid.character",
           invalidKey       = "fieldName.error.invalid",
           allRequiredKey   = "fieldName.error.required.all",
           twoRequiredKey   = "fieldName.error.required.two",
@@ -61,7 +60,7 @@ class DateFluencySpec extends AnyFreeSpec with Matchers with Mappings with Optio
 
       val boundForm = form.bind(Map(
         "value.month" -> "1",
-        "value.year"  -> "2000"
+        "value.year" -> "2000"
       ))
 
       val result = DateViewModel(boundForm("value"), fieldset)
@@ -100,7 +99,7 @@ class DateFluencySpec extends AnyFreeSpec with Matchers with Mappings with Optio
     "must highlight the month field when the error is that a month is missing" in {
 
       val boundForm = form.bind(Map(
-        "value.day"  -> "1",
+        "value.day" -> "1",
         "value.year" -> "2000"
       ))
 
@@ -127,7 +126,7 @@ class DateFluencySpec extends AnyFreeSpec with Matchers with Mappings with Optio
     "must highlight the year field when the error is that a year is missing" in {
 
       val boundForm = form.bind(Map(
-        "value.day"   -> "1",
+        "value.day" -> "1",
         "value.month" -> "1"
       ))
 
@@ -141,9 +140,9 @@ class DateFluencySpec extends AnyFreeSpec with Matchers with Mappings with Optio
     "must not highlight any fields when there is not an error" in {
 
       val boundForm = form.bind(Map(
-        "value.day"   -> "1",
+        "value.day" -> "1",
         "value.month" -> "1",
-        "value.year"  -> "2000"
+        "value.year" -> "2000"
       ))
 
       val result = DateViewModel(boundForm("value"), fieldset)
