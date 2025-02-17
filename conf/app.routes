@@ -20,12 +20,10 @@ GET        /account/signed-out                                       controllers
 
 GET        /unauthorised                                             controllers.UnauthorisedController.onPageLoad()
 
-GET        /hello-world                                              controllers.HelloWorldController.onPageLoad()
-
-GET        /member-name                                              controllers.MemberNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-name                                              controllers.MemberNameController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-name                                       controllers.MemberNameController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-name                                       controllers.MemberNameController.onSubmit(mode: Mode = CheckMode)
+GET         /member-name                                             controllers.MemberNameController.onPageLoad(mode: Mode = NormalMode)
+POST        /member-name                                             controllers.MemberNameController.onSubmit(mode: Mode = NormalMode)
+GET         /change-member-name                                      controllers.MemberNameController.onPageLoad(mode: Mode = CheckMode)
+POST        /change-member-name                                      controllers.MemberNameController.onSubmit(mode: Mode = CheckMode)
 
 GET        /member-nino                                              controllers.MemberNinoController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-nino                                              controllers.MemberNinoController.onSubmit(mode: Mode = NormalMode)
@@ -36,6 +34,11 @@ GET        /member-date-of-birth                                     controllers
 POST       /member-date-of-birth                                     controllers.MemberDateOfBirthController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-date-of-birth                              controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-date-of-birth                              controllers.MemberDateOfBirthController.onSubmit(mode: Mode = CheckMode)
+
+GET        /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
 
 GET        /member-is-resident-uk                                    controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-is-resident-uk                                    controllers.MemberIsResidentUKController.onSubmit(mode: Mode = NormalMode)
