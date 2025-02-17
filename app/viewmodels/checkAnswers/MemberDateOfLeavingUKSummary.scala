@@ -25,12 +25,11 @@ import utils.DateTimeFormats.dateTimeFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberDateOfLeavingUKSummary  {
+object MemberDateOfLeavingUKSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberDateOfLeavingUKPage).map {
       answer =>
-
         implicit val lang: Lang = messages.lang
 
         SummaryListRowViewModel(

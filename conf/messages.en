@@ -74,6 +74,16 @@ memberNino.error.pattern = Enter the member’'s National Insurance number in th
 memberNino.change.hidden = Member''s National Insurance number
 memberNino.hint = For example, AB123456B
 
+memberDateOfLeavingUK.title = When did the member leave the UK?
+memberDateOfLeavingUK.heading = When did {0} leave the UK?
+memberDateOfLeavingUK.hint = For example, 31 03 1980.
+memberDateOfLeavingUK.checkYourAnswersLabel = Date of leaving the UK
+memberDateOfLeavingUK.error.required.all = Enter the date of leaving the UK
+memberDateOfLeavingUK.error.required.two = The date must include {0} and {1}
+memberDateOfLeavingUK.error.required = The date must include {0}
+memberDateOfLeavingUK.error.invalid = Enter Day/Month/Year in the correct format
+memberDateOfLeavingUK.change.hidden = Date of leaving the UK
+
 memberDateOfBirth.title = DateOfBirth
 memberDateOfBirth.heading = What is undefined`s date of birth?
 memberDateOfBirth.hint = For example, 31 03 1980.
@@ -84,16 +94,6 @@ memberDateOfBirth.error.required = Enter a {0}
 memberDateOfBirth.error.invalid = Enter Day/Month/Year in the correct format
 memberDateOfBirth.error.invalid.character = The Day/Month/Year Field must only include numbers
 memberDateOfBirth.change.hidden = Date of Birth
-
-memberDateOfLeavingUK.title = When did the member leave the UK?
-memberDateOfLeavingUK.heading = When did {0} leave the UK?
-memberDateOfLeavingUK.hint = For example, 31 03 1980.
-memberDateOfLeavingUK.checkYourAnswersLabel = Date of leaving the UK
-memberDateOfLeavingUK.error.required.all = Enter the date of leaving the UK
-memberDateOfLeavingUK.error.required.two = The date must include {0} and {1}
-memberDateOfLeavingUK.error.required = The date must include {0}
-memberDateOfLeavingUK.error.invalid = Enter Day/Month/Year in the correct format
-memberDateOfLeavingUK.change.hidden = Date of leaving the UK
 
 memberIsResidentUk.title = Is the member a resident of the UK for tax purposes?
 memberIsResidentUk.heading = Is undefined currently a resident of UK for tax purposes?

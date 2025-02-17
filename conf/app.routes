@@ -32,6 +32,11 @@ POST        /member-nino                                 controllers.MemberNinoC
 GET         /change-member-nino                          controllers.MemberNinoController.onPageLoad(mode: Mode = CheckMode)
 POST        /change-member-nino                          controllers.MemberNinoController.onSubmit(mode: Mode = CheckMode)
 
+GET        /member-date-of-leaving-uk                    controllers.MemberDateOfLeavingUKController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-date-of-leaving-uk                    controllers.MemberDateOfLeavingUKController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-date-of-leaving-uk             controllers.MemberDateOfLeavingUKController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-date-of-leaving-uk             controllers.MemberDateOfLeavingUKController.onSubmit(mode: Mode = CheckMode)
+
 GET        /member-date-of-birth                         controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-date-of-birth                         controllers.MemberDateOfBirthController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-date-of-birth                  controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = CheckMode)
@@ -41,8 +46,3 @@ GET        /member-is-resident-uk                        controllers.MemberIsRes
 POST       /member-is-resident-uk                        controllers.MemberIsResidentUKController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-is-resident-uk                  controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-is-resident-uk                  controllers.MemberIsResidentUKController.onSubmit(mode: Mode = CheckMode)
-
-GET        /member-date-of-leaving-uk                    controllers.MemberDateOfLeavingUKController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-date-of-leaving-uk                    controllers.MemberDateOfLeavingUKController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-date-of-leaving-uk             controllers.MemberDateOfLeavingUKController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-date-of-leaving-uk             controllers.MemberDateOfLeavingUKController.onSubmit(mode: Mode = CheckMode)

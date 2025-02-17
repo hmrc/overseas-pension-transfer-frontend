@@ -29,24 +29,24 @@ import views.html.MemberDateOfLeavingUKView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MemberDateOfLeavingUKController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: MemberDateOfLeavingUKFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: MemberDateOfLeavingUKView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class MemberDateOfLeavingUKController @Inject() (
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: MemberDateOfLeavingUKFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: MemberDateOfLeavingUKView
+  )(implicit ec: ExecutionContext
+  ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-
       val form = formProvider()
 
       val preparedForm = request.userAnswers.get(MemberDateOfLeavingUKPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -55,13 +55,11 @@ class MemberDateOfLeavingUKController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
       val form = formProvider()
 
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))

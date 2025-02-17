@@ -28,11 +28,11 @@ class MemberDateOfLeavingUKFormProvider @Inject() extends Mappings {
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidCharacter     = "memberDateOfLeavingUK.error.invalid.character",
-        invalidKey     = "memberDateOfLeavingUK.error.invalid",
-        allRequiredKey = "memberDateOfLeavingUK.error.required.all",
-        twoRequiredKey = "memberDateOfLeavingUK.error.required.two",
-        requiredKey    = "memberDateOfLeavingUK.error.required"
+        invalidCharacter = "memberDateOfLeavingUK.error.invalid.character",
+        invalidKey       = "memberDateOfLeavingUK.error.invalid",
+        allRequiredKey   = "memberDateOfLeavingUK.error.required.all",
+        twoRequiredKey   = "memberDateOfLeavingUK.error.required.two",
+        requiredKey      = "memberDateOfLeavingUK.error.required"
       )
     )
 }
