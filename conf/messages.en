@@ -95,11 +95,18 @@ memberDateOfBirth.error.invalid = Enter Day/Month/Year in the correct format
 memberDateOfBirth.error.invalid.character = The Day/Month/Year Field must only include numbers
 memberDateOfBirth.change.hidden = Date of Birth
 
-memberIsResidentUk.title = Is the member a resident of the UK for tax purposes?
-memberIsResidentUk.heading = Is undefined currently a resident of UK for tax purposes?
-memberIsResidentUk.yes = Yes
-memberIsResidentUk.no = No
-memberIsResidentUk.checkYourAnswersLabel = memberIsResident
-memberIsResidentUk.error.required = Select one option
-memberIsResidentUk.change.hidden = MemberIsResidentUk
-memberIsResidentUk.hint = Select one
+memberIsResidentUK.title = Is the member a resident of the UK for tax purposes?
+memberIsResidentUK.heading = Is undefined currently a resident of UK for tax purposes?
+memberIsResidentUK.yes = Yes
+memberIsResidentUK.no = No
+memberIsResidentUK.checkYourAnswersLabel = memberIsResident
+memberIsResidentUK.error.required = Select one option
+memberIsResidentUK.change.hidden = MemberIsResidentUK
+memberIsResidentUK.hint = Select one
+
+memberHasEverBeenResidentUK.title = Has undefined undefined ever been a resident in the UK for tax purposes?
+memberHasEverBeenResidentUK.heading = Has undefined undefined ever been a resident in the UK for tax purposes?
+memberHasEverBeenResidentUK.checkYourAnswersLabel = memberHasEverBeenResidentUK
+memberHasEverBeenResidentUK.error.required = Select one option
+memberHasEverBeenResidentUK.change.hidden = memberHasEverBeenResidentUK
+memberHasEverBeenResidentUK.hint = Select one
