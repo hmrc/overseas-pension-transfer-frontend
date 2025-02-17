@@ -18,31 +18,25 @@ package viewmodels.checkAnswers
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberIsResidentUKPage
+import pages.MemberHasEverBeenResidentUKPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberIsResidentUKSummary {
+object MemberHasEverBeenResidentUKSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberIsResidentUKPage).map {
+    answers.get(MemberHasEverBeenResidentUKPage).map {
       answer =>
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"memberIsResidentUK.$answer"))
-          )
-        )
+        val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "memberIsResidentUK.checkYourAnswersLabel",
-          value   = value,
+          key     = "memberHasEverBeenResidentUK.checkYourAnswersLabel",
+          value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberIsResidentUKController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberIsResidentUK.change.hidden"))
+            ActionItemViewModel("site.change", routes.MemberHasEverBeenResidentUKController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("memberHasEverBeenResidentUK.change.hidden"))
           )
         )
     }

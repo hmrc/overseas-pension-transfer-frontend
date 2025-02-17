@@ -17,36 +17,36 @@
 package controllers
 
 import controllers.actions._
-import forms.MemberNinoFormProvider
+import forms.MemberHasEverBeenResidentUKFormProvider
 import models.Mode
-import pages.MemberNinoPage
-import play.api.Logging
+import pages.MemberHasEverBeenResidentUKPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.MemberNinoView
+import views.html.MemberHasEverBeenResidentUKView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MemberNinoController @Inject() (
+class MemberHasEverBeenResidentUKController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: MemberNinoFormProvider,
+    formProvider: MemberHasEverBeenResidentUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MemberNinoView
+    view: MemberHasEverBeenResidentUKView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(MemberNinoPage) match {
+      val preparedForm = request.userAnswers.get(MemberHasEverBeenResidentUKPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -61,9 +61,9 @@ class MemberNinoController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(MemberHasEverBeenResidentUKPage.nextPage(mode, updatedAnswers))
       )
   }
 }
