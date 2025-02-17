@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{MemberIsResidentUK, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import javax.inject.Inject
 
-case object MemberIsResidentUKPage extends QuestionPage[MemberIsResidentUK] {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override def path: JsPath = JsPath \ toString
+class MemberHasEverBeenResidentUKFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "memberIsResidentUK"
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("memberHasEverBeenResidentUK.error.required")
+    )
 }

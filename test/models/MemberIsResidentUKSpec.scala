@@ -24,17 +24,17 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class MemberIsResidentSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class MemberIsResidentUKSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "MemberIsResidentUK" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(MemberIsResidentUK.values.toSeq)
+      val gen = Gen.oneOf(MemberIsResidentUK.values)
 
       forAll(gen) {
-        memberIsResidentUk =>
-          JsString(memberIsResidentUk.toString).validate[MemberIsResidentUK].asOpt.value mustEqual memberIsResidentUk
+        memberIsResidentUK =>
+          JsString(memberIsResidentUK.toString).validate[MemberIsResidentUK].asOpt.value mustEqual memberIsResidentUK
       }
     }
 
@@ -50,11 +50,11 @@ class MemberIsResidentSpec extends AnyFreeSpec with Matchers with ScalaCheckProp
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(MemberIsResidentUK.values.toSeq)
+      val gen = Gen.oneOf(MemberIsResidentUK.values)
 
       forAll(gen) {
-        memberIsResidentUk =>
-          Json.toJson(memberIsResidentUk) mustEqual JsString(memberIsResidentUk.toString)
+        memberIsResidentUK =>
+          Json.toJson(memberIsResidentUK) mustEqual JsString(memberIsResidentUK.toString)
       }
     }
   }

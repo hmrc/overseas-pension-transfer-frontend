@@ -20,7 +20,6 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
-import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 
 //TODO: Look into using HttpClientV2
