@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class MemberIsResidentUKControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new MemberIsResidentUKFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   private lazy val memberIsResidentUKRoute = routes.MemberIsResidentUKController.onPageLoad(NormalMode).url
 
