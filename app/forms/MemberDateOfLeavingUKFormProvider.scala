@@ -20,19 +20,28 @@ import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
 
-import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, ZoneOffset}
 import javax.inject.Inject
 
 class MemberDateOfLeavingUKFormProvider @Inject() extends Mappings {
+
+  def minDate: LocalDate    = LocalDate of (1901, 1, 1)
+  def maxDate: LocalDate    = LocalDate.now(ZoneOffset.UTC)
+  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidCharacter = "memberDateOfLeavingUK.error.invalid.character",
         invalidKey       = "memberDateOfLeavingUK.error.invalid",
-        allRequiredKey   = "memberDateOfLeavingUK.error.required.all",
+        requiredKey      = "memberDateOfLeavingUK.error.required",
         twoRequiredKey   = "memberDateOfLeavingUK.error.required.two",
-        requiredKey      = "memberDateOfLeavingUK.error.required"
+        allRequiredKey   = "memberDateOfLeavingUK.error.required.all"
       )
+        .verifying(
+          maxDate(maxDate, "memberDateOfLeavingUK.error.invalid", maxDate.format(dateFormatter)),
+          minDate(minDate, "memberDateOfLeavingUK.error.invalid", minDate.format(dateFormatter))
+        )
     )
 }

@@ -79,9 +79,10 @@ memberDateOfLeavingUK.heading = When did {0} leave the UK?
 memberDateOfLeavingUK.hint = For example, 31 03 1980.
 memberDateOfLeavingUK.checkYourAnswersLabel = Date of leaving the UK
 memberDateOfLeavingUK.error.required.all = Enter the date of leaving the UK
-memberDateOfLeavingUK.error.required.two = The date must include {0} and {1}
-memberDateOfLeavingUK.error.required = The date must include {0}
-memberDateOfLeavingUK.error.invalid = Enter Day/Month/Year in the correct format
+memberDateOfLeavingUK.error.required.two = Enter a {0} and a {1}
+memberDateOfLeavingUK.error.required = Enter a {0}
+memberDateOfLeavingUK.error.invalid = Enter the day, month, year in the correct format. For example 27 03 1970.
+memberDateOfLeavingUK.error.invalid.character = The Day/Month/Year Field must only include numbers
 memberDateOfLeavingUK.change.hidden = Date of leaving the UK
 
 memberDateOfBirth.title = DateOfBirth

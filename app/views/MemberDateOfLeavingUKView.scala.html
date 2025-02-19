@@ -44,7 +44,7 @@
         @govukDateInput(
             DateViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(Text(messages("memberDateOfLeavingUK.heading"))).asPageHeading(size = Large)
+                legend = LegendViewModel(Text(messages("memberDateOfLeavingUK.heading", ""))).asPageHeading(size = Large)
             )
             .withHint(HintViewModel(Text(messages("memberDateOfLeavingUK.hint"))))
         )
