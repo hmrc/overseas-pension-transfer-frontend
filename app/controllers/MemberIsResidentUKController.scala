@@ -18,11 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.MemberIsResidentUKFormProvider
-
 import javax.inject.Inject
-import models.{MemberIsResidentUK, Mode}
+import models.Mode
 import pages.MemberIsResidentUKPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -43,7 +41,7 @@ class MemberIsResidentUKController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[MemberIsResidentUK] = formProvider()
+  val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

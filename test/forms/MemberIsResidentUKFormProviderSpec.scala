@@ -16,24 +16,24 @@
 
 package forms
 
-import forms.behaviours.OptionFieldBehaviours
-import models.MemberIsResidentUK
+import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class MemberIsResidentUKFormProviderSpec extends OptionFieldBehaviours {
+class MemberIsResidentUKFormProviderSpec extends BooleanFieldBehaviours {
+
+  val requiredKey = "memberIsResidentUK.error.required"
+  val invalidKey  = "error.boolean"
 
   val form = new MemberIsResidentUKFormProvider()()
 
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "memberIsResidentUK.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[MemberIsResidentUK](
+    behave like booleanField(
       form,
       fieldName,
-      validValues  = MemberIsResidentUK.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
