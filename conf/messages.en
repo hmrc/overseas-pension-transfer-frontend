@@ -72,7 +72,7 @@ memberNino.checkYourAnswersLabel = Member''s National Insurance number
 memberNino.error.required = Enter the member’'s National Insurance number
 memberNino.error.pattern = Enter the member’'s National Insurance number in the correct format
 memberNino.change.hidden = Member''s National Insurance number
-memberNino.hint = For example, AB123456B
+memberNino.hint = For example, QQ123456A.
 
 memberDateOfBirth.title = DateOfBirth
 memberDateOfBirth.heading = What is undefined`s date of birth?
