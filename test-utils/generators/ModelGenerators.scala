@@ -17,10 +17,22 @@
 package generators
 
 import models._
-import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryMembersCurrentAddress: Arbitrary[MembersCurrentAddress] =
+    Arbitrary {
+      for {
+        addressLine1 <- arbitrary[String]
+        addressLine2 <- arbitrary[String]
+        addressLine3 <- arbitrary[String]
+        city         <- arbitrary[String]
+        country      <- arbitrary[String]
+        postcode     <- arbitrary[String]
+      } yield MembersCurrentAddress(addressLine1, addressLine2, Some(addressLine3), Some(city), Some(country), Some(postcode))
+    }
 
   implicit lazy val arbitraryMemberName: Arbitrary[MemberName] =
     Arbitrary {
