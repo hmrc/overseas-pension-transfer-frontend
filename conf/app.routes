@@ -46,3 +46,8 @@ GET        /member-has-ever-been-resident-uk                         controllers
 POST       /member-has-ever-been-resident-uk                         controllers.MemberHasEverBeenResidentUKController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-has-ever-been-resident-uk                  controllers.MemberHasEverBeenResidentUKController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-has-ever-been-resident-uk                  controllers.MemberHasEverBeenResidentUKController.onSubmit(mode: Mode = CheckMode)
+
+GET        /members-current-address                                  controllers.MembersCurrentAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /members-current-address                                  controllers.MembersCurrentAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-members-current-address                           controllers.MembersCurrentAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-members-current-address                           controllers.MembersCurrentAddressController.onSubmit(mode: Mode = CheckMode)
