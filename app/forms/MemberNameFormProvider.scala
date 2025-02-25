@@ -17,15 +17,12 @@
 package forms
 
 import javax.inject.Inject
-
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
 import play.api.data.Forms._
 import models.MemberName
 
-class MemberNameFormProvider @Inject() extends Mappings {
-
-  val nameRegex = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+class MemberNameFormProvider @Inject() extends Mappings with Regex {
 
   def apply(): Form[MemberName] = Form(
     mapping(
