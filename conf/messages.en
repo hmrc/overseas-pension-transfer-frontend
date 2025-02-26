@@ -99,7 +99,7 @@ memberHasEverBeenResidentUK.heading = Has undefined undefined ever been a reside
 memberHasEverBeenResidentUK.checkYourAnswersLabel = memberHasEverBeenResidentUK
 memberHasEverBeenResidentUK.error.required = Select one option
 memberHasEverBeenResidentUK.change.hidden = memberHasEverBeenResidentUK
-memberHasEverBeenResidentUK.hint = Select one
+memberHasEverBeenResidentUK.hint = Select one.
 
 membersCurrentAddress.title = Enter undefined undefined''s current address
 membersCurrentAddress.heading = Enter undefined undefined''s current address
