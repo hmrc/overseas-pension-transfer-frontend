@@ -22,6 +22,14 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitrarySchemeManagersName: Arbitrary[SchemeManagersName] =
+    Arbitrary {
+      for {
+        firstName <- arbitrary[String]
+        lastName <- arbitrary[String]
+      } yield SchemeManagersName(firstName, lastName)
+    }
+
   implicit lazy val arbitraryMembersCurrentAddress: Arbitrary[MembersCurrentAddress] =
     Arbitrary {
       for {

@@ -20,36 +20,32 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.title
-@import viewmodels.govuk.all.ErrorSummaryViewModel
-@import viewmodels.govuk.all.InputViewModel
-@import viewmodels.govuk.all.FluentInput
-@import viewmodels.govuk.all.LabelViewModel
-@import viewmodels.govuk.all.ButtonViewModel
+@import viewmodels.govuk.all._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @this(
-        layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
-        govukButton: GovukButton
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("memberName.title"))) {
+@layout(pageTitle = title(form, messages("schemeManagersName.title"))) {
 
-    @formHelper(action = routes.MemberNameController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.SchemeManagersNameController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("memberName.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("schemeManagersName.heading")</h1>
 
         @govukInput(
             InputViewModel(
-                field = form("memberFirstName"),
+                field = form("schemeManagerFirstName"),
                 label = LabelViewModel(Text(messages("common.nameInput.firstName")))
             )
             .withWidth(OneHalf)
@@ -57,15 +53,14 @@
 
         @govukInput(
             InputViewModel(
-                field = form("memberLastName"),
+                field = form("schemeManagerLastName"),
                 label = LabelViewModel(Text(messages("common.nameInput.lastName")))
             )
             .withWidth(OneHalf)
         )
 
         @govukButton(
-            ButtonViewModel(Text(messages("site.continue")))
+            ButtonViewModel(Text(messages("site.saveAndContinue")))
         )
-
     }
 }
