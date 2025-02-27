@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class QropsNameControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new QropsNameFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   private lazy val qropsNameRoute = routes.QropsNameController.onPageLoad(NormalMode).url
 
@@ -88,7 +88,7 @@ class QropsNameControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, qropsNameRoute)
-      .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 

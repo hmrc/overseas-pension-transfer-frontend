@@ -22,8 +22,8 @@ import play.api.data.FormError
 class QropsNameFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "qropsName.error.required"
-  val lengthKey = "qropsName.error.length"
-  val maxLength = 160
+  val lengthKey   = "qropsName.error.length"
+  val maxLength   = 160
 
   val form = new QropsNameFormProvider()()
 
@@ -40,7 +40,7 @@ class QropsNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
