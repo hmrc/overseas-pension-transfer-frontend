@@ -124,3 +124,11 @@ membersCurrentAddress.addressLine3.change.hidden = Address line 3 (optional)
 membersCurrentAddress.city.change.hidden = City (optional)
 membersCurrentAddress.country.change.hidden = Country (optional)
 membersCurrentAddress.postcode.change.hidden = Postcode (optional)
+
+qropsSchemeManagerIsIndividualOrOrg.title = Is the scheme manager an individual or organisation?
+qropsSchemeManagerIsIndividualOrOrg.heading = Is the scheme manager an individual or organisation?
+qropsSchemeManagerIsIndividualOrOrg.individual = Individual
+qropsSchemeManagerIsIndividualOrOrg.organisation = Organisation
+qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel = qropsSchemeManagerIsIndividualOrOrg
+qropsSchemeManagerIsIndividualOrOrg.error.required = Select one option
+qropsSchemeManagerIsIndividualOrOrg.change.hidden = QropsSchemeManagerIsIndividualOrOrg
