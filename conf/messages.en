@@ -124,3 +124,11 @@ membersCurrentAddress.addressLine3.change.hidden = Address line 3 (optional)
 membersCurrentAddress.city.change.hidden = City (optional)
 membersCurrentAddress.country.change.hidden = Country (optional)
 membersCurrentAddress.postcode.change.hidden = Postcode (optional)
+
+qropsName.title = What is the full name of the QROPS receiving the transfer?
+qropsName.heading = What is the full name of the QROPS receiving the transfer?
+qropsName.checkYourAnswersLabel = qropsName
+qropsName.error.required = Enter the full name of the QROPS receiving the transfer
+qropsName.error.length = The full name of the QROPS must be 160 characters or fewer
+qropsName.change.hidden = QROPSName
+qropsName.hint = QROPS name
