@@ -93,7 +93,7 @@ class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, schemeManagersNameRoute)
-            .withFormUrlEncodedBody(("schemeManagersFirstName", "value 1"), ("schemeManagersLastName", "value 2"))
+            .withFormUrlEncodedBody(("schemeManagersFirstName", "value"), ("schemeManagersLastName", "value"))
 
         val result = route(application, request).value
 
