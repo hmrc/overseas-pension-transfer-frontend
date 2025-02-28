@@ -29,24 +29,24 @@ import views.html.SchemeManagersNameView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SchemeManagersNameController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      sessionRepository: SessionRepository,
-                                      identify: IdentifierAction,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      formProvider: SchemeManagersNameFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: SchemeManagersNameView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class SchemeManagersNameController @Inject() (
+    override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    formProvider: SchemeManagersNameFormProvider,
+    val controllerComponents: MessagesControllerComponents,
+    view: SchemeManagersNameView
+  )(implicit ec: ExecutionContext
+  ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(SchemeManagersNamePage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -55,11 +55,9 @@ class SchemeManagersNameController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersNamePage, value))

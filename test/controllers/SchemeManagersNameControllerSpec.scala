@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new SchemeManagersNameFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   private lazy val schemeManagersNameRoute = routes.SchemeManagersNameController.onPageLoad(NormalMode).url
 
@@ -93,7 +93,7 @@ class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, schemeManagersNameRoute)
-            .withFormUrlEncodedBody(("firstName", "value 1"), ("lastName", "value 2"))
+            .withFormUrlEncodedBody(("schemeManagersFirstName", "value 1"), ("schemeManagersLastName", "value 2"))
 
         val result = route(application, request).value
 
@@ -143,7 +143,7 @@ class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, schemeManagersNameRoute)
-            .withFormUrlEncodedBody(("firstName", "value 1"), ("lastName", "value 2"))
+            .withFormUrlEncodedBody(("schemeManagersFirstName", "value 1"), ("schemeManagersLastName", "value 2"))
 
         val result = route(application, request).value
 

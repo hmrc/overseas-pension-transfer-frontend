@@ -17,6 +17,7 @@
 package forms.mappings
 
 trait Regex {
+
   val nameRegex: String =
     "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 

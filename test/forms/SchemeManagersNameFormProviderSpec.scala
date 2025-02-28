@@ -23,23 +23,33 @@ class SchemeManagersNameFormProviderSpec extends StringFieldBehaviours {
 
   val form = new SchemeManagersNameFormProvider()()
 
-  ".firstName" - {
+  val nameRegex = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
-    val fieldName = "firstName"
+  ".schemeManagersFirstName" - {
+
+    val fieldName = "schemeManagersFirstName"
     val requiredKey = "schemeManagersName.error.firstName.required"
     val lengthKey = "schemeManagersName.error.firstName.length"
+    val patternKey  = "schemeManagersName.error.firstName.pattern"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(nameRegex, maybeMaxLength = Some(maxLength))
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError   = FormError(fieldName, patternKey, Seq(nameRegex)),
+      maybeMaxLength = Some(maxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -50,23 +60,31 @@ class SchemeManagersNameFormProviderSpec extends StringFieldBehaviours {
     )
   }
 
-  ".lastName" - {
+  ".schemeManagerLastNight" - {
 
-    val fieldName = "lastName"
+    val fieldName = "schemeManagersLastName"
     val requiredKey = "schemeManagersName.error.lastName.required"
     val lengthKey = "schemeManagersName.error.lastName.length"
+    val patternKey  = "schemeManagersName.error.lastName.pattern"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(nameRegex, maybeMaxLength = Some(maxLength))
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError   = FormError(fieldName, patternKey, Seq(nameRegex)),
+      maybeMaxLength = Some(maxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = maxLength,
+      maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

@@ -26,12 +26,12 @@ class SchemeManagersNameFormProvider @Inject() extends Mappings with Regex {
 
   def apply(): Form[SchemeManagersName] = Form(
     mapping(
-      "schemeManagerFirstName" -> text("schemeManagersName.error.firstName.required")
+      "schemeManagersFirstName" -> text("schemeManagersName.error.firstName.required")
         .verifying(maxLength(35, "schemeManagersName.error.firstName.length"))
         .verifying(regexp(nameRegex, "schemeManagersName.error.firstName.pattern")),
-      "schemeManagerLastName"  -> text("schemeManagersName.error.lastName.required")
+      "schemeManagersLastName"  -> text("schemeManagersName.error.lastName.required")
         .verifying(maxLength(35, "schemeManagersName.error.lastName.length"))
         .verifying(regexp(nameRegex, "schemeManagersName.error.lastName.pattern"))
-    )(SchemeManagersName.apply)(x => Some((x.schemeMangerFirstName, x.schemeManagerLastName)))
+    )(SchemeManagersName.apply)(x => Some((x.schemeMangersFirstName, x.schemeManagersLastName)))
   )
 }

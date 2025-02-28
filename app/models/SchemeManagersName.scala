@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json._
 
-case class SchemeManagersName (schemeMangerFirstName: String, schemeManagerLastName: String)
+case class SchemeManagersName(schemeMangersFirstName: String, schemeManagersLastName: String)
 
 object SchemeManagersName {
 
