@@ -27,11 +27,11 @@ class SchemeManagersNameFormProviderSpec extends StringFieldBehaviours {
 
   ".schemeManagersFirstName" - {
 
-    val fieldName = "schemeManagersFirstName"
+    val fieldName   = "schemeManagersFirstName"
     val requiredKey = "schemeManagersName.error.firstName.required"
-    val lengthKey = "schemeManagersName.error.firstName.length"
+    val lengthKey   = "schemeManagersName.error.firstName.length"
     val patternKey  = "schemeManagersName.error.firstName.pattern"
-    val maxLength = 35
+    val maxLength   = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -62,11 +62,11 @@ class SchemeManagersNameFormProviderSpec extends StringFieldBehaviours {
 
   ".schemeManagerLastNight" - {
 
-    val fieldName = "schemeManagersLastName"
+    val fieldName   = "schemeManagersLastName"
     val requiredKey = "schemeManagersName.error.lastName.required"
-    val lengthKey = "schemeManagersName.error.lastName.length"
+    val lengthKey   = "schemeManagersName.error.lastName.length"
     val patternKey  = "schemeManagersName.error.lastName.pattern"
-    val maxLength = 35
+    val maxLength   = 35
 
     behave like fieldThatBindsValidData(
       form,

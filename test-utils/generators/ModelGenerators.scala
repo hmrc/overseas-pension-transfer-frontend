@@ -26,7 +26,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         firstName <- arbitrary[String]
-        lastName <- arbitrary[String]
+        lastName  <- arbitrary[String]
       } yield SchemeManagersName(firstName, lastName)
     }
 
