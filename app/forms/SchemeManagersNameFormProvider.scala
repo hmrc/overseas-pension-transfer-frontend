@@ -20,18 +20,18 @@ import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
 import play.api.data.Forms._
-import models.MemberName
+import models.SchemeManagersName
 
-class MemberNameFormProvider @Inject() extends Mappings with Regex {
+class SchemeManagersNameFormProvider @Inject() extends Mappings with Regex {
 
-  def apply(): Form[MemberName] = Form(
+  def apply(): Form[SchemeManagersName] = Form(
     mapping(
-      "memberFirstName" -> text("memberName.error.memberFirstName.required")
-        .verifying(maxLength(35, "memberName.error.memberFirstName.length"))
-        .verifying(regexp(nameRegex, "memberName.error.memberFirstName.pattern")),
-      "memberLastName"  -> text("memberName.error.memberLastName.required")
-        .verifying(maxLength(35, "memberName.error.memberLastName.length"))
-        .verifying(regexp(nameRegex, "memberName.error.memberLastName.pattern"))
-    )(MemberName.apply)(x => Some((x.memberFirstName, x.memberLastName)))
+      "schemeManagersFirstName" -> text("schemeManagersName.error.firstName.required")
+        .verifying(maxLength(35, "schemeManagersName.error.firstName.length"))
+        .verifying(regexp(nameRegex, "schemeManagersName.error.firstName.pattern")),
+      "schemeManagersLastName"  -> text("schemeManagersName.error.lastName.required")
+        .verifying(maxLength(35, "schemeManagersName.error.lastName.length"))
+        .verifying(regexp(nameRegex, "schemeManagersName.error.lastName.pattern"))
+    )(SchemeManagersName.apply)(x => Some((x.schemeMangersFirstName, x.schemeManagersLastName)))
   )
 }

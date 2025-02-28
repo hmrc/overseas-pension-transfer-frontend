@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import javax.inject.Inject
-import forms.mappings.{Mappings, Regex}
-import play.api.data.Form
+import play.api.libs.json._
 
-class MemberNinoFormProvider @Inject() extends Mappings with Regex {
+case class SchemeManagersName(schemeMangersFirstName: String, schemeManagersLastName: String)
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("memberNino.error.required")
-        .verifying(regexp(ninoRegex, "memberNino.error.pattern"))
-    )
+object SchemeManagersName {
+
+  implicit val format: OFormat[SchemeManagersName] = Json.format
 }

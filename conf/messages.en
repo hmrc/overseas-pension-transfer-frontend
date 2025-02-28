@@ -52,10 +52,11 @@ unauthorised.heading = You can’t access this service with this account
 helloWorld.title = helloWorld
 helloWorld.heading = helloWorld
 
+common.nameInput.firstName = First name
+common.nameInput.lastName = Last name
+
 memberName.title = What is the member''s name?
 memberName.heading = What is the member's name?
-memberName.memberFirstName = First name
-memberName.memberLastName = Last name
 memberName.checkYourAnswersLabel = Member name
 memberName.error.memberFirstName.required = Enter the member''s first name
 memberName.error.memberLastName.required = Enter the member''s last name
@@ -65,6 +66,18 @@ memberName.error.memberFirstName.pattern = The member''s first name must only in
 memberName.error.memberLastName.pattern = The member''s last name must only include letters, apostrophes and hyphens
 memberName.memberFirstName.change.hidden = Member''s first name
 memberName.memberLastName.change.hidden = Member''s last name
+
+schemeManagersName.title = What is the manager''s name?
+schemeManagersName.heading = What is the manager''s name?
+schemeManagersName.checkYourAnswersLabel = Scheme manager''s name
+schemeManagersName.error.firstName.required = Enter the Scheme Manager''s first name
+schemeManagersName.error.lastName.required = Enter the Scheme Manager''s last name
+schemeManagersName.error.firstName.length = The Scheme Manager''s first name must be 35 characters or fewer
+schemeManagersName.error.lastName.length = The Scheme Manager''s last name must be 35 characters or fewer
+schemeManagersName.error.firstName.pattern = The scheme manager'’s first name must only include letters, spaces, apostrophes and hyphens
+schemeManagersName.error.lastName.pattern = The scheme manager'’s last name must only include letters, spaces, apostrophes and hyphens
+schemeManagersName.firstName.change.hidden = Scheme manager''s name
+schemeManagersName.lastName.change.hidden = Scheme manager''s name
 
 memberNino.title = Enter member''s National Insurance number
 memberNino.heading = What is undefined undefined''s National Insurance number?
@@ -124,3 +137,4 @@ membersCurrentAddress.addressLine3.change.hidden = Address line 3 (optional)
 membersCurrentAddress.city.change.hidden = City (optional)
 membersCurrentAddress.country.change.hidden = Country (optional)
 membersCurrentAddress.postcode.change.hidden = Postcode (optional)
+

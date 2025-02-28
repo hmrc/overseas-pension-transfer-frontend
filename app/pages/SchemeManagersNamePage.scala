@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
-import forms.mappings.{Mappings, Regex}
-import play.api.data.Form
+import controllers.routes
+import models.{SchemeManagersName, UserAnswers}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class MemberNinoFormProvider @Inject() extends Mappings with Regex {
+case object SchemeManagersNamePage extends QuestionPage[SchemeManagersName] {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("memberNino.error.required")
-        .verifying(regexp(ninoRegex, "memberNino.error.pattern"))
-    )
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "schemeManagersName"
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
 }
