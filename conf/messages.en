@@ -101,8 +101,8 @@ memberHasEverBeenResidentUK.error.required = Select one option
 memberHasEverBeenResidentUK.change.hidden = memberHasEverBeenResidentUK
 memberHasEverBeenResidentUK.hint = Select one.
 
-membersCurrentAddress.title = Enter undefined undefined''s current address
-membersCurrentAddress.heading = Enter undefined undefined''s current address
+membersCurrentAddress.title = What is undefined undefined''s current address?
+membersCurrentAddress.heading = What is undefined undefined''s current address?
 membersCurrentAddress.addressLine1 = Address line 1
 membersCurrentAddress.addressLine2 = Address line 2
 membersCurrentAddress.addressLine3 = Address line 3 (optional)
