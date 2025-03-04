@@ -51,3 +51,8 @@ GET        /members-current-address                                  controllers
 POST       /members-current-address                                  controllers.MembersCurrentAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-members-current-address                           controllers.MembersCurrentAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-members-current-address                           controllers.MembersCurrentAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /qrops-name                                               controllers.QropsNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /qrops-name                                               controllers.QropsNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-qrops-name                                        controllers.QropsNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-qrops-name                                        controllers.QropsNameController.onSubmit(mode: Mode = CheckMode)
