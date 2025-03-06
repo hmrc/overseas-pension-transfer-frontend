@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package forms.mappings
 
-import javax.inject.Inject
-import forms.mappings.{Mappings, Regex}
-import play.api.data.Form
+trait Regex {
 
-class MemberNinoFormProvider @Inject() extends Mappings with Regex {
+  val nameRegex: String =
+    "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("memberNino.error.required")
-        .verifying(regexp(ninoRegex, "memberNino.error.pattern"))
-    )
+  val ninoRegex = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
 }

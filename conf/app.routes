@@ -51,3 +51,8 @@ GET        /members-current-address                                  controllers
 POST       /members-current-address                                  controllers.MembersCurrentAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-members-current-address                           controllers.MembersCurrentAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-members-current-address                           controllers.MembersCurrentAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /scheme-managers-name                                     controllers.SchemeManagersNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /scheme-managers-name                                     controllers.SchemeManagersNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
