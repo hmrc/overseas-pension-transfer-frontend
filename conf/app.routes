@@ -20,10 +20,10 @@ GET        /account/signed-out                                       controllers
 
 GET        /unauthorised                                             controllers.UnauthorisedController.onPageLoad()
 
-GET         /member-name                                             controllers.MemberNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /member-name                                             controllers.MemberNameController.onSubmit(mode: Mode = NormalMode)
-GET         /change-member-name                                      controllers.MemberNameController.onPageLoad(mode: Mode = CheckMode)
-POST        /change-member-name                                      controllers.MemberNameController.onSubmit(mode: Mode = CheckMode)
+GET        /member-name                                              controllers.MemberNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-name                                              controllers.MemberNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-name                                       controllers.MemberNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-name                                       controllers.MemberNameController.onSubmit(mode: Mode = CheckMode)
 
 GET        /member-nino                                              controllers.MemberNinoController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-nino                                              controllers.MemberNinoController.onSubmit(mode: Mode = NormalMode)
@@ -59,11 +59,6 @@ GET        /scheme-managers-name                                     controllers
 POST       /scheme-managers-name                                     controllers.SchemeManagersNameController.onSubmit(mode: Mode = NormalMode)
 GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
-
-GET        /member-has-a-nino                        controllers.MemberHasANinoController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-has-a-nino                        controllers.MemberHasANinoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-has-a-nino                  controllers.MemberHasANinoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-has-a-nino                  controllers.MemberHasANinoController.onSubmit(mode: Mode = CheckMode)
 
 GET        /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
