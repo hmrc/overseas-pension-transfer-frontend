@@ -15,9 +15,9 @@ site.govuk = GOV.UK
 date.day = Day
 date.month = Month
 date.year = Year
-date.error.day = day
-date.error.month = month
-date.error.year = year
+date.error.day = Day
+date.error.month = Month
+date.error.year = Year
 
 timeout.title = You’re about to be signed out
 timeout.message = For security reasons, you will be signed out of this service in
@@ -55,6 +55,13 @@ helloWorld.heading = helloWorld
 common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
 
+common.dateInput.hint = For example, 31 03 1980.
+common.dateInput.error.required.two = Enter a {0} and a {1}
+common.dateInput.error.required = Enter a {0}
+common.dateInput.error.invalid.character = The Day/Month/Year Field must only include numbers
+common.dateInput.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 1970
+common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the future
+
 memberName.title = What is the member''s name?
 memberName.heading = What is the member's name?
 memberName.checkYourAnswersLabel = Member name
@@ -89,24 +96,14 @@ memberNino.hint = For example, QQ123456A.
 
 memberDateOfLeavingUK.title = When did the member leave the UK?
 memberDateOfLeavingUK.heading = When did {0} leave the UK?
-memberDateOfLeavingUK.hint = For example, 31 03 1980.
 memberDateOfLeavingUK.checkYourAnswersLabel = Date of leaving the UK
 memberDateOfLeavingUK.error.required.all = Enter the date of leaving the UK
-memberDateOfLeavingUK.error.required.two = Enter a {0} and a {1}
-memberDateOfLeavingUK.error.required = Enter a {0}
-memberDateOfLeavingUK.error.invalid = Enter the day, month, year in the correct format. For example 27 03 1970.
-memberDateOfLeavingUK.error.invalid.character = The Day/Month/Year Field must only include numbers
 memberDateOfLeavingUK.change.hidden = Date of leaving the UK
 
 memberDateOfBirth.title = DateOfBirth
 memberDateOfBirth.heading = What is {0}’s date of birth?
-memberDateOfBirth.hint = For example, 31 03 1980.
 memberDateOfBirth.checkYourAnswersLabel = Date of Birth
 memberDateOfBirth.error.required.all = Enter the date of birth
-memberDateOfBirth.error.required.two = Enter a {0} and a {1}
-memberDateOfBirth.error.required = Enter a {0}
-memberDateOfBirth.error.invalid = Enter Day/Month/Year in the correct format
-memberDateOfBirth.error.invalid.character = The Day/Month/Year Field must only include numbers
 memberDateOfBirth.change.hidden = Date of Birth
 
 memberIsResidentUk.title = Is the member a resident of the UK for tax purposes?
