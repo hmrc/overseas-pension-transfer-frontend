@@ -39,7 +39,12 @@
     @formHelper(action = routes.MemberDateOfBirthController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value.day")))
+            @{
+              val missingFields = form.errors.head.args
+              val fieldToHighlight = missingFields.find(List("month", "year", "day").contains).getOrElse("day")
+
+              govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> s"value.$fieldToHighlight")))
+            }
         }
 
         @govukDateInput(
