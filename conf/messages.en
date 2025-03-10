@@ -56,7 +56,7 @@ common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
 
 memberName.title = What is the member''s name?
-memberName.heading = What is the member's name?
+memberName.heading = What is the member''s name?
 memberName.checkYourAnswersLabel = Member name
 memberName.error.memberFirstName.required = Enter the member''s first name
 memberName.error.memberLastName.required = Enter the member''s last name
