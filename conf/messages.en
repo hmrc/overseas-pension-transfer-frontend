@@ -130,5 +130,5 @@ qropsSchemeManagerIsIndividualOrOrg.heading = Is the scheme manager an individua
 qropsSchemeManagerIsIndividualOrOrg.individual = Individual
 qropsSchemeManagerIsIndividualOrOrg.organisation = Organisation
 qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel = qropsSchemeManagerIsIndividualOrOrg
-qropsSchemeManagerIsIndividualOrOrg.error.required = Select one option
+qropsSchemeManagerIsIndividualOrOrg.error.required = Select if the scheme manager is an individual or an organisation
 qropsSchemeManagerIsIndividualOrOrg.change.hidden = QropsSchemeManagerIsIndividualOrOrg
