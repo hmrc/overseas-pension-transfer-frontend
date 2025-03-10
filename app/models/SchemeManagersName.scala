@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import play.twirl.api.Html
+package models
 
-@this()
+import play.api.libs.json._
 
-@()
+case class SchemeManagersName(schemeMangersFirstName: String, schemeManagersLastName: String)
 
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+object SchemeManagersName {
 
-<a
- class="govuk-link govuk-body"
- target="_blank"
- href=""
->
- Return to task list
-</a>
-
-<hr class="govuk-section-break govuk-section-break--l">
-
-
-
+  implicit val format: OFormat[SchemeManagersName] = Json.format
+}
