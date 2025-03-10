@@ -70,7 +70,10 @@ POST       /scheme-managers-name                                     controllers
 GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
 
-GET        /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
+GET        /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
+
+GET        /address-lookup/:postcode                                 controllers.AddressLookupController.addressLookup(postcode: String)
+
