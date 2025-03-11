@@ -21,16 +21,15 @@ import org.apache.pekko.http.scaladsl.model.HttpHeader.ParsingResult.Ok
 import play.api.Logging
 import play.api.http.Status.OK
 import play.api.libs.json.Json
+import play.api.test.Injecting
 import stubs.HelloWorldStub
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class HelloWorldConnectorISpec extends BaseISpec with Logging {
+class HelloWorldConnectorISpec extends BaseISpec with Injecting {
 
-  val connector: HelloWorldConnector = app.injector.instanceOf[HelloWorldConnector]
-
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  val connector: HelloWorldConnector = inject[HelloWorldConnector]
 
   "HelloWorldConnector" should {
 

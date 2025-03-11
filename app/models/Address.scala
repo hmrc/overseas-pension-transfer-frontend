@@ -16,69 +16,15 @@
 
 package models
 
-import java.util.regex.Pattern
-import com.fasterxml.jackson.annotation.JsonIgnore
-import play.api.libs.json.{Json, OFormat}
-
-/**
- * Address typically represents a postal address.
- * For UK addresses, 'town' will always be present.
- * For non-UK addresses, 'town' may be absent and there may be an extra line instead.
- */
-case class Address(lines: List[String],
-                   town: String,
-                   postcode: String,
-                   subdivision: Option[Country],
-                   country: Country) {
-
-  import Address._
-
-  @JsonIgnore // needed because the name starts 'is...'
-  def isValid: Boolean = lines.nonEmpty && lines.size <= (if (town.isEmpty) 4 else 3)
-
-  def nonEmptyFields: List[String] = lines ::: List(town) ::: List(postcode)
-
-  /** Gets a conjoined representation, excluding the country. */
-  def printable(separator: String): String = nonEmptyFields.mkString(separator)
-
-  /** Gets a single-line representation, excluding the country. */
-  @JsonIgnore // needed because it's a field
-  lazy val printable: String = printable(", ")
-
-  def line1: String = if (lines.nonEmpty) lines.head else ""
-
-  def line2: String = if (lines.size > 1) lines(1) else ""
-
-  def line3: String = if (lines.size > 2) lines(2) else ""
-
-  def line4: String = if (lines.size > 3) lines(3) else ""
-
-  def longestLineLength: Int = nonEmptyFields.map(_.length).max
-
-  def truncatedAddress(maxLen: Int = maxLineLength): Address =
-    Address(lines.map(limit(_, maxLen)), limit(town, maxLen), postcode, subdivision, country)
-
-}
-
-
-object Address {
-  val maxLineLength = 35
-  val danglingLetter: Pattern = Pattern.compile(".* [A-Z0-9]$")
-
-  private def limit(str: String, max: Int): String = {
-    var s = str
-    while (s.length > max && s.indexOf(", ") > 0) {
-      s = s.replaceFirst(", ", ",")
-    }
-    if (s.length > max) {
-      s = s.substring(0, max).trim
-      if (Address.danglingLetter.matcher(s).matches()) {
-        s = s.substring(0, s.length - 2)
-      }
-      s
-    }
-    else s
-  }
-
-  implicit val format: OFormat[Address] = Json.format
+trait Address {
+  val addressLine1: String
+  val addressLine2: String
+  val addressLine3: Option[String]
+  val city: Option[String]
+  /*TODO
+     Once we implement the country look up on the manual entry page, the country should be changed to the country object itself
+     which contains a country code and country name (see the country case class)
+   */
+  val country: Option[String]
+  val postcode: Option[String]
 }

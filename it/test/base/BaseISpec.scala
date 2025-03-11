@@ -38,7 +38,7 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Environment, Mode}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
 import scala.concurrent.duration.Duration
@@ -51,6 +51,8 @@ trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with O
     "play.filters.csrf.header.bypassHeaders.Csrf-Token"            -> "nocheck",
     "microservice.services.overseas-pension-transfer-backend.host" -> WireMockHelper.wireMockHost,
     "microservice.services.overseas-pension-transfer-backend.port" -> WireMockHelper.wireMockPort.toString,
+    "microservice.services.address-lookup.host"                    -> WireMockHelper.wireMockHost,
+    "microservice.services.address-lookup.port"                    -> WireMockHelper.wireMockPort.toString,
     "microservice.services.auth.host"                              -> WireMockHelper.wireMockHost,
     "microservice.services.auth.port"                              -> WireMockHelper.wireMockPort.toString
   )
@@ -60,8 +62,9 @@ trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with O
     .configure(servicesConfig)
     .build()
 
-  lazy val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
-  val appRouteContext: String     = "/overseas-pension-transfer-frontend"
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  val appRouteContext: String = "/overseas-pension-transfer-frontend"
 
   override def beforeAll(): Unit = {
     super.beforeAll()

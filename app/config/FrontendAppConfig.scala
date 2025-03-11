@@ -56,6 +56,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val cacheTtl: Long = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
-  val backendService: String = s"${baseUrl("overseas-pension-transfer-backend")}/overseas-pension-transfer-backend"
+  val backendService: String       = s"${baseUrl("overseas-pension-transfer-backend")}/overseas-pension-transfer-backend"
   val addressLookupService: String = baseUrl("address-lookup")
 }

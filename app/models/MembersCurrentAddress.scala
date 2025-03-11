@@ -25,7 +25,7 @@ case class MembersCurrentAddress(
     city: Option[String],
     country: Option[String],
     postcode: Option[String]
-  )
+  ) extends Address
 
 object MembersCurrentAddress {
 
