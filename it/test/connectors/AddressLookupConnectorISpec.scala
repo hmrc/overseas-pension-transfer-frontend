@@ -39,7 +39,7 @@ class AddressLookupConnectorISpec extends BaseISpec with Injecting {
               AddressRecord(
                 id = "GB200000698110",
                 address = UkAddress(
-                  lines = List( "2 The Test Close"),
+                  lines = List("2 Test Close"),
                   town = "Test Town",
                   rawPostCode = "BB00 1BB",
                   rawCountry = Country("GB", "United Kingdom")
@@ -48,7 +48,7 @@ class AddressLookupConnectorISpec extends BaseISpec with Injecting {
               AddressRecord(
                 id = "GB200000708497",
                 address = UkAddress(
-                  lines = List( "4 The Test Close"),
+                  lines = List("4 Test Close"),
                   town = "Test Town",
                   rawPostCode = "BB00 1BB",
                   rawCountry = Country("GB", "United Kingdom")

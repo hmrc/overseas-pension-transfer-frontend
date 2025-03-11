@@ -53,7 +53,7 @@ object AddressLookupStub {
        |        "uprn": 200000698110,
        |        "address": {
        |            "lines": [
-       |                "2 The Test Close"
+       |                "2 Test Close"
        |            ],
        |            "town": "Test Town",
        |            "postcode": "BB00 1BB",
@@ -107,7 +107,7 @@ object AddressLookupStub {
        |        "uprn": 200000698110,
        |        "address": {
        |            "lines": [
-       |                "2 The Test Close"
+       |                "2 Test Close"
        |            ],
        |            "town": "Test Town",
        |            "postcode": "BB00 0BB",
