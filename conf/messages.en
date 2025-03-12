@@ -169,7 +169,7 @@ membersCurrentAddress.error.addressLine1.pattern = Address line 1 must only incl
 membersCurrentAddress.error.addressLine2.pattern = Address line 2 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 membersCurrentAddress.error.addressLine3.pattern = Address line 3 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 membersCurrentAddress.error.city.pattern = City must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-membersCurrentAddress.country.addressLine.pattern = Country must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+membersCurrentAddress.error.country.pattern = Country must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
