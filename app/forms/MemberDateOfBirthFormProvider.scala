@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class MemberDateOfBirthFormProvider @Inject() extends Mappings {
 
-  def minDate: LocalDate    = LocalDate of (1900, 1, 1)
+  def minDate: LocalDate    = LocalDate of (1901, 1, 1)
   def maxDate: LocalDate    = LocalDate.now(ZoneOffset.UTC)
   private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 

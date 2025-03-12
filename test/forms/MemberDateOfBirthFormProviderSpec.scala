@@ -29,7 +29,7 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours {
   implicit private val messages: Messages = stubMessages()
   private val form                        = new MemberDateOfBirthFormProvider()()
 
-  private val minDate = LocalDate.of(1900, 1, 1)
+  private val minDate = LocalDate.of(1901, 1, 1)
   private val maxDate = LocalDate.now(ZoneOffset.UTC)
 
   private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
