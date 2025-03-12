@@ -24,4 +24,6 @@ trait Regex {
   val ninoRegex: String = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
 
   val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
+
+  val postcodeRegex: String = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
 }
