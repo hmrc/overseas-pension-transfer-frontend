@@ -60,6 +60,11 @@ POST       /members-current-address                                  controllers
 GET        /change-members-current-address                           controllers.MembersCurrentAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-members-current-address                           controllers.MembersCurrentAddressController.onSubmit(mode: Mode = CheckMode)
 
+GET        /members-last-uk-address                                  controllers.MembersLastUKAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /members-last-uk-address                                  controllers.MembersLastUKAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-members-last-uk-address                           controllers.MembersLastUKAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-members-last-uk-address                           controllers.MembersLastUKAddressController.onSubmit(mode: Mode = CheckMode)
+
 GET        /qrops-name                                               controllers.QropsNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-name                                               controllers.QropsNameController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-name                                        controllers.QropsNameController.onPageLoad(mode: Mode = CheckMode)
