@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package pages
 
-import play.api.libs.json.{JsString, JsValue, Json, OFormat, Writes}
+import controllers.routes
+import models.{NormalMode, RecordSet, UserAnswers}
+import play.api.libs.json.{JsPath, Json, OFormat}
+import play.api.mvc.Call
 
-case class AddressRecord(
-    id: String,
-    address: UkAddress
-  )
+case object MembersLastUkAddressLookupPage extends QuestionPage[RecordSet] {
 
-object AddressRecord {
-  implicit val format: OFormat[AddressRecord] = Json.format
-}
+  override def path: JsPath = JsPath \ toString
 
-case class RecordSet(addresses: Seq[AddressRecord])
+  implicit val format: OFormat[RecordSet] = Json.format[RecordSet]
 
-object RecordSet {
+  override def toString: String = "membersLastUkAddressLookup"
 
-  def fromJsonAddressLookupService(addressListAsJson: JsValue): RecordSet = {
-    val addresses = addressListAsJson.as[Seq[AddressRecord]]
-    RecordSet(addresses)
-  }
-
-  implicit val format: OFormat[RecordSet] = Json.format
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.MemberSelectLastUkAddressController.onPageLoad(mode = NormalMode)
 }

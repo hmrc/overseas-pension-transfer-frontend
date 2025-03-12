@@ -68,7 +68,7 @@ class AddressLookupConnectorISpec extends BaseISpec with Injecting {
       }
     }
     "an exception is encountered when calling Address Lookup" must {
-      "return and AddressLookupErrorResponse" in {
+      "return an AddressLookupErrorResponse" in {
         lazy val res = {
           AddressLookupStub.errorResponsePostPostcode("BB003BB")(BAD_REQUEST, """{"Reason":"Your submission contains one or more errors."}""")
 

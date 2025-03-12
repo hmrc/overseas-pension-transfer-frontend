@@ -188,3 +188,18 @@ memberDoesNotHaveNino.error.required = Enter the reason the member does not have
 memberDoesNotHaveNino.error.length = The reason for not having a National Insurance number and reference in its place must be must be 160 characters or fewer
 memberDoesNotHaveNino.change.hidden = MemberDoesNotHaveNino
 memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
+
+membersLastUkAddressLookup.title = membersLastUkAddressLookup
+membersLastUkAddressLookup.heading = membersLastUkAddressLookup
+membersLastUkAddressLookup.checkYourAnswersLabel = membersLastUkAddressLookup
+membersLastUkAddressLookup.error.required = Enter membersLastUkAddressLookup
+membersLastUkAddressLookup.error.length = MembersLastUkAddressLookup must be 8 characters or less
+membersLastUkAddressLookup.change.hidden = MembersLastUkAddressLookup
+
+memberSelectLastUkAddress.title = memberSelectLastUkAddress
+memberSelectLastUkAddress.heading = memberSelectLastUkAddress
+memberSelectLastUkAddress.option1 = option1msg
+memberSelectLastUkAddress.option2 = option2msg
+memberSelectLastUkAddress.checkYourAnswersLabel = memberSelectLastUkAddress
+memberSelectLastUkAddress.error.required = Select memberSelectLastUkAddress
+memberSelectLastUkAddress.change.hidden = MemberSelectLastUkAddress

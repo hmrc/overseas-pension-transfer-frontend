@@ -23,7 +23,7 @@ trait Address {
   val city: Option[String]
   /*TODO
      Once we implement the country look up on the manual entry page, the country should be changed to the country object itself
-     which contains a country code and country name (see the country case class)
+     which contains a country code and country name (see the country model)
    */
   val country: Option[String]
   val postcode: Option[String]

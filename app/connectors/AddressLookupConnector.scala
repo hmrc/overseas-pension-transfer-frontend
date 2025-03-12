@@ -52,7 +52,3 @@ class AddressLookupConnector @Inject() (appConfig: FrontendAppConfig, val http: 
     }
   }
 }
-
-trait HasAddressLookupConnector {
-  val addressLookupConnector: AddressLookupConnector
-}

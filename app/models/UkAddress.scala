@@ -32,6 +32,7 @@ case class UkAddress(lines: List[String], town: String, rawPostCode: String, raw
   val postcode: Option[String] = Some(rawPostCode)
 
   val country: Option[String] = Some(rawCountry.name)
+
 }
 
 object UkAddress {

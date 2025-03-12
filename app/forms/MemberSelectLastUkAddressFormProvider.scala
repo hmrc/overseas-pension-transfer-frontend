@@ -14,27 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import play.api.libs.json.{JsString, JsValue, Json, OFormat, Writes}
+import javax.inject.Inject
 
-case class AddressRecord(
-    id: String,
-    address: UkAddress
-  )
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.MemberSelectLastUkAddress
 
-object AddressRecord {
-  implicit val format: OFormat[AddressRecord] = Json.format
-}
+class MemberSelectLastUkAddressFormProvider @Inject() extends Mappings {
 
-case class RecordSet(addresses: Seq[AddressRecord])
-
-object RecordSet {
-
-  def fromJsonAddressLookupService(addressListAsJson: JsValue): RecordSet = {
-    val addresses = addressListAsJson.as[Seq[AddressRecord]]
-    RecordSet(addresses)
-  }
-
-  implicit val format: OFormat[RecordSet] = Json.format
+  def apply(): Form[MemberSelectLastUkAddress] =
+    Form(
+      "value" -> enumerable[MemberSelectLastUkAddress]("memberSelectLastUkAddress.error.required")
+    )
 }

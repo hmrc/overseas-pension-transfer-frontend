@@ -22,6 +22,11 @@ import org.scalacheck.Arbitrary.arbitrary
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryMemberSelectLastUkAddress: Arbitrary[MemberSelectLastUkAddress] =
+    Arbitrary {
+      Gen.oneOf(MemberSelectLastUkAddress.values.toSeq)
+    }
+
   implicit lazy val arbitrarySchemeManagersName: Arbitrary[SchemeManagersName] =
     Arbitrary {
       for {
