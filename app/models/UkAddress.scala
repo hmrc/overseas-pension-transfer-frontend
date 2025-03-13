@@ -21,11 +21,11 @@ import play.api.libs.json._
 
 case class UkAddress(lines: List[String], town: String, rawPostCode: String, rawCountry: Country) extends Address {
 
-  val addressLine1: String = if (lines.nonEmpty) lines.head else ""
+  val line1: String = if (lines.nonEmpty) lines.head else ""
 
-  val addressLine2: String = if (lines.size > 1) lines(1) else ""
+  val line2: String = if (lines.size > 1) lines(1) else ""
 
-  val addressLine3: Option[String] = lines.lift(2)
+  val line3: Option[String] = lines.lift(2)
 
   val city: Option[String] = Some(town)
 

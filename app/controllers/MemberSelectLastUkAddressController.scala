@@ -51,8 +51,7 @@ class MemberSelectLastUkAddressController @Inject() (
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(addressRecords) => {
-          val ukAddresses = addressRecords.addresses.map { ar => ar.address }
-          Ok(view(form, mode, ukAddresses))
+          Ok(view(form, mode, addressRecords))
         }
         case None                 => BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))
       }

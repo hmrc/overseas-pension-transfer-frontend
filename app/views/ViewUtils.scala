@@ -16,8 +16,12 @@
 
 package views
 
+import models.{Address, AddressRecord, RecordSet, UkAddress}
 import play.api.data.Form
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import viewmodels.AddressField
 
 object ViewUtils {
 
@@ -33,4 +37,28 @@ object ViewUtils {
   def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
     if (form.hasErrors || form.hasGlobalErrors) messages("error.title.prefix") else ""
   }
+
+  def addressRadios(addressRecords: RecordSet): Seq[RadioItem] =
+    addressRecords.addresses.zipWithIndex.map {
+      case (addressRecord: AddressRecord, index: Int) =>
+        addressRecord match {
+          case AddressRecord(id: String, address: UkAddress) =>
+            def toOption[A](a: A)(implicit ev: AddressField[A]): Option[String] = ev.toOption(a)
+
+            val formattedAddress = {
+              List(
+                toOption(address.line1),
+                toOption(address.line2),
+                toOption(address.line3),
+                toOption(address.city),
+                toOption(address.postcode)
+              ).flatten.mkString(", ")
+            }
+            RadioItem(
+              content = Text(formattedAddress),
+              value   = Some(id),
+              id      = Some(s"value_$index")
+            )
+        }
+    }
 }

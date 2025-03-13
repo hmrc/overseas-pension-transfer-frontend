@@ -22,7 +22,7 @@
 @import viewmodels.govuk.all._
 @import viewmodels.LegendSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+@import views.ViewUtils
 
 @this(
         layout: templates.Layout,
@@ -33,24 +33,9 @@
 )
 
 
-@(form: Form[_], mode: Mode, ukAddresses: Seq[UkAddress])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, addresses: RecordSet)(implicit request: Request[_], messages: Messages)
 
-@addressRadios = @{ukAddresses.zipWithIndex.map {
-        case (value: UkAddress, index) => {
-          val line1 = value.addressLine1
-          val line2 = s", ${value.addressLine2}"
-          val line3 = if(value.addressLine3.isEmpty) "" else s", ${value.addressLine3.get}"
-          val city = if(value.city.isEmpty) "" else s", ${value.city.get}"
-          val country = if(value.country.isEmpty) "" else s", ${value.country.get}"
-          val postcode = if(value.postcode.isEmpty) "" else s", ${value.postcode.get}"
-            RadioItem(
-                content = Text(s"$line1$line2$line3$city$country$postcode"),
-                value = Some(value.toString),
-                id = Some(s"value_$index")
-            )
-        }
-    }
-}
+@addressRadios = @{ViewUtils.addressRadios(addresses)}
 
 @layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title"))) {
 

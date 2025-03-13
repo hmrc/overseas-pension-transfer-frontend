@@ -25,7 +25,11 @@ case class MembersCurrentAddress(
     city: Option[String],
     country: Option[String],
     postcode: Option[String]
-  ) extends Address
+  ) extends Address {
+  val line1: String         = addressLine1
+  val line2: String         = addressLine2
+  val line3: Option[String] = addressLine3
+}
 
 object MembersCurrentAddress {
 

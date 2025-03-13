@@ -17,9 +17,9 @@
 package models
 
 trait Address {
-  val addressLine1: String
-  val addressLine2: String
-  val addressLine3: Option[String]
+  val line1: String
+  val line2: String
+  val line3: Option[String]
   val city: Option[String]
   /*TODO
      Once we implement the country look up on the manual entry page, the country should be changed to the country object itself

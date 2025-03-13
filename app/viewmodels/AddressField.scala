@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package viewmodels
 
-import play.api.libs.json.{Json, OFormat}
-
-case class Country(code: String, name: String) {
-  override def toString: String = name
+trait AddressField[A] {
+  def toOption(a: A): Option[String]
 }
 
-object Country {
+object AddressField {
 
-  implicit val format: OFormat[Country] = Json.format
+  implicit val stringField: AddressField[String] = (a: String) => if (a.nonEmpty) Some(a) else None
+
+  implicit val optionStringField: AddressField[Option[String]] = (a: Option[String]) => a.filter(_.nonEmpty)
+
 }
