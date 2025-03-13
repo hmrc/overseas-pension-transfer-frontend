@@ -45,28 +45,50 @@ class MemberSelectLastUkAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  val form = formProvider()
-
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
-        case Some(addressRecords) => {
+        case Some(addressRecords) =>
+          val validIds = addressRecords.addresses.map(_.id)
+          val form     = formProvider(validIds)
+
           Ok(view(form, mode, addressRecords))
-        }
-        case None                 => BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))
+
+        case None => BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberSelectLastUkAddressPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MemberSelectLastUkAddressPage.nextPage(mode, updatedAnswers))
-      )
+      request.userAnswers.get(MembersLastUkAddressLookupPage) match {
+        case Some(addressRecords) =>
+          val validIds = addressRecords.addresses.map(_.id)
+          val form     = formProvider(validIds)
+          form.bindFromRequest().fold(
+            _ =>
+              Future.successful(BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))),
+            selectedId =>
+              if (validIds.contains(selectedId)) {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberSelectLastUkAddressPage, selectedId))
+                  _              <- {
+                    logger.info(Json.stringify(updatedAnswers.data))
+                    sessionRepository.set(updatedAnswers)
+                  }
+                } yield Redirect(MemberSelectLastUkAddressPage.nextPage(mode, updatedAnswers))
+              } else {
+                Future.successful(BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)))
+              }
+          )
+
+        case None =>
+          Future.successful(
+            BadRequest(
+              recoveryView(
+                routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+              )
+            )
+          )
+      }
   }
 }

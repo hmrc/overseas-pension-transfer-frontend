@@ -20,12 +20,15 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.MemberSelectLastUkAddress
 
 class MemberSelectLastUkAddressFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[MemberSelectLastUkAddress] =
+  def apply(validIds: Seq[String]): Form[String] =
     Form(
-      "value" -> enumerable[MemberSelectLastUkAddress]("memberSelectLastUkAddress.error.required")
+      "value" -> text("memberSelectLastUkAddress.error.required")
+        .verifying(
+          "memberSelectLastUkAddress.error.invalid",
+          chosenId => validIds.contains(chosenId)
+        )
     )
 }

@@ -22,10 +22,12 @@ import forms.mappings.Mappings
 import play.api.data.Form
 
 class MembersLastUkAddressLookupFormProvider @Inject() extends Mappings {
+  // TODO: placeholder regex, replace with mappings regex
+  val regex = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
 
   def apply(): Form[String] =
     Form(
       "value" -> text("membersLastUkAddressLookup.error.required")
-        .verifying(maxLength(8, "membersLastUkAddressLookup.error.length"))
+        .verifying(regexp(regex, "membersLastUkAddressLookup.error.pattern"))
     )
 }

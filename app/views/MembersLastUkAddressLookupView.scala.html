@@ -25,11 +25,11 @@
 @import viewmodels.LabelSize.Large
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton,
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -42,16 +42,22 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <h1 class="govuk-heading-l">@messages("membersLastUkAddressLookup.heading")</h1>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("membersLastUkAddressLookup.heading"))).asPageHeading(size = Large)
+                label = LabelViewModel(Text(messages("membersLastUkAddressLookup.label")))
             )
+            .withHint(HintViewModel(Text(messages("membersLastUkAddressLookup.hint"))))
             .withWidth(OneHalf)
         )
+      @{//TODO: replace link with route to manual entry
+      }
+        <p class="govuk-body">@Html(messages("membersLastUkAddressLookup.link", "#"))</p>
 
         @govukButton(
-            ButtonViewModel(Text(messages("site.saveAndContinue")))
+            ButtonViewModel(Text(messages("site.continue")))
         )
     }
 }
