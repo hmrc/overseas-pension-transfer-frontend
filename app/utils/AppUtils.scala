@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package utils
 
-trait Regex {
+import models.UserAnswers
+import pages.MemberNamePage
 
-  val nameRegex: String =
-    "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+trait AppUtils {
 
-  val ninoRegex: String = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
-
-  val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
-
-  val postcodeRegex: String = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
+  def memberFullName(userAnswers: UserAnswers): Option[String] = {
+    userAnswers.get(MemberNamePage) match {
+      case Some(memberName) => Some(memberName.fullName)
+      case None             => None
+    }
+  }
 }

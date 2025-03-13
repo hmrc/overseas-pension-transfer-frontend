@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package models
 
-trait Regex {
+import play.api.libs.json._
 
-  val nameRegex: String =
-    "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+case class MembersLastUKAddress(
+    addressLine1: String,
+    addressLine2: Option[String],
+    townOrCity: String,
+    county: Option[String],
+    postcode: String
+  )
 
-  val ninoRegex: String = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
+object MembersLastUKAddress {
 
-  val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
-
-  val postcodeRegex: String = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
+  implicit val format: OFormat[MembersLastUKAddress] = Json.format
 }
