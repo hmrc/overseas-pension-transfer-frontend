@@ -21,9 +21,9 @@ import play.api.data.FormError
 
 class MembersLastUkAddressLookupFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "membersLastUkAddressLookup.error.required"
-  val lengthKey   = "membersLastUkAddressLookup.error.length"
-  val maxLength   = 8
+  val requiredKey   = "membersLastUkAddressLookup.error.required"
+  val patternKey    = "membersLastUkAddressLookup.error.patternKey"
+  val postcodeRegex = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
 
   val form = new MembersLastUkAddressLookupFormProvider()()
 
@@ -34,14 +34,7 @@ class MembersLastUkAddressLookupFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+      stringsMatchingRegex(postcodeRegex)
     )
 
     behave like mandatoryField(

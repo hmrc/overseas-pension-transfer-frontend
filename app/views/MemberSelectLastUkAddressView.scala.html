@@ -23,6 +23,7 @@
 @import viewmodels.LegendSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import views.ViewUtils
+@import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 
 @this(
         layout: templates.Layout,
@@ -33,9 +34,11 @@
 )
 
 
-@(form: Form[_], mode: Mode, addresses: RecordSet)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, addressRecords: RecordSet, postcode: String)(implicit request: Request[_], messages: Messages)
 
-@addressRadios = @{ViewUtils.addressRadios(addresses)}
+@addressRadios = @{ViewUtils.addressRadios(addressRecords)}
+
+@addressLength = @{addressRadios.length}
 
 @layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title"))) {
 
@@ -45,18 +48,24 @@
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
+        <h1 class="govuk-heading-l">@messages("memberSelectLastUkAddress.heading")</h1>
+        @{//TODO: replace link in legend with route to manual entry
+        }
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(Text(messages("memberSelectLastUkAddress.heading"))).asPageHeading(size = Large),
+                legend = LegendViewModel(
+                    HtmlContent(messages("membersLastUkAddressLookup.legend", addressLength, postcode, "#"))
+                ).withCssClass("govuk-!-padding-bottom-3"),
                 items  = addressRadios
             )
+
         )
 
 
 
         @govukButton(
-            ButtonViewModel(Text(messages("site.saveAndContinue")))
+            ButtonViewModel(Text(messages("site.continue")))
         )
     }
 }

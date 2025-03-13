@@ -48,13 +48,17 @@ class MemberSelectLastUkAddressController @Inject() (
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
-        case Some(addressRecords) =>
+        case Some(addressRecords) if addressRecords.addresses.nonEmpty =>
           val validIds = addressRecords.addresses.map(_.id)
           val form     = formProvider(validIds)
+          val postcode = addressRecords.addresses.head.address.postcode.get
+          Ok(view(form, mode, addressRecords, postcode))
 
-          Ok(view(form, mode, addressRecords))
+        case Some(_) =>
+          Redirect(routes.MemberLastUkAddressNotFoundController.onPageLoad())
 
-        case None => BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))
+        case None =>
+          BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))
       }
   }
 
@@ -64,9 +68,11 @@ class MemberSelectLastUkAddressController @Inject() (
         case Some(addressRecords) =>
           val validIds = addressRecords.addresses.map(_.id)
           val form     = formProvider(validIds)
+          val postcode = addressRecords.addresses.head.address.postcode.get
+
           form.bindFromRequest().fold(
-            _ =>
-              Future.successful(BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, mode, addressRecords, postcode))),
             selectedId =>
               if (validIds.contains(selectedId)) {
                 for {

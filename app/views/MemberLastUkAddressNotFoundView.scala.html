@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package models
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.titleNoForm
 
-import play.api.libs.json.{JsValue, Json, OFormat}
+@this(
+        layout: templates.Layout,
+        govukButton: GovukButton
+)
 
-case class AddressRecord(
-    id: String,
-    address: UkAddress
-  )
+@()(implicit request: Request[_], messages: Messages)
 
-object AddressRecord {
-  implicit val format: OFormat[AddressRecord] = Json.format
-}
+@layout(pageTitle = titleNoForm(messages("memberLastUkAddressNotFound.title"))) {
 
-case class RecordSet(addresses: Seq[AddressRecord])
-
-object RecordSet {
-
-  def fromJsonAddressLookupService(addressListAsJson: JsValue): RecordSet = {
-    val addresses = addressListAsJson.as[Seq[AddressRecord]]
-    RecordSet(addresses)
-  }
-
-  implicit val format: OFormat[RecordSet] = Json.format
+    <h1 class="govuk-heading-l">@messages("memberLastUkAddressNotFound.heading")</h1>
 }

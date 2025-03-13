@@ -66,6 +66,8 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
   private val formProvider = new MemberSelectLastUkAddressFormProvider()
   private val form         = formProvider(validIds)
 
+  val postcode: String = addressRecords.addresses.head.address.postcode.get
+
   val userAnswers: UserAnswers = UserAnswers("id").set(MembersLastUkAddressLookupPage, addressRecords).get
 
   "MemberSelectLastUkAddress Controller" - {
@@ -82,7 +84,7 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
         val view = application.injector.instanceOf[MemberSelectLastUkAddressView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, addressRecords)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, addressRecords, postcode)(request, messages(application)).toString
       }
     }
 
@@ -111,7 +113,7 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
       }
     }
 
-    "must return a Bad Request and redirect to recovery view when invalid data is submitted" in {
+    "must return a Bad Request and errors when invalid data is submitted" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -120,15 +122,13 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
           FakeRequest(POST, memberSelectLastUkAddressRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val recoveryView = application.injector.instanceOf[JourneyRecoveryContinueView]
+        val boundForm = form.bind(Map("value" -> "invalid value"))
+        val view      = application.injector.instanceOf[MemberSelectLastUkAddressView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)(
-          request,
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, addressRecords, postcode)(request, messages(application)).toString
       }
     }
 

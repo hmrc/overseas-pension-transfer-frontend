@@ -23,6 +23,7 @@ import forms.MembersLastUkAddressLookupFormProvider
 import javax.inject.Inject
 import models.{AddressRecord, Mode, RecordSet}
 import pages.MembersLastUkAddressLookupPage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -43,7 +44,7 @@ class MembersLastUkAddressLookupController @Inject() (
     val addressLookupConnector: AddressLookupConnector,
     view: MembersLastUkAddressLookupView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   val form = formProvider()
 
@@ -63,10 +64,13 @@ class MembersLastUkAddressLookupController @Inject() (
       postcode =>
         addressLookupConnector.lookup(postcode).flatMap {
           case AddressLookupErrorResponse(e: BadRequestException) =>
+            logger.warn(s"Bad request: ${e.message}")
             Future.successful(BadRequest(e.message))
-          case AddressLookupErrorResponse(_)                      =>
+          case AddressLookupErrorResponse(e)                      =>
+            logger.warn(s"Internal error: $e")
             Future.successful(InternalServerError)
           case AddressLookupSuccessResponse(recordSet)            =>
+            logger.info(s"Records: ${recordSet.toString}")
             Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, RecordSet(recordSet.addresses.sorted))).flatMap { updatedAnswers =>
               sessionRepository.set(updatedAnswers).map { _ =>
                 Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
