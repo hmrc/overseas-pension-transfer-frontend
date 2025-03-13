@@ -27,6 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AppUtils
 import views.html.MemberDoesNotHaveNinoView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +42,7 @@ class MemberDoesNotHaveNinoController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberDoesNotHaveNinoView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with AppUtils {
 
   val form = formProvider()
 
@@ -51,26 +52,19 @@ class MemberDoesNotHaveNinoController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, memberFullName(request), mode))
+      Ok(view(preparedForm, memberFullName(request.userAnswers), mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, memberFullName(request), mode))),
+          Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(routes.MemberDateOfBirthController.onPageLoad(NormalMode))
       )
-  }
-
-  private def memberFullName(request: DataRequest[AnyContent]): Option[String] = {
-    request.userAnswers.get(MemberNamePage) match {
-      case Some(memberName) => Some(memberName.fullName)
-      case None             => None
-    }
   }
 }

@@ -31,17 +31,17 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], memberName: Option[String], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("membersLastUKAddress.title"))) {
 
-    @formHelper(action = routes.MembersCurrentAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.MembersLastUKAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading", memberName.getOrElse("undefined undefined"))</h1>
 
         @govukInput(
             InputViewModel(

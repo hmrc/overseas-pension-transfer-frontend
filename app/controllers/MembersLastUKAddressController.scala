@@ -17,57 +17,60 @@
 package controllers
 
 import controllers.actions._
-import forms.MembersCurrentAddressFormProvider
-import models.Mode
-import pages.MembersCurrentAddressPage
+import forms.MembersLastUKAddressFormProvider
+import models.{MembersLastUKAddress, Mode, UserAnswers}
+import pages.{MemberNamePage, MembersLastUKAddressPage}
 import play.api.Logging
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.MembersCurrentAddressView
+import utils.AppUtils
+import views.html.MembersLastUKAddressView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MembersLastUKAddressController @Inject()(
+class MembersLastUKAddressController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: MembersCurrentAddressFormProvider,
+    formProvider: MembersLastUKAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MembersCurrentAddressView
+    view: MembersLastUKAddressView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  val form = formProvider()
+  private def form(userAnswers: UserAnswers): Form[MembersLastUKAddress] = formProvider(userAnswers)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(MembersCurrentAddressPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val userAnswers  = request.userAnswers
+      val preparedForm = userAnswers.get(MembersLastUKAddressPage) match {
+        case None        => form(userAnswers)
+        case Some(value) => form(userAnswers).fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, memberFullName(userAnswers), mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
+      form(request.userAnswers).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, value))
             _              <- {
               logger.info(Json.stringify(updatedAnswers.data))
               sessionRepository.set(updatedAnswers)
             }
-          } yield Redirect(MembersCurrentAddressPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
       )
   }
 }

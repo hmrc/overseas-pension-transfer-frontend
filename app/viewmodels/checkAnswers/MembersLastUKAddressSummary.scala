@@ -18,7 +18,7 @@ package viewmodels.checkAnswers
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MembersCurrentAddressPage
+import pages.MembersLastUKAddressPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -29,15 +29,15 @@ import viewmodels.implicits._
 object MembersLastUKAddressSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersCurrentAddressPage).map {
+    answers.get(MembersLastUKAddressPage).map {
       answer =>
-        val value = HtmlFormat.escape(answer.addressLine1).toString + "<br/>" + HtmlFormat.escape(answer.addressLine2).toString
+        val value = HtmlFormat.escape(answer.addressLine1).toString + "<br/>" + HtmlFormat.escape(answer.addressLine2.get).toString
 
         SummaryListRowViewModel(
           key     = "membersLastUKAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MembersCurrentAddressController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.MembersLastUKAddressController.onPageLoad(CheckMode).url)
               .withVisuallyHiddenText(messages("membersLastUKAddress.change.hidden"))
           )
         )

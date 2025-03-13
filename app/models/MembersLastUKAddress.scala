@@ -21,8 +21,8 @@ import play.api.libs.json._
 case class MembersLastUKAddress(
     addressLine1: String,
     addressLine2: Option[String],
-    city: String,
-    country: Option[String],
+    townOrCity: String,
+    county: Option[String],
     postcode: String
   )
 

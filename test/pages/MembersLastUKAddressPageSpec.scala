@@ -31,7 +31,7 @@ class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        MembersCurrentAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        MembersLastUKAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
       }
     }
 
@@ -39,7 +39,7 @@ class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        MembersCurrentAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        MembersLastUKAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

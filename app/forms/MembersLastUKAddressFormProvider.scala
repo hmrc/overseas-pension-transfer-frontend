@@ -16,31 +16,43 @@
 
 package forms
 
-import forms.mappings.Mappings
-import models.MembersCurrentAddress
+import forms.mappings.{Mappings, Regex}
+import models.{MembersLastUKAddress, UserAnswers}
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
+import utils.AppUtils
 
 import javax.inject.Inject
 
-class MembersLastUKAddressFormProvider @Inject() extends Mappings {
+class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {
 
-  def apply(): Form[MembersCurrentAddress] = Form(
-    mapping(
-      "addressLine1" -> text("membersLastUKAddress.error.addressLine1.required")
-        .verifying(maxLength(35, "membersLastUKAddress.error.addressLine1.length")),
-      "addressLine2" -> optional(
-        Forms.text verifying maxLength(35, "membersLastUKAddress.error.addressLine2.length")
-      ),
-      "townOrCity"   -> text("membersLastUKAddress.error.city.required").verifying(maxLength(35, "membersLastUKAddress.error.city.length")),
-      "county"      -> optional(
-        Forms.text
-          verifying maxLength(35, "membersLastUKAddress.error.country.length")
-      ),
-      "postcode"     -> optional(
-        Forms.text
-          verifying maxLength(16, "membersLastUKAddress.error.postcode.length")
-      )
-    )(MembersCurrentAddress.apply)(x => Some(x.addressLine1, x.addressLine2, x.addressLine3, x.city, x.country, x.postcode))
-  )
+  private val length35 = 35
+  private val length16 = 16
+
+  def apply(userAnswers: UserAnswers): Form[MembersLastUKAddress] = {
+    val memberFullname = memberFullName(userAnswers).getOrElse("undefined undefined")
+    Form(
+      mapping(
+        "addressLine1" -> text("membersLastUKAddress.error.addressLine1.required", Seq(memberFullname))
+          .verifying(maxLength(length35, "membersLastUKAddress.error.addressLine1.length"))
+          .verifying(regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine1.pattern")),
+        "addressLine2" -> optional(
+          Forms.text
+            verifying maxLength(length35, "membersLastUKAddress.error.addressLine2.length")
+            verifying regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine2.pattern")
+        ),
+        "townOrCity"   -> text("membersLastUKAddress.error.city.required", Seq(memberFullname))
+          .verifying(maxLength(length35, "membersLastUKAddress.error.city.length"))
+          .verifying(regexp(addressLinesRegex, "membersLastUKAddress.error.city.pattern")),
+        "county"       -> optional(
+          Forms.text
+            verifying maxLength(length35, "membersLastUKAddress.error.county.length")
+            verifying regexp(addressLinesRegex, "membersLastUKAddress.error.county.pattern")
+        ),
+        "postcode"     -> text("membersLastUKAddress.error.postcode.required")
+          .verifying(maxLength(length16, "membersLastUKAddress.error.postcode.length"))
+          .verifying(regexp(postcodeRegex, "membersLastUKAddress.error.postcode.incorrect"))
+      )(MembersLastUKAddress.apply)(x => Some(x.addressLine1, x.addressLine2, x.townOrCity, x.county, x.postcode))
+    )
+  }
 }

@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package pages
+package utils
 
-import controllers.routes
-import models.{MembersLastUKAddress, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.UserAnswers
+import pages.MemberNamePage
 
-case object MembersLastUKAddressPage extends QuestionPage[MembersLastUKAddress] {
+trait AppUtils {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "membersLastUKAddress"
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+  def memberFullName(userAnswers: UserAnswers): Option[String] = {
+    userAnswers.get(MemberNamePage) match {
+      case Some(memberName) => Some(memberName.fullName)
+      case None             => None
+    }
+  }
 }
