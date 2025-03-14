@@ -17,13 +17,10 @@
 package forms
 
 import javax.inject.Inject
-
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
 
-class MemberNinoFormProvider @Inject() extends Mappings {
-
-  val ninoRegex = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
+class MemberNinoFormProvider @Inject() extends Mappings with Regex {
 
   def apply(): Form[String] =
     Form(

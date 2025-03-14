@@ -21,24 +21,22 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
-@import viewmodels.LabelSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import views.html.components.MemberDoesNotHaveNino
+@import viewmodels.LabelSize.Large
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton,
-    memberDoesNotHaveNino: MemberDoesNotHaveNino
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("memberNino.title"))) {
+@layout(pageTitle = title(form, messages("qropsName.title"))) {
 
-    @formHelper(action = routes.MemberNinoController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.QropsNameController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -47,18 +45,14 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("memberNino.heading")))
-                    .withCssClass("govuk-!-margin-bottom-6")
-                    .asPageHeading(size = Large)
+                label = LabelViewModel(Text(messages("qropsName.heading"))).asPageHeading(size = Large)
             )
-            .withHint(HintViewModel(messages("memberNino.hint")))
-            .withWidth(Fixed10)
+            .withHint(HintViewModel(Text(messages("qropsName.hint"))))
+            .withWidth(OneHalf)
         )
 
-        @memberDoesNotHaveNino()
-
         @govukButton(
-            ButtonViewModel(messages("site.saveAndContinue"))
+            ButtonViewModel(Text(messages("site.saveAndContinue")))
         )
     }
 }

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import play.twirl.api.Html
+package pages
 
-@this()
+import controllers.routes
+import models.{SchemeManagersName, UserAnswers}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-@()
+case object SchemeManagersNamePage extends QuestionPage[SchemeManagersName] {
 
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+  override def path: JsPath = JsPath \ toString
 
-<a
- class="govuk-link govuk-body"
- target="_blank"
- href=""
->
- Return to task list
-</a>
+  override def toString: String = "schemeManagersName"
 
-<hr class="govuk-section-break govuk-section-break--l">
-
-
-
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
+}

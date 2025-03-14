@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import play.twirl.api.Html
+package forms.mappings
 
-@this()
+trait Regex {
 
-@()
+  val nameRegex: String =
+    "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+  val ninoRegex: String = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
 
-<a
- class="govuk-link govuk-body"
- target="_blank"
- href=""
->
- Return to task list
-</a>
-
-<hr class="govuk-section-break govuk-section-break--l">
-
-
-
+  val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
+}

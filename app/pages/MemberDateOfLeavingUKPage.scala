@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import play.twirl.api.Html
+package pages
 
-@this()
+import controllers.routes
+import models.UserAnswers
+import play.api.mvc.Call
+import play.api.libs.json.JsPath
 
-@()
+import java.time.LocalDate
 
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+case object MemberDateOfLeavingUKPage extends QuestionPage[LocalDate] {
 
-<a
- class="govuk-link govuk-body"
- target="_blank"
- href=""
->
- Return to task list
-</a>
+  override def path: JsPath = JsPath \ toString
 
-<hr class="govuk-section-break govuk-section-break--l">
+  override def toString: String = "memberDateOfLeavingUK"
 
-
-
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
+}

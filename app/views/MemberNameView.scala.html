@@ -50,7 +50,7 @@
         @govukInput(
             InputViewModel(
                 field = form("memberFirstName"),
-                label = LabelViewModel(Text(messages("memberName.memberFirstName")))
+                label = LabelViewModel(Text(messages("common.nameInput.firstName")))
             )
             .withWidth(OneHalf)
         )
@@ -58,7 +58,7 @@
         @govukInput(
             InputViewModel(
                 field = form("memberLastName"),
-                label = LabelViewModel(Text(messages("memberName.memberLastName")))
+                label = LabelViewModel(Text(messages("common.nameInput.lastName")))
             )
             .withWidth(OneHalf)
         )
