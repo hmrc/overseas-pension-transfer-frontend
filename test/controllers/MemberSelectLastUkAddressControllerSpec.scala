@@ -16,65 +16,34 @@
 
 package controllers
 
-import base.SpecBase
+import base.{AddressBase, SpecBase}
 import forms.MemberSelectLastUkAddressFormProvider
-import models.{AddressRecord, Country, NormalMode, RecordSet, UkAddress, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
+import pages.MemberSelectLastUkAddressPage
 import play.api.inject.bind
-import play.api.libs.json.Json
+
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.{JourneyRecoveryContinueView, MemberSelectLastUkAddressView}
+import views.html.MemberSelectLastUkAddressView
 
 import scala.concurrent.Future
-import scala.util.Try
 
-class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar {
+class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar with AddressBase {
 
   private lazy val memberSelectLastUkAddressRoute = routes.MemberSelectLastUkAddressController.onPageLoad(NormalMode).url
 
-  private val addressRecords =
-    RecordSet(addresses =
-      Seq(
-        AddressRecord(
-          id      = "GB990091234514",
-          address = UkAddress(
-            lines       = List("2 Other Place", "Some District"),
-            town        = "Anytown",
-            rawPostCode = "ZZ1 1ZZ",
-            rawCountry  = Country(code = "GB", name = "United Kingdom")
-          )
-        ),
-        AddressRecord(
-          id      = "GB990091234515",
-          address = UkAddress(
-            lines       = List("3 Other Place", "Some District"),
-            town        = "Anytown",
-            rawPostCode = "ZZ1 1ZZ",
-            rawCountry  = Country(code = "GB", name = "United Kingdom")
-          )
-        )
-      )
-    )
-
-  private val validIds = addressRecords.addresses.map(_.id)
-
   private val formProvider = new MemberSelectLastUkAddressFormProvider()
   private val form         = formProvider(validIds)
-
-  val postcode: String = addressRecords.addresses.head.address.postcode.get
-
-  val userAnswers: UserAnswers = UserAnswers("id").set(MembersLastUkAddressLookupPage, addressRecords).get
 
   "MemberSelectLastUkAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(addressUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, memberSelectLastUkAddressRoute)
@@ -84,7 +53,7 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
         val view = application.injector.instanceOf[MemberSelectLastUkAddressView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, addressRecords, postcode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, addressRecords)(request, messages(application)).toString
       }
     }
 
@@ -95,7 +64,7 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = Some(addressUserAnswers))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -115,7 +84,7 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(addressUserAnswers)).build()
 
       running(application) {
         val request =
@@ -128,7 +97,7 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, addressRecords, postcode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, addressRecords)(request, messages(application)).toString
       }
     }
 
