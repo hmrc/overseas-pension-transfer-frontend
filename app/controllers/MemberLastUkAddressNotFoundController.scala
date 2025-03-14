@@ -17,6 +17,8 @@
 package controllers
 
 import controllers.actions._
+import pages.MembersLastUkAddressLookupPage
+
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,6 +36,8 @@ class MemberLastUkAddressNotFoundController @Inject() (
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      request.userAnswers.get(MembersLastUkAddressLookupPage) match {
+        case Some(value) => Ok(view(value.searchedPostcode))
+      }
   }
 }

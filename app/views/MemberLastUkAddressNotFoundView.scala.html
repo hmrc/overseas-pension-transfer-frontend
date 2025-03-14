@@ -16,15 +16,23 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.titleNoForm
+@import controllers.routes
 
 @this(
         layout: templates.Layout,
         govukButton: GovukButton
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(postcode: String)(implicit request: Request[_], messages: Messages)
+
+@searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 
 @layout(pageTitle = titleNoForm(messages("memberLastUkAddressNotFound.title"))) {
 
     <h1 class="govuk-heading-l">@messages("memberLastUkAddressNotFound.heading")</h1>
+    @{//TODO: replace link in paragraph with route to manual entry
+    }
+    <p class="govuk-body">@Html(
+     messages("memberLastUkAddressNotFound.paragraph", postcode, searchAgain, "#"))
+    </p>
 }

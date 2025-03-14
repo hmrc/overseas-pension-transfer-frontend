@@ -206,5 +206,7 @@ memberSelectLastUkAddress.checkYourAnswersLabel = memberSelectLastUkAddress
 memberSelectLastUkAddress.error.required = Select the member's last UK address
 memberSelectLastUkAddress.change.hidden = MemberSelectLastUkAddress
 
-memberLastUkAddressNotFound.title = memberLastUkAddressNotFound
-memberLastUkAddressNotFound.heading = memberLastUkAddressNotFound
+memberLastUkAddressNotFound.title = No address found
+memberLastUkAddressNotFound.heading = No address found
+memberLastUkAddressNotFound.paragraph = We could not find an address that matches <b>{0}</b>. You can <a href="{1}" class="govuk-link">search again</a> or <a href="{2}" class="govuk-link">enter the address manually</a>.
+
