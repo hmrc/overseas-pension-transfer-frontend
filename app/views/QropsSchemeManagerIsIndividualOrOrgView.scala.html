@@ -47,6 +47,7 @@
                 legend = LegendViewModel(Text(messages("qropsSchemeManagerIsIndividualOrOrg.heading"))).asPageHeading(size = Large),
                 items  = QropsSchemeManagerIsIndividualOrOrg.options
             )
+            .withHint(HintViewModel(Text(messages("radios.hint"))))
         )
 
         @govukButton(

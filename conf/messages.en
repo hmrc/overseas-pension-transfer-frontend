@@ -52,6 +52,8 @@ unauthorised.heading = You can’t access this service with this account
 helloWorld.title = helloWorld
 helloWorld.heading = helloWorld
 
+radios.hint = Select one.
+
 memberName.title = What is the member''s name?
 memberName.heading = What is the member's name?
 memberName.memberFirstName = First name
@@ -99,7 +101,6 @@ memberHasEverBeenResidentUK.heading = Has undefined undefined ever been a reside
 memberHasEverBeenResidentUK.checkYourAnswersLabel = memberHasEverBeenResidentUK
 memberHasEverBeenResidentUK.error.required = Select one option
 memberHasEverBeenResidentUK.change.hidden = memberHasEverBeenResidentUK
-memberHasEverBeenResidentUK.hint = Select one.
 
 membersCurrentAddress.title = Enter undefined undefined''s current address
 membersCurrentAddress.heading = Enter undefined undefined''s current address
