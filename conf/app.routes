@@ -60,6 +60,11 @@ POST       /members-current-address                                  controllers
 GET        /change-members-current-address                           controllers.MembersCurrentAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-members-current-address                           controllers.MembersCurrentAddressController.onSubmit(mode: Mode = CheckMode)
 
+GET        /qrops-scheme-manager-is-individual-or-org                controllers.QropsSchemeManagerIsIndividualOrOrgController.onPageLoad(mode: Mode = NormalMode)
+POST       /qrops-scheme-manager-is-individual-or-org                controllers.QropsSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = NormalMode)
+GET        /change-qrops-scheme-manager-is-individual-or-org         controllers.QropsSchemeManagerIsIndividualOrOrgController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-qrops-scheme-manager-is-individual-or-org         controllers.QropsSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = CheckMode)
+
 GET        /qrops-name                                               controllers.QropsNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-name                                               controllers.QropsNameController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-name                                        controllers.QropsNameController.onPageLoad(mode: Mode = CheckMode)
@@ -74,3 +79,4 @@ GET        /member-does-not-have-nino                        controllers.MemberD
 POST       /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
+

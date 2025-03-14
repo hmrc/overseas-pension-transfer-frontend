@@ -22,6 +22,11 @@ import org.scalacheck.Arbitrary.arbitrary
 
 trait ModelGenerators {
 
+
+  implicit lazy val arbitraryQropsSchemeManagerIsIndividualOrOrg: Arbitrary[QropsSchemeManagerIsIndividualOrOrg] =
+    Arbitrary {
+      Gen.oneOf(QropsSchemeManagerIsIndividualOrOrg.values.toSeq)
+
   implicit lazy val arbitrarySchemeManagersName: Arbitrary[SchemeManagersName] =
     Arbitrary {
       for {
