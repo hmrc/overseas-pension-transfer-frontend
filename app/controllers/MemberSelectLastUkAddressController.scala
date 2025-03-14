@@ -51,14 +51,15 @@ class MemberSelectLastUkAddressController @Inject() (
         case Some(addressRecords) if addressRecords.addresses.nonEmpty =>
           val validIds = addressRecords.addresses.map(_.id)
           val form     = formProvider(validIds)
-          val postcode = addressRecords.addresses.head.address.postcode.get
-          Ok(view(form, mode, addressRecords, postcode))
 
-        case Some(_) =>
-          Redirect(routes.MemberLastUkAddressNotFoundController.onPageLoad())
+          Ok(view(form, mode, addressRecords))
 
         case None =>
-          BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))
+          Redirect(
+            MemberSelectLastUkAddressPage.nextPageRecovery(
+              Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+            )
+          )
       }
   }
 
@@ -68,11 +69,10 @@ class MemberSelectLastUkAddressController @Inject() (
         case Some(addressRecords) =>
           val validIds = addressRecords.addresses.map(_.id)
           val form     = formProvider(validIds)
-          val postcode = addressRecords.addresses.head.address.postcode.get
 
           form.bindFromRequest().fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, mode, addressRecords, postcode))),
+              Future.successful(BadRequest(view(formWithErrors, mode, addressRecords))),
             selectedId =>
               if (validIds.contains(selectedId)) {
                 for {
@@ -83,15 +83,20 @@ class MemberSelectLastUkAddressController @Inject() (
                   }
                 } yield Redirect(MemberSelectLastUkAddressPage.nextPage(mode, updatedAnswers))
               } else {
-                Future.successful(BadRequest(recoveryView(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)))
+                Future.successful(
+                  Redirect(
+                    MemberSelectLastUkAddressPage.nextPageRecovery(
+                      Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+                    )
+                  )
+                )
               }
           )
-
-        case None =>
+        case None                 =>
           Future.successful(
-            BadRequest(
-              recoveryView(
-                routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+            Redirect(
+              MemberSelectLastUkAddressPage.nextPageRecovery(
+                Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
               )
             )
           )

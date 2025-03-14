@@ -34,4 +34,8 @@ case object MembersLastUkAddressLookupPage extends QuestionPage[RecordSet] {
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.MemberSelectLastUkAddressController.onPageLoad(mode = NormalMode)
+
+  def nextPageNoResults(): Call =
+    routes.MemberLastUkAddressNotFoundController.onPageLoad()
+
 }

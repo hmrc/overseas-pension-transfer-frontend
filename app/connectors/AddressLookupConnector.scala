@@ -44,7 +44,7 @@ class AddressLookupConnector @Inject() (appConfig: FrontendAppConfig, val http: 
       .setHeader("X-Hmrc-Origin" -> "PODS")
       .execute[JsValue] map {
       addressListJson =>
-        AddressLookupSuccessResponse(RecordSet.fromJsonAddressLookupService(addressListJson))
+        AddressLookupSuccessResponse(RecordSet(addressListJson))
     } recover {
       case e: Exception =>
         logger.warn(s"Error received from address lookup service: $e")

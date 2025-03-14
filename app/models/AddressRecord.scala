@@ -27,13 +27,24 @@ object AddressRecord {
   implicit val format: OFormat[AddressRecord] = Json.format
 }
 
-case class RecordSet(addresses: Seq[AddressRecord])
+case class RecordSet(searchedPostcode: String, addresses: Seq[AddressRecord])
 
 object RecordSet {
 
-  def fromJsonAddressLookupService(addressListAsJson: JsValue): RecordSet = {
+  private def getPostcode(addresses: Seq[AddressRecord]): String =
+    addresses.headOption.flatMap(record => record.address.postcode).getOrElse("")
+
+  def apply(postcode: String): RecordSet = {
+    RecordSet(postcode, Seq.empty)
+  }
+
+  def apply(addresses: Seq[AddressRecord]): RecordSet = {
+    RecordSet(getPostcode(addresses), addresses)
+  }
+
+  def apply(addressListAsJson: JsValue): RecordSet = {
     val addresses = addressListAsJson.as[Seq[AddressRecord]]
-    RecordSet(addresses)
+    RecordSet(getPostcode(addresses), addresses)
   }
 
   implicit val format: OFormat[RecordSet] = Json.format

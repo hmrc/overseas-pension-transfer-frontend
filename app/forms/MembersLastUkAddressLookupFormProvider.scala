@@ -17,17 +17,24 @@
 package forms
 
 import javax.inject.Inject
-
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
 
-class MembersLastUkAddressLookupFormProvider @Inject() extends Mappings {
-  // TODO: placeholder regex, replace with mappings regex
-  val regex = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
+class MembersLastUkAddressLookupFormProvider @Inject() extends Mappings with Regex {
 
   def apply(): Form[String] =
     Form(
       "value" -> text("membersLastUkAddressLookup.error.required")
-        .verifying(regexp(regex, "membersLastUkAddressLookup.error.pattern"))
+        .verifying(regexp(postcodeRegex, "membersLastUkAddressLookup.error.pattern"))
+        .transform[String](
+          raw => formatPostcode(raw),
+          formatted => formatted
+        )
     )
+
+  private def formatPostcode(raw: String): String = {
+    val formated          = raw.trim.toUpperCase.replaceAll("\\s+", "")
+    val (outcode, incode) = formated.splitAt(formated.length - 3)
+    s"$outcode $incode"
+  }
 }

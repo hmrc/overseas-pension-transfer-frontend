@@ -34,11 +34,13 @@
 )
 
 
-@(form: Form[_], mode: Mode, addressRecords: RecordSet, postcode: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, addressRecords: RecordSet)(implicit request: Request[_], messages: Messages)
 
 @addressRadios = @{ViewUtils.addressRadios(addressRecords)}
 
 @addressLength = @{addressRadios.length}
+
+@postcode = @{addressRecords.searchedPostcode}
 
 @layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title"))) {
 

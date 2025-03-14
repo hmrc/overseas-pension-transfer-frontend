@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.MembersLastUkAddressLookupFormProvider
 
 import javax.inject.Inject
-import models.{AddressRecord, Mode, RecordSet}
+import models.{AddressRecord, Mode, NormalMode, RecordSet}
 import pages.MembersLastUkAddressLookupPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -54,7 +54,12 @@ class MembersLastUkAddressLookupController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(form, mode))
+      val preparedForm = request.userAnswers.get(MembersLastUkAddressLookupPage) match {
+        case None        => form
+        case Some(value) => form.fill(value.searchedPostcode)
+      }
+
+      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
@@ -63,18 +68,29 @@ class MembersLastUkAddressLookupController @Inject() (
         Future.successful(BadRequest(view(formWithErrors, mode))),
       postcode =>
         addressLookupConnector.lookup(postcode).flatMap {
-          case AddressLookupErrorResponse(e: BadRequestException) =>
-            logger.warn(s"Bad request: ${e.message}")
-            Future.successful(BadRequest(e.message))
-          case AddressLookupErrorResponse(e)                      =>
-            logger.warn(s"Internal error: $e")
-            Future.successful(InternalServerError)
-          case AddressLookupSuccessResponse(recordSet)            =>
-            logger.info(s"Records: ${recordSet.toString}")
-            Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, RecordSet(recordSet.addresses.sorted))).flatMap { updatedAnswers =>
-              sessionRepository.set(updatedAnswers).map { _ =>
-                Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
-              }
+          case AddressLookupErrorResponse(e)           =>
+            logger.warn(s"Error: $e")
+            Future.successful(Redirect(
+              MembersLastUkAddressLookupPage.nextPageRecovery(
+                Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+              )
+            ))
+          case AddressLookupSuccessResponse(recordSet) =>
+            recordSet match {
+              case recordSet if recordSet.addresses.nonEmpty =>
+                Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, RecordSet(recordSet.addresses.sorted)))
+                  .flatMap { updatedAnswers =>
+                    sessionRepository.set(updatedAnswers).map { _ =>
+                      Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
+                    }
+                  }
+              case _                                         =>
+                Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, RecordSet(postcode)))
+                  .flatMap { updatedAnswers =>
+                    sessionRepository.set(updatedAnswers).map { _ =>
+                      Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
+                    }
+                  }
             }
         }
     )
