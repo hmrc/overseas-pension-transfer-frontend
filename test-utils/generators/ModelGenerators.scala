@@ -24,7 +24,7 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryQropsSchemeManagerIsIndividualOrOrg: Arbitrary[QropsSchemeManagerIsIndividualOrOrg] =
     Arbitrary {
-      Gen.oneOf(QropsSchemeManagerIsIndividualOrOrg.values.toSeq)
+      Gen.oneOf(QropsSchemeManagerIsIndividualOrOrg.values)
     }
 
   implicit lazy val arbitraryMembersCurrentAddress: Arbitrary[MembersCurrentAddress] =

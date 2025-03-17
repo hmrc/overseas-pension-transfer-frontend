@@ -94,7 +94,6 @@ memberIsResidentUK.no = No
 memberIsResidentUK.checkYourAnswersLabel = memberIsResident
 memberIsResidentUK.error.required = Select one option
 memberIsResidentUK.change.hidden = MemberIsResidentUK
-memberIsResidentUK.hint = Select one
 
 memberHasEverBeenResidentUK.title = Has undefined undefined ever been a resident in the UK for tax purposes?
 memberHasEverBeenResidentUK.heading = Has undefined undefined ever been a resident in the UK for tax purposes?
