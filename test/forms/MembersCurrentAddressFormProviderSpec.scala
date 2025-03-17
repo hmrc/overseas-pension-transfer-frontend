@@ -17,9 +17,10 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Regex
 import play.api.data.FormError
 
-class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours {
+class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with Regex {
 
   val form = new MembersCurrentAddressFormProvider()()
 
@@ -28,6 +29,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName   = "addressLine1"
     val requiredKey = "membersCurrentAddress.error.addressLine1.required"
     val lengthKey   = "membersCurrentAddress.error.addressLine1.length"
+    val patternKey  = "membersCurrentAddress.error.addressLine1.pattern"
     val maxLength   = 35
 
     behave like fieldThatBindsValidData(
@@ -47,6 +49,13 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
     )
   }
 
@@ -55,6 +64,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours {
     val fieldName   = "addressLine2"
     val requiredKey = "membersCurrentAddress.error.addressLine2.required"
     val lengthKey   = "membersCurrentAddress.error.addressLine2.length"
+    val patternKey  = "membersCurrentAddress.error.addressLine2.pattern"
     val maxLength   = 35
 
     behave like fieldThatBindsValidData(
@@ -75,13 +85,21 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
+    )
   }
 
   ".addressLine3" - {
 
-    val fieldName = "addressLine3"
-    val lengthKey = "membersCurrentAddress.error.addressLine3.length"
-    val maxLength = 35
+    val fieldName  = "addressLine3"
+    val lengthKey  = "membersCurrentAddress.error.addressLine3.length"
+    val patternKey = "membersCurrentAddress.error.addressLine3.pattern"
+    val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -99,14 +117,22 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours {
     behave like optionalField(
       form,
       fieldName
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
     )
   }
 
   "city" - {
 
-    val fieldName = "city"
-    val lengthKey = "membersCurrentAddress.error.city.length"
-    val maxLength = 35
+    val fieldName  = "city"
+    val lengthKey  = "membersCurrentAddress.error.city.length"
+    val patternKey = "membersCurrentAddress.error.city.pattern"
+    val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -124,14 +150,22 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours {
     behave like optionalField(
       form,
       fieldName
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
     )
   }
 
   "country" - {
 
-    val fieldName = "country"
-    val lengthKey = "membersCurrentAddress.error.country.length"
-    val maxLength = 35
+    val fieldName  = "country"
+    val lengthKey  = "membersCurrentAddress.error.country.length"
+    val patternKey = "membersCurrentAddress.error.country.pattern"
+    val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -149,6 +183,12 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours {
     behave like optionalField(
       form,
       fieldName
+    )
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
     )
   }
 

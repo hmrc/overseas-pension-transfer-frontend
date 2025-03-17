@@ -20,11 +20,11 @@ import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
 
-import java.time.{LocalDate, ZoneOffset}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, ZoneOffset}
 import javax.inject.Inject
 
-class MemberDateOfBirthFormProvider @Inject() extends Mappings {
+class MemberDateOfLeavingUKFormProvider @Inject() extends Mappings {
 
   def minDate: LocalDate    = LocalDate of (1901, 1, 1)
   def maxDate: LocalDate    = LocalDate.now(ZoneOffset.UTC)
@@ -35,12 +35,13 @@ class MemberDateOfBirthFormProvider @Inject() extends Mappings {
       "value" -> localDate(
         invalidCharacter = "common.dateInput.error.invalid.character",
         invalidKey       = "common.dateInput.error.invalid",
-        allRequiredKey   = "memberDateOfBirth.error.required.all",
+        requiredKey      = "common.dateInput.error.required",
         twoRequiredKey   = "common.dateInput.error.required.two",
-        requiredKey      = "common.dateInput.error.required"
-      ).verifying(
-        maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateFormatter)),
-        minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateFormatter))
+        allRequiredKey   = "memberDateOfLeavingUK.error.required.all"
       )
+        .verifying(
+          maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateFormatter)),
+          minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateFormatter))
+        )
     )
 }

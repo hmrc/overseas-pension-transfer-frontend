@@ -17,42 +17,39 @@
 package controllers
 
 import base.SpecBase
-import forms.MemberNameFormProvider
-import models.{MemberName, NormalMode}
+import forms.QropsNameFormProvider
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.MemberNamePage
+import pages.QropsNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.MemberNameView
+import views.html.QropsNameView
 
 import scala.concurrent.Future
 
-class MemberNameControllerSpec extends SpecBase with MockitoSugar {
+class QropsNameControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider = new MemberNameFormProvider()
+  private val formProvider = new QropsNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberNameRoute = routes.MemberNameController.onPageLoad(NormalMode).url
+  private lazy val qropsNameRoute = routes.QropsNameController.onPageLoad(NormalMode).url
 
-  private val validAnswer = MemberName("value 1", "value 2")
-  private val userAnswers = emptyUserAnswers.set(MemberNamePage, validAnswer).success.value
-
-  "MemberName Controller" - {
+  "QropsName Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberNameRoute)
-
-        val view = application.injector.instanceOf[MemberNameView]
+        val request = FakeRequest(GET, qropsNameRoute)
 
         val result = route(application, request).value
+
+        val view = application.injector.instanceOf[QropsNameView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
@@ -61,17 +58,19 @@ class MemberNameControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
+      val userAnswers = emptyUserAnswers.set(QropsNamePage, "answer").success.value
+
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberNameRoute)
+        val request = FakeRequest(GET, qropsNameRoute)
 
-        val view = application.injector.instanceOf[MemberNameView]
+        val view = application.injector.instanceOf[QropsNameView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(MemberName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -83,20 +82,18 @@ class MemberNameControllerSpec extends SpecBase with MockitoSugar {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNameRoute)
-            .withFormUrlEncodedBody(("memberFirstName", "first name"), ("memberLastName", "last name"))
+          FakeRequest(POST, qropsNameRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MemberNamePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual QropsNamePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -106,12 +103,12 @@ class MemberNameControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNameRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+          FakeRequest(POST, qropsNameRoute)
+            .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+        val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[MemberNameView]
+        val view = application.injector.instanceOf[QropsNameView]
 
         val result = route(application, request).value
 
@@ -125,7 +122,7 @@ class MemberNameControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberNameRoute)
+        val request = FakeRequest(GET, qropsNameRoute)
 
         val result = route(application, request).value
 
@@ -140,8 +137,8 @@ class MemberNameControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNameRoute)
-            .withFormUrlEncodedBody(("memberFirstName", "value 1"), ("memberLastName", "value 2"))
+          FakeRequest(POST, qropsNameRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 

@@ -20,8 +20,6 @@ GET        /account/signed-out                                       controllers
 
 GET        /unauthorised                                             controllers.UnauthorisedController.onPageLoad()
 
-GET        /hello-world                                              controllers.HelloWorldController.onPageLoad()
-
 GET        /member-name                                              controllers.MemberNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-name                                              controllers.MemberNameController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-name                                       controllers.MemberNameController.onPageLoad(mode: Mode = CheckMode)
@@ -32,10 +30,20 @@ POST       /member-nino                                              controllers
 GET        /change-member-nino                                       controllers.MemberNinoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-nino                                       controllers.MemberNinoController.onSubmit(mode: Mode = CheckMode)
 
+GET        /member-date-of-leaving-uk                                controllers.MemberDateOfLeavingUKController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-date-of-leaving-uk                                controllers.MemberDateOfLeavingUKController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-date-of-leaving-uk                         controllers.MemberDateOfLeavingUKController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-date-of-leaving-uk                         controllers.MemberDateOfLeavingUKController.onSubmit(mode: Mode = CheckMode)
+
 GET        /member-date-of-birth                                     controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-date-of-birth                                     controllers.MemberDateOfBirthController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-date-of-birth                              controllers.MemberDateOfBirthController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-date-of-birth                              controllers.MemberDateOfBirthController.onSubmit(mode: Mode = CheckMode)
+
+GET        /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
 
 GET        /member-is-resident-uk                                    controllers.MemberIsResidentUKController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-is-resident-uk                                    controllers.MemberIsResidentUKController.onSubmit(mode: Mode = NormalMode)
@@ -56,3 +64,19 @@ GET        /qrops-scheme-manager-is-individual-or-org                controllers
 POST       /qrops-scheme-manager-is-individual-or-org                controllers.QropsSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-scheme-manager-is-individual-or-org         controllers.QropsSchemeManagerIsIndividualOrOrgController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-qrops-scheme-manager-is-individual-or-org         controllers.QropsSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = CheckMode)
+
+GET        /qrops-name                                               controllers.QropsNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /qrops-name                                               controllers.QropsNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-qrops-name                                        controllers.QropsNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-qrops-name                                        controllers.QropsNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /scheme-managers-name                                     controllers.SchemeManagersNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /scheme-managers-name                                     controllers.SchemeManagersNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
+
