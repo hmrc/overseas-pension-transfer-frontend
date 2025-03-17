@@ -24,6 +24,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import views.ViewUtils
 @import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 @this(
         layout: templates.Layout,
@@ -33,14 +34,11 @@
         govukButton: GovukButton
 )
 
+@(form: Form[_], mode: Mode, addressRadios: Seq[RadioItem], postcode: String)(implicit request: Request[_], messages: Messages)
 
-@(form: Form[_], mode: Mode, addressRecords: RecordSet)(implicit request: Request[_], messages: Messages)
-
-@addressRadios = @{ViewUtils.addressRadios(addressRecords)}
+@searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 
 @addressLength = @{addressRadios.length}
-
-@postcode = @{addressRecords.searchedPostcode}
 
 @layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title"))) {
 
@@ -57,7 +55,7 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(
-                    HtmlContent(messages("membersLastUkAddressLookup.legend", addressLength, postcode, "#"))
+                    HtmlContent(messages("membersLastUkAddressLookup.legend", addressLength, postcode, searchAgain))
                 ).withCssClass("govuk-!-padding-bottom-3"),
                 items  = addressRadios
             )

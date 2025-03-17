@@ -86,3 +86,8 @@ GET        /change-member-select-last-uk-address                     controllers
 POST       /change-member-select-last-uk-address                     controllers.MemberSelectLastUkAddressController.onSubmit(mode: Mode = CheckMode)
 
 GET        /member-last-uk-address-not-found                         controllers.MemberLastUkAddressNotFoundController.onPageLoad()
+
+GET        /memberConfirmLastUkAddress                        controllers.MemberConfirmLastUkAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /memberConfirmLastUkAddress                        controllers.MemberConfirmLastUkAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /changeMemberConfirmLastUkAddress                  controllers.MemberConfirmLastUkAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeMemberConfirmLastUkAddress                  controllers.MemberConfirmLastUkAddressController.onSubmit(mode: Mode = CheckMode)

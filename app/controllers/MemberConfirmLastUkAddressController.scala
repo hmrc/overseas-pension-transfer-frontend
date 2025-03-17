@@ -17,57 +17,60 @@
 package controllers
 
 import controllers.actions._
-import forms.MemberNameFormProvider
-import models.Mode
-import pages.MemberNamePage
-import play.api.Logging
+import forms.MemberConfirmLastUkAddressFormProvider
+
+import javax.inject.Inject
+import models.{Mode, NormalMode}
+import pages.{MemberConfirmLastUkAddressPage, MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.MemberNameView
+import viewmodels.AddressViewModel
+import views.html.MemberConfirmLastUkAddressView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MemberNameController @Inject() (
+class MemberConfirmLastUkAddressController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: MemberNameFormProvider,
+    formProvider: MemberConfirmLastUkAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MemberNameView
+    view: MemberConfirmLastUkAddressView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(MemberNamePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      val maybeSelectedAddress = request.userAnswers.get(MemberSelectLastUkAddressPage)
+      maybeSelectedAddress match {
+        case Some(selectedAddress) =>
+          val viewModel    = AddressViewModel.fromAddress(selectedAddress.address)
+          val preparedForm = request.userAnswers.get(MemberConfirmLastUkAddressPage) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-      Ok(view(preparedForm, mode))
+          Ok(view(preparedForm, mode, viewModel))
+        case _                     =>
+          Redirect(
+            MemberConfirmLastUkAddressPage.nextPageRecovery(Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))
+          )
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
-            _              <- {
-              logger.info(Json.stringify(updatedAnswers.data))
-              sessionRepository.set(updatedAnswers)
-            }
-          } yield Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
-      )
+      for {
+        updatedAnswers <- Future.fromTry(MemberConfirmLastUkAddressPage.clearAddressLookups(request.userAnswers))
+        _              <- sessionRepository.set(updatedAnswers)
+
+      } yield Redirect(MemberConfirmLastUkAddressPage.nextPage(mode, updatedAnswers))
   }
 }

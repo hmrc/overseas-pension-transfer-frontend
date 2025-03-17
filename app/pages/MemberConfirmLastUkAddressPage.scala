@@ -17,19 +17,21 @@
 package pages
 
 import controllers.routes
-import models.{AddressRecord, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MemberSelectLastUkAddressPage extends QuestionPage[AddressRecord] {
+import scala.util.Try
+
+case object MemberConfirmLastUkAddressPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "memberLastUkAddress"
+  override def toString: String = "memberConfirmLastUkAddress"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.MemberConfirmLastUkAddressController.onPageLoad(mode = NormalMode)
+    routes.IndexController.onPageLoad()
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.MemberConfirmLastUkAddressController.onPageLoad(mode = NormalMode)
+  def clearAddressLookups(answers: UserAnswers): Try[UserAnswers] =
+    answers.remove(MembersLastUkAddressLookupPage)
 }
