@@ -17,6 +17,7 @@
 package controllers
 
 import controllers.actions._
+import models.NoAddressFound
 import pages.MembersLastUkAddressLookupPage
 
 import javax.inject.Inject
@@ -37,7 +38,13 @@ class MemberLastUkAddressNotFoundController @Inject() (
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
-        case Some(value) => Ok(view(value.searchedPostcode))
+        case Some(value) =>
+          value match {
+            case NoAddressFound(searchedPostcode) =>
+              Ok(view(searchedPostcode))
+
+          }
+
       }
   }
 }

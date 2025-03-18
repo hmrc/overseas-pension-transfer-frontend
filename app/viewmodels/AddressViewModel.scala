@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.{Address, RecordSet}
+import models.{Address, FoundAddress, RecordSet}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
 
 case class AddressViewModel(
@@ -59,14 +59,14 @@ object AddressViewModel {
   def formatAddressAsStringExcludingCountry(vm: AddressViewModel): String =
     formatAddressAsLines(vm, ukMode = true).mkString(", ")
 
-  def addressRadios(addressRecords: RecordSet): Seq[RadioItem] =
-    addressRecords.addresses.zipWithIndex.map { case (addressRecord, index) =>
-      val vm               = AddressViewModel.fromAddress(addressRecord.address)
+  def addressRadios(addresses: Seq[FoundAddress]): Seq[RadioItem] =
+    addresses.zipWithIndex.map { case (fa, index) =>
+      val vm               = AddressViewModel.fromAddress(fa.address)
       val formattedAddress = formatAddressAsStringExcludingCountry(vm)
 
       RadioItem(
         content = Text(formattedAddress),
-        value   = Some(addressRecord.id),
+        value   = Some(fa.id),
         id      = Some(s"value_$index")
       )
     }

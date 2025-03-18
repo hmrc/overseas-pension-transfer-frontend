@@ -19,29 +19,22 @@ package models
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class UkAddress(lines: List[String], town: String, rawPostCode: String, rawCountry: Country) extends Address {
-
-  val line1: String = if (lines.nonEmpty) lines.head else ""
-
-  val line2: String = if (lines.size > 1) lines(1) else ""
-
-  val line3: Option[String] = lines.lift(2)
-
-  val city: Option[String] = Some(town)
-
-  val postcode: Option[String] = Some(rawPostCode)
-
-  val country: Option[String] = Some(rawCountry.name)
-
-}
+case class UkAddress(line1: String, line2: String, line3: Option[String], city: Option[String], country: Option[String], postcode: Option[String])
+    extends Address
 
 object UkAddress {
 
-  implicit val format: OFormat[UkAddress] = (
-    (__ \ "lines").format[List[String]] and
-      (__ \ "town").format[String] and
-      (__ \ "postcode").format[String] and
-      (__ \ "country").format[Country]
-  )(UkAddress.apply, unlift(UkAddress.unapply))
+  def fromRawAddress(rawAddress: RawAddress): UkAddress = {
+    UkAddress(
+      line1    = if (rawAddress.lines.nonEmpty) rawAddress.lines.head else "",
+      line2    = if (rawAddress.lines.size > 1) rawAddress.lines(1) else "",
+      line3    = rawAddress.lines.lift(2),
+      city     = Some(rawAddress.town),
+      postcode = Some(rawAddress.postcode),
+      country  = Some(rawAddress.country.name)
+    )
+  }
+
+  implicit val format: OFormat[UkAddress] = Json.format
 
 }

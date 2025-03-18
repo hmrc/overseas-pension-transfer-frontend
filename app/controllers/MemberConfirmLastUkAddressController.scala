@@ -50,8 +50,8 @@ class MemberConfirmLastUkAddressController @Inject() (
     implicit request =>
       val maybeSelectedAddress = request.userAnswers.get(MemberSelectLastUkAddressPage)
       maybeSelectedAddress match {
-        case Some(selectedAddress) =>
-          val viewModel    = AddressViewModel.fromAddress(selectedAddress.address)
+        case Some(foundAddress) =>
+          val viewModel    = AddressViewModel.fromAddress(foundAddress.address)
           val preparedForm = request.userAnswers.get(MemberConfirmLastUkAddressPage) match {
             case None        => form
             case Some(value) => form.fill(value)

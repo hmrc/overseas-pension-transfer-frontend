@@ -23,12 +23,8 @@ import play.api.data.Form
 
 class MemberSelectLastUkAddressFormProvider @Inject() extends Mappings {
 
-  def apply(validIds: Seq[String]): Form[String] =
+  def apply(): Form[String] =
     Form(
       "value" -> text("memberSelectLastUkAddress.error.required")
-        .verifying(
-          "memberSelectLastUkAddress.error.invalid",
-          chosenId => validIds.contains(chosenId)
-        )
     )
 }

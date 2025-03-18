@@ -17,15 +17,13 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, RecordSet, UserAnswers}
+import models.{FoundAddressResponse, NormalMode, RecordSet, UserAnswers}
 import play.api.libs.json.{JsPath, Json, OFormat}
 import play.api.mvc.Call
 
-case object MembersLastUkAddressLookupPage extends QuestionPage[RecordSet] {
+case object MembersLastUkAddressLookupPage extends QuestionPage[FoundAddressResponse] {
 
   override def path: JsPath = JsPath \ toString
-
-  implicit val format: OFormat[RecordSet] = Json.format[RecordSet]
 
   override def toString: String = "membersLastUkAddressLookup"
 

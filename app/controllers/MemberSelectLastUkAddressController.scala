@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.MemberSelectLastUkAddressFormProvider
 
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.{FoundAddressSet, Mode, NoAddressFound, NormalMode}
 import pages.{MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,16 +45,24 @@ class MemberSelectLastUkAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
+  val form = formProvider()
+
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
-        case Some(addressRecords) if addressRecords.addresses.nonEmpty =>
-          val validIds      = addressRecords.addresses.map(_.id)
-          val form          = formProvider(validIds)
-          val addressRadios = AddressViewModel.addressRadios(addressRecords)
-          val postcode      = addressRecords.searchedPostcode
+        case Some(value) =>
+          value match {
+            case FoundAddressSet(searchedPostcode, addresses) =>
+              val addressRadios = AddressViewModel.addressRadios(addresses)
 
-          Ok(view(form, mode, addressRadios, postcode))
+              Ok(view(form, mode, addressRadios, searchedPostcode))
+            case NoAddressFound(_)                            =>
+              Redirect(
+                MemberSelectLastUkAddressPage.nextPageRecovery(
+                  Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+                )
+              )
+          }
 
         case None =>
           Redirect(
@@ -68,46 +76,38 @@ class MemberSelectLastUkAddressController @Inject() (
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
-        case Some(addressRecords) =>
-          val validIds      = addressRecords.addresses.map(_.id)
-          val form          = formProvider(validIds)
-          val addressRadios = AddressViewModel.addressRadios(addressRecords)
-          val postcode      = addressRecords.searchedPostcode
-          form.bindFromRequest().fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, mode, addressRadios, postcode))),
-            selectedId =>
-              if (validIds.contains(selectedId)) {
-                val maybeSelectedAddress = addressRecords.addresses.find(_.id == selectedId)
-                maybeSelectedAddress match {
-                  case Some(selectedAddress) =>
-                    for {
-                      updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberSelectLastUkAddressPage, selectedAddress))
-                      _              <- {
-                        logger.info(Json.stringify(updatedAnswers.data))
-                        sessionRepository.set(updatedAnswers)
-                      }
-                    } yield Redirect(MemberSelectLastUkAddressPage.nextPage(mode, updatedAnswers))
-                  case _                     =>
-                    Future.successful(
-                      Redirect(
-                        MemberSelectLastUkAddressPage.nextPageRecovery(
-                          Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+        case Some(value) =>
+          value match {
+            case FoundAddressSet(searchedPostcode, addresses) =>
+              val addressRadios = AddressViewModel.addressRadios(addresses)
+
+              form.bindFromRequest().fold(
+                formWithErrors =>
+                  Future.successful(BadRequest(view(formWithErrors, mode, addressRadios, searchedPostcode))),
+                selectedId => {
+                  val maybeSelectedAddress = addresses.find(_.id == selectedId)
+                  maybeSelectedAddress match {
+                    case Some(selectedAddress) =>
+                      for {
+                        updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberSelectLastUkAddressPage, selectedAddress))
+                        _              <- {
+                          logger.info(Json.stringify(updatedAnswers.data))
+                          sessionRepository.set(updatedAnswers)
+                        }
+                      } yield Redirect(MemberSelectLastUkAddressPage.nextPage(mode, updatedAnswers))
+                    case _                     =>
+                      Future.successful(
+                        Redirect(
+                          MemberSelectLastUkAddressPage.nextPageRecovery(
+                            Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+                          )
                         )
                       )
-                    )
+                  }
                 }
-              } else {
-                Future.successful(
-                  Redirect(
-                    MemberSelectLastUkAddressPage.nextPageRecovery(
-                      Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
-                    )
-                  )
-                )
-              }
-          )
-        case None                 =>
+              )
+          }
+        case None        =>
           Future.successful(
             Redirect(
               MemberSelectLastUkAddressPage.nextPageRecovery(
