@@ -32,4 +32,6 @@ case object MemberSelectLastUkAddressPage extends QuestionPage[FoundAddress] {
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.MemberConfirmLastUkAddressController.onPageLoad(mode = NormalMode)
+
+  val recoveryModeReturnUrl: String = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
 }

@@ -59,7 +59,7 @@ class MemberSelectLastUkAddressController @Inject() (
             case NoAddressFound(_)                            =>
               Redirect(
                 MemberSelectLastUkAddressPage.nextPageRecovery(
-                  Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+                  Some(MemberSelectLastUkAddressPage.recoveryModeReturnUrl)
                 )
               )
           }
@@ -67,7 +67,7 @@ class MemberSelectLastUkAddressController @Inject() (
         case None =>
           Redirect(
             MemberSelectLastUkAddressPage.nextPageRecovery(
-              Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+              Some(MemberSelectLastUkAddressPage.recoveryModeReturnUrl)
             )
           )
       }
@@ -99,7 +99,7 @@ class MemberSelectLastUkAddressController @Inject() (
                       Future.successful(
                         Redirect(
                           MemberSelectLastUkAddressPage.nextPageRecovery(
-                            Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+                            Some(MemberSelectLastUkAddressPage.recoveryModeReturnUrl)
                           )
                         )
                       )
@@ -111,7 +111,7 @@ class MemberSelectLastUkAddressController @Inject() (
           Future.successful(
             Redirect(
               MemberSelectLastUkAddressPage.nextPageRecovery(
-                Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+                Some(MemberSelectLastUkAddressPage.recoveryModeReturnUrl)
               )
             )
           )

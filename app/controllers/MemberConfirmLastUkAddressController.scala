@@ -60,7 +60,9 @@ class MemberConfirmLastUkAddressController @Inject() (
           Ok(view(preparedForm, mode, viewModel))
         case _                     =>
           Redirect(
-            MemberConfirmLastUkAddressPage.nextPageRecovery(Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url))
+            MemberConfirmLastUkAddressPage.nextPageRecovery(
+              Some(MemberConfirmLastUkAddressPage.recoveryModeReturnUrl)
+            )
           )
       }
   }

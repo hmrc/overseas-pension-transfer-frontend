@@ -34,4 +34,6 @@ case object MemberConfirmLastUkAddressPage extends QuestionPage[Boolean] {
 
   def clearAddressLookups(answers: UserAnswers): Try[UserAnswers] =
     answers.remove(MembersLastUkAddressLookupPage)
+
+  val recoveryModeReturnUrl: String = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
 }
