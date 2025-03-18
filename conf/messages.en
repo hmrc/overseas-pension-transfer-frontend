@@ -214,5 +214,6 @@ memberLastUkAddressNotFound.paragraph = We could not find an address that matche
 memberConfirmLastUkAddress.title = Confirm undefined undefined''s last principal residential address in the UK
 memberConfirmLastUkAddress.heading = Confirm undefined undefined''s last principal residential address in the UK
 memberConfirmLastUkAddress.checkYourAnswersLabel = memberConfirmLastUkAddress
-memberConfirmLastUkAddress.error.required = Select yes if memberConfirmLastUkAddress
+memberConfirmLastUkAddress.error.required = Select save and continue to continue
 memberConfirmLastUkAddress.change.hidden = MemberConfirmLastUkAddress
+memberConfirmLastUkAddress.paragraph = You can also <a href="{0}" class="govuk-link">select a different address</a> or <a href="{1}" class="govuk-link">enter the address manually</a>.

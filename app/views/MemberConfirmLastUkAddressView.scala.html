@@ -40,6 +40,8 @@
 
 @(form: Form[_], mode: Mode, address: AddressViewModel)(implicit request: Request[_], messages: Messages)
 
+@searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
+
 @layout(pageTitle = title(form, messages("memberConfirmLastUkAddress.title"))) {
 
     @formHelper(action = routes.MemberConfirmLastUkAddressController.onSubmit(mode), Symbol("autoComplete") -> "off") {
@@ -51,8 +53,11 @@
 
         @displayConfirmableAddress(address)
 
-
-
+        @{//TODO: replace link in paragraph with route to manual entry
+        }
+        <p class="govuk-body govuk-!-padding-bottom-2">@Html(
+            messages("memberConfirmLastUkAddress.paragraph", searchAgain, "#"))
+        </p>
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
         )
