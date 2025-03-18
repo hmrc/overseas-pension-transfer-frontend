@@ -16,37 +16,12 @@
 
 package forms
 
+import base.AddressBase
 import forms.behaviours.OptionFieldBehaviours
 import models.{AddressRecord, Country, RecordSet, UkAddress}
 import play.api.data.FormError
 
-class MemberSelectLastUkAddressFormProviderSpec extends OptionFieldBehaviours {
-
-  private val addressRecords =
-    RecordSet(addresses =
-      Seq(
-        AddressRecord(
-          id      = "GB990091234514",
-          address = UkAddress(
-            lines       = List("2 Other Place", "Some District"),
-            town        = "Anytown",
-            rawPostCode = "ZZ1 1ZZ",
-            rawCountry  = Country(code = "GB", name = "United Kingdom")
-          )
-        ),
-        AddressRecord(
-          id      = "GB990091234515",
-          address = UkAddress(
-            lines       = List("3 Other Place", "Some District"),
-            town        = "Anytown",
-            rawPostCode = "ZZ1 1ZZ",
-            rawCountry  = Country(code = "GB", name = "United Kingdom")
-          )
-        )
-      )
-    )
-
-  private val validIds = addressRecords.addresses.map(_.id)
+class MemberSelectLastUkAddressFormProviderSpec extends OptionFieldBehaviours with AddressBase {
 
   val form = new MemberSelectLastUkAddressFormProvider()(validIds)
 

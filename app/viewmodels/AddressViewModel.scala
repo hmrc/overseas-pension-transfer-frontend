@@ -21,33 +21,34 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
 
 case class AddressViewModel(
     line1: String,
-    line2: String,
+    line2: Option[String],
     line3: Option[String],
-    city: Option[String],
+    townOrCity: Option[String],
     country: Option[String],
     postcode: Option[String]
   )
 
 object AddressViewModel {
+  private def toOption[A](a: A)(implicit ev: AddressField[A]): Option[String] = ev.toOption(a)
 
   def fromAddress(address: Address): AddressViewModel = {
     AddressViewModel(
-      line1    = address.line1,
-      line2    = address.line2,
-      line3    = address.line3,
-      city     = address.city,
-      postcode = address.postcode,
-      country  = address.country
+      line1      = address.line1,
+      line2      = address.line2,
+      line3      = address.line3,
+      townOrCity = address.townOrCity,
+      postcode   = address.postcode,
+      country    = address.country
     )
   }
 
   def formatAddressAsLines(vm: AddressViewModel, ukMode: Boolean = false): List[String] = {
-    def toOption[A](a: A)(implicit ev: AddressField[A]): Option[String] = ev.toOption(a)
+
     List(
       toOption(vm.line1),
       toOption(vm.line2),
       toOption(vm.line3),
-      toOption(vm.city),
+      toOption(vm.townOrCity),
       toOption(vm.postcode),
       toOption(vm.country).filterNot(_ => ukMode)
     ).flatten

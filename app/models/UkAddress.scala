@@ -19,19 +19,19 @@ package models
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-case class UkAddress(line1: String, line2: String, line3: Option[String], city: Option[String], country: Option[String], postcode: Option[String])
+case class UkAddress(line1: String, line2: Option[String], line3: Option[String], townOrCity: Option[String], country: Option[String], postcode: Option[String])
     extends Address
 
 object UkAddress {
 
   def fromRawAddress(rawAddress: RawAddress): UkAddress = {
     UkAddress(
-      line1    = if (rawAddress.lines.nonEmpty) rawAddress.lines.head else "",
-      line2    = if (rawAddress.lines.size > 1) rawAddress.lines(1) else "",
-      line3    = rawAddress.lines.lift(2),
-      city     = Some(rawAddress.town),
-      postcode = Some(rawAddress.postcode),
-      country  = Some(rawAddress.country.name)
+      line1      = rawAddress.lines.headOption.getOrElse(""),
+      line2      = rawAddress.lines.lift(1),
+      line3      = rawAddress.lines.lift(2),
+      townOrCity = Some(rawAddress.town),
+      postcode   = Some(rawAddress.postcode),
+      country    = Some(rawAddress.country.name)
     )
   }
 

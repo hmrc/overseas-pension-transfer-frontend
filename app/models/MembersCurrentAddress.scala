@@ -22,12 +22,12 @@ case class MembersCurrentAddress(
     addressLine1: String,
     addressLine2: String,
     addressLine3: Option[String],
-    city: Option[String],
+    townOrCity: Option[String],
     country: Option[String],
     postcode: Option[String]
   ) extends Address {
   val line1: String         = addressLine1
-  val line2: String         = addressLine2
+  val line2: Option[String] = Some(addressLine2)
   val line3: Option[String] = addressLine3
 }
 

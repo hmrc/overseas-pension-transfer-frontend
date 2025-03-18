@@ -30,18 +30,17 @@ class MemberLastUkAddressNotFoundControllerSpec extends SpecBase with AddressBas
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(addressUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(noAddressFoundUserAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.MemberLastUkAddressNotFoundController.onPageLoad().url)
 
-        val result   = route(application, request).value
-        val postcode = "ZZ1 1ZZ"
+        val result = route(application, request).value
 
         val view = application.injector.instanceOf[MemberLastUkAddressNotFoundView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(postcode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(noAddressFound.searchedPostcode)(request, messages(application)).toString
       }
     }
   }

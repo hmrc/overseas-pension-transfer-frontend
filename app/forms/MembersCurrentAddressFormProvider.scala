@@ -46,6 +46,6 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings {
         Forms.text
           verifying maxLength(16, "membersCurrentAddress.error.postcode.length")
       )
-    )(MembersCurrentAddress.apply)(x => Some(x.addressLine1, x.addressLine2, x.addressLine3, x.city, x.country, x.postcode))
+    )(MembersCurrentAddress.apply)(MembersCurrentAddress.unapply)
   )
 }

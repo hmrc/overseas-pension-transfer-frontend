@@ -45,215 +45,82 @@ object AddressLookupStub {
        |[]
        |""".stripMargin
 
-  val partialSuccessResponse: String =
+
+  val successResponseJson: String =
     s"""
        |[
-       |    {
-       |        "id": "GB200000698110",
-       |        "uprn": 200000698110,
-       |        "address": {
-       |            "lines": [
-       |                "2 Test Close"
-       |            ],
-       |            "town": "Test Town",
-       |            "postcode": "BB00 1BB",
-       |            "subdivision": {
-       |                "code": "GB-ENG",
-       |                "name": "England"
-       |            },
-       |            "country": {
-       |                "code": "GB",
-       |                "name": "United Kingdom"
-       |            }
-       |        },
-       |        "localCustodian": {
-       |            "code": 1760,
-       |            "name": "Test Valley"
-       |        },
-       |        "language": "en"
+       |  {
+       |    "id": "GB200000698110",
+       |    "uprn": 200000698110,
+       |    "parentUprn": 200000698110,
+       |    "usrn": 200000698110,
+       |    "organisation": "Test Organisation",
+       |    "address": {
+       |      "lines": [
+       |        "2 Test Close"
+       |      ],
+       |      "town": "Test Town",
+       |      "postcode": "BB00 1BB",
+       |      "subdivision": {
+       |        "code": "GB-ENG",
+       |        "name": "England"
+       |      },
+       |      "country": {
+       |        "code": "GB",
+       |        "name": "United Kingdom"
+       |      }
        |    },
-       |    {
-       |        "id": "GB200000708497",
-       |        "uprn": 200000708497,
-       |        "address": {
-       |            "lines": [
-       |                "4 Test Close"
-       |            ],
-       |            "town": "Test Town",
-       |            "postcode": "BB00 1BB",
-       |            "subdivision": {
-       |                "code": "GB-ENG",
-       |                "name": "England"
-       |            },
-       |            "country": {
-       |                "code": "GB",
-       |                "name": "United Kingdom"
-       |            }
-       |        },
-       |        "localCustodian": {
-       |            "code": 1760,
-       |            "name": "Test Valley"
-       |        },
-       |        "language": "en"
-       |    }
+       |    "localCustodian": {
+       |      "code": 1760,
+       |      "name": "Test Valley"
+       |    },
+       |    "location": [
+       |      -1.234,
+       |      50.678
+       |    ],
+       |    "language": "en",
+       |    "administrativeArea": "Some Area",
+       |    "poBox": "1234"
+       |  },
+       |  {
+       |    "id": "GB200000708497",
+       |    "uprn": 200000708497,
+       |    "parentUprn": 200000708497,
+       |    "usrn": 200000708497,
+       |    "organisation": "Another Organisation",
+       |    "address": {
+       |      "lines": [
+       |        "4 Test Close"
+       |      ],
+       |      "town": "Test Town",
+       |      "postcode": "BB00 1BB",
+       |      "subdivision": {
+       |        "code": "GB-ENG",
+       |        "name": "England"
+       |      },
+       |      "country": {
+       |        "code": "GB",
+       |        "name": "United Kingdom"
+       |      }
+       |    },
+       |    "localCustodian": {
+       |      "code": 1760,
+       |      "name": "Test Valley"
+       |    },
+       |    "location": [
+       |      -1.234,
+       |      50.678
+       |    ],
+       |    "language": "en",
+       |    "administrativeArea": "Some Other Area",
+       |    "poBox": "5678"
+       |  }
        |]
+       |
        |""".stripMargin
 
-  val fullSuccessResponseJson: String =
-    s"""
-       |[
-       |    {
-       |        "id": "GB200000698110",
-       |        "uprn": 200000698110,
-       |        "address": {
-       |            "lines": [
-       |                "2 Test Close"
-       |            ],
-       |            "town": "Test Town",
-       |            "postcode": "BB00 0BB",
-       |            "subdivision": {
-       |                "code": "GB-ENG",
-       |                "name": "England"
-       |            },
-       |            "country": {
-       |                "code": "GB",
-       |                "name": "United Kingdom"
-       |            }
-       |        },
-       |        "localCustodian": {
-       |            "code": 1760,
-       |            "name": "Test Valley"
-       |        },
-       |        "language": "en"
-       |    },
-       |    {
-       |        "id": "GB200000708497",
-       |        "uprn": 200000708497,
-       |        "address": {
-       |            "lines": [
-       |                "4 Test Close"
-       |            ],
-       |            "town": "Test Town",
-       |            "postcode": "BB00 0BB",
-       |            "subdivision": {
-       |                "code": "GB-ENG",
-       |                "name": "England"
-       |            },
-       |            "country": {
-       |                "code": "GB",
-       |                "name": "United Kingdom"
-       |            }
-       |        },
-       |        "localCustodian": {
-       |            "code": 1760,
-       |            "name": "Test Valley"
-       |        },
-       |        "language": "en"
-       |    },
-       |    {
-       |        "id": "GB200000704710",
-       |        "uprn": 200000704710,
-       |        "address": {
-       |            "lines": [
-       |                "6 Test Close"
-       |            ],
-       |            "town": "Test Town",
-       |            "postcode": "BB00 0BB",
-       |            "subdivision": {
-       |                "code": "GB-ENG",
-       |                "name": "England"
-       |            },
-       |            "country": {
-       |                "code": "GB",
-       |                "name": "United Kingdom"
-       |            }
-       |        },
-       |        "localCustodian": {
-       |            "code": 1760,
-       |            "name": "Test Valley"
-       |        },
-       |        "language": "en"
-       |    },
-       |    {
-       |        "id": "GB200000700558",
-       |        "uprn": 200000700558,
-       |        "address": {
-       |            "lines": [
-       |                "8 Test Close"
-       |            ],
-       |            "town": "Test Town",
-       |            "postcode": "BB00 0BB",
-       |            "subdivision": {
-       |                "code": "GB-ENG",
-       |                "name": "England"
-       |            },
-       |            "country": {
-       |                "code": "GB",
-       |                "name": "United Kingdom"
-       |            }
-       |        },
-       |        "localCustodian": {
-       |            "code": 1760,
-       |            "name": "Test Valley"
-       |        },
-       |        "language": "en"
-       |    },
-       |    {
-       |        "id": "GB200010012154",
-       |        "uprn": 200010012154,
-       |        "address": {
-       |            "lines": [
-       |                "Test Lodge",
-       |                "Test Close"
-       |            ],
-       |            "town": "Test Town",
-       |            "postcode": "BB00 0BB",
-       |            "subdivision": {
-       |                "code": "GB-ENG",
-       |                "name": "England"
-       |            },
-       |            "country": {
-       |                "code": "GB",
-       |                "name": "United Kingdom"
-       |            }
-       |        },
-       |        "localCustodian": {
-       |            "code": 1760,
-       |            "name": "Test Valley"
-       |        },
-       |        "language": "en"
-       |    },
-       |    {
-       |        "id": "GB200000706253",
-       |        "uprn": 200000706253,
-       |        "address": {
-       |            "lines": [
-       |                "Test House",
-       |                "Test Close"
-       |            ],
-       |            "town": "Test Town",
-       |            "postcode": "BB00 0BB",
-       |            "subdivision": {
-       |                "code": "GB-ENG",
-       |                "name": "England"
-       |            },
-       |            "country": {
-       |                "code": "GB",
-       |                "name": "United Kingdom"
-       |            }
-       |        },
-       |        "localCustodian": {
-       |            "code": 1760,
-       |            "name": "Test Valley"
-       |        },
-       |        "language": "en"
-       |    }
-       |]
-       |""".stripMargin
+  def postPostcodeSuccessResponse(): Unit = responsePostPostcode("BB001BB")(OK, successResponseJson)
 
-  def postPostcodeFullSuccessResponse(): Unit = responsePostPostcode("BB000BB")(OK, fullSuccessResponseJson)
-
-  def postPostcodePartialSuccessResponse(): Unit = responsePostPostcode("BB001BB")(OK, partialSuccessResponse)
 
   def postPostcodeNoAddressesFoundResponse(): Unit = responsePostPostcode("BB002BB")(OK, noAddressesFoundResponseJson)
 

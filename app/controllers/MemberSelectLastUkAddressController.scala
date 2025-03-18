@@ -45,14 +45,14 @@ class MemberSelectLastUkAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  val form = formProvider()
-
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(value) =>
           value match {
             case FoundAddressSet(searchedPostcode, addresses) =>
+              val validIds      = addresses.map(_.id)
+              val form          = formProvider(validIds)
               val addressRadios = AddressViewModel.addressRadios(addresses)
 
               Ok(view(form, mode, addressRadios, searchedPostcode))
@@ -79,42 +79,43 @@ class MemberSelectLastUkAddressController @Inject() (
         case Some(value) =>
           value match {
             case FoundAddressSet(searchedPostcode, addresses) =>
+              val validIds      = addresses.map(_.id)
+              val form          = formProvider(validIds)
               val addressRadios = AddressViewModel.addressRadios(addresses)
-
               form.bindFromRequest().fold(
                 formWithErrors =>
                   Future.successful(BadRequest(view(formWithErrors, mode, addressRadios, searchedPostcode))),
                 selectedId => {
-                  val maybeSelectedAddress = addresses.find(_.id == selectedId)
-                  maybeSelectedAddress match {
-                    case Some(selectedAddress) =>
-                      for {
-                        updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberSelectLastUkAddressPage, selectedAddress))
-                        _              <- {
-                          logger.info(Json.stringify(updatedAnswers.data))
-                          sessionRepository.set(updatedAnswers)
-                        }
-                      } yield Redirect(MemberSelectLastUkAddressPage.nextPage(mode, updatedAnswers))
-                    case _                     =>
-                      Future.successful(
-                        Redirect(
-                          MemberSelectLastUkAddressPage.nextPageRecovery(
-                            Some(MemberSelectLastUkAddressPage.recoveryModeReturnUrl)
+                  if (validIds.contains(selectedId)) {
+                    val maybeSelectedAddress = addresses.find(_.id == selectedId)
+                    maybeSelectedAddress match {
+                      case Some(selectedAddress) =>
+                        for {
+                          updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberSelectLastUkAddressPage, selectedAddress))
+                          _              <- {
+                            logger.info(Json.stringify(updatedAnswers.data))
+                            sessionRepository.set(updatedAnswers)
+                          }
+                        } yield Redirect(MemberSelectLastUkAddressPage.nextPage(mode, updatedAnswers))
+                      case _                     =>
+                        Future.successful(
+                          Redirect(
+                            MemberSelectLastUkAddressPage.nextPageRecovery(
+                              Some(MemberSelectLastUkAddressPage.recoveryModeReturnUrl)
+                            )
                           )
                         )
+                    }
+                  } else {
+                    Future.successful(Redirect(
+                      MemberSelectLastUkAddressPage.nextPageRecovery(
+                        Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
                       )
+                    ))
                   }
                 }
               )
           }
-        case None        =>
-          Future.successful(
-            Redirect(
-              MemberSelectLastUkAddressPage.nextPageRecovery(
-                Some(MemberSelectLastUkAddressPage.recoveryModeReturnUrl)
-              )
-            )
-          )
       }
   }
 }

@@ -17,7 +17,7 @@
 package connectors
 
 import base.BaseISpec
-import models.{Address, AddressRecord, Country, RecordSet, UkAddress}
+import models.{Address, AddressRecord, Country, LocalCustodian, RawAddress, RecordSet, Subdivision, UkAddress}
 import play.api.http.Status.BAD_REQUEST
 import play.api.test.Injecting
 import stubs.AddressLookupStub
@@ -31,38 +31,88 @@ class AddressLookupConnectorISpec extends BaseISpec with Injecting {
   "AddressLookupConnector.lookup" when {
     "search for address by postcode" must {
       "return a AddressLookupSuccessResponse containing a seq of addresses if address found" in {
-        AddressLookupStub.postPostcodePartialSuccessResponse()
+        AddressLookupStub.postPostcodeSuccessResponse()
         await(connector.lookup("BB001BB")) shouldBe
-        AddressLookupSuccessResponse(
-          RecordSet(
-            Seq(
-              AddressRecord(
-                id = "GB200000698110",
-                address = UkAddress(
-                  lines = List("2 Test Close"),
-                  town = "Test Town",
-                  rawPostCode = "BB00 1BB",
-                  rawCountry = Country("GB", "United Kingdom")
+          AddressLookupSuccessResponse(
+            "BB001BB",
+            RecordSet(
+              Seq(
+                AddressRecord(
+                  id                   = "GB200000698110",
+                  uprn                 = Some(200000698110L),
+                  parentUprn           = Some(200000698110L),
+                  usrn                 = Some(200000698110L),
+                  organisation         = Some("Test Organisation"),
+                  address              = RawAddress(
+                    lines       = List("2 Test Close"),
+                    town        = "Test Town",
+                    postcode    = "BB00 1BB",
+                    subdivision = Some(Subdivision(
+                      code = "GB-ENG",
+                      name = "England"
+                    )),
+                    country     = Country(
+                      code = "GB",
+                      name = "United Kingdom"
+                    )
+                  ),
+                  language             = "en",
+                  localCustodian       = Some(
+                    LocalCustodian(
+                      code = 1760,
+                      name = "Test Valley"
+                    )
+                  ),
+                  location             = Some(Seq(BigDecimal(-1.234), BigDecimal(50.678))),
+                  blpuState            = None,
+                  logicalState         = None,
+                  streetClassification = None,
+                  administrativeArea   = Some("Some Area"),
+                  poBox                = Some("1234")
                 ),
-              ),
-              AddressRecord(
-                id = "GB200000708497",
-                address = UkAddress(
-                  lines = List("4 Test Close"),
-                  town = "Test Town",
-                  rawPostCode = "BB00 1BB",
-                  rawCountry = Country("GB", "United Kingdom")
+                AddressRecord(
+                  id                   = "GB200000708497",
+                  uprn                 = Some(200000708497L),
+                  parentUprn           = Some(200000708497L),
+                  usrn                 = Some(200000708497L),
+                  organisation         = Some("Another Organisation"),
+                  address              = RawAddress(
+                    lines       = List("4 Test Close"),
+                    town        = "Test Town",
+                    postcode    = "BB00 1BB",
+                    subdivision = Some(Subdivision(
+                      code = "GB-ENG",
+                      name = "England"
+                    )),
+                    country     = Country(
+                      code = "GB",
+                      name = "United Kingdom"
+                    )
+                  ),
+                  language             = "en",
+                  localCustodian       = Some(
+                    LocalCustodian(
+                      code = 1760,
+                      name = "Test Valley"
+                    )
+                  ),
+                  location             = Some(Seq(BigDecimal(-1.234), BigDecimal(50.678))),
+                  blpuState            = None,
+                  logicalState         = None,
+                  streetClassification = None,
+                  administrativeArea   = Some("Some Other Area"),
+                  poBox                = Some("5678")
                 ),
               )
             )
           )
-        )
       }
 
       "return an empty AddressLookupSuccessResponse if no addresses found" in {
         AddressLookupStub.postPostcodeNoAddressesFoundResponse()
         await(connector.lookup("BB002BB")) shouldBe
           AddressLookupSuccessResponse(
+            "BB002BB",
             RecordSet(Seq.empty)
           )
       }
@@ -76,8 +126,7 @@ class AddressLookupConnectorISpec extends BaseISpec with Injecting {
         }
         try {
           res
-        }
-        catch {
+        } catch {
           case e: Exception => res shouldBe AddressLookupErrorResponse(e)
         }
       }

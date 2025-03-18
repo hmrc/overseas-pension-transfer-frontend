@@ -16,36 +16,50 @@
 
 package base
 
-import models.{AddressRecord, Country, RecordSet, UkAddress, UserAnswers}
-import pages.MembersLastUkAddressLookupPage
+import models.{FoundAddress, FoundAddressSet, NoAddressFound, UkAddress, UserAnswers}
+import pages.{MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
 
 trait AddressBase {
 
-  val addressRecords: RecordSet =
-    RecordSet(addresses =
-      Seq(
-        AddressRecord(
-          id      = "GB990091234514",
-          address = UkAddress(
-            lines       = List("2 Other Place", "Some District"),
-            town        = "Anytown",
-            rawPostCode = "ZZ1 1ZZ",
-            rawCountry  = Country(code = "GB", name = "United Kingdom")
-          )
-        ),
-        AddressRecord(
-          id      = "GB990091234515",
-          address = UkAddress(
-            lines       = List("3 Other Place", "Some District"),
-            town        = "Anytown",
-            rawPostCode = "ZZ1 1ZZ",
-            rawCountry  = Country(code = "GB", name = "United Kingdom")
+  val foundAddresses: FoundAddressSet      =
+    FoundAddressSet(
+      searchedPostcode = "ZZ1 1ZZ",
+      addresses        =
+        Seq(
+          FoundAddress(
+            id      = "GB990091234514",
+            address = UkAddress(
+              line1      = "2 Other Place",
+              line2      = Some("Some District"),
+              line3      = None,
+              townOrCity = Some("Anytown"),
+              postcode   = Some("ZZ1 1ZZ"),
+              country    = Some("United Kingdom")
+            )
+          ),
+          FoundAddress(
+            id      = "GB990091234515",
+            address = UkAddress(
+              line1      = "3 Other Place",
+              line2      = Some("Some District"),
+              line3      = None,
+              townOrCity = Some("Anytown"),
+              postcode   = Some("ZZ1 1ZZ"),
+              country    = Some("United Kingdom")
+            )
           )
         )
-      )
     )
-  val validIds: Seq[String]     = addressRecords.addresses.map(_.id)
+  val addressFoundUserAnswers: UserAnswers = UserAnswers("id").set(MembersLastUkAddressLookupPage, foundAddresses).get
 
-  val addressUserAnswers: UserAnswers = UserAnswers("id").set(MembersLastUkAddressLookupPage, addressRecords).get
+  val selectedAddress: FoundAddress = foundAddresses.addresses.head
+
+  val addressSelectedUserAnswers: UserAnswers = addressFoundUserAnswers.set(MemberSelectLastUkAddressPage, selectedAddress).get
+
+  val validIds: Seq[String] = foundAddresses.addresses.map(_.id)
+
+  val noAddressFound: NoAddressFound = NoAddressFound(searchedPostcode = "ZZ1 1ZZ")
+
+  val noAddressFoundUserAnswers: UserAnswers = UserAnswers("id").set(MembersLastUkAddressLookupPage, noAddressFound).get
 
 }

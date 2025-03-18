@@ -29,17 +29,17 @@ class MemberSelectLastUkAddressPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to confirm address page" in {
 
-        MemberSelectLastUkAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        MemberSelectLastUkAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberConfirmLastUkAddressController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to confirm address page" in {
 
-        MemberSelectLastUkAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        MemberSelectLastUkAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberConfirmLastUkAddressController.onPageLoad(NormalMode)
       }
     }
   }
