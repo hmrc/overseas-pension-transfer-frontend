@@ -26,7 +26,7 @@ case object MemberSelectLastUkAddressPage extends QuestionPage[FoundAddress] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "membersLastUKAddress"
+  override def toString: String = "memberSelectLastUkAddress"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberConfirmLastUkAddressController.onPageLoad(mode = NormalMode)

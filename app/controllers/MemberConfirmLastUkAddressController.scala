@@ -18,8 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.MemberConfirmLastUkAddressFormProvider
-import models.Mode
-import pages.{MemberConfirmLastUkAddressPage, MemberSelectLastUkAddressPage}
+import models.{Mode, NormalMode}
+import models.address.MembersLastUKAddress
+import pages.{MemberConfirmLastUkAddressPage, MemberSelectLastUkAddressPage, MembersLastUKAddressPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,9 +55,7 @@ class MemberConfirmLastUkAddressController @Inject() (
           Ok(view(form, mode, viewModel))
         case _                     =>
           Redirect(
-            MemberConfirmLastUkAddressPage.nextPageRecovery(
-              Some(MemberConfirmLastUkAddressPage.recoveryModeReturnUrl)
-            )
+            routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
           )
       }
   }
@@ -73,8 +72,12 @@ class MemberConfirmLastUkAddressController @Inject() (
             },
             _ =>
               for {
-                updatedAnswers <- Future.fromTry(MemberConfirmLastUkAddressPage.clearAddressLookups(request.userAnswers))
-                _              <- sessionRepository.set(updatedAnswers)
+                clearedLookupUA <- Future.fromTry(MemberConfirmLastUkAddressPage.clearAddressLookups(request.userAnswers))
+                updatedAnswers  <- {
+                  val membersLastUkAddress = MembersLastUKAddress.fromLookupAddress(selectedAddress.address)
+                  Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, membersLastUkAddress))
+                }
+                _               <- sessionRepository.set(updatedAnswers)
               } yield Redirect(MemberConfirmLastUkAddressPage.nextPage(mode, updatedAnswers))
           )
         case _                     =>

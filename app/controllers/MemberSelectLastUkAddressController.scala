@@ -66,9 +66,7 @@ class MemberSelectLastUkAddressController @Inject() (
           }
         case None        =>
           Redirect(
-            MemberSelectLastUkAddressPage.nextPageRecovery(
-              Some(MemberSelectLastUkAddressPage.recoveryModeReturnUrl)
-            )
+            routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
           )
       }
   }

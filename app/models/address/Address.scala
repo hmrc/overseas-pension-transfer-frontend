@@ -16,7 +16,7 @@
 
 package models.address
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{JsObject, JsResult, JsValue, Json, OFormat}
 
 sealed trait Address {
   val line1: String
@@ -47,7 +47,43 @@ case class MembersLastUKAddress(
 }
 
 object MembersLastUKAddress {
-  implicit val format: OFormat[MembersLastUKAddress] = Json.format
+
+  implicit val format: OFormat[MembersLastUKAddress] = new OFormat[MembersLastUKAddress] {
+
+    override def reads(json: JsValue): JsResult[MembersLastUKAddress] = {
+      for {
+        addressLine1 <- (json \ "addressLine1").validate[String]
+        addressLine2 <- (json \ "addressLine2").validateOpt[String]
+        townOrCity   <- (json \ "townOrCity").validate[String]
+        county       <- (json \ "county").validateOpt[String]
+        postcode     <- (json \ "postcode").validate[String]
+      } yield MembersLastUKAddress(
+        addressLine1  = addressLine1,
+        addressLine2  = addressLine2,
+        rawTownOrCity = townOrCity,
+        county        = county,
+        rawPostcode   = postcode
+      )
+    }
+
+    override def writes(address: MembersLastUKAddress): JsObject = Json.obj(
+      "addressLine1" -> address.addressLine1,
+      "addressLine2" -> address.addressLine2,
+      "townOrCity"   -> address.rawTownOrCity,
+      "county"       -> address.county,
+      "postcode"     -> address.rawPostcode
+    )
+  }
+
+  def fromLookupAddress(address: MembersLookupLastUkAddress): MembersLastUKAddress = {
+    MembersLastUKAddress(
+      addressLine1  = address.line1,
+      addressLine2  = address.line2,
+      rawTownOrCity = address.townOrCity.getOrElse(""),
+      county        = None,
+      rawPostcode   = address.postcode.getOrElse("")
+    )
+  }
 }
 
 case class MembersLookupLastUkAddress(
