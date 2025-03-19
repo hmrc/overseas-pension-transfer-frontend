@@ -48,11 +48,11 @@ trait ModelGenerators {
       } yield MembersCurrentAddress(addressLine1, addressLine2, Some(addressLine3), Some(city), Some(country), Some(postcode))
     }
 
-  implicit lazy val arbitraryMemberName: Arbitrary[MemberName] =
+  implicit lazy val arbitraryMemberName: Arbitrary[PersonName] =
     Arbitrary {
       for {
         memberFirstName <- arbitrary[String]
         memberLastName  <- arbitrary[String]
-      } yield MemberName(memberFirstName, memberLastName)
+      } yield PersonName(memberFirstName, memberLastName)
     }
 }

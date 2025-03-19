@@ -18,11 +18,11 @@ package models
 
 import play.api.libs.json._
 
-case class MemberName(memberFirstName: String, memberLastName: String) {
-  def fullName: String = s"$memberFirstName $memberLastName".trim
+case class PersonName(firstName: String, lastName: String) {
+  def fullName: String = s"$firstName $lastName".trim
 }
 
-object MemberName {
+object PersonName {
 
-  implicit val format: OFormat[MemberName] = Json.format
+  implicit val format: OFormat[PersonName] = Json.format
 }
