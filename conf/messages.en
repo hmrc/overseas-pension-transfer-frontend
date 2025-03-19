@@ -52,6 +52,8 @@ unauthorised.heading = You can’t access this service with this account
 helloWorld.title = helloWorld
 helloWorld.heading = helloWorld
 
+radios.hint = Select one.
+
 common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
 
@@ -130,14 +132,12 @@ memberIsResidentUK.no = No
 memberIsResidentUK.checkYourAnswersLabel = memberIsResident
 memberIsResidentUK.error.required = Select one option
 memberIsResidentUK.change.hidden = MemberIsResidentUK
-memberIsResidentUK.hint = Select one
 
 memberHasEverBeenResidentUK.title = Has undefined undefined ever been a resident in the UK for tax purposes?
 memberHasEverBeenResidentUK.heading = Has undefined undefined ever been a resident in the UK for tax purposes?
 memberHasEverBeenResidentUK.checkYourAnswersLabel = memberHasEverBeenResidentUK
 memberHasEverBeenResidentUK.error.required = Select one option
 memberHasEverBeenResidentUK.change.hidden = memberHasEverBeenResidentUK
-memberHasEverBeenResidentUK.hint = Select one.
 
 membersCurrentAddress.title = What is undefined undefined''s current address?
 membersCurrentAddress.heading = What is undefined undefined''s current address?
@@ -162,6 +162,15 @@ membersCurrentAddress.addressLine3.change.hidden = Address line 3 (optional)
 membersCurrentAddress.city.change.hidden = City (optional)
 membersCurrentAddress.country.change.hidden = Country (optional)
 membersCurrentAddress.postcode.change.hidden = Postcode (optional)
+
+qropsSchemeManagerIsIndividualOrOrg.title = Is the scheme manager an individual or organisation?
+qropsSchemeManagerIsIndividualOrOrg.heading = Is the scheme manager an individual or organisation?
+qropsSchemeManagerIsIndividualOrOrg.individual = Individual
+qropsSchemeManagerIsIndividualOrOrg.organisation = Organisation
+qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel = qropsSchemeManagerIsIndividualOrOrg
+qropsSchemeManagerIsIndividualOrOrg.error.required = Select if the scheme manager is an individual or an organisation
+qropsSchemeManagerIsIndividualOrOrg.change.hidden = QropsSchemeManagerIsIndividualOrOrg
+
 membersCurrentAddress.error.addressLine1.pattern = Address line 1 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 membersCurrentAddress.error.addressLine2.pattern = Address line 2 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 membersCurrentAddress.error.addressLine3.pattern = Address line 3 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
@@ -218,3 +227,4 @@ memberDoesNotHaveNino.error.required = Enter the reason the member does not have
 memberDoesNotHaveNino.error.length = The reason for not having a National Insurance number and reference in its place must be must be 160 characters or fewer
 memberDoesNotHaveNino.change.hidden = MemberDoesNotHaveNino
 memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
+
