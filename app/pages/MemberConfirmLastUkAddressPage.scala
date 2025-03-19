@@ -18,14 +18,11 @@ package pages
 
 import controllers.routes
 import models.{NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case object MemberConfirmLastUkAddressPage extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ toString
+case object MemberConfirmLastUkAddressPage extends Page {
 
   override def toString: String = "memberConfirmLastUkAddress"
 

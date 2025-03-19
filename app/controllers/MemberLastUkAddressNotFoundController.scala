@@ -42,9 +42,7 @@ class MemberLastUkAddressNotFoundController @Inject() (
           value match {
             case NoAddressFound(searchedPostcode) =>
               Ok(view(searchedPostcode))
-
           }
-
       }
   }
 }

@@ -43,7 +43,7 @@ class MemberSelectLastUkAddressController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberSelectLastUkAddressView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -63,8 +63,7 @@ class MemberSelectLastUkAddressController @Inject() (
                 )
               )
           }
-
-        case None =>
+        case None        =>
           Redirect(
             MemberSelectLastUkAddressPage.nextPageRecovery(
               Some(MemberSelectLastUkAddressPage.recoveryModeReturnUrl)
@@ -92,10 +91,8 @@ class MemberSelectLastUkAddressController @Inject() (
                       case Some(selectedAddress) =>
                         for {
                           updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberSelectLastUkAddressPage, selectedAddress))
-                          _              <- {
-                            logger.info(Json.stringify(updatedAnswers.data))
-                            sessionRepository.set(updatedAnswers)
-                          }
+                          _              <- sessionRepository.set(updatedAnswers)
+
                         } yield Redirect(MemberSelectLastUkAddressPage.nextPage(mode, updatedAnswers))
                       case _                     =>
                         Future.successful(

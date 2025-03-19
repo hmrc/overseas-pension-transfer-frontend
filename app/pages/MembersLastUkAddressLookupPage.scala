@@ -36,4 +36,6 @@ case object MembersLastUkAddressLookupPage extends QuestionPage[FoundAddressResp
   def nextPageNoResults(): Call =
     routes.MemberLastUkAddressNotFoundController.onPageLoad()
 
+  val recoveryModeReturnUrl: String = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+
 }

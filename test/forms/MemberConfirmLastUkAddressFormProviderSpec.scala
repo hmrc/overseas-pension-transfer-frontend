@@ -16,30 +16,30 @@
 
 package forms
 
-import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.Form
 import play.api.data.FormError
 
-class MemberConfirmLastUkAddressFormProviderSpec extends BooleanFieldBehaviours {
+class MemberConfirmLastUkAddressFormProviderSpec extends FormSpec {
 
-  val requiredKey = "memberConfirmLastUkAddress.error.required"
-  val invalidKey  = "error.boolean"
-
-  val form = new MemberConfirmLastUkAddressFormProvider()()
+  private val form: Form[Boolean] = new MemberConfirmLastUkAddressFormProvider()()
 
   ".value" - {
 
-    val fieldName = "value"
+    "must bind true when the field is omitted (default=true)" in {
+      val result = form.bind(Map.empty[String, String])
+      result.errors mustBe empty
+      result.value mustBe Some(true)
+    }
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
+    "must bind true if provided as 'true'" in {
+      val result = form.bind(Map("value" -> "true"))
+      result.errors mustBe empty
+      result.value mustBe Some(true)
+    }
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    "must fail if provided a non-boolean" in {
+      val result = form.bind(Map("value" -> "notABoolean"))
+      result.errors mustBe Seq(FormError("value", "error.boolean"))
+    }
   }
 }

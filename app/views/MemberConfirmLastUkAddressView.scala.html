@@ -58,6 +58,9 @@
         <p class="govuk-body govuk-!-padding-bottom-2">@Html(
             messages("memberConfirmLastUkAddress.paragraph", searchAgain, "#"))
         </p>
+
+        <input type="hidden" name="value" value="true"/>
+
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
         )

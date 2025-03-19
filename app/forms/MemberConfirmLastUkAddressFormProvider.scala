@@ -18,13 +18,15 @@ package forms
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
 import play.api.data.Form
+import play.api.data.Forms._
 
-class MemberConfirmLastUkAddressFormProvider @Inject() extends Mappings {
+class MemberConfirmLastUkAddressFormProvider @Inject() {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("memberConfirmLastUkAddress.error.required")
+      single(
+        "value" -> default(boolean, true)
+      )
     )
 }

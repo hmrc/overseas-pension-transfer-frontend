@@ -22,6 +22,7 @@ import forms.MemberConfirmLastUkAddressFormProvider
 import javax.inject.Inject
 import models.{Mode, NormalMode}
 import pages.{MemberConfirmLastUkAddressPage, MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,21 +45,16 @@ class MemberConfirmLastUkAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val maybeSelectedAddress = request.userAnswers.get(MemberSelectLastUkAddressPage)
       maybeSelectedAddress match {
-        case Some(foundAddress) =>
-          val viewModel    = AddressViewModel.fromAddress(foundAddress.address)
-          val preparedForm = request.userAnswers.get(MemberConfirmLastUkAddressPage) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
-
-          Ok(view(preparedForm, mode, viewModel))
-        case _                  =>
+        case Some(selectedAddress) =>
+          val viewModel = AddressViewModel.fromAddress(selectedAddress.address)
+          Ok(view(form, mode, viewModel))
+        case _                     =>
           Redirect(
             MemberConfirmLastUkAddressPage.nextPageRecovery(
               Some(MemberConfirmLastUkAddressPage.recoveryModeReturnUrl)
@@ -69,10 +65,28 @@ class MemberConfirmLastUkAddressController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      for {
-        updatedAnswers <- Future.fromTry(MemberConfirmLastUkAddressPage.clearAddressLookups(request.userAnswers))
-        _              <- sessionRepository.set(updatedAnswers)
-
-      } yield Redirect(MemberConfirmLastUkAddressPage.nextPage(mode, updatedAnswers))
+      val maybeSelectedAddress = request.userAnswers.get(MemberSelectLastUkAddressPage)
+      maybeSelectedAddress match {
+        case Some(selectedAddress) =>
+          val viewModel = AddressViewModel.fromAddress(selectedAddress.address)
+          formProvider().bindFromRequest().fold(
+            formWithErrors => {
+              Future.successful(BadRequest(view(formWithErrors, mode, viewModel)))
+            },
+            _ =>
+              for {
+                updatedAnswers <- Future.fromTry(MemberConfirmLastUkAddressPage.clearAddressLookups(request.userAnswers))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(MemberConfirmLastUkAddressPage.nextPage(mode, updatedAnswers))
+          )
+        case _                     =>
+          Future.successful(
+            Redirect(
+              MemberConfirmLastUkAddressPage.nextPageRecovery(
+                Some(MemberConfirmLastUkAddressPage.recoveryModeReturnUrl)
+              )
+            )
+          )
+      }
   }
 }

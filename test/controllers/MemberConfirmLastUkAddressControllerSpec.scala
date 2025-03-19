@@ -83,7 +83,7 @@ class MemberConfirmLastUkAddressControllerSpec extends SpecBase with MockitoSuga
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(addressFoundUserAnswers))
+        applicationBuilder(userAnswers = Some(addressSelectedUserAnswers))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -92,7 +92,6 @@ class MemberConfirmLastUkAddressControllerSpec extends SpecBase with MockitoSuga
       running(application) {
         val request =
           FakeRequest(POST, memberConfirmLastUkAddressRoute)
-            .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
