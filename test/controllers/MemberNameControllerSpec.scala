@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.MemberNameFormProvider
-import models.{MemberName, NormalMode}
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -38,7 +38,7 @@ class MemberNameControllerSpec extends SpecBase with MockitoSugar {
 
   private lazy val memberNameRoute = routes.MemberNameController.onPageLoad(NormalMode).url
 
-  private val validAnswer = MemberName("value 1", "value 2")
+  private val validAnswer = PersonName("value 1", "value 2")
   private val userAnswers = emptyUserAnswers.set(MemberNamePage, validAnswer).success.value
 
   "MemberName Controller" - {
@@ -71,7 +71,7 @@ class MemberNameControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(MemberName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
       }
     }
 

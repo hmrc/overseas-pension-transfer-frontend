@@ -16,22 +16,23 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
+import models.PersonName
 import play.api.data.Form
 import play.api.data.Forms._
-import models.PersonName
 
-class MemberNameFormProvider @Inject() extends Mappings with Regex {
+import javax.inject.Inject
+
+class OrgIndividualNameFormProvider @Inject() extends Mappings with Regex {
 
   def apply(): Form[PersonName] = Form(
     mapping(
-      "memberFirstName" -> text("memberName.error.memberFirstName.required")
-        .verifying(maxLength(35, "memberName.error.memberFirstName.length"))
-        .verifying(regexp(nameRegex, "memberName.error.memberFirstName.pattern")),
-      "memberLastName"  -> text("memberName.error.memberLastName.required")
-        .verifying(maxLength(35, "memberName.error.memberLastName.length"))
-        .verifying(regexp(nameRegex, "memberName.error.memberLastName.pattern"))
+      "orgIndFirstName" -> text("orgIndividualName.error.firstName.required")
+        .verifying(maxLength(35, "orgIndividualName.error.firstName.length"))
+        .verifying(regexp(nameRegex, "orgIndividualName.error.firstName.pattern")),
+      "orgIndLastName"  -> text("orgIndividualName.error.lastName.required")
+        .verifying(maxLength(35, "orgIndividualName.error.lastName.length"))
+        .verifying(regexp(nameRegex, "orgIndividualName.error.lastName.pattern"))
     )(PersonName.apply)(x => Some((x.firstName, x.lastName)))
   )
 }

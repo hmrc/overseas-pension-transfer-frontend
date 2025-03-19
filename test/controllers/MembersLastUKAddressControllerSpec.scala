@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.MembersLastUKAddressFormProvider
-import models.{MemberName, MembersLastUKAddress, NormalMode}
+import models.{MembersLastUKAddress, NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -41,7 +41,7 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
   private val validAnswer = MembersLastUKAddress("1stLineAdd", Some("2ndLineAdd"), "aTown", Some("aCounty"), postCode)
   private val userAnswers = emptyUserAnswers.set(MembersLastUKAddressPage, validAnswer).success.value
   private val form        = formProvider(userAnswers)
-  private val memberName  = MemberName("undefined", "undefined")
+  private val memberName  = PersonName("undefined", "undefined")
 
   "MembersLastUKAddress Controller" - {
 
