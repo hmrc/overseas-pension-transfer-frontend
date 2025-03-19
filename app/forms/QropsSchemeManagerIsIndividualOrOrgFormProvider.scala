@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package forms
 
-trait Regex {
+import javax.inject.Inject
 
-  val nameRegex: String =
-    "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.QropsSchemeManagerIsIndividualOrOrg
 
-  val ninoRegex: String = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
+class QropsSchemeManagerIsIndividualOrOrgFormProvider @Inject() extends Mappings {
 
-  val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
-
-  val postcodeRegex: String = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
+  def apply(): Form[QropsSchemeManagerIsIndividualOrOrg] =
+    Form(
+      "value" -> enumerable[QropsSchemeManagerIsIndividualOrOrg]("qropsSchemeManagerIsIndividualOrOrg.error.required")
+    )
 }

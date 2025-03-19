@@ -33,15 +33,15 @@ class MemberDateOfLeavingUKFormProvider @Inject() extends Mappings {
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidCharacter = "memberDateOfLeavingUK.error.invalid.character",
-        invalidKey       = "memberDateOfLeavingUK.error.invalid",
-        requiredKey      = "memberDateOfLeavingUK.error.required",
-        twoRequiredKey   = "memberDateOfLeavingUK.error.required.two",
+        invalidCharacter = "common.dateInput.error.invalid.character",
+        invalidKey       = "common.dateInput.error.invalid",
+        requiredKey      = "common.dateInput.error.required",
+        twoRequiredKey   = "common.dateInput.error.required.two",
         allRequiredKey   = "memberDateOfLeavingUK.error.required.all"
       )
         .verifying(
-          maxDate(maxDate, "memberDateOfLeavingUK.error.invalid", maxDate.format(dateFormatter)),
-          minDate(minDate, "memberDateOfLeavingUK.error.invalid", minDate.format(dateFormatter))
+          maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateFormatter)),
+          minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateFormatter))
         )
     )
 }

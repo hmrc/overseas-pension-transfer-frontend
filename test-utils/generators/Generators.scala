@@ -33,7 +33,7 @@ trait Generators extends ModelGenerators {
       ('Ø' to 'ö') ++
       ('ø' to 'ÿ')
 
-  private val invalidCharacters: Seq[Char] = Seq('<', '>', '=', '|', '&', '^')
+  private val invalidCharacters: Seq[Char] = Seq('<', '>', '=', '|', '^')
 
   def genValidChar: Gen[Char] =
     Gen.oneOf(validCharacters)

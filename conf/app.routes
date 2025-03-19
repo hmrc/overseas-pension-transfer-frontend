@@ -60,6 +60,16 @@ POST       /members-current-address                                  controllers
 GET        /change-members-current-address                           controllers.MembersCurrentAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-members-current-address                           controllers.MembersCurrentAddressController.onSubmit(mode: Mode = CheckMode)
 
+GET        /members-last-uk-address                                  controllers.MembersLastUKAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /members-last-uk-address                                  controllers.MembersLastUKAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-members-last-uk-address                           controllers.MembersLastUKAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-members-last-uk-address                           controllers.MembersLastUKAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /qrops-scheme-manager-is-individual-or-org                controllers.QropsSchemeManagerIsIndividualOrOrgController.onPageLoad(mode: Mode = NormalMode)
+POST       /qrops-scheme-manager-is-individual-or-org                controllers.QropsSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = NormalMode)
+GET        /change-qrops-scheme-manager-is-individual-or-org         controllers.QropsSchemeManagerIsIndividualOrOrgController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-qrops-scheme-manager-is-individual-or-org         controllers.QropsSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = CheckMode)
+
 GET        /qrops-name                                               controllers.QropsNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-name                                               controllers.QropsNameController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-name                                        controllers.QropsNameController.onPageLoad(mode: Mode = CheckMode)

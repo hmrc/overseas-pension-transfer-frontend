@@ -17,54 +17,52 @@
 package controllers
 
 import controllers.actions._
-import forms.MemberDoesNotHaveNinoFormProvider
-import models.requests.DataRequest
-
+import forms.QropsSchemeManagerIsIndividualOrOrgFormProvider
 import javax.inject.Inject
-import models.{Mode, NormalMode}
-import pages.{MemberDoesNotHaveNinoPage, MemberNamePage}
+import models.Mode
+import pages.QropsSchemeManagerIsIndividualOrOrgPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AppUtils
-import views.html.MemberDoesNotHaveNinoView
+import views.html.QropsSchemeManagerIsIndividualOrOrgView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MemberDoesNotHaveNinoController @Inject() (
+class QropsSchemeManagerIsIndividualOrOrgController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: MemberDoesNotHaveNinoFormProvider,
+    formProvider: QropsSchemeManagerIsIndividualOrOrgFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MemberDoesNotHaveNinoView
+    view: QropsSchemeManagerIsIndividualOrOrgView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(MemberDoesNotHaveNinoPage) match {
+      val preparedForm = request.userAnswers.get(QropsSchemeManagerIsIndividualOrOrgPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, memberFullName(request.userAnswers), mode))
+
+      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QropsSchemeManagerIsIndividualOrOrgPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.MemberDateOfBirthController.onPageLoad(NormalMode))
+          } yield Redirect(QropsSchemeManagerIsIndividualOrOrgPage.nextPage(mode, updatedAnswers))
       )
   }
 }

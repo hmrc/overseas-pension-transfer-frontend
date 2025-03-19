@@ -15,14 +15,13 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import viewmodels.govuk.all._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
 @import views.ViewUtils.title
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.govuk.all._
 @import viewmodels.LegendSize.Large
-
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @this(
     layout: templates.Layout,
@@ -34,18 +33,19 @@
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("memberIsResidentUK.title"))) {
+@layout(pageTitle = title(form, messages("qropsSchemeManagerIsIndividualOrOrg.title"))) {
 
-    @formHelper(action = routes.MemberIsResidentUKController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.QropsSchemeManagerIsIndividualOrOrgController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(Text(messages("memberIsResidentUK.heading"))).asPageHeading(size = Large)
+            RadiosViewModel(
+                field  = form("value"),
+                legend = LegendViewModel(Text(messages("qropsSchemeManagerIsIndividualOrOrg.heading"))).asPageHeading(size = Large),
+                items  = QropsSchemeManagerIsIndividualOrOrg.options
             )
             .withHint(HintViewModel(Text(messages("radios.hint"))))
         )

@@ -17,54 +17,60 @@
 package controllers
 
 import controllers.actions._
-import forms.MemberDoesNotHaveNinoFormProvider
-import models.requests.DataRequest
-
-import javax.inject.Inject
-import models.{Mode, NormalMode}
-import pages.{MemberDoesNotHaveNinoPage, MemberNamePage}
+import forms.MembersLastUKAddressFormProvider
+import models.{MembersLastUKAddress, Mode, UserAnswers}
+import pages.{MemberNamePage, MembersLastUKAddressPage}
+import play.api.Logging
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import views.html.MemberDoesNotHaveNinoView
+import views.html.MembersLastUKAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MemberDoesNotHaveNinoController @Inject() (
+class MembersLastUKAddressController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: MemberDoesNotHaveNinoFormProvider,
+    formProvider: MembersLastUKAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MemberDoesNotHaveNinoView
+    view: MembersLastUKAddressView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  val form = formProvider()
+  private def form(userAnswers: UserAnswers): Form[MembersLastUKAddress] = formProvider(userAnswers)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(MemberDoesNotHaveNinoPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      val userAnswers  = request.userAnswers
+      val preparedForm = userAnswers.get(MembersLastUKAddressPage) match {
+        case None        => form(userAnswers)
+        case Some(value) => form(userAnswers).fill(value)
       }
-      Ok(view(preparedForm, memberFullName(request.userAnswers), mode))
+
+      Ok(view(preparedForm, memberFullName(userAnswers), mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
+      form(request.userAnswers).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.MemberDateOfBirthController.onPageLoad(NormalMode))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, value))
+            _              <- {
+              logger.info(Json.stringify(updatedAnswers.data))
+              sessionRepository.set(updatedAnswers)
+            }
+          } yield Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
       )
   }
 }

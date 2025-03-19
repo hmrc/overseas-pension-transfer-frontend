@@ -19,8 +19,14 @@ package generators
 import models._
 import org.scalacheck.Arbitrary
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryQropsSchemeManagerIsIndividualOrOrg: Arbitrary[QropsSchemeManagerIsIndividualOrOrg] =
+    Arbitrary {
+      Gen.oneOf(QropsSchemeManagerIsIndividualOrOrg.values)
+    }
 
   implicit lazy val arbitrarySchemeManagersName: Arbitrary[SchemeManagersName] =
     Arbitrary {
