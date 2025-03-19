@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.{Address, FoundAddress, RecordSet}
+import models.address._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
 
 case class AddressViewModel(

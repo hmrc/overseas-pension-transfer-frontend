@@ -16,7 +16,8 @@
 
 package base
 
-import models.{FoundAddress, FoundAddressSet, NoAddressFound, UkAddress, UserAnswers}
+import models.address._
+import models.UserAnswers
 import pages.{MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
 
 trait AddressBase {
@@ -28,7 +29,7 @@ trait AddressBase {
         Seq(
           FoundAddress(
             id      = "GB990091234514",
-            address = UkAddress(
+            address = MembersLookupLastUkAddress(
               line1      = "2 Other Place",
               line2      = Some("Some District"),
               line3      = None,
@@ -39,7 +40,7 @@ trait AddressBase {
           ),
           FoundAddress(
             id      = "GB990091234515",
-            address = UkAddress(
+            address = MembersLookupLastUkAddress(
               line1      = "3 Other Place",
               line2      = Some("Some District"),
               line3      = None,

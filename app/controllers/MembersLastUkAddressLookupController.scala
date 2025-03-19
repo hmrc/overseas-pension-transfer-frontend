@@ -19,7 +19,8 @@ package controllers
 import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import controllers.actions._
 import forms.MembersLastUkAddressLookupFormProvider
-import models.{FoundAddressResponse, FoundAddressSet, Mode, NoAddressFound}
+import models.address.{FoundAddressResponse, FoundAddressSet, NoAddressFound}
+import models.Mode
 import pages.MembersLastUkAddressLookupPage
 import play.api.Logging
 import play.api.data.Form

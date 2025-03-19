@@ -26,13 +26,13 @@
 @(postcode: String)(implicit request: Request[_], messages: Messages)
 
 @searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
+@manualEntry = @{routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
 
 @layout(pageTitle = titleNoForm(messages("memberLastUkAddressNotFound.title"))) {
 
     <h1 class="govuk-heading-l">@messages("memberLastUkAddressNotFound.heading")</h1>
-    @{//TODO: replace link in paragraph with route to manual entry
-    }
+
     <p class="govuk-body">@Html(
-     messages("memberLastUkAddressNotFound.paragraph", postcode, searchAgain, "#"))
+     messages("memberLastUkAddressNotFound.paragraph", postcode, searchAgain, manualEntry))
     </p>
 }

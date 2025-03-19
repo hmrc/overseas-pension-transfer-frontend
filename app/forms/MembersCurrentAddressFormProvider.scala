@@ -20,7 +20,7 @@ import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
 import play.api.data.{Form, Forms}
 import play.api.data.Forms._
-import models.MembersCurrentAddress
+import models.address._
 
 class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
 

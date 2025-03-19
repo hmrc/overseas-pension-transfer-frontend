@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models
+package models.address
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -48,13 +48,13 @@ object FoundAddressResponse {
 
   def fromRecordSet(searchedPostcode: String, rs: RecordSet): FoundAddressResponse =
     if (rs.addresses.nonEmpty) {
-      FoundAddressSet(searchedPostcode, rs.addresses.map(ar => FoundAddress(ar.id, UkAddress.fromRawAddress(ar.address))).sorted)
+      FoundAddressSet(searchedPostcode, rs.addresses.map(ar => FoundAddress(ar.id, MembersLookupLastUkAddress.fromRawAddress(ar.address))).sorted)
     } else {
       NoAddressFound(searchedPostcode)
     }
 }
 
-case class FoundAddress(id: String, address: UkAddress)
+case class FoundAddress(id: String, address: MembersLookupLastUkAddress)
 
 object FoundAddress {
   implicit val format: OFormat[FoundAddress] = Json.format

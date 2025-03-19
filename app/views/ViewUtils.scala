@@ -16,12 +16,8 @@
 
 package views
 
-import models.{Address, AddressRecord, RecordSet, UkAddress}
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import viewmodels.AddressField
 
 object ViewUtils {
 

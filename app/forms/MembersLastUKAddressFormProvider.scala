@@ -17,7 +17,8 @@
 package forms
 
 import forms.mappings.{Mappings, Regex}
-import models.{MembersLastUKAddress, UserAnswers}
+import models.UserAnswers
+import models.address._
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import utils.AppUtils
@@ -52,7 +53,7 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex wit
         "postcode"     -> text("membersLastUKAddress.error.postcode.required")
           .verifying(maxLength(length16, "membersLastUKAddress.error.postcode.length"))
           .verifying(regexp(postcodeRegex, "membersLastUKAddress.error.postcode.incorrect"))
-      )(MembersLastUKAddress.apply)(x => Some(x.addressLine1, x.addressLine2, x.townOrCity, x.county, x.postcode))
+      )(MembersLastUKAddress.apply)(MembersLastUKAddress.unapply)
     )
   }
 }

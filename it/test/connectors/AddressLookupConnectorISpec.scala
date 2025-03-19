@@ -17,7 +17,7 @@
 package connectors
 
 import base.BaseISpec
-import models.{Address, AddressRecord, Country, LocalCustodian, RawAddress, RecordSet, Subdivision, UkAddress}
+import models.address._
 import play.api.http.Status.BAD_REQUEST
 import play.api.test.Injecting
 import stubs.AddressLookupStub

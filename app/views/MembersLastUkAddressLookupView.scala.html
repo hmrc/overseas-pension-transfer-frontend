@@ -34,6 +34,8 @@
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
+@manualEntry = @{routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
+
 @layout(pageTitle = title(form, messages("membersLastUkAddressLookup.title"))) {
 
     @formHelper(action = routes.MembersLastUkAddressLookupController.onSubmit(mode)) {
@@ -52,9 +54,8 @@
             .withHint(HintViewModel(Text(messages("membersLastUkAddressLookup.hint"))))
             .withWidth(OneHalf)
         )
-      @{//TODO: replace link with route to manual entry
-      }
-        <p class="govuk-body">@Html(messages("membersLastUkAddressLookup.link", "#"))</p>
+
+        <p class="govuk-body">@Html(messages("membersLastUkAddressLookup.link", manualEntry))</p>
 
         @govukButton(
             ButtonViewModel(Text(messages("site.continue")))

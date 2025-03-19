@@ -17,7 +17,7 @@
 package generators
 
 import models._
-import org.scalacheck.Arbitrary
+import models.address.MembersCurrentAddress
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 

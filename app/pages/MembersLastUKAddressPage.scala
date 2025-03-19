@@ -17,7 +17,8 @@
 package pages
 
 import controllers.routes
-import models.{MembersLastUKAddress, UserAnswers}
+import models.UserAnswers
+import models.address._
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

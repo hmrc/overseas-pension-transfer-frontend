@@ -17,9 +17,6 @@
 package controllers
 
 import base.{AddressBase, SpecBase}
-import forms.MemberSelectLastUkAddressFormProvider
-import models.{AddressRecord, Country, RecordSet, UkAddress, UserAnswers}
-import pages.MembersLastUkAddressLookupPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.MemberLastUkAddressNotFoundView

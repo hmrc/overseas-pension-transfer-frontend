@@ -19,9 +19,9 @@ package forms
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
-import models.MembersLastUKAddress
 import pages.MembersLastUKAddressPage
 import play.api.data.FormError
+import models.address._
 
 class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with SpecBase with Regex {
 
@@ -161,7 +161,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      validAnswer.postcode
+      stringsMatchingRegex(postcodeRegex)
     )
 
     behave like mandatoryField(

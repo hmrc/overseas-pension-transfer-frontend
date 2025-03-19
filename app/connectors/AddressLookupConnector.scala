@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.RecordSet
+import models.address._
 import play.api.Logging
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}

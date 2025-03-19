@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions._
-import models.NoAddressFound
+import models.address.NoAddressFound
 import pages.MembersLastUkAddressLookupPage
 
 import javax.inject.Inject

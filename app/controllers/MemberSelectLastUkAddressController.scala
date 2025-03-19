@@ -18,9 +18,10 @@ package controllers
 
 import controllers.actions._
 import forms.MemberSelectLastUkAddressFormProvider
+import models.address.{FoundAddressSet, NoAddressFound}
 
 import javax.inject.Inject
-import models.{FoundAddressSet, Mode, NoAddressFound, NormalMode}
+import models.{Mode, NormalMode}
 import pages.{MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}

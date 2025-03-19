@@ -18,7 +18,6 @@ package forms
 
 import base.AddressBase
 import forms.behaviours.OptionFieldBehaviours
-import models.{AddressRecord, Country, RecordSet, UkAddress}
 import play.api.data.FormError
 
 class MemberSelectLastUkAddressFormProviderSpec extends OptionFieldBehaviours with AddressBase {

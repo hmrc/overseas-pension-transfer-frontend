@@ -18,19 +18,17 @@ package controllers
 
 import controllers.actions._
 import forms.MemberConfirmLastUkAddressFormProvider
-
-import javax.inject.Inject
-import models.{Mode, NormalMode}
-import pages.{MemberConfirmLastUkAddressPage, MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
+import models.Mode
+import pages.{MemberConfirmLastUkAddressPage, MemberSelectLastUkAddressPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.AddressViewModel
 import views.html.MemberConfirmLastUkAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MemberConfirmLastUkAddressController @Inject() (

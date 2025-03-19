@@ -17,8 +17,9 @@
 package pages
 
 import controllers.routes
-import models.{FoundAddressResponse, NormalMode, RecordSet, UserAnswers}
-import play.api.libs.json.{JsPath, Json, OFormat}
+import models.address.FoundAddressResponse
+import models.{NormalMode, UserAnswers}
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object MembersLastUkAddressLookupPage extends QuestionPage[FoundAddressResponse] {
