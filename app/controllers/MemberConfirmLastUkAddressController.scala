@@ -73,11 +73,10 @@ class MemberConfirmLastUkAddressController @Inject() (
             _ =>
               for {
                 clearedLookupUA <- Future.fromTry(MemberConfirmLastUkAddressPage.clearAddressLookups(request.userAnswers))
-                updatedAnswers  <- {
-                  val membersLastUkAddress = MembersLastUKAddress.fromLookupAddress(selectedAddress.address)
-                  Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, membersLastUkAddress))
-                }
-                _               <- sessionRepository.set(updatedAnswers)
+                updatedAnswers  <-
+                  Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, selectedAddress.address))
+
+                _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(MemberConfirmLastUkAddressPage.nextPage(mode, updatedAnswers))
           )
         case _                     =>

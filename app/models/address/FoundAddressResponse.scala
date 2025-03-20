@@ -54,7 +54,7 @@ object FoundAddressResponse {
     }
 }
 
-case class FoundAddress(id: String, address: MembersLookupLastUkAddress)
+case class FoundAddress(id: String, address: Address)
 
 object FoundAddress {
   implicit val format: OFormat[FoundAddress] = Json.format

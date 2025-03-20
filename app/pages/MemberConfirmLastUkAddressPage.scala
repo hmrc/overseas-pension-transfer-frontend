@@ -27,7 +27,7 @@ case object MemberConfirmLastUkAddressPage extends Page {
   override def toString: String = "memberConfirmLastUkAddress"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.MemberNameController.onPageLoad(NormalMode)
 
   def clearAddressLookups(answers: UserAnswers): Try[UserAnswers] =
     answers.remove(MembersLastUkAddressLookupPage).get.remove(MemberSelectLastUkAddressPage)
