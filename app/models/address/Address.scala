@@ -16,6 +16,7 @@
 
 package models.address
 
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 
 sealed trait Address {
@@ -35,88 +36,34 @@ sealed trait Address {
 
 object Address {
 
-  implicit val writes: OWrites[Address] = OWrites[Address] { address =>
-    val base = Json.obj(
-      "line1"      -> address.line1,
-      "line2"      -> address.line2,
-      "line3"      -> address.line3,
-      "line4"      -> address.line4,
-      "townOrCity" -> address.townOrCity,
-      "county"     -> address.county,
-      "country"    -> address.country,
-      "postcode"   -> address.postcode
-    )
-
-    val withType = address match {
-      case _: MembersLastUKAddress       => base + ("type" -> JsString("MembersLastUKAddress"))
-      case _: MembersLookupLastUkAddress => base + ("type" -> JsString("MembersLookupLastUkAddress"))
-      case _: MembersCurrentAddress      => base + ("type" -> JsString("MembersCurrentAddress"))
-    }
-    withType
-  }
-
   implicit val reads: Reads[Address] =
     (__ \ "type").read[String].flatMap {
       case "MembersLastUKAddress" =>
-        for {
-          line1      <- (__ \ "line1").read[String]
-          line2      <- (__ \ "line2").readNullable[String]
-          townOrCity <- (__ \ "townOrCity").readNullable[String]
-          county     <- (__ \ "county").readNullable[String]
-          postcode   <- (__ \ "postcode").readNullable[String]
-        } yield {
-          MembersLastUKAddress(
-            addressLine1  = line1,
-            addressLine2  = line2,
-            rawTownOrCity = townOrCity.getOrElse(""),
-            county        = county,
-            rawPostcode   = postcode.getOrElse("")
-          )
-        }
+        MembersLastUKAddress.reads.widen[Address]
 
       case "MembersLookupLastUkAddress" =>
-        for {
-          line1      <- (__ \ "line1").read[String]
-          line2      <- (__ \ "line2").readNullable[String]
-          line3      <- (__ \ "line3").readNullable[String]
-          line4      <- (__ \ "line4").readNullable[String]
-          townOrCity <- (__ \ "townOrCity").readNullable[String]
-          country    <- (__ \ "country").readNullable[String]
-          postcode   <- (__ \ "postcode").readNullable[String]
-        } yield {
-          MembersLookupLastUkAddress(
-            line1      = line1,
-            line2      = line2,
-            line3      = line3,
-            line4      = line4,
-            townOrCity = townOrCity,
-            country    = country,
-            postcode   = postcode
-          )
-        }
+        MembersLookupLastUkAddress.reads.widen[Address]
 
       case "MembersCurrentAddress" =>
-        for {
-          line1      <- (__ \ "line1").read[String]
-          line2      <- (__ \ "line2").read[String]
-          line3      <- (__ \ "line3").readNullable[String]
-          townOrCity <- (__ \ "townOrCity").readNullable[String]
-          country    <- (__ \ "country").readNullable[String]
-          postcode   <- (__ \ "postcode").readNullable[String]
-        } yield {
-          MembersCurrentAddress(
-            addressLine1 = line1,
-            addressLine2 = line2,
-            addressLine3 = line3,
-            townOrCity   = townOrCity,
-            country      = country,
-            postcode     = postcode
-          )
-        }
+        MembersCurrentAddress.reads.widen[Address]
 
       case other =>
         Reads(_ => JsError(s"Unknown Address type: $other"))
     }
+
+  implicit val writes: OWrites[Address] = OWrites {
+    case a: MembersLastUKAddress =>
+      MembersLastUKAddress.writes.writes(a).as[JsObject] +
+        ("type" -> JsString("MembersLastUKAddress"))
+
+    case a: MembersLookupLastUkAddress =>
+      MembersLookupLastUkAddress.writes.writes(a).as[JsObject] +
+        ("type" -> JsString("MembersLookupLastUkAddress"))
+
+    case a: MembersCurrentAddress =>
+      MembersCurrentAddress.writes.writes(a).as[JsObject] +
+        ("type" -> JsString("MembersCurrentAddress"))
+  }
 
   implicit val format: OFormat[Address] = OFormat(reads, writes)
 }
@@ -139,6 +86,26 @@ case class MembersLastUKAddress(
 
 object MembersLastUKAddress {
 
+  implicit val reads: Reads[MembersLastUKAddress] = (
+    (__ \ "line1").read[String] and
+      (__ \ "line2").readNullable[String] and
+      (__ \ "townOrCity").read[String] and
+      (__ \ "county").readNullable[String] and
+      (__ \ "postcode").read[String]
+  )(MembersLastUKAddress.apply _)
+
+  implicit val writes: OWrites[MembersLastUKAddress] = OWrites[MembersLastUKAddress] { address =>
+    Json.obj(
+      "line1"      -> address.line1,
+      "line2"      -> address.line2,
+      "townOrCity" -> address.rawTownOrCity,
+      "county"     -> address.county,
+      "postcode"   -> address.rawPostcode
+    )
+  }
+
+  implicit val format: OFormat[MembersLastUKAddress] = OFormat(reads, writes)
+
   def fromAddress(address: Address): MembersLastUKAddress = {
     MembersLastUKAddress(
       addressLine1  = address.line1,
@@ -159,10 +126,34 @@ case class MembersLookupLastUkAddress(
     country: Option[String],
     postcode: Option[String]
   ) extends Address {
-  val county: Option[Nothing] = None
+  val county: Option[String] = None
 }
 
 object MembersLookupLastUkAddress {
+
+  implicit val reads: Reads[MembersLookupLastUkAddress] = (
+    (__ \ "line1").read[String] and
+      (__ \ "line2").readNullable[String] and
+      (__ \ "line3").readNullable[String] and
+      (__ \ "line4").readNullable[String] and
+      (__ \ "townOrCity").readNullable[String] and
+      (__ \ "country").readNullable[String] and
+      (__ \ "postcode").readNullable[String]
+  )(MembersLookupLastUkAddress.apply _)
+
+  implicit val writes: OWrites[MembersLookupLastUkAddress] = OWrites[MembersLookupLastUkAddress] { address =>
+    Json.obj(
+      "line1"      -> address.line1,
+      "line2"      -> address.line2,
+      "line3"      -> address.line3,
+      "line4"      -> address.line4,
+      "townOrCity" -> address.townOrCity,
+      "country"    -> address.country,
+      "postcode"   -> address.postcode
+    )
+  }
+
+  implicit val format: OFormat[MembersLookupLastUkAddress] = OFormat(reads, writes)
 
   def fromRawAddress(rawAddress: RawAddress): MembersLookupLastUkAddress = {
     MembersLookupLastUkAddress(
@@ -193,6 +184,28 @@ case class MembersCurrentAddress(
 }
 
 object MembersCurrentAddress {
+
+  implicit val reads: Reads[MembersCurrentAddress] = (
+    (__ \ "line1").read[String] and
+      (__ \ "line2").read[String] and
+      (__ \ "line3").readNullable[String] and
+      (__ \ "townOrCity").readNullable[String] and
+      (__ \ "country").readNullable[String] and
+      (__ \ "postcode").readNullable[String]
+  )(MembersCurrentAddress.apply _)
+
+  implicit val writes: OWrites[MembersCurrentAddress] = OWrites[MembersCurrentAddress] { address =>
+    Json.obj(
+      "line1"      -> address.line1,
+      "line2"      -> address.line2,
+      "line3"      -> address.line3,
+      "townOrCity" -> address.townOrCity,
+      "country"    -> address.country,
+      "postcode"   -> address.postcode
+    )
+  }
+
+  implicit val format: OFormat[MembersCurrentAddress] = OFormat(reads, writes)
 
   def fromAddress(address: Address): MembersCurrentAddress = {
     MembersCurrentAddress(
