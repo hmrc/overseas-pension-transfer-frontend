@@ -25,18 +25,18 @@
 @import viewmodels.LabelSize.Large
 
 @this(
-        layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
-        govukButton: GovukButton
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("qropsName.title"))) {
+@layout(pageTitle = title(form, messages("organisationName.title"))) {
 
-    @formHelper(action = routes.QropsNameController.onSubmit(mode)) {
+    @formHelper(action = routes.OrganisationNameController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -44,8 +44,8 @@
 
         @govukInput(
             InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(Text(messages("qropsName.heading"))).asPageHeading(size = Large)
+                field = form("organisationName"),
+                label = LabelViewModel(Text(messages("organisationName.heading"))).asPageHeading(size = Large)
             )
             .withWidth(OneHalf)
         )

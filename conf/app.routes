@@ -80,11 +80,6 @@ POST       /scheme-managers-name                                     controllers
 GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
 
-GET        /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
-
 GET        /members-last-uk-address-lookup                           controllers.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = NormalMode)
 POST       /members-last-uk-address-lookup                           controllers.MembersLastUkAddressLookupController.onSubmit(mode: Mode = NormalMode)
 GET        /change-members-last-uk-address-lookup                    controllers.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = CheckMode)
@@ -101,3 +96,14 @@ GET        /member-confirm-last-uk-address                           controllers
 POST       /member-confirm-last-uk-address                           controllers.MemberConfirmLastUkAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-confirm-last-uk-address                    controllers.MemberConfirmLastUkAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-confirm-last-uk-address                    controllers.MemberConfirmLastUkAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
+
+GET        /organisation-name                        controllers.OrganisationNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /organisation-name                        controllers.OrganisationNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-organisation-name                  controllers.OrganisationNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-organisation-name                  controllers.OrganisationNameController.onSubmit(mode: Mode = CheckMode)
+
