@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package forms
 
-trait Regex {
+import javax.inject.Inject
+import forms.mappings.{Mappings, Regex}
+import play.api.data.Form
 
-  val nameRegex: String =
-    "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+class QROPSReferenceFormProvider @Inject() extends Mappings with Regex {
 
-  val ninoRegex: String = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
-
-  val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
-
-  val postcodeRegex: String = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
-
-  val qropsRefRegex: String = "^(QROPS\\d{6}|QROPS|\\d{6})$"
+  def apply(): Form[String] =
+    Form(
+      "qropsRef" -> text("qropsReference.error.required")
+        .verifying(regexp(qropsRefRegex, "qropsReference.error.invalid"))
+    )
 }
