@@ -33,6 +33,7 @@ trait AddressBase {
               line1      = "2 Other Place",
               line2      = Some("Some District"),
               line3      = None,
+              line4      = None,
               townOrCity = Some("Anytown"),
               postcode   = Some("ZZ1 1ZZ"),
               country    = Some("United Kingdom")
@@ -44,6 +45,7 @@ trait AddressBase {
               line1      = "3 Other Place",
               line2      = Some("Some District"),
               line3      = None,
+              line4      = None,
               townOrCity = Some("Anytown"),
               postcode   = Some("ZZ1 1ZZ"),
               country    = Some("United Kingdom")
