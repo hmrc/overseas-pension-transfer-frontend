@@ -16,9 +16,11 @@
 
 package controllers
 
-import base.SpecBase
+import base.{AddressBase, SpecBase}
+import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import forms.MembersLastUkAddressLookupFormProvider
 import models.NormalMode
+import models.address.RecordSet
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -31,7 +33,7 @@ import views.html.MembersLastUkAddressLookupView
 
 import scala.concurrent.Future
 
-class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSugar {
+class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSugar with AddressBase {
 
   private val formProvider = new MembersLastUkAddressLookupFormProvider()
   private val form         = formProvider()
@@ -58,19 +60,30 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository      = mock[SessionRepository]
+      val mockAddressLookupConnector = mock[AddressLookupConnector]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
+      when(mockAddressLookupConnector.lookup(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            AddressLookupSuccessResponse(connectorPostcode, recordSet)
+          )
+        )
+
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+          )
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, membersLastUkAddressLookupRoute)
-            .withFormUrlEncodedBody(("value", "ZZ1 1ZZ"))
+            .withFormUrlEncodedBody(("value", connectorPostcode))
 
         val result = route(application, request).value
 
@@ -99,6 +112,40 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
       }
     }
 
+    "must redirect to nextPageNoResults when the connector returns a success but no addresses found" in {
+      val mockSessionRepository      = mock[SessionRepository]
+      val mockAddressLookupConnector = mock[AddressLookupConnector]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val noAddresses = RecordSet(Seq.empty)
+      when(mockAddressLookupConnector.lookup(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            AddressLookupSuccessResponse("AB1 2CD", noAddresses)
+          )
+        )
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, membersLastUkAddressLookupRoute)
+            .withFormUrlEncodedBody(("value", "ZZ1 1ZZ"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual MembersLastUkAddressLookupPage.nextPageNoResults().url
+      }
+    }
+
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
@@ -110,6 +157,41 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to nextPageRecovery when the connector returns an error" in {
+      val mockSessionRepository      = mock[SessionRepository]
+      val mockAddressLookupConnector = mock[AddressLookupConnector]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockAddressLookupConnector.lookup(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            AddressLookupErrorResponse(new RuntimeException("Simulated address service failure"))
+          )
+        )
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, membersLastUkAddressLookupRoute)
+            .withFormUrlEncodedBody(("value", "AB1 2CD"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual
+          MembersLastUkAddressLookupPage.nextPageRecovery(
+            Some(MembersLastUkAddressLookupPage.recoveryModeReturnUrl)
+          ).url
       }
     }
 

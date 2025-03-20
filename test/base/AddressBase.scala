@@ -22,6 +22,80 @@ import pages.{MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
 
 trait AddressBase {
 
+  val connectorPostcode = "BB00 1BB"
+
+  val recordSet: RecordSet =
+    RecordSet(
+      Seq(
+        AddressRecord(
+          id                   = "GB200000698110",
+          uprn                 = Some(200000698110L),
+          parentUprn           = Some(200000698110L),
+          usrn                 = Some(200000698110L),
+          organisation         = Some("Test Organisation"),
+          address              = RawAddress(
+            lines       = List("2 Test Close"),
+            town        = "Test Town",
+            postcode    = "BB00 1BB",
+            subdivision = Some(Subdivision(
+              code = "GB-ENG",
+              name = "England"
+            )),
+            country     = Country(
+              code = "GB",
+              name = "United Kingdom"
+            )
+          ),
+          language             = "en",
+          localCustodian       = Some(
+            LocalCustodian(
+              code = 1760,
+              name = "Test Valley"
+            )
+          ),
+          location             = Some(Seq(BigDecimal(-1.234), BigDecimal(50.678))),
+          blpuState            = None,
+          logicalState         = None,
+          streetClassification = None,
+          administrativeArea   = Some("Some Area"),
+          poBox                = Some("1234")
+        ),
+        AddressRecord(
+          id                   = "GB200000708497",
+          uprn                 = Some(200000708497L),
+          parentUprn           = Some(200000708497L),
+          usrn                 = Some(200000708497L),
+          organisation         = Some("Another Organisation"),
+          address              = RawAddress(
+            lines       = List("4 Test Close"),
+            town        = "Test Town",
+            postcode    = "BB00 1BB",
+            subdivision = Some(Subdivision(
+              code = "GB-ENG",
+              name = "England"
+            )),
+            country     = Country(
+              code = "GB",
+              name = "United Kingdom"
+            )
+          ),
+          language             = "en",
+          localCustodian       = Some(
+            LocalCustodian(
+              code = 1760,
+              name = "Test Valley"
+            )
+          ),
+          location             = Some(Seq(BigDecimal(-1.234), BigDecimal(50.678))),
+          blpuState            = None,
+          logicalState         = None,
+          streetClassification = None,
+          administrativeArea   = Some("Some Other Area"),
+          poBox                = Some("5678")
+        )
+      )
+    )
+
   val foundAddresses: FoundAddressSet      =
     FoundAddressSet(
       searchedPostcode = "ZZ1 1ZZ",
