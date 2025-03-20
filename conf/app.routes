@@ -84,3 +84,8 @@ GET        /member-does-not-have-nino                        controllers.MemberD
 POST       /member-does-not-have-nino                        controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-does-not-have-nino                 controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
+
+GET        /organisation-name                        controllers.OrganisationNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /organisation-name                        controllers.OrganisationNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-organisation-name                  controllers.OrganisationNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-organisation-name                  controllers.OrganisationNameController.onSubmit(mode: Mode = CheckMode)
