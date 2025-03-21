@@ -31,7 +31,7 @@ object MembersLastUKAddressSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersLastUKAddressPage).map {
       answer =>
-        val value = HtmlFormat.escape(answer.addressLine1).toString + "<br/>" + HtmlFormat.escape(answer.addressLine2.get).toString
+        val value = HtmlFormat.escape(answer.line1).toString + "<br/>" + HtmlFormat.escape(answer.line2.get).toString
 
         SummaryListRowViewModel(
           key     = "membersLastUKAddress.checkYourAnswersLabel",

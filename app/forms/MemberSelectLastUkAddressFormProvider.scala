@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import play.api.libs.json._
+import javax.inject.Inject
 
-case class MembersLastUKAddress(
-    addressLine1: String,
-    addressLine2: Option[String],
-    townOrCity: String,
-    county: Option[String],
-    postcode: String
-  )
+import forms.mappings.Mappings
+import play.api.data.Form
 
-object MembersLastUKAddress {
+class MemberSelectLastUkAddressFormProvider @Inject() extends Mappings {
 
-  implicit val format: OFormat[MembersLastUKAddress] = Json.format
+  def apply(validIds: Seq[String]): Form[String] =
+    Form(
+      "value" -> text("memberSelectLastUkAddress.error.required")
+        .verifying(
+          "memberSelectLastUkAddress.error.invalid",
+          chosenId => validIds.contains(chosenId)
+        )
+    )
 }

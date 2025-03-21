@@ -18,6 +18,8 @@ package pages
 
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
+
 import scala.language.implicitConversions
 
 trait Page {
@@ -32,6 +34,12 @@ trait Page {
 
   protected def nextPageCheckMode(answers: UserAnswers): Call =
     controllers.routes.CheckYourAnswersController.onPageLoad()
+
+  def nextPageRecovery(returnUrl: Option[String] = None): Call =
+    controllers.routes.JourneyRecoveryController.onPageLoad(
+      returnUrl.map(url => RedirectUrl(url))
+    )
+
 }
 
 object Page {

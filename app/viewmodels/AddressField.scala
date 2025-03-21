@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package pages
+package viewmodels
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import models.address._
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+trait AddressField[A] {
+  def toOption(a: A): Option[String]
+}
 
-case object MembersCurrentAddressPage extends QuestionPage[Address] {
+object AddressField {
 
-  override def path: JsPath = JsPath \ toString
+  implicit val stringField: AddressField[String] = (a: String) => if (a.nonEmpty) Some(a) else None
 
-  override def toString: String = "membersCurrentAddress"
+  implicit val optionStringField: AddressField[Option[String]] = (a: Option[String]) => a.filter(_.nonEmpty)
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
 }

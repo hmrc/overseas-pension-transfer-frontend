@@ -21,6 +21,7 @@ import forms.MembersCurrentAddressFormProvider
 
 import javax.inject.Inject
 import models.Mode
+import models.address.MembersCurrentAddress
 import pages.MembersCurrentAddressPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -49,8 +50,8 @@ class MembersCurrentAddressController @Inject() (
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(MembersCurrentAddressPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None          => form
+        case Some(address) => form.fill(MembersCurrentAddress.fromAddress(address))
       }
 
       Ok(view(preparedForm, mode))
