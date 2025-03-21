@@ -38,6 +38,8 @@
 
 @searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 
+@manualEntry = @{routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
+
 @addressLength = @{addressRadios.length}
 
 @layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title"))) {
@@ -54,14 +56,14 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(
-                    HtmlContent(messages("membersLastUkAddressLookup.legend", addressLength, postcode, searchAgain))
+                    HtmlContent(messages("memberSelectLastUkAddress.legend", addressLength, postcode, searchAgain))
                 ).withCssClass("govuk-!-padding-bottom-3"),
                 items  = addressRadios
             )
 
         )
 
-
+        <p class="govuk-body govuk-!-padding-bottom-2">@Html(messages("memberSelectLastUkAddress.link", manualEntry))</p>
 
         @govukButton(
             ButtonViewModel(Text(messages("site.continue")))

@@ -238,7 +238,8 @@ membersLastUkAddressLookup.link = You can also <a href="{0}" class="govuk-link">
 
 memberSelectLastUkAddress.title = Select undefined undefined's last UK address
 memberSelectLastUkAddress.heading = Select undefined undefined's last UK address
-membersLastUkAddressLookup.legend = {0} addresses found for <b>{1}</b> or try a <a href="{2}" class="govuk-link">different postcode</a>.
+memberSelectLastUkAddress.link = You can also <a href="{0}" class="govuk-link">enter the address manually</a>.
+memberSelectLastUkAddress.legend = {0} addresses found for <b>{1}</b> or try a <a href="{2}" class="govuk-link">different postcode</a>.
 memberSelectLastUkAddress.checkYourAnswersLabel = memberSelectLastUkAddress
 memberSelectLastUkAddress.error.required = Select the member's last UK address
 memberSelectLastUkAddress.change.hidden = MemberSelectLastUkAddress
