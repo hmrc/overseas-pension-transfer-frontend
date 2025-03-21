@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package pages
 
-trait Regex {
+import controllers.routes
+import models.UserAnswers
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-  val nameRegex: String =
-    "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+case object QROPSReferencePage extends QuestionPage[String] {
 
-  val ninoRegex: String = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
+  override def path: JsPath = JsPath \ toString
 
-  val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
+  override def toString: String = "qropsReference"
 
-  val postcodeRegex: String = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
-
-  val qropsRefRegex: String = "^(QROPS\\d{6}|QROPS|\\d{6})$"
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
 }
