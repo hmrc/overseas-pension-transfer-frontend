@@ -22,9 +22,19 @@ import play.api.data.Form
 
 class QROPSReferenceFormProvider @Inject() extends Mappings with Regex {
 
+  val referencePrefix = "QROPS"
+
   def apply(): Form[String] =
     Form(
       "qropsRef" -> text("qropsReference.error.required")
         .verifying(regexp(qropsRefRegex, "qropsReference.error.invalid"))
+        .transform[String](
+          raw => prependReferencePrefix(raw),
+          formatted => formatted
+        )
     )
+
+  private def prependReferencePrefix(raw: String): String = {
+    if (raw.startsWith(referencePrefix)) raw else s"$referencePrefix$raw"
+  }
 }

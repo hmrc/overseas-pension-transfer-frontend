@@ -19,8 +19,8 @@ package controllers
 import controllers.actions._
 import forms.QROPSReferenceFormProvider
 import javax.inject.Inject
-import models.Mode
-import pages.QROPSReferencePage
+import models.{Mode, NormalMode}
+import pages.{IndexPage, QROPSReferencePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -61,13 +61,9 @@ class QROPSReferenceController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSReferencePage, prependReferencePrefix(value)))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSReferencePage, value))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(QROPSReferencePage.nextPage(mode, updatedAnswers))
       )
-  }
-
-  def prependReferencePrefix(input: String): String = {
-    if (input.startsWith(referencePrefix)) input else s"$referencePrefix$input"
   }
 }
