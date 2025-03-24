@@ -94,3 +94,8 @@ GET        /qrops-reference                                          controllers
 POST       /qrops-reference                                          controllers.QROPSReferenceController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-reference                                   controllers.QROPSReferenceController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-qrops-reference                                   controllers.QROPSReferenceController.onSubmit(mode: Mode = CheckMode)
+
+GET        /organisation-individual-name                                       controllers.OrgIndividualNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /organisation-individual-name                                       controllers.OrgIndividualNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-organisation-individual-name                                controllers.OrgIndividualNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-organisation-individual-name                                controllers.OrgIndividualNameController.onSubmit(mode: Mode = CheckMode)
