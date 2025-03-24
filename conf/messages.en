@@ -226,10 +226,23 @@ memberDoesNotHaveNino.error.length = The reason for not having a National Insura
 memberDoesNotHaveNino.change.hidden = MemberDoesNotHaveNino
 memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
 
+orgIndividualName.title = Contact details of an individual within the organisation
+orgIndividualName.heading = Contact details of an individual within the organisation with whom HMRC should correspond
+orgIndividualName.checkYourAnswersLabel = Organisation contact
+orgIndividualName.error.firstName.required = Enter the individual''s first name
+orgIndividualName.error.lastName.required = Enter the individual''s last name
+orgIndividualName.error.firstName.length = The individual''s first name must be 35 characters or less
+orgIndividualName.error.lastName.length = The individual''s last name must be 35 characters or less
+orgIndividualName.error.firstName.pattern = The individual''s first name must only include letters, spaces, apostrophes and hyphens
+orgIndividualName.error.lastName.pattern = The individual''s last name must only include letters, spaces, apostrophes and hyphens
+orgIndividualName.firstName.change.hidden = The individual''s first name
+orgIndividualName.lastName.change.hidden = The individual''s last name
+orgIndividualName.change.hidden = Contact details of an individual within the organisation
+
 organisationName.title = What is the name of the organisation?
 organisationName.heading = What is the name of the organisation?
 organisationName.checkYourAnswersLabel = organisationName
 organisationName.error.required = Enter the name of the organisation
-organisationName.error.length = The name of the organisation must be 160 characters or fewer
+organisationName.error.length = The name of the organisation must be 160 characters or less
 organisationName.error.pattern = The name of the organisation must only include letters, spaces, apostrophes and hyphens
 organisationName.change.hidden = What is the name of the organisation?

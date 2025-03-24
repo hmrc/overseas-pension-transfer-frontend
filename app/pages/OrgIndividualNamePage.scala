@@ -21,11 +21,11 @@ import models.{PersonName, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MemberNamePage extends QuestionPage[PersonName] {
+case object OrgIndividualNamePage extends QuestionPage[PersonName] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "memberName"
+  override def toString: String = "orgIndividualName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()
