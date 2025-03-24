@@ -237,7 +237,7 @@ organisationName.change.hidden = What is the name of the organisation?
 
 qropsReference.title = What is the QROPS reference?
 qropsReference.heading = What is the QROPS reference?
-qropsReference.hint = For example, QROPS123456
+qropsReference.hint = For example, QROPS123456.
 qropsReference.prefix = QROPS
 qropsReference.checkYourAnswersLabel = QROPS reference
 qropsReference.error.required = Enter the QROPS Reference
