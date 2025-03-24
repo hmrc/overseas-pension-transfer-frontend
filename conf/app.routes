@@ -89,3 +89,8 @@ GET        /organisation-individual-name                                       c
 POST       /organisation-individual-name                                       controllers.OrgIndividualNameController.onSubmit(mode: Mode = NormalMode)
 GET        /change-organisation-individual-name                                controllers.OrgIndividualNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-organisation-individual-name                                controllers.OrgIndividualNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /organisation-name                        controllers.OrganisationNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /organisation-name                        controllers.OrganisationNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-organisation-name                  controllers.OrganisationNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-organisation-name                  controllers.OrganisationNameController.onSubmit(mode: Mode = CheckMode)
