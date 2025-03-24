@@ -32,9 +32,6 @@ index.title = overseas-pension-transfer-frontend
 index.heading = overseas-pension-transfer-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
-checkYourAnswers.title = Check your answers
-checkYourAnswers.heading = Check your answers
-
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]
@@ -56,6 +53,7 @@ radios.hint = Select one.
 
 common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
+common.undefined.name = Undefined Undefined
 
 common.dateInput.hint = For example, 31 03 1980.
 common.dateInput.error.required.two = Enter a {0} and a {1}
@@ -64,9 +62,15 @@ common.dateInput.error.invalid.character = The Day/Month/Year Field must only in
 common.dateInput.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 1970
 common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the future
 
+checkYourAnswers.title = Check your answers
+checkYourAnswers.heading = Check your answers
+checkYourAnswers.memberDetails.heading = The member's details
+checkYourAnswers.qropsDetails.heading = The QROPS details
+checkYourAnswers.qropsSchemeManagerDetails.heading = The QROPS scheme manager's details
+
 memberName.title = What is the member''s name?
 memberName.heading = What is the member''s name?
-memberName.checkYourAnswersLabel = Member name
+memberName.checkYourAnswersLabel = Name
 memberName.error.memberFirstName.required = Enter the member''s first name
 memberName.error.memberLastName.required = Enter the member''s last name
 memberName.error.memberFirstName.length = Member''s first name must be 35 characters or less
@@ -76,31 +80,22 @@ memberName.error.memberLastName.pattern = The member''s last name must only incl
 memberName.memberFirstName.change.hidden = Member''s first name
 memberName.memberLastName.change.hidden = Member''s last name
 
-schemeManagersName.title = What is the manager''s name?
-schemeManagersName.heading = What is the manager''s name?
-schemeManagersName.checkYourAnswersLabel = Scheme manager''s name
-schemeManagersName.error.firstName.required = Enter the Scheme manager''s first name
-schemeManagersName.error.lastName.required = Enter the Scheme manager''s last name
-schemeManagersName.error.firstName.length = The Scheme manager''s first name must be 35 characters or less
-schemeManagersName.error.lastName.length = The Scheme manager''s last name must be 35 characters or less
-schemeManagersName.error.firstName.pattern = The scheme manager'’s first name must only include letters, spaces, apostrophes and hyphens
-schemeManagersName.error.lastName.pattern = The scheme manager'’s last name must only include letters, spaces, apostrophes and hyphens
-schemeManagersName.firstName.change.hidden = Scheme manager''s name
-schemeManagersName.lastName.change.hidden = Scheme manager''s name
-
 memberNino.title = Enter member''s National Insurance number
-memberNino.heading = What is undefined undefined''s National Insurance number?
-memberNino.checkYourAnswersLabel = Member''s National Insurance number
+memberNino.heading = What is {0}''s National Insurance number?
+memberNino.checkYourAnswersLabel = National Insurance number
 memberNino.error.required = Enter the member’'s National Insurance number
 memberNino.error.pattern = Enter the member’'s National Insurance number in the correct format
-memberNino.change.hidden = Member''s National Insurance number
+memberNino.change.hidden = National Insurance number
 memberNino.hint = For example, QQ123456A.
+memberNino.doesNotHaveNino.link.text = Member doesn''t have a National Insurance number.
 
-memberDateOfLeavingUK.title = When did the member leave the UK?
-memberDateOfLeavingUK.heading = When did {0} leave the UK?
-memberDateOfLeavingUK.checkYourAnswersLabel = Date of leaving the UK
-memberDateOfLeavingUK.error.required.all = Enter the date of leaving the UK
-memberDateOfLeavingUK.change.hidden = Date of leaving the UK
+memberDoesNotHaveNino.title = Why the member doesn’t have a National Insurance number?
+memberDoesNotHaveNino.heading = Why doesn’t {0} have a National Insurance number?
+memberDoesNotHaveNino.checkYourAnswersLabel = Why no National Insurance number
+memberDoesNotHaveNino.error.required = Enter the reason the member does not have a National Insurance number and a reference we can use to identify them
+memberDoesNotHaveNino.error.length = The reason for not having a National Insurance number and reference in its place must be must be 160 characters or less
+memberDoesNotHaveNino.change.hidden = Why no National Insurance number
+memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
 
 memberDateOfBirth.title = DateOfBirth
 memberDateOfBirth.heading = What is {0}’s date of birth?
@@ -108,39 +103,8 @@ memberDateOfBirth.checkYourAnswersLabel = Date of Birth
 memberDateOfBirth.error.required.all = Enter the date of birth
 memberDateOfBirth.change.hidden = Date of Birth
 
-memberIsResidentUk.title = Is the member a resident of the UK for tax purposes?
-memberIsResidentUk.heading = Is {0} currently a resident of UK for tax purposes?
-memberIsResidentUk.yes = Yes
-memberIsResidentUk.no = No
-memberIsResidentUk.checkYourAnswersLabel = memberIsResident
-memberIsResidentUk.error.required = Select one option
-memberIsResidentUk.change.hidden = MemberIsResidentUk
-memberIsResidentUk.hint = Select one
-
-memberDoesNotHaveNino.title = Why the member doesn’t have a National Insurance number?
-memberDoesNotHaveNino.heading = Why doesn’t {0} have a National Insurance number?
-memberDoesNotHaveNino.checkYourAnswersLabel = Other HMRC reference
-memberDoesNotHaveNino.error.required = Enter the reason the member does not have a National Insurance number and a reference we can use to identify them
-memberDoesNotHaveNino.error.length = The reason for not having a National Insurance number and reference in its place must be must be 160 characters or less
-memberDoesNotHaveNino.change.hidden = MemberDoesNotHaveNino
-memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
-
-memberIsResidentUK.title = Is the member a resident of the UK for tax purposes?
-memberIsResidentUK.heading = Is undefined currently a resident of UK for tax purposes?
-memberIsResidentUK.yes = Yes
-memberIsResidentUK.no = No
-memberIsResidentUK.checkYourAnswersLabel = memberIsResident
-memberIsResidentUK.error.required = Select one option
-memberIsResidentUK.change.hidden = MemberIsResidentUK
-
-memberHasEverBeenResidentUK.title = Has undefined undefined ever been a resident in the UK for tax purposes?
-memberHasEverBeenResidentUK.heading = Has undefined undefined ever been a resident in the UK for tax purposes?
-memberHasEverBeenResidentUK.checkYourAnswersLabel = memberHasEverBeenResidentUK
-memberHasEverBeenResidentUK.error.required = Select one option
-memberHasEverBeenResidentUK.change.hidden = memberHasEverBeenResidentUK
-
-membersCurrentAddress.title = What is undefined undefined''s current address?
-membersCurrentAddress.heading = What is undefined undefined''s current address?
+membersCurrentAddress.title = What is {0}''s current address?
+membersCurrentAddress.heading = What is {0}''s current address?
 membersCurrentAddress.addressLine1 = Address line 1
 membersCurrentAddress.addressLine2 = Address line 2
 membersCurrentAddress.addressLine3 = Address line 3 (optional)
@@ -148,8 +112,8 @@ membersCurrentAddress.city = City (optional)
 membersCurrentAddress.country = Country (optional)
 membersCurrentAddress.postcode = Postcode (optional)
 membersCurrentAddress.checkYourAnswersLabel = Current address
-membersCurrentAddress.error.addressLine1.required = Enter the first line of undefined undefined''s address
-membersCurrentAddress.error.addressLine2.required = Enter the second line of undefined undefined''s address
+membersCurrentAddress.error.addressLine1.required = Enter the first line of {0}''s address
+membersCurrentAddress.error.addressLine2.required = Enter the second line of {0}''s address
 membersCurrentAddress.error.addressLine1.length = Address line 1 must be 35 characters or less
 membersCurrentAddress.error.addressLine2.length = Address line 2 must be 35 characters or less
 membersCurrentAddress.error.addressLine3.length = Address line 3 must be 35 characters or less
@@ -167,14 +131,21 @@ membersCurrentAddress.error.addressLine2.pattern = Address line 2 must only incl
 membersCurrentAddress.error.addressLine3.pattern = Address line 3 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 membersCurrentAddress.error.city.pattern = City must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 membersCurrentAddress.error.country.pattern = Country must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+membersCurrentAddress.change.hidden = Current address
 
-qropsSchemeManagerIsIndividualOrOrg.title = Is the scheme manager an individual or organisation?
-qropsSchemeManagerIsIndividualOrOrg.heading = Is the scheme manager an individual or organisation?
-qropsSchemeManagerIsIndividualOrOrg.individual = Individual
-qropsSchemeManagerIsIndividualOrOrg.organisation = Organisation
-qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel = qropsSchemeManagerIsIndividualOrOrg
-qropsSchemeManagerIsIndividualOrOrg.error.required = Select if the scheme manager is an individual or an organisation
-qropsSchemeManagerIsIndividualOrOrg.change.hidden = QropsSchemeManagerIsIndividualOrOrg
+memberIsResidentUK.title = Is the member a resident of the UK for tax purposes?
+memberIsResidentUK.heading = Is {0} currently a resident of UK for tax purposes?
+memberIsResidentUK.yes = Yes
+memberIsResidentUK.no = No
+memberIsResidentUK.checkYourAnswersLabel = Is member a UK resident
+memberIsResidentUK.error.required = Select one option
+memberIsResidentUK.change.hidden = Is member a UK resident
+
+memberHasEverBeenResidentUK.title = Has {0} ever been a resident in the UK for tax purposes?
+memberHasEverBeenResidentUK.heading = Has {0} ever been a resident in the UK for tax purposes?
+memberHasEverBeenResidentUK.checkYourAnswersLabel = Have they ever been a UK resident
+memberHasEverBeenResidentUK.error.required = Select one option
+memberHasEverBeenResidentUK.change.hidden = Have they ever been a UK resident
 
 membersLastUKAddress.title = What was member''s last principal residential address in the UK?
 membersLastUKAddress.heading = What was {0}''s last principal residential address in the UK?
@@ -204,28 +175,55 @@ membersLastUKAddress.county.change.hidden = County (optional)
 membersLastUKAddress.postcode.change.hidden = Postcode
 membersLastUKAddress.change.hidden = Last UK address
 
+memberDateOfLeavingUK.title = When did the member leave the UK?
+memberDateOfLeavingUK.heading = When did {0} leave the UK?
+memberDateOfLeavingUK.checkYourAnswersLabel = Date of leaving the UK
+memberDateOfLeavingUK.error.required.all = Enter the date of leaving the UK
+memberDateOfLeavingUK.change.hidden = Date of leaving the UK
+
+schemeManagersName.title = What is the manager''s name?
+schemeManagersName.heading = What is the manager''s name?
+schemeManagersName.checkYourAnswersLabel = Scheme manager''s name
+schemeManagersName.error.firstName.required = Enter the Scheme manager''s first name
+schemeManagersName.error.lastName.required = Enter the Scheme manager''s last name
+schemeManagersName.error.firstName.length = The Scheme manager''s first name must be 35 characters or less
+schemeManagersName.error.lastName.length = The Scheme manager''s last name must be 35 characters or less
+schemeManagersName.error.firstName.pattern = The scheme manager'’s first name must only include letters, spaces, apostrophes and hyphens
+schemeManagersName.error.lastName.pattern = The scheme manager'’s last name must only include letters, spaces, apostrophes and hyphens
+schemeManagersName.firstName.change.hidden = Scheme manager''s name
+schemeManagersName.lastName.change.hidden = Scheme manager''s name
+
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
-qropsName.checkYourAnswersLabel = qropsName
+qropsName.checkYourAnswersLabel = QROPS full name
 qropsName.error.required = Enter the full name of the QROPS receiving the transfer
 qropsName.error.length = The full name of the QROPS must be 160 characters or less
-qropsName.change.hidden = QROPS name
-qropsName.hint = QROPS name
+qropsName.change.hidden = QROPS full name
 
-memberHasANino.title = Does undefined have a National Insurance number?
-memberHasANino.heading = Does undefined have a National Insurance number?
-memberHasANino.checkYourAnswersLabel = Does Undefined has a National Insurance number
-memberHasANino.error.required = Select one option
-memberHasANino.change.hidden = MemberHasANino
-memberHasANino.hint = Select one.
+qropsReference.title = What is the QROPS reference?
+qropsReference.heading = What is the QROPS reference?
+qropsReference.hint = For example, QROPS123456.
+qropsReference.prefix = QROPS
+qropsReference.checkYourAnswersLabel = QROPS reference
+qropsReference.error.required = Enter the QROPS Reference
+qropsReference.error.invalid = Enter the QROPS reference in a valid format
+qropsReference.change.hidden = QROPS reference
 
-memberDoesNotHaveNino.title = Why the member doesn’t have a National Insurance number?
-memberDoesNotHaveNino.heading = Why doesn’t {0} have a National Insurance number?
-memberDoesNotHaveNino.checkYourAnswersLabel = Other HMRC reference
-memberDoesNotHaveNino.error.required = Enter the reason the member does not have a National Insurance number and a reference we can use to identify them
-memberDoesNotHaveNino.error.length = The reason for not having a National Insurance number and reference in its place must be must be 160 characters or less
-memberDoesNotHaveNino.change.hidden = MemberDoesNotHaveNino
-memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
+qropsSchemeManagerIsIndividualOrOrg.title = Is the scheme manager an individual or organisation?
+qropsSchemeManagerIsIndividualOrOrg.heading = Is the scheme manager an individual or organisation?
+qropsSchemeManagerIsIndividualOrOrg.individual = Individual
+qropsSchemeManagerIsIndividualOrOrg.organisation = Organisation
+qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel = qropsSchemeManagerIsIndividualOrOrg
+qropsSchemeManagerIsIndividualOrOrg.error.required = Select if the scheme manager is an individual or an organisation
+qropsSchemeManagerIsIndividualOrOrg.change.hidden = QropsSchemeManagerIsIndividualOrOrg
+
+organisationName.title = What is the name of the organisation?
+organisationName.heading = What is the name of the organisation?
+organisationName.checkYourAnswersLabel = organisationName
+organisationName.error.required = Enter the name of the organisation
+organisationName.error.length = The name of the organisation must be 160 characters or less
+organisationName.error.pattern = The name of the organisation must only include letters, spaces, apostrophes and hyphens
+organisationName.change.hidden = What is the name of the organisation?
 
 membersLastUkAddressLookup.title = Find undefined undefined''s last principal residential address in the UK
 membersLastUkAddressLookup.heading = Find undefined undefined''s last principal residential address in the UK
@@ -268,20 +266,3 @@ orgIndividualName.error.lastName.pattern = The individual''s last name must only
 orgIndividualName.firstName.change.hidden = The individual''s first name
 orgIndividualName.lastName.change.hidden = The individual''s last name
 orgIndividualName.change.hidden = Contact details of an individual within the organisation
-
-organisationName.title = What is the name of the organisation?
-organisationName.heading = What is the name of the organisation?
-organisationName.checkYourAnswersLabel = organisationName
-organisationName.error.required = Enter the name of the organisation
-organisationName.error.length = The name of the organisation must be 160 characters or less
-organisationName.error.pattern = The name of the organisation must only include letters, spaces, apostrophes and hyphens
-organisationName.change.hidden = What is the name of the organisation?
-
-qropsReference.title = What is the QROPS reference?
-qropsReference.heading = What is the QROPS reference?
-qropsReference.hint = For example, QROPS123456.
-qropsReference.prefix = QROPS
-qropsReference.checkYourAnswersLabel = QROPS reference
-qropsReference.error.required = Enter the QROPS Reference
-qropsReference.error.invalid = Enter the QROPS reference in a valid format
-qropsReference.change.hidden = QROPS reference

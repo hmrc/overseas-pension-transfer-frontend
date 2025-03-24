@@ -17,10 +17,9 @@
 package controllers
 
 import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import forms.MemberDateOfLeavingUKFormProvider
-import models.NormalMode
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -39,6 +38,7 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase with MockitoSugar {
 
   implicit private val messages: Messages = stubMessages()
 
+  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MemberDateOfLeavingUKFormProvider()
   private def form         = formProvider()
 
@@ -68,7 +68,7 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[MemberDateOfLeavingUKView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(getRequest(), messages(application)).toString
+        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(getRequest(), messages(application)).toString
       }
     }
 
@@ -84,7 +84,7 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, getRequest()).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(getRequest(), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), memberName.fullName, NormalMode)(getRequest(), messages(application)).toString
       }
     }
 
@@ -125,7 +125,7 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 

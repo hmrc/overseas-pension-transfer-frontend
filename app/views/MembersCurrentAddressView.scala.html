@@ -31,7 +31,7 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("membersCurrentAddress.title"))) {
 
@@ -41,7 +41,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("membersCurrentAddress.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("membersCurrentAddress.heading", memberName)</h1>
 
         @govukInput(
             InputViewModel(

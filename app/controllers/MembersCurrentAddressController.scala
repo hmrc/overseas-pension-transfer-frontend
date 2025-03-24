@@ -24,11 +24,13 @@ import models.Mode
 import models.address.MembersCurrentAddress
 import pages.MembersCurrentAddressPage
 import play.api.Logging
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AppUtils
 import views.html.MembersCurrentAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,15 +45,17 @@ class MembersCurrentAddressController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MembersCurrentAddressView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  val form = formProvider()
+  private def form(memberName: String)(implicit messages: Messages): Form[MembersCurrentAddress] = formProvider(memberName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(MembersCurrentAddressPage) match {
-        case None          => form
-        case Some(address) => form.fill(MembersCurrentAddress.fromAddress(address))
+      val userAnswers  = request.userAnswers
+      val memberName   = memberFullName(request.userAnswers)
+      val preparedForm = userAnswers.get(MembersCurrentAddressPage) match {
+        case None          => form(memberName)
+        case Some(address) => form(memberName).fill(MembersCurrentAddress.fromAddress(address))
       }
 
       Ok(view(preparedForm, mode))
@@ -59,9 +63,10 @@ class MembersCurrentAddressController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
+      val memberName = memberFullName(request.userAnswers)
+      form(memberName).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, memberName, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, value))

@@ -16,22 +16,37 @@
 
 package pages
 
+import base.SpecBase
 import controllers.routes
 import models.{CheckMode, NormalMode, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with Matchers {
+class MemberHasEverBeenResidentUKPageSpec extends SpecBase with Matchers {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers("id")
+    emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Check Answers page when answer is 'false'" in {
 
-        MemberHasEverBeenResidentUKPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        MemberHasEverBeenResidentUKPage.nextPage(
+          NormalMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
+        ) mustEqual routes.CheckYourAnswersController.onPageLoad()
+      }
+    }
+    "in Normal Mode" - {
+
+      "must go to Next page when answer is 'true'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          NormalMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
+        ) mustEqual routes.IndexController.onPageLoad() // TODO update when address lookup is connected
       }
     }
 
@@ -39,7 +54,7 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        MemberHasEverBeenResidentUKPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        MemberHasEverBeenResidentUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

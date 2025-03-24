@@ -22,7 +22,8 @@ import play.api.data.FormError
 
 class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with Regex {
 
-  val form = new MembersCurrentAddressFormProvider()()
+  private val memberName = "Undefined Undefined"
+  private val form       = new MembersCurrentAddressFormProvider()(memberName)
 
   ".addressLine1" - {
 
@@ -48,7 +49,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(memberName))
     )
 
     behave like fieldThatRejectsInvalidCharacters(
@@ -83,7 +84,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(memberName))
     )
 
     behave like fieldThatRejectsInvalidCharacters(

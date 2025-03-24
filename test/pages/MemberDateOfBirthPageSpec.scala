@@ -29,9 +29,9 @@ class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Next page" in {
 
-        MemberDateOfBirthPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        MemberDateOfBirthPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MembersCurrentAddressController.onPageLoad(NormalMode)
       }
     }
 

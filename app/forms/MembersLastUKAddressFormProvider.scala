@@ -21,20 +21,18 @@ import models.UserAnswers
 import models.address._
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
-import utils.AppUtils
 
 import javax.inject.Inject
 
-class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {
+class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
 
   private val length35 = 35
   private val length16 = 16
 
-  def apply(userAnswers: UserAnswers): Form[MembersLastUKAddress] = {
-    val memberFullname = memberFullName(userAnswers).getOrElse("undefined undefined")
+  def apply(memberName: String): Form[MembersLastUKAddress] = {
     Form(
       mapping(
-        "addressLine1" -> text("membersLastUKAddress.error.addressLine1.required", Seq(memberFullname))
+        "addressLine1" -> text("membersLastUKAddress.error.addressLine1.required", Seq(memberName))
           .verifying(maxLength(length35, "membersLastUKAddress.error.addressLine1.length"))
           .verifying(regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine1.pattern")),
         "addressLine2" -> optional(
@@ -42,7 +40,7 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex wit
             verifying maxLength(length35, "membersLastUKAddress.error.addressLine2.length")
             verifying regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine2.pattern")
         ),
-        "townOrCity"   -> text("membersLastUKAddress.error.city.required", Seq(memberFullname))
+        "townOrCity"   -> text("membersLastUKAddress.error.city.required", Seq(memberName))
           .verifying(maxLength(length35, "membersLastUKAddress.error.city.length"))
           .verifying(regexp(addressLinesRegex, "membersLastUKAddress.error.city.pattern")),
         "county"       -> optional(

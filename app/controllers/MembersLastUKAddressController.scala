@@ -18,12 +18,12 @@ package controllers
 
 import controllers.actions._
 import forms.MembersLastUKAddressFormProvider
-import models.address._
 import models.{Mode, UserAnswers}
 import pages.MembersLastUKAddressPage
+import models.address._
 import play.api.Logging
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,26 +46,27 @@ class MembersLastUKAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  private def form(userAnswers: UserAnswers): Form[MembersLastUKAddress] = formProvider(userAnswers)
+  private def form(memberName: String)(implicit messages: Messages): Form[MembersLastUKAddress] = formProvider(memberName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val userAnswers  = request.userAnswers
+      val memberName   = memberFullName(request.userAnswers)
       val preparedForm = userAnswers.get(MembersLastUKAddressPage) match {
-        case None          => form(userAnswers)
-        case Some(address) => form(userAnswers).fill(
-            MembersLastUKAddress.fromAddress(address)
-          )
+        case None          => form(memberName)
+        case Some(address) => form(memberName).fill(
+          MembersLastUKAddress.fromAddress(address)
+        )
       }
-
-      Ok(view(preparedForm, memberFullName(userAnswers), mode))
+      Ok(view(preparedForm, memberName, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form(request.userAnswers).bindFromRequest().fold(
+      val memberName = memberFullName(request.userAnswers)
+      form(memberName).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
+          Future.successful(BadRequest(view(formWithErrors, memberName, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, value))

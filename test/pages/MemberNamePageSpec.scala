@@ -29,9 +29,9 @@ class MemberNamePageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Next page" in {
 
-        MemberNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        MemberNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberNinoController.onPageLoad(NormalMode)
       }
     }
 
