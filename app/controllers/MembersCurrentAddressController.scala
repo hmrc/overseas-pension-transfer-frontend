@@ -28,6 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.CountryService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.MembersCurrentAddressView
 
@@ -40,6 +41,7 @@ class MembersCurrentAddressController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: MembersCurrentAddressFormProvider,
+    countryService: CountryService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersCurrentAddressView
   )(implicit ec: ExecutionContext
@@ -53,15 +55,14 @@ class MembersCurrentAddressController @Inject() (
         case None          => form
         case Some(address) => form.fill(MembersCurrentAddress.fromAddress(address))
       }
-
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, countryService.countries, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, countryService.countries, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, value))

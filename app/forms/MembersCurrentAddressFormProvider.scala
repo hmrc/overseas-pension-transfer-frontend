@@ -42,11 +42,8 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
           verifying maxLength(35, "membersCurrentAddress.error.city.length")
           verifying regexp(addressLinesRegex, "membersCurrentAddress.error.city.pattern")
       ),
-      "country"      -> optional(
-        Forms.text
-          verifying maxLength(35, "membersCurrentAddress.error.country.length")
-          verifying regexp(addressLinesRegex, "membersCurrentAddress.error.country.pattern")
-      ),
+      "country"      -> text("membersCurrentAddress.error.addressLine2.required")
+        .verifying(maxLength(35, "membersCurrentAddress.error.addressLine2.length")),
       "postcode"     -> optional(
         Forms.text
           verifying maxLength(16, "membersCurrentAddress.error.postcode.length")

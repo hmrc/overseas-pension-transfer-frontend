@@ -22,35 +22,41 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
 @import views.html.components.ReturnToTaskList
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
+
 
 @this(
-    appConfig: FrontendAppConfig,
-    hmrcHead: HmrcHead,
-    hmrcTimeoutDialog: HmrcTimeoutDialog,
-    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-    returnToTaskList: ReturnToTaskList,
-    hmrcScripts: HmrcScripts,
-    alphaBanner: StandardAlphaBanner,
-    hmrcStandardPage: HmrcStandardPage
+        appConfig: FrontendAppConfig,
+        hmrcHead: HmrcHead,
+        hmrcTimeoutDialog: HmrcTimeoutDialog,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        returnToTaskList: ReturnToTaskList,
+        hmrcScripts: HmrcScripts,
+        alphaBanner: StandardAlphaBanner,
+        hmrcStandardPage: HmrcStandardPage,
+        autocompleteCss: HmrcAccessibleAutocompleteCss,
+        autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )
 
 @(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true, showHmrcBanner: Boolean = false, showReturnToTaskListLink: Boolean = true)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
 
 @head = {
-
-@if(timeout) {
-    @hmrcTimeoutDialog(TimeoutDialog(
-        timeout             = Some(appConfig.timeout),
-        countdown           = Some(appConfig.countdown),
-        keepAliveUrl        = Some(routes.KeepAliveController.keepAlive().url),
-        keepAliveButtonText = Some(messages("timeout.keepAlive")),
-        signOutUrl          = Some(controllers.auth.routes.AuthController.signOut().url),
-        signOutButtonText   = Some(messages("timeout.signOut")),
-        title               = Some(messages("timeout.title")),
-        message             = Some(messages("timeout.message")),
-        language            = Some(messages.lang.code)
-    ))
-}
+    @autocompleteCss()
+    @if(timeout) {
+        @hmrcTimeoutDialog(TimeoutDialog(
+            timeout             = Some(appConfig.timeout),
+            countdown           = Some(appConfig.countdown),
+            keepAliveUrl        = Some(routes.KeepAliveController.keepAlive().url),
+            keepAliveButtonText = Some(messages("timeout.keepAlive")),
+            signOutUrl          = Some(controllers.auth.routes.AuthController.signOut().url),
+            signOutButtonText   = Some(messages("timeout.signOut")),
+            title               = Some(messages("timeout.title")),
+            message             = Some(messages("timeout.message")),
+            language            = Some(messages.lang.code)
+        ))
+    }
 }
 
 @content = {
@@ -62,7 +68,8 @@
 @hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(pageTitle),
     templateOverrides = TemplateOverrides(
-        additionalHeadBlock = Some(head)
+        additionalHeadBlock = Some(head),
+        additionalScriptsBlock = Some(autocompleteJavascript())
     ),
     serviceURLs = ServiceURLs(
         serviceUrl = Some(routes.IndexController.onPageLoad().url),

@@ -16,8 +16,10 @@
 
 package views
 
+import models.Country
 import play.api.data.Form
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 object ViewUtils {
 
@@ -33,4 +35,22 @@ object ViewUtils {
   def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
     if (form.hasErrors || form.hasGlobalErrors) messages("error.title.prefix") else ""
   }
+
+  def countryToSelectItem(c: Country): SelectItem =
+    SelectItem(
+      value      = Some(encodeCountryCode(c)),
+      text       = c.name,
+      selected   = false,
+      attributes = Map("id" -> encodeCountryCode(c))
+    )
+
+  def countriesToSelectItems(cs: Seq[Country]): Seq[SelectItem] =
+    SelectItem(value = Some(""), selected = true) +: cs.map(c => countryToSelectItem(c))
+
+  private val countryCodeEncodingChar = "-"
+  private val whitespaceChar          = "_"
+
+  def encodeCountryCode(c: Country): String =
+    s"${c.code}${countryCodeEncodingChar}${c.name.replaceAll("\\p{Space}", whitespaceChar)}"
+  def decodeCountryCode(c: String): String  = c.replaceAll(s"${countryCodeEncodingChar}.*", "")
 }
