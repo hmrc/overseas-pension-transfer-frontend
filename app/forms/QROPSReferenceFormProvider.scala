@@ -19,19 +19,22 @@ package forms
 import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
-import play.api.data.Forms._
-import models.PersonName
 
-class MemberNameFormProvider @Inject() extends Mappings with Regex {
+class QROPSReferenceFormProvider @Inject() extends Mappings with Regex {
 
-  def apply(): Form[PersonName] = Form(
-    mapping(
-      "memberFirstName" -> text("memberName.error.memberFirstName.required")
-        .verifying(maxLength(35, "memberName.error.memberFirstName.length"))
-        .verifying(regexp(nameRegex, "memberName.error.memberFirstName.pattern")),
-      "memberLastName"  -> text("memberName.error.memberLastName.required")
-        .verifying(maxLength(35, "memberName.error.memberLastName.length"))
-        .verifying(regexp(nameRegex, "memberName.error.memberLastName.pattern"))
-    )(PersonName.apply)(x => Some((x.firstName, x.lastName)))
-  )
+  val referencePrefix = "QROPS"
+
+  def apply(): Form[String] =
+    Form(
+      "qropsRef" -> text("qropsReference.error.required")
+        .verifying(regexp(qropsRefRegex, "qropsReference.error.invalid"))
+        .transform[String](
+          raw => prependReferencePrefix(raw),
+          formatted => formatted
+        )
+    )
+
+  private def prependReferencePrefix(raw: String): String = {
+    if (raw.startsWith(referencePrefix)) raw else s"$referencePrefix$raw"
+  }
 }

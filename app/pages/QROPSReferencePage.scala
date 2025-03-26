@@ -17,15 +17,15 @@
 package pages
 
 import controllers.routes
-import models.{PersonName, UserAnswers}
+import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MemberNamePage extends QuestionPage[PersonName] {
+case object QROPSReferencePage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "memberName"
+  override def toString: String = "qropsReference"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()

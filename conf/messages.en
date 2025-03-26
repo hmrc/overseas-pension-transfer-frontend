@@ -147,7 +147,7 @@ membersCurrentAddress.addressLine3 = Address line 3 (optional)
 membersCurrentAddress.city = City (optional)
 membersCurrentAddress.country = Country (optional)
 membersCurrentAddress.postcode = Postcode (optional)
-membersCurrentAddress.checkYourAnswersLabel = membersCurrentAddress
+membersCurrentAddress.checkYourAnswersLabel = Current address
 membersCurrentAddress.error.addressLine1.required = Enter the first line of undefined undefined''s address
 membersCurrentAddress.error.addressLine2.required = Enter the second line of undefined undefined''s address
 membersCurrentAddress.error.addressLine1.length = Address line 1 must be 35 characters or less
@@ -210,6 +210,7 @@ qropsName.checkYourAnswersLabel = qropsName
 qropsName.error.required = Enter the full name of the QROPS receiving the transfer
 qropsName.error.length = The full name of the QROPS must be 160 characters or less
 qropsName.change.hidden = QROPS name
+qropsName.hint = QROPS name
 
 memberHasANino.title = Does undefined have a National Insurance number?
 memberHasANino.heading = Does undefined have a National Insurance number?
@@ -248,7 +249,6 @@ memberLastUkAddressNotFound.title = No address found
 memberLastUkAddressNotFound.heading = No address found
 memberLastUkAddressNotFound.paragraph = We could not find an address that matches <b>{0}</b>. You can <a href="{1}" class="govuk-link">search again</a> or <a href="{2}" class="govuk-link">enter the address manually</a>.
 
-
 memberConfirmLastUkAddress.title = Confirm undefined undefined''s last principal residential address in the UK
 memberConfirmLastUkAddress.heading = Confirm undefined undefined''s last principal residential address in the UK
 memberConfirmLastUkAddress.checkYourAnswersLabel = memberConfirmLastUkAddress
@@ -256,11 +256,32 @@ memberConfirmLastUkAddress.error.required = Select save and continue to continue
 memberConfirmLastUkAddress.change.hidden = MemberConfirmLastUkAddress
 memberConfirmLastUkAddress.paragraph = You can also <a href="{0}" class="govuk-link">select a different address</a> or <a href="{1}" class="govuk-link">enter the address manually</a>.
 
+orgIndividualName.title = Contact details of an individual within the organisation
+orgIndividualName.heading = Contact details of an individual within the organisation with whom HMRC should correspond
+orgIndividualName.checkYourAnswersLabel = Organisation contact
+orgIndividualName.error.firstName.required = Enter the individual''s first name
+orgIndividualName.error.lastName.required = Enter the individual''s last name
+orgIndividualName.error.firstName.length = The individual''s first name must be 35 characters or less
+orgIndividualName.error.lastName.length = The individual''s last name must be 35 characters or less
+orgIndividualName.error.firstName.pattern = The individual''s first name must only include letters, spaces, apostrophes and hyphens
+orgIndividualName.error.lastName.pattern = The individual''s last name must only include letters, spaces, apostrophes and hyphens
+orgIndividualName.firstName.change.hidden = The individual''s first name
+orgIndividualName.lastName.change.hidden = The individual''s last name
+orgIndividualName.change.hidden = Contact details of an individual within the organisation
+
 organisationName.title = What is the name of the organisation?
 organisationName.heading = What is the name of the organisation?
 organisationName.checkYourAnswersLabel = organisationName
 organisationName.error.required = Enter the name of the organisation
-organisationName.error.length = The name of the organisation must be 160 characters or fewer
+organisationName.error.length = The name of the organisation must be 160 characters or less
 organisationName.error.pattern = The name of the organisation must only include letters, spaces, apostrophes and hyphens
 organisationName.change.hidden = What is the name of the organisation?
 
+qropsReference.title = What is the QROPS reference?
+qropsReference.heading = What is the QROPS reference?
+qropsReference.hint = For example, QROPS123456.
+qropsReference.prefix = QROPS
+qropsReference.checkYourAnswersLabel = QROPS reference
+qropsReference.error.required = Enter the QROPS Reference
+qropsReference.error.invalid = Enter the QROPS reference in a valid format
+qropsReference.change.hidden = QROPS reference

@@ -17,16 +17,30 @@
 package pages
 
 import controllers.routes
-import models.{PersonName, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-case object MemberNamePage extends QuestionPage[PersonName] {
+class OrgIndividualNamePageSpec extends AnyFreeSpec with Matchers {
 
-  override def path: JsPath = JsPath \ toString
+  ".nextPage" - {
 
-  override def toString: String = "memberName"
+    val emptyAnswers = UserAnswers("id")
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    "in Normal Mode" - {
+
+      "must go to Index" in {
+
+        OrgIndividualNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+      }
+    }
+
+    "in Check Mode" - {
+
+      "must go to Check Answers" in {
+
+        OrgIndividualNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+      }
+    }
+  }
 }

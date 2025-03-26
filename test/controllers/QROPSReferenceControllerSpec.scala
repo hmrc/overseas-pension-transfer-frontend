@@ -17,64 +17,60 @@
 package controllers
 
 import base.SpecBase
-import forms.MemberDoesNotHaveNinoFormProvider
-import models.{NormalMode, PersonName}
+import forms.QROPSReferenceFormProvider
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{MemberDoesNotHaveNinoPage, MemberNamePage}
+import pages.QROPSReferencePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.MemberDoesNotHaveNinoView
+import views.html.QROPSReferenceView
 
 import scala.concurrent.Future
 
-class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
+class QROPSReferenceControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider = new MemberDoesNotHaveNinoFormProvider()
+  private val formProvider = new QROPSReferenceFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberDoesNotHaveNinoRoute = routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode).url
-  private val memberName                      = PersonName("FirstName", "LastName")
+  private lazy val qropsReferenceRoute = routes.QROPSReferenceController.onPageLoad(NormalMode).url
 
-  "MemberDoesNotHaveNino Controller" - {
+  "QROPSReference Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.set(MemberNamePage, memberName).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberDoesNotHaveNinoRoute)
+        val request = FakeRequest(GET, qropsReferenceRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
+        val view = application.injector.instanceOf[QROPSReferenceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, Some(memberName.fullName), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
-        .set(MemberNamePage, memberName).success.value
-        .set(MemberDoesNotHaveNinoPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(QROPSReferencePage, "QROPS123456").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberDoesNotHaveNinoRoute)
+        val request = FakeRequest(GET, qropsReferenceRoute)
 
-        val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
+        val view = application.injector.instanceOf[QROPSReferenceView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), Some(memberName.fullName), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("QROPS123456"), NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -91,34 +87,33 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, memberDoesNotHaveNinoRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, qropsReferenceRoute)
+            .withFormUrlEncodedBody(("qropsRef", "QROPS123456"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual QROPSReferencePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val userAnswers = emptyUserAnswers
-        .set(MemberNamePage, memberName).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, memberDoesNotHaveNinoRoute)
-            .withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, qropsReferenceRoute)
+            .withFormUrlEncodedBody(("qropsRef", ""))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("qropsRef" -> ""))
 
-        val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
+        val view = application.injector.instanceOf[QROPSReferenceView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Some(memberName.fullName), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -127,7 +122,7 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberDoesNotHaveNinoRoute)
+        val request = FakeRequest(GET, qropsReferenceRoute)
 
         val result = route(application, request).value
 
@@ -142,8 +137,8 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, memberDoesNotHaveNinoRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, qropsReferenceRoute)
+            .withFormUrlEncodedBody(("qropsRef", "QROPS123456"))
 
         val result = route(application, request).value
 

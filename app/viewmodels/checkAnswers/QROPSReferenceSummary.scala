@@ -18,27 +18,24 @@ package viewmodels.checkAnswers
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberNamePage
+import pages.QROPSReferencePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberNameSummary {
+object QROPSReferenceSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberNamePage).map {
+    answers.get(QROPSReferencePage).map {
       answer =>
-        val value = HtmlFormat.escape(answer.firstName).toString + "<br/>" + HtmlFormat.escape(answer.lastName).toString
-
         SummaryListRowViewModel(
-          key     = "memberName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
+          key     = "qROPSReference.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberName.change.hidden"))
+            ActionItemViewModel("site.change", routes.QROPSReferenceController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("qROPSReference.change.hidden"))
           )
         )
     }

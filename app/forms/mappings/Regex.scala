@@ -26,4 +26,6 @@ trait Regex {
   val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
 
   val postcodeRegex: String = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
+
+  val qropsRefRegex: String = "^(QROPS\\d{6}|QROPS|\\d{6})$"
 }
