@@ -17,27 +17,28 @@
 package controllers
 
 import base.{AddressBase, SpecBase}
-import forms.MemberSelectLastUkAddressFormProvider
-import models.NormalMode
+import forms.MembersLastUkAddressSelectFormProvider
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.MemberSelectLastUkAddressPage
+import pages.MembersLastUkAddressSelectPage
 import play.api.Logging
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import viewmodels.AddressViewModel
-import views.html.MemberSelectLastUkAddressView
+import views.html.MembersLastUkAddressSelectView
 
 import scala.concurrent.Future
 
-class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar with AddressBase {
+class MembersLastUkAddressSelectControllerSpec extends SpecBase with MockitoSugar with AddressBase {
 
-  private lazy val memberSelectLastUkAddressRoute = routes.MemberSelectLastUkAddressController.onPageLoad(NormalMode).url
+  private lazy val memberSelectLastUkAddressRoute = routes.MembersLastUkAddressSelectController.onPageLoad(NormalMode).url
 
-  private val formProvider = new MemberSelectLastUkAddressFormProvider()
+  private val memberName   = PersonName("Undefined", "Undefined")
+  private val formProvider = new MembersLastUkAddressSelectFormProvider()
   private val form         = formProvider(validIds)
 
   "MemberSelectLastUkAddress Controller" - {
@@ -51,10 +52,16 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[MemberSelectLastUkAddressView]
+        val view = application.injector.instanceOf[MembersLastUkAddressSelectView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, AddressViewModel.addressRadios(foundAddresses.addresses), foundAddresses.searchedPostcode)(
+        contentAsString(result) mustEqual view(
+          form,
+          memberName.fullName,
+          NormalMode,
+          AddressViewModel.addressRadios(foundAddresses.addresses),
+          foundAddresses.searchedPostcode
+        )(
           request,
           messages(application)
         ).toString
@@ -82,7 +89,7 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MemberSelectLastUkAddressPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual MembersLastUkAddressSelectPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -96,13 +103,14 @@ class MemberSelectLastUkAddressControllerSpec extends SpecBase with MockitoSugar
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
-        val view      = application.injector.instanceOf[MemberSelectLastUkAddressView]
+        val view      = application.injector.instanceOf[MembersLastUkAddressSelectView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(
           boundForm,
+          memberName.fullName,
           NormalMode,
           AddressViewModel.addressRadios(foundAddresses.addresses),
           foundAddresses.searchedPostcode

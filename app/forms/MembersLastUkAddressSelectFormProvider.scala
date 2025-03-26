@@ -21,7 +21,7 @@ import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class MemberSelectLastUkAddressFormProvider @Inject() extends Mappings {
+class MembersLastUkAddressSelectFormProvider @Inject() extends Mappings {
 
   def apply(validIds: Seq[String]): Form[String] =
     Form(

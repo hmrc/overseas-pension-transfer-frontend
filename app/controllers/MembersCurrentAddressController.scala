@@ -58,7 +58,7 @@ class MembersCurrentAddressController @Inject() (
         case Some(address) => form(memberName).fill(MembersCurrentAddress.fromAddress(address))
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, memberName, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {

@@ -29,7 +29,7 @@ case object MemberHasEverBeenResidentUKPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     answers.get(MemberHasEverBeenResidentUKPage) match {
-      case Some(true)  => routes.IndexController.onPageLoad() // TODO connect address lookup journey
+      case Some(true)  => routes.MembersLastUkAddressSelectController.onPageLoad(NormalMode)
       case Some(false) => routes.CheckYourAnswersController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }

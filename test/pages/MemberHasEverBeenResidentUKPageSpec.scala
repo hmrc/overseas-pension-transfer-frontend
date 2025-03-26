@@ -46,7 +46,7 @@ class MemberHasEverBeenResidentUKPageSpec extends SpecBase with Matchers {
         MemberHasEverBeenResidentUKPage.nextPage(
           NormalMode,
           emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
-        ) mustEqual routes.IndexController.onPageLoad() // TODO update when address lookup is connected
+        ) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(NormalMode)
       }
     }
 
