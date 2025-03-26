@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import models.address._
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import javax.inject.Inject
 
-case object MembersCurrentAddressPage extends QuestionPage[Address] {
+import play.api.data.Form
+import play.api.data.Forms._
 
-  override def path: JsPath = JsPath \ toString
+class MemberConfirmLastUkAddressFormProvider @Inject() {
 
-  override def toString: String = "membersCurrentAddress"
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+  def apply(): Form[Boolean] =
+    Form(
+      single(
+        "value" -> default(boolean, true)
+      )
+    )
 }

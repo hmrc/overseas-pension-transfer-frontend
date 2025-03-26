@@ -80,6 +80,23 @@ POST       /scheme-managers-name                                     controllers
 GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
 
+GET        /members-last-uk-address-lookup                           controllers.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = NormalMode)
+POST       /members-last-uk-address-lookup                           controllers.MembersLastUkAddressLookupController.onSubmit(mode: Mode = NormalMode)
+GET        /change-members-last-uk-address-lookup                    controllers.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-members-last-uk-address-lookup                    controllers.MembersLastUkAddressLookupController.onSubmit(mode: Mode = CheckMode)
+
+GET        /member-select-last-uk-address                            controllers.MemberSelectLastUkAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-select-last-uk-address                            controllers.MemberSelectLastUkAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-select-last-uk-address                     controllers.MemberSelectLastUkAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-select-last-uk-address                     controllers.MemberSelectLastUkAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /member-last-uk-address-not-found                         controllers.MemberLastUkAddressNotFoundController.onPageLoad()
+
+GET        /member-confirm-last-uk-address                           controllers.MemberConfirmLastUkAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-confirm-last-uk-address                           controllers.MemberConfirmLastUkAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-confirm-last-uk-address                    controllers.MemberConfirmLastUkAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-confirm-last-uk-address                    controllers.MemberConfirmLastUkAddressController.onSubmit(mode: Mode = CheckMode)
+
 GET        /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)
 GET        /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
@@ -95,7 +112,7 @@ POST       /qrops-reference                                          controllers
 GET        /change-qrops-reference                                   controllers.QROPSReferenceController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-qrops-reference                                   controllers.QROPSReferenceController.onSubmit(mode: Mode = CheckMode)
 
-GET        /organisation-individual-name                                       controllers.OrgIndividualNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /organisation-individual-name                                       controllers.OrgIndividualNameController.onSubmit(mode: Mode = NormalMode)
-GET        /change-organisation-individual-name                                controllers.OrgIndividualNameController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-organisation-individual-name                                controllers.OrgIndividualNameController.onSubmit(mode: Mode = CheckMode)
+GET        /organisation-individual-name                             controllers.OrgIndividualNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /organisation-individual-name                             controllers.OrgIndividualNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-organisation-individual-name                      controllers.OrgIndividualNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-organisation-individual-name                      controllers.OrgIndividualNameController.onSubmit(mode: Mode = CheckMode)

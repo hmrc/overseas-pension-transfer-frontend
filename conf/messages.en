@@ -227,6 +227,35 @@ memberDoesNotHaveNino.error.length = The reason for not having a National Insura
 memberDoesNotHaveNino.change.hidden = MemberDoesNotHaveNino
 memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
 
+membersLastUkAddressLookup.title = Find undefined undefined''s last principal residential address in the UK
+membersLastUkAddressLookup.heading = Find undefined undefined''s last principal residential address in the UK
+membersLastUkAddressLookup.checkYourAnswersLabel = membersLastUkAddressLookup
+membersLastUkAddressLookup.error.required = Enter a full UK postcode
+membersLastUkAddressLookup.error.pattern = Enter a full UK postcode in the correct format
+membersLastUkAddressLookup.change.hidden = MembersLastUkAddressLookup
+membersLastUkAddressLookup.hint = For example, AA3 1AB.
+membersLastUkAddressLookup.label = Postcode
+membersLastUkAddressLookup.link = You can also <a href="{0}" class="govuk-link">enter the address manually</a>.
+
+memberSelectLastUkAddress.title = Select undefined undefined'''s last UK address
+memberSelectLastUkAddress.heading = Select undefined undefined''s last UK address
+memberSelectLastUkAddress.link = You can also <a href="{0}" class="govuk-link">enter the address manually</a>.
+memberSelectLastUkAddress.legend = {0} addresses found for <b>{1}</b> or try a <a href="{2}" class="govuk-link">different postcode</a>.
+memberSelectLastUkAddress.checkYourAnswersLabel = memberSelectLastUkAddress
+memberSelectLastUkAddress.error.required = Select the member's last UK address
+memberSelectLastUkAddress.change.hidden = MemberSelectLastUkAddress
+
+memberLastUkAddressNotFound.title = No address found
+memberLastUkAddressNotFound.heading = No address found
+memberLastUkAddressNotFound.paragraph = We could not find an address that matches <b>{0}</b>. You can <a href="{1}" class="govuk-link">search again</a> or <a href="{2}" class="govuk-link">enter the address manually</a>.
+
+memberConfirmLastUkAddress.title = Confirm undefined undefined''s last principal residential address in the UK
+memberConfirmLastUkAddress.heading = Confirm undefined undefined''s last principal residential address in the UK
+memberConfirmLastUkAddress.checkYourAnswersLabel = memberConfirmLastUkAddress
+memberConfirmLastUkAddress.error.required = Select save and continue to continue
+memberConfirmLastUkAddress.change.hidden = MemberConfirmLastUkAddress
+memberConfirmLastUkAddress.paragraph = You can also <a href="{0}" class="govuk-link">select a different address</a> or <a href="{1}" class="govuk-link">enter the address manually</a>.
+
 orgIndividualName.title = Contact details of an individual within the organisation
 orgIndividualName.heading = Contact details of an individual within the organisation with whom HMRC should correspond
 orgIndividualName.checkYourAnswersLabel = Organisation contact

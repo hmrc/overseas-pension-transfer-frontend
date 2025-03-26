@@ -18,8 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.MembersLastUKAddressFormProvider
-import models.{MembersLastUKAddress, Mode, UserAnswers}
-import pages.{MemberNamePage, MembersLastUKAddressPage}
+import models.address._
+import models.{Mode, UserAnswers}
+import pages.MembersLastUKAddressPage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -51,8 +52,10 @@ class MembersLastUKAddressController @Inject() (
     implicit request =>
       val userAnswers  = request.userAnswers
       val preparedForm = userAnswers.get(MembersLastUKAddressPage) match {
-        case None        => form(userAnswers)
-        case Some(value) => form(userAnswers).fill(value)
+        case None          => form(userAnswers)
+        case Some(address) => form(userAnswers).fill(
+            MembersLastUKAddress.fromAddress(address)
+          )
       }
 
       Ok(view(preparedForm, memberFullName(userAnswers), mode))

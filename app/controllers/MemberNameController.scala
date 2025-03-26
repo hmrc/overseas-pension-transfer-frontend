@@ -22,6 +22,7 @@ import models.Mode
 import pages.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -62,7 +63,10 @@ class MemberNameController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- {
+              logger.info(Json.stringify(updatedAnswers.data))
+              sessionRepository.set(updatedAnswers)
+            }
           } yield Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
       )
   }

@@ -20,7 +20,7 @@ import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
 import play.api.data.{Form, Forms}
 import play.api.data.Forms._
-import models.MembersCurrentAddress
+import models.address._
 
 class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
 
@@ -51,6 +51,6 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
         Forms.text
           verifying maxLength(16, "membersCurrentAddress.error.postcode.length")
       )
-    )(MembersCurrentAddress.apply)(x => Some(x.addressLine1, x.addressLine2, x.addressLine3, x.city, x.country, x.postcode))
+    )(MembersCurrentAddress.apply)(MembersCurrentAddress.unapply)
   )
 }

@@ -18,7 +18,8 @@ package controllers
 
 import base.SpecBase
 import forms.MembersLastUKAddressFormProvider
-import models.{MembersLastUKAddress, NormalMode, PersonName}
+import models.address._
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

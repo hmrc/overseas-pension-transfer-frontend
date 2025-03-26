@@ -17,17 +17,26 @@
 package pages
 
 import controllers.routes
+import models.address.FoundAddressResponse
 import models.{NormalMode, UserAnswers}
-import models.address._
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MembersCurrentAddressPage extends QuestionPage[Address] {
+case object MembersLastUkAddressLookupPage extends QuestionPage[FoundAddressResponse] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "membersCurrentAddress"
+  override def toString: String = "membersLastUkAddressLookup"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.MemberSelectLastUkAddressController.onPageLoad(mode = NormalMode)
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberSelectLastUkAddressController.onPageLoad(mode = NormalMode)
+
+  def nextPageNoResults(): Call =
+    routes.MemberLastUkAddressNotFoundController.onPageLoad()
+
+  val recoveryModeReturnUrl: String = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+
 }
