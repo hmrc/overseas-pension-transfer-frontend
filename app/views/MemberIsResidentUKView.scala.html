@@ -32,7 +32,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("memberIsResidentUK.title"))) {
 
@@ -45,7 +45,7 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(Text(messages("memberIsResidentUK.heading"))).asPageHeading(size = Large)
+                legend = LegendViewModel(Text(messages("memberIsResidentUK.heading", memberName))).asPageHeading(size = Large)
             )
             .withHint(HintViewModel(Text(messages("radios.hint"))))
         )

@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,5 +28,9 @@ case object MemberIsResidentUKPage extends QuestionPage[Boolean] {
   override def toString: String = "memberIsResidentUK"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    answers.get(MemberIsResidentUKPage) match {
+      case Some(false) => routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode)
+      case Some(true)  => routes.CheckYourAnswersController.onPageLoad()
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
 }

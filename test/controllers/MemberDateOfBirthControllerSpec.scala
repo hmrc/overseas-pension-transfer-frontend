@@ -19,7 +19,7 @@ package controllers
 import java.time.{LocalDate, ZoneOffset}
 import base.SpecBase
 import forms.MemberDateOfBirthFormProvider
-import models.NormalMode
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -38,6 +38,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
   implicit private val messages: Messages = stubMessages()
 
+  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MemberDateOfBirthFormProvider()
   private def form         = formProvider()
 
@@ -67,7 +68,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[MemberDateOfBirthView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(getRequest(), messages(application)).toString
+        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(getRequest(), messages(application)).toString
       }
     }
 
@@ -83,11 +84,11 @@ class MemberDateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, getRequest()).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(getRequest(), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), memberName.fullName, NormalMode)(getRequest(), messages(application)).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the members current address when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -124,7 +125,7 @@ class MemberDateOfBirthControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 

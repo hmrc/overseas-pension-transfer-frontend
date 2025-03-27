@@ -31,7 +31,7 @@ class MembersLastUkAddressLookupPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to select address page" in {
 
-        MembersLastUkAddressLookupPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberSelectLastUkAddressController.onPageLoad(mode = NormalMode)
+        MembersLastUkAddressLookupPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode = NormalMode)
       }
     }
 
@@ -39,7 +39,7 @@ class MembersLastUkAddressLookupPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        MembersLastUkAddressLookupPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberSelectLastUkAddressController.onPageLoad(mode = NormalMode)
+        MembersLastUkAddressLookupPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode = NormalMode)
       }
     }
   }

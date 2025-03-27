@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.MemberHasEverBeenResidentUKFormProvider
-import models.NormalMode
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -33,6 +33,7 @@ import scala.concurrent.Future
 
 class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSugar {
 
+  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MemberHasEverBeenResidentUKFormProvider()
   private val form         = formProvider()
 
@@ -52,7 +53,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
         val view = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -70,7 +71,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -90,12 +91,12 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
       running(application) {
         val request =
           FakeRequest(POST, memberHasEverBeenResidentUKRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+            .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MemberHasEverBeenResidentUKPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
       }
     }
 
@@ -115,7 +116,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 

@@ -20,9 +20,9 @@ import base.AddressBase
 import forms.behaviours.OptionFieldBehaviours
 import play.api.data.FormError
 
-class MemberSelectLastUkAddressFormProviderSpec extends OptionFieldBehaviours with AddressBase {
+class MembersLastUkAddressSelectFormProviderSpec extends OptionFieldBehaviours with AddressBase {
 
-  val form = new MemberSelectLastUkAddressFormProvider()(validIds)
+  val form = new MembersLastUkAddressSelectFormProvider()(validIds)
 
   ".value" - {
 

@@ -30,5 +30,5 @@ case object MemberDateOfLeavingUKPage extends QuestionPage[LocalDate] {
   override def toString: String = "memberDateOfLeavingUK"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.CheckYourAnswersController.onPageLoad()
 }

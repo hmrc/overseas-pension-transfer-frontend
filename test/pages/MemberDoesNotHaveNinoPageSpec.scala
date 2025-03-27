@@ -29,9 +29,9 @@ class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Member Date of Birth" in {
 
-        MemberDoesNotHaveNinoPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        MemberDoesNotHaveNinoPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode)
       }
     }
 

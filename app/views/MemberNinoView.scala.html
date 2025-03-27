@@ -23,7 +23,7 @@
 @import viewmodels.govuk.all._
 @import viewmodels.LabelSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import views.html.components.MemberDoesNotHaveNino
+@import views.html.components.Link
 
 @this(
     layout: templates.Layout,
@@ -31,10 +31,12 @@
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
     govukButton: GovukButton,
-    memberDoesNotHaveNino: MemberDoesNotHaveNino
+    link: Link
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+
+@noNinoPage = @{routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode).url}
 
 @layout(pageTitle = title(form, messages("memberNino.title"))) {
 
@@ -47,7 +49,7 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("memberNino.heading")))
+                label = LabelViewModel(Text(messages("memberNino.heading", memberName)))
                     .withCssClass("govuk-!-margin-bottom-6")
                     .asPageHeading(size = Large)
             )
@@ -55,7 +57,8 @@
             .withWidth(Fixed10)
         )
 
-        @memberDoesNotHaveNino()
+        @link("noNinoPageLink", noNinoPage, messages("memberNino.doesNotHaveNino.link.text"), extraClasses = "govuk-body")
+        <hr class="govuk-section-break govuk-section-break govuk-!-margin-bottom-6">
 
         @govukButton(
             ButtonViewModel(messages("site.saveAndContinue"))

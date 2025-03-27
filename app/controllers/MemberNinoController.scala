@@ -19,12 +19,13 @@ package controllers
 import controllers.actions._
 import forms.MemberNinoFormProvider
 import models.Mode
-import pages.MemberNinoPage
+import pages.{MemberDoesNotHaveNinoPage, MemberNinoPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AppUtils
 import views.html.MemberNinoView
 
 import javax.inject.Inject
@@ -40,7 +41,7 @@ class MemberNinoController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberNinoView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
   val form = formProvider()
 
@@ -51,17 +52,17 @@ class MemberNinoController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, memberFullName(request.userAnswers), mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value).flatMap(_.remove(MemberDoesNotHaveNinoPage)))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
       )

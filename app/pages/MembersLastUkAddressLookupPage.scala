@@ -29,13 +29,13 @@ case object MembersLastUkAddressLookupPage extends QuestionPage[FoundAddressResp
   override def toString: String = "membersLastUkAddressLookup"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.MemberSelectLastUkAddressController.onPageLoad(mode = NormalMode)
+    routes.MembersLastUkAddressSelectController.onPageLoad(mode = NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.MemberSelectLastUkAddressController.onPageLoad(mode = NormalMode)
+    routes.MembersLastUkAddressSelectController.onPageLoad(mode = NormalMode)
 
   def nextPageNoResults(): Call =
-    routes.MemberLastUkAddressNotFoundController.onPageLoad()
+    routes.MembersLastUkAddressNotFoundController.onPageLoad()
 
   val recoveryModeReturnUrl: String = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
 

@@ -34,7 +34,7 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode, addressRadios: Seq[RadioItem], postcode: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], memberName: String, mode: Mode, addressRadios: Seq[RadioItem], postcode: String)(implicit request: Request[_], messages: Messages)
 
 @searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 
@@ -42,15 +42,15 @@
 
 @addressLength = @{addressRadios.length}
 
-@layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title"))) {
+@layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title", memberName))) {
 
-    @formHelper(action = routes.MemberSelectLastUkAddressController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.MembersLastUkAddressSelectController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
-        <h1 class="govuk-heading-l">@messages("memberSelectLastUkAddress.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("memberSelectLastUkAddress.heading", memberName)</h1>
 
         @govukRadios(
             RadiosViewModel(
