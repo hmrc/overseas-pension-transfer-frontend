@@ -82,8 +82,9 @@
             )
             .withWidth(OneQuarter)
         )
+
+        @govukButton(
+            ButtonViewModel(Text(messages("site.saveAndContinue")))
+        )
     }
-    @govukButton(
-        ButtonViewModel(Text(messages("site.saveAndContinue")))
-    )
 }

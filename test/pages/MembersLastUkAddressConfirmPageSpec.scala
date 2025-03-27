@@ -29,7 +29,7 @@ class MembersLastUkAddressConfirmPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Members Date of Leaving UK" in {
 
         MembersLastUkAddressConfirmPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
       }

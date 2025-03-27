@@ -29,7 +29,7 @@ class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Next page" in {
+      "must go to Members Current Address" in {
 
         MemberDateOfBirthPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MembersCurrentAddressController.onPageLoad(NormalMode)
       }

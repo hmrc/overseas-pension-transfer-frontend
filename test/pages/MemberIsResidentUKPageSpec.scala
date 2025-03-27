@@ -38,7 +38,7 @@ class MemberIsResidentUKPageSpec extends SpecBase with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Next page when 'false'" in {
+      "must go to Member Has Ever Been Uk Resident when 'false'" in {
 
         MemberIsResidentUKPage.nextPage(
           NormalMode,

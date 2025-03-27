@@ -81,7 +81,7 @@ class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the member is UK resident when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 

@@ -29,7 +29,7 @@ class MemberNamePageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Next page" in {
+      "must go to Member Nino" in {
 
         MemberNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberNinoController.onPageLoad(NormalMode)
       }

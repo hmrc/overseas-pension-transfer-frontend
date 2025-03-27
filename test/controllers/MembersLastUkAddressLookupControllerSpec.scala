@@ -59,7 +59,7 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the member select last uk address when valid data is submitted" in {
 
       val mockSessionRepository      = mock[SessionRepository]
       val mockAddressLookupConnector = mock[AddressLookupConnector]

@@ -29,7 +29,7 @@ class MembersCurrentAddressPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Next page" in {
+      "must go to Member Is UK Resident" in {
 
         MembersCurrentAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberIsResidentUKController.onPageLoad(NormalMode)
       }

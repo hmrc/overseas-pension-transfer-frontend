@@ -68,7 +68,7 @@ class MembersLastUkAddressSelectControllerSpec extends SpecBase with MockitoSuga
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the address confirmation when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 

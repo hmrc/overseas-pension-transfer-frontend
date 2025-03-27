@@ -80,7 +80,7 @@ class MembersLastUkAddressConfirmControllerSpec extends SpecBase with MockitoSug
       }
     }
 
-    "must redirect to the next page when continue is selected" in {
+    "must redirect to the date member left UK when continue is selected" in {
 
       val mockSessionRepository = mock[SessionRepository]
 

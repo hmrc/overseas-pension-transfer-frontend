@@ -75,7 +75,7 @@ class MemberNinoControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the members date of birth when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
