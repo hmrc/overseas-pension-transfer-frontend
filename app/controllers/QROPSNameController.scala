@@ -17,27 +17,28 @@
 package controllers
 
 import controllers.actions._
-import forms.QropsNameFormProvider
+import forms.QROPSNameFormProvider
+
 import javax.inject.Inject
 import models.Mode
-import pages.QropsNamePage
+import pages.QROPSNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.QropsNameView
+import views.html.QROPSNameView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class QropsNameController @Inject() (
+class QROPSNameController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: QropsNameFormProvider,
+    formProvider: QROPSNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: QropsNameView
+    view: QROPSNameView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -45,7 +46,7 @@ class QropsNameController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QropsNamePage) match {
+      val preparedForm = request.userAnswers.get(QROPSNamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,9 +61,9 @@ class QropsNameController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QropsNamePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(QropsNamePage.nextPage(mode, updatedAnswers))
+          } yield Redirect(QROPSNamePage.nextPage(mode, updatedAnswers))
       )
   }
 }

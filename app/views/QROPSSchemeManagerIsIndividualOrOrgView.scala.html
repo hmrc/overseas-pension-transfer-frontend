@@ -35,7 +35,7 @@
 
 @layout(pageTitle = title(form, messages("qropsSchemeManagerIsIndividualOrOrg.title"))) {
 
-    @formHelper(action = routes.QropsSchemeManagerIsIndividualOrOrgController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.QROPSSchemeManagerIsIndividualOrOrgController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
@@ -45,7 +45,7 @@
             RadiosViewModel(
                 field  = form("value"),
                 legend = LegendViewModel(Text(messages("qropsSchemeManagerIsIndividualOrOrg.heading"))).asPageHeading(size = Large),
-                items  = QropsSchemeManagerIsIndividualOrOrg.options
+                items  = QROPSSchemeManagerIsIndividualOrOrg.options
             )
             .withHint(HintViewModel(Text(messages("radios.hint"))))
         )

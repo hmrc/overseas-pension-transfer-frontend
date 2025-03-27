@@ -17,27 +17,28 @@
 package controllers
 
 import controllers.actions._
-import forms.QropsSchemeManagerIsIndividualOrOrgFormProvider
+import forms.QROPSSchemeManagerIsIndividualOrOrgFormProvider
+
 import javax.inject.Inject
 import models.Mode
-import pages.QropsSchemeManagerIsIndividualOrOrgPage
+import pages.QROPSSchemeManagerIsIndividualOrOrgPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.QropsSchemeManagerIsIndividualOrOrgView
+import views.html.QROPSSchemeManagerIsIndividualOrOrgView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class QropsSchemeManagerIsIndividualOrOrgController @Inject() (
+class QROPSSchemeManagerIsIndividualOrOrgController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    formProvider: QropsSchemeManagerIsIndividualOrOrgFormProvider,
+    formProvider: QROPSSchemeManagerIsIndividualOrOrgFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: QropsSchemeManagerIsIndividualOrOrgView
+    view: QROPSSchemeManagerIsIndividualOrOrgView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -45,7 +46,7 @@ class QropsSchemeManagerIsIndividualOrOrgController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QropsSchemeManagerIsIndividualOrOrgPage) match {
+      val preparedForm = request.userAnswers.get(QROPSSchemeManagerIsIndividualOrOrgPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,9 +61,9 @@ class QropsSchemeManagerIsIndividualOrOrgController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QropsSchemeManagerIsIndividualOrOrgPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerIsIndividualOrOrgPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(QropsSchemeManagerIsIndividualOrOrgPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(mode, updatedAnswers))
       )
   }
 }

@@ -17,26 +17,26 @@
 package controllers
 
 import base.SpecBase
-import forms.QropsNameFormProvider
+import forms.QROPSNameFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.QropsNamePage
+import pages.QROPSNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.QropsNameView
+import views.html.QROPSNameView
 
 import scala.concurrent.Future
 
-class QropsNameControllerSpec extends SpecBase with MockitoSugar {
+class QROPSNameControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider = new QropsNameFormProvider()
+  private val formProvider = new QROPSNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val qropsNameRoute = routes.QropsNameController.onPageLoad(NormalMode).url
+  private lazy val qropsNameRoute = routes.QROPSNameController.onPageLoad(NormalMode).url
 
   "QropsName Controller" - {
 
@@ -49,7 +49,7 @@ class QropsNameControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[QropsNameView]
+        val view = application.injector.instanceOf[QROPSNameView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
@@ -58,14 +58,14 @@ class QropsNameControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(QropsNamePage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(QROPSNamePage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, qropsNameRoute)
 
-        val view = application.injector.instanceOf[QropsNameView]
+        val view = application.injector.instanceOf[QROPSNameView]
 
         val result = route(application, request).value
 
@@ -93,7 +93,7 @@ class QropsNameControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QropsNamePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual QROPSNamePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -108,7 +108,7 @@ class QropsNameControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[QropsNameView]
+        val view = application.injector.instanceOf[QROPSNameView]
 
         val result = route(application, request).value
 

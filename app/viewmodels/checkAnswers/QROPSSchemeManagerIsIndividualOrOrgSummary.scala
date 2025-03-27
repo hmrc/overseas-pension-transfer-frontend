@@ -18,24 +18,31 @@ package viewmodels.checkAnswers
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.QropsNamePage
+import pages.QROPSSchemeManagerIsIndividualOrOrgPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object QropsNameSummary {
+object QROPSSchemeManagerIsIndividualOrOrgSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QropsNamePage).map {
+    answers.get(QROPSSchemeManagerIsIndividualOrOrgPage).map {
       answer =>
+        val value = ValueViewModel(
+          HtmlContent(
+            HtmlFormat.escape(messages(s"qropsSchemeManagerIsIndividualOrOrg.$answer"))
+          )
+        )
+
         SummaryListRowViewModel(
-          key     = "qropsName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key     = "qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel",
+          value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.QropsNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("qropsName.change.hidden"))
+            ActionItemViewModel("site.change", routes.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("qropsSchemeManagerIsIndividualOrOrg.change.hidden"))
           )
         )
     }

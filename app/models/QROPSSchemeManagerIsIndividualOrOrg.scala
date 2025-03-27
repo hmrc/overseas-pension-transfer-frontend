@@ -20,14 +20,14 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait QropsSchemeManagerIsIndividualOrOrg
+sealed trait QROPSSchemeManagerIsIndividualOrOrg
 
-object QropsSchemeManagerIsIndividualOrOrg extends Enumerable.Implicits {
+object QROPSSchemeManagerIsIndividualOrOrg extends Enumerable.Implicits {
 
-  case object Individual   extends WithName("individual") with QropsSchemeManagerIsIndividualOrOrg
-  case object Organisation extends WithName("organisation") with QropsSchemeManagerIsIndividualOrOrg
+  case object Individual   extends WithName("individual") with QROPSSchemeManagerIsIndividualOrOrg
+  case object Organisation extends WithName("organisation") with QROPSSchemeManagerIsIndividualOrOrg
 
-  val values: Seq[QropsSchemeManagerIsIndividualOrOrg] = Seq(
+  val values: Seq[QROPSSchemeManagerIsIndividualOrOrg] = Seq(
     Individual,
     Organisation
   )
@@ -41,6 +41,6 @@ object QropsSchemeManagerIsIndividualOrOrg extends Enumerable.Implicits {
       )
   }
 
-  implicit val enumerable: Enumerable[QropsSchemeManagerIsIndividualOrOrg] =
+  implicit val enumerable: Enumerable[QROPSSchemeManagerIsIndividualOrOrg] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

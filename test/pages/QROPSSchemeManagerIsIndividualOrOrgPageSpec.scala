@@ -21,7 +21,7 @@ import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class QropsSchemeManagerIsIndividualOrOrgPageSpec extends AnyFreeSpec with Matchers {
+class QROPSSchemeManagerIsIndividualOrOrgPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -31,7 +31,7 @@ class QropsSchemeManagerIsIndividualOrOrgPageSpec extends AnyFreeSpec with Match
 
       "must go to Index" in {
 
-        QropsSchemeManagerIsIndividualOrOrgPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
       }
     }
 
@@ -39,7 +39,7 @@ class QropsSchemeManagerIsIndividualOrOrgPageSpec extends AnyFreeSpec with Match
 
       "must go to Check Answers" in {
 
-        QropsSchemeManagerIsIndividualOrOrgPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

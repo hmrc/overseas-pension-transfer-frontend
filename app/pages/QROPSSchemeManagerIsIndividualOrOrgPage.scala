@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
+import controllers.routes
+import models.{QROPSSchemeManagerIsIndividualOrOrg, UserAnswers}
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case object QROPSSchemeManagerIsIndividualOrOrgPage extends QuestionPage[QROPSSchemeManagerIsIndividualOrOrg] {
 
-class QropsNameFormProvider @Inject() extends Mappings {
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("qropsName.error.required")
-        .verifying(maxLength(160, "qropsName.error.length"))
-    )
+  override def toString: String = "qropsSchemeManagerIsIndividualOrOrg"
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
 }

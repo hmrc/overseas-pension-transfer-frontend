@@ -16,24 +16,32 @@
 
 package forms
 
-import forms.behaviours.OptionFieldBehaviours
-import models.QropsSchemeManagerIsIndividualOrOrg
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class QropsSchemeManagerIsIndividualOrOrgFormProviderSpec extends OptionFieldBehaviours {
+class QROPSNameFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new QropsSchemeManagerIsIndividualOrOrgFormProvider()()
+  val requiredKey = "qropsName.error.required"
+  val lengthKey   = "qropsName.error.length"
+  val maxLength   = 160
+
+  val form = new QROPSNameFormProvider()()
 
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "qropsSchemeManagerIsIndividualOrOrg.error.required"
+    val fieldName = "value"
 
-    behave like optionsField[QropsSchemeManagerIsIndividualOrOrg](
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      validValues  = QropsSchemeManagerIsIndividualOrOrg.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
     behave like mandatoryField(
