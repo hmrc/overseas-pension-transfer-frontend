@@ -30,14 +30,6 @@ object Subdivision {
   implicit val format: OFormat[Subdivision] = Json.format[Subdivision]
 }
 
-case class Country(code: String, name: String) {
-  override def toString: String = name
-}
-
-object Country {
-  implicit val format: OFormat[Country] = Json.format
-}
-
 case class RawAddress(lines: List[String], town: String, postcode: String, subdivision: Option[Subdivision], country: Country)
 
 object RawAddress {

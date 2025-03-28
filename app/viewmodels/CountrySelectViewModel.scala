@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-package models
+package viewmodels
 
-import play.api.libs.json.{Json, OFormat}
+import models.address.Country
+import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 
-case class Country(code: String, name: String) {
+case class CountrySelectViewModel(items: Seq[SelectItem])
 
-  def toMap: Map[String, String] = Map(
-    "Country" -> code,
-    "Name"    -> name
-  )
-}
+object CountrySelectViewModel {
 
-object Country {
+  def fromCountries(countries: Seq[Country]): CountrySelectViewModel = {
 
-  def apply(codeCountryMap: (String, Map[String, String])): Country = codeCountryMap match {
-    case (code, countryMap) => new Country(countryMap("Country"), countryMap("Name"))
+    val selectItems =
+      SelectItem(
+        value    = Some(""),
+        selected = true
+      ) +:
+        countries.map { country =>
+          SelectItem(
+            value = Some(country.code),
+            text  = country.name
+          )
+        }
+
+    CountrySelectViewModel(selectItems)
   }
-
-  def toMap(country: Country): (String, Map[String, String]) = {
-    (country.code -> country.toMap)
-  }
-
-  implicit val format: OFormat[Country] = Json.format
 }

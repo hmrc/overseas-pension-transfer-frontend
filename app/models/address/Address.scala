@@ -21,17 +21,14 @@ import play.api.libs.json._
 
 sealed trait Address {
   val line1: String
-  val line2: Option[String]
+  val line2: String
   val line3: Option[String]
   val line4: Option[String]
   val townOrCity: Option[String]
-  /*TODO
-     Once we implement the country look up on the manual entry page, the country should be changed to the country object itself
-     which contains a country code and country name (see the country model)
-   */
   val county: Option[String]
-  val country: Option[String]
+  val country: Country
   val postcode: Option[String]
+  val poBox: Option[String]
 }
 
 object Address {
@@ -76,12 +73,13 @@ case class MembersLastUKAddress(
     rawPostcode: String
   ) extends Address {
   val line1: String              = addressLine1
-  val line2: Option[String]      = addressLine2
+  val line2: String              = addressLine2.getOrElse("")
   val line3: Option[String]      = None
   val line4: Option[String]      = None
-  val country: Option[String]    = None
+  val country: Country           = Countries.UK
   val townOrCity: Option[String] = Some(rawTownOrCity)
   val postcode: Option[String]   = Some(rawPostcode)
+  val poBox: Option[String]      = None
 }
 
 object MembersLastUKAddress {
@@ -109,7 +107,7 @@ object MembersLastUKAddress {
   def fromAddress(address: Address): MembersLastUKAddress = {
     MembersLastUKAddress(
       addressLine1  = address.line1,
-      addressLine2  = address.line2,
+      addressLine2  = Some(address.line2),
       rawTownOrCity = address.townOrCity.getOrElse(""),
       county        = address.county,
       rawPostcode   = address.postcode.getOrElse("")
@@ -119,12 +117,13 @@ object MembersLastUKAddress {
 
 case class MembersLookupLastUkAddress(
     line1: String,
-    line2: Option[String],
+    line2: String,
     line3: Option[String],
     line4: Option[String],
     townOrCity: Option[String],
-    country: Option[String],
-    postcode: Option[String]
+    country: Country,
+    postcode: Option[String],
+    poBox: Option[String]
   ) extends Address {
   val county: Option[String] = None
 }
@@ -133,12 +132,13 @@ object MembersLookupLastUkAddress {
 
   implicit val reads: Reads[MembersLookupLastUkAddress] = (
     (__ \ "line1").read[String] and
-      (__ \ "line2").readNullable[String] and
+      (__ \ "line2").read[String] and
       (__ \ "line3").readNullable[String] and
       (__ \ "line4").readNullable[String] and
       (__ \ "townOrCity").readNullable[String] and
-      (__ \ "country").readNullable[String] and
-      (__ \ "postcode").readNullable[String]
+      (__ \ "country").read[Country] and
+      (__ \ "postcode").readNullable[String] and
+      (__ \ "poBox").readNullable[String]
   )(MembersLookupLastUkAddress.apply _)
 
   implicit val writes: OWrites[MembersLookupLastUkAddress] = OWrites[MembersLookupLastUkAddress] { address =>
@@ -155,31 +155,37 @@ object MembersLookupLastUkAddress {
 
   implicit val format: OFormat[MembersLookupLastUkAddress] = OFormat(reads, writes)
 
-  def fromRawAddress(rawAddress: RawAddress): MembersLookupLastUkAddress = {
+  def fromAddressRecord(record: AddressRecord): MembersLookupLastUkAddress = {
+    val raw = record.address
+
     MembersLookupLastUkAddress(
-      line1      = rawAddress.lines.headOption.getOrElse(""),
-      line2      = rawAddress.lines.lift(1),
-      line3      = rawAddress.lines.lift(2),
-      line4      = rawAddress.lines.lift(3),
-      townOrCity = Some(rawAddress.town),
-      postcode   = Some(rawAddress.postcode),
-      country    = Some(rawAddress.country.name)
+      line1      = raw.lines.headOption.getOrElse(""),
+      line2      = raw.lines.lift(1).getOrElse(""),
+      line3      = raw.lines.lift(2),
+      line4      = raw.lines.lift(3),
+      townOrCity = Some(raw.town),
+      postcode   = Some(raw.postcode),
+      country    = raw.country,
+      poBox      = record.poBox
     )
   }
+
 }
 
 case class MembersCurrentAddress(
     addressLine1: String,
     addressLine2: String,
     addressLine3: Option[String],
+    addressLine4: Option[String],
     townOrCity: Option[String],
-    country: Option[String],
-    postcode: Option[String]
+    country: Country,
+    postcode: Option[String],
+    poBox: Option[String]
   ) extends Address {
   val line1: String          = addressLine1
-  val line2: Option[String]  = Some(addressLine2)
+  val line2: String          = addressLine2
   val line3: Option[String]  = addressLine3
-  val line4: Option[String]  = None
+  val line4: Option[String]  = addressLine4
   val county: Option[String] = None
 }
 
@@ -189,9 +195,11 @@ object MembersCurrentAddress {
     (__ \ "line1").read[String] and
       (__ \ "line2").read[String] and
       (__ \ "line3").readNullable[String] and
+      (__ \ "line4").readNullable[String] and
       (__ \ "townOrCity").readNullable[String] and
-      (__ \ "country").readNullable[String] and
-      (__ \ "postcode").readNullable[String]
+      (__ \ "country").read[Country] and
+      (__ \ "postcode").readNullable[String] and
+      (__ \ "poBox").readNullable[String]
   )(MembersCurrentAddress.apply _)
 
   implicit val writes: OWrites[MembersCurrentAddress] = OWrites[MembersCurrentAddress] { address =>
@@ -199,9 +207,11 @@ object MembersCurrentAddress {
       "line1"      -> address.line1,
       "line2"      -> address.line2,
       "line3"      -> address.line3,
+      "line4"      -> address.line4,
       "townOrCity" -> address.townOrCity,
       "country"    -> address.country,
-      "postcode"   -> address.postcode
+      "postcode"   -> address.postcode,
+      "poBox"      -> address.poBox
     )
   }
 
@@ -210,11 +220,13 @@ object MembersCurrentAddress {
   def fromAddress(address: Address): MembersCurrentAddress = {
     MembersCurrentAddress(
       addressLine1 = address.line1,
-      addressLine2 = address.line2.getOrElse(""),
+      addressLine2 = address.line2,
       addressLine3 = address.line3,
+      addressLine4 = address.line4,
       townOrCity   = address.townOrCity,
       country      = address.country,
-      postcode     = address.postcode
+      postcode     = address.postcode,
+      poBox        = address.poBox
     )
   }
 }

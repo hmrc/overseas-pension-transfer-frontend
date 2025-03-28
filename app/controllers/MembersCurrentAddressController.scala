@@ -17,11 +17,11 @@
 package controllers
 
 import controllers.actions._
-import forms.MembersCurrentAddressFormProvider
+import forms.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 
 import javax.inject.Inject
 import models.Mode
-import models.address.MembersCurrentAddress
+import models.address.{Country, MembersCurrentAddress}
 import pages.MembersCurrentAddressPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,6 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.CountryService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.CountrySelectViewModel
 import views.html.MembersCurrentAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,24 +54,59 @@ class MembersCurrentAddressController @Inject() (
     implicit request =>
       val preparedForm = request.userAnswers.get(MembersCurrentAddressPage) match {
         case None          => form
-        case Some(address) => form.fill(MembersCurrentAddress.fromAddress(address))
+        case Some(address) => form.fill(
+            MembersCurrentAddressFormData.fromDomain(
+              MembersCurrentAddress.fromAddress(address)
+            )
+          )
       }
-      Ok(view(preparedForm, countryService.countries, mode))
+
+      val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+
+      Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryService.countries, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, value))
-            _              <- {
-              logger.info(Json.stringify(updatedAnswers.data))
-              sessionRepository.set(updatedAnswers)
-            }
-          } yield Redirect(MembersCurrentAddressPage.nextPage(mode, updatedAnswers))
+        formWithErrors => {
+          val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+
+        },
+        formData => {
+          val maybeCountry: Option[Country] =
+            countryService.find(formData.countryCode)
+          maybeCountry match {
+            case None          =>
+              Future.successful(
+                Redirect(
+                  MembersCurrentAddressPage.nextPageRecovery(
+                    Some(MembersCurrentAddressPage.recoveryModeReturnUrl)
+                  )
+                )
+              )
+            case Some(country) =>
+              val addressToSave = MembersCurrentAddress(
+                addressLine1 = formData.addressLine1,
+                addressLine2 = formData.addressLine2,
+                addressLine3 = formData.addressLine3,
+                addressLine4 = formData.addressLine4,
+                townOrCity   = formData.townOrCity,
+                country      = country,
+                postcode     = formData.postcode,
+                poBox        = formData.poBox
+              )
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
+                _              <- {
+                  logger.info(Json.stringify(updatedAnswers.data))
+                  sessionRepository.set(updatedAnswers)
+                }
+              } yield Redirect(MembersCurrentAddressPage.nextPage(mode, updatedAnswers))
+          }
+        }
       )
   }
+
 }

@@ -17,7 +17,7 @@
 package services
 
 import javax.inject.{Inject, Singleton}
-import models.Country
+import models.address.Country
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.Environment
@@ -29,6 +29,10 @@ class CountryService @Inject() (env: Environment) {
   private val countriesJsonPath = "public/countries.json"
 
   lazy val countries: Seq[Country] = loadCountries()
+
+  def find(code: String): Option[Country] = {
+    countries.find(_.code == code)
+  }
 
   private def getJson: Option[JsValue] =
     env.resourceAsStream(countriesJsonPath).map { stream =>

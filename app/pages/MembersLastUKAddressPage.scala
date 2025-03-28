@@ -29,5 +29,5 @@ case object MembersLastUKAddressPage extends QuestionPage[Address] {
   override def toString: String = "membersLastUKAddress"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
 }

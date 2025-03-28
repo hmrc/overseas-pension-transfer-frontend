@@ -25,7 +25,8 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 @import views.ViewUtils
 @import views.html.components.InputCountry
-
+@import models.address.Country
+@import viewmodels.CountrySelectViewModel
 
 @this(
         layout: templates.Layout,
@@ -36,7 +37,8 @@
         govukButton: GovukButton,
 )
 
-@(form: Form[_], countries: Seq[Country], mode: Mode)(implicit request: Request[_], messages: Messages)
+
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("membersCurrentAddress.title"))) {
 
@@ -74,6 +76,14 @@
 
         @govukInput(
             InputViewModel(
+                field = form("addressLine4"),
+                label = LabelViewModel(Text(messages("membersCurrentAddress.addressLine4")))
+            )
+            .withWidth(OneHalf)
+        )
+
+        @govukInput(
+            InputViewModel(
                 field = form("city"),
                 label = LabelViewModel(Text(messages("membersCurrentAddress.city")))
             )
@@ -82,14 +92,24 @@
 
           @inputCountry(
             form,
-            labelMsg = messages("membersCurrentAddress.country"),
-            countries = ViewUtils.countriesToSelectItems(countries)
+            id = "countryCode",
+            name = "countryCode",
+            labelMsg = messages("membersCurrentAddress.countryCode"),
+            countries = countrySelectViewModel.items
           )
 
         @govukInput(
             InputViewModel(
                 field = form("postcode"),
                 label = LabelViewModel(Text(messages("membersCurrentAddress.postcode")))
+            )
+            .withWidth(OneQuarter)
+        )
+
+        @govukInput(
+            InputViewModel(
+                field = form("poBox"),
+                label = LabelViewModel(Text(messages("membersCurrentAddress.poBox")))
             )
             .withWidth(OneQuarter)
         )

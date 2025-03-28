@@ -21,10 +21,10 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
 
 case class AddressViewModel(
     line1: String,
-    line2: Option[String],
+    line2: String,
     line3: Option[String],
     townOrCity: Option[String],
-    country: Option[String],
+    country: String,
     postcode: Option[String]
   )
 
@@ -38,7 +38,7 @@ object AddressViewModel {
       line3      = address.line3,
       townOrCity = address.townOrCity,
       postcode   = address.postcode,
-      country    = address.country
+      country    = address.country.name
     )
   }
 

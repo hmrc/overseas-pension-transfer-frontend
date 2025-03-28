@@ -22,9 +22,35 @@ import play.api.data.{Form, Forms}
 import play.api.data.Forms._
 import models.address._
 
+case class MembersCurrentAddressFormData(
+    addressLine1: String,
+    addressLine2: String,
+    addressLine3: Option[String],
+    addressLine4: Option[String],
+    townOrCity: Option[String],
+    countryCode: String,
+    postcode: Option[String],
+    poBox: Option[String]
+  )
+
+object MembersCurrentAddressFormData {
+
+  def fromDomain(address: MembersCurrentAddress): MembersCurrentAddressFormData =
+    MembersCurrentAddressFormData(
+      addressLine1 = address.addressLine1,
+      addressLine2 = address.addressLine2,
+      addressLine3 = address.addressLine3,
+      addressLine4 = address.addressLine4,
+      townOrCity   = address.townOrCity,
+      countryCode  = address.country.code,
+      postcode     = address.postcode,
+      poBox        = address.poBox
+    )
+}
+
 class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
 
-  def apply(): Form[MembersCurrentAddress] = Form(
+  def apply(): Form[MembersCurrentAddressFormData] = Form(
     mapping(
       "addressLine1" -> text("membersCurrentAddress.error.addressLine1.required")
         .verifying(maxLength(35, "membersCurrentAddress.error.addressLine1.length"))
@@ -37,17 +63,25 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
           verifying maxLength(35, "membersCurrentAddress.error.addressLine3.length")
           verifying regexp(addressLinesRegex, "membersCurrentAddress.error.addressLine3.pattern")
       ),
+      "addressLine4" -> optional(
+        Forms.text
+          verifying maxLength(35, "membersCurrentAddress.error.addressLine4.length")
+          verifying regexp(addressLinesRegex, "membersCurrentAddress.error.addressLine4.pattern")
+      ),
       "city"         -> optional(
         Forms.text
           verifying maxLength(35, "membersCurrentAddress.error.city.length")
           verifying regexp(addressLinesRegex, "membersCurrentAddress.error.city.pattern")
       ),
-      "country"      -> text("membersCurrentAddress.error.addressLine2.required")
-        .verifying(maxLength(35, "membersCurrentAddress.error.addressLine2.length")),
+      "countryCode"  -> text("membersCurrentAddress.error.countryCode.required"),
       "postcode"     -> optional(
         Forms.text
           verifying maxLength(16, "membersCurrentAddress.error.postcode.length")
+      ),
+      "poBox"        -> optional(
+        Forms.text
+          verifying maxLength(16, "membersCurrentAddress.error.postcode.length")
       )
-    )(MembersCurrentAddress.apply)(MembersCurrentAddress.unapply)
+    )(MembersCurrentAddressFormData.apply)(MembersCurrentAddressFormData.unapply)
   )
 }
