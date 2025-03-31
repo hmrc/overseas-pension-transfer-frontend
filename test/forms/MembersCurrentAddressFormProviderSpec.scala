@@ -160,48 +160,29 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     )
   }
 
-  "country" - {
+  "countryCode" - {
 
-    val fieldName  = "country"
-    val lengthKey  = "membersCurrentAddress.error.country.length"
-    val patternKey = "membersCurrentAddress.error.country.pattern"
-    val maxLength  = 35
+    val fieldName   = "countryCode"
+    val requiredKey = "membersCurrentAddress.error.countryCode.required"
 
-    behave like fieldThatBindsValidData(
+    behave like mandatoryField(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like optionalField(
-      form,
-      fieldName
-    )
-    behave like fieldThatRejectsInvalidCharacters(
-      form,
-      fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
-      Option(maxLength)
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 
   "postcode" - {
 
-    val fieldName = "postcode"
-    val lengthKey = "membersCurrentAddress.error.postcode.length"
-    val maxLength = 16
+    val fieldName  = "postcode"
+    val lengthKey  = "membersCurrentAddress.error.postcode.length"
+    val patternKey = "membersCurrentAddress.error.postcode.pattern"
+    val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(internationalPostcodeRegex, maybeMaxLength = Some(maxLength))
     )
 
     behave like fieldWithMaxLength(
@@ -214,6 +195,46 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     behave like optionalField(
       form,
       fieldName
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(internationalPostcodeRegex)),
+      Option(maxLength)
+    )
+  }
+
+  "poBox" - {
+
+    val fieldName  = "poBox"
+    val lengthKey  = "membersCurrentAddress.error.poBox.length"
+    val patternKey = "membersCurrentAddress.error.poBox.pattern"
+    val maxLength  = 35
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsMatchingRegex(poBoxRegex, maybeMaxLength = Some(maxLength))
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
+
+    behave like optionalField(
+      form,
+      fieldName
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(poBoxRegex)),
+      Option(maxLength)
     )
   }
 }

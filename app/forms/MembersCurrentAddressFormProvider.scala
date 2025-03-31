@@ -76,11 +76,13 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
       "countryCode"  -> text("membersCurrentAddress.error.countryCode.required"),
       "postcode"     -> optional(
         Forms.text
-          verifying maxLength(16, "membersCurrentAddress.error.postcode.length")
+          verifying maxLength(35, "membersCurrentAddress.error.postcode.length")
+          verifying regexp(internationalPostcodeRegex, "membersCurrentAddress.error.postcode.pattern")
       ),
       "poBox"        -> optional(
         Forms.text
-          verifying maxLength(16, "membersCurrentAddress.error.postcode.length")
+          verifying maxLength(35, "membersCurrentAddress.error.poBox.length")
+          verifying regexp(poBoxRegex, "membersCurrentAddress.error.poBox.pattern")
       )
     )(MembersCurrentAddressFormData.apply)(MembersCurrentAddressFormData.unapply)
   )

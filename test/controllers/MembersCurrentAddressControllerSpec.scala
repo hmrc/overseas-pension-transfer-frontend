@@ -16,8 +16,8 @@
 
 package controllers
 
-import base.SpecBase
-import forms.MembersCurrentAddressFormProvider
+import base.{AddressBase, SpecBase}
+import forms.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.NormalMode
 import models.address._
 import org.mockito.ArgumentMatchers.any
@@ -28,52 +28,80 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.CountryService
 import views.html.MembersCurrentAddressView
+import viewmodels.CountrySelectViewModel
 
 import scala.concurrent.Future
 
-class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar {
+class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar with AddressBase {
 
   private val formProvider = new MembersCurrentAddressFormProvider()
   private val form         = formProvider()
+  private val formData     = MembersCurrentAddressFormData.fromDomain(membersCurrentAddress)
 
-  private lazy val membersCurrentAddressRoute = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
+  private lazy val membersCurrentAddressRoute =
+    routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
 
-  private val validAnswer = MembersCurrentAddress("value 1", "value 2", Some("value 3"), Some("value 4"), Some("value 5"), Some("value 6"))
-  private val userAnswers = emptyUserAnswers.set(MembersCurrentAddressPage, validAnswer).success.value
+  private val userAnswers =
+    emptyUserAnswers.set(MembersCurrentAddressPage, membersCurrentAddress).success.value
+
+  private val testCountries = Seq(
+    Country("GB", "United Kingdom"),
+    Country("FR", "France")
+  )
+
+  private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
+
+  val mockCountryService = mock[CountryService]
 
   "MembersCurrentAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockCountryService.countries).thenReturn(testCountries)
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService)
+        )
+        .build()
 
       running(application) {
         val request = FakeRequest(GET, membersCurrentAddressRoute)
-
-        val view = application.injector.instanceOf[MembersCurrentAddressView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, membersCurrentAddressRoute)
-
-        val view = application.injector.instanceOf[MembersCurrentAddressView]
+        val view    = application.injector.instanceOf[MembersCurrentAddressView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
-          form.fill(MembersCurrentAddress("value 1", "value 2", Some("value 3"), Some("value 4"), Some("value 5"), Some("value 6"))),
+          form,
+          countrySelectViewModel,
+          NormalMode
+        )(request, messages(application)).toString
+      }
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      when(mockCountryService.countries).thenReturn(testCountries)
+
+      val application = applicationBuilder(Some(userAnswers))
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, membersCurrentAddressRoute)
+        val view    = application.injector.instanceOf[MembersCurrentAddressView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(
+          form.fill(formData),
+          countrySelectViewModel,
           NormalMode
         )(request, messages(application)).toString
       }
@@ -82,45 +110,64 @@ class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockCountryService.countries).thenReturn(testCountries)
+
+      when(mockCountryService.find("GB"))
+        .thenReturn(Some(Country("GB", "United Kingdom")))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[CountryService].toInstance(mockCountryService)
           )
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, membersCurrentAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "value 1"), ("addressLine2", "value 2"))
+            .withFormUrlEncodedBody(
+              "addressLine1" -> "value 1",
+              "addressLine2" -> "value 2",
+              "countryCode"  -> "GB"
+            )
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MembersCurrentAddressPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual
+          MembersCurrentAddressPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      when(mockCountryService.countries).thenReturn(testCountries)
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService)
+        )
+        .build()
 
       running(application) {
         val request =
           FakeRequest(POST, membersCurrentAddressRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+            .withFormUrlEncodedBody("value" -> "invalid value")
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[MembersCurrentAddressView]
+        val view      = application.injector.instanceOf[MembersCurrentAddressView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(
+          boundForm,
+          countrySelectViewModel,
+          NormalMode
+        )(request, messages(application)).toString
       }
     }
 
@@ -130,11 +177,11 @@ class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, membersCurrentAddressRoute)
-
-        val result = route(application, request).value
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual
+          routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -145,12 +192,16 @@ class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, membersCurrentAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "value 1"), ("addressLine2", "value 2"))
+            .withFormUrlEncodedBody(
+              "addressLine1" -> "value 1",
+              "addressLine2" -> "value 2"
+            )
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual
+          routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
