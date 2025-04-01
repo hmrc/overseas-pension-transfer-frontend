@@ -19,7 +19,7 @@ package controllers
 import base.{AddressBase, SpecBase}
 import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import forms.MembersLastUkAddressLookupFormProvider
-import models.NormalMode
+import models.{NormalMode, PersonName}
 import models.address.RecordSet
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -35,6 +35,7 @@ import scala.concurrent.Future
 
 class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSugar with AddressBase {
 
+  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MembersLastUkAddressLookupFormProvider()
   private val form         = formProvider()
 
@@ -54,11 +55,11 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
         val view = application.injector.instanceOf[MembersLastUkAddressLookupView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the member select last uk address when valid data is submitted" in {
 
       val mockSessionRepository      = mock[SessionRepository]
       val mockAddressLookupConnector = mock[AddressLookupConnector]
@@ -108,7 +109,7 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 

@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import play.api.mvc.Call
 import play.api.libs.json.JsPath
 
@@ -30,5 +30,5 @@ case object MemberDateOfBirthPage extends QuestionPage[LocalDate] {
   override def toString: String = "memberDateOfBirth"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.MembersCurrentAddressController.onPageLoad(NormalMode)
 }

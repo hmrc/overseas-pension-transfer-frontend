@@ -21,7 +21,7 @@ import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class MemberSelectLastUkAddressPageSpec extends AnyFreeSpec with Matchers {
+class MembersLastUkAddressConfirmPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -29,17 +29,17 @@ class MemberSelectLastUkAddressPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to confirm address page" in {
+      "must go to Members Date of Leaving UK" in {
 
-        MemberSelectLastUkAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberConfirmLastUkAddressController.onPageLoad(NormalMode)
+        MembersLastUkAddressConfirmPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
 
-      "must go to confirm address page" in {
+      "must go to Check Answers" in {
 
-        MemberSelectLastUkAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberConfirmLastUkAddressController.onPageLoad(NormalMode)
+        MembersLastUkAddressConfirmPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }
