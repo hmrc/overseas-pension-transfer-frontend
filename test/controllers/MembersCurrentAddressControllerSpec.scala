@@ -37,9 +37,9 @@ import scala.concurrent.Future
 class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar with AddressBase {
 
   private val formProvider = new MembersCurrentAddressFormProvider()
+  private val memberName   = PersonName("Undefined", "Undefined")
   private val form         = formProvider(memberName.fullName)
   private val formData     = MembersCurrentAddressFormData.fromDomain(membersCurrentAddress)
-  private val memberName   = PersonName("Undefined", "Undefined")
 
   private lazy val membersCurrentAddressRoute =
     routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
@@ -54,7 +54,7 @@ class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar wit
 
   private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
 
-  val mockCountryService = mock[CountryService]
+  private val mockCountryService = mock[CountryService]
 
   "MembersCurrentAddress Controller" - {
 

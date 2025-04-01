@@ -50,7 +50,7 @@ class MembersCurrentAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  private def form(memberName: String)(implicit messages: Messages): Form[MembersCurrentAddress] = formProvider(memberName)
+  private def form(memberName: String)(implicit messages: Messages): Form[MembersCurrentAddressFormData] = formProvider(memberName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -58,9 +58,9 @@ class MembersCurrentAddressController @Inject() (
       val memberName   = memberFullName(request.userAnswers)
       val preparedForm = userAnswers.get(MembersCurrentAddressPage) match {
         case None          => form(memberName)
-        case Some(address) => form(memberName).fill(MembersCurrentAddress.fromAddress(address))
+        case Some(address) => form(memberName).fill(MembersCurrentAddressFormData.fromDomain(MembersCurrentAddress.fromAddress(address)))
       }
-    
+
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
 
       Ok(view(preparedForm, countrySelectViewModel, memberName, mode))
