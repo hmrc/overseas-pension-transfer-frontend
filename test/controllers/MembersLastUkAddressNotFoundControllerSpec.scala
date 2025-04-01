@@ -19,9 +19,9 @@ package controllers
 import base.{AddressBase, SpecBase}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.MemberLastUkAddressNotFoundView
+import views.html.MembersLastUkAddressNotFoundView
 
-class MemberLastUkAddressNotFoundControllerSpec extends SpecBase with AddressBase {
+class MembersLastUkAddressNotFoundControllerSpec extends SpecBase with AddressBase {
 
   "MemberLastUkAddressNotFound Controller" - {
 
@@ -30,11 +30,11 @@ class MemberLastUkAddressNotFoundControllerSpec extends SpecBase with AddressBas
       val application = applicationBuilder(userAnswers = Some(noAddressFoundUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.MemberLastUkAddressNotFoundController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.MembersLastUkAddressNotFoundController.onPageLoad().url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[MemberLastUkAddressNotFoundView]
+        val view = application.injector.instanceOf[MembersLastUkAddressNotFoundView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(noAddressFound.searchedPostcode)(request, messages(application)).toString

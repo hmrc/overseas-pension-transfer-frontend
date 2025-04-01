@@ -18,7 +18,7 @@ package base
 
 import models.address._
 import models.UserAnswers
-import pages.{MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
+import pages.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 
 trait AddressBase {
 
@@ -145,7 +145,7 @@ trait AddressBase {
 
   val selectedAddress: FoundAddress = foundAddresses.addresses.head
 
-  val addressSelectedUserAnswers: UserAnswers = addressFoundUserAnswers.set(MemberSelectLastUkAddressPage, selectedAddress).get
+  val addressSelectedUserAnswers: UserAnswers = addressFoundUserAnswers.set(MembersLastUkAddressSelectPage, selectedAddress).get
 
   val validIds: Seq[String] = foundAddresses.addresses.map(_.id)
 

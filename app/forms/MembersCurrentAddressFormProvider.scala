@@ -50,12 +50,12 @@ object MembersCurrentAddressFormData {
 
 class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
 
-  def apply(): Form[MembersCurrentAddressFormData] = Form(
+  def apply(memberName: String): Form[MembersCurrentAddressFormData] = Form(
     mapping(
-      "addressLine1" -> text("membersCurrentAddress.error.addressLine1.required")
+      "addressLine1" -> text("membersCurrentAddress.error.addressLine1.required", Seq(memberName))
         .verifying(maxLength(35, "membersCurrentAddress.error.addressLine1.length"))
         .verifying(regexp(addressLinesRegex, "membersCurrentAddress.error.addressLine1.pattern")),
-      "addressLine2" -> text("membersCurrentAddress.error.addressLine2.required")
+      "addressLine2" -> text("membersCurrentAddress.error.addressLine2.required", Seq(memberName))
         .verifying(maxLength(35, "membersCurrentAddress.error.addressLine2.length"))
         .verifying(regexp(addressLinesRegex, "membersCurrentAddress.error.addressLine2.pattern")),
       "addressLine3" -> optional(

@@ -150,5 +150,107 @@ class DateFluencySpec extends AnyFreeSpec with Matchers with Mappings with Optio
 
       result.items.forall(_.classes.contains(errorClass)) mustEqual false
     }
+
+    "Error link navigation" - {
+
+      "should direct error link to the day field when day input is missing" in {
+        val boundForm = form.bind(Map(
+          "value.month" -> "1",
+          "value.year"  -> "2000"
+        ))
+
+        val errorArg      = boundForm.errors.head.args.headOption
+          .map(_.toString.stripPrefix("date.error."))
+          .getOrElse("day")
+        val overrideField = s"value.$errorArg"
+        val errorSummary  = ErrorSummaryViewModel(boundForm, errorLinkOverrides = Map("value" -> overrideField))
+
+        errorSummary.errorList.head.href mustEqual Some("#value.day")
+      }
+
+      "should direct error link to the month field when month input is missing" in {
+        val boundForm = form.bind(Map(
+          "value.day"  -> "1",
+          "value.year" -> "2000"
+        ))
+
+        val errorArg      = boundForm.errors.head.args.headOption
+          .map(_.toString.stripPrefix("date.error."))
+          .getOrElse("day")
+        val overrideField = s"value.$errorArg"
+        val errorSummary  = ErrorSummaryViewModel(boundForm, errorLinkOverrides = Map("value" -> overrideField))
+
+        errorSummary.errorList.head.href mustEqual Some("#value.month")
+      }
+
+      "should direct error link to the year field when year input is missing" in {
+        val boundForm = form.bind(Map(
+          "value.day"   -> "1",
+          "value.month" -> "1"
+        ))
+
+        val errorArg      = boundForm.errors.head.args.headOption
+          .map(_.toString.stripPrefix("date.error."))
+          .getOrElse("day")
+        val overrideField = s"value.$errorArg"
+        val errorSummary  = ErrorSummaryViewModel(boundForm, errorLinkOverrides = Map("value" -> overrideField))
+
+        errorSummary.errorList.head.href mustEqual Some("#value.year")
+      }
+
+      "should direct error link to the day field when day and month inputs are missing" in {
+        val boundForm = form.bind(Map(
+          "value.year" -> "2000"
+        ))
+
+        val errorArg      = boundForm.errors.head.args.headOption
+          .map(_.toString.stripPrefix("date.error."))
+          .getOrElse("day")
+        val overrideField = s"value.$errorArg"
+        val errorSummary  = ErrorSummaryViewModel(boundForm, errorLinkOverrides = Map("value" -> overrideField))
+
+        errorSummary.errorList.head.href mustEqual Some("#value.day")
+      }
+
+      "should direct error link to the month field when month and year inputs are missing" in {
+        val boundForm = form.bind(Map(
+          "value.day" -> "1"
+        ))
+
+        val errorArg      = boundForm.errors.head.args.headOption
+          .map(_.toString.stripPrefix("date.error."))
+          .getOrElse("day")
+        val overrideField = s"value.$errorArg"
+        val errorSummary  = ErrorSummaryViewModel(boundForm, errorLinkOverrides = Map("value" -> overrideField))
+
+        errorSummary.errorList.head.href mustEqual Some("#value.month")
+      }
+
+      "should direct error link to the day field when day and year inputs are missing" in {
+        val boundForm = form.bind(Map(
+          "value.month" -> "3"
+        ))
+
+        val errorArg      = boundForm.errors.head.args.headOption
+          .map(_.toString.stripPrefix("date.error."))
+          .getOrElse("day")
+        val overrideField = s"value.$errorArg"
+        val errorSummary  = ErrorSummaryViewModel(boundForm, errorLinkOverrides = Map("value" -> overrideField))
+
+        errorSummary.errorList.head.href mustEqual Some("#value.day")
+      }
+
+      "should direct error link to the day field when all inputs are missing" in {
+        val boundForm = form.bind(Map.empty[String, String])
+
+        val errorArg      = boundForm.errors.head.args.headOption
+          .map(_.toString.stripPrefix("date.error."))
+          .getOrElse("day")
+        val overrideField = s"value.$errorArg"
+        val errorSummary  = ErrorSummaryViewModel(boundForm, errorLinkOverrides = Map("value" -> overrideField))
+
+        errorSummary.errorList.head.href mustEqual Some("#value.day")
+      }
+    }
   }
 }

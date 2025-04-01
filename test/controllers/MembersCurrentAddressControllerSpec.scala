@@ -18,7 +18,7 @@ package controllers
 
 import base.{AddressBase, SpecBase}
 import forms.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
-import models.NormalMode
+import models.{NormalMode, PersonName}
 import models.address._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,8 +37,9 @@ import scala.concurrent.Future
 class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar with AddressBase {
 
   private val formProvider = new MembersCurrentAddressFormProvider()
-  private val form         = formProvider()
+  private val form         = formProvider(memberName.fullName)
   private val formData     = MembersCurrentAddressFormData.fromDomain(membersCurrentAddress)
+  private val memberName   = PersonName("Undefined", "Undefined")
 
   private lazy val membersCurrentAddressRoute =
     routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
@@ -77,6 +78,7 @@ class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar wit
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
+          memberName.fullName,
           NormalMode
         )(request, messages(application)).toString
       }
@@ -102,12 +104,13 @@ class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar wit
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
+          memberName.fullName,
           NormalMode
         )(request, messages(application)).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the member is UK resident when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -166,6 +169,7 @@ class MembersCurrentAddressControllerSpec extends SpecBase with MockitoSugar wit
         contentAsString(result) mustEqual view(
           boundForm,
           countrySelectViewModel,
+          memberName.fullName,
           NormalMode
         )(request, messages(application)).toString
       }

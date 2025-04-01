@@ -18,11 +18,10 @@ package controllers
 
 import controllers.actions._
 import forms.MemberDoesNotHaveNinoFormProvider
-import models.requests.DataRequest
 
 import javax.inject.Inject
-import models.{Mode, NormalMode}
-import pages.{MemberDoesNotHaveNinoPage, MemberNamePage}
+import models.Mode
+import pages.{MemberDoesNotHaveNinoPage, MemberNinoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -62,9 +61,9 @@ class MemberDoesNotHaveNinoController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value).flatMap(_.remove(MemberNinoPage)))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.MemberDateOfBirthController.onPageLoad(NormalMode))
+          } yield Redirect(MemberDoesNotHaveNinoPage.nextPage(mode, updatedAnswers))
       )
   }
 }

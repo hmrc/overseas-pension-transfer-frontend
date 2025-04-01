@@ -29,9 +29,9 @@ class MemberDateOfLeavingUKPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Check Answers page" in {
 
-        MemberDateOfLeavingUKPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        MemberDateOfLeavingUKPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
       }
     }
 

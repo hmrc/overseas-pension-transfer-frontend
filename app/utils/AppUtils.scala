@@ -18,13 +18,12 @@ package utils
 
 import models.UserAnswers
 import pages.MemberNamePage
+import play.api.i18n.Messages
 
 trait AppUtils {
 
-  def memberFullName(userAnswers: UserAnswers): Option[String] = {
-    userAnswers.get(MemberNamePage) match {
-      case Some(memberName) => Some(memberName.fullName)
-      case None             => None
-    }
+  def memberFullName(userAnswers: UserAnswers)(implicit messages: Messages): String = {
+    userAnswers.get(MemberNamePage).map(_.fullName)
+      .getOrElse(messages("common.undefined.name"))
   }
 }
