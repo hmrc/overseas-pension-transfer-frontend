@@ -17,11 +17,10 @@
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSelect
 @import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Select
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.accessibleautocomplete.AccessibleAutocomplete
-@import viewmodels.govuk.all.LabelViewModel
-@import viewmodels.govuk.SelectFluency.SelectViewModel
-@import viewmodels.govuk.SelectFluency.FluentSelect
 
 @this(govukSelect: GovukSelect)
 
@@ -35,12 +34,14 @@
 )(implicit messages: Messages)
 
 @govukSelect(
-    SelectViewModel(
-        field = form(name),
-        label = LabelViewModel(Text(messages(labelMsg, labelMsgArgs))),
+    Select(
+        id = id,
+        name = name,
+        label = Label(
+            content = Text(messages(labelMsg, labelMsgArgs))
+        ),
         items = countries
     )
-    .withAttribute("autocomplete" -> "country-name")
     .asAccessibleAutocomplete(
         Some(
             AccessibleAutocomplete(
@@ -48,6 +49,7 @@
                 showAllValues = true,
                 autoSelect = true
             )
-    ))
-    .withCssClass("govuk-!-width-half")
+        )
+    )
+    .withFormField(form(name))
 )

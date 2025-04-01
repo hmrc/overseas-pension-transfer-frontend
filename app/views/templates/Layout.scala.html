@@ -44,6 +44,18 @@
 
 @head = {
     @autocompleteCss()
+    <!--
+        The below styling is here to override the default behaviour of the country picker js component.
+        Hopefully this component will be updated soon, when it is please remove this styling and use
+        govuk-!-width-one-half directly on the InputCountry component
+    -->
+    <style type="text/css">
+            .autocomplete__wrapper { width: 100% }
+            @@media (min-width: 40.0625em) {
+                .autocomplete__wrapper { width: 50% };
+            }
+
+    </style>
     @if(timeout) {
         @hmrcTimeoutDialog(TimeoutDialog(
             timeout             = Some(appConfig.timeout),
