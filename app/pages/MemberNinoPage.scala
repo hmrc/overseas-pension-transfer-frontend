@@ -29,4 +29,7 @@ case object MemberNinoPage extends QuestionPage[String] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberDateOfBirthController.onPageLoad(NormalMode)
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberDetailsCYAController.onPageLoad()
 }

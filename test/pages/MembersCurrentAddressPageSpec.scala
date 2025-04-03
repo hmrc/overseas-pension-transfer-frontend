@@ -39,7 +39,7 @@ class MembersCurrentAddressPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        MembersCurrentAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        MembersCurrentAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
   }

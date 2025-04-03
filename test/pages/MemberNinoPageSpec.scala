@@ -39,7 +39,7 @@ class MemberNinoPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        MemberNinoPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        MemberNinoPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
   }

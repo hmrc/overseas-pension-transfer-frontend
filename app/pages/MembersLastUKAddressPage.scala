@@ -30,4 +30,7 @@ case object MembersLastUKAddressPage extends QuestionPage[Address] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberDetailsCYAController.onPageLoad()
 }

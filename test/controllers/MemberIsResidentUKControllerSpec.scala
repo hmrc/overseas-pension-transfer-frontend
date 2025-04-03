@@ -18,11 +18,13 @@ package controllers
 
 import base.SpecBase
 import forms.MemberIsResidentUKFormProvider
-import models.{NormalMode, PersonName}
+import models.address.MembersLastUKAddress
+import models.{CheckMode, NormalMode, PersonName, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.MemberIsResidentUKPage
+import pages.{MemberHasEverBeenResidentUKPage, MemberIsResidentUKPage, MembersLastUKAddressPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -97,6 +99,55 @@ class MemberIsResidentUKControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode).url
+      }
+    }
+
+    "must redirect to NormalMode if changed from true to false in CheckMode" in {
+      val previousAnswers = emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
+      val application     = applicationBuilder(userAnswers = Some(previousAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.MemberIsResidentUKController.onSubmit(CheckMode).url)
+            .withFormUrlEncodedBody("value" -> "false")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode).url
+      }
+    }
+
+    "must remove previous data if changed from false to true in CheckMode" in {
+      val lastUkAdd       = MembersLastUKAddress("1stLineAdd", None, "aTown", Some("aCounty"), "AB1 2CD")
+      val previousAnswers = emptyUserAnswers
+        .set(MemberIsResidentUKPage, false).success.value
+        .set(MemberHasEverBeenResidentUKPage, true).success.value
+        .set(MembersLastUKAddressPage, lastUkAdd).success.value
+
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application = applicationBuilder(userAnswers = Some(previousAnswers))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.MemberIsResidentUKController.onSubmit(CheckMode).url)
+            .withFormUrlEncodedBody("value" -> "true")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.MemberDetailsCYAController.onPageLoad().url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+
+        val updatedAnswers = captor.getValue
+        updatedAnswers.get(MemberHasEverBeenResidentUKPage) mustBe None
+        updatedAnswers.get(MembersLastUKAddressPage) mustBe None
       }
     }
 

@@ -29,8 +29,11 @@ case object MemberHasEverBeenResidentUKPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     answers.get(MemberHasEverBeenResidentUKPage) match {
-      case Some(true)  => routes.MembersLastUkAddressSelectController.onPageLoad(NormalMode)
-      case Some(false) => routes.CheckYourAnswersController.onPageLoad()
+      case Some(true)  => routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode)
+      case Some(false) => routes.MemberDetailsCYAController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberDetailsCYAController.onPageLoad()
 }

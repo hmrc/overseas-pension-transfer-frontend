@@ -31,5 +31,8 @@ case object MembersCurrentAddressPage extends QuestionPage[Address] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberIsResidentUKController.onPageLoad(NormalMode)
 
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberDetailsCYAController.onPageLoad()
+
   val recoveryModeReturnUrl: String = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
 }

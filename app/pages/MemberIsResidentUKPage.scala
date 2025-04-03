@@ -30,7 +30,10 @@ case object MemberIsResidentUKPage extends QuestionPage[Boolean] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     answers.get(MemberIsResidentUKPage) match {
       case Some(false) => routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode)
-      case Some(true)  => routes.CheckYourAnswersController.onPageLoad()
+      case Some(true)  => routes.MemberDetailsCYAController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberDetailsCYAController.onPageLoad()
 }
