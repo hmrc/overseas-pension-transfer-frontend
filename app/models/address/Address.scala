@@ -72,8 +72,8 @@ case class MembersLastUKAddress(
   ) extends Address {
   val line1: String            = addressLine1
   val line2: String            = addressLine2
-  val line3: Option[String]    = None
-  val line4: Option[String]    = None
+  val line3: Option[String]    = Option(addressLine3.getOrElse(""))
+  val line4: Option[String]    = Option(addressLine4.getOrElse(""))
   val country: Country         = Countries.UK
   val postcode: Option[String] = Some(rawPostcode)
   val poBox: Option[String]    = None
