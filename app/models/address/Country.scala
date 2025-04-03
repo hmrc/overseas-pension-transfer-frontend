@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package models.address
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import models.address._
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import play.api.libs.json.{Json, OFormat}
 
-case object MembersCurrentAddressPage extends QuestionPage[Address] {
+case class Country(code: String, name: String) {
+  override def toString: String = name
+}
 
-  override def path: JsPath = JsPath \ toString
+object Country {
+  implicit val format: OFormat[Country] = Json.format
+}
 
-  override def toString: String = "membersCurrentAddress"
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.MemberIsResidentUKController.onPageLoad(NormalMode)
-
-  val recoveryModeReturnUrl: String = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
+object Countries {
+  val UK: Country = Country("GB", "United Kingdom")
 }

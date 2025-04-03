@@ -48,7 +48,7 @@ object FoundAddressResponse {
 
   def fromRecordSet(searchedPostcode: String, rs: RecordSet): FoundAddressResponse =
     if (rs.addresses.nonEmpty) {
-      FoundAddressSet(searchedPostcode, rs.addresses.map(ar => FoundAddress(ar.id, MembersLookupLastUkAddress.fromRawAddress(ar.address))).sorted)
+      FoundAddressSet(searchedPostcode, rs.addresses.map(ar => FoundAddress(ar.id, MembersLookupLastUkAddress.fromAddressRecord(ar))).sorted)
     } else {
       NoAddressFound(searchedPostcode)
     }

@@ -61,16 +61,16 @@
 
         @govukInput(
             InputViewModel(
-                field = form("townOrCity"),
-                label = LabelViewModel(Text(messages("membersLastUKAddress.city")))
+                field = form("addressLine3"),
+                label = LabelViewModel(Text(messages("membersLastUKAddress.addressLine3")))
             )
             .withWidth(OneThird)
         )
 
         @govukInput(
             InputViewModel(
-                field = form("county"),
-                label = LabelViewModel(Text(messages("membersLastUKAddress.county")))
+                field = form("addressLine4"),
+                label = LabelViewModel(Text(messages("membersLastUKAddress.addressLine4")))
             )
             .withWidth(OneThird)
         )

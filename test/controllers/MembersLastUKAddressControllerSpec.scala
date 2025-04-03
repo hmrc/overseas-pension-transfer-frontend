@@ -39,7 +39,7 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
   private lazy val membersLastUKAddressRoute = routes.MembersLastUKAddressController.onPageLoad(NormalMode).url
 
   private val postCode    = "AB1 2CD"
-  private val validAnswer = MembersLastUKAddress("1stLineAdd", Some("2ndLineAdd"), "aTown", Some("aCounty"), postCode)
+  private val validAnswer = MembersLastUKAddress("1stLineAdd", "2ndLineAdd", Some("aTown"), Some("aCounty"), postCode)
   private val userAnswers = emptyUserAnswers.set(MembersLastUKAddressPage, validAnswer).success.value
   private val memberName  = PersonName("Undefined", "Undefined")
   private val form        = formProvider(memberName.fullName)
@@ -98,7 +98,7 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, membersLastUKAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("townOrCity", "aTown"), ("postcode", postCode))
+            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdded"), ("postcode", postCode))
 
         val result = route(application, request).value
 
@@ -148,7 +148,7 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, membersLastUKAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("townOrCity", "aTown"), ("postcode", postCode))
+            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdd"), ("postcode", postCode))
 
         val result = route(application, request).value
 

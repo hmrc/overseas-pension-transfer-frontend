@@ -27,5 +27,9 @@ trait Regex {
 
   val postcodeRegex: String = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
 
+  val internationalPostcodeRegex: String = "^[A-Za-z0-9\\s]+$"
+
+  val poBoxRegex: String = "^[A-Za-z0-9\\s]+$"
+
   val qropsRefRegex: String = "^(QROPS\\d{6}|QROPS|\\d{6})$"
 }

@@ -17,11 +17,11 @@
 package controllers
 
 import controllers.actions._
-import forms.MembersCurrentAddressFormProvider
+import forms.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 
 import javax.inject.Inject
 import models.Mode
-import models.address.MembersCurrentAddress
+import models.address.{Country, MembersCurrentAddress}
 import pages.MembersCurrentAddressPage
 import play.api.Logging
 import play.api.data.Form
@@ -29,7 +29,9 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.CountryService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.CountrySelectViewModel
 import utils.AppUtils
 import views.html.MembersCurrentAddressView
 
@@ -42,12 +44,13 @@ class MembersCurrentAddressController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     formProvider: MembersCurrentAddressFormProvider,
+    countryService: CountryService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersCurrentAddressView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  private def form(memberName: String)(implicit messages: Messages): Form[MembersCurrentAddress] = formProvider(memberName)
+  private def form(memberName: String)(implicit messages: Messages): Form[MembersCurrentAddressFormData] = formProvider(memberName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -55,26 +58,55 @@ class MembersCurrentAddressController @Inject() (
       val memberName   = memberFullName(request.userAnswers)
       val preparedForm = userAnswers.get(MembersCurrentAddressPage) match {
         case None          => form(memberName)
-        case Some(address) => form(memberName).fill(MembersCurrentAddress.fromAddress(address))
+        case Some(address) => form(memberName).fill(MembersCurrentAddressFormData.fromDomain(MembersCurrentAddress.fromAddress(address)))
       }
 
-      Ok(view(preparedForm, memberName, mode))
+      val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+
+      Ok(view(preparedForm, countrySelectViewModel, memberName, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val memberName = memberFullName(request.userAnswers)
       form(memberName).bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, memberName, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, value))
-            _              <- {
-              logger.info(Json.stringify(updatedAnswers.data))
-              sessionRepository.set(updatedAnswers)
-            }
-          } yield Redirect(MembersCurrentAddressPage.nextPage(mode, updatedAnswers))
+        formWithErrors => {
+          val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, memberName, mode)))
+
+        },
+        formData => {
+          val maybeCountry: Option[Country] =
+            countryService.find(formData.countryCode)
+          maybeCountry match {
+            case None          =>
+              Future.successful(
+                Redirect(
+                  MembersCurrentAddressPage.nextPageRecovery(
+                    Some(MembersCurrentAddressPage.recoveryModeReturnUrl)
+                  )
+                )
+              )
+            case Some(country) =>
+              val addressToSave = MembersCurrentAddress(
+                addressLine1 = formData.addressLine1,
+                addressLine2 = formData.addressLine2,
+                addressLine3 = formData.addressLine3,
+                addressLine4 = formData.addressLine4,
+                country      = country,
+                postcode     = formData.postcode,
+                poBox        = formData.poBox
+              )
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
+                _              <- {
+                  logger.info(Json.stringify(updatedAnswers.data))
+                  sessionRepository.set(updatedAnswers)
+                }
+              } yield Redirect(MembersCurrentAddressPage.nextPage(mode, updatedAnswers))
+          }
+        }
       )
   }
+
 }

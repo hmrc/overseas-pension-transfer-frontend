@@ -20,9 +20,10 @@ import java.time.{Instant, LocalDate, ZoneOffset}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Gen, Shrink}
+import play.api.Logging
 import wolfendale.scalacheck.regexp.RegexpGen
 
-trait Generators extends ModelGenerators {
+trait Generators extends ModelGenerators with Logging {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
 
@@ -105,7 +106,7 @@ trait Generators extends ModelGenerators {
   def stringsMatchingRegex(
       regex: String,
       maybeMinLength: Option[Int] = None,
-      maybeMaxLength: Option[Int] = None
+      maybeMaxLength: Option[Int] = Some(99)
     ): Gen[String] = {
 
     val baseGen: Gen[String] = RegexpGen.from(regex)

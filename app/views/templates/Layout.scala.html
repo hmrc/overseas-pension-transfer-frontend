@@ -22,35 +22,53 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
 @import views.html.components.ReturnToTaskList
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
+
 
 @this(
-    appConfig: FrontendAppConfig,
-    hmrcHead: HmrcHead,
-    hmrcTimeoutDialog: HmrcTimeoutDialog,
-    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-    returnToTaskList: ReturnToTaskList,
-    hmrcScripts: HmrcScripts,
-    betaBanner: StandardBetaBanner,
-    hmrcStandardPage: HmrcStandardPage
+        appConfig: FrontendAppConfig,
+        hmrcHead: HmrcHead,
+        hmrcTimeoutDialog: HmrcTimeoutDialog,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        returnToTaskList: ReturnToTaskList,
+        hmrcScripts: HmrcScripts,
+        betaBanner: StandardBetaBanner,
+        hmrcStandardPage: HmrcStandardPage,
+        autocompleteCss: HmrcAccessibleAutocompleteCss,
+        autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )
 
 @(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true, showHmrcBanner: Boolean = false, showReturnToTaskListLink: Boolean = true)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
 
 @head = {
+    @autocompleteCss()
+    <!--
+        The below styling is here to override the default behaviour of the country picker js component.
+        Hopefully this component will be updated soon, when it is please remove this styling and use
+        govuk-!-width-one-half directly on the InputCountry component
+    -->
+    <style type="text/css">
+            .autocomplete__wrapper { width: 100% }
+            @@media (min-width: 40.0625em) {
+                .autocomplete__wrapper { width: 50% };
+            }
 
-@if(timeout) {
-    @hmrcTimeoutDialog(TimeoutDialog(
-        timeout             = Some(appConfig.timeout),
-        countdown           = Some(appConfig.countdown),
-        keepAliveUrl        = Some(routes.KeepAliveController.keepAlive().url),
-        keepAliveButtonText = Some(messages("timeout.keepAlive")),
-        signOutUrl          = Some(controllers.auth.routes.AuthController.signOut().url),
-        signOutButtonText   = Some(messages("timeout.signOut")),
-        title               = Some(messages("timeout.title")),
-        message             = Some(messages("timeout.message")),
-        language            = Some(messages.lang.code)
-    ))
-}
+    </style>
+    @if(timeout) {
+        @hmrcTimeoutDialog(TimeoutDialog(
+            timeout             = Some(appConfig.timeout),
+            countdown           = Some(appConfig.countdown),
+            keepAliveUrl        = Some(routes.KeepAliveController.keepAlive().url),
+            keepAliveButtonText = Some(messages("timeout.keepAlive")),
+            signOutUrl          = Some(controllers.auth.routes.AuthController.signOut().url),
+            signOutButtonText   = Some(messages("timeout.signOut")),
+            title               = Some(messages("timeout.title")),
+            message             = Some(messages("timeout.message")),
+            language            = Some(messages.lang.code)
+        ))
+    }
 }
 
 @content = {
@@ -62,7 +80,8 @@
 @hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(pageTitle),
     templateOverrides = TemplateOverrides(
-        additionalHeadBlock = Some(head)
+        additionalHeadBlock = Some(head),
+        additionalScriptsBlock = Some(autocompleteJavascript())
     ),
     serviceURLs = ServiceURLs(
         serviceUrl = Some(routes.IndexController.onPageLoad().url),
