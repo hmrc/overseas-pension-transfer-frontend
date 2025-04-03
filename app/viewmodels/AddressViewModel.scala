@@ -23,7 +23,7 @@ case class AddressViewModel(
     line1: String,
     line2: String,
     line3: Option[String],
-    townOrCity: Option[String],
+    line4: Option[String],
     country: String,
     postcode: Option[String]
   )
@@ -33,12 +33,12 @@ object AddressViewModel {
 
   def fromAddress(address: Address): AddressViewModel = {
     AddressViewModel(
-      line1      = address.line1,
-      line2      = address.line2,
-      line3      = address.line3,
-      townOrCity = address.townOrCity,
-      postcode   = address.postcode,
-      country    = address.country.name
+      line1    = address.line1,
+      line2    = address.line2,
+      line3    = address.line3,
+      line4    = address.line4,
+      postcode = address.postcode,
+      country  = address.country.name
     )
   }
 
@@ -48,7 +48,7 @@ object AddressViewModel {
       toOption(vm.line1),
       toOption(vm.line2),
       toOption(vm.line3),
-      toOption(vm.townOrCity),
+      toOption(vm.line4),
       toOption(vm.postcode),
       toOption(vm.country).filterNot(_ => ukMode)
     ).flatten

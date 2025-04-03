@@ -128,11 +128,11 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     )
   }
 
-  "city" - {
+  "addressLine4" - {
 
-    val fieldName  = "city"
-    val lengthKey  = "membersCurrentAddress.error.city.length"
-    val patternKey = "membersCurrentAddress.error.city.pattern"
+    val fieldName  = "addressLine4"
+    val lengthKey  = "membersCurrentAddress.error.addressLine4.length"
+    val patternKey = "membersCurrentAddress.error.addressLine4.pattern"
     val maxLength  = 35
 
     behave like fieldThatBindsValidData(

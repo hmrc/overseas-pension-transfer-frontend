@@ -81,21 +81,13 @@
             .withWidth(OneHalf)
         )
 
-        @govukInput(
-            InputViewModel(
-                field = form("city"),
-                label = LabelViewModel(Text(messages("membersCurrentAddress.city")))
-            )
-            .withWidth(OneThird)
-        )
-
-          @inputCountry(
+        @inputCountry(
             form,
             id = "countryCode",
             name = "countryCode",
             labelMsg = messages("membersCurrentAddress.countryCode"),
             countries = countrySelectViewModel.items
-          )
+        )
 
         @govukInput(
             InputViewModel(

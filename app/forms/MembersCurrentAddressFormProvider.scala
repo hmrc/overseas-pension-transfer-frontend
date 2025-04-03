@@ -27,7 +27,6 @@ case class MembersCurrentAddressFormData(
     addressLine2: String,
     addressLine3: Option[String],
     addressLine4: Option[String],
-    townOrCity: Option[String],
     countryCode: String,
     postcode: Option[String],
     poBox: Option[String]
@@ -41,7 +40,6 @@ object MembersCurrentAddressFormData {
       addressLine2 = address.addressLine2,
       addressLine3 = address.addressLine3,
       addressLine4 = address.addressLine4,
-      townOrCity   = address.townOrCity,
       countryCode  = address.country.code,
       postcode     = address.postcode,
       poBox        = address.poBox
@@ -67,11 +65,6 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
         Forms.text
           verifying maxLength(35, "membersCurrentAddress.error.addressLine4.length")
           verifying regexp(addressLinesRegex, "membersCurrentAddress.error.addressLine4.pattern")
-      ),
-      "city"         -> optional(
-        Forms.text
-          verifying maxLength(35, "membersCurrentAddress.error.city.length")
-          verifying regexp(addressLinesRegex, "membersCurrentAddress.error.city.pattern")
       ),
       "countryCode"  -> text("membersCurrentAddress.error.countryCode.required"),
       "postcode"     -> optional(

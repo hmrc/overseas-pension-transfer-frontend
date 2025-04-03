@@ -104,27 +104,25 @@ trait AddressBase {
           FoundAddress(
             id      = "GB990091234514",
             address = MembersLookupLastUkAddress(
-              line1      = "2 Other Place",
-              line2      = "Some District",
-              line3      = None,
-              line4      = None,
-              townOrCity = Some("Anytown"),
-              postcode   = Some("ZZ1 1ZZ"),
-              country    = Countries.UK,
-              poBox      = None
+              line1    = "2 Other Place",
+              line2    = "Some District",
+              line3    = None,
+              line4    = None,
+              postcode = Some("ZZ1 1ZZ"),
+              country  = Countries.UK,
+              poBox    = None
             )
           ),
           FoundAddress(
             id      = "GB990091234515",
             address = MembersLookupLastUkAddress(
-              line1      = "3 Other Place",
-              line2      = "Some District",
-              line3      = None,
-              line4      = None,
-              townOrCity = Some("Anytown"),
-              postcode   = Some("ZZ1 1ZZ"),
-              country    = Countries.UK,
-              poBox      = None
+              line1    = "3 Other Place",
+              line2    = "Some District",
+              line3    = None,
+              line4    = None,
+              postcode = Some("ZZ1 1ZZ"),
+              country  = Countries.UK,
+              poBox    = None
             )
           )
         )
@@ -135,7 +133,6 @@ trait AddressBase {
     addressLine2 = "Some District",
     addressLine3 = None,
     addressLine4 = None,
-    townOrCity   = Some("Anytown"),
     postcode     = Some("ZZ1 1ZZ"),
     country      = Countries.UK,
     poBox        = None

@@ -93,7 +93,6 @@ class MembersCurrentAddressController @Inject() (
                 addressLine2 = formData.addressLine2,
                 addressLine3 = formData.addressLine3,
                 addressLine4 = formData.addressLine4,
-                townOrCity   = formData.townOrCity,
                 country      = country,
                 postcode     = formData.postcode,
                 poBox        = formData.poBox

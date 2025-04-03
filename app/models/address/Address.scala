@@ -24,8 +24,6 @@ sealed trait Address {
   val line2: String
   val line3: Option[String]
   val line4: Option[String]
-  val townOrCity: Option[String]
-  val county: Option[String]
   val country: Country
   val postcode: Option[String]
   val poBox: Option[String]
@@ -67,38 +65,37 @@ object Address {
 
 case class MembersLastUKAddress(
     addressLine1: String,
-    addressLine2: Option[String],
-    rawTownOrCity: String,
-    county: Option[String],
+    addressLine2: String,
+    addressLine3: Option[String],
+    addressLine4: Option[String],
     rawPostcode: String
   ) extends Address {
-  val line1: String              = addressLine1
-  val line2: String              = addressLine2.getOrElse("")
-  val line3: Option[String]      = None
-  val line4: Option[String]      = None
-  val country: Country           = Countries.UK
-  val townOrCity: Option[String] = Some(rawTownOrCity)
-  val postcode: Option[String]   = Some(rawPostcode)
-  val poBox: Option[String]      = None
+  val line1: String            = addressLine1
+  val line2: String            = addressLine2
+  val line3: Option[String]    = None
+  val line4: Option[String]    = None
+  val country: Country         = Countries.UK
+  val postcode: Option[String] = Some(rawPostcode)
+  val poBox: Option[String]    = None
 }
 
 object MembersLastUKAddress {
 
   implicit val reads: Reads[MembersLastUKAddress] = (
     (__ \ "line1").read[String] and
-      (__ \ "line2").readNullable[String] and
-      (__ \ "townOrCity").read[String] and
-      (__ \ "county").readNullable[String] and
+      (__ \ "line2").read[String] and
+      (__ \ "line3").readNullable[String] and
+      (__ \ "line4").readNullable[String] and
       (__ \ "postcode").read[String]
   )(MembersLastUKAddress.apply _)
 
   implicit val writes: OWrites[MembersLastUKAddress] = OWrites[MembersLastUKAddress] { address =>
     Json.obj(
-      "line1"      -> address.line1,
-      "line2"      -> address.line2,
-      "townOrCity" -> address.rawTownOrCity,
-      "county"     -> address.county,
-      "postcode"   -> address.rawPostcode
+      "line1"    -> address.line1,
+      "line2"    -> address.line2,
+      "line3"    -> address.line3,
+      "line4"    -> address.line4,
+      "postcode" -> address.rawPostcode
     )
   }
 
@@ -106,11 +103,11 @@ object MembersLastUKAddress {
 
   def fromAddress(address: Address): MembersLastUKAddress = {
     MembersLastUKAddress(
-      addressLine1  = address.line1,
-      addressLine2  = Some(address.line2),
-      rawTownOrCity = address.townOrCity.getOrElse(""),
-      county        = address.county,
-      rawPostcode   = address.postcode.getOrElse("")
+      addressLine1 = address.line1,
+      addressLine2 = address.line2,
+      addressLine3 = address.line3,
+      addressLine4 = address.line4,
+      rawPostcode  = address.postcode.getOrElse("")
     )
   }
 }
@@ -120,13 +117,10 @@ case class MembersLookupLastUkAddress(
     line2: String,
     line3: Option[String],
     line4: Option[String],
-    townOrCity: Option[String],
     country: Country,
     postcode: Option[String],
     poBox: Option[String]
-  ) extends Address {
-  val county: Option[String] = None
-}
+  ) extends Address {}
 
 object MembersLookupLastUkAddress {
 
@@ -135,7 +129,6 @@ object MembersLookupLastUkAddress {
       (__ \ "line2").read[String] and
       (__ \ "line3").readNullable[String] and
       (__ \ "line4").readNullable[String] and
-      (__ \ "townOrCity").readNullable[String] and
       (__ \ "country").read[Country] and
       (__ \ "postcode").readNullable[String] and
       (__ \ "poBox").readNullable[String]
@@ -143,13 +136,12 @@ object MembersLookupLastUkAddress {
 
   implicit val writes: OWrites[MembersLookupLastUkAddress] = OWrites[MembersLookupLastUkAddress] { address =>
     Json.obj(
-      "line1"      -> address.line1,
-      "line2"      -> address.line2,
-      "line3"      -> address.line3,
-      "line4"      -> address.line4,
-      "townOrCity" -> address.townOrCity,
-      "country"    -> address.country,
-      "postcode"   -> address.postcode
+      "line1"    -> address.line1,
+      "line2"    -> address.line2,
+      "line3"    -> address.line3,
+      "line4"    -> address.line4,
+      "country"  -> address.country,
+      "postcode" -> address.postcode
     )
   }
 
@@ -159,14 +151,13 @@ object MembersLookupLastUkAddress {
     val raw = record.address
 
     MembersLookupLastUkAddress(
-      line1      = raw.lines.headOption.getOrElse(""),
-      line2      = raw.lines.lift(1).getOrElse(""),
-      line3      = raw.lines.lift(2),
-      line4      = raw.lines.lift(3),
-      townOrCity = Some(raw.town),
-      postcode   = Some(raw.postcode),
-      country    = raw.country,
-      poBox      = record.poBox
+      line1    = raw.lines.headOption.getOrElse(""),
+      line2    = raw.lines.lift(1).getOrElse(""),
+      line3    = raw.lines.lift(2),
+      line4    = raw.lines.lift(3),
+      postcode = Some(raw.postcode),
+      country  = raw.country,
+      poBox    = record.poBox
     )
   }
 
@@ -177,16 +168,14 @@ case class MembersCurrentAddress(
     addressLine2: String,
     addressLine3: Option[String],
     addressLine4: Option[String],
-    townOrCity: Option[String],
     country: Country,
     postcode: Option[String],
     poBox: Option[String]
   ) extends Address {
-  val line1: String          = addressLine1
-  val line2: String          = addressLine2
-  val line3: Option[String]  = addressLine3
-  val line4: Option[String]  = addressLine4
-  val county: Option[String] = None
+  val line1: String         = addressLine1
+  val line2: String         = addressLine2
+  val line3: Option[String] = addressLine3
+  val line4: Option[String] = addressLine4
 }
 
 object MembersCurrentAddress {
@@ -196,7 +185,6 @@ object MembersCurrentAddress {
       (__ \ "line2").read[String] and
       (__ \ "line3").readNullable[String] and
       (__ \ "line4").readNullable[String] and
-      (__ \ "townOrCity").readNullable[String] and
       (__ \ "country").read[Country] and
       (__ \ "postcode").readNullable[String] and
       (__ \ "poBox").readNullable[String]
@@ -204,14 +192,13 @@ object MembersCurrentAddress {
 
   implicit val writes: OWrites[MembersCurrentAddress] = OWrites[MembersCurrentAddress] { address =>
     Json.obj(
-      "line1"      -> address.line1,
-      "line2"      -> address.line2,
-      "line3"      -> address.line3,
-      "line4"      -> address.line4,
-      "townOrCity" -> address.townOrCity,
-      "country"    -> address.country,
-      "postcode"   -> address.postcode,
-      "poBox"      -> address.poBox
+      "line1"    -> address.line1,
+      "line2"    -> address.line2,
+      "line3"    -> address.line3,
+      "line4"    -> address.line4,
+      "country"  -> address.country,
+      "postcode" -> address.postcode,
+      "poBox"    -> address.poBox
     )
   }
 
@@ -223,7 +210,6 @@ object MembersCurrentAddress {
       addressLine2 = address.line2,
       addressLine3 = address.line3,
       addressLine4 = address.line4,
-      townOrCity   = address.townOrCity,
       country      = address.country,
       postcode     = address.postcode,
       poBox        = address.poBox
