@@ -42,7 +42,7 @@ trait DateFluency {
 
     def apply(
         field: Field,
-        fieldset: Fieldset
+        fieldset: Fieldset = Fieldset()
       )(implicit messages: Messages
       ): DateInput = {
 

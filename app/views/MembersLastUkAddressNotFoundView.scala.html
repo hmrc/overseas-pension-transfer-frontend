@@ -17,10 +17,12 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.titleNoForm
 @import controllers.routes
+@import views.html.components.QTNumber
 
 @this(
         layout: templates.Layout,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(postcode: String)(implicit request: Request[_], messages: Messages)
@@ -30,6 +32,7 @@
 
 @layout(pageTitle = titleNoForm(messages("memberLastUkAddressNotFound.title"))) {
 
+    @qtNumber()
     <h1 class="govuk-heading-l">@messages("memberLastUkAddressNotFound.heading")</h1>
 
     <p class="govuk-body">@Html(

@@ -22,13 +22,15 @@
 @import viewmodels.govuk.all._
 @import viewmodels.LegendSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import views.html.components.QTNumber
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukDateInput: GovukDateInput,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -46,10 +48,12 @@
             }
         }
 
+        @qtNumber()
+        <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading", memberName)</h1>
+
         @govukDateInput(
             DateViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(Text(messages("memberDateOfLeavingUK.heading", memberName))).asPageHeading(size = Large)
             )
             .withHint(HintViewModel(Text(messages("common.dateInput.hint"))))
         )
