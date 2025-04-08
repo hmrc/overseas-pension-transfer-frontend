@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.UserAnswers
-import play.api.mvc.Call
-import play.api.libs.json.JsPath
+import javax.inject.Inject
 
-import java.time.LocalDate
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case object MemberDateOfLeavingUKPage extends QuestionPage[LocalDate] {
+class MembersLastUkAddressSelectFormProvider @Inject() extends Mappings {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "memberDateOfLeavingUK"
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.CheckYourAnswersController.onPageLoad()
+  def apply(validIds: Seq[String]): Form[String] =
+    Form(
+      "value" -> text("memberSelectLastUkAddress.error.required")
+        .verifying(
+          "memberSelectLastUkAddress.error.invalid",
+          chosenId => validIds.contains(chosenId)
+        )
+    )
 }

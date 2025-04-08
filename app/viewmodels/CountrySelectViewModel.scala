@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
-package forms
+package viewmodels
 
-import javax.inject.Inject
+import models.address.Country
+import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 
-import forms.mappings.Mappings
-import play.api.data.Form
+case class CountrySelectViewModel(items: Seq[SelectItem])
 
-class MemberSelectLastUkAddressFormProvider @Inject() extends Mappings {
+object CountrySelectViewModel {
 
-  def apply(validIds: Seq[String]): Form[String] =
-    Form(
-      "value" -> text("memberSelectLastUkAddress.error.required")
-        .verifying(
-          "memberSelectLastUkAddress.error.invalid",
-          chosenId => validIds.contains(chosenId)
-        )
-    )
+  def fromCountries(countries: Seq[Country]): CountrySelectViewModel = {
+
+    val selectItems =
+      SelectItem(
+        value    = Some(""),
+        selected = true
+      ) +:
+        countries.map { country =>
+          SelectItem(
+            value = Some(country.code),
+            text  = country.name
+          )
+        }
+
+    CountrySelectViewModel(selectItems)
+  }
 }

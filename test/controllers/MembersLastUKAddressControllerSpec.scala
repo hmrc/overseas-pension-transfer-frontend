@@ -39,10 +39,10 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
   private lazy val membersLastUKAddressRoute = routes.MembersLastUKAddressController.onPageLoad(NormalMode).url
 
   private val postCode    = "AB1 2CD"
-  private val validAnswer = MembersLastUKAddress("1stLineAdd", Some("2ndLineAdd"), "aTown", Some("aCounty"), postCode)
+  private val validAnswer = MembersLastUKAddress("1stLineAdd", "2ndLineAdd", Some("aTown"), Some("aCounty"), postCode)
   private val userAnswers = emptyUserAnswers.set(MembersLastUKAddressPage, validAnswer).success.value
-  private val form        = formProvider(userAnswers)
-  private val memberName  = PersonName("undefined", "undefined")
+  private val memberName  = PersonName("Undefined", "Undefined")
+  private val form        = formProvider(memberName.fullName)
 
   "MembersLastUKAddress Controller" - {
 
@@ -58,7 +58,7 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, Some(memberName.fullName), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -76,13 +76,13 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(validAnswer),
-          Some(memberName.fullName),
+          memberName.fullName,
           NormalMode
         )(request, messages(application)).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the member date of leaving UK when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -98,7 +98,7 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, membersLastUKAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("townOrCity", "aTown"), ("postcode", postCode))
+            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdded"), ("postcode", postCode))
 
         val result = route(application, request).value
 
@@ -123,7 +123,7 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Some(memberName.fullName), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -148,7 +148,7 @@ class MembersLastUKAddressControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, membersLastUKAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("townOrCity", "aTown"), ("postcode", postCode))
+            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdd"), ("postcode", postCode))
 
         val result = route(application, request).value
 

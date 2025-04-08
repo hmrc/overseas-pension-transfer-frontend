@@ -16,22 +16,34 @@
 
 package pages
 
+import base.SpecBase
 import controllers.routes
 import models.{CheckMode, NormalMode, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class MemberIsResidentUKPageSpec extends AnyFreeSpec with Matchers {
+class MemberIsResidentUKPageSpec extends SpecBase with Matchers {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers("id")
+    "in Normal Mode" - {
+
+      "must go to Check Answers page when 'true'" in {
+
+        MemberIsResidentUKPage.nextPage(
+          NormalMode,
+          emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
+        ) mustEqual routes.CheckYourAnswersController.onPageLoad()
+      }
+    }
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Member Has Ever Been Uk Resident when 'false'" in {
 
-        MemberIsResidentUKPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        MemberIsResidentUKPage.nextPage(
+          NormalMode,
+          emptyUserAnswers.set(MemberIsResidentUKPage, false).success.value
+        ) mustEqual routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode)
       }
     }
 
@@ -39,7 +51,7 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        MemberIsResidentUKPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        MemberIsResidentUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

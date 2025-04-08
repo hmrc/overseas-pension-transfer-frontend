@@ -31,7 +31,7 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], memberName: Option[String], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("membersLastUKAddress.title"))) {
 
@@ -41,7 +41,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading", memberName.getOrElse("undefined undefined"))</h1>
+        <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading", memberName)</h1>
 
         @govukInput(
             InputViewModel(
@@ -61,16 +61,16 @@
 
         @govukInput(
             InputViewModel(
-                field = form("townOrCity"),
-                label = LabelViewModel(Text(messages("membersLastUKAddress.city")))
+                field = form("addressLine3"),
+                label = LabelViewModel(Text(messages("membersLastUKAddress.addressLine3")))
             )
             .withWidth(OneThird)
         )
 
         @govukInput(
             InputViewModel(
-                field = form("county"),
-                label = LabelViewModel(Text(messages("membersLastUKAddress.county")))
+                field = form("addressLine4"),
+                label = LabelViewModel(Text(messages("membersLastUKAddress.addressLine4")))
             )
             .withWidth(OneThird)
         )

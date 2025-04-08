@@ -18,7 +18,7 @@ package base
 
 import models.address._
 import models.UserAnswers
-import pages.{MemberSelectLastUkAddressPage, MembersLastUkAddressLookupPage}
+import pages.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 
 trait AddressBase {
 
@@ -96,7 +96,7 @@ trait AddressBase {
       )
     )
 
-  val foundAddresses: FoundAddressSet      =
+  val foundAddresses: FoundAddressSet =
     FoundAddressSet(
       searchedPostcode = "ZZ1 1ZZ",
       addresses        =
@@ -104,34 +104,45 @@ trait AddressBase {
           FoundAddress(
             id      = "GB990091234514",
             address = MembersLookupLastUkAddress(
-              line1      = "2 Other Place",
-              line2      = Some("Some District"),
-              line3      = None,
-              line4      = None,
-              townOrCity = Some("Anytown"),
-              postcode   = Some("ZZ1 1ZZ"),
-              country    = Some("United Kingdom")
+              line1    = "2 Other Place",
+              line2    = "Some District",
+              line3    = None,
+              line4    = None,
+              postcode = Some("ZZ1 1ZZ"),
+              country  = Countries.UK,
+              poBox    = None
             )
           ),
           FoundAddress(
             id      = "GB990091234515",
             address = MembersLookupLastUkAddress(
-              line1      = "3 Other Place",
-              line2      = Some("Some District"),
-              line3      = None,
-              line4      = None,
-              townOrCity = Some("Anytown"),
-              postcode   = Some("ZZ1 1ZZ"),
-              country    = Some("United Kingdom")
+              line1    = "3 Other Place",
+              line2    = "Some District",
+              line3    = None,
+              line4    = None,
+              postcode = Some("ZZ1 1ZZ"),
+              country  = Countries.UK,
+              poBox    = None
             )
           )
         )
     )
+
+  val membersCurrentAddress: MembersCurrentAddress = MembersCurrentAddress(
+    addressLine1 = "2 Other Place",
+    addressLine2 = "Some District",
+    addressLine3 = None,
+    addressLine4 = None,
+    postcode     = Some("ZZ1 1ZZ"),
+    country      = Countries.UK,
+    poBox        = None
+  )
+
   val addressFoundUserAnswers: UserAnswers = UserAnswers("id").set(MembersLastUkAddressLookupPage, foundAddresses).get
 
   val selectedAddress: FoundAddress = foundAddresses.addresses.head
 
-  val addressSelectedUserAnswers: UserAnswers = addressFoundUserAnswers.set(MemberSelectLastUkAddressPage, selectedAddress).get
+  val addressSelectedUserAnswers: UserAnswers = addressFoundUserAnswers.set(MembersLastUkAddressSelectPage, selectedAddress).get
 
   val validIds: Seq[String] = foundAddresses.addresses.map(_.id)
 

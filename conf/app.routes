@@ -85,17 +85,17 @@ POST       /members-last-uk-address-lookup                           controllers
 GET        /change-members-last-uk-address-lookup                    controllers.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-members-last-uk-address-lookup                    controllers.MembersLastUkAddressLookupController.onSubmit(mode: Mode = CheckMode)
 
-GET        /member-select-last-uk-address                            controllers.MemberSelectLastUkAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-select-last-uk-address                            controllers.MemberSelectLastUkAddressController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-select-last-uk-address                     controllers.MemberSelectLastUkAddressController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-select-last-uk-address                     controllers.MemberSelectLastUkAddressController.onSubmit(mode: Mode = CheckMode)
+GET        /member-select-last-uk-address                            controllers.MembersLastUkAddressSelectController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-select-last-uk-address                            controllers.MembersLastUkAddressSelectController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-select-last-uk-address                     controllers.MembersLastUkAddressSelectController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-select-last-uk-address                     controllers.MembersLastUkAddressSelectController.onSubmit(mode: Mode = CheckMode)
 
-GET        /member-last-uk-address-not-found                         controllers.MemberLastUkAddressNotFoundController.onPageLoad()
+GET        /member-last-uk-address-not-found                         controllers.MembersLastUkAddressNotFoundController.onPageLoad()
 
-GET        /member-confirm-last-uk-address                           controllers.MemberConfirmLastUkAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-confirm-last-uk-address                           controllers.MemberConfirmLastUkAddressController.onSubmit(mode: Mode = NormalMode)
-GET        /change-member-confirm-last-uk-address                    controllers.MemberConfirmLastUkAddressController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-member-confirm-last-uk-address                    controllers.MemberConfirmLastUkAddressController.onSubmit(mode: Mode = CheckMode)
+GET        /member-confirm-last-uk-address                           controllers.MembersLastUkAddressConfirmController.onPageLoad(mode: Mode = NormalMode)
+POST       /member-confirm-last-uk-address                           controllers.MembersLastUkAddressConfirmController.onSubmit(mode: Mode = NormalMode)
+GET        /change-member-confirm-last-uk-address                    controllers.MembersLastUkAddressConfirmController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-member-confirm-last-uk-address                    controllers.MembersLastUkAddressConfirmController.onSubmit(mode: Mode = CheckMode)
 
 GET        /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-does-not-have-nino                                controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = NormalMode)

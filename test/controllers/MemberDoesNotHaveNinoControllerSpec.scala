@@ -54,7 +54,7 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, Some(memberName.fullName), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -74,11 +74,11 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), Some(memberName.fullName), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the member date of birth when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -118,7 +118,7 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Some(memberName.fullName), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 

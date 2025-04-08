@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.MemberIsResidentUKFormProvider
-import models.NormalMode
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -33,6 +33,7 @@ import scala.concurrent.Future
 
 class MemberIsResidentUKControllerSpec extends SpecBase with MockitoSugar {
 
+  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MemberIsResidentUKFormProvider()
   private val form         = formProvider()
 
@@ -52,7 +53,7 @@ class MemberIsResidentUKControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[MemberIsResidentUKView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -70,7 +71,7 @@ class MemberIsResidentUKControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -90,12 +91,12 @@ class MemberIsResidentUKControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, memberIsResidentUKRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+            .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MemberIsResidentUKPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode).url
       }
     }
 
@@ -115,7 +116,7 @@ class MemberIsResidentUKControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
       }
     }
 

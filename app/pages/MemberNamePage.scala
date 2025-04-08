@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{PersonName, UserAnswers}
+import models.{NormalMode, PersonName, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,5 +28,5 @@ case object MemberNamePage extends QuestionPage[PersonName] {
   override def toString: String = "memberName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.MemberNinoController.onPageLoad(NormalMode)
 }

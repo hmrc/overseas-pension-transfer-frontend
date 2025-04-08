@@ -25,11 +25,10 @@ import models.address._
 
 class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with SpecBase with Regex {
 
-  private val validAnswer = MembersLastUKAddress("1stLineAdd", Some("2ndLineAdd"), "aTown", Some("aCounty"), "AB12CD")
-  private val userAnswers = emptyUserAnswers.set(MembersLastUKAddressPage, validAnswer).success.value
+  private val validAnswer = MembersLastUKAddress("1stLineAdd", "2ndLineAdd", Some("aTown"), Some("aCounty"), "AB12CD")
   private val memberName  = "undefined undefined"
 
-  val form = new MembersLastUKAddressFormProvider()(userAnswers)
+  val form = new MembersLastUKAddressFormProvider()(memberName)
 
   ".addressLine1" - {
 
@@ -68,42 +67,10 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
 
   ".addressLine2" - {
 
-    val fieldName  = "addressLine2"
-    val lengthKey  = "membersLastUKAddress.error.addressLine2.length"
-    val patternKey = "membersLastUKAddress.error.addressLine2.pattern"
-    val maxLength  = 35
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like optionalField(
-      form,
-      fieldName
-    )
-
-    behave like fieldThatRejectsInvalidCharacters(
-      form,
-      fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
-      Option(maxLength)
-    )
-  }
-
-  "townOrCity" - {
-
-    val fieldName   = "townOrCity"
-    val lengthKey   = "membersLastUKAddress.error.city.length"
-    val requiredKey = "membersLastUKAddress.error.city.required"
+    val fieldName   = "addressLine2"
+    val requiredKey = "membersLastUKAddress.error.addressLine2.required"
+    val lengthKey   = "membersLastUKAddress.error.addressLine2.length"
+    val patternKey  = "membersLastUKAddress.error.addressLine2.pattern"
     val maxLength   = 35
 
     behave like fieldThatBindsValidData(
@@ -124,12 +91,44 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
       fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(memberName))
     )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
+    )
   }
 
-  "county" - {
+  "addressLine3" - {
 
-    val fieldName = "county"
-    val lengthKey = "membersLastUKAddress.error.county.length"
+    val fieldName = "addressLine3"
+    val lengthKey = "membersLastUKAddress.error.addressLine3.length"
+    val maxLength = 35
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxLength)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
+
+    behave like optionalField(
+      form,
+      fieldName
+    )
+  }
+
+  "addressLine4" - {
+
+    val fieldName = "addressLine4"
+    val lengthKey = "membersLastUKAddress.error.addressLine4.length"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
@@ -168,6 +167,13 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
   }
 }

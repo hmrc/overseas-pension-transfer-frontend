@@ -1,5 +1,5 @@
-@*
- * Copyright 2024 HM Revenue & Customs
+/*
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.titleNoForm
+package models.address
 
-@this(
-        layout: templates.Layout,
-        govukButton: GovukButton
-)
+import play.api.libs.json.{Json, OFormat}
 
-@(helloWorld: String)(implicit request: Request[_], messages: Messages)
+case class Country(code: String, name: String) {
+  override def toString: String = name
+}
 
-@layout(pageTitle = titleNoForm(messages("helloWorld.title"))) {
+object Country {
+  implicit val format: OFormat[Country] = Json.format
+}
 
-    <h1 class="govuk-heading-l">@helloWorld</h1>
+object Countries {
+  val UK: Country = Country("GB", "United Kingdom")
 }
