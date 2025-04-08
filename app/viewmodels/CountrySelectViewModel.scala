@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package pages
+package viewmodels
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import models.address._
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.address.Country
+import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 
-case object MembersCurrentAddressPage extends QuestionPage[Address] {
+case class CountrySelectViewModel(items: Seq[SelectItem])
 
-  override def path: JsPath = JsPath \ toString
+object CountrySelectViewModel {
 
-  override def toString: String = "membersCurrentAddress"
+  def fromCountries(countries: Seq[Country]): CountrySelectViewModel = {
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.MemberIsResidentUKController.onPageLoad(NormalMode)
+    val selectItems =
+      SelectItem(
+        value    = Some(""),
+        selected = true
+      ) +:
+        countries.map { country =>
+          SelectItem(
+            value = Some(country.code),
+            text  = country.name
+          )
+        }
 
-  val recoveryModeReturnUrl: String = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
+    CountrySelectViewModel(selectItems)
+  }
 }

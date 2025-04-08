@@ -35,18 +35,18 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
         "addressLine1" -> text("membersLastUKAddress.error.addressLine1.required", Seq(memberName))
           .verifying(maxLength(length35, "membersLastUKAddress.error.addressLine1.length"))
           .verifying(regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine1.pattern")),
-        "addressLine2" -> optional(
+        "addressLine2" -> text("membersLastUKAddress.error.addressLine2.required", Seq(memberName))
+          .verifying(maxLength(length35, "membersLastUKAddress.error.addressLine2.length"))
+          .verifying(regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine2.pattern")),
+        "addressLine3" -> optional(
           Forms.text
-            verifying maxLength(length35, "membersLastUKAddress.error.addressLine2.length")
-            verifying regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine2.pattern")
+            verifying maxLength(length35, "membersLastUKAddress.error.addressLine3.length")
+            verifying regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine3.pattern")
         ),
-        "townOrCity"   -> text("membersLastUKAddress.error.city.required", Seq(memberName))
-          .verifying(maxLength(length35, "membersLastUKAddress.error.city.length"))
-          .verifying(regexp(addressLinesRegex, "membersLastUKAddress.error.city.pattern")),
-        "county"       -> optional(
+        "addressLine4" -> optional(
           Forms.text
-            verifying maxLength(length35, "membersLastUKAddress.error.county.length")
-            verifying regexp(addressLinesRegex, "membersLastUKAddress.error.county.pattern")
+            verifying maxLength(length35, "membersLastUKAddress.error.addressLine4.length")
+            verifying regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine4.pattern")
         ),
         "postcode"     -> text("membersLastUKAddress.error.postcode.required")
           .verifying(maxLength(length16, "membersLastUKAddress.error.postcode.length"))
