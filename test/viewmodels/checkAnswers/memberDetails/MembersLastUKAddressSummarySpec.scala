@@ -28,7 +28,7 @@ class MembersLastUKAddressSummarySpec extends SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a row with all fields present" in {
-      val address = MembersLastUKAddress("Line1", Some("Line2"), "Town", Some("County"), "Postcode")
+      val address = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
 
       val answers = emptyUserAnswers.set(MembersLastUKAddressPage, address).success.value
 
@@ -36,16 +36,16 @@ class MembersLastUKAddressSummarySpec extends SpecBase {
 
       row mustBe defined
       row.get.key.content.asHtml.body must include("membersLastUKAddress.checkYourAnswersLabel")
-      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Town<br>County<br>Postcode")
+      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Line3<br>Line4<br>Postcode")
     }
 
     "must return a row with only required fields present" in {
       val address = MembersLastUKAddress(
-        addressLine1  = "Line 1",
-        addressLine2  = None,
-        rawTownOrCity = "Town",
-        county        = None,
-        rawPostcode   = "Postcode"
+        addressLine1 = "Line1",
+        addressLine2 = "Line2",
+        addressLine3 = None,
+        addressLine4 = None,
+        rawPostcode  = "Postcode"
       )
 
       val answers = emptyUserAnswers.set(MembersLastUKAddressPage, address).success.value
@@ -53,17 +53,17 @@ class MembersLastUKAddressSummarySpec extends SpecBase {
       val row = MembersLastUKAddressSummary.row(answers)
 
       row mustBe defined
-      row.get.value.content.asHtml.body must include("Line 1<br>Town<br>Postcode")
+      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Postcode")
       row.get.value.content.asHtml.body must not include "null"
     }
 
     "must not include blank or whitespace-only fields" in {
       val address = MembersLastUKAddress(
-        addressLine1  = "Line 1",
-        addressLine2  = Some("  "),
-        rawTownOrCity = "City",
-        county        = Some(""),
-        rawPostcode   = "Postcode"
+        addressLine1 = "Line1",
+        addressLine2 = "Line2",
+        addressLine3 = Some("    "),
+        addressLine4 = Some(""),
+        rawPostcode  = "Postcode"
       )
 
       val answers = emptyUserAnswers.set(MembersLastUKAddressPage, address).success.value
@@ -71,7 +71,7 @@ class MembersLastUKAddressSummarySpec extends SpecBase {
       val row = MembersLastUKAddressSummary.row(answers)
 
       row mustBe defined
-      row.get.value.content.asHtml.body must include("Line 1<br>City<br>Postcode")
+      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Postcode")
       row.get.value.content.asHtml.body must not include "<br><br>"
     }
 

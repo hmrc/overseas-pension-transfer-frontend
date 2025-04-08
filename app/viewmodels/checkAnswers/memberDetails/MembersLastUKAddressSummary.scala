@@ -33,9 +33,9 @@ object MembersLastUKAddressSummary {
       answer =>
         val value = Seq(
           Some(answer.line1),
-          answer.line2,
-          answer.townOrCity,
-          answer.county,
+          Some(answer.line2),
+          answer.line3,
+          answer.line4,
           answer.postcode
         ).flatMap {
           case Some(part) if !part.trim.isEmpty => Some(HtmlFormat.escape(part))

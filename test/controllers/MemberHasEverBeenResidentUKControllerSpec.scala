@@ -134,7 +134,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
     }
 
     "must remove MembersLastUKAddressPage if changed from true to false in CheckMode" in {
-      val lastUkAdd       = MembersLastUKAddress("1stLineAdd", None, "aTown", Some("aCounty"), "AB1 2CD")
+      val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
       val previousAnswers = emptyUserAnswers
         .set(MemberHasEverBeenResidentUKPage, true).success.value
         .set(MembersLastUKAddressPage, lastUkAdd).success.value

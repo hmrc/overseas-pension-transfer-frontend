@@ -33,11 +33,12 @@ object MembersCurrentAddressSummary {
       answer =>
         val value = Seq(
           Some(answer.line1),
-          answer.line2,
+          Some(answer.line2),
           answer.line3,
-          answer.townOrCity,
-          answer.country,
-          answer.postcode
+          answer.line4,
+          Some(answer.country.toString),
+          answer.postcode,
+          answer.poBox
         ).flatMap {
           case Some(part) if !part.trim.isEmpty => Some(HtmlFormat.escape(part))
           case _                                => None

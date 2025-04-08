@@ -28,7 +28,15 @@ class MembersCurrentAddressSummarySpec extends SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a row with all fields present" in {
-      val address = MembersCurrentAddress("Line1", "Line2", Some("Line3"), Some("Town"), Some("Country"), Some("Postcode"))
+      val address = MembersCurrentAddress(
+        addressLine1 = "Line1",
+        addressLine2 = "Line2",
+        addressLine3 = Some("Line3"),
+        addressLine4 = Some("Line4"),
+        postcode     = Some("Postcode"),
+        country      = Country("FI", "Finland"),
+        poBox        = Some("POBox")
+      )
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
 
@@ -36,44 +44,46 @@ class MembersCurrentAddressSummarySpec extends SpecBase {
 
       row mustBe defined
       row.get.key.content.asHtml.body must include("membersCurrentAddress.checkYourAnswersLabel")
-      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Line3<br>Town<br>Country<br>Postcode")
+      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Line3<br>Line4<br>Finland<br>Postcode<br>POBox")
     }
 
     "must return a row with only required fields present" in {
+
       val address = MembersCurrentAddress(
-        addressLine1 = "Line 1",
-        addressLine2 = "Line 2",
+        addressLine1 = "Line1",
+        addressLine2 = "Line2",
         addressLine3 = None,
-        townOrCity   = None,
-        country      = None,
-        postcode     = None
+        addressLine4 = None,
+        postcode     = None,
+        country      = Country("FI", "Finland"),
+        poBox        = None
       )
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
-
-      val row = MembersCurrentAddressSummary.row(answers)
+      val row     = MembersCurrentAddressSummary.row(answers)
 
       row mustBe defined
-      row.get.value.content.asHtml.body must include("Line 1<br>Line 2")
+      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "null"
     }
 
     "must not include blank or whitespace-only fields" in {
-      val address = MembersCurrentAddress(
-        addressLine1 = "Line 1",
-        addressLine2 = "  ",
-        addressLine3 = Some(""),
-        townOrCity   = Some("City"),
-        country      = None,
-        postcode     = Some(" ")
-      )
 
+      val address = MembersCurrentAddress(
+        addressLine1 = "Line1",
+        addressLine2 = "Line2",
+        addressLine3 = Some("    "),
+        addressLine4 = Some(""),
+        postcode     = Some("  "),
+        country      = Country("FI", "Finland"),
+        poBox        = None
+      )
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
 
       val row = MembersCurrentAddressSummary.row(answers)
 
       row mustBe defined
-      row.get.value.content.asHtml.body must include("Line 1<br>City")
+      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "<br><br>"
     }
 

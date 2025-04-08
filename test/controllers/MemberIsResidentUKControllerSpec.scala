@@ -119,7 +119,7 @@ class MemberIsResidentUKControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must remove previous data if changed from false to true in CheckMode" in {
-      val lastUkAdd       = MembersLastUKAddress("1stLineAdd", None, "aTown", Some("aCounty"), "AB1 2CD")
+      val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
       val previousAnswers = emptyUserAnswers
         .set(MemberIsResidentUKPage, false).success.value
         .set(MemberHasEverBeenResidentUKPage, true).success.value
