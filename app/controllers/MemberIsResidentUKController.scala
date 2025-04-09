@@ -21,7 +21,7 @@ import forms.MemberIsResidentUKFormProvider
 
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
-import pages.{MemberHasEverBeenResidentUKPage, MemberIsResidentUKPage, MembersLastUKAddressPage}
+import pages.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MemberIsResidentUKPage, MembersLastUKAddressPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -66,15 +66,14 @@ class MemberIsResidentUKController @Inject() (
           for {
             baseAnswers <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
 
-            // If going from false → true in CheckMode, remove the answers of next questions
-            updatedAnswers <- (mode, previousValue, value) match {
-                                case (CheckMode, Some(false), true) =>
-                                  Future.fromTry(
-                                    baseAnswers
-                                      .remove(MemberHasEverBeenResidentUKPage)
-                                      .flatMap(_.remove(MembersLastUKAddressPage))
-                                  )
-                                case _                              =>
+            // If going from false → true, remove the answers of next questions
+            updatedAnswers <- (previousValue, value) match {
+                                case (Some(false), true) =>
+                                  Future.fromTry(baseAnswers
+                                    .remove(MemberHasEverBeenResidentUKPage)
+                                    .flatMap(_.remove(MembersLastUKAddressPage))
+                                    .flatMap(_.remove(MemberDateOfLeavingUKPage)))
+                                case _                   =>
                                   Future.successful(baseAnswers)
                               }
 

@@ -34,7 +34,7 @@ object MemberNinoSummary {
           key     = "memberNino.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberNinoController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.MemberNinoController.onPageLoad(CheckMode).url) // TODO introduce something in page navigation
               .withVisuallyHiddenText(messages("memberNino.change.hidden"))
           )
         )

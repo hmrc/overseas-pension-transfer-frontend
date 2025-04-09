@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.MemberHasEverBeenResidentUKFormProvider
 import models.{CheckMode, Mode, NormalMode}
-import pages.{MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
+import pages.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -66,10 +66,12 @@ class MemberHasEverBeenResidentUKController @Inject() (
           for {
             baseAnswers <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
 
-            // If going from true → false in CheckMode, remove stored membersLastUKAddress
-            updatedAnswers <- (mode, previousValue, value) match {
-                                case (CheckMode, Some(true), false) => Future.fromTry(baseAnswers.remove(MembersLastUKAddressPage))
-                                case _                              => Future.successful(baseAnswers)
+            // If going from true → false, remove the answers of next questions
+            updatedAnswers <- (previousValue, value) match {
+                                case (Some(true), false) => Future.fromTry(baseAnswers
+                                    .remove(MembersLastUKAddressPage)
+                                    .flatMap(_.remove(MemberDateOfLeavingUKPage)))
+                                case _                   => Future.successful(baseAnswers)
                               }
 
             _ <- sessionRepository.set(updatedAnswers)
