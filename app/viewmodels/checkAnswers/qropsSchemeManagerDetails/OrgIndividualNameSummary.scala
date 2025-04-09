@@ -37,7 +37,7 @@ object OrgIndividualNameSummary {
           key     = "orgIndividualName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.OrgIndividualNameController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", OrgIndividualNamePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("orgIndividualName.change.hidden"))
           )
         )

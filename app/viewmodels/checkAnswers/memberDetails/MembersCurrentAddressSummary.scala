@@ -48,7 +48,7 @@ object MembersCurrentAddressSummary {
           key     = "membersCurrentAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MembersCurrentAddressController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", MembersCurrentAddressPage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("membersCurrentAddress.change.hidden"))
           )
         )

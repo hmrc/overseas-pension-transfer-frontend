@@ -36,7 +36,7 @@ object MemberDateOfBirthSummary {
           key     = "memberDateOfBirth.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberDateOfBirthController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", MemberDateOfBirthPage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("memberDateOfBirth.change.hidden"))
           )
         )

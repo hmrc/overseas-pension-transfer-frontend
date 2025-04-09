@@ -35,7 +35,7 @@ object MemberHasEverBeenResidentUKSummary {
           key     = "memberHasEverBeenResidentUK.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberHasEverBeenResidentUKController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", MemberHasEverBeenResidentUKPage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("memberHasEverBeenResidentUK.change.hidden"))
           )
         )

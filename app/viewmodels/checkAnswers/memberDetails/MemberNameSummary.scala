@@ -37,7 +37,7 @@ object MemberNameSummary {
           key     = "memberName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberNameController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", MemberNamePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("memberName.change.hidden"))
           )
         )

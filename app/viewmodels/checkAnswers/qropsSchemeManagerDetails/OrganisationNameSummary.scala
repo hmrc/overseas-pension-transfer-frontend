@@ -34,7 +34,7 @@ object OrganisationNameSummary {
           key     = "organisationName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.OrganisationNameController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", OrganisationNamePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("organisationName.change.hidden"))
           )
         )

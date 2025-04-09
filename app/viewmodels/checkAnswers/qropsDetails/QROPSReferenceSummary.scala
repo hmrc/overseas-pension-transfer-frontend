@@ -34,7 +34,7 @@ object QROPSReferenceSummary {
           key     = "qROPSReference.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.QROPSReferenceController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", QROPSReferencePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("qROPSReference.change.hidden"))
           )
         )

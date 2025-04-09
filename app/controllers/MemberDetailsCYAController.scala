@@ -18,23 +18,12 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import models.{Mode, NormalMode, UserAnswers}
+import models.NormalMode
 import pages.MemberDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.memberDetails.{
-  MemberDateOfBirthSummary,
-  MemberDateOfLeavingUKSummary,
-  MemberDoesNotHaveNinoSummary,
-  MemberHasEverBeenResidentUKSummary,
-  MemberIsResidentUKSummary,
-  MemberNameSummary,
-  MemberNinoSummary,
-  MembersCurrentAddressSummary,
-  MembersLastUKAddressSummary
-}
+import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.MemberDetailsCYAView
 
@@ -49,19 +38,7 @@ class MemberDetailsCYAController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val userAnswers: UserAnswers                = request.userAnswers
-      val nameRow: Option[SummaryListRow]         = MemberNameSummary.row(userAnswers)
-      val ninoRow: Option[SummaryListRow]         = MemberNinoSummary.row(userAnswers)
-      val noNinoRow: Option[SummaryListRow]       = MemberDoesNotHaveNinoSummary.row(userAnswers)
-      val dobRow: Option[SummaryListRow]          = MemberDateOfBirthSummary.row(userAnswers)
-      val currentAddRow: Option[SummaryListRow]   = MembersCurrentAddressSummary.row(userAnswers)
-      val isResidentRow: Option[SummaryListRow]   = MemberIsResidentUKSummary.row(userAnswers)
-      val everResidentRow: Option[SummaryListRow] = MemberHasEverBeenResidentUKSummary.row(userAnswers)
-      val lastAddRow: Option[SummaryListRow]      = MembersLastUKAddressSummary.row(userAnswers)
-      val dolRow: Option[SummaryListRow]          = MemberDateOfLeavingUKSummary.row(userAnswers)
-      val list                                    = SummaryListViewModel(
-        rows = Seq(nameRow, ninoRow, noNinoRow, dobRow, currentAddRow, isResidentRow, everResidentRow, lastAddRow, dolRow).flatten
-      )
+      val list = SummaryListViewModel(MemberDetailsSummary.rows(request.userAnswers))
       Ok(view(list))
   }
 

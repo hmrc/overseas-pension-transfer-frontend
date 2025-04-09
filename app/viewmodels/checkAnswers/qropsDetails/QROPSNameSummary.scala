@@ -34,7 +34,7 @@ object QROPSNameSummary {
           key     = "qropsName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.QROPSNameController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", QROPSNamePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("qropsName.change.hidden"))
           )
         )

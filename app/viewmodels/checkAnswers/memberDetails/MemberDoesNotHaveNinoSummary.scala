@@ -34,7 +34,7 @@ object MemberDoesNotHaveNinoSummary {
           key     = "memberDoesNotHaveNino.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberDoesNotHaveNinoController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", MemberDoesNotHaveNinoPage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("memberDoesNotHaveNino.change.hidden"))
           )
         )

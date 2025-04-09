@@ -34,4 +34,7 @@ case object MemberDateOfBirthPage extends QuestionPage[LocalDate] {
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.MemberDetailsCYAController.onPageLoad()
+
+  final def changeLink(answers: UserAnswers): Call =
+    routes.MemberDateOfBirthController.onPageLoad(CheckMode)
 }

@@ -37,7 +37,7 @@ object SchemeManagersNameSummary {
           key     = "schemeManagersName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.SchemeManagersNameController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", SchemeManagersNamePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("schemeManagersName.change.hidden"))
           )
         )

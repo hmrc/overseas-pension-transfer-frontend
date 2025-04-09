@@ -41,7 +41,7 @@ object QROPSSchemeManagerIsIndividualOrOrgSummary {
           key     = "qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", QROPSSchemeManagerIsIndividualOrOrgPage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("qropsSchemeManagerIsIndividualOrOrg.change.hidden"))
           )
         )

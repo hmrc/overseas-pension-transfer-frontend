@@ -36,7 +36,7 @@ object MemberDateOfLeavingUKSummary {
           key     = "memberDateOfLeavingUK.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", MemberDateOfLeavingUKPage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("memberDateOfLeavingUK.change.hidden"))
           )
         )
