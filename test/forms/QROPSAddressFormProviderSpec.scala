@@ -16,19 +16,19 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
 import play.api.data.FormError
 
-class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with Regex {
+class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase with Regex {
 
-  private val memberName = "Undefined Undefined"
-  private val form       = new MembersCurrentAddressFormProvider()(memberName)
+  val form = new QROPSAddressFormProvider()()
 
   ".addressLine1" - {
 
     val fieldName   = "addressLine1"
-    val requiredKey = "membersCurrentAddress.error.addressLine1.required"
+    val requiredKey = "qROPSAddress.error.addressLine1.required"
     val lengthKey   = "common.addressInput.error.addressLine1.length"
     val patternKey  = "common.addressInput.error.addressLine1.pattern"
     val maxLength   = 35
@@ -49,7 +49,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(memberName))
+      requiredError = FormError(fieldName, requiredKey)
     )
 
     behave like fieldThatRejectsInvalidCharacters(
@@ -63,7 +63,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
   ".addressLine2" - {
 
     val fieldName   = "addressLine2"
-    val requiredKey = "membersCurrentAddress.error.addressLine2.required"
+    val requiredKey = "qROPSAddress.error.addressLine2.required"
     val lengthKey   = "common.addressInput.error.addressLine2.length"
     val patternKey  = "common.addressInput.error.addressLine2.pattern"
     val maxLength   = 35
@@ -84,7 +84,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(memberName))
+      requiredError = FormError(fieldName, requiredKey)
     )
 
     behave like fieldThatRejectsInvalidCharacters(
@@ -202,39 +202,6 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
       form,
       fieldName,
       patternError = FormError(fieldName, patternKey, Seq(internationalPostcodeRegex)),
-      Option(maxLength)
-    )
-  }
-
-  "poBox" - {
-
-    val fieldName  = "poBox"
-    val lengthKey  = "common.addressInput.error.poBox.length"
-    val patternKey = "common.addressInput.error.poBox.pattern"
-    val maxLength  = 35
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsMatchingRegex(poBoxRegex, maybeMaxLength = Some(maxLength))
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like optionalField(
-      form,
-      fieldName
-    )
-
-    behave like fieldThatRejectsInvalidCharacters(
-      form,
-      fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(poBoxRegex)),
       Option(maxLength)
     )
   }

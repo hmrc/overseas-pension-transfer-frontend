@@ -116,3 +116,8 @@ GET        /organisation-individual-name                             controllers
 POST       /organisation-individual-name                             controllers.OrgIndividualNameController.onSubmit(mode: Mode = NormalMode)
 GET        /change-organisation-individual-name                      controllers.OrgIndividualNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-organisation-individual-name                      controllers.OrgIndividualNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /qrops-address                                            controllers.QROPSAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /qrops-address                                            controllers.QROPSAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-qrops-address                                     controllers.QROPSAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-qrops-address                                     controllers.QROPSAddressController.onSubmit(mode: Mode = CheckMode)

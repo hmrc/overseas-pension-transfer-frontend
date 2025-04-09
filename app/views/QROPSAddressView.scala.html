@@ -22,26 +22,32 @@
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
+@import views.ViewUtils
+@import views.html.components.InputCountry
+@import models.address.Country
+@import viewmodels.CountrySelectViewModel
 
 @this(
-        layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
-        govukButton: GovukButton
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    inputCountry: InputCountry,
+    govukButton: GovukButton
 )
 
-@(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("membersLastUKAddress.title"))) {
+@layout(pageTitle = title(form, messages("qROPSAddress.title"))) {
 
-    @formHelper(action = routes.MembersLastUKAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.QROPSAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading", memberName)</h1>
+        <h1 class="govuk-heading-l">@messages("qROPSAddress.heading")</h1>
 
         @govukInput(
             InputViewModel(
@@ -75,10 +81,18 @@
             .withWidth(Fixed20)
         )
 
+        @inputCountry(
+            form,
+            id = "countryCode",
+            name = "countryCode",
+            labelMsg = messages("common.addressInput.countryCode"),
+            countries = countrySelectViewModel.items
+        )
+
         @govukInput(
             InputViewModel(
                 field = form("postcode"),
-                label = LabelViewModel(Text(messages("membersLastUKAddress.postcode")))
+                label = LabelViewModel(Text(messages("common.addressInput.postcode")))
             )
             .withWidth(OneQuarter)
         )

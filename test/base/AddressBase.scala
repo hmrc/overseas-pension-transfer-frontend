@@ -138,6 +138,15 @@ trait AddressBase {
     poBox        = None
   )
 
+  val qropsAddress: QROPSAddress = QROPSAddress(
+    addressLine1 = "2 Other Place",
+    addressLine2 = "Some District",
+    addressLine3 = None,
+    addressLine4 = None,
+    postcode     = Some("ZZ1 1ZZ"),
+    country      = Countries.UK
+  )
+
   val addressFoundUserAnswers: UserAnswers = UserAnswers("id").set(MembersLastUkAddressLookupPage, foundAddresses).get
 
   val selectedAddress: FoundAddress = foundAddresses.addresses.head

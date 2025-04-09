@@ -19,9 +19,8 @@ package forms
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
-import pages.MembersLastUKAddressPage
-import play.api.data.FormError
 import models.address._
+import play.api.data.FormError
 
 class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with SpecBase with Regex {
 
@@ -34,8 +33,8 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
 
     val fieldName   = "addressLine1"
     val requiredKey = "membersLastUKAddress.error.addressLine1.required"
-    val lengthKey   = "membersLastUKAddress.error.addressLine1.length"
-    val patternKey  = "membersLastUKAddress.error.addressLine1.pattern"
+    val lengthKey   = "common.addressInput.error.addressLine1.length"
+    val patternKey  = "common.addressInput.error.addressLine1.pattern"
     val maxLength   = 35
 
     behave like fieldThatBindsValidData(
@@ -69,8 +68,8 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
 
     val fieldName   = "addressLine2"
     val requiredKey = "membersLastUKAddress.error.addressLine2.required"
-    val lengthKey   = "membersLastUKAddress.error.addressLine2.length"
-    val patternKey  = "membersLastUKAddress.error.addressLine2.pattern"
+    val lengthKey   = "common.addressInput.error.addressLine2.length"
+    val patternKey  = "common.addressInput.error.addressLine2.pattern"
     val maxLength   = 35
 
     behave like fieldThatBindsValidData(
@@ -103,7 +102,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
   "addressLine3" - {
 
     val fieldName = "addressLine3"
-    val lengthKey = "membersLastUKAddress.error.addressLine3.length"
+    val lengthKey = "common.addressInput.error.addressLine3.length"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
@@ -128,7 +127,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
   "addressLine4" - {
 
     val fieldName = "addressLine4"
-    val lengthKey = "membersLastUKAddress.error.addressLine4.length"
+    val lengthKey = "common.addressInput.error.addressLine4.length"
     val maxLength = 35
 
     behave like fieldThatBindsValidData(
