@@ -89,8 +89,7 @@ class QROPSAddressController @Inject() (
                 addressLine2 = formData.addressLine2,
                 addressLine3 = formData.addressLine3,
                 addressLine4 = formData.addressLine4,
-                country      = country,
-                postcode     = formData.postcode
+                country      = country
               )
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSAddressPage, addressToSave))

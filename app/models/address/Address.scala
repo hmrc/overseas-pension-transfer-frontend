@@ -229,15 +229,15 @@ case class QROPSAddress(
     addressLine2: String,
     addressLine3: Option[String],
     addressLine4: Option[String],
-    country: Country,
-    postcode: Option[String]
+    country: Country
   ) extends Address {
-  val line1: String         = addressLine1
-  val line2: String         = addressLine2
-  val line3: Option[String] = addressLine3
-  val line4: Option[String] = addressLine4
-  val countryCode: Country  = country
-  val poBox: Option[String] = None
+  val line1: String                     = addressLine1
+  val line2: String                     = addressLine2
+  val line3: Option[String]             = addressLine3
+  val line4: Option[String]             = addressLine4
+  val countryCode: Country              = country
+  val poBox: Option[String]             = None
+  override val postcode: Option[String] = None
 }
 
 object QROPSAddress {
@@ -247,18 +247,16 @@ object QROPSAddress {
       (__ \ "line2").read[String] and
       (__ \ "line3").readNullable[String] and
       (__ \ "line4").readNullable[String] and
-      (__ \ "country").read[Country] and
-      (__ \ "postcode").readNullable[String]
+      (__ \ "country").read[Country]
   )(QROPSAddress.apply _)
 
   implicit val writes: OWrites[QROPSAddress] = OWrites[QROPSAddress] { address =>
     Json.obj(
-      "line1"    -> address.line1,
-      "line2"    -> address.line2,
-      "line3"    -> address.line3,
-      "line4"    -> address.line4,
-      "country"  -> address.country,
-      "postcode" -> address.postcode
+      "line1"   -> address.line1,
+      "line2"   -> address.line2,
+      "line3"   -> address.line3,
+      "line4"   -> address.line4,
+      "country" -> address.country
     )
   }
 
@@ -270,8 +268,7 @@ object QROPSAddress {
       addressLine2 = address.line2,
       addressLine3 = address.line3,
       addressLine4 = address.line4,
-      country      = address.country,
-      postcode     = address.postcode
+      country      = address.country
     )
   }
 }

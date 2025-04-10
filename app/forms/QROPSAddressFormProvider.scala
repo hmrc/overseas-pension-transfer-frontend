@@ -27,8 +27,7 @@ case class QROPSAddressFormData(
     addressLine2: String,
     addressLine3: Option[String],
     addressLine4: Option[String],
-    countryCode: String,
-    postcode: Option[String]
+    countryCode: String
   )
 
 object QROPSAddressFormData {
@@ -39,8 +38,7 @@ object QROPSAddressFormData {
       addressLine2 = address.addressLine2,
       addressLine3 = address.addressLine3,
       addressLine4 = address.addressLine4,
-      countryCode  = address.country.code,
-      postcode     = address.postcode
+      countryCode  = address.country.code
     )
 }
 
@@ -64,12 +62,7 @@ class QROPSAddressFormProvider @Inject() extends Mappings with Regex {
           verifying maxLength(35, "common.addressInput.error.addressLine4.length")
           verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern")
       ),
-      "countryCode"  -> text("common.addressInput.error.countryCode.required"),
-      "postcode"     -> optional(
-        Forms.text
-          verifying maxLength(35, "common.addressInput.error.postcode.length")
-          verifying regexp(internationalPostcodeRegex, "common.addressInput.error.postcode.pattern")
-      )
+      "countryCode"  -> text("common.addressInput.error.countryCode.required")
     )(QROPSAddressFormData.apply)(QROPSAddressFormData.unapply)
   )
 

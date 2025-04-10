@@ -172,37 +172,4 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
       requiredError = FormError(fieldName, requiredKey)
     )
   }
-
-  "postcode" - {
-
-    val fieldName  = "postcode"
-    val lengthKey  = "common.addressInput.error.postcode.length"
-    val patternKey = "common.addressInput.error.postcode.pattern"
-    val maxLength  = 35
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsMatchingRegex(internationalPostcodeRegex, maybeMaxLength = Some(maxLength))
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like optionalField(
-      form,
-      fieldName
-    )
-
-    behave like fieldThatRejectsInvalidCharacters(
-      form,
-      fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(internationalPostcodeRegex)),
-      Option(maxLength)
-    )
-  }
 }

@@ -89,14 +89,6 @@
             countries = countrySelectViewModel.items
         )
 
-        @govukInput(
-            InputViewModel(
-                field = form("postcode"),
-                label = LabelViewModel(Text(messages("common.addressInput.postcode")))
-            )
-            .withWidth(OneQuarter)
-        )
-
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
         )
