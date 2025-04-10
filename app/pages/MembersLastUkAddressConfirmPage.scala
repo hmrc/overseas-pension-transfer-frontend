@@ -29,6 +29,9 @@ case object MembersLastUkAddressConfirmPage extends Page {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
 
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberDetailsCYAController.onPageLoad()
+
   def clearAddressLookups(answers: UserAnswers): Try[UserAnswers] =
     answers.remove(MembersLastUkAddressLookupPage).get.remove(MembersLastUkAddressSelectPage)
 

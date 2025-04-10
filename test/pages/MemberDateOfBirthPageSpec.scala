@@ -39,7 +39,7 @@ class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        MemberDateOfBirthPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        MemberDateOfBirthPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
   }

@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, PersonName, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,4 +29,10 @@ case object MemberNamePage extends QuestionPage[PersonName] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberNinoController.onPageLoad(NormalMode)
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberDetailsCYAController.onPageLoad()
+
+  final def changeLink(answers: UserAnswers): Call =
+    routes.MemberNameController.onPageLoad(CheckMode)
 }

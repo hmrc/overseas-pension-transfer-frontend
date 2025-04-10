@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.UserAnswers
+import models.{CheckMode, UserAnswers}
 import play.api.mvc.Call
 import play.api.libs.json.JsPath
 
@@ -30,5 +30,11 @@ case object MemberDateOfLeavingUKPage extends QuestionPage[LocalDate] {
   override def toString: String = "memberDateOfLeavingUK"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.CheckYourAnswersController.onPageLoad()
+    routes.MemberDetailsCYAController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberDetailsCYAController.onPageLoad()
+
+  final def changeLink(answers: UserAnswers): Call =
+    routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode)
 }

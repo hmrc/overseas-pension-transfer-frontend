@@ -32,7 +32,7 @@ class MemberIsResidentUKPageSpec extends SpecBase with Matchers {
         MemberIsResidentUKPage.nextPage(
           NormalMode,
           emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
-        ) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        ) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
 
@@ -51,7 +51,7 @@ class MemberIsResidentUKPageSpec extends SpecBase with Matchers {
 
       "must go to Check Answers" in {
 
-        MemberIsResidentUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        MemberIsResidentUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
   }

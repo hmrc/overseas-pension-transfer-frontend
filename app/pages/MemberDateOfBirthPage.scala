@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 import play.api.libs.json.JsPath
 
@@ -31,4 +31,10 @@ case object MemberDateOfBirthPage extends QuestionPage[LocalDate] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MembersCurrentAddressController.onPageLoad(NormalMode)
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.MemberDetailsCYAController.onPageLoad()
+
+  final def changeLink(answers: UserAnswers): Call =
+    routes.MemberDateOfBirthController.onPageLoad(CheckMode)
 }

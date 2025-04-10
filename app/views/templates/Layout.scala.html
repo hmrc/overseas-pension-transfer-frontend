@@ -25,7 +25,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
-
+@import views.html.components.CheckYourAnswersFooter
 
 @this(
         appConfig: FrontendAppConfig,
@@ -36,11 +36,12 @@
         hmrcScripts: HmrcScripts,
         betaBanner: StandardBetaBanner,
         hmrcStandardPage: HmrcStandardPage,
+		cyaFooter: CheckYourAnswersFooter,
         autocompleteCss: HmrcAccessibleAutocompleteCss,
         autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )
 
-@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true, showHmrcBanner: Boolean = false, showReturnToTaskListLink: Boolean = true)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
+@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true, showHmrcBanner: Boolean = false, showReturnToTaskListLink: Boolean = true, showCYAFooter: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
 
 @head = {
     @autocompleteCss()
@@ -74,7 +75,7 @@
 @content = {
     @contentBlock
     @if(showReturnToTaskListLink){@returnToTaskList() }
-    @hmrcReportTechnicalIssueHelper()
+    @if(showCYAFooter){@cyaFooter()}
 }
 
 @hmrcStandardPage(HmrcStandardPageParams(
