@@ -18,7 +18,7 @@ package controllers.actions
 
 import models.requests.{DataRequest, DisplayRequest}
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{ActionTransformer, Request, RequestHeader}
+import play.api.mvc.ActionTransformer
 import utils.AppUtils
 
 import javax.inject.Inject
@@ -29,7 +29,9 @@ class DisplayActionImpl @Inject() (val messagesApi: MessagesApi, implicit val ex
 
   override protected def transform[A](request: DataRequest[A]): Future[DisplayRequest[A]] = {
     implicit val messages: Messages = messagesApi.preferred(request)
-    Future.successful(DisplayRequest(request.request, request.userId, request.userAnswers, memberFullName(request.userAnswers), None))
+    Future.successful(
+      DisplayRequest(request.request, request.userId, request.userAnswers, memberFullName(request.userAnswers), getQtNumber(request.userAnswers))
+    )
   }
 }
 

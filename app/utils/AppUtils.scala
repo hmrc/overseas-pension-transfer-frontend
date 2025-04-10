@@ -19,11 +19,17 @@ package utils
 import models.UserAnswers
 import pages.MemberNamePage
 import play.api.i18n.Messages
+import queries.QtNumber
 
 trait AppUtils {
 
   def memberFullName(userAnswers: UserAnswers)(implicit messages: Messages): String = {
     userAnswers.get(MemberNamePage).map(_.fullName)
       .getOrElse(messages("common.undefined.name"))
+  }
+
+  def getQtNumber(userAnswers: UserAnswers)(implicit messages: Messages): String = {
+    userAnswers.get(QtNumber)
+      .getOrElse(messages("common.undefined.qtNumber"))
   }
 }

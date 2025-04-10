@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package models.requests
+package queries
 
-import models.UserAnswers
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.JsPath
 
-case class DisplayRequest[A](request: Request[A], userId: String, userAnswers: UserAnswers, memberName: String, qtNumber: String)
-    extends WrappedRequest[A](request)
+case object QtNumber extends Gettable[String] with Settable[String] {
+  override def path: JsPath = JsPath \ "qtNumber"
+}
