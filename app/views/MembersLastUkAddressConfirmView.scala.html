@@ -28,6 +28,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import viewmodels.LegendSize.Large
 @import views.html.components.QTNumber
+@import models.requests.DisplayRequest
 
 @this(
         layout: templates.Layout,
@@ -39,8 +40,8 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], memberName: String, mode: Mode, address: AddressViewModel)(implicit request: Request[_], messages: Messages)
-
+@(form: Form[_], mode: Mode, address: AddressViewModel)(implicit request: DisplayRequest[_], messages: Messages)
+@memberName = @{request.memberName}
 @searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 @manualEntry = @{routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
 

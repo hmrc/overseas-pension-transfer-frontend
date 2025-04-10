@@ -41,6 +41,7 @@ class MemberNinoController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: MemberNinoFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberNinoView,
@@ -50,21 +51,21 @@ class MemberNinoController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(MemberNinoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, memberFullName(request.userAnswers), mode))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             ninoUserAnswers  <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value).flatMap(_.remove(MemberDoesNotHaveNinoPage)))

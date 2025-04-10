@@ -43,6 +43,7 @@ class MembersCurrentAddressController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: MembersCurrentAddressFormProvider,
     countryService: CountryService,
     val controllerComponents: MessagesControllerComponents,
@@ -50,29 +51,28 @@ class MembersCurrentAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  private def form(memberName: String)(implicit messages: Messages): Form[MembersCurrentAddressFormData] = formProvider(memberName)
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val form         = formProvider()
       val userAnswers  = request.userAnswers
-      val memberName   = memberFullName(request.userAnswers)
       val preparedForm = userAnswers.get(MembersCurrentAddressPage) match {
-        case None          => form(memberName)
-        case Some(address) => form(memberName).fill(MembersCurrentAddressFormData.fromDomain(MembersCurrentAddress.fromAddress(address)))
+        case None          => form
+        case Some(address) => form.fill(MembersCurrentAddress.fromAddress(address))
       }
 
+      Ok(view(preparedForm, mode))
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
 
       Ok(view(preparedForm, countrySelectViewModel, memberName, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
-      val memberName = memberFullName(request.userAnswers)
-      form(memberName).bindFromRequest().fold(
+      val form = formProvider()
+      form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, memberName, mode)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
 
         },
         formData => {
@@ -108,5 +108,4 @@ class MembersCurrentAddressController @Inject() (
         }
       )
   }
-
 }

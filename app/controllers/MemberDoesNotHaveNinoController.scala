@@ -37,6 +37,7 @@ class MemberDoesNotHaveNinoController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: MemberDoesNotHaveNinoFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDoesNotHaveNinoView
@@ -45,20 +46,20 @@ class MemberDoesNotHaveNinoController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(MemberDoesNotHaveNinoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, memberFullName(request.userAnswers), mode))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value).flatMap(_.remove(MemberNinoPage)))

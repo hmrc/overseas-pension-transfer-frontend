@@ -26,6 +26,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 @import views.html.components.QTNumber
+@import models.requests.DisplayRequest
 
 @this(
         layout: templates.Layout,
@@ -36,7 +37,9 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], memberName: String, mode: Mode, addressRadios: Seq[RadioItem], postcode: String)(implicit request: Request[_], messages: Messages)
+
+@(form: Form[_], mode: Mode, addressRadios: Seq[RadioItem], postcode: String)(implicit request: DisplayRequest[_], messages: Messages)
+@memberName = @{request.memberName}
 
 @searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 

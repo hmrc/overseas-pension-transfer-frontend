@@ -33,8 +33,8 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], memberName: String, mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
-@{val memberName = request.userAnswers}
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@memberName = @{request.memberName}
 
 @layout(pageTitle = title(form, messages("memberDateOfBirth.title", memberName))) {
 
@@ -64,4 +64,3 @@
         )
     }
 }
-

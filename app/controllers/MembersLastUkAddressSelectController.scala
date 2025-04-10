@@ -41,13 +41,14 @@ class MembersLastUkAddressSelectController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: MembersLastUkAddressSelectFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressSelectView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(value) =>
@@ -57,7 +58,7 @@ class MembersLastUkAddressSelectController @Inject() (
               val form          = formProvider(validIds)
               val addressRadios = AddressViewModel.addressRadios(addresses)
 
-              Ok(view(form, memberFullName(request.userAnswers), mode, addressRadios, searchedPostcode))
+              Ok(view(form, mode, addressRadios, searchedPostcode))
             case NoAddressFound(_)                            =>
               Redirect(
                 MembersLastUkAddressSelectPage.nextPageRecovery(
@@ -72,7 +73,7 @@ class MembersLastUkAddressSelectController @Inject() (
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(value) =>
@@ -83,7 +84,7 @@ class MembersLastUkAddressSelectController @Inject() (
               val addressRadios = AddressViewModel.addressRadios(addresses)
               form.bindFromRequest().fold(
                 formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode, addressRadios, searchedPostcode))),
+                  Future.successful(BadRequest(view(formWithErrors, mode, addressRadios, searchedPostcode))),
                 selectedId => {
                   if (validIds.contains(selectedId)) {
                     val maybeSelectedAddress = addresses.find(_.id == selectedId)

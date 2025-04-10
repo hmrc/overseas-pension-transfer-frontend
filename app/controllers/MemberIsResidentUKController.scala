@@ -37,6 +37,7 @@ class MemberIsResidentUKController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: MemberIsResidentUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberIsResidentUKView
@@ -45,17 +46,17 @@ class MemberIsResidentUKController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(MemberIsResidentUKPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, memberFullName(request.userAnswers), mode))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

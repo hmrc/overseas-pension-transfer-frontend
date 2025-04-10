@@ -40,6 +40,7 @@ class MembersLastUkAddressLookupController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: MembersLastUkAddressLookupFormProvider,
     val controllerComponents: MessagesControllerComponents,
     val addressLookupConnector: AddressLookupConnector,
@@ -49,7 +50,7 @@ class MembersLastUkAddressLookupController @Inject() (
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case None        => form
@@ -59,13 +60,13 @@ class MembersLastUkAddressLookupController @Inject() (
             case NoAddressFound(searchedPostcode)     => form.fill(searchedPostcode)
           }
       }
-      Ok(view(preparedForm, memberFullName(request.userAnswers), mode))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
+        Future.successful(BadRequest(view(formWithErrors, mode))),
       postcode =>
         addressLookupConnector.lookup(postcode).flatMap {
           case AddressLookupErrorResponse(e)                             =>

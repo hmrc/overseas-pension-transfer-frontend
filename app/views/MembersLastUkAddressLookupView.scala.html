@@ -24,6 +24,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import viewmodels.LabelSize.Large
 @import views.html.components.QTNumber
+@import models.requests.DisplayRequest
 
 @this(
         layout: templates.Layout,
@@ -34,7 +35,8 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@memberName = @{request.memberName}
 
 @manualEntry = @{routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
 

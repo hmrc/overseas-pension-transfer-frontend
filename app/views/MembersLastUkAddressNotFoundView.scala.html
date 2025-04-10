@@ -18,6 +18,7 @@
 @import views.ViewUtils.titleNoForm
 @import controllers.routes
 @import views.html.components.QTNumber
+@import models.requests.DisplayRequest
 
 @this(
         layout: templates.Layout,
@@ -25,7 +26,8 @@
         qtNumber: QTNumber
 )
 
-@(postcode: String)(implicit request: Request[_], messages: Messages)
+
+@(postcode: String)(implicit request: DisplayRequest[_], messages: Messages)
 
 @searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 @manualEntry = @{routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}

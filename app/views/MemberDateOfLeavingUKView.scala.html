@@ -23,6 +23,7 @@
 @import viewmodels.LegendSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import views.html.components.QTNumber
+@import models.requests.DisplayRequest
 
 @this(
         layout: templates.Layout,
@@ -33,8 +34,8 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
-
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@memberName = @{request.memberName}
 @layout(pageTitle = title(form, messages("memberDateOfLeavingUK.title"))) {
 
     @formHelper(action = routes.MemberDateOfLeavingUKController.onSubmit(mode), Symbol("autoComplete") -> "on") {
@@ -49,7 +50,7 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading", memberName)</h1>
+        <h1 class="govuk-heading-l">@messages("memberDateOfLeavingUK.heading", memberName)</h1>
 
         @govukDateInput(
             DateViewModel(

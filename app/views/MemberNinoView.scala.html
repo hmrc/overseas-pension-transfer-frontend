@@ -24,6 +24,7 @@
 @import viewmodels.LabelSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import views.html.components.Link
+@import models.requests.DisplayRequest
 
 @this(
     layout: templates.Layout,
@@ -34,9 +35,11 @@
     link: Link
 )
 
-@(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@noNinoPage = @{routes.MemberDoesNotHaveNinoController.onPageLoad(mode).url}
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+
+@memberName = @{request.memberName}
+@noNinoPage = @{routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode).url}
 
 @layout(pageTitle = title(form, messages("memberNino.title"))) {
 

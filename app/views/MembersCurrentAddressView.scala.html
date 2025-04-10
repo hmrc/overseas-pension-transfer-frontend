@@ -40,7 +40,10 @@
         inputCountry: InputCountry
 )
 
-@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, memberName: String, mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+
+@memberName = @{request.memberName}
 
 @layout(pageTitle = title(form, messages("membersCurrentAddress.title"))) {
 
