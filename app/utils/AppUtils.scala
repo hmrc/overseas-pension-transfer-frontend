@@ -28,7 +28,7 @@ trait AppUtils {
       .getOrElse(messages("common.undefined.name"))
   }
 
-  def getQtNumber(userAnswers: UserAnswers)(implicit messages: Messages): String = {
+  def qtNumber(userAnswers: UserAnswers)(implicit messages: Messages): String = {
     userAnswers.get(QtNumber)
       .getOrElse(messages("common.undefined.qtNumber"))
   }

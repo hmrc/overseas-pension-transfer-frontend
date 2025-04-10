@@ -30,7 +30,7 @@ class DisplayActionImpl @Inject() (val messagesApi: MessagesApi, implicit val ex
   override protected def transform[A](request: DataRequest[A]): Future[DisplayRequest[A]] = {
     implicit val messages: Messages = messagesApi.preferred(request)
     Future.successful(
-      DisplayRequest(request.request, request.userId, request.userAnswers, memberFullName(request.userAnswers), getQtNumber(request.userAnswers))
+      DisplayRequest(request.request, request.userId, request.userAnswers, memberFullName(request.userAnswers), qtNumber(request.userAnswers))
     )
   }
 }
