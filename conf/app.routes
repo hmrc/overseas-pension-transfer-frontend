@@ -115,6 +115,11 @@ POST       /scheme-managers-name                                     controllers
 GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
 
+GET        /scheme-managers-email                                    controllers.SchemeManagersEmailController.onPageLoad(mode: Mode = NormalMode)
+POST       /scheme-managers-email                                    controllers.SchemeManagersEmailController.onSubmit(mode: Mode = NormalMode)
+GET        /change-scheme-managers-email                             controllers.SchemeManagersEmailController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-scheme-managers-email                             controllers.SchemeManagersEmailController.onSubmit(mode: Mode = CheckMode)
+
 GET        /organisation-name                                        controllers.OrganisationNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /organisation-name                                        controllers.OrganisationNameController.onSubmit(mode: Mode = NormalMode)
 GET        /change-organisation-name                                 controllers.OrganisationNameController.onPageLoad(mode: Mode = CheckMode)

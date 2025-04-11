@@ -229,6 +229,15 @@ schemeManagersName.error.lastName.pattern = The scheme manager'’s last name mu
 schemeManagersName.firstName.change.hidden = Scheme manager''s name
 schemeManagersName.lastName.change.hidden = Scheme manager''s name
 
+schemeManagersEmail.title = What is the scheme manager''s email address?
+schemeManagersEmail.heading = What is the scheme manager''s email address?
+schemeManagersEmail.hint = For example, name@example.com.
+schemeManagersEmail.checkYourAnswersLabel = Manager email
+schemeManagersEmail.error.required = Enter the scheme manager''s email address
+schemeManagersEmail.error.length = Email address must be 254 characters or less
+schemeManagersEmail.error.format = Email address must be entered in the format name@example.com
+schemeManagersEmail.change.hidden = Manager email
+
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
 qropsName.checkYourAnswersLabel = QROPS full name

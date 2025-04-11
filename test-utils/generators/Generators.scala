@@ -103,6 +103,16 @@ trait Generators extends ModelGenerators with Logging {
       chars  <- listOfN(length, genValidChar)
     } yield chars.mkString
 
+  def validEmailOfMaxLength(maxLength: Int): Gen[String] = {
+    val domain          = "@example.com"
+    val domainLength    = domain.length
+    val localPartLength = maxLength - domainLength
+
+    for {
+      localChars <- Gen.listOfN(localPartLength, Gen.alphaNumChar)
+    } yield localChars.mkString + domain
+  }
+
   def stringsMatchingRegex(
       regex: String,
       maybeMinLength: Option[Int] = None,

@@ -17,8 +17,7 @@
 package forms.mappings
 
 import java.time.LocalDate
-
-import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.data.validation.{Constraint, Constraints, Invalid, Valid}
 
 trait Constraints {
 
@@ -105,5 +104,13 @@ trait Constraints {
         Valid
       case _                   =>
         Invalid(errorKey)
+    }
+
+  protected def validEmail(errorKey: String): Constraint[String] =
+    Constraint { input =>
+      Constraints.emailAddress()(input) match {
+        case Valid      => Valid
+        case Invalid(_) => Invalid(errorKey)
+      }
     }
 }
