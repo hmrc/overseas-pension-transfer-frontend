@@ -18,42 +18,40 @@ package forms
 
 import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
-import models.address.MembersCurrentAddress
+import models.address.QROPSAddress
 import play.api.data.{Form, Forms}
 import play.api.data.Forms._
 
-case class MembersCurrentAddressFormData(
+case class QROPSAddressFormData(
     addressLine1: String,
     addressLine2: String,
     addressLine3: Option[String],
     addressLine4: Option[String],
-    countryCode: String,
-    postcode: Option[String],
-    poBox: Option[String]
+    addressLine5: Option[String],
+    countryCode: String
   )
 
-object MembersCurrentAddressFormData {
+object QROPSAddressFormData {
 
-  def fromDomain(address: MembersCurrentAddress): MembersCurrentAddressFormData =
-    MembersCurrentAddressFormData(
+  def fromDomain(address: QROPSAddress): QROPSAddressFormData =
+    QROPSAddressFormData(
       addressLine1 = address.addressLine1,
       addressLine2 = address.addressLine2,
       addressLine3 = address.addressLine3,
       addressLine4 = address.addressLine4,
-      countryCode  = address.country.code,
-      postcode     = address.postcode,
-      poBox        = address.poBox
+      addressLine5 = address.addressLine5,
+      countryCode  = address.country.code
     )
 }
 
-class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
+class QROPSAddressFormProvider @Inject() extends Mappings with Regex {
 
-  def apply(memberName: String): Form[MembersCurrentAddressFormData] = Form(
+  def apply(): Form[QROPSAddressFormData] = Form(
     mapping(
-      "addressLine1" -> text("membersCurrentAddress.error.addressLine1.required", Seq(memberName))
+      "addressLine1" -> text("qROPSAddress.error.addressLine1.required")
         .verifying(maxLength(35, "common.addressInput.error.addressLine1.length"))
         .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine1.pattern")),
-      "addressLine2" -> text("membersCurrentAddress.error.addressLine2.required", Seq(memberName))
+      "addressLine2" -> text("qROPSAddress.error.addressLine2.required")
         .verifying(maxLength(35, "common.addressInput.error.addressLine2.length"))
         .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine2.pattern")),
       "addressLine3" -> optional(
@@ -66,17 +64,13 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
           verifying maxLength(35, "common.addressInput.error.addressLine4.length")
           verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern")
       ),
-      "countryCode"  -> text("common.addressInput.error.countryCode.required"),
-      "postcode"     -> optional(
+      "addressLine5" -> optional(
         Forms.text
-          verifying maxLength(35, "common.addressInput.error.postcode.length")
-          verifying regexp(internationalPostcodeRegex, "common.addressInput.error.postcode.pattern")
+          verifying maxLength(35, "common.addressInput.error.addressLine5.length")
+          verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine5.pattern")
       ),
-      "poBox"        -> optional(
-        Forms.text
-          verifying maxLength(35, "common.addressInput.error.poBox.length")
-          verifying regexp(poBoxRegex, "common.addressInput.error.poBox.pattern")
-      )
-    )(MembersCurrentAddressFormData.apply)(MembersCurrentAddressFormData.unapply)
+      "countryCode"  -> text("common.addressInput.error.countryCode.required")
+    )(QROPSAddressFormData.apply)(QROPSAddressFormData.unapply)
   )
+
 }

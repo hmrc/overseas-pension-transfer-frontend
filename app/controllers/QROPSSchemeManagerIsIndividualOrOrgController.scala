@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.QROPSSchemeManagerIsIndividualOrOrgFormProvider
+
 import javax.inject.Inject
 import models.Mode
 import pages.QROPSSchemeManagerIsIndividualOrOrgPage

@@ -18,12 +18,13 @@ package controllers
 
 import base.SpecBase
 import forms.QROPSSchemeManagerIsIndividualOrOrgFormProvider
-import models.{NormalMode, QropsSchemeManagerIsIndividualOrOrg}
+import models.{NormalMode, QROPSSchemeManagerIsIndividualOrOrg}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.QROPSSchemeManagerIsIndividualOrOrgPage
 import play.api.inject.bind
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -58,7 +59,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with Mo
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(QROPSSchemeManagerIsIndividualOrOrgPage, QropsSchemeManagerIsIndividualOrOrg.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(QROPSSchemeManagerIsIndividualOrOrgPage, QROPSSchemeManagerIsIndividualOrOrg.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +71,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(QropsSchemeManagerIsIndividualOrOrg.values.head), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(QROPSSchemeManagerIsIndividualOrOrg.values.head), NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -90,7 +91,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with Mo
       running(application) {
         val request =
           FakeRequest(POST, qropsSchemeManagerIsIndividualOrOrgRoute)
-            .withFormUrlEncodedBody(("value", QropsSchemeManagerIsIndividualOrOrg.values.head.toString))
+            .withFormUrlEncodedBody(("value", QROPSSchemeManagerIsIndividualOrOrg.values.head.toString))
 
         val result = route(application, request).value
 
@@ -140,7 +141,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with Mo
       running(application) {
         val request =
           FakeRequest(POST, qropsSchemeManagerIsIndividualOrOrgRoute)
-            .withFormUrlEncodedBody(("value", QropsSchemeManagerIsIndividualOrOrg.values.head.toString))
+            .withFormUrlEncodedBody(("value", QROPSSchemeManagerIsIndividualOrOrg.values.head.toString))
 
         val result = route(application, request).value
 

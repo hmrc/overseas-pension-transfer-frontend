@@ -23,7 +23,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MembersLastUkAddressSelectPage
-import play.api.Logging
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

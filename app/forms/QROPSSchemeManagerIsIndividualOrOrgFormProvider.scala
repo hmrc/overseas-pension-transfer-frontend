@@ -20,12 +20,12 @@ import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import models.QropsSchemeManagerIsIndividualOrOrg
+import models.QROPSSchemeManagerIsIndividualOrOrg
 
 class QROPSSchemeManagerIsIndividualOrOrgFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[QropsSchemeManagerIsIndividualOrOrg] =
+  def apply(): Form[QROPSSchemeManagerIsIndividualOrOrg] =
     Form(
-      "value" -> enumerable[QropsSchemeManagerIsIndividualOrOrg]("qropsSchemeManagerIsIndividualOrOrg.error.required")
+      "value" -> enumerable[QROPSSchemeManagerIsIndividualOrOrg]("qropsSchemeManagerIsIndividualOrOrg.error.required")
     )
 }
