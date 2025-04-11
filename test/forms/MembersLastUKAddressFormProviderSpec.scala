@@ -25,10 +25,9 @@ import models.address._
 
 class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with SpecBase with Regex {
 
-  private val validAnswer = MembersLastUKAddress("1stLineAdd", "2ndLineAdd", Some("aTown"), Some("aCounty"), "AB12CD")
-  private val memberName  = "undefined undefined"
+  val form = new MembersLastUKAddressFormProvider()()
 
-  val form = new MembersLastUKAddressFormProvider()(memberName)
+  private val memberName = testDisplayRequest.memberName
 
   ".addressLine1" - {
 

@@ -21,7 +21,10 @@ import forms.MemberHasEverBeenResidentUKFormProvider
 import models.address.MembersLastUKAddress
 import models.{CheckMode, NormalMode, PersonName, UserAnswers}
 import org.mockito.ArgumentCaptor
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
@@ -33,9 +36,8 @@ import views.html.MemberHasEverBeenResidentUKView
 
 import scala.concurrent.Future
 
-class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSugar {
+class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MemberHasEverBeenResidentUKFormProvider()
   private val form         = formProvider()
 
@@ -44,43 +46,42 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
   "memberHasEverBeenResidentUK Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
-
-        val result = route(application, request).value
+        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
+        val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(req),
+          messages(application)
+        ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
-
+      val userAnswers = userAnswersMemberNameQtNumber.set(MemberHasEverBeenResidentUKPage, true).get
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
-
-        val view = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
-
-        val result = route(application, request).value
+        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
+        val view   = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
+        val result = route(application, req).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
+          fakeDisplayRequest(req),
+          messages(application)
+        ).toString
       }
     }
 
     "must redirect to the Check Answers page when valid data is submitted in NormalMode" in {
 
       val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
@@ -91,11 +92,11 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
           .build()
 
       running(application) {
-        val request =
+        val req =
           FakeRequest(POST, memberHasEverBeenResidentUKRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
-        val result = route(application, request).value
+        val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.MemberDetailsCYAController.onPageLoad().url
@@ -165,33 +166,31 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val request =
+        val req =
           FakeRequest(POST, memberHasEverBeenResidentUKRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
-
-        val result = route(application, request).value
+        val view      = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
+        val result    = route(application, req).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(req),
+          messages(application)
+        ).toString
       }
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
-
-        val result = route(application, request).value
+        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
+        val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
@@ -199,15 +198,14 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request =
+        val req =
           FakeRequest(POST, memberHasEverBeenResidentUKRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-        val result = route(application, request).value
+        val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
