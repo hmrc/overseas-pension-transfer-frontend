@@ -17,12 +17,13 @@
 package controllers
 
 import base.SpecBase
+import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 import views.html.MemberDetailsCYAView
 
-class MemberDetailsCYAControllerSpec extends SpecBase with SummaryListFluency {
+class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency {
 
   "Check Your Answers Controller" - {
 

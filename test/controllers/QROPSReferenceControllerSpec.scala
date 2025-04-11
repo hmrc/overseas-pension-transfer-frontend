@@ -21,6 +21,7 @@ import forms.QROPSReferenceFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.QROPSReferencePage
 import play.api.inject.bind
@@ -31,7 +32,7 @@ import views.html.QROPSReferenceView
 
 import scala.concurrent.Future
 
-class QROPSReferenceControllerSpec extends SpecBase with MockitoSugar {
+class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new QROPSReferenceFormProvider()
   private val form         = formProvider()

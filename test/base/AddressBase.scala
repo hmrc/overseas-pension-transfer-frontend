@@ -20,7 +20,7 @@ import models.address._
 import models.UserAnswers
 import pages.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 
-trait AddressBase {
+trait AddressBase extends SpecBase {
 
   val connectorPostcode = "BB00 1BB"
 
@@ -138,16 +138,16 @@ trait AddressBase {
     poBox        = None
   )
 
-  val addressFoundUserAnswers: UserAnswers = UserAnswers("id").set(MembersLastUkAddressLookupPage, foundAddresses).get
+   val addressFoundUserAnswers: UserAnswers = userAnswersMemberNameQtNumber.set(MembersLastUkAddressLookupPage, foundAddresses).success.value
 
   val selectedAddress: FoundAddress = foundAddresses.addresses.head
 
-  val addressSelectedUserAnswers: UserAnswers = addressFoundUserAnswers.set(MembersLastUkAddressSelectPage, selectedAddress).get
+  val addressSelectedUserAnswers: UserAnswers = addressFoundUserAnswers.set(MembersLastUkAddressSelectPage, selectedAddress).success.value
 
   val validIds: Seq[String] = foundAddresses.addresses.map(_.id)
 
   val noAddressFound: NoAddressFound = NoAddressFound(searchedPostcode = "ZZ1 1ZZ")
 
-  val noAddressFoundUserAnswers: UserAnswers = UserAnswers("id").set(MembersLastUkAddressLookupPage, noAddressFound).get
+  val noAddressFoundUserAnswers: UserAnswers = userAnswersMemberNameQtNumber.set(MembersLastUkAddressLookupPage, noAddressFound).success.value
 
 }

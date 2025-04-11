@@ -21,6 +21,7 @@ import forms.SchemeManagersNameFormProvider
 import models.{NormalMode, SchemeManagersName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.SchemeManagersNamePage
 import play.api.inject.bind
@@ -31,7 +32,7 @@ import views.html.SchemeManagersNameView
 
 import scala.concurrent.Future
 
-class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
+class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new SchemeManagersNameFormProvider()
   private val form         = formProvider()

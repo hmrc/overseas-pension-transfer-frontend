@@ -21,6 +21,7 @@ import forms.QROPSSchemeManagerIsIndividualOrOrgFormProvider
 import models.{NormalMode, QropsSchemeManagerIsIndividualOrOrg}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.QROPSSchemeManagerIsIndividualOrOrgPage
 import play.api.inject.bind
@@ -31,7 +32,7 @@ import views.html.QROPSSchemeManagerIsIndividualOrOrgView
 
 import scala.concurrent.Future
 
-class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with MockitoSugar {
+class QropsSchemeManagerIsIndividualOrOrgControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val qropsSchemeManagerIsIndividualOrOrgRoute = routes.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(NormalMode).url
 

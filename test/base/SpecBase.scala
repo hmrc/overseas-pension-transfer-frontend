@@ -18,20 +18,22 @@ package base
 
 import connectors.HelloWorldConnector
 import controllers.actions._
-import models.UserAnswers
+import models.{PersonName, UserAnswers}
+import models.requests.DisplayRequest
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import pages.MemberNamePage
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
+import queries.QtNumber
 
 trait SpecBase
-    extends AnyFreeSpec
-    with Matchers
+    extends Matchers
     with TryValues
     with OptionValues
     with ScalaFutures
@@ -39,7 +41,17 @@ trait SpecBase
 
   val userAnswersId: String = "id"
 
+  val testMemberName: PersonName = PersonName("User", "McUser")
+
+  val testQtNumber: String = "QT123456"
+
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
+
+  def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
+
+  def userAnswersQtNumber: UserAnswers = emptyUserAnswers.set(QtNumber, testQtNumber).success.value
+
+  def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumber, testQtNumber).success.value
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -49,6 +61,25 @@ trait SpecBase
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[DisplayAction].to[FakeDisplayAction],
         bind[HelloWorldConnector].to[FakeHelloWorldConnector]
       )
+
+  def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
+    DisplayRequest(
+      request     = fakeRequest,
+      userId      = userAnswersId,
+      userAnswers = userAnswers,
+      memberName  = testMemberName.fullName,
+      qtNumber    = testQtNumber
+    )
+
+  implicit val testDisplayRequest: DisplayRequest[_] =
+    DisplayRequest(
+      request     = FakeRequest(),
+      userId      = userAnswersId,
+      userAnswers = emptyUserAnswers,
+      memberName  = testMemberName.fullName,
+      qtNumber    = testQtNumber
+    )
 }

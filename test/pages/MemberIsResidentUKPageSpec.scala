@@ -19,9 +19,10 @@ package pages
 import base.SpecBase
 import controllers.routes
 import models.{CheckMode, NormalMode, UserAnswers}
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class MemberIsResidentUKPageSpec extends SpecBase with Matchers {
+class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers {
 
   ".nextPage" - {
 
