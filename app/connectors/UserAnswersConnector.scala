@@ -19,8 +19,7 @@ package connectors
 import config.FrontendAppConfig
 import models.dtos.UserAnswersDTO
 import play.api.Logging
-import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.HttpReads.Implicits.readJsValue
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
