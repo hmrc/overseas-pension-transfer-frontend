@@ -17,8 +17,8 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
 import models.address.QROPSAddress
+import models.{NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -30,6 +30,9 @@ case object QROPSAddressPage extends QuestionPage[QROPSAddress] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.QROPSDetailsCYAController.onPageLoad()
 
   val recoveryModeReturnUrl: String = routes.QROPSAddressController.onPageLoad(NormalMode).url
 }

@@ -27,6 +27,9 @@ case object QROPSSchemeManagerIsIndividualOrOrgPage extends QuestionPage[QROPSSc
 
   override def toString: String = "qropsSchemeManagerIsIndividualOrOrg"
 
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
+
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.QROPSManagerDetailsCYAController.onPageLoad()
 

@@ -27,6 +27,5 @@ class QROPSSchemeManagerIsIndividualOrOrgFormProvider @Inject() extends Mappings
   def apply(): Form[QROPSSchemeManagerIsIndividualOrOrg] =
     Form(
       "value" -> enumerable[QROPSSchemeManagerIsIndividualOrOrg]("qropsSchemeManagerIsIndividualOrOrg.error.required")
-
     )
 }

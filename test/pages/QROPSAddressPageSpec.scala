@@ -39,7 +39,7 @@ class QROPSAddressPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        QROPSAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        QROPSAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
       }
     }
   }
