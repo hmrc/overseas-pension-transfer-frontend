@@ -229,6 +229,7 @@ case class QROPSAddress(
     addressLine2: String,
     addressLine3: Option[String],
     addressLine4: Option[String],
+    addressLine5: Option[String],
     country: Country
   ) extends Address {
   val line1: String                     = addressLine1
@@ -247,6 +248,7 @@ object QROPSAddress {
       (__ \ "line2").read[String] and
       (__ \ "line3").readNullable[String] and
       (__ \ "line4").readNullable[String] and
+      (__ \ "line5").readNullable[String] and
       (__ \ "country").read[Country]
   )(QROPSAddress.apply _)
 
@@ -256,6 +258,7 @@ object QROPSAddress {
       "line2"   -> address.line2,
       "line3"   -> address.line3,
       "line4"   -> address.line4,
+      "line5"   -> address.addressLine5,
       "country" -> address.country
     )
   }
@@ -268,6 +271,7 @@ object QROPSAddress {
       addressLine2 = address.line2,
       addressLine3 = address.line3,
       addressLine4 = address.line4,
+      addressLine5 = None,
       country      = address.country
     )
   }

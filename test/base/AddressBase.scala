@@ -143,6 +143,7 @@ trait AddressBase {
     addressLine2 = "Some District",
     addressLine3 = None,
     addressLine4 = None,
+    addressLine5 = None,
     country      = Countries.UK
   )
 

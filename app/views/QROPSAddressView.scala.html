@@ -81,6 +81,14 @@
             .withWidth(Fixed20)
         )
 
+        @govukInput(
+            InputViewModel(
+                field = form("addressLine5"),
+                label = LabelViewModel(Text(messages("common.addressInput.addressLine5")))
+            )
+            .withWidth(Fixed20)
+        )
+
         @inputCountry(
             form,
             id = "countryCode",

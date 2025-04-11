@@ -37,7 +37,7 @@ object AddressViewModel {
       line2    = address.line2,
       line3    = address.line3,
       line4    = address.line4,
-      postcode = address.postcode,
+      postcode = None,
       country  = address.country.name
     )
   }

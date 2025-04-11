@@ -89,6 +89,7 @@ class QROPSAddressController @Inject() (
                 addressLine2 = formData.addressLine2,
                 addressLine3 = formData.addressLine3,
                 addressLine4 = formData.addressLine4,
+                addressLine5 = formData.addressLine5,
                 country      = country
               )
               for {
