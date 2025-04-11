@@ -17,18 +17,16 @@
 package controllers.actions
 
 import models.requests.{DataRequest, DisplayRequest}
-import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.ActionTransformer
 import utils.AppUtils
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DisplayActionImpl @Inject() (val messagesApi: MessagesApi, implicit val executionContext: ExecutionContext) extends DisplayAction
+class DisplayActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DisplayAction
     with AppUtils {
 
   override protected def transform[A](request: DataRequest[A]): Future[DisplayRequest[A]] = {
-    implicit val messages: Messages = messagesApi.preferred(request)
     Future.successful(
       DisplayRequest(request.request, request.userId, request.userAnswers, memberFullName(request.userAnswers), qtNumber(request.userAnswers))
     )

@@ -23,13 +23,13 @@ import queries.QtNumber
 
 trait AppUtils {
 
-  def memberFullName(userAnswers: UserAnswers)(implicit messages: Messages): String = {
+  def memberFullName(userAnswers: UserAnswers): String = {
     userAnswers.get(MemberNamePage).map(_.fullName)
-      .getOrElse(messages("common.undefined.name"))
+      .getOrElse("Undefined name")
   }
 
-  def qtNumber(userAnswers: UserAnswers)(implicit messages: Messages): String = {
+  def qtNumber(userAnswers: UserAnswers): String = {
     userAnswers.get(QtNumber)
-      .getOrElse(messages("common.undefined.qtNumber"))
+      .getOrElse("Undefined QT Number")
   }
 }
