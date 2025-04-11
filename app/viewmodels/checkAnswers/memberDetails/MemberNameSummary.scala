@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.memberDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.SchemeManagersNamePage
+import pages.MemberNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,19 +26,19 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object SchemeManagersNameSummary {
+object MemberNameSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeManagersNamePage).map {
+    answers.get(MemberNamePage).map {
       answer =>
-        val value = HtmlFormat.escape(answer.schemeMangersFirstName).toString + "<br/>" + HtmlFormat.escape(answer.schemeManagersLastName).toString
+        val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
 
         SummaryListRowViewModel(
-          key     = "schemeManagersName.checkYourAnswersLabel",
+          key     = "memberName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.SchemeManagersNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("schemeManagersName.change.hidden"))
+            ActionItemViewModel("site.change", MemberNamePage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("memberName.change.hidden"))
           )
         )
     }

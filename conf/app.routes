@@ -12,7 +12,15 @@ GET        /refresh-session                                          controllers
 
 GET        /there-is-a-problem                                       controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET        /check-your-answers                                       controllers.CheckYourAnswersController.onPageLoad()
+GET        /member-details/check-your-answers                        controllers.MemberDetailsCYAController.onPageLoad()
+POST       /member-details/check-your-answers                        controllers.MemberDetailsCYAController.onSubmit()
+
+GET        /qrops-details/check-your-answers                         controllers.QROPSDetailsCYAController.onPageLoad()
+
+GET        /qrops-manager-details/check-your-answers                 controllers.QROPSManagerDetailsCYAController.onPageLoad()
+
+GET        /discard-transfer-confirm                                 controllers.DiscardTransferConfirmController.onPageLoad()
+POST       /discard-transfer-confirm                                 controllers.DiscardTransferConfirmController.onSubmit()
 
 GET        /account/sign-out-survey                                  controllers.auth.AuthController.signOut()
 GET        /account/sign-out                                         controllers.auth.AuthController.signOutNoSurvey()
@@ -65,21 +73,6 @@ POST       /members-last-uk-address                                  controllers
 GET        /change-members-last-uk-address                           controllers.MembersLastUKAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-members-last-uk-address                           controllers.MembersLastUKAddressController.onSubmit(mode: Mode = CheckMode)
 
-GET        /qrops-scheme-manager-is-individual-or-org                controllers.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(mode: Mode = NormalMode)
-POST       /qrops-scheme-manager-is-individual-or-org                controllers.QROPSSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = NormalMode)
-GET        /change-qrops-scheme-manager-is-individual-or-org         controllers.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-qrops-scheme-manager-is-individual-or-org         controllers.QROPSSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = CheckMode)
-
-GET        /qrops-name                                               controllers.QROPSNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /qrops-name                                               controllers.QROPSNameController.onSubmit(mode: Mode = NormalMode)
-GET        /change-qrops-name                                        controllers.QROPSNameController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-qrops-name                                        controllers.QROPSNameController.onSubmit(mode: Mode = CheckMode)
-
-GET        /scheme-managers-name                                     controllers.SchemeManagersNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /scheme-managers-name                                     controllers.SchemeManagersNameController.onSubmit(mode: Mode = NormalMode)
-GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
-
 GET        /members-last-uk-address-lookup                           controllers.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = NormalMode)
 POST       /members-last-uk-address-lookup                           controllers.MembersLastUkAddressLookupController.onSubmit(mode: Mode = NormalMode)
 GET        /change-members-last-uk-address-lookup                    controllers.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = CheckMode)
@@ -102,15 +95,30 @@ POST       /member-does-not-have-nino                                controllers
 GET        /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-member-does-not-have-nino                         controllers.MemberDoesNotHaveNinoController.onSubmit(mode: Mode = CheckMode)
 
-GET        /organisation-name                                        controllers.OrganisationNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /organisation-name                                        controllers.OrganisationNameController.onSubmit(mode: Mode = NormalMode)
-GET        /change-organisation-name                                 controllers.OrganisationNameController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-organisation-name                                 controllers.OrganisationNameController.onSubmit(mode: Mode = CheckMode)
+GET        /qrops-name                                               controllers.QROPSNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /qrops-name                                               controllers.QROPSNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-qrops-name                                        controllers.QROPSNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-qrops-name                                        controllers.QROPSNameController.onSubmit(mode: Mode = CheckMode)
 
 GET        /qrops-reference                                          controllers.QROPSReferenceController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-reference                                          controllers.QROPSReferenceController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-reference                                   controllers.QROPSReferenceController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-qrops-reference                                   controllers.QROPSReferenceController.onSubmit(mode: Mode = CheckMode)
+
+GET        /qrops-scheme-manager-is-individual-or-org                controllers.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(mode: Mode = NormalMode)
+POST       /qrops-scheme-manager-is-individual-or-org                controllers.QROPSSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = NormalMode)
+GET        /change-qrops-scheme-manager-is-individual-or-org         controllers.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-qrops-scheme-manager-is-individual-or-org         controllers.QROPSSchemeManagerIsIndividualOrOrgController.onSubmit(mode: Mode = CheckMode)
+
+GET        /scheme-managers-name                                     controllers.SchemeManagersNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /scheme-managers-name                                     controllers.SchemeManagersNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /organisation-name                                        controllers.OrganisationNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /organisation-name                                        controllers.OrganisationNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-organisation-name                                 controllers.OrganisationNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-organisation-name                                 controllers.OrganisationNameController.onSubmit(mode: Mode = CheckMode)
 
 GET        /organisation-individual-name                             controllers.OrgIndividualNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /organisation-individual-name                             controllers.OrgIndividualNameController.onSubmit(mode: Mode = NormalMode)

@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{PersonName, UserAnswers}
+import models.{CheckMode, PersonName, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,4 +29,10 @@ case object OrgIndividualNamePage extends QuestionPage[PersonName] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.QROPSManagerDetailsCYAController.onPageLoad()
+
+  final def changeLink(answers: UserAnswers): Call =
+    routes.OrgIndividualNameController.onPageLoad(CheckMode)
 }

@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.memberDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MembersLastUKAddressPage
+import pages.MemberIsResidentUKPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MembersLastUKAddressSummary {
+object MemberIsResidentUKSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersLastUKAddressPage).map {
+    answers.get(MemberIsResidentUKPage).map {
       answer =>
-        val value = HtmlFormat.escape(answer.line1).toString + "<br/>" + HtmlFormat.escape(answer.line2).toString
+        val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "membersLastUKAddress.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
+          key     = "memberIsResidentUK.checkYourAnswersLabel",
+          value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MembersLastUKAddressController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("membersLastUKAddress.change.hidden"))
+            ActionItemViewModel("site.change", MemberIsResidentUKPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("memberIsResidentUK.change.hidden"))
           )
         )
     }

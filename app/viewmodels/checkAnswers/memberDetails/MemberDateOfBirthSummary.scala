@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.memberDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberDateOfLeavingUKPage
+import pages.MemberDateOfBirthPage
 import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.DateTimeFormats.dateTimeFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberDateOfLeavingUKSummary {
+object MemberDateOfBirthSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberDateOfLeavingUKPage).map {
+    answers.get(MemberDateOfBirthPage).map {
       answer =>
         implicit val lang: Lang = messages.lang
 
         SummaryListRowViewModel(
-          key     = "memberDateOfLeavingUK.checkYourAnswersLabel",
+          key     = "memberDateOfBirth.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberDateOfLeavingUK.change.hidden"))
+            ActionItemViewModel("site.change", MemberDateOfBirthPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("memberDateOfBirth.change.hidden"))
           )
         )
     }

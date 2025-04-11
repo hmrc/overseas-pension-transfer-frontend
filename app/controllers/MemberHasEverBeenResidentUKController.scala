@@ -18,8 +18,8 @@ package controllers
 
 import controllers.actions._
 import forms.MemberHasEverBeenResidentUKFormProvider
-import models.Mode
-import pages.MemberHasEverBeenResidentUKPage
+import models.{CheckMode, Mode, NormalMode}
+import pages.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -60,11 +60,30 @@ class MemberHasEverBeenResidentUKController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
-        value =>
+        value => {
+          val previousValue = request.userAnswers.get(MemberHasEverBeenResidentUKPage)
+
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MemberHasEverBeenResidentUKPage.nextPage(mode, updatedAnswers))
+            baseAnswers <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
+
+            // If going from true → false, remove the answers of next questions
+            updatedAnswers <- (previousValue, value) match {
+                                case (Some(true), false) => Future.fromTry(baseAnswers
+                                    .remove(MembersLastUKAddressPage)
+                                    .flatMap(_.remove(MemberDateOfLeavingUKPage)))
+                                case _                   => Future.successful(baseAnswers)
+                              }
+
+            _ <- sessionRepository.set(updatedAnswers)
+
+            // If going from false → true in CheckMode, switch to NormalMode to question membersLastUKAddress
+            redirectMode = (mode, previousValue, value) match {
+                             case (CheckMode, Some(false), true) => NormalMode
+                             case _                              => mode
+                           }
+
+          } yield Redirect(MemberHasEverBeenResidentUKPage.nextPage(redirectMode, updatedAnswers))
+        }
       )
   }
 }

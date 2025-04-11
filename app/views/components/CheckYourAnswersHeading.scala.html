@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,14 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-@import views.ViewUtils.titleNoForm
+@import play.twirl.api.Html
 
-@this(
-        layout: templates.Layout,
-        govukSummaryList: GovukSummaryList
-)
+@this()
 
-@(list: SummaryList)(implicit request: Request[_], messages: Messages)
+@(heading: String, secondaryHeading: Option[String] = None)
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
+<h1 class="govuk-heading-l">@heading</h1>
 
-    <h1 class="govuk-heading-l">@messages("checkYourAnswers.heading")</h1>
-
-    @govukSummaryList(list)
+@secondaryHeading.filter(_.trim.nonEmpty).map { h2 =>
+    <h2 class="govuk-heading-m">@h2</h2>
 }

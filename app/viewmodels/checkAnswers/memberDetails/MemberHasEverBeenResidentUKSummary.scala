@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.memberDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberDoesNotHaveNinoPage
+import pages.MemberHasEverBeenResidentUKPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberDoesNotHaveNinoSummary {
+object MemberHasEverBeenResidentUKSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberDoesNotHaveNinoPage).map {
+    answers.get(MemberHasEverBeenResidentUKPage).map {
       answer =>
+        val value = if (answer) "site.yes" else "site.no"
+
         SummaryListRowViewModel(
-          key     = "memberDoesNotHaveNino.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key     = "memberHasEverBeenResidentUK.checkYourAnswersLabel",
+          value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberDoesNotHaveNinoController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberDoesNotHaveNino.change.hidden"))
+            ActionItemViewModel("site.change", MemberHasEverBeenResidentUKPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("memberHasEverBeenResidentUK.change.hidden"))
           )
         )
     }

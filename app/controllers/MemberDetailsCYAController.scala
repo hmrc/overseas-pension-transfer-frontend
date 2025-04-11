@@ -18,27 +18,34 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.NormalMode
+import pages.MemberDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.govuk.summarylist._
-import views.html.CheckYourAnswersView
+import views.html.MemberDetailsCYAView
 
-class CheckYourAnswersController @Inject() (
+class MemberDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     val controllerComponents: MessagesControllerComponents,
-    view: CheckYourAnswersView
+    view: MemberDetailsCYAView
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val list = SummaryListViewModel(
-        rows = Seq.empty
-      )
-
+      val list = SummaryListViewModel(MemberDetailsSummary.rows(request.userAnswers))
       Ok(view(list))
+  }
+
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      {
+        Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+      }
   }
 }

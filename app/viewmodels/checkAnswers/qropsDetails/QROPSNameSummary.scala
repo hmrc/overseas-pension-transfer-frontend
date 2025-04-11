@@ -14,31 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.qropsDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberNamePage
+import pages.QROPSNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberNameSummary {
+object QROPSNameSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberNamePage).map {
+    answers.get(QROPSNamePage).map {
       answer =>
-        val value = HtmlFormat.escape(answer.firstName).toString + "<br/>" + HtmlFormat.escape(answer.lastName).toString
-
         SummaryListRowViewModel(
-          key     = "memberName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
+          key     = "qropsName.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberNameController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberName.change.hidden"))
+            ActionItemViewModel("site.change", QROPSNamePage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("qropsName.change.hidden"))
           )
         )
     }

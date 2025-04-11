@@ -33,7 +33,7 @@
 
 @(form: Form[_], memberName: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("memberDateOfBirth.title"))) {
+@layout(pageTitle = title(form, messages("memberDateOfBirth.title", memberName))) {
 
 
     @formHelper(action = routes.MemberDateOfBirthController.onSubmit(mode), Symbol("autoComplete") -> "on") {

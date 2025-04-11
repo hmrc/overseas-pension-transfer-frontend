@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.memberDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberHasEverBeenResidentUKPage
-import play.api.i18n.Messages
+import pages.MemberDateOfLeavingUKPage
+import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.DateTimeFormats.dateTimeFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberHasEverBeenResidentUKSummary {
+object MemberDateOfLeavingUKSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberHasEverBeenResidentUKPage).map {
+    answers.get(MemberDateOfLeavingUKPage).map {
       answer =>
-        val value = if (answer) "site.yes" else "site.no"
+        implicit val lang: Lang = messages.lang
 
         SummaryListRowViewModel(
-          key     = "memberHasEverBeenResidentUK.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key     = "memberDateOfLeavingUK.checkYourAnswersLabel",
+          value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberHasEverBeenResidentUKController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberHasEverBeenResidentUK.change.hidden"))
+            ActionItemViewModel("site.change", MemberDateOfLeavingUKPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("memberDateOfLeavingUK.change.hidden"))
           )
         )
     }

@@ -14,29 +14,35 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberIsResidentUKPage
+import pages.QROPSSchemeManagerIsIndividualOrOrgPage
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberIsResidentUKSummary {
+object QROPSSchemeManagerIsIndividualOrOrgSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberIsResidentUKPage).map {
+    answers.get(QROPSSchemeManagerIsIndividualOrOrgPage).map {
       answer =>
-        val value = if (answer) "site.yes" else "site.no"
+        val value = ValueViewModel(
+          HtmlContent(
+            HtmlFormat.escape(messages(s"qropsSchemeManagerIsIndividualOrOrg.$answer"))
+          )
+        )
 
         SummaryListRowViewModel(
-          key     = "memberIsResidentUK.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key     = "qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel",
+          value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberIsResidentUKController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberIsResidentUK.change.hidden"))
+            ActionItemViewModel("site.change", QROPSSchemeManagerIsIndividualOrOrgPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("qropsSchemeManagerIsIndividualOrOrg.change.hidden"))
           )
         )
     }

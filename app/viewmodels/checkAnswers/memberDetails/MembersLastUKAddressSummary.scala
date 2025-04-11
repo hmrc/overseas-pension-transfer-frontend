@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.memberDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MembersCurrentAddressPage
+import pages.MembersLastUKAddressPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,19 +26,28 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MembersCurrentAddressSummary {
+object MembersLastUKAddressSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersCurrentAddressPage).map {
+    answers.get(MembersLastUKAddressPage).map {
       answer =>
-        val value = HtmlFormat.escape(answer.line1).toString + "<br/>" + HtmlFormat.escape(answer.line2).toString
+        val value = Seq(
+          Some(answer.line1),
+          Some(answer.line2),
+          answer.line3,
+          answer.line4,
+          answer.postcode
+        ).flatMap {
+          case Some(part) if !part.trim.isEmpty => Some(HtmlFormat.escape(part))
+          case _                                => None
+        }.mkString("<br>")
 
         SummaryListRowViewModel(
-          key     = "membersCurrentAddress.checkYourAnswersLabel",
+          key     = "membersLastUKAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MembersCurrentAddressController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("membersCurrentAddress.change.hidden"))
+            ActionItemViewModel("site.change", MembersLastUKAddressPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("membersLastUKAddress.change.hidden"))
           )
         )
     }

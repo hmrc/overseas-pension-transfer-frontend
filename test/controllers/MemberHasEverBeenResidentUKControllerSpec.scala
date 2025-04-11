@@ -18,11 +18,13 @@ package controllers
 
 import base.SpecBase
 import forms.MemberHasEverBeenResidentUKFormProvider
-import models.{NormalMode, PersonName}
+import models.address.MembersLastUKAddress
+import models.{CheckMode, NormalMode, PersonName, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
-import pages.MemberHasEverBeenResidentUKPage
+import pages.{MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -75,7 +77,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the Check Answers page when valid data is submitted in NormalMode" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -96,7 +98,69 @@ class MemberHasEverBeenResidentUKControllerSpec extends SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.CheckYourAnswersController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.MemberDetailsCYAController.onPageLoad().url
+      }
+    }
+
+    "must redirect to the Address Lookup page when valid data is submitted in NormalMode" in {
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+            .withFormUrlEncodedBody("value" -> "true")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+      }
+    }
+
+    "must redirect to NormalMode if changed from false to true in CheckMode" in {
+      val previousAnswers = emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
+      val application     = applicationBuilder(userAnswers = Some(previousAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.MemberHasEverBeenResidentUKController.onSubmit(CheckMode).url)
+            .withFormUrlEncodedBody("value" -> "true")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+      }
+    }
+
+    "must remove MembersLastUKAddressPage if changed from true to false in CheckMode" in {
+      val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
+      val previousAnswers = emptyUserAnswers
+        .set(MemberHasEverBeenResidentUKPage, true).success.value
+        .set(MembersLastUKAddressPage, lastUkAdd).success.value
+
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application = applicationBuilder(userAnswers = Some(previousAnswers))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.MemberHasEverBeenResidentUKController.onSubmit(CheckMode).url)
+            .withFormUrlEncodedBody("value" -> "false")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.MemberDetailsCYAController.onPageLoad().url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+
+        val updatedAnswers = captor.getValue
+        updatedAnswers.get(MembersLastUKAddressPage) mustBe None
       }
     }
 

@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.qropsDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberDateOfBirthPage
-import play.api.i18n.{Lang, Messages}
+import pages.QROPSReferencePage
+import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.DateTimeFormats.dateTimeFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberDateOfBirthSummary {
+object QROPSReferenceSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberDateOfBirthPage).map {
+    answers.get(QROPSReferencePage).map {
       answer =>
-        implicit val lang: Lang = messages.lang
-
         SummaryListRowViewModel(
-          key     = "memberDateOfBirth.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.format(dateTimeFormat())),
+          key     = "qROPSReference.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberDateOfBirthController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberDateOfBirth.change.hidden"))
+            ActionItemViewModel("site.change", QROPSReferencePage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("qROPSReference.change.hidden"))
           )
         )
     }

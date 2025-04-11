@@ -34,7 +34,7 @@ trait Page {
   protected def nextPageNormalMode(answers: UserAnswers): Call
 
   protected def nextPageCheckMode(answers: UserAnswers): Call =
-    controllers.routes.CheckYourAnswersController.onPageLoad()
+    nextPageNormalMode(answers)
 
   def nextPageRecovery(returnUrl: Option[String] = None): Call =
     controllers.routes.JourneyRecoveryController.onPageLoad(

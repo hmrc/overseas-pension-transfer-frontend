@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.MemberNinoPage
+import pages.OrganisationNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object MemberNinoSummary {
+object OrganisationNameSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberNinoPage).map {
+    answers.get(OrganisationNamePage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "memberNino.checkYourAnswersLabel",
+          key     = "organisationName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.MemberNinoController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("memberNino.change.hidden"))
+            ActionItemViewModel("site.change", OrganisationNamePage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("organisationName.change.hidden"))
           )
         )
     }

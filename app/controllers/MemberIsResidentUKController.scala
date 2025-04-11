@@ -20,8 +20,8 @@ import controllers.actions._
 import forms.MemberIsResidentUKFormProvider
 
 import javax.inject.Inject
-import models.Mode
-import pages.MemberIsResidentUKPage
+import models.{CheckMode, Mode, NormalMode}
+import pages.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MemberIsResidentUKPage, MembersLastUKAddressPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -60,11 +60,33 @@ class MemberIsResidentUKController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
-        value =>
+        value => {
+          val previousValue = request.userAnswers.get(MemberIsResidentUKPage)
+
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MemberIsResidentUKPage.nextPage(mode, updatedAnswers))
+            baseAnswers <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
+
+            // If going from false → true, remove the answers of next questions
+            updatedAnswers <- (previousValue, value) match {
+                                case (Some(false), true) =>
+                                  Future.fromTry(baseAnswers
+                                    .remove(MemberHasEverBeenResidentUKPage)
+                                    .flatMap(_.remove(MembersLastUKAddressPage))
+                                    .flatMap(_.remove(MemberDateOfLeavingUKPage)))
+                                case _                   =>
+                                  Future.successful(baseAnswers)
+                              }
+
+            _ <- sessionRepository.set(updatedAnswers)
+
+            // If going from true → false in CheckMode, switch to NormalMode to question next two questions
+            redirectMode = (mode, previousValue, value) match {
+                             case (CheckMode, Some(true), false) => NormalMode
+                             case _                              => mode
+                           }
+
+          } yield Redirect(MemberIsResidentUKPage.nextPage(redirectMode, updatedAnswers))
+        }
       )
   }
 }

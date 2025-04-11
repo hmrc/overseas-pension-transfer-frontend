@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.memberDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.QROPSReferencePage
+import pages.MemberDoesNotHaveNinoPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object QROPSReferenceSummary {
+object MemberDoesNotHaveNinoSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QROPSReferencePage).map {
+    answers.get(MemberDoesNotHaveNinoPage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "qROPSReference.checkYourAnswersLabel",
+          key     = "memberDoesNotHaveNino.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.QROPSReferenceController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("qROPSReference.change.hidden"))
+            ActionItemViewModel("site.change", MemberDoesNotHaveNinoPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("memberDoesNotHaveNino.change.hidden"))
           )
         )
     }

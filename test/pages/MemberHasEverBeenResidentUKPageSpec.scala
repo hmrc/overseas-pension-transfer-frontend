@@ -36,17 +36,17 @@ class MemberHasEverBeenResidentUKPageSpec extends SpecBase with Matchers {
         MemberHasEverBeenResidentUKPage.nextPage(
           NormalMode,
           emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
-        ) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        ) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
     "in Normal Mode" - {
 
-      "must go to Member Last UK Address when answer is 'true'" in {
+      "must go to Member Last UK Address Lookup when answer is 'true'" in {
 
         MemberHasEverBeenResidentUKPage.nextPage(
           NormalMode,
           emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
-        ) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(NormalMode)
+        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode)
       }
     }
 
@@ -54,7 +54,7 @@ class MemberHasEverBeenResidentUKPageSpec extends SpecBase with Matchers {
 
       "must go to Check Answers" in {
 
-        MemberHasEverBeenResidentUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        MemberHasEverBeenResidentUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
   }
