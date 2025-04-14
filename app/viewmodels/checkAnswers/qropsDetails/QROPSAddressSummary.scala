@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.qropsDetails
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages.QROPSSchemeManagerIsIndividualOrOrgPage
+import models.UserAnswers
+import pages.QROPSAddressPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,23 +25,19 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object QROPSSchemeManagerIsIndividualOrOrgSummary {
+object QROPSAddressSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QROPSSchemeManagerIsIndividualOrOrgPage).map {
+    answers.get(QROPSAddressPage).map {
       answer =>
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"qropsSchemeManagerIsIndividualOrOrg.$answer"))
-          )
-        )
+        val value = HtmlFormat.escape(answer.addressLine1).toString + "<br/>" + HtmlFormat.escape(answer.addressLine2).toString
 
         SummaryListRowViewModel(
-          key     = "qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel",
-          value   = value,
+          key     = "qROPSAddress.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("qropsSchemeManagerIsIndividualOrOrg.change.hidden"))
+            ActionItemViewModel("site.change", QROPSAddressPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("qROPSAddress.change.hidden"))
           )
         )
     }
