@@ -34,7 +34,7 @@ trait RadiosFluency {
     def apply(
         field: Field,
         items: Seq[RadioItem],
-        legend: Legend
+        legend: Legend = Legend()
       )(implicit messages: Messages
       ): Radios =
       apply(

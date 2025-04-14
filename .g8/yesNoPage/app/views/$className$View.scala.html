@@ -6,6 +6,9 @@
 @import views.ViewUtils.title
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import viewmodels.LegendSize.Large
+@import models.requests.DisplayRequest
+@import views.html.components.QTNumber
+
 
 
 @this(
@@ -13,10 +16,11 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("$className;format="decap"$.title"))) {
 
@@ -26,10 +30,12 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @qtNumber()
+        <h1 class="govuk-heading-l">@messages("$className;format="decap"$.heading")</h1>
+
         @govukRadios(
             RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(Text(messages("$className;format="decap"$.heading"))).asPageHeading(size = Large)
+                field = form("value")
             )
             .withHint(HintViewModel(Text(messages("radios.hint"))))
         )
