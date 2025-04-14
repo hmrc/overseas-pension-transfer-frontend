@@ -16,31 +16,30 @@
 
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSelect
-@import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Select
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.accessibleautocomplete.AccessibleAutocomplete
+@import viewmodels.govuk.all._
+@import viewmodels.LabelSize.Large
 
 @this(govukSelect: GovukSelect)
 
 @(
         form: Form[_],
         countries: Seq[SelectItem],
-        id: String = "location-autocomplete",
-        name: String = "country",
+        field: String,
         labelMsg: String = "address.country",
-        labelMsgArgs: String = ""
+        labelMsgArgs: String = "",
+        labelAsHeading: Boolean = false
 )(implicit messages: Messages)
 
-@govukSelect(
-    Select(
-        id = id,
-        name = name,
-        label = Label(
-            content = Text(messages(labelMsg, labelMsgArgs))
-        ),
-        items = countries
+@{
+    val baseLabel = LabelViewModel(Text(messages(labelMsg, labelMsgArgs)))
+    val label = if (labelAsHeading) baseLabel.asPageHeading(size = Large) else baseLabel
+
+    val selectModel = SelectViewModel(
+        field = form(field),
+        items = countries,
+        label = label
     )
     .asAccessibleAutocomplete(
         Some(
@@ -51,5 +50,5 @@
             )
         )
     )
-    .withFormField(form(name))
-)
+    govukSelect(selectModel)
+}
