@@ -24,7 +24,7 @@ import models.dtos.UserAnswersDTO
 import pages.{MemberDoesNotHaveNinoPage, MemberNinoPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier

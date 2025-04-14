@@ -60,7 +60,7 @@ class MemberHasEverBeenResidentUKController @Inject() (
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           val previousValue = request.userAnswers.get(MemberHasEverBeenResidentUKPage)
 

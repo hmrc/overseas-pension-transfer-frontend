@@ -40,13 +40,13 @@ import viewmodels.CountrySelectViewModel
 
 import scala.concurrent.Future
 
-class MembersCurrentAddressControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
 
   private val formProvider = new MembersCurrentAddressFormProvider()
+  private val formData     = MembersCurrentAddressFormData.fromDomain(membersCurrentAddress)
 
   private lazy val membersCurrentAddressRoute = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
 
-  private val validAnswer = MembersCurrentAddress("value 1", "value 2", Some("value 3"), Some("value 4"), Some("value 5"), Some("value 6"))
   private val testCountries = Seq(
     Country("GB", "United Kingdom"),
     Country("FR", "France")
@@ -60,23 +60,18 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
-      when(mockCountryService.countries).thenReturn(testCountries)
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).overrides(
+        bind[CountryService].toInstance(mockCountryService)
+      ).build()
 
-      val application = applicationBuilder(Some(emptyUserAnswers))
-        .overrides(
-          bind[CountryService].toInstance(mockCountryService)
-        )
-        .build()
+      when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
         val request                                                         = FakeRequest(GET, membersCurrentAddressRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
-        val form   = formProvider()
-        val view   = application.injector.instanceOf[MembersCurrentAddressView]
-        val request = FakeRequest(GET, membersCurrentAddressRoute)
-        val view    = application.injector.instanceOf[MembersCurrentAddressView]
+        val form = formProvider()
+        val view = application.injector.instanceOf[MembersCurrentAddressView]
 
         val result = route(application, request).value
 
@@ -91,16 +86,15 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with SpecBase with
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = userAnswersMemberNameQtNumber.set(MembersCurrentAddressPage, validAnswer).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      when(mockCountryService.countries).thenReturn(testCountries)
-
+      val userAnswers =
+        userAnswersMemberNameQtNumber.set(MembersCurrentAddressPage, membersCurrentAddress).success.value
       val application = applicationBuilder(Some(userAnswers))
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
         .build()
+
+      when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
         val request                                                         = FakeRequest(GET, membersCurrentAddressRoute)
@@ -156,14 +150,13 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
-      when(mockCountryService.countries).thenReturn(testCountries)
-
-      val application = applicationBuilder(Some(emptyUserAnswers))
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
         .build()
+
+      when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
         val request =
@@ -178,9 +171,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with SpecBase with
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
           displayRequest,
-          countrySelectViewModel,
           messages(application)
         ).toString
       }

@@ -18,8 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.MemberDoesNotHaveNinoFormProvider
-
-import javax.inject.Inject
 import models.Mode
 import pages.{MemberDoesNotHaveNinoPage, MemberNinoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import views.html.MemberDoesNotHaveNinoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDoesNotHaveNinoController @Inject() (

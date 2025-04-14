@@ -18,8 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.MemberIsResidentUKFormProvider
-
-import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import pages.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MemberIsResidentUKPage, MembersLastUKAddressPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import views.html.MemberIsResidentUKView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MemberIsResidentUKController @Inject() (
@@ -60,7 +59,7 @@ class MemberIsResidentUKController @Inject() (
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           val previousValue = request.userAnswers.get(MemberIsResidentUKPage)
 

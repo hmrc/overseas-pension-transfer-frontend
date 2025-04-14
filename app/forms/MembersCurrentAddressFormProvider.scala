@@ -49,8 +49,8 @@ object MembersCurrentAddressFormData {
 
 class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
 
-  def apply()(implicit request: DisplayRequest[_]): Form[MembersCurrentAddress] = {
-    val memberName: String = request.memberName
+  def apply()(implicit request: DisplayRequest[_]): Form[MembersCurrentAddressFormData] = {
+    val memberName = request.memberName
     Form(
       mapping(
         "addressLine1" -> text("membersCurrentAddress.error.addressLine1.required", Seq(memberName))
@@ -64,21 +64,23 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
             verifying maxLength(35, "membersCurrentAddress.error.addressLine3.length")
             verifying regexp(addressLinesRegex, "membersCurrentAddress.error.addressLine3.pattern")
         ),
-        "city"         -> optional(
+        "addressLine4" -> optional(
           Forms.text
-            verifying maxLength(35, "membersCurrentAddress.error.city.length")
-            verifying regexp(addressLinesRegex, "membersCurrentAddress.error.city.pattern")
+            verifying maxLength(35, "membersCurrentAddress.error.addressLine4.length")
+            verifying regexp(addressLinesRegex, "membersCurrentAddress.error.addressLine4.pattern")
         ),
-        "country"      -> optional(
-          Forms.text
-            verifying maxLength(35, "membersCurrentAddress.error.country.length")
-            verifying regexp(addressLinesRegex, "membersCurrentAddress.error.country.pattern")
-        ),
+        "countryCode"  -> text("membersCurrentAddress.error.countryCode.required"),
         "postcode"     -> optional(
           Forms.text
-            verifying maxLength(16, "membersCurrentAddress.error.postcode.length")
+            verifying maxLength(35, "membersCurrentAddress.error.postcode.length")
+            verifying regexp(internationalPostcodeRegex, "membersCurrentAddress.error.postcode.pattern")
+        ),
+        "poBox"        -> optional(
+          Forms.text
+            verifying maxLength(35, "membersCurrentAddress.error.poBox.length")
+            verifying regexp(poBoxRegex, "membersCurrentAddress.error.poBox.pattern")
         )
-      )(MembersCurrentAddress.apply)(MembersCurrentAddress.unapply)
+      )(MembersCurrentAddressFormData.apply)(MembersCurrentAddressFormData.unapply)
     )
   }
 }

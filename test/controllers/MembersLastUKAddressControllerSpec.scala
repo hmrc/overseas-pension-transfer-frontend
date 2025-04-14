@@ -40,6 +40,9 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
 
   private lazy val membersLastUKAddressRoute = routes.MembersLastUKAddressController.onPageLoad(NormalMode).url
 
+  private val postCode    = "AB1 2CD"
+  private val validAnswer = MembersLastUKAddress("1stLineAdd", "2ndLineAdd", Some("aTown"), Some("aCounty"), postCode)
+
   "MembersLastUKAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -61,7 +64,6 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val validAnswer = MembersLastUKAddress("1stLineAdd", Some("2ndLineAdd"), "aTown", Some("aCounty"), "AB1 1CD")
       val userAnswers = userAnswersMemberNameQtNumber.set(MembersLastUKAddressPage, validAnswer).get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -99,7 +101,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       running(application) {
         val request =
           FakeRequest(POST, membersLastUKAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("townOrCity", "aTown"), ("postcode", "AB1 1CD"))
+            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdded"), ("postcode", postCode))
 
         val result = route(application, request).value
 
@@ -151,7 +153,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       running(application) {
         val request =
           FakeRequest(POST, membersLastUKAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("townOrCity", "aTown"), ("postcode", "AB1 1CD"))
+            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdd"), ("postcode", postCode))
 
         val result = route(application, request).value
 

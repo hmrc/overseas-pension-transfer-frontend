@@ -138,7 +138,7 @@ trait AddressBase extends SpecBase {
     poBox        = None
   )
 
-   val addressFoundUserAnswers: UserAnswers = userAnswersMemberNameQtNumber.set(MembersLastUkAddressLookupPage, foundAddresses).success.value
+  val addressFoundUserAnswers: UserAnswers = userAnswersMemberNameQtNumber.set(MembersLastUkAddressLookupPage, foundAddresses).success.value
 
   val selectedAddress: FoundAddress = foundAddresses.addresses.head
 

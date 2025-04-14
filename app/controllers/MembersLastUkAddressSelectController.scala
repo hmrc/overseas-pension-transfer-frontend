@@ -19,13 +19,9 @@ package controllers
 import controllers.actions._
 import forms.MembersLastUkAddressSelectFormProvider
 import models.address.{FoundAddressSet, NoAddressFound}
-
-import javax.inject.Inject
 import models.{Mode, NormalMode}
 import pages.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
-import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -33,6 +29,7 @@ import utils.AppUtils
 import viewmodels.AddressViewModel
 import views.html.MembersLastUkAddressSelectView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MembersLastUkAddressSelectController @Inject() (

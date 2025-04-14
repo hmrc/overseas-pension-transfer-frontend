@@ -18,8 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.MemberDateOfLeavingUKFormProvider
-
-import javax.inject.Inject
 import models.Mode
 import pages.MemberDateOfLeavingUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import views.html.MemberDateOfLeavingUKView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDateOfLeavingUKController @Inject() (

@@ -22,7 +22,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.textarea.Textarea
 import viewmodels.ErrorMessageAwareness
-import viewmodels.govuk.all.LabelViewModel
 
 object textarea extends TextareaFluency
 

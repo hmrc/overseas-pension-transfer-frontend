@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import forms.MemberConfirmLastUkAddressFormProvider
 import models.{Mode, NormalMode}
-import models.address.MembersLastUKAddress
 import pages.{MembersLastUKAddressPage, MembersLastUkAddressConfirmPage, MembersLastUkAddressSelectPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
