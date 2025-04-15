@@ -34,13 +34,13 @@ object UserAnswersDTO {
     val reads: Reads[UserAnswersDTO] = (
       (__ \ "id").read[String] and
         (__ \ "data").read[JsObject] and
-        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
+        (__ \ "lastUpdated").read[Instant]
     )(UserAnswersDTO.apply _)
 
     val writes: OWrites[UserAnswersDTO] = (
       (__ \ "id").write[String] and
         (__ \ "data").write[JsObject] and
-        (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
+        (__ \ "lastUpdated").write[Instant]
     )(unlift(UserAnswersDTO.unapply))
 
     OFormat(reads, writes)
