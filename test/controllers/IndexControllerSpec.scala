@@ -18,11 +18,12 @@ package controllers
 
 import base.SpecBase
 import models.NormalMode
+import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.IndexView
 
-class IndexControllerSpec extends SpecBase {
+class IndexControllerSpec extends AnyFreeSpec with SpecBase {
 
   "Index Controller" - {
 

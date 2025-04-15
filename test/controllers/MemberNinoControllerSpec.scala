@@ -18,9 +18,10 @@ package controllers
 
 import base.SpecBase
 import forms.MemberNinoFormProvider
-import models.{NormalMode, PersonName}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MemberNinoPage
 import play.api.inject.bind
@@ -31,9 +32,8 @@ import views.html.MemberNinoView
 
 import scala.concurrent.Future
 
-class MemberNinoControllerSpec extends SpecBase with MockitoSugar {
+class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MemberNinoFormProvider()
   private val form         = formProvider()
 
@@ -42,43 +42,42 @@ class MemberNinoControllerSpec extends SpecBase with MockitoSugar {
   "MemberNino Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
         val request = FakeRequest(GET, memberNinoRoute)
-
-        val result = route(application, request).value
+        val result  = route(application, request).value
 
         val view = application.injector.instanceOf[MemberNinoView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(MemberNinoPage, "answer").success.value
+      val userAnswers = userAnswersMemberNameQtNumber.set(MemberNinoPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, memberNinoRoute)
-
-        val view = application.injector.instanceOf[MemberNinoView]
-
-        val result = route(application, request).value
+        val view    = application.injector.instanceOf[MemberNinoView]
+        val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
+          fakeDisplayRequest(request, userAnswers),
+          messages(application)
+        ).toString
       }
     }
 
     "must redirect to the members date of birth when valid data is submitted" in {
-
       val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
@@ -99,8 +98,7 @@ class MemberNinoControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
         val request =
@@ -108,24 +106,23 @@ class MemberNinoControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[MemberNinoView]
-
-        val result = route(application, request).value
+        val view      = application.injector.instanceOf[MemberNinoView]
+        val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request = FakeRequest(GET, memberNinoRoute)
-
-        val result = route(application, request).value
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
@@ -133,15 +130,13 @@ class MemberNinoControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
           FakeRequest(POST, memberNinoRoute)
             .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(application, request).value
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url

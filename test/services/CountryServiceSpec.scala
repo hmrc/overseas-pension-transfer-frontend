@@ -21,10 +21,11 @@ import models.address.Country
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Environment
+import org.scalatest.freespec.AnyFreeSpec
 
 import java.io.ByteArrayInputStream
 
-class CountryServiceSpec extends SpecBase with MockitoSugar {
+class CountryServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val countriesJsonPath = "public/countries.json"
 

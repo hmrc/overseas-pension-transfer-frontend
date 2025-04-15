@@ -19,10 +19,11 @@ package controllers
 import base.{AddressBase, SpecBase}
 import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import forms.MembersLastUkAddressLookupFormProvider
-import models.{NormalMode, PersonName}
+import models.NormalMode
 import models.address.RecordSet
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MembersLastUkAddressLookupPage
 import play.api.inject.bind
@@ -33,9 +34,8 @@ import views.html.MembersLastUkAddressLookupView
 
 import scala.concurrent.Future
 
-class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSugar with AddressBase {
+class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with AddressBase {
 
-  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MembersLastUkAddressLookupFormProvider()
   private val form         = formProvider()
 
@@ -45,7 +45,7 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
         val request = FakeRequest(GET, membersLastUkAddressLookupRoute)
@@ -55,7 +55,7 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
         val view = application.injector.instanceOf[MembersLastUkAddressLookupView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -95,7 +95,7 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
         val request =
@@ -109,7 +109,7 @@ class MembersLastUkAddressLookupControllerSpec extends SpecBase with MockitoSuga
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

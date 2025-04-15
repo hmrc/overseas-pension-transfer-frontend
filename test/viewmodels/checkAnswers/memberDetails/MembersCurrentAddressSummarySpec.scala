@@ -18,11 +18,12 @@ package viewmodels.checkAnswers.memberDetails
 
 import base.SpecBase
 import models.address._
+import org.scalatest.freespec.AnyFreeSpec
 import pages.MembersCurrentAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class MembersCurrentAddressSummarySpec extends SpecBase {
+class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
   "MembersCurrentAddress Summary" - {
     implicit val messages: Messages = stubMessages()

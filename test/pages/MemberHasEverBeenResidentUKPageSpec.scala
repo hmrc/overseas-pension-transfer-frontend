@@ -23,7 +23,7 @@ import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class MemberHasEverBeenResidentUKPageSpec extends SpecBase with Matchers {
+class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers {
 
   ".nextPage" - {
 

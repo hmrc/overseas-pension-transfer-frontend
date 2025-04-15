@@ -16,8 +16,7 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.UserAnswers
 import pages.MemberNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat

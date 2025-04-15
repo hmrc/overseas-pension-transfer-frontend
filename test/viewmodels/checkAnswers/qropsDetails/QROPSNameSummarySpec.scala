@@ -17,11 +17,12 @@
 package viewmodels.checkAnswers.qropsDetails
 
 import base.SpecBase
+import org.scalatest.freespec.AnyFreeSpec
 import pages.QROPSNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class QROPSNameSummarySpec extends SpecBase {
+class QROPSNameSummarySpec extends AnyFreeSpec with SpecBase {
 
   "QROPSName Summary" - {
     implicit val messages: Messages = stubMessages()

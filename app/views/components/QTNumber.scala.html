@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+@import models.requests.DisplayRequest
+@this()
 
-import models.UserAnswers
-import pages.MemberNamePage
-import play.api.i18n.Messages
-import queries.QtNumber
+@()(implicit request: DisplayRequest[_])
 
-trait AppUtils {
-
-  def memberFullName(userAnswers: UserAnswers): String = {
-    userAnswers.get(MemberNamePage).map(_.fullName)
-      .getOrElse("Undefined name")
-  }
-
-  def qtNumber(userAnswers: UserAnswers): String = {
-    userAnswers.get(QtNumber)
-      .getOrElse("Undefined QT Number")
-  }
-}
+<span class="govuk-caption-l">@request.qtNumber</span>

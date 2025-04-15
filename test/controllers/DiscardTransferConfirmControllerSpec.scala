@@ -28,10 +28,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.DiscardTransferConfirmView
+import org.scalatest.freespec.AnyFreeSpec
 
 import scala.concurrent.Future
 
-class DiscardTransferConfirmControllerSpec extends SpecBase with MockitoSugar {
+class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new DiscardTransferConfirmFormProvider()
   private val form         = formProvider()

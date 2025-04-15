@@ -19,9 +19,10 @@ package controllers
 import java.time.{LocalDate, ZoneOffset}
 import base.SpecBase
 import forms.MemberDateOfLeavingUKFormProvider
-import models.{NormalMode, PersonName}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MemberDateOfLeavingUKPage
 import play.api.i18n.Messages
@@ -34,11 +35,10 @@ import views.html.MemberDateOfLeavingUKView
 
 import scala.concurrent.Future
 
-class MemberDateOfLeavingUKControllerSpec extends SpecBase with MockitoSugar {
+class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   implicit private val messages: Messages = stubMessages()
 
-  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MemberDateOfLeavingUKFormProvider()
   private def form         = formProvider()
 
@@ -60,38 +60,41 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase with MockitoSugar {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val result = route(application, getRequest()).value
+        val req    = getRequest()
+        val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberDateOfLeavingUKView]
-
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(getRequest(), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(req),
+          messages(application)
+        ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = emptyUserAnswers.set(MemberDateOfLeavingUKPage, validAnswer).success.value
-
+      val userAnswers = userAnswersMemberNameQtNumber.set(MemberDateOfLeavingUKPage, validAnswer).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val view = application.injector.instanceOf[MemberDateOfLeavingUKView]
-
-        val result = route(application, getRequest()).value
+        val request = getRequest()
+        val view    = application.injector.instanceOf[MemberDateOfLeavingUKView]
+        val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), memberName.fullName, NormalMode)(getRequest(), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
@@ -111,21 +114,21 @@ class MemberDateOfLeavingUKControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
-      val request =
-        FakeRequest(POST, memberDateOfLeavingUKRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+      val request = FakeRequest(POST, memberDateOfLeavingUKRoute)
+        .withFormUrlEncodedBody(("value", "invalid value"))
 
       running(application) {
         val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[MemberDateOfLeavingUKView]
-
-        val result = route(application, request).value
+        val view      = application.injector.instanceOf[MemberDateOfLeavingUKView]
+        val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

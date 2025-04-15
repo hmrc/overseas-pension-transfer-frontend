@@ -21,6 +21,7 @@ import forms.MemberNameFormProvider
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MemberNamePage
 import play.api.inject.bind
@@ -31,7 +32,7 @@ import views.html.MemberNameView
 
 import scala.concurrent.Future
 
-class MemberNameControllerSpec extends SpecBase with MockitoSugar {
+class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new MemberNameFormProvider()
   private val form         = formProvider()

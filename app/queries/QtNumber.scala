@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package utils
+package queries
 
-import models.UserAnswers
-import pages.MemberNamePage
-import play.api.i18n.Messages
-import queries.QtNumber
+import play.api.libs.json.JsPath
 
-trait AppUtils {
-
-  def memberFullName(userAnswers: UserAnswers): String = {
-    userAnswers.get(MemberNamePage).map(_.fullName)
-      .getOrElse("Undefined name")
-  }
-
-  def qtNumber(userAnswers: UserAnswers): String = {
-    userAnswers.get(QtNumber)
-      .getOrElse("Undefined QT Number")
-  }
+case object QtNumber extends Gettable[String] with Settable[String] {
+  override def path: JsPath = JsPath \ "qtNumber"
 }

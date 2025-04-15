@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package utils
+package models.requests
 
 import models.UserAnswers
-import pages.MemberNamePage
-import play.api.i18n.Messages
-import queries.QtNumber
+import play.api.mvc.{Request, WrappedRequest}
 
-trait AppUtils {
-
-  def memberFullName(userAnswers: UserAnswers): String = {
-    userAnswers.get(MemberNamePage).map(_.fullName)
-      .getOrElse("Undefined name")
-  }
-
-  def qtNumber(userAnswers: UserAnswers): String = {
-    userAnswers.get(QtNumber)
-      .getOrElse("Undefined QT Number")
-  }
-}
+case class DisplayRequest[A](request: Request[A], userId: String, userAnswers: UserAnswers, memberName: String, qtNumber: String)
+    extends WrappedRequest[A](request)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,21 @@
 
 package controllers.actions
 
-import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.requests.{DataRequest, DisplayRequest}
 import play.api.mvc.ActionTransformer
-import repositories.SessionRepository
+import utils.AppUtils
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalActionImpl @Inject() (
-    val sessionRepository: SessionRepository
-  )(implicit val executionContext: ExecutionContext
-  ) extends DataRetrievalAction {
+class DisplayActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DisplayAction
+    with AppUtils {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
-
-    sessionRepository.get(request.userId).map {
-      OptionalDataRequest(request.request, request.userId, _)
-    }
+  override protected def transform[A](request: DataRequest[A]): Future[DisplayRequest[A]] = {
+    Future.successful(
+      DisplayRequest(request.request, request.userId, request.userAnswers, memberFullName(request.userAnswers), qtNumber(request.userAnswers))
+    )
   }
 }
 
-trait DataRetrievalAction extends ActionTransformer[IdentifierRequest, OptionalDataRequest]
+trait DisplayAction extends ActionTransformer[DataRequest, DisplayRequest]

@@ -32,7 +32,7 @@ trait InputFluency {
 
     def apply(
         field: Field,
-        label: Label
+        label: Label = Label()
       )(implicit messages: Messages
       ): Input =
       Input(

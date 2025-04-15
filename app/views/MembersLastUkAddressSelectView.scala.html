@@ -25,16 +25,21 @@
 @import views.ViewUtils
 @import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+@import views.html.components.QTNumber
+@import models.requests.DisplayRequest
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
-@(form: Form[_], memberName: String, mode: Mode, addressRadios: Seq[RadioItem], postcode: String)(implicit request: Request[_], messages: Messages)
+
+@(form: Form[_], mode: Mode, addressRadios: Seq[RadioItem], postcode: String)(implicit request: DisplayRequest[_], messages: Messages)
+@memberName = @{request.memberName}
 
 @searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 
@@ -50,6 +55,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
+        @qtNumber()
         <h1 class="govuk-heading-l">@messages("memberSelectLastUkAddress.heading", memberName)</h1>
 
         @govukRadios(
