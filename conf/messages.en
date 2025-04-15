@@ -282,3 +282,10 @@ orgIndividualName.error.lastName.pattern = The individual''s last name must only
 orgIndividualName.firstName.change.hidden = The individual''s first name
 orgIndividualName.lastName.change.hidden = The individual''s last name
 orgIndividualName.change.hidden = Contact details of an individual within the organisation
+
+qropsCountry.title = Country or territory in which QROPS was established?
+qropsCountry.heading = Country or territory in which QROPS was established?
+qropsCountry.checkYourAnswersLabel = QROPS country
+qropsCountry.error.required = Select a country
+qropsCountry.error.length = QROPSCountry must be 100 characters or less
+qropsCountry.change.hidden = QROPS country
