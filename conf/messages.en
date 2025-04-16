@@ -220,7 +220,7 @@ schemeManagersEmail.hint = For example, name@example.com.
 schemeManagersEmail.checkYourAnswersLabel = Manager email
 schemeManagersEmail.error.required = Enter the scheme manager''s email address
 schemeManagersEmail.error.length = Email address must be 254 characters or less
-schemeManagersEmail.error.format = Email address must be entered in the format name@example.com
+schemeManagersEmail.error.format = Enter an email address in the correct format like, name@example.com
 schemeManagersEmail.change.hidden = Manager email
 
 qropsName.title = What is the full name of the QROPS receiving the transfer?
