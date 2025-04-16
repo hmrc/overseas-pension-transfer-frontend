@@ -248,7 +248,7 @@ qROPSAddress.error.addressLine2.required = Enter the second line of QROPS addres
 qropsCountry.title = Country or territory in which QROPS was established?
 qropsCountry.heading = Country or territory in which QROPS was established?
 qropsCountry.checkYourAnswersLabel = QROPS country
-qropsCountry.error.required = Select a country
+qropsCountry.error.required = Enter a country or territory
 qropsCountry.error.length = QROPSCountry must be 100 characters or less
 qropsCountry.change.hidden = QROPS country
 
