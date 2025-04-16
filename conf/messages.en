@@ -214,6 +214,15 @@ schemeManagersName.error.lastName.pattern = The scheme manager'’s last name mu
 schemeManagersName.firstName.change.hidden = Scheme manager''s name
 schemeManagersName.lastName.change.hidden = Scheme manager''s name
 
+schemeManagersEmail.title = What is the scheme manager''s email address?
+schemeManagersEmail.heading = What is the scheme manager''s email address?
+schemeManagersEmail.hint = For example, name@example.com.
+schemeManagersEmail.checkYourAnswersLabel = Manager email
+schemeManagersEmail.error.required = Enter the scheme manager''s email address
+schemeManagersEmail.error.length = Email address must be 254 characters or less
+schemeManagersEmail.error.format = Email address must be entered in the format name@example.com
+schemeManagersEmail.change.hidden = Manager email
+
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
 qropsName.checkYourAnswersLabel = QROPS full name
@@ -229,6 +238,19 @@ qropsReference.checkYourAnswersLabel = QROPS reference
 qropsReference.error.required = Enter the QROPS Reference
 qropsReference.error.invalid = Enter the QROPS reference in a valid format
 qropsReference.change.hidden = QROPS reference
+
+qROPSAddress.title = Address of the QROPS
+qROPSAddress.heading = Address of the QROPS
+qROPSAddress.checkYourAnswersLabel = QROPSAddress
+qROPSAddress.error.addressLine1.required = Enter the first line of QROPS address
+qROPSAddress.error.addressLine2.required = Enter the second line of QROPS address
+
+qropsCountry.title = Country or territory in which QROPS was established?
+qropsCountry.heading = Country or territory in which QROPS was established?
+qropsCountry.checkYourAnswersLabel = QROPS country
+qropsCountry.error.required = Select a country
+qropsCountry.error.length = QROPSCountry must be 100 characters or less
+qropsCountry.change.hidden = QROPS country
 
 qropsSchemeManagerIsIndividualOrOrg.title = Is the scheme manager an individual or organisation?
 qropsSchemeManagerIsIndividualOrOrg.heading = Is the scheme manager an individual or organisation?
@@ -258,9 +280,3 @@ orgIndividualName.error.lastName.pattern = The individual''s last name must only
 orgIndividualName.firstName.change.hidden = The individual''s first name
 orgIndividualName.lastName.change.hidden = The individual''s last name
 orgIndividualName.change.hidden = Contact details of an individual within the organisation
-
-qROPSAddress.title = Address of the QROPS
-qROPSAddress.heading = Address of the QROPS
-qROPSAddress.checkYourAnswersLabel = QROPSAddress
-qROPSAddress.error.addressLine1.required = Enter the first line of QROPS address
-qROPSAddress.error.addressLine2.required = Enter the second line of QROPS address
