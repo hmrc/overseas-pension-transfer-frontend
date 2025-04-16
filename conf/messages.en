@@ -223,6 +223,15 @@ schemeManagersEmail.error.length = Email address must be 254 characters or less
 schemeManagersEmail.error.format = Enter an email address in the correct format like, name@example.com
 schemeManagersEmail.change.hidden = Manager email
 
+schemeManagersContact.title = What is the scheme manager''s telephone number?
+schemeManagersContact.heading = What is the scheme manager''s telephone number?
+schemeManagersContact.hint = All numbers should include the area, dialling or country code for example, +441234567890.
+schemeManagersContact.checkYourAnswersLabel = Manager telephone number
+schemeManagersContact.error.required = Enter the scheme manager''s telephone number
+schemeManagersContact.error.length = Telephone number must be 35 characters or less
+schemeManagersContact.error.pattern = Telephone number must only include numbers or a + at the beginning
+schemeManagersContact.change.hidden = Manager telephone number
+
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
 qropsName.checkYourAnswersLabel = QROPS full name
