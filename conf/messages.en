@@ -187,6 +187,8 @@ memberConfirmLastUkAddress.paragraph = You can also <a href="{0}" class="govuk-l
 
 membersLastUKAddress.title = What was member''s last principal residential address in the UK?
 membersLastUKAddress.heading = What was {0}''s last principal residential address in the UK?
+membersLastUKAddress.by.postcode.hint = You can also find the address by {0}.
+membersLastUKAddress.by.postcode.link.text = searching the postcode
 membersLastUKAddress.postcode = Postcode
 membersLastUKAddress.checkYourAnswersLabel = Last UK address
 membersLastUKAddress.error.postcode.length = Postcode must be 16 characters or less
