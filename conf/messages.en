@@ -187,6 +187,8 @@ memberConfirmLastUkAddress.paragraph = You can also <a href="{0}" class="govuk-l
 
 membersLastUKAddress.title = What was member''s last principal residential address in the UK?
 membersLastUKAddress.heading = What was {0}''s last principal residential address in the UK?
+membersLastUKAddress.by.postcode.hint = You can also find the address by {0}.
+membersLastUKAddress.by.postcode.link.text = searching the postcode
 membersLastUKAddress.postcode = Postcode
 membersLastUKAddress.checkYourAnswersLabel = Last UK address
 membersLastUKAddress.error.postcode.length = Postcode must be 16 characters or less
@@ -222,6 +224,15 @@ schemeManagersEmail.error.required = Enter the scheme manager''s email address
 schemeManagersEmail.error.length = Email address must be 254 characters or less
 schemeManagersEmail.error.format = Enter an email address in the correct format like, name@example.com
 schemeManagersEmail.change.hidden = Manager email
+
+schemeManagersContact.title = What is the scheme manager''s telephone number?
+schemeManagersContact.heading = What is the scheme manager''s telephone number?
+schemeManagersContact.hint = All numbers should include the area, dialling or country code for example, +441234567890.
+schemeManagersContact.checkYourAnswersLabel = Manager telephone number
+schemeManagersContact.error.required = Enter the scheme manager''s telephone number
+schemeManagersContact.error.length = Telephone number must be 35 characters or less
+schemeManagersContact.error.pattern = Telephone number must only include numbers or a + at the beginning
+schemeManagersContact.change.hidden = Manager telephone number
 
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
