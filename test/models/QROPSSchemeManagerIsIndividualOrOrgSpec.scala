@@ -24,35 +24,35 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class QropsSchemeManagerIsIndividualOrOrgSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class QROPSSchemeManagerIsIndividualOrOrgSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   "QropsSchemeManagerIsIndividualOrOrg" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(QropsSchemeManagerIsIndividualOrOrg.values.toSeq)
+      val gen = Gen.oneOf(QROPSSchemeManagerIsIndividualOrOrg.values.toSeq)
 
       forAll(gen) {
         qropsSchemeManagerIsIndividualOrOrg =>
           JsString(qropsSchemeManagerIsIndividualOrOrg.toString).validate[
-            QropsSchemeManagerIsIndividualOrOrg
+            QROPSSchemeManagerIsIndividualOrOrg
           ].asOpt.value mustEqual qropsSchemeManagerIsIndividualOrOrg
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!QropsSchemeManagerIsIndividualOrOrg.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!QROPSSchemeManagerIsIndividualOrOrg.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[QropsSchemeManagerIsIndividualOrOrg] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[QROPSSchemeManagerIsIndividualOrOrg] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(QropsSchemeManagerIsIndividualOrOrg.values.toSeq)
+      val gen = Gen.oneOf(QROPSSchemeManagerIsIndividualOrOrg.values.toSeq)
 
       forAll(gen) {
         qropsSchemeManagerIsIndividualOrOrg =>

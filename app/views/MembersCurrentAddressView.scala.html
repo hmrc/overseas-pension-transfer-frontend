@@ -52,46 +52,46 @@
         @govukInput(
             InputViewModel(
                 field = form("addressLine1"),
-                label = LabelViewModel(Text(messages("membersCurrentAddress.addressLine1")))
+                label = LabelViewModel(Text(messages("common.addressInput.addressLine1")))
             )
-            .withWidth(OneHalf)
+            .withWidth(Fixed20)
         )
 
         @govukInput(
             InputViewModel(
                 field = form("addressLine2"),
-                label = LabelViewModel(Text(messages("membersCurrentAddress.addressLine2")))
+                label = LabelViewModel(Text(messages("common.addressInput.addressLine2")))
             )
-            .withWidth(OneHalf)
+            .withWidth(Fixed20)
         )
 
         @govukInput(
             InputViewModel(
                 field = form("addressLine3"),
-                label = LabelViewModel(Text(messages("membersCurrentAddress.addressLine3")))
+                label = LabelViewModel(Text(messages("common.addressInput.addressLine3")))
             )
-            .withWidth(OneHalf)
+            .withWidth(Fixed20)
         )
 
         @govukInput(
             InputViewModel(
                 field = form("addressLine4"),
-                label = LabelViewModel(Text(messages("membersCurrentAddress.addressLine4")))
+                label = LabelViewModel(Text(messages("common.addressInput.addressLine4")))
             )
-            .withWidth(OneHalf)
+            .withWidth(Fixed20)
         )
 
         @inputCountry(
             form,
             field = "countryCode",
-            labelMsg = "membersCurrentAddress.countryCode",
+            labelMsg = "common.addressInput.countryCode",
             countries = countrySelectViewModel.items
         )
 
         @govukInput(
             InputViewModel(
                 field = form("postcode"),
-                label = LabelViewModel(Text(messages("membersCurrentAddress.postcode")))
+                label = LabelViewModel(Text(messages("common.addressInput.postcode")))
             )
             .withWidth(OneQuarter)
         )
@@ -99,7 +99,7 @@
         @govukInput(
             InputViewModel(
                 field = form("poBox"),
-                label = LabelViewModel(Text(messages("membersCurrentAddress.poBox")))
+                label = LabelViewModel(Text(messages("common.addressInput.poBox")))
             )
             .withWidth(OneQuarter)
         )

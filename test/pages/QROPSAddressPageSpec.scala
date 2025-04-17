@@ -17,23 +17,30 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+class QROPSAddressPageSpec extends AnyFreeSpec with Matchers {
 
-case object QROPSNamePage extends QuestionPage[String] {
+  ".nextPage" - {
 
-  override def path: JsPath = JsPath \ toString
+    val emptyAnswers = UserAnswers("id")
 
-  override def toString: String = "qropsName"
+    "in Normal Mode" - {
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+      "must go to Index" in {
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.QROPSDetailsCYAController.onPageLoad()
+        QROPSAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+      }
+    }
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.QROPSNameController.onPageLoad(CheckMode)
+    "in Check Mode" - {
+
+      "must go to Check Answers" in {
+
+        QROPSAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
+      }
+    }
+  }
 }
