@@ -78,7 +78,7 @@ common.addressInput.error.addressLine4.pattern = Address line 4 must only includ
 common.addressInput.error.addressLine5.pattern = Address line 5 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 common.addressInput.error.postcode.pattern = Postcode must only include letters, numbers or spaces
 common.addressInput.error.poBox.pattern = PO Box must only include letters, numbers or spaces
-common.addressInput.error.countryCode.required = Select a country
+common.addressInput.error.countryCode.required = Enter a country
 
 common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
