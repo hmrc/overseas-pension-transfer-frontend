@@ -29,9 +29,9 @@ class SchemeManagersEmailPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Scheme manager contact" in {
 
-        SchemeManagersEmailPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        SchemeManagersEmailPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersContactController.onPageLoad(NormalMode)
       }
     }
 

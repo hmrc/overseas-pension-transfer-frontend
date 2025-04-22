@@ -29,9 +29,10 @@ class OrgIndividualNamePageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Scheme manager address page" in {
 
-        OrgIndividualNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        OrgIndividualNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersEmailController.onPageLoad(NormalMode)
+        // routes.SchemeManagersAddressController.onPageLoad(NormalMode) TODO should be this when address page is ready
       }
     }
 

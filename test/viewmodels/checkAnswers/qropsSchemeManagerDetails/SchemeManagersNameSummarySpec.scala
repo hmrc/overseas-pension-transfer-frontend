@@ -17,22 +17,23 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
-import pages.OrganisationNamePage
+import models.SchemeManagersName
+import pages.SchemeManagersNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class OrganisationNameSummarySpec extends SpecBase {
+class SchemeManagersNameSummarySpec extends SpecBase {
 
-  "Organisation name Summary" - {
+  "Scheme manager's name Summary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when OrganisationNamePage has a value" in {
-      val answers = emptyUserAnswers.set(OrganisationNamePage, "Organisation Sample Name").success.value
-      val result  = OrganisationNameSummary.row(answers)
+    "must return a SummaryListRow when SchemeManagersNamePage has a value" in {
+      val answers = emptyUserAnswers.set(SchemeManagersNamePage, SchemeManagersName("FirstName", "LastName")).success.value
+      val result  = SchemeManagersNameSummary.row(answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("organisationName.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("Organisation Sample Name")
+      result.get.key.content.asHtml.body must include("schemeManagersName.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include("FirstName LastName")
     }
   }
 }

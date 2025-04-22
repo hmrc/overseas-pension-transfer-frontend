@@ -18,11 +18,14 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import models.NormalMode
+import pages.SchemeManagerDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
 import viewmodels.govuk.summarylist._
-import views.html.QROPSManagerDetailsCYAView
+import views.html.SchemeManagerDetailsCYAView
 
 class SchemeManagerDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -35,10 +38,15 @@ class SchemeManagerDetailsCYAController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val list = SummaryListViewModel(
-        rows = Seq.empty
-      )
+      val list = SummaryListViewModel(SchemeManagerDetailsSummary.rows(request.userAnswers))
 
       Ok(view(list))
+  }
+
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      {
+        Redirect(SchemeManagerDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+      }
   }
 }

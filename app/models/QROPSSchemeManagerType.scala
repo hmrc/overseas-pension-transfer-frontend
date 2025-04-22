@@ -20,14 +20,14 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait QROPSSchemeManagerIsIndividualOrOrg
+sealed trait QROPSSchemeManagerType
 
-object QROPSSchemeManagerIsIndividualOrOrg extends Enumerable.Implicits {
+object QROPSSchemeManagerType extends Enumerable.Implicits {
 
-  case object Individual   extends WithName("individual") with QROPSSchemeManagerIsIndividualOrOrg
-  case object Organisation extends WithName("organisation") with QROPSSchemeManagerIsIndividualOrOrg
+  case object Individual   extends WithName("individual") with QROPSSchemeManagerType
+  case object Organisation extends WithName("organisation") with QROPSSchemeManagerType
 
-  val values: Seq[QROPSSchemeManagerIsIndividualOrOrg] = Seq(
+  val values: Seq[QROPSSchemeManagerType] = Seq(
     Individual,
     Organisation
   )
@@ -35,12 +35,12 @@ object QROPSSchemeManagerIsIndividualOrOrg extends Enumerable.Implicits {
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
     case (value, index) =>
       RadioItem(
-        content = Text(messages(s"qropsSchemeManagerIsIndividualOrOrg.${value.toString}")),
+        content = Text(messages(s"qropsSchemeManagerType.${value.toString}")),
         value   = Some(value.toString),
         id      = Some(s"value_$index")
       )
   }
 
-  implicit val enumerable: Enumerable[QROPSSchemeManagerIsIndividualOrOrg] =
+  implicit val enumerable: Enumerable[QROPSSchemeManagerType] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

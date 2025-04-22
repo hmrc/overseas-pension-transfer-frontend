@@ -29,9 +29,9 @@ class OrganisationNamePageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Organisation individual name page" in {
 
-        OrganisationNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        OrganisationNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.OrgIndividualNameController.onPageLoad(NormalMode)
       }
     }
 
