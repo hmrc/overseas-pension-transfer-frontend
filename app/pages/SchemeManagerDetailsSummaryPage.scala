@@ -21,7 +21,7 @@ import models.{PersonName, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QROPSManagerDetailsSummaryPage extends QuestionPage[PersonName] {
+case object SchemeManagerDetailsSummaryPage extends QuestionPage[PersonName] {
 
   override def path: JsPath = JsPath \ toString
 

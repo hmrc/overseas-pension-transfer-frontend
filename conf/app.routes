@@ -17,7 +17,7 @@ POST       /member-details/check-your-answers                        controllers
 
 GET        /qrops-details/check-your-answers                         controllers.QROPSDetailsCYAController.onPageLoad()
 
-GET        /qrops-manager-details/check-your-answers                 controllers.QROPSManagerDetailsCYAController.onPageLoad()
+GET        /qrops-manager-details/check-your-answers                 controllers.SchemeManagerDetailsCYAController.onPageLoad()
 
 GET        /discard-transfer-confirm                                 controllers.DiscardTransferConfirmController.onPageLoad()
 POST       /discard-transfer-confirm                                 controllers.DiscardTransferConfirmController.onSubmit()

@@ -39,7 +39,7 @@ class SchemeManagersEmailPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        SchemeManagersEmailPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.QROPSManagerDetailsCYAController.onPageLoad()
+        SchemeManagersEmailPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
   }

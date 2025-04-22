@@ -39,7 +39,7 @@ class QROPSSchemeManagerIsIndividualOrOrgPageSpec extends AnyFreeSpec with Match
 
       "must go to Check Answers" in {
 
-        QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.QROPSManagerDetailsCYAController.onPageLoad()
+        QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
   }

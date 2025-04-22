@@ -39,7 +39,7 @@ class OrgIndividualNamePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        OrgIndividualNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.QROPSManagerDetailsCYAController.onPageLoad()
+        OrgIndividualNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
   }

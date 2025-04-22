@@ -31,7 +31,7 @@ case object OrganisationNamePage extends QuestionPage[String] {
     routes.IndexController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.QROPSManagerDetailsCYAController.onPageLoad()
+    routes.SchemeManagerDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
     routes.OrganisationNameController.onPageLoad(CheckMode)

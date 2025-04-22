@@ -24,13 +24,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.govuk.summarylist._
 import views.html.QROPSManagerDetailsCYAView
 
-class QROPSManagerDetailsCYAController @Inject() (
+class SchemeManagerDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSManagerDetailsCYAView
+    view: SchemeManagerDetailsCYAView
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
