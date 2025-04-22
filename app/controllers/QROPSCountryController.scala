@@ -21,6 +21,7 @@ import forms.QROPSCountryFormProvider
 
 import javax.inject.Inject
 import models.Mode
+import models.address.Country
 import pages.QROPSCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,8 +51,8 @@ class QROPSCountryController @Inject() (
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(QROPSCountryPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+        case None          => form
+        case Some(country) => form.fill(country.code)
       }
 
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
@@ -65,11 +66,26 @@ class QROPSCountryController @Inject() (
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
           Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
         },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
+        countryCode => {
+          val maybeCountry: Option[Country] =
+            countryService.find(countryCode)
+          maybeCountry match {
+            case None          =>
+              Future.successful(
+                Redirect(
+                  QROPSCountryPage.nextPageRecovery(
+                    Some(QROPSCountryPage.recoveryModeReturnUrl)
+                  )
+                )
+              )
+            case Some(country) =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
+          }
+        }
       )
   }
+
 }
