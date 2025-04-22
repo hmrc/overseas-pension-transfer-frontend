@@ -41,7 +41,7 @@ class MemberIsResidentUKController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberIsResidentUKView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 

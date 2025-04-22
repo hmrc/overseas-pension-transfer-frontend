@@ -41,7 +41,7 @@ class MemberDoesNotHaveNinoController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberDoesNotHaveNinoView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 

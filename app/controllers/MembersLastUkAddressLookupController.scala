@@ -46,7 +46,7 @@ class MembersLastUkAddressLookupController @Inject() (
     val addressLookupConnector: AddressLookupConnector,
     view: MembersLastUkAddressLookupView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   val form: Form[String] = formProvider()
 

@@ -47,7 +47,7 @@ class MembersCurrentAddressController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MembersCurrentAddressView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>

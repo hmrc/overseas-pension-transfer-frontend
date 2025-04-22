@@ -22,7 +22,7 @@ import utils.AppUtils
 import scala.concurrent.{ExecutionContext, Future}
 
 class FakeDisplayAction()
-    extends DisplayAction with AppUtils {
+    extends DisplayAction {
 
   override protected def transform[A](request: DataRequest[A]): Future[DisplayRequest[A]] = {
     Future.successful(DisplayRequest(

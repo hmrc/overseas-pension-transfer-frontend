@@ -42,7 +42,7 @@ class MemberHasEverBeenResidentUKController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberHasEverBeenResidentUKView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 

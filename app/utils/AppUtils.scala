@@ -25,11 +25,11 @@ trait AppUtils {
 
   def memberFullName(userAnswers: UserAnswers): String = {
     userAnswers.get(MemberNamePage).map(_.fullName)
-      .getOrElse("Undefined name")
+      .getOrElse("Undefined Undefined")
   }
 
   def qtNumber(userAnswers: UserAnswers): String = {
     userAnswers.get(QtNumber)
-      .getOrElse("Undefined QT Number")
+      .getOrElse("Undefined")
   }
 }

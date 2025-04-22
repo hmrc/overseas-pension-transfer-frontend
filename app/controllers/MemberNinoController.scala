@@ -47,7 +47,7 @@ class MemberNinoController @Inject() (
     view: MemberNinoView,
     userAnswersConnector: UserAnswersConnector
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   val form = formProvider()
 

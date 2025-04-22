@@ -41,7 +41,7 @@ class MemberDateOfBirthController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberDateOfBirthView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
