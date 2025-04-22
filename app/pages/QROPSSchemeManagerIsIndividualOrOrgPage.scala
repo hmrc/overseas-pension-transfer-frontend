@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, QROPSSchemeManagerIsIndividualOrOrg, UserAnswers}
+import models.{CheckMode, NormalMode, QROPSSchemeManagerIsIndividualOrOrg, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,7 +28,11 @@ case object QROPSSchemeManagerIsIndividualOrOrgPage extends QuestionPage[QROPSSc
   override def toString: String = "qropsSchemeManagerIsIndividualOrOrg"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    answers.get(QROPSSchemeManagerIsIndividualOrOrgPage) match {
+      case Some(QROPSSchemeManagerIsIndividualOrOrg.Individual)   => routes.OrgIndividualNameController.onPageLoad(NormalMode)
+      case Some(QROPSSchemeManagerIsIndividualOrOrg.Organisation) => routes.OrganisationNameController.onPageLoad(NormalMode)
+      case _                                                      => routes.JourneyRecoveryController.onPageLoad()
+    }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.SchemeManagerDetailsCYAController.onPageLoad()

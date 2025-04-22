@@ -28,7 +28,7 @@ case object SchemeManagersContactPage extends QuestionPage[String] {
   override def toString: String = "schemeManagersContact"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.SchemeManagerDetailsCYAController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.SchemeManagerDetailsCYAController.onPageLoad()

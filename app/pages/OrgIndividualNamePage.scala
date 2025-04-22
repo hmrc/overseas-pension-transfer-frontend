@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, PersonName, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,7 +28,7 @@ case object OrgIndividualNamePage extends QuestionPage[PersonName] {
   override def toString: String = "orgIndividualName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.SchemeManagersEmailController.onPageLoad(NormalMode) // Todo change to SchemeManagerAddress when ready
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.SchemeManagerDetailsCYAController.onPageLoad()

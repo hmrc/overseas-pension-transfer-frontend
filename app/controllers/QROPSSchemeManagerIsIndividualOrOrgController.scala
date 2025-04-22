@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.QROPSSchemeManagerIsIndividualOrOrgFormProvider
 
 import javax.inject.Inject
-import models.Mode
+import models.{CheckMode, Mode, NormalMode}
 import pages.QROPSSchemeManagerIsIndividualOrOrgPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -59,11 +59,13 @@ class QROPSSchemeManagerIsIndividualOrOrgController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
+        value => {
+          val previousValue = request.userAnswers.get(QROPSSchemeManagerIsIndividualOrOrgPage)
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerIsIndividualOrOrgPage, value))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(mode, updatedAnswers))
+        }
       )
   }
 }
