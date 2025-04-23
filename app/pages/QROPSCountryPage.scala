@@ -18,7 +18,7 @@ package pages
 
 import controllers.routes
 import models.address.Country
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -37,5 +37,5 @@ case object QROPSCountryPage extends QuestionPage[Country] {
   final def changeLink(answers: UserAnswers): Call =
     routes.QROPSCountryController.onPageLoad(CheckMode)
 
-  val recoveryModeReturnUrl: String = routes.QROPSCountryController.onPageLoad().url
+  val recoveryModeReturnUrl: String = routes.QROPSCountryController.onPageLoad(NormalMode).url
 }

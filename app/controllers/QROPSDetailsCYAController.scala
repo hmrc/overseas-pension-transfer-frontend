@@ -44,7 +44,7 @@ class QROPSDetailsCYAController @Inject() (
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent]   = (identify andThen getData andThen requireData) {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       {
         Redirect(QROPSDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
