@@ -32,7 +32,7 @@ import views.html.QROPSNameView
 
 import scala.concurrent.Future
 
-class QropsNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new QROPSNameFormProvider()
   private val form         = formProvider()
@@ -43,7 +43,7 @@ class QropsNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request = FakeRequest(GET, qropsNameRoute)
@@ -53,13 +53,13 @@ class QropsNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val view = application.injector.instanceOf[QROPSNameView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(QROPSNamePage, "answer").success.value
+      val userAnswers = userAnswersQtNumber.set(QROPSNamePage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +71,7 @@ class QropsNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -100,7 +100,7 @@ class QropsNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
@@ -114,7 +114,7 @@ class QropsNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

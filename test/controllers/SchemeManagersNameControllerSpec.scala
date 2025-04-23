@@ -40,13 +40,13 @@ class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private lazy val schemeManagersNameRoute = routes.SchemeManagersNameController.onPageLoad(NormalMode).url
 
   private val validAnswer = SchemeManagersName("value 1", "value 2")
-  private val userAnswers = emptyUserAnswers.set(SchemeManagersNamePage, validAnswer).success.value
+  private val userAnswers = userAnswersQtNumber.set(SchemeManagersNamePage, validAnswer).success.value
 
   "SchemeManagersName Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request = FakeRequest(GET, schemeManagersNameRoute)
@@ -56,7 +56,7 @@ class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -72,7 +72,10 @@ class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(SchemeManagersName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(SchemeManagersName("value 1", "value 2")), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -103,7 +106,7 @@ class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
@@ -117,7 +120,7 @@ class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

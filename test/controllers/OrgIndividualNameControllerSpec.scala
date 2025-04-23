@@ -40,13 +40,13 @@ class OrgIndividualNameControllerSpec extends AnyFreeSpec with SpecBase with Moc
   private lazy val orgIndNameRoute = routes.OrgIndividualNameController.onPageLoad(NormalMode).url
 
   private val validAnswer = PersonName("value 1", "value 2")
-  private val userAnswers = emptyUserAnswers.set(OrgIndividualNamePage, validAnswer).success.value
+  private val userAnswers = userAnswersQtNumber.set(OrgIndividualNamePage, validAnswer).success.value
 
   "MemberName Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request = FakeRequest(GET, orgIndNameRoute)
@@ -56,7 +56,7 @@ class OrgIndividualNameControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -72,7 +72,10 @@ class OrgIndividualNameControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -103,7 +106,7 @@ class OrgIndividualNameControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
@@ -117,7 +120,7 @@ class OrgIndividualNameControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

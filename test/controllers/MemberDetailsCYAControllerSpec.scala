@@ -23,13 +23,13 @@ import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 import views.html.MemberDetailsCYAView
 
-class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency {
+class MemberDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency {
 
   "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.MemberDetailsCYAController.onPageLoad().url)
@@ -40,7 +40,7 @@ class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with Summ
         val list = SummaryListViewModel(Seq.empty)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(list)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
