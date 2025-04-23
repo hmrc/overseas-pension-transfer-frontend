@@ -22,6 +22,7 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.AddressViewModel
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
@@ -29,19 +30,8 @@ object MembersCurrentAddressSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersCurrentAddressPage).map {
-      answer =>
-        val value = Seq(
-          Some(answer.line1),
-          Some(answer.line2),
-          answer.line3,
-          answer.line4,
-          Some(answer.country.toString),
-          answer.postcode,
-          answer.poBox
-        ).flatMap {
-          case Some(part) if !part.trim.isEmpty => Some(HtmlFormat.escape(part))
-          case _                                => None
-        }.mkString("<br>")
+      address =>
+        val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
 
         SummaryListRowViewModel(
           key     = "membersCurrentAddress.checkYourAnswersLabel",
