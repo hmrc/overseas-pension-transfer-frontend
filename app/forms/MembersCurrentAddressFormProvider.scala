@@ -83,4 +83,4 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
       )(MembersCurrentAddressFormData.apply)(MembersCurrentAddressFormData.unapply)
     )
   }
-}
+

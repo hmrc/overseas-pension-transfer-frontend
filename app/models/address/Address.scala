@@ -42,6 +42,9 @@ object Address {
       case "MembersCurrentAddress" =>
         MembersCurrentAddress.reads.widen[Address]
 
+      case "QROPSAddress" =>
+        QROPSAddress.reads.widen[Address]
+
       case other =>
         Reads(_ => JsError(s"Unknown Address type: $other"))
     }
@@ -58,6 +61,10 @@ object Address {
     case a: MembersCurrentAddress =>
       MembersCurrentAddress.writes.writes(a).as[JsObject] +
         ("type" -> JsString("MembersCurrentAddress"))
+
+    case a: QROPSAddress =>
+      QROPSAddress.writes.writes(a).as[JsObject] +
+        ("type" -> JsString("QROPSAddress"))
   }
 
   implicit val format: OFormat[Address] = OFormat(reads, writes)
@@ -213,6 +220,59 @@ object MembersCurrentAddress {
       country      = address.country,
       postcode     = address.postcode,
       poBox        = address.poBox
+    )
+  }
+}
+
+case class QROPSAddress(
+    addressLine1: String,
+    addressLine2: String,
+    addressLine3: Option[String],
+    addressLine4: Option[String],
+    addressLine5: Option[String],
+    country: Country
+  ) extends Address {
+  val line1: String                     = addressLine1
+  val line2: String                     = addressLine2
+  val line3: Option[String]             = addressLine3
+  val line4: Option[String]             = addressLine4
+  val countryCode: Country              = country
+  val poBox: Option[String]             = None
+  override val postcode: Option[String] = None
+}
+
+object QROPSAddress {
+
+  implicit val reads: Reads[QROPSAddress] = (
+    (__ \ "line1").read[String] and
+      (__ \ "line2").read[String] and
+      (__ \ "line3").readNullable[String] and
+      (__ \ "line4").readNullable[String] and
+      (__ \ "line5").readNullable[String] and
+      (__ \ "country").read[Country]
+  )(QROPSAddress.apply _)
+
+  implicit val writes: OWrites[QROPSAddress] = OWrites[QROPSAddress] { address =>
+    Json.obj(
+      "line1"   -> address.line1,
+      "line2"   -> address.line2,
+      "line3"   -> address.line3,
+      "line4"   -> address.line4,
+      "line5"   -> address.addressLine5,
+      "country" -> address.country
+    )
+  }
+
+  implicit val format: OFormat[QROPSAddress] = OFormat(reads, writes)
+
+  def fromAddress(address: Address): QROPSAddress = {
+    QROPSAddress(
+      addressLine1 = address.line1,
+      addressLine2 = address.line2,
+      addressLine3 = address.line3,
+      addressLine4 = address.line4,
+      addressLine5 = None,
+      country      = address.country
     )
   }
 }

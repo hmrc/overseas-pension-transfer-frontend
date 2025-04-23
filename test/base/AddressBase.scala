@@ -137,6 +137,15 @@ trait AddressBase extends SpecBase {
     country      = Countries.UK,
     poBox        = None
   )
+  
+    val qropsAddress: QROPSAddress = QROPSAddress(
+    addressLine1 = "2 Other Place",
+    addressLine2 = "Some District",
+    addressLine3 = None,
+    addressLine4 = None,
+    addressLine5 = None,
+    country      = Countries.UK
+  )
 
   val addressFoundUserAnswers: UserAnswers = userAnswersMemberNameQtNumber.set(MembersLastUkAddressLookupPage, foundAddresses).success.value
 

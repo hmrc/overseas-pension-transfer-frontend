@@ -17,22 +17,22 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, QROPSSchemeManagerIsIndividualOrOrg, UserAnswers}
+import models.{CheckMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QROPSSchemeManagerIsIndividualOrOrgPage extends QuestionPage[QROPSSchemeManagerIsIndividualOrOrg] {
+case object QROPSCountryPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "qropsSchemeManagerIsIndividualOrOrg"
+  override def toString: String = "qROPSCountry"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.QROPSManagerDetailsCYAController.onPageLoad()
+    routes.QROPSDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(CheckMode)
+    routes.QROPSCountryController.onPageLoad(CheckMode)
 }

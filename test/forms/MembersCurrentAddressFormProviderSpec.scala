@@ -30,8 +30,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
 
     val fieldName   = "addressLine1"
     val requiredKey = "membersCurrentAddress.error.addressLine1.required"
-    val lengthKey   = "membersCurrentAddress.error.addressLine1.length"
-    val patternKey  = "membersCurrentAddress.error.addressLine1.pattern"
+    val lengthKey   = "common.addressInput.error.addressLine1.length"
+    val patternKey  = "common.addressInput.error.addressLine1.pattern"
     val maxLength   = 35
 
     behave like fieldThatBindsValidData(
@@ -65,8 +65,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
 
     val fieldName   = "addressLine2"
     val requiredKey = "membersCurrentAddress.error.addressLine2.required"
-    val lengthKey   = "membersCurrentAddress.error.addressLine2.length"
-    val patternKey  = "membersCurrentAddress.error.addressLine2.pattern"
+    val lengthKey   = "common.addressInput.error.addressLine2.length"
+    val patternKey  = "common.addressInput.error.addressLine2.pattern"
     val maxLength   = 35
 
     behave like fieldThatBindsValidData(
@@ -99,8 +99,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
   ".addressLine3" - {
 
     val fieldName  = "addressLine3"
-    val lengthKey  = "membersCurrentAddress.error.addressLine3.length"
-    val patternKey = "membersCurrentAddress.error.addressLine3.pattern"
+    val lengthKey  = "common.addressInput.error.addressLine3.length"
+    val patternKey = "common.addressInput.error.addressLine3.pattern"
     val maxLength  = 35
 
     behave like fieldThatBindsValidData(
@@ -132,8 +132,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
   "addressLine4" - {
 
     val fieldName  = "addressLine4"
-    val lengthKey  = "membersCurrentAddress.error.addressLine4.length"
-    val patternKey = "membersCurrentAddress.error.addressLine4.pattern"
+    val lengthKey  = "common.addressInput.error.addressLine4.length"
+    val patternKey = "common.addressInput.error.addressLine4.pattern"
     val maxLength  = 35
 
     behave like fieldThatBindsValidData(
@@ -165,7 +165,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
   "countryCode" - {
 
     val fieldName   = "countryCode"
-    val requiredKey = "membersCurrentAddress.error.countryCode.required"
+    val requiredKey = "common.addressInput.error.countryCode.required"
 
     behave like mandatoryField(
       form,
@@ -177,8 +177,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
   "postcode" - {
 
     val fieldName  = "postcode"
-    val lengthKey  = "membersCurrentAddress.error.postcode.length"
-    val patternKey = "membersCurrentAddress.error.postcode.pattern"
+    val lengthKey  = "common.addressInput.error.postcode.length"
+    val patternKey = "common.addressInput.error.postcode.pattern"
     val maxLength  = 35
 
     behave like fieldThatBindsValidData(
@@ -210,8 +210,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
   "poBox" - {
 
     val fieldName  = "poBox"
-    val lengthKey  = "membersCurrentAddress.error.poBox.length"
-    val patternKey = "membersCurrentAddress.error.poBox.pattern"
+    val lengthKey  = "common.addressInput.error.poBox.length"
+    val patternKey = "common.addressInput.error.poBox.pattern"
     val maxLength  = 35
 
     behave like fieldThatBindsValidData(

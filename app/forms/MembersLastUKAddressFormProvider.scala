@@ -17,7 +17,6 @@
 package forms
 
 import forms.mappings.{Mappings, Regex}
-import models.UserAnswers
 import models.address._
 import models.requests.DisplayRequest
 import play.api.data.Forms._
@@ -35,20 +34,20 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
     Form(
       mapping(
         "addressLine1" -> text("membersLastUKAddress.error.addressLine1.required", Seq(memberName))
-          .verifying(maxLength(length35, "membersLastUKAddress.error.addressLine1.length"))
-          .verifying(regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine1.pattern")),
+          .verifying(maxLength(length35, "common.addressInput.error.addressLine1.length"))
+          .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine1.pattern")),
         "addressLine2" -> text("membersLastUKAddress.error.addressLine2.required", Seq(memberName))
-          .verifying(maxLength(length35, "membersLastUKAddress.error.addressLine2.length"))
-          .verifying(regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine2.pattern")),
+          .verifying(maxLength(length35, "common.addressInput.error.addressLine2.length"))
+          .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine2.pattern")),
         "addressLine3" -> optional(
           Forms.text
-            verifying maxLength(length35, "membersLastUKAddress.error.addressLine3.length")
-            verifying regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine3.pattern")
+            verifying maxLength(length35, "common.addressInput.error.addressLine3.length")
+            verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern")
         ),
         "addressLine4" -> optional(
           Forms.text
-            verifying maxLength(length35, "membersLastUKAddress.error.addressLine4.length")
-            verifying regexp(addressLinesRegex, "membersLastUKAddress.error.addressLine4.pattern")
+            verifying maxLength(length35, "common.addressInput.error.addressLine4.length")
+            verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern")
         ),
         "postcode"     -> text("membersLastUKAddress.error.postcode.required")
           .verifying(maxLength(length16, "membersLastUKAddress.error.postcode.length"))

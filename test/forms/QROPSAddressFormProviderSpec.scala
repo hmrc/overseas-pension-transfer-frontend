@@ -19,20 +19,16 @@ package forms
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
-import models.address._
-
 import play.api.data.FormError
 
-class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with SpecBase with Regex {
+class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase with Regex {
 
-  val form = new MembersLastUKAddressFormProvider()()
-
-  private val memberName = testDisplayRequest.memberName
+  val form = new QROPSAddressFormProvider()()
 
   ".addressLine1" - {
 
     val fieldName   = "addressLine1"
-    val requiredKey = "membersLastUKAddress.error.addressLine1.required"
+    val requiredKey = "qROPSAddress.error.addressLine1.required"
     val lengthKey   = "common.addressInput.error.addressLine1.length"
     val patternKey  = "common.addressInput.error.addressLine1.pattern"
     val maxLength   = 35
@@ -53,7 +49,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(memberName))
+      requiredError = FormError(fieldName, requiredKey)
     )
 
     behave like fieldThatRejectsInvalidCharacters(
@@ -67,7 +63,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
   ".addressLine2" - {
 
     val fieldName   = "addressLine2"
-    val requiredKey = "membersLastUKAddress.error.addressLine2.required"
+    val requiredKey = "qROPSAddress.error.addressLine2.required"
     val lengthKey   = "common.addressInput.error.addressLine2.length"
     val patternKey  = "common.addressInput.error.addressLine2.pattern"
     val maxLength   = 35
@@ -88,7 +84,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(memberName))
+      requiredError = FormError(fieldName, requiredKey)
     )
 
     behave like fieldThatRejectsInvalidCharacters(
@@ -99,11 +95,12 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     )
   }
 
-  "addressLine3" - {
+  ".addressLine3" - {
 
-    val fieldName = "addressLine3"
-    val lengthKey = "common.addressInput.error.addressLine3.length"
-    val maxLength = 35
+    val fieldName  = "addressLine3"
+    val lengthKey  = "common.addressInput.error.addressLine3.length"
+    val patternKey = "common.addressInput.error.addressLine3.pattern"
+    val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -121,14 +118,22 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like optionalField(
       form,
       fieldName
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
     )
   }
 
   "addressLine4" - {
 
-    val fieldName = "addressLine4"
-    val lengthKey = "common.addressInput.error.addressLine4.length"
-    val maxLength = 35
+    val fieldName  = "addressLine4"
+    val lengthKey  = "common.addressInput.error.addressLine4.length"
+    val patternKey = "common.addressInput.error.addressLine4.pattern"
+    val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
@@ -147,25 +152,26 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
       form,
       fieldName
     )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
+    )
   }
 
-  "postcode" - {
+  "addressLine5" - {
 
-    val fieldName   = "postcode"
-    val lengthKey   = "membersLastUKAddress.error.postcode.length"
-    val requiredKey = "membersLastUKAddress.error.postcode.required"
-    val maxLength   = 16
+    val fieldName  = "addressLine5"
+    val lengthKey  = "common.addressInput.error.addressLine5.length"
+    val patternKey = "common.addressInput.error.addressLine5.pattern"
+    val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsMatchingRegex(postcodeRegex)
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      stringsWithMaxLength(maxLength)
     )
 
     behave like fieldWithMaxLength(
@@ -173,6 +179,30 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
       fieldName,
       maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
+
+    behave like optionalField(
+      form,
+      fieldName
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
+    )
+  }
+
+  "countryCode" - {
+
+    val fieldName   = "countryCode"
+    val requiredKey = "common.addressInput.error.countryCode.required"
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

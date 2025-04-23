@@ -17,36 +17,35 @@
 package controllers
 
 import controllers.actions._
-import forms.QROPSNameFormProvider
+import forms.SchemeManagersEmailFormProvider
 import javax.inject.Inject
 import models.Mode
-import pages.QROPSNamePage
+import pages.SchemeManagersEmailPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.QROPSNameView
+import views.html.SchemeManagersEmailView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class QROPSNameController @Inject() (
+class SchemeManagersEmailController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    displayData: DisplayAction,
-    formProvider: QROPSNameFormProvider,
+    formProvider: SchemeManagersEmailFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSNameView
+    view: SchemeManagersEmailView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSNamePage) match {
+      val preparedForm = request.userAnswers.get(SchemeManagersEmailPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -54,16 +53,16 @@ class QROPSNameController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSNamePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersEmailPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(QROPSNamePage.nextPage(mode, updatedAnswers))
+          } yield Redirect(SchemeManagersEmailPage.nextPage(mode, updatedAnswers))
       )
   }
 }

@@ -51,6 +51,35 @@ helloWorld.heading = helloWorld
 
 radios.hint = Select one.
 
+common.addressInput.addressLine1 = Address line 1
+common.addressInput.addressLine2 = Address line 2
+common.addressInput.addressLine3 = Address line 3 (optional)
+common.addressInput.addressLine4 = Address line 4 (optional)
+common.addressInput.addressLine5 = Address line 5 (optional)
+common.addressInput.addressLine1.change.hidden = Address line 1
+common.addressInput.addressLine2.change.hidden = Address line 2
+common.addressInput.addressLine3.change.hidden = Address line 3 (optional)
+common.addressInput.addressLine4.change.hidden = Address line 4 (optional)
+common.addressInput.postcode = UK Postcode (optional)
+common.addressInput.poBox = PO Box (optional)
+common.addressInput.countryCode = Country
+common.addressInput.error.addressLine1.length = Address line 1 must be 35 characters or less
+common.addressInput.error.addressLine2.length = Address line 2 must be 35 characters or less
+common.addressInput.error.addressLine3.length = Address line 3 must be 35 characters or less
+common.addressInput.error.addressLine4.length = Address line 4 must be 35 characters or less
+common.addressInput.error.addressLine5.length = Address line 5 must be 35 characters or less
+common.addressInput.error.countryCode.length = Country must be 35 characters or less
+common.addressInput.error.postcode.length = Postcode must be 35 characters or less
+common.addressInput.error.poBox.length = PO Box must be 35 characters or less
+common.addressInput.error.addressLine1.pattern = Address line 1 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+common.addressInput.error.addressLine2.pattern = Address line 2 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+common.addressInput.error.addressLine3.pattern = Address line 3 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+common.addressInput.error.addressLine4.pattern = Address line 4 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+common.addressInput.error.addressLine5.pattern = Address line 5 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+common.addressInput.error.postcode.pattern = Postcode must only include letters, numbers or spaces
+common.addressInput.error.poBox.pattern = PO Box must only include letters, numbers or spaces
+common.addressInput.error.countryCode.required = Enter a country
+
 common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
 
@@ -112,41 +141,14 @@ memberDateOfBirth.change.hidden = Date of birth
 
 membersCurrentAddress.title = What is {0}''s current address?
 membersCurrentAddress.heading = What is {0}''s current address?
-membersCurrentAddress.addressLine1 = Address line 1
-membersCurrentAddress.addressLine2 = Address line 2
-membersCurrentAddress.addressLine3 = Address line 3 (optional)
-membersCurrentAddress.addressLine4 = Address line 4 (optional)
-membersCurrentAddress.countryCode = Country
-membersCurrentAddress.postcode = Postcode (optional)
-membersCurrentAddress.poBox = PO Box (optional)
 membersCurrentAddress.checkYourAnswersLabel = Current address
 membersCurrentAddress.error.addressLine1.required = Enter the first line of {0}''s address
 membersCurrentAddress.error.addressLine2.required = Enter the second line of {0}''s address
-membersCurrentAddress.error.countryCode.required = Select a country
-membersCurrentAddress.error.addressLine1.length = Address line 1 must be 35 characters or less
-membersCurrentAddress.error.addressLine2.length = Address line 2 must be 35 characters or less
-membersCurrentAddress.error.addressLine3.length = Address line 3 must be 35 characters or less
-membersCurrentAddress.error.addressLine4.length = Address line 4 must be 35 characters or less
-membersCurrentAddress.error.countryCode.length = Country must be 35 characters or less
-membersCurrentAddress.error.postcode.length = Postcode must be 35 characters or less
-membersCurrentAddress.error.poBox.length = PO Box must be 35 characters or less
-membersCurrentAddress.addressLine1.change.hidden = Address line 1
-membersCurrentAddress.addressLine2.change.hidden = Address line 2
-membersCurrentAddress.addressLine3.change.hidden = Address line 3 (optional)
-membersCurrentAddress.addressLine4.change.hidden = Address line 4 (optional)
 membersCurrentAddress.countryCode.change.hidden = Country (optional)
-membersCurrentAddress.postcode.change.hidden = Postcode (optional)
-membersCurrentAddress.poBox.change.hidden = PO Box (optional)
-membersCurrentAddress.error.addressLine1.pattern = Address line 1 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-membersCurrentAddress.error.addressLine2.pattern = Address line 2 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-membersCurrentAddress.error.addressLine3.pattern = Address line 3 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-membersCurrentAddress.error.addressLine4.pattern = Address line 4 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-membersCurrentAddress.error.postcode.pattern = Postcode must only include letters, numbers or spaces
-membersCurrentAddress.error.poBox.pattern = PO Box must only include letters, numbers or spaces
 membersCurrentAddress.change.hidden = Current address
 
 memberIsResidentUK.title = Is the member a resident of the UK for tax purposes?
-memberIsResidentUK.heading = Is {0} currently a resident of UK for tax purposes?
+memberIsResidentUK.heading = Is {0} currently a resident of the UK for tax purposes?
 memberIsResidentUK.yes = Yes
 memberIsResidentUK.no = No
 memberIsResidentUK.checkYourAnswersLabel = Is member a UK resident
@@ -184,30 +186,13 @@ memberConfirmLastUkAddress.paragraph = You can also <a href="{0}" class="govuk-l
 
 membersLastUKAddress.title = What was member''s last principal residential address in the UK?
 membersLastUKAddress.heading = What was {0}''s last principal residential address in the UK?
-membersLastUKAddress.addressLine1 = Address line 1
-membersLastUKAddress.addressLine2 = Address line 2
-membersLastUKAddress.addressLine3 = Address Line 3 (optional)
-membersLastUKAddress.addressLine4 = Address Line 4 (optional)
 membersLastUKAddress.postcode = Postcode
 membersLastUKAddress.checkYourAnswersLabel = Last UK address
-membersLastUKAddress.error.addressLine1.length = Address line 1 must be 35 characters or less
-membersLastUKAddress.error.addressLine2.length = Address line 2 must be 35 characters or less
-membersLastUKAddress.error.addressLine3.length = Address line 3 must be 35 characters or less
-membersLastUKAddress.error.addressLine4.length = Address line 4 must be 35 characters or less
 membersLastUKAddress.error.postcode.length = Postcode must be 16 characters or less
 membersLastUKAddress.error.postcode.incorrect = Enter a UK postcode in the correct format
 membersLastUKAddress.error.addressLine1.required = Enter the first line of {0}''s last principal UK address
 membersLastUKAddress.error.addressLine2.required = Enter the second line for {0}''s last principal UK address
 membersLastUKAddress.error.postcode.required = Enter Postcode
-membersLastUKAddress.error.addressLine1.pattern = Address line 1 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-membersLastUKAddress.error.addressLine2.pattern = Address line 2 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-membersLastUKAddress.error.addressLine3.pattern = Address line 3 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-membersLastUKAddress.error.addressLine4.pattern = Address line 4 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-membersLastUKAddress.addressLine1.change.hidden = Address line 1
-membersLastUKAddress.addressLine3.change.hidden = Address line 2 (optional)
-membersLastUKAddress.addressLine3.change.hidden = Address line 3
-membersLastUKAddress.addressLine4.change.hidden = Address line 4 (optional)
-membersLastUKAddress.postcode.change.hidden = Postcode
 membersLastUKAddress.change.hidden = Last UK address
 
 memberDateOfLeavingUK.title = When did the member leave the UK?
@@ -228,6 +213,15 @@ schemeManagersName.error.lastName.pattern = The scheme manager'’s last name mu
 schemeManagersName.firstName.change.hidden = Scheme manager''s name
 schemeManagersName.lastName.change.hidden = Scheme manager''s name
 
+schemeManagersEmail.title = What is the scheme manager''s email address?
+schemeManagersEmail.heading = What is the scheme manager''s email address?
+schemeManagersEmail.hint = For example, name@example.com.
+schemeManagersEmail.checkYourAnswersLabel = Manager email
+schemeManagersEmail.error.required = Enter the scheme manager''s email address
+schemeManagersEmail.error.length = Email address must be 254 characters or less
+schemeManagersEmail.error.format = Enter an email address in the correct format like, name@example.com
+schemeManagersEmail.change.hidden = Manager email
+
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
 qropsName.checkYourAnswersLabel = QROPS full name
@@ -243,6 +237,19 @@ qropsReference.checkYourAnswersLabel = QROPS reference
 qropsReference.error.required = Enter the QROPS Reference
 qropsReference.error.invalid = Enter the QROPS reference in a valid format
 qropsReference.change.hidden = QROPS reference
+
+qROPSAddress.title = Address of the QROPS
+qROPSAddress.heading = Address of the QROPS
+qROPSAddress.checkYourAnswersLabel = QROPSAddress
+qROPSAddress.error.addressLine1.required = Enter the first line of QROPS address
+qROPSAddress.error.addressLine2.required = Enter the second line of QROPS address
+
+qropsCountry.title = Country or territory in which QROPS was established?
+qropsCountry.heading = Country or territory in which QROPS was established?
+qropsCountry.checkYourAnswersLabel = QROPS country
+qropsCountry.error.required = Enter a country or territory
+qropsCountry.error.length = QROPSCountry must be 100 characters or less
+qropsCountry.change.hidden = QROPS country
 
 qropsSchemeManagerIsIndividualOrOrg.title = Is the scheme manager an individual or organisation?
 qropsSchemeManagerIsIndividualOrOrg.heading = Is the scheme manager an individual or organisation?

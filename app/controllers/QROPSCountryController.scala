@@ -17,53 +17,59 @@
 package controllers
 
 import controllers.actions._
-import forms.QROPSNameFormProvider
+import forms.QROPSCountryFormProvider
+
 import javax.inject.Inject
 import models.Mode
-import pages.QROPSNamePage
+import pages.QROPSCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.CountryService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.QROPSNameView
+import viewmodels.CountrySelectViewModel
+import views.html.QROPSCountryView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class QROPSNameController @Inject() (
+class QROPSCountryController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    displayData: DisplayAction,
-    formProvider: QROPSNameFormProvider,
+    formProvider: QROPSCountryFormProvider,
+    countryService: CountryService,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSNameView
+    view: QROPSCountryView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSNamePage) match {
+      val preparedForm = request.userAnswers.get(QROPSCountryPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+      Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => {
+          val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+        },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSNamePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(QROPSNamePage.nextPage(mode, updatedAnswers))
+          } yield Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
       )
   }
 }

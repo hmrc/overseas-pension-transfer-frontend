@@ -17,66 +17,60 @@
 package controllers
 
 import base.SpecBase
-import forms.QROPSSchemeManagerIsIndividualOrOrgFormProvider
-import models.{NormalMode, QROPSSchemeManagerIsIndividualOrOrg}
+import forms.SchemeManagersEmailFormProvider
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.QROPSSchemeManagerIsIndividualOrOrgPage
+import pages.SchemeManagersEmailPage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.QROPSSchemeManagerIsIndividualOrOrgView
+import views.html.SchemeManagersEmailView
 
 import scala.concurrent.Future
 
-class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagersEmailControllerSpec extends SpecBase with MockitoSugar {
 
-  private lazy val qropsSchemeManagerIsIndividualOrOrgRoute = routes.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(NormalMode).url
-
-  private val formProvider = new QROPSSchemeManagerIsIndividualOrOrgFormProvider()
+  private val formProvider = new SchemeManagersEmailFormProvider()
   private val form         = formProvider()
 
-  "QropsSchemeManagerIsIndividualOrOrg Controller" - {
+  private lazy val schemeManagerEmailRoute = routes.SchemeManagersEmailController.onPageLoad(NormalMode).url
+
+  "SchemeManagerEmail Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsSchemeManagerIsIndividualOrOrgRoute)
+        val request = FakeRequest(GET, schemeManagerEmailRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[QROPSSchemeManagerIsIndividualOrOrgView]
+        val view = application.injector.instanceOf[SchemeManagersEmailView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(QROPSSchemeManagerIsIndividualOrOrgPage, QropsSchemeManagerIsIndividualOrOrg.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(SchemeManagersEmailPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsSchemeManagerIsIndividualOrOrgRoute)
+        val request = FakeRequest(GET, schemeManagerEmailRoute)
 
-        val view = application.injector.instanceOf[QROPSSchemeManagerIsIndividualOrOrgView]
+        val view = application.injector.instanceOf[SchemeManagersEmailView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-
-        contentAsString(result) mustEqual view(form.fill(QropsSchemeManagerIsIndividualOrOrg.values.head), NormalMode)(
-          fakeDisplayRequest(request),
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -88,40 +82,38 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends AnyFreeSpec with
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsSchemeManagerIsIndividualOrOrgRoute)
-            .withFormUrlEncodedBody(("value", QROPSSchemeManagerIsIndividualOrOrg.values.head.toString))
+          FakeRequest(POST, schemeManagerEmailRoute)
+            .withFormUrlEncodedBody(("emailAddress", "name@example.com"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual SchemeManagersEmailPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsSchemeManagerIsIndividualOrOrgRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+          FakeRequest(POST, schemeManagerEmailRoute)
+            .withFormUrlEncodedBody(("emailAddress", ""))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+        val boundForm = form.bind(Map("emailAddress" -> ""))
 
-        val view = application.injector.instanceOf[QROPSSchemeManagerIsIndividualOrOrgView]
+        val view = application.injector.instanceOf[SchemeManagersEmailView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -130,7 +122,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends AnyFreeSpec with
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsSchemeManagerIsIndividualOrOrgRoute)
+        val request = FakeRequest(GET, schemeManagerEmailRoute)
 
         val result = route(application, request).value
 
@@ -139,19 +131,18 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends AnyFreeSpec with
       }
     }
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
+    "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsSchemeManagerIsIndividualOrOrgRoute)
-            .withFormUrlEncodedBody(("value", QROPSSchemeManagerIsIndividualOrOrg.values.head.toString))
+          FakeRequest(POST, schemeManagerEmailRoute)
+            .withFormUrlEncodedBody(("emailAddress", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
