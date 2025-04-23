@@ -28,7 +28,7 @@ case object OrgIndividualNamePage extends QuestionPage[PersonName] {
   override def toString: String = "orgIndividualName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.SchemeManagersEmailController.onPageLoad(NormalMode) // Todo change to SchemeManagerAddress when ready
+    routes.SchemeManagersAddressController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.SchemeManagerDetailsCYAController.onPageLoad()

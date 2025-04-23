@@ -30,9 +30,7 @@ case object SchemeManagerDetailsSummary {
     val orgName: Option[SummaryListRow]       = OrganisationNameSummary.row(userAnswers)
     val orgIndividual: Option[SummaryListRow] = OrgIndividualNameSummary.row(userAnswers)
 
-    // TODO update when SchemeManagerAddress implemented
-    // val managerAddress: Option[SummaryListRow]       = SchemeManagerAddress.row(userAnswers)
-
+    val managerAddress: Option[SummaryListRow]  = SchemeManagersAddressSummary.row(userAnswers)
     val managersEmail: Option[SummaryListRow]   = SchemeManagersEmailSummary.row(userAnswers)
     val managersContact: Option[SummaryListRow] = SchemeManagersContactSummary.row(userAnswers)
 
@@ -41,8 +39,7 @@ case object SchemeManagerDetailsSummary {
       managersName,
       orgName,
       orgIndividual,
-      // TODO uncomment when SchemeManagerAddress implemented
-      // managerAddress,
+      managerAddress,
       managersEmail,
       managersContact
     ).flatten

@@ -28,18 +28,13 @@ class OrgIndividualNamePageSpec extends AnyFreeSpec with Matchers {
     val emptyAnswers = UserAnswers("id")
 
     "in Normal Mode" - {
-
       "must go to Scheme manager address page" in {
-
-        OrgIndividualNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersEmailController.onPageLoad(NormalMode)
-        // routes.SchemeManagersAddressController.onPageLoad(NormalMode) TODO should be this when address page is ready
+        OrgIndividualNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersAddressController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
-
-      "must go to Check Answers" in {
-
+      "must go to Check your answers" in {
         OrgIndividualNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }

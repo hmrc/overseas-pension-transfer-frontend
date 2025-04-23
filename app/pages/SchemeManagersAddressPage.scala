@@ -29,13 +29,13 @@ case object SchemeManagersAddressPage extends QuestionPage[SchemeManagersAddress
   override def toString: String = "schemeManagersAddress"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.SchemeManagersEmailController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.SchemeManagerDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.SchemeManagersNameController.onPageLoad(CheckMode)
+    routes.SchemeManagersAddressController.onPageLoad(CheckMode)
 
-  val recoveryModeReturnUrl: String = routes.QROPSAddressController.onPageLoad(NormalMode).url
+  val recoveryModeReturnUrl: String = routes.SchemeManagersAddressController.onPageLoad(NormalMode).url
 }

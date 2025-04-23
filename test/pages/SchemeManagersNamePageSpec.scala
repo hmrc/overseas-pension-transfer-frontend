@@ -28,18 +28,13 @@ class SchemeManagersNamePageSpec extends AnyFreeSpec with Matchers {
     val emptyAnswers = UserAnswers("id")
 
     "in Normal Mode" - {
-
-      "must go to Index" in {
-
-        SchemeManagersNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersEmailController.onPageLoad(NormalMode)
-        // routes.SchemeManagersAddressController.onPageLoad(NormalMode) TODO should be this when address page is ready
+      "must go to Scheme manager's address" in {
+        SchemeManagersNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersAddressController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
-
-      "must go to Check Answers" in {
-
+      "must go to Check your answers" in {
         SchemeManagersNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }

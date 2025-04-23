@@ -31,7 +31,17 @@ object SchemeManagersAddressSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeManagersAddressPage).map {
       answer =>
-        val value = HtmlFormat.escape(answer.addressLine1).toString + "<br/>" + HtmlFormat.escape(answer.addressLine2).toString
+        val value = Seq(
+          Some(answer.line1),
+          Some(answer.line2),
+          answer.line3,
+          answer.line4,
+          answer.addressLine5,
+          Some(answer.country.toString)
+        ).flatMap {
+          case Some(part) if !part.trim.isEmpty => Some(HtmlFormat.escape(part))
+          case _                                => None
+        }.mkString("<br>")
 
         SummaryListRowViewModel(
           key     = "schemeManagersAddress.checkYourAnswersLabel",

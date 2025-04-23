@@ -31,7 +31,7 @@ class SchemeManagersAddressPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        SchemeManagersAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        SchemeManagersAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersEmailController.onPageLoad(NormalMode)
       }
     }
 
