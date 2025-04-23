@@ -28,7 +28,7 @@ case object QROPSReferencePage extends QuestionPage[String] {
   override def toString: String = "qropsReference"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.QROPSCountryController.onPageLoad(NormalMode)
+    routes.QROPSAddressController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.QROPSDetailsCYAController.onPageLoad()

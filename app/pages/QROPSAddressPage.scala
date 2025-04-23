@@ -26,10 +26,10 @@ case object QROPSAddressPage extends QuestionPage[QROPSAddress] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "qROPSAddress"
+  override def toString: String = "qropsAddress"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.QROPSCountryController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.QROPSDetailsCYAController.onPageLoad()

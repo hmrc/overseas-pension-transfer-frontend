@@ -25,11 +25,13 @@ case object QROPSDetailsSummary {
   def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
     val nameRow: Option[SummaryListRow]      = QROPSNameSummary.row(userAnswers)
     val referenceRow: Option[SummaryListRow] = QROPSReferenceSummary.row(userAnswers)
+    val addressRow: Option[SummaryListRow]   = QROPSAddressSummary.row(userAnswers)
     val countryRow: Option[SummaryListRow]   = QROPSCountrySummary.row(userAnswers)
 
     Seq(
       nameRow,
       referenceRow,
+      addressRow,
       countryRow
     ).flatten
   }
