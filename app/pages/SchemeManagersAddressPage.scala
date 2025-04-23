@@ -17,25 +17,25 @@
 package pages
 
 import controllers.routes
-import models.address.QROPSAddress
+import models.address.SchemeManagersAddress
 import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QROPSAddressPage extends QuestionPage[QROPSAddress] {
+case object SchemeManagersAddressPage extends QuestionPage[SchemeManagersAddress] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "qROPSAddress"
+  override def toString: String = "schemeManagersAddress"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.QROPSDetailsCYAController.onPageLoad()
+    routes.SchemeManagerDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.QROPSAddressController.onPageLoad(CheckMode)
+    routes.SchemeManagersNameController.onPageLoad(CheckMode)
 
   val recoveryModeReturnUrl: String = routes.QROPSAddressController.onPageLoad(NormalMode).url
 }

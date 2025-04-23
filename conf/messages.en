@@ -288,3 +288,9 @@ orgIndividualName.error.lastName.length = The individual''s last name must be 35
 orgIndividualName.error.firstName.pattern = The individual''s first name must only include letters, spaces, apostrophes and hyphens
 orgIndividualName.error.lastName.pattern = The individual''s last name must only include letters, spaces, apostrophes and hyphens
 orgIndividualName.change.hidden = Organisation contact
+
+schemeManagersAddress.title = Scheme Manager''s Address
+schemeManagersAddress.heading = What is the scheme manager''s address?
+schemeManagersAddress.checkYourAnswersLabel = Scheme Manager''s Address
+schemeManagersAddress.error.addressLine1.required = Enter the first line of the scheme manager''s address
+schemeManagersAddress.error.addressLine2.required = Enter the first line of the scheme manager''s address

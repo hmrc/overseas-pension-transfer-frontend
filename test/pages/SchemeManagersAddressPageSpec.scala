@@ -17,25 +17,30 @@
 package pages
 
 import controllers.routes
-import models.address.QROPSAddress
 import models.{CheckMode, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-case object QROPSAddressPage extends QuestionPage[QROPSAddress] {
+class SchemeManagersAddressPageSpec extends AnyFreeSpec with Matchers {
 
-  override def path: JsPath = JsPath \ toString
+  ".nextPage" - {
 
-  override def toString: String = "qROPSAddress"
+    val emptyAnswers = UserAnswers("id")
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    "in Normal Mode" - {
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.QROPSDetailsCYAController.onPageLoad()
+      "must go to Index" in {
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.QROPSAddressController.onPageLoad(CheckMode)
+        SchemeManagersAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+      }
+    }
 
-  val recoveryModeReturnUrl: String = routes.QROPSAddressController.onPageLoad(NormalMode).url
+    "in Check Mode" - {
+
+      "must go to Check Answers" in {
+
+        SchemeManagersAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+      }
+    }
+  }
 }

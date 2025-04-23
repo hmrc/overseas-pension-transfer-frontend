@@ -145,3 +145,8 @@ GET        /qrops-address                                            controllers
 POST       /qrops-address                                            controllers.QROPSAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-address                                     controllers.QROPSAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-qrops-address                                     controllers.QROPSAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /scheme-managers-address                                  controllers.SchemeManagersAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /scheme-managers-address                                  controllers.SchemeManagersAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-scheme-managers-address                           controllers.SchemeManagersAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-scheme-managers-address                           controllers.SchemeManagersAddressController.onSubmit(mode: Mode = CheckMode)
