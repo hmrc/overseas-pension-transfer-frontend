@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.{AddressBase, SpecBase}
+import base.AddressBase
 import forms.MemberConfirmLastUkAddressFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any

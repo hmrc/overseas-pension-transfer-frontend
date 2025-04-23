@@ -25,7 +25,6 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.QROPSSchemeManagerIsIndividualOrOrgPage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -60,7 +59,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends AnyFreeSpec with
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(QROPSSchemeManagerIsIndividualOrOrgPage, QropsSchemeManagerIsIndividualOrOrg.values.head).success.value
+      val userAnswers = userAnswersQtNumber.set(QROPSSchemeManagerIsIndividualOrOrgPage, QROPSSchemeManagerIsIndividualOrOrg.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -73,7 +72,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends AnyFreeSpec with
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(form.fill(QropsSchemeManagerIsIndividualOrOrg.values.head), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(QROPSSchemeManagerIsIndividualOrOrg.values.head), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString

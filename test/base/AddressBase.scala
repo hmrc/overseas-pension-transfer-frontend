@@ -137,8 +137,8 @@ trait AddressBase extends SpecBase {
     country      = Countries.UK,
     poBox        = None
   )
-  
-    val qropsAddress: QROPSAddress = QROPSAddress(
+
+  val qropsAddress: QROPSAddress = QROPSAddress(
     addressLine1 = "2 Other Place",
     addressLine2 = "Some District",
     addressLine3 = None,

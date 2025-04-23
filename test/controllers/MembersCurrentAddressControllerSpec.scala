@@ -16,12 +16,9 @@
 
 package controllers
 
-import base.SpecBase
-import forms.MembersCurrentAddressFormProvider
-import models.NormalMode
-import base.{AddressBase, SpecBase}
+import base.AddressBase
 import forms.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
-import models.{NormalMode, PersonName}
+import models.NormalMode
 import models.address._
 import models.requests.DisplayRequest
 import org.mockito.ArgumentMatchers.any
@@ -35,8 +32,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.CountryService
-import views.html.MembersCurrentAddressView
 import viewmodels.CountrySelectViewModel
+import views.html.MembersCurrentAddressView
 
 import scala.concurrent.Future
 

@@ -19,13 +19,11 @@ package controllers
 import base.SpecBase
 import forms.MemberHasEverBeenResidentUKFormProvider
 import models.address.MembersLastUKAddress
-import models.{CheckMode, NormalMode, PersonName, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
-import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
 import org.mockito.Mockito.{verify, when}
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.{MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
 import play.api.inject.bind
