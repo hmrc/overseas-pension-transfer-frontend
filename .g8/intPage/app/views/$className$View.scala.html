@@ -6,18 +6,19 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.LabelSize.Large
-
+@import models.requests.DisplayRequest
+@import views.html.components.QTNumber
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("$className;format="decap"$.title"))) {
 
@@ -27,10 +28,12 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @qtNumber()
+        <h1 class="govuk-heading-l">@messages("$className;format="decap"$.heading")</h1>
+
         @govukInput(
             InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(Text(messages("$className;format="decap"$.heading"))).asPageHeading(size = Large)
+                field = form("value")
             )
             .asNumeric()
             .withWidth(Fixed10)

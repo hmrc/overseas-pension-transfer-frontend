@@ -21,6 +21,7 @@ import forms.QROPSReferenceFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.QROPSReferencePage
 import play.api.inject.bind
@@ -31,7 +32,7 @@ import views.html.QROPSReferenceView
 
 import scala.concurrent.Future
 
-class QROPSReferenceControllerSpec extends SpecBase with MockitoSugar {
+class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new QROPSReferenceFormProvider()
   private val form         = formProvider()
@@ -42,7 +43,7 @@ class QROPSReferenceControllerSpec extends SpecBase with MockitoSugar {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request = FakeRequest(GET, qropsReferenceRoute)
@@ -52,13 +53,13 @@ class QROPSReferenceControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[QROPSReferenceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(QROPSReferencePage, "QROPS123456").success.value
+      val userAnswers = userAnswersQtNumber.set(QROPSReferencePage, "QROPS123456").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +71,7 @@ class QROPSReferenceControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("QROPS123456"), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("QROPS123456"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -99,7 +100,7 @@ class QROPSReferenceControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
@@ -113,7 +114,7 @@ class QROPSReferenceControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

@@ -16,14 +16,15 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
 import play.api.data.FormError
 
-class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with Regex {
+class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with Regex with SpecBase {
 
-  private val memberName = "Undefined Undefined"
-  private val form       = new MembersCurrentAddressFormProvider()(memberName)
+  private val memberName = testDisplayRequest.memberName
+  private val form       = new MembersCurrentAddressFormProvider()()
 
   ".addressLine1" - {
 

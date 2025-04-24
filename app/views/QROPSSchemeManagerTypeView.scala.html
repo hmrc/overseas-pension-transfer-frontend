@@ -22,16 +22,19 @@
 @import viewmodels.govuk.all._
 @import viewmodels.LegendSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import views.html.components.QTNumber
+@import models.requests.DisplayRequest
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("qropsSchemeManagerType.title"))) {
 
@@ -41,10 +44,12 @@
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
+        @qtNumber()
+        <h1 class="govuk-heading-l">@messages("qropsSchemeManagerType.heading")</h1>
+
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(Text(messages("qropsSchemeManagerType.heading"))).asPageHeading(size = Large),
                 items  = QROPSSchemeManagerType.options
             )
             .withHint(HintViewModel(Text(messages("radios.hint"))))

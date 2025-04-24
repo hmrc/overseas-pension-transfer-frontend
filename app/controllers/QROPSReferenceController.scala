@@ -18,15 +18,15 @@ package controllers
 
 import controllers.actions._
 import forms.QROPSReferenceFormProvider
-import javax.inject.Inject
-import models.{Mode, NormalMode}
-import pages.{IndexPage, QROPSReferencePage}
+import models.Mode
+import pages.QROPSReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.QROPSReferenceView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class QROPSReferenceController @Inject() (
@@ -35,6 +35,7 @@ class QROPSReferenceController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: QROPSReferenceFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: QROPSReferenceView
@@ -44,7 +45,7 @@ class QROPSReferenceController @Inject() (
   val form            = formProvider()
   val referencePrefix = "QROPS"
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(QROPSReferencePage) match {
         case None        => form
@@ -54,7 +55,7 @@ class QROPSReferenceController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

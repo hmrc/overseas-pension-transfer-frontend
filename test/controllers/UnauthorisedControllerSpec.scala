@@ -17,11 +17,12 @@
 package controllers
 
 import base.SpecBase
+import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.UnauthorisedView
 
-class UnauthorisedControllerSpec extends SpecBase {
+class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {
 
   "Unauthorised Controller" - {
 

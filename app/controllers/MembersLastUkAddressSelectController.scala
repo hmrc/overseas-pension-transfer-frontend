@@ -19,13 +19,9 @@ package controllers
 import controllers.actions._
 import forms.MembersLastUkAddressSelectFormProvider
 import models.address.{FoundAddressSet, NoAddressFound}
-
-import javax.inject.Inject
 import models.{Mode, NormalMode}
 import pages.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
-import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -33,6 +29,7 @@ import utils.AppUtils
 import viewmodels.AddressViewModel
 import views.html.MembersLastUkAddressSelectView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MembersLastUkAddressSelectController @Inject() (
@@ -41,13 +38,14 @@ class MembersLastUkAddressSelectController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: MembersLastUkAddressSelectFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressSelectView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(value) =>
@@ -57,7 +55,7 @@ class MembersLastUkAddressSelectController @Inject() (
               val form          = formProvider(validIds)
               val addressRadios = AddressViewModel.addressRadios(addresses)
 
-              Ok(view(form, memberFullName(request.userAnswers), mode, addressRadios, searchedPostcode))
+              Ok(view(form, mode, addressRadios, searchedPostcode))
             case NoAddressFound(_)                            =>
               Redirect(
                 MembersLastUkAddressSelectPage.nextPageRecovery(
@@ -72,7 +70,7 @@ class MembersLastUkAddressSelectController @Inject() (
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(value) =>
@@ -83,7 +81,7 @@ class MembersLastUkAddressSelectController @Inject() (
               val addressRadios = AddressViewModel.addressRadios(addresses)
               form.bindFromRequest().fold(
                 formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode, addressRadios, searchedPostcode))),
+                  Future.successful(BadRequest(view(formWithErrors, mode, addressRadios, searchedPostcode))),
                 selectedId => {
                   if (validIds.contains(selectedId)) {
                     val maybeSelectedAddress = addresses.find(_.id == selectedId)
