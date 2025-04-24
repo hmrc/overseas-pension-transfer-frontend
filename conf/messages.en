@@ -82,7 +82,6 @@ common.addressInput.error.countryCode.required = Enter a country
 
 common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
-common.undefined.name = Undefined Undefined
 
 common.dateInput.hint = For example, 31 03 1980.
 common.dateInput.error.required.two = Enter a {0} and a {1}

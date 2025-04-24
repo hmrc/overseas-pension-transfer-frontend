@@ -18,8 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.QROPSSchemeManagerIsIndividualOrOrgFormProvider
-
-import javax.inject.Inject
 import models.Mode
 import pages.QROPSSchemeManagerIsIndividualOrOrgPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,6 +26,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.QROPSSchemeManagerIsIndividualOrOrgView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class QROPSSchemeManagerIsIndividualOrOrgController @Inject() (
@@ -36,6 +35,7 @@ class QROPSSchemeManagerIsIndividualOrOrgController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: QROPSSchemeManagerIsIndividualOrOrgFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: QROPSSchemeManagerIsIndividualOrOrgView
@@ -44,7 +44,7 @@ class QROPSSchemeManagerIsIndividualOrOrgController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(QROPSSchemeManagerIsIndividualOrOrgPage) match {
         case None        => form
@@ -54,7 +54,7 @@ class QROPSSchemeManagerIsIndividualOrOrgController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

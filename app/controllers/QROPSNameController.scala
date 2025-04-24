@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.QROPSNameFormProvider
-
 import javax.inject.Inject
 import models.Mode
 import pages.QROPSNamePage
@@ -36,6 +35,7 @@ class QROPSNameController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: QROPSNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: QROPSNameView
@@ -44,7 +44,7 @@ class QROPSNameController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(QROPSNamePage) match {
         case None        => form
@@ -54,7 +54,7 @@ class QROPSNameController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

@@ -21,10 +21,10 @@ import forms.QROPSSchemeManagerIsIndividualOrOrgFormProvider
 import models.{NormalMode, QROPSSchemeManagerIsIndividualOrOrg}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.QROPSSchemeManagerIsIndividualOrOrgPage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -32,7 +32,7 @@ import views.html.QROPSSchemeManagerIsIndividualOrOrgView
 
 import scala.concurrent.Future
 
-class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with MockitoSugar {
+class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val qropsSchemeManagerIsIndividualOrOrgRoute = routes.QROPSSchemeManagerIsIndividualOrOrgController.onPageLoad(NormalMode).url
 
@@ -43,7 +43,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with Mo
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request = FakeRequest(GET, qropsSchemeManagerIsIndividualOrOrgRoute)
@@ -53,13 +53,13 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with Mo
         val view = application.injector.instanceOf[QROPSSchemeManagerIsIndividualOrOrgView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(QROPSSchemeManagerIsIndividualOrOrgPage, QROPSSchemeManagerIsIndividualOrOrg.values.head).success.value
+      val userAnswers = userAnswersQtNumber.set(QROPSSchemeManagerIsIndividualOrOrgPage, QROPSSchemeManagerIsIndividualOrOrg.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +71,11 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(QROPSSchemeManagerIsIndividualOrOrg.values.head), NormalMode)(request, messages(application)).toString
+
+        contentAsString(result) mustEqual view(form.fill(QROPSSchemeManagerIsIndividualOrOrg.values.head), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -102,7 +106,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with Mo
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
@@ -116,7 +120,7 @@ class QROPSSchemeManagerIsIndividualOrOrgControllerSpec extends SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

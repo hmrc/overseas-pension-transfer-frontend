@@ -18,23 +18,20 @@ package controllers
 
 import controllers.actions._
 import forms.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
-
-import javax.inject.Inject
 import models.Mode
 import models.address.{Country, MembersCurrentAddress}
 import pages.MembersCurrentAddressPage
 import play.api.Logging
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.CountryService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
-import utils.AppUtils
 import views.html.MembersCurrentAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MembersCurrentAddressController @Inject() (
@@ -43,36 +40,35 @@ class MembersCurrentAddressController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: MembersCurrentAddressFormProvider,
     countryService: CountryService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersCurrentAddressView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
-  private def form(memberName: String)(implicit messages: Messages): Form[MembersCurrentAddressFormData] = formProvider(memberName)
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val form         = formProvider()
       val userAnswers  = request.userAnswers
-      val memberName   = memberFullName(request.userAnswers)
       val preparedForm = userAnswers.get(MembersCurrentAddressPage) match {
-        case None          => form(memberName)
-        case Some(address) => form(memberName).fill(MembersCurrentAddressFormData.fromDomain(MembersCurrentAddress.fromAddress(address)))
+        case None          => form
+        case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(MembersCurrentAddress.fromAddress(address)))
       }
 
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
 
-      Ok(view(preparedForm, countrySelectViewModel, memberName, mode))
+      Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
-      val memberName = memberFullName(request.userAnswers)
-      form(memberName).bindFromRequest().fold(
+      val form = formProvider()
+      form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, memberName, mode)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
 
         },
         formData => {
@@ -108,5 +104,4 @@ class MembersCurrentAddressController @Inject() (
         }
       )
   }
-
 }

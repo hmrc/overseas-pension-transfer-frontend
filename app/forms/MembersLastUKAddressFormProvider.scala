@@ -18,6 +18,7 @@ package forms
 
 import forms.mappings.{Mappings, Regex}
 import models.address._
+import models.requests.DisplayRequest
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 
@@ -28,7 +29,8 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
   private val length35 = 35
   private val length16 = 16
 
-  def apply(memberName: String): Form[MembersLastUKAddress] = {
+  def apply()(implicit request: DisplayRequest[_]): Form[MembersLastUKAddress] = {
+    val memberName = request.memberName
     Form(
       mapping(
         "addressLine1" -> text("membersLastUKAddress.error.addressLine1.required", Seq(memberName))

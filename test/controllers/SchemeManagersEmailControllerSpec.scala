@@ -21,6 +21,7 @@ import forms.SchemeManagersEmailFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.SchemeManagersEmailPage
 import play.api.inject.bind
@@ -31,7 +32,7 @@ import views.html.SchemeManagersEmailView
 
 import scala.concurrent.Future
 
-class SchemeManagersEmailControllerSpec extends SpecBase with MockitoSugar {
+class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new SchemeManagersEmailFormProvider()
   private val form         = formProvider()

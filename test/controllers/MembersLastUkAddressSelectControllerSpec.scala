@@ -18,9 +18,10 @@ package controllers
 
 import base.{AddressBase, SpecBase}
 import forms.MembersLastUkAddressSelectFormProvider
-import models.{NormalMode, PersonName}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MembersLastUkAddressSelectPage
 import play.api.inject.bind
@@ -32,11 +33,10 @@ import views.html.MembersLastUkAddressSelectView
 
 import scala.concurrent.Future
 
-class MembersLastUkAddressSelectControllerSpec extends SpecBase with MockitoSugar with AddressBase {
+class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
 
   private lazy val memberSelectLastUkAddressRoute = routes.MembersLastUkAddressSelectController.onPageLoad(NormalMode).url
 
-  private val memberName   = PersonName("Undefined", "Undefined")
   private val formProvider = new MembersLastUkAddressSelectFormProvider()
   private val form         = formProvider(validIds)
 
@@ -56,12 +56,11 @@ class MembersLastUkAddressSelectControllerSpec extends SpecBase with MockitoSuga
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form,
-          memberName.fullName,
           NormalMode,
           AddressViewModel.addressRadios(foundAddresses.addresses),
           foundAddresses.searchedPostcode
         )(
-          request,
+          fakeDisplayRequest(request),
           messages(application)
         ).toString
       }
@@ -109,11 +108,10 @@ class MembersLastUkAddressSelectControllerSpec extends SpecBase with MockitoSuga
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(
           boundForm,
-          memberName.fullName,
           NormalMode,
           AddressViewModel.addressRadios(foundAddresses.addresses),
           foundAddresses.searchedPostcode
-        )(request, messages(application)).toString
+        )(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

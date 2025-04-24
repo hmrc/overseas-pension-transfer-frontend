@@ -18,16 +18,13 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils._
 @import views.html.components.DisplayConfirmableAddress
 @import viewmodels.AddressViewModel
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.button.Button
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.LegendSize.Large
-
+@import views.html.components.QTNumber
+@import models.requests.DisplayRequest
 
 @this(
         layout: templates.Layout,
@@ -35,11 +32,12 @@
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
-        displayConfirmableAddress: DisplayConfirmableAddress
+        displayConfirmableAddress: DisplayConfirmableAddress,
+        qtNumber: QTNumber
 )
 
-@(form: Form[_], memberName: String, mode: Mode, address: AddressViewModel)(implicit request: Request[_], messages: Messages)
-
+@(form: Form[_], mode: Mode, address: AddressViewModel)(implicit request: DisplayRequest[_], messages: Messages)
+@memberName = @{request.memberName}
 @searchAgain = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 @manualEntry = @{routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
 
@@ -50,6 +48,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @qtNumber()
         <h1 class="govuk-heading-l">@messages("memberConfirmLastUkAddress.heading", memberName)</h1>
 
         @displayConfirmableAddress(address)

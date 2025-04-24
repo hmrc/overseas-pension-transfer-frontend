@@ -21,6 +21,7 @@ import forms.SchemeManagersNameFormProvider
 import models.{NormalMode, SchemeManagersName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.SchemeManagersNamePage
 import play.api.inject.bind
@@ -31,7 +32,7 @@ import views.html.SchemeManagersNameView
 
 import scala.concurrent.Future
 
-class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
+class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new SchemeManagersNameFormProvider()
   private val form         = formProvider()
@@ -39,13 +40,13 @@ class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
   private lazy val schemeManagersNameRoute = routes.SchemeManagersNameController.onPageLoad(NormalMode).url
 
   private val validAnswer = SchemeManagersName("value 1", "value 2")
-  private val userAnswers = emptyUserAnswers.set(SchemeManagersNamePage, validAnswer).success.value
+  private val userAnswers = userAnswersQtNumber.set(SchemeManagersNamePage, validAnswer).success.value
 
   "SchemeManagersName Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request = FakeRequest(GET, schemeManagersNameRoute)
@@ -55,7 +56,7 @@ class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -71,7 +72,10 @@ class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(SchemeManagersName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(SchemeManagersName("value 1", "value 2")), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -102,7 +106,7 @@ class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
@@ -116,7 +120,7 @@ class SchemeManagersNameControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

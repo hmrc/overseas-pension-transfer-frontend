@@ -17,11 +17,12 @@
 package controllers
 
 import base.{AddressBase, SpecBase}
+import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.MembersLastUkAddressNotFoundView
 
-class MembersLastUkAddressNotFoundControllerSpec extends SpecBase with AddressBase {
+class MembersLastUkAddressNotFoundControllerSpec extends AnyFreeSpec with SpecBase with AddressBase {
 
   "MemberLastUkAddressNotFound Controller" - {
 
@@ -37,7 +38,7 @@ class MembersLastUkAddressNotFoundControllerSpec extends SpecBase with AddressBa
         val view = application.injector.instanceOf[MembersLastUkAddressNotFoundView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(noAddressFound.searchedPostcode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(noAddressFound.searchedPostcode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
   }

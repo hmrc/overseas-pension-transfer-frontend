@@ -16,11 +16,12 @@
 
 package controllers
 
-import base.{AddressBase, SpecBase}
+import base.AddressBase
 import forms.MemberConfirmLastUkAddressFormProvider
-import models.{NormalMode, PersonName}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.MembersLastUkAddressConfirmPage
 import play.api.inject.bind
@@ -32,12 +33,10 @@ import views.html.MembersLastUkAddressConfirmView
 
 import scala.concurrent.Future
 
-class MembersLastUkAddressConfirmControllerSpec extends SpecBase with MockitoSugar with AddressBase {
+class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
 
-  private val memberName   = PersonName("Undefined", "Undefined")
-  private val formProvider = new MemberConfirmLastUkAddressFormProvider()
-  private val form         = formProvider()
-
+  private val formProvider                         = new MemberConfirmLastUkAddressFormProvider()
+  private val form                                 = formProvider()
   private lazy val memberConfirmLastUkAddressRoute = routes.MembersLastUkAddressConfirmController.onPageLoad(NormalMode).url
 
   "MemberConfirmLastUkAddress Controller" - {
@@ -48,14 +47,13 @@ class MembersLastUkAddressConfirmControllerSpec extends SpecBase with MockitoSug
 
       running(application) {
         val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
-
-        val result = route(application, request).value
+        val result  = route(application, request).value
 
         val view = application.injector.instanceOf[MembersLastUkAddressConfirmView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode, AddressViewModel.fromAddress(selectedAddress.address))(
-          request,
+        contentAsString(result) mustEqual view(form, NormalMode, AddressViewModel.fromAddress(selectedAddress.address))(
+          fakeDisplayRequest(request, addressSelectedUserAnswers),
           messages(application)
         ).toString
       }
@@ -67,14 +65,12 @@ class MembersLastUkAddressConfirmControllerSpec extends SpecBase with MockitoSug
 
       running(application) {
         val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
-
-        val view = application.injector.instanceOf[MembersLastUkAddressConfirmView]
-
-        val result = route(application, request).value
+        val view    = application.injector.instanceOf[MembersLastUkAddressConfirmView]
+        val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), memberName.fullName, NormalMode, AddressViewModel.fromAddress(selectedAddress.address))(
-          request,
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, AddressViewModel.fromAddress(selectedAddress.address))(
+          fakeDisplayRequest(request, addressSelectedUserAnswers),
           messages(application)
         ).toString
       }
@@ -83,21 +79,16 @@ class MembersLastUkAddressConfirmControllerSpec extends SpecBase with MockitoSug
     "must redirect to the date member left UK when continue is selected" in {
 
       val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = Some(addressSelectedUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, memberConfirmLastUkAddressRoute)
-
-        val result = route(application, request).value
+        val request = FakeRequest(POST, memberConfirmLastUkAddressRoute)
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual MembersLastUkAddressConfirmPage.nextPage(NormalMode, emptyUserAnswers).url
@@ -110,8 +101,7 @@ class MembersLastUkAddressConfirmControllerSpec extends SpecBase with MockitoSug
 
       running(application) {
         val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
-
-        val result = route(application, request).value
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
@@ -126,14 +116,11 @@ class MembersLastUkAddressConfirmControllerSpec extends SpecBase with MockitoSug
         val request =
           FakeRequest(POST, memberConfirmLastUkAddressRoute)
             .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
-
-    "must clear lookup addresses on POST" in {}
   }
 }

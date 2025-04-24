@@ -17,11 +17,12 @@
 package controllers.auth
 
 import base.SpecBase
+import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.auth.SignedOutView
 
-class SignedOutControllerSpec extends SpecBase {
+class SignedOutControllerSpec extends AnyFreeSpec with SpecBase {
 
   "SignedOut Controller" - {
 

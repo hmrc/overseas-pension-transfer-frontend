@@ -22,6 +22,7 @@ import models.NormalMode
 import models.address.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.QROPSAddressPage
 import play.api.inject.bind
@@ -34,7 +35,7 @@ import views.html.QROPSAddressView
 
 import scala.concurrent.Future
 
-class QROPSAddressControllerSpec extends SpecBase with MockitoSugar with AddressBase {
+class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
 
   private val formProvider = new QROPSAddressFormProvider()
   private val form         = formProvider()

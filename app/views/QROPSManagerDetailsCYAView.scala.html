@@ -20,6 +20,9 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 @import views.ViewUtils.titleNoForm
 @import views.html.components.CheckYourAnswersHeading
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import views.html.components.QTNumber
+@import models.requests.DisplayRequest
 
 @this(
         layout: templates.Layout,
@@ -27,13 +30,15 @@
         govukSummaryList: GovukSummaryList,
         govukButton: GovukButton,
         govukInsetText : GovukInsetText,
-        heading: CheckYourAnswersHeading
+        heading: CheckYourAnswersHeading,
+        qtNumber: QTNumber
 )
 
-@(list: SummaryList)(implicit request: Request[_], messages: Messages)
+@(list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showReturnToTaskListLink = false, showCYAFooter = true) {
 
+    @qtNumber()
     @heading(messages("checkYourAnswers.heading"), Some(messages("checkYourAnswers.qropsSchemeManagerDetails.heading")))
 
     @govukSummaryList(list)

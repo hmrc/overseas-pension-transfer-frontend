@@ -19,14 +19,12 @@ package controllers
 import controllers.actions._
 import forms.MemberConfirmLastUkAddressFormProvider
 import models.{Mode, NormalMode}
-import models.address.MembersLastUKAddress
 import pages.{MembersLastUKAddressPage, MembersLastUkAddressConfirmPage, MembersLastUkAddressSelectPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AppUtils
 import viewmodels.AddressViewModel
 import views.html.MembersLastUkAddressConfirmView
 
@@ -39,21 +37,22 @@ class MembersLastUkAddressConfirmController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    displayData: DisplayAction,
     formProvider: MemberConfirmLastUkAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressConfirmView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
         case Some(selectedAddress) =>
           val viewModel = AddressViewModel.fromAddress(selectedAddress.address)
-          Ok(view(form, memberFullName(request.userAnswers), mode, viewModel))
+          Ok(view(form, mode, viewModel))
         case _                     =>
           Redirect(
             routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
@@ -61,7 +60,7 @@ class MembersLastUkAddressConfirmController @Inject() (
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
@@ -69,7 +68,7 @@ class MembersLastUkAddressConfirmController @Inject() (
           val viewModel = AddressViewModel.fromAddress(selectedAddress.address)
           formProvider().bindFromRequest().fold(
             formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, memberFullName(request.userAnswers), mode, viewModel)))
+              Future.successful(BadRequest(view(formWithErrors, mode, viewModel)))
             },
             _ =>
               for {

@@ -18,11 +18,12 @@ package controllers
 
 import base.SpecBase
 import forms.MemberDoesNotHaveNinoFormProvider
-import models.{NormalMode, PersonName}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{MemberDoesNotHaveNinoPage, MemberNamePage}
+import pages.MemberDoesNotHaveNinoPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,57 +32,56 @@ import views.html.MemberDoesNotHaveNinoView
 
 import scala.concurrent.Future
 
-class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
+class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new MemberDoesNotHaveNinoFormProvider()
   private val form         = formProvider()
 
   private lazy val memberDoesNotHaveNinoRoute = routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode).url
-  private val memberName                      = PersonName("FirstName", "LastName")
 
   "MemberDoesNotHaveNino Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = emptyUserAnswers.set(MemberNamePage, memberName).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberDoesNotHaveNinoRoute)
-
-        val result = route(application, request).value
+        val req    = FakeRequest(GET, memberDoesNotHaveNinoRoute)
+        val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(req),
+          messages(application)
+        ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
-        .set(MemberNamePage, memberName).success.value
+      val userAnswers = userAnswersMemberNameQtNumber
         .set(MemberDoesNotHaveNinoPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberDoesNotHaveNinoRoute)
-
-        val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
-
-        val result = route(application, request).value
+        val req    = FakeRequest(GET, memberDoesNotHaveNinoRoute)
+        val view   = application.injector.instanceOf[MemberDoesNotHaveNinoView]
+        val result = route(application, req).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
+          fakeDisplayRequest(req, userAnswers),
+          messages(application)
+        ).toString
       }
     }
 
     "must redirect to the member date of birth when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
@@ -90,11 +90,11 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
       running(application) {
-        val request =
+        val req =
           FakeRequest(POST, memberDoesNotHaveNinoRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
-        val result = route(application, request).value
+        val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode).url
@@ -102,23 +102,23 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val userAnswers = emptyUserAnswers
-        .set(MemberNamePage, memberName).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val request =
+        val req =
           FakeRequest(POST, memberDoesNotHaveNinoRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
-
-        val result = route(application, request).value
+        val view      = application.injector.instanceOf[MemberDoesNotHaveNinoView]
+        val result    = route(application, req).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, memberName.fullName, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(req),
+          messages(application)
+        ).toString
       }
     }
 
@@ -127,9 +127,8 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberDoesNotHaveNinoRoute)
-
-        val result = route(application, request).value
+        val req    = FakeRequest(GET, memberDoesNotHaveNinoRoute)
+        val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
@@ -141,11 +140,11 @@ class MemberDoesNotHaveNinoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request =
+        val req =
           FakeRequest(POST, memberDoesNotHaveNinoRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
-        val result = route(application, request).value
+        val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url

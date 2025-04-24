@@ -22,16 +22,20 @@
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import views.html.components.QTNumber
+@import models.requests.DisplayRequest
+
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("schemeManagersName.title"))) {
 
@@ -41,6 +45,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        @qtNumber()
         <h1 class="govuk-heading-l">@messages("schemeManagersName.heading")</h1>
 
         @govukInput(

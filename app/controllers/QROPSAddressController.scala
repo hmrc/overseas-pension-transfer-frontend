@@ -23,7 +23,7 @@ import models.address.{Country, QROPSAddress}
 import pages.QROPSAddressPage
 import play.api.Logging
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -49,14 +49,14 @@ class QROPSAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  private def form()(implicit messages: Messages): Form[QROPSAddressFormData] = formProvider()
+  private def form(): Form[QROPSAddressFormData] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val userAnswers  = request.userAnswers
       val preparedForm = userAnswers.get(QROPSAddressPage) match {
-        case None          => form
-        case Some(address) => form.fill(QROPSAddressFormData.fromDomain(QROPSAddress.fromAddress(address)))
+        case None          => form()
+        case Some(address) => form().fill(QROPSAddressFormData.fromDomain(QROPSAddress.fromAddress(address)))
       }
 
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
@@ -66,7 +66,7 @@ class QROPSAddressController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
+      form().bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
           Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
