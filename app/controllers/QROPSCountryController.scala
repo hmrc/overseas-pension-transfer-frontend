@@ -18,8 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.QROPSCountryFormProvider
-
-import javax.inject.Inject
 import models.Mode
 import models.address.Country
 import pages.QROPSCountryPage
@@ -31,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.QROPSCountryView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class QROPSCountryController @Inject() (
