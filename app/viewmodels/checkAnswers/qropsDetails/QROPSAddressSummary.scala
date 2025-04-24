@@ -33,11 +33,11 @@ object QROPSAddressSummary {
         val value = AddressViewModel.formatAddressWithLineBreaks(answer, ukMode = false)
 
         SummaryListRowViewModel(
-          key     = "qROPSAddress.checkYourAnswersLabel",
+          key     = "qropsAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
             ActionItemViewModel("site.change", QROPSAddressPage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("qROPSAddress.change.hidden"))
+              .withVisuallyHiddenText(messages("qropsAddress.change.hidden"))
           )
         )
     }

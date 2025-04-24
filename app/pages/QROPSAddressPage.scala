@@ -35,7 +35,7 @@ case object QROPSAddressPage extends QuestionPage[Address] {
     routes.QROPSDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.QROPSNameController.onPageLoad(CheckMode)
+    routes.QROPSAddressController.onPageLoad(CheckMode)
 
   val recoveryModeReturnUrl: String = routes.QROPSAddressController.onPageLoad(NormalMode).url
 }

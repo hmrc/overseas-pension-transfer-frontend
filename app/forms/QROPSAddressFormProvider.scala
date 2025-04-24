@@ -48,10 +48,10 @@ class QROPSAddressFormProvider @Inject() extends Mappings with Regex {
 
   def apply(): Form[QROPSAddressFormData] = Form(
     mapping(
-      "addressLine1" -> text("qROPSAddress.error.addressLine1.required")
+      "addressLine1" -> text("qropsAddress.error.addressLine1.required")
         .verifying(maxLength(35, "common.addressInput.error.addressLine1.length"))
         .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine1.pattern")),
-      "addressLine2" -> text("qROPSAddress.error.addressLine2.required")
+      "addressLine2" -> text("qropsAddress.error.addressLine2.required")
         .verifying(maxLength(35, "common.addressInput.error.addressLine2.length"))
         .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine2.pattern")),
       "addressLine3" -> optional(

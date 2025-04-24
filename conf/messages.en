@@ -238,11 +238,11 @@ qropsReference.error.required = Enter the QROPS Reference
 qropsReference.error.invalid = Enter the QROPS reference in a valid format
 qropsReference.change.hidden = QROPS reference
 
-qROPSAddress.title = Address of the QROPS
-qROPSAddress.heading = Address of the QROPS
-qROPSAddress.checkYourAnswersLabel = QROPSAddress
-qROPSAddress.error.addressLine1.required = Enter the first line of QROPS address
-qROPSAddress.error.addressLine2.required = Enter the second line of QROPS address
+qropsAddress.title = Address of the QROPS
+qropsAddress.heading = Address of the QROPS
+qropsAddress.checkYourAnswersLabel = QROPS address
+qropsAddress.error.addressLine1.required = Enter the first line of QROPS address
+qropsAddress.error.addressLine2.required = Enter the second line of QROPS address
 
 qropsCountry.title = Country or territory in which QROPS was established?
 qropsCountry.heading = Country or territory in which QROPS was established?
