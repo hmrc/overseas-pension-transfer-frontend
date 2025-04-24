@@ -106,6 +106,11 @@ POST       /qrops-reference                                          controllers
 GET        /change-qrops-reference                                   controllers.QROPSReferenceController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-qrops-reference                                   controllers.QROPSReferenceController.onSubmit(mode: Mode = CheckMode)
 
+GET        /qrops-address                                            controllers.QROPSAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /qrops-address                                            controllers.QROPSAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /change-qrops-address                                     controllers.QROPSAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-qrops-address                                     controllers.QROPSAddressController.onSubmit(mode: Mode = CheckMode)
+
 GET        /qrops-country                                            controllers.QROPSCountryController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-country                                            controllers.QROPSCountryController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-country                                     controllers.QROPSCountryController.onPageLoad(mode: Mode = CheckMode)
@@ -121,16 +126,6 @@ POST       /scheme-managers-name                                     controllers
 GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
 
-GET        /scheme-managers-email                                    controllers.SchemeManagersEmailController.onPageLoad(mode: Mode = NormalMode)
-POST       /scheme-managers-email                                    controllers.SchemeManagersEmailController.onSubmit(mode: Mode = NormalMode)
-GET        /change-scheme-managers-email                             controllers.SchemeManagersEmailController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-scheme-managers-email                             controllers.SchemeManagersEmailController.onSubmit(mode: Mode = CheckMode)
-
-GET        /scheme-managers-contact                                  controllers.SchemeManagersContactController.onPageLoad(mode: Mode = NormalMode)
-POST       /scheme-managers-contact                                  controllers.SchemeManagersContactController.onSubmit(mode: Mode = NormalMode)
-GET        /change-scheme-managers-contact                           controllers.SchemeManagersContactController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-scheme-managers-contact                           controllers.SchemeManagersContactController.onSubmit(mode: Mode = CheckMode)
-
 GET        /organisation-name                                        controllers.OrganisationNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /organisation-name                                        controllers.OrganisationNameController.onSubmit(mode: Mode = NormalMode)
 GET        /change-organisation-name                                 controllers.OrganisationNameController.onPageLoad(mode: Mode = CheckMode)
@@ -141,12 +136,17 @@ POST       /organisation-individual-name                             controllers
 GET        /change-organisation-individual-name                      controllers.OrgIndividualNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-organisation-individual-name                      controllers.OrgIndividualNameController.onSubmit(mode: Mode = CheckMode)
 
-GET        /qrops-address                                            controllers.QROPSAddressController.onPageLoad(mode: Mode = NormalMode)
-POST       /qrops-address                                            controllers.QROPSAddressController.onSubmit(mode: Mode = NormalMode)
-GET        /change-qrops-address                                     controllers.QROPSAddressController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-qrops-address                                     controllers.QROPSAddressController.onSubmit(mode: Mode = CheckMode)
-
 GET        /scheme-managers-address                                  controllers.SchemeManagersAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /scheme-managers-address                                  controllers.SchemeManagersAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-scheme-managers-address                           controllers.SchemeManagersAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-scheme-managers-address                           controllers.SchemeManagersAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /scheme-managers-email                                    controllers.SchemeManagersEmailController.onPageLoad(mode: Mode = NormalMode)
+POST       /scheme-managers-email                                    controllers.SchemeManagersEmailController.onSubmit(mode: Mode = NormalMode)
+GET        /change-scheme-managers-email                             controllers.SchemeManagersEmailController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-scheme-managers-email                             controllers.SchemeManagersEmailController.onSubmit(mode: Mode = CheckMode)
+
+GET        /scheme-managers-contact                                  controllers.SchemeManagersContactController.onPageLoad(mode: Mode = NormalMode)
+POST       /scheme-managers-contact                                  controllers.SchemeManagersContactController.onSubmit(mode: Mode = NormalMode)
+GET        /change-scheme-managers-contact                           controllers.SchemeManagersContactController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-scheme-managers-contact                           controllers.SchemeManagersContactController.onSubmit(mode: Mode = CheckMode)

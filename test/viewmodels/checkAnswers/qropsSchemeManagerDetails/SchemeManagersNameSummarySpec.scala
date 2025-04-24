@@ -18,11 +18,12 @@ package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import models.SchemeManagersName
+import org.scalatest.freespec.AnyFreeSpec
 import pages.SchemeManagersNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class SchemeManagersNameSummarySpec extends SpecBase {
+class SchemeManagersNameSummarySpec extends AnyFreeSpec with SpecBase {
 
   "Scheme manager's name Summary" - {
     implicit val messages: Messages = stubMessages()

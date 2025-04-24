@@ -22,6 +22,7 @@ import models.NormalMode
 import models.address.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.SchemeManagersAddressPage
 import play.api.inject.bind
@@ -34,7 +35,7 @@ import views.html.SchemeManagersAddressView
 
 import scala.concurrent.Future
 
-class SchemeManagersAddressControllerSpec extends SpecBase with MockitoSugar with AddressBase {
+class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with AddressBase {
 
   private val formProvider = new SchemeManagersAddressFormProvider()
   private val form         = formProvider()
