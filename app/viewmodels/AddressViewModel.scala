@@ -55,8 +55,8 @@ object AddressViewModel {
       toOption(vm.line3),
       toOption(vm.line4),
       toOption(vm.line5),
-      toOption(vm.postcode),
       toOption(vm.country).filterNot(_ => ukMode),
+      toOption(vm.postcode),
       toOption(vm.poBox)
     ).flatten
   }
@@ -80,8 +80,12 @@ object AddressViewModel {
     }
 
   def formatAddressWithLineBreaks(vm: AddressViewModel, ukMode: Boolean): Html =
-    HtmlFormat.fill(
-      for (line <- formatAddressAsLines(vm, ukMode))
-        yield Html(s"$line<br>")
-    )
+    HtmlFormat.fill {
+      val lines = formatAddressAsLines(vm, ukMode)
+      lines.zipWithIndex.map {
+        case (line, idx) =>
+          val isLast = idx == lines.length - 1
+          if (isLast) Html(line) else Html(s"$line<br>")
+      }
+    }
 }
