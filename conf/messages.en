@@ -68,7 +68,6 @@ common.addressInput.error.addressLine2.length = Address line 2 must be 35 charac
 common.addressInput.error.addressLine3.length = Address line 3 must be 35 characters or less
 common.addressInput.error.addressLine4.length = Address line 4 must be 35 characters or less
 common.addressInput.error.addressLine5.length = Address line 5 must be 35 characters or less
-common.addressInput.error.countryCode.length = Country must be 35 characters or less
 common.addressInput.error.postcode.length = Postcode must be 35 characters or less
 common.addressInput.error.poBox.length = PO Box must be 35 characters or less
 common.addressInput.error.addressLine1.pattern = Address line 1 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
@@ -274,7 +273,7 @@ schemeManagersAddress.title = What is the scheme manager''s address?
 schemeManagersAddress.heading = What is the scheme manager''s address?
 schemeManagersAddress.checkYourAnswersLabel = Manager address
 schemeManagersAddress.error.addressLine1.required = Enter the first line of the scheme manager''s address
-schemeManagersAddress.error.addressLine2.required = Enter the first line of the scheme manager''s address
+schemeManagersAddress.error.addressLine2.required = Enter the second line of the scheme manager''s address
 schemeManagersAddress.change.hidden = Manager address
 
 schemeManagersEmail.title = What is the scheme manager''s email address?
