@@ -18,21 +18,29 @@ package pages
 
 import controllers.routes
 import models.{CheckMode, NormalMode, UserAnswers}
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-case object OrganisationNamePage extends QuestionPage[String] {
+class SchemeManagersAddressPageSpec extends AnyFreeSpec with Matchers {
 
-  override def path: JsPath = JsPath \ toString
+  ".nextPage" - {
 
-  override def toString: String = "organisationName"
+    val emptyAnswers = UserAnswers("id")
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.OrgIndividualNameController.onPageLoad(NormalMode)
+    "in Normal Mode" - {
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.SchemeManagerDetailsCYAController.onPageLoad()
+      "must go to Index" in {
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.OrganisationNameController.onPageLoad(CheckMode)
+        SchemeManagersAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersEmailController.onPageLoad(NormalMode)
+      }
+    }
+
+    "in Check Mode" - {
+
+      "must go to Check Answers" in {
+
+        SchemeManagersAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+      }
+    }
+  }
 }

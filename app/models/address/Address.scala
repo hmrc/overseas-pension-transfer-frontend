@@ -276,3 +276,56 @@ object QROPSAddress {
     )
   }
 }
+
+case class SchemeManagersAddress(
+    addressLine1: String,
+    addressLine2: String,
+    addressLine3: Option[String],
+    addressLine4: Option[String],
+    addressLine5: Option[String],
+    country: Country
+  ) extends Address {
+  val line1: String                     = addressLine1
+  val line2: String                     = addressLine2
+  val line3: Option[String]             = addressLine3
+  val line4: Option[String]             = addressLine4
+  val countryCode: Country              = country
+  val poBox: Option[String]             = None
+  override val postcode: Option[String] = None
+}
+
+object SchemeManagersAddress {
+
+  implicit val reads: Reads[SchemeManagersAddress] = (
+    (__ \ "line1").read[String] and
+      (__ \ "line2").read[String] and
+      (__ \ "line3").readNullable[String] and
+      (__ \ "line4").readNullable[String] and
+      (__ \ "line5").readNullable[String] and
+      (__ \ "country").read[Country]
+  )(SchemeManagersAddress.apply _)
+
+  implicit val writes: OWrites[SchemeManagersAddress] = OWrites[SchemeManagersAddress] { address =>
+    Json.obj(
+      "line1"   -> address.line1,
+      "line2"   -> address.line2,
+      "line3"   -> address.line3,
+      "line4"   -> address.line4,
+      "line5"   -> address.addressLine5,
+      "country" -> address.country
+    )
+  }
+
+  implicit val format: OFormat[SchemeManagersAddress] = OFormat(reads, writes)
+
+  def fromAddress(address: Address): SchemeManagersAddress = {
+    SchemeManagersAddress(
+      addressLine1 = address.line1,
+      addressLine2 = address.line2,
+      addressLine3 = address.line3,
+      addressLine4 = address.line4,
+      addressLine5 = None,
+      country      = address.country
+    )
+  }
+}

@@ -18,28 +18,36 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import models.NormalMode
+import pages.SchemeManagerDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
 import viewmodels.govuk.summarylist._
-import views.html.QROPSManagerDetailsCYAView
+import views.html.SchemeManagerDetailsCYAView
 
-class QROPSManagerDetailsCYAController @Inject() (
+class SchemeManagerDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSManagerDetailsCYAView
+    view: SchemeManagerDetailsCYAView
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val list = SummaryListViewModel(
-        rows = Seq.empty
-      )
+      val list = SummaryListViewModel(SchemeManagerDetailsSummary.rows(request.userAnswers))
 
       Ok(view(list))
+  }
+
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      {
+        Redirect(SchemeManagerDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+      }
   }
 }

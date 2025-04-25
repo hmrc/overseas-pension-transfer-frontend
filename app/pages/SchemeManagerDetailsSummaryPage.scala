@@ -21,11 +21,11 @@ import models.{PersonName, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QROPSManagerDetailsSummaryPage extends QuestionPage[PersonName] {
+case object SchemeManagerDetailsSummaryPage extends QuestionPage[PersonName] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "qropsManagerDetailsSummary"
+  override def toString: String = "schemeManagerDetailsSummary"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad() // TODO This will have to be changed to 'overseas transfer report' main page when exists

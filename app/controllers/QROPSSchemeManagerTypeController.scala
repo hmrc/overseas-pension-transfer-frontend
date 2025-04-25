@@ -17,28 +17,29 @@
 package controllers
 
 import controllers.actions._
-import forms.QROPSSchemeManagerIsIndividualOrOrgFormProvider
-import models.Mode
-import pages.QROPSSchemeManagerIsIndividualOrOrgPage
+import forms.QROPSSchemeManagerTypeFormProvider
+
+import javax.inject.Inject
+import models.{Mode, NormalMode, QROPSSchemeManagerType}
+import pages.{OrgIndividualNamePage, OrganisationNamePage, QROPSSchemeManagerTypePage, SchemeManagersNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.QROPSSchemeManagerIsIndividualOrOrgView
+import views.html.QROPSSchemeManagerTypeView
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class QROPSSchemeManagerIsIndividualOrOrgController @Inject() (
+class QROPSSchemeManagerTypeController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: QROPSSchemeManagerIsIndividualOrOrgFormProvider,
+    formProvider: QROPSSchemeManagerTypeFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSSchemeManagerIsIndividualOrOrgView
+    view: QROPSSchemeManagerTypeView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -46,7 +47,7 @@ class QROPSSchemeManagerIsIndividualOrOrgController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSSchemeManagerIsIndividualOrOrgPage) match {
+      val preparedForm = request.userAnswers.get(QROPSSchemeManagerTypePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -59,11 +60,27 @@ class QROPSSchemeManagerIsIndividualOrOrgController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
+        value => {
+          val previousValue = request.userAnswers.get(QROPSSchemeManagerTypePage)
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerIsIndividualOrOrgPage, value))
+            baseAnswers <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerTypePage, value))
+
+            // If the QROPSSchemeManagerType changes, remove the answers of previous corresponding questions
+            updatedAnswers <- (previousValue, value) match {
+                                case (Some(QROPSSchemeManagerType.Individual), QROPSSchemeManagerType.Organisation) => Future.fromTry(baseAnswers
+                                    .remove(SchemeManagersNamePage))
+                                case (Some(QROPSSchemeManagerType.Organisation), QROPSSchemeManagerType.Individual) => Future.fromTry(baseAnswers
+                                    .remove(OrganisationNamePage)
+                                    .flatMap(_.remove(OrgIndividualNamePage)))
+                                case _                                                                              => Future.successful(baseAnswers)
+                              }
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(mode, updatedAnswers))
+
+            // If the QROPSSchemeManagerType changes, always switch to NormalMode to go through corresponding set of questions
+            redirectMode = if (!previousValue.contains(value)) NormalMode else mode
+
+          } yield Redirect(QROPSSchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
+        }
       )
   }
 }

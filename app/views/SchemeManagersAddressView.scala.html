@@ -22,39 +22,32 @@
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import views.html.components.Link
-@import views.html.components.QTNumber
-@import models.requests.DisplayRequest
+@import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
+@import views.ViewUtils
+@import views.html.components.InputCountry
+@import models.address.Country
+@import viewmodels.CountrySelectViewModel
 
 @this(
-        layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
-        govukButton: GovukButton,
-        link: Link,
-        qtNumber: QTNumber
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    inputCountry: InputCountry,
+    govukButton: GovukButton
 )
 
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
-@memberName = @{request.memberName}
+@layout(pageTitle = title(form, messages("schemeManagersAddress.title"))) {
 
-@addressLookupPage = @{routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
-
-@layout(pageTitle = title(form, messages("membersLastUKAddress.title"))) {
-
-    @formHelper(action = routes.MembersLastUKAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.SchemeManagersAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @qtNumber()
-        <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading", memberName)</h1>
-        <p id ="postcodeSearchHint " class="govuk-body govuk-!-padding-bottom-2">
-            @Html(messages("membersLastUKAddress.by.postcode.hint", link("postcodeSearchLink", addressLookupPage, messages("membersLastUKAddress.by.postcode.link.text"))) )
-        </p>
+        <h1 class="govuk-heading-l">@messages("schemeManagersAddress.heading")</h1>
 
         @govukInput(
             InputViewModel(
@@ -90,10 +83,17 @@
 
         @govukInput(
             InputViewModel(
-                field = form("postcode"),
-                label = LabelViewModel(Text(messages("membersLastUKAddress.postcode")))
+                field = form("addressLine5"),
+                label = LabelViewModel(Text(messages("common.addressInput.addressLine5")))
             )
-            .withWidth(OneQuarter)
+            .withWidth(Fixed20)
+        )
+
+        @inputCountry(
+            form,
+            field = "countryCode",
+            labelMsg = "common.addressInput.countryCode",
+            countries = countrySelectViewModel.items
         )
 
         @govukButton(

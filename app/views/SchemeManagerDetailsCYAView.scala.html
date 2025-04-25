@@ -43,4 +43,9 @@
 
     @govukSummaryList(list)
 
+    @formHelper(action = routes.SchemeManagerDetailsCYAController.onSubmit(), Symbol("autoComplete") -> "off") {
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
 }

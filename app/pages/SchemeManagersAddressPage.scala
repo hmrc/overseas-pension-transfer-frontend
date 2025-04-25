@@ -17,22 +17,25 @@
 package pages
 
 import controllers.routes
+import models.address.SchemeManagersAddress
 import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object OrganisationNamePage extends QuestionPage[String] {
+case object SchemeManagersAddressPage extends QuestionPage[SchemeManagersAddress] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "organisationName"
+  override def toString: String = "schemeManagersAddress"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.OrgIndividualNameController.onPageLoad(NormalMode)
+    routes.SchemeManagersEmailController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.SchemeManagerDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.OrganisationNameController.onPageLoad(CheckMode)
+    routes.SchemeManagersAddressController.onPageLoad(CheckMode)
+
+  val recoveryModeReturnUrl: String = routes.SchemeManagersAddressController.onPageLoad(NormalMode).url
 }

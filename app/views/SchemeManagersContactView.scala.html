@@ -14,45 +14,43 @@
  * limitations under the License.
  *@
 
+@import viewmodels.InputWidth._
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
-@import viewmodels.LegendSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import views.html.components.QTNumber
-@import models.requests.DisplayRequest
+@import viewmodels.LabelSize.Large
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+    govukInput: GovukInput,
+    govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("qropsSchemeManagerIsIndividualOrOrg.title"))) {
+@layout(pageTitle = title(form, messages("schemeManagersContact.title"))) {
 
-    @formHelper(action = routes.QROPSSchemeManagerIsIndividualOrOrgController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.SchemeManagersContactController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
+            @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @qtNumber()
-        <h1 class="govuk-heading-l">@messages("qropsSchemeManagerIsIndividualOrOrg.heading")</h1>
-
-        @govukRadios(
-            RadiosViewModel(
-                field  = form("value"),
-                items  = QROPSSchemeManagerIsIndividualOrOrg.options
+        @govukInput(
+            InputViewModel(
+                field = form("contactNumber"),
+                label = LabelViewModel(Text(messages("schemeManagersContact.heading")))
+                            .withCssClass("govuk-!-margin-bottom-6")
+                            .asPageHeading(size = Large)
             )
-            .withHint(HintViewModel(Text(messages("radios.hint"))))
+            .withHint(HintViewModel(messages("schemeManagersContact.hint")))
+            .withWidth(OneHalf)
         )
 
         @govukButton(

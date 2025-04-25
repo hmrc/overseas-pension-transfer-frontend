@@ -24,39 +24,39 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class QROPSSchemeManagerIsIndividualOrOrgSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class QROPSSchemeManagerTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "QropsSchemeManagerIsIndividualOrOrg" - {
+  "QROPSSchemeManagerType" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(QROPSSchemeManagerIsIndividualOrOrg.values.toSeq)
+      val gen = Gen.oneOf(QROPSSchemeManagerType.values.toSeq)
 
       forAll(gen) {
-        qropsSchemeManagerIsIndividualOrOrg =>
-          JsString(qropsSchemeManagerIsIndividualOrOrg.toString).validate[
-            QROPSSchemeManagerIsIndividualOrOrg
-          ].asOpt.value mustEqual qropsSchemeManagerIsIndividualOrOrg
+        qropsSchemeManagerType =>
+          JsString(qropsSchemeManagerType.toString).validate[
+            QROPSSchemeManagerType
+          ].asOpt.value mustEqual qropsSchemeManagerType
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!QROPSSchemeManagerIsIndividualOrOrg.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!QROPSSchemeManagerType.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[QROPSSchemeManagerIsIndividualOrOrg] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[QROPSSchemeManagerType] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(QROPSSchemeManagerIsIndividualOrOrg.values.toSeq)
+      val gen = Gen.oneOf(QROPSSchemeManagerType.values.toSeq)
 
       forAll(gen) {
-        qropsSchemeManagerIsIndividualOrOrg =>
-          Json.toJson(qropsSchemeManagerIsIndividualOrOrg) mustEqual JsString(qropsSchemeManagerIsIndividualOrOrg.toString)
+        qropsSchemeManagerType =>
+          Json.toJson(qropsSchemeManagerType) mustEqual JsString(qropsSchemeManagerType.toString)
       }
     }
   }

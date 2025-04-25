@@ -68,7 +68,6 @@ common.addressInput.error.addressLine2.length = Address line 2 must be 35 charac
 common.addressInput.error.addressLine3.length = Address line 3 must be 35 characters or less
 common.addressInput.error.addressLine4.length = Address line 4 must be 35 characters or less
 common.addressInput.error.addressLine5.length = Address line 5 must be 35 characters or less
-common.addressInput.error.countryCode.length = Country must be 35 characters or less
 common.addressInput.error.postcode.length = Postcode must be 35 characters or less
 common.addressInput.error.poBox.length = PO Box must be 35 characters or less
 common.addressInput.error.addressLine1.pattern = Address line 1 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
@@ -98,7 +97,7 @@ checkYourAnswers.return.dashboard = Return to overseas pension transfer dashboar
 checkYourAnswers.memberDetails.heading = The member''s details
 checkYourAnswers.memberDetails.insetText = Take note of the transfer reference (e.g., QT123456) or National Insurance number as you will be able to identify the form and search by these details later.
 checkYourAnswers.qropsDetails.heading = The QROPS details
-checkYourAnswers.qropsSchemeManagerDetails.heading = The QROPS scheme manager's details
+checkYourAnswers.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
 
 discardTransferConfirm.title = Are you sure you want to discard this transfer?
 discardTransferConfirm.heading = Are you sure you want to discard this transfer?
@@ -186,6 +185,8 @@ memberConfirmLastUkAddress.paragraph = You can also <a href="{0}" class="govuk-l
 
 membersLastUKAddress.title = What was member''s last principal residential address in the UK?
 membersLastUKAddress.heading = What was {0}''s last principal residential address in the UK?
+membersLastUKAddress.by.postcode.hint = You can also find the address by {0}.
+membersLastUKAddress.by.postcode.link.text = searching the postcode
 membersLastUKAddress.postcode = Postcode
 membersLastUKAddress.checkYourAnswersLabel = Last UK address
 membersLastUKAddress.error.postcode.length = Postcode must be 16 characters or less
@@ -200,27 +201,6 @@ memberDateOfLeavingUK.heading = When did {0} leave the UK?
 memberDateOfLeavingUK.checkYourAnswersLabel = Date member left UK
 memberDateOfLeavingUK.error.required.all = Enter the date of leaving the UK
 memberDateOfLeavingUK.change.hidden = Date member left UK
-
-schemeManagersName.title = What is the manager''s name?
-schemeManagersName.heading = What is the manager''s name?
-schemeManagersName.checkYourAnswersLabel = Scheme manager''s name
-schemeManagersName.error.firstName.required = Enter the Scheme manager''s first name
-schemeManagersName.error.lastName.required = Enter the Scheme manager''s last name
-schemeManagersName.error.firstName.length = The Scheme manager''s first name must be 35 characters or less
-schemeManagersName.error.lastName.length = The Scheme manager''s last name must be 35 characters or less
-schemeManagersName.error.firstName.pattern = The scheme manager'’s first name must only include letters, spaces, apostrophes and hyphens
-schemeManagersName.error.lastName.pattern = The scheme manager'’s last name must only include letters, spaces, apostrophes and hyphens
-schemeManagersName.firstName.change.hidden = Scheme manager''s name
-schemeManagersName.lastName.change.hidden = Scheme manager''s name
-
-schemeManagersEmail.title = What is the scheme manager''s email address?
-schemeManagersEmail.heading = What is the scheme manager''s email address?
-schemeManagersEmail.hint = For example, name@example.com.
-schemeManagersEmail.checkYourAnswersLabel = Manager email
-schemeManagersEmail.error.required = Enter the scheme manager''s email address
-schemeManagersEmail.error.length = Email address must be 254 characters or less
-schemeManagersEmail.error.format = Enter an email address in the correct format like, name@example.com
-schemeManagersEmail.change.hidden = Manager email
 
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
@@ -251,21 +231,32 @@ qropsCountry.error.required = Enter a country or territory
 qropsCountry.error.length = QROPSCountry must be 100 characters or less
 qropsCountry.change.hidden = QROPS country
 
-qropsSchemeManagerIsIndividualOrOrg.title = Is the scheme manager an individual or organisation?
-qropsSchemeManagerIsIndividualOrOrg.heading = Is the scheme manager an individual or organisation?
-qropsSchemeManagerIsIndividualOrOrg.individual = Individual
-qropsSchemeManagerIsIndividualOrOrg.organisation = Organisation
-qropsSchemeManagerIsIndividualOrOrg.checkYourAnswersLabel = qropsSchemeManagerIsIndividualOrOrg
-qropsSchemeManagerIsIndividualOrOrg.error.required = Select if the scheme manager is an individual or an organisation
-qropsSchemeManagerIsIndividualOrOrg.change.hidden = QropsSchemeManagerIsIndividualOrOrg
+qropsSchemeManagerType.title = Is the scheme manager an individual or organisation?
+qropsSchemeManagerType.heading = Is the scheme manager an individual or organisation?
+qropsSchemeManagerType.individual = Individual
+qropsSchemeManagerType.organisation = Organisation
+qropsSchemeManagerType.checkYourAnswersLabel = Organisation or individual
+qropsSchemeManagerType.error.required = Select if the scheme manager is an individual or an organisation
+qropsSchemeManagerType.change.hidden = Organisation or individual
+
+schemeManagersName.title = What is the manager''s name?
+schemeManagersName.heading = What is the manager''s name?
+schemeManagersName.checkYourAnswersLabel = Manager name
+schemeManagersName.error.firstName.required = Enter the Scheme manager''s first name
+schemeManagersName.error.lastName.required = Enter the Scheme manager''s last name
+schemeManagersName.error.firstName.length = The Scheme manager''s first name must be 35 characters or less
+schemeManagersName.error.lastName.length = The Scheme manager''s last name must be 35 characters or less
+schemeManagersName.error.firstName.pattern = The scheme manager'’s first name must only include letters, spaces, apostrophes and hyphens
+schemeManagersName.error.lastName.pattern = The scheme manager'’s last name must only include letters, spaces, apostrophes and hyphens
+schemeManagersName.change.hidden = Manager name
 
 organisationName.title = What is the name of the organisation?
 organisationName.heading = What is the name of the organisation?
-organisationName.checkYourAnswersLabel = organisationName
+organisationName.checkYourAnswersLabel = Organisation name
 organisationName.error.required = Enter the name of the organisation
 organisationName.error.length = The name of the organisation must be 160 characters or less
 organisationName.error.pattern = The name of the organisation must only include letters, spaces, apostrophes and hyphens
-organisationName.change.hidden = What is the name of the organisation?
+organisationName.change.hidden = Organisation name
 
 orgIndividualName.title = Contact details of an individual within the organisation
 orgIndividualName.heading = Contact details of an individual within the organisation with whom HMRC should correspond
@@ -276,6 +267,29 @@ orgIndividualName.error.firstName.length = The individual''s first name must be 
 orgIndividualName.error.lastName.length = The individual''s last name must be 35 characters or less
 orgIndividualName.error.firstName.pattern = The individual''s first name must only include letters, spaces, apostrophes and hyphens
 orgIndividualName.error.lastName.pattern = The individual''s last name must only include letters, spaces, apostrophes and hyphens
-orgIndividualName.firstName.change.hidden = The individual''s first name
-orgIndividualName.lastName.change.hidden = The individual''s last name
-orgIndividualName.change.hidden = Contact details of an individual within the organisation
+orgIndividualName.change.hidden = Organisation contact
+
+schemeManagersAddress.title = What is the scheme manager''s address?
+schemeManagersAddress.heading = What is the scheme manager''s address?
+schemeManagersAddress.checkYourAnswersLabel = Manager address
+schemeManagersAddress.error.addressLine1.required = Enter the first line of the scheme manager''s address
+schemeManagersAddress.error.addressLine2.required = Enter the second line of the scheme manager''s address
+schemeManagersAddress.change.hidden = Manager address
+
+schemeManagersEmail.title = What is the scheme manager''s email address?
+schemeManagersEmail.heading = What is the scheme manager''s email address?
+schemeManagersEmail.hint = For example, name@example.com.
+schemeManagersEmail.checkYourAnswersLabel = Manager email
+schemeManagersEmail.error.required = Enter the scheme manager''s email address
+schemeManagersEmail.error.length = Email address must be 254 characters or less
+schemeManagersEmail.error.format = Enter an email address in the correct format like, name@example.com
+schemeManagersEmail.change.hidden = Manager email
+
+schemeManagersContact.title = What is the scheme manager''s telephone number?
+schemeManagersContact.heading = What is the scheme manager''s telephone number?
+schemeManagersContact.hint = All numbers should include the area, dialling or country code for example, +441234567890.
+schemeManagersContact.checkYourAnswersLabel = Manager telephone number
+schemeManagersContact.error.required = Enter the scheme manager''s telephone number
+schemeManagersContact.error.length = Telephone number must be 35 characters or less
+schemeManagersContact.error.pattern = Telephone number must only include numbers or a + at the beginning
+schemeManagersContact.change.hidden = Manager telephone number

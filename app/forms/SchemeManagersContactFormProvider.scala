@@ -17,15 +17,15 @@
 package forms
 
 import javax.inject.Inject
-
-import forms.mappings.Mappings
+import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
-import models.QROPSSchemeManagerIsIndividualOrOrg
 
-class QROPSSchemeManagerIsIndividualOrOrgFormProvider @Inject() extends Mappings {
+class SchemeManagersContactFormProvider @Inject() extends Mappings with Regex {
 
-  def apply(): Form[QROPSSchemeManagerIsIndividualOrOrg] =
+  def apply(): Form[String] =
     Form(
-      "value" -> enumerable[QROPSSchemeManagerIsIndividualOrOrg]("qropsSchemeManagerIsIndividualOrOrg.error.required")
+      "contactNumber" -> text("schemeManagersContact.error.required")
+        .verifying(maxLength(35, "schemeManagersContact.error.length"))
+        .verifying(regexp(phoneNumberRegex, "schemeManagersContact.error.pattern"))
     )
 }

@@ -21,7 +21,7 @@ import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class QROPSSchemeManagerIsIndividualOrOrgPageSpec extends AnyFreeSpec with Matchers {
+class SchemeManagersContactPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -29,9 +29,9 @@ class QROPSSchemeManagerIsIndividualOrOrgPageSpec extends AnyFreeSpec with Match
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to Scheme manager's details CYA" in {
 
-        QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        SchemeManagersContactPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
 
@@ -39,7 +39,7 @@ class QROPSSchemeManagerIsIndividualOrOrgPageSpec extends AnyFreeSpec with Match
 
       "must go to Check Answers" in {
 
-        QROPSSchemeManagerIsIndividualOrOrgPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.QROPSManagerDetailsCYAController.onPageLoad()
+        SchemeManagersContactPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
   }

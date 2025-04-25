@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import models.UserAnswers
-import pages.OrgIndividualNamePage
+import pages.QROPSSchemeManagerTypePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -25,19 +25,23 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OrgIndividualNameSummary {
+object QROPSSchemeManagerTypeSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OrgIndividualNamePage).map {
+    answers.get(QROPSSchemeManagerTypePage).map {
       answer =>
-        val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
+        val value = ValueViewModel(
+          HtmlContent(
+            HtmlFormat.escape(messages(s"qropsSchemeManagerType.$answer"))
+          )
+        )
 
         SummaryListRowViewModel(
-          key     = "orgIndividualName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
+          key     = "qropsSchemeManagerType.checkYourAnswersLabel",
+          value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", OrgIndividualNamePage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("orgIndividualName.change.hidden"))
+            ActionItemViewModel("site.change", QROPSSchemeManagerTypePage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("qropsSchemeManagerType.change.hidden"))
           )
         )
     }

@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, SchemeManagersName, UserAnswers}
+import models.{CheckMode, NormalMode, SchemeManagersName, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,10 +28,10 @@ case object SchemeManagersNamePage extends QuestionPage[SchemeManagersName] {
   override def toString: String = "schemeManagersName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.SchemeManagersAddressController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.QROPSManagerDetailsCYAController.onPageLoad()
+    routes.SchemeManagerDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
     routes.SchemeManagersNameController.onPageLoad(CheckMode)

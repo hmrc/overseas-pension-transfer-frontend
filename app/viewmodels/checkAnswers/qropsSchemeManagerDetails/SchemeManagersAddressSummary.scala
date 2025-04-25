@@ -16,8 +16,9 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import models.UserAnswers
-import pages.OrgIndividualNamePage
+import controllers.routes
+import models.{CheckMode, UserAnswers}
+import pages.SchemeManagersAddressPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -25,19 +26,29 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OrgIndividualNameSummary {
+object SchemeManagersAddressSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OrgIndividualNamePage).map {
+    answers.get(SchemeManagersAddressPage).map {
       answer =>
-        val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
+        val value = Seq(
+          Some(answer.line1),
+          Some(answer.line2),
+          answer.line3,
+          answer.line4,
+          answer.addressLine5,
+          Some(answer.country.toString)
+        ).flatMap {
+          case Some(part) if !part.trim.isEmpty => Some(HtmlFormat.escape(part))
+          case _                                => None
+        }.mkString("<br>")
 
         SummaryListRowViewModel(
-          key     = "orgIndividualName.checkYourAnswersLabel",
+          key     = "schemeManagersAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", OrgIndividualNamePage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("orgIndividualName.change.hidden"))
+            ActionItemViewModel("site.change", routes.SchemeManagersAddressController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("schemeManagersAddress.change.hidden"))
           )
         )
     }
