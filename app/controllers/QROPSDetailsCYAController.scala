@@ -18,9 +18,12 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import models.NormalMode
+import pages.QROPSDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.QROPSDetailsCYAView
 
@@ -36,10 +39,15 @@ class QROPSDetailsCYAController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val list = SummaryListViewModel(
-        rows = Seq.empty
-      )
+      val list = SummaryListViewModel(QROPSDetailsSummary.rows(request.userAnswers))
 
       Ok(view(list))
+  }
+
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      {
+        Redirect(QROPSDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+      }
   }
 }

@@ -17,8 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
-
+import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -29,7 +28,7 @@ case object QROPSNamePage extends QuestionPage[String] {
   override def toString: String = "qropsName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.QROPSReferenceController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.QROPSDetailsCYAController.onPageLoad()

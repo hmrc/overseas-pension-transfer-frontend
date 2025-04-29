@@ -31,7 +31,7 @@ class QROPSAddressPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        QROPSAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        QROPSAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.QROPSCountryController.onPageLoad(NormalMode)
       }
     }
 
