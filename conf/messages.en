@@ -293,3 +293,10 @@ schemeManagersContact.error.required = Enter the scheme manager''s telephone num
 schemeManagersContact.error.length = Telephone number must be 35 characters or less
 schemeManagersContact.error.pattern = Telephone number must only include numbers or a + at the beginning
 schemeManagersContact.change.hidden = Manager telephone number
+
+overseasTransferAllowance.title = What is the amount of the overseas transfer allowance before making this transfer?
+overseasTransferAllowance.heading = What is the amount of the overseas transfer allowance before making this transfer?
+overseasTransferAllowance.checkYourAnswersLabel = Transfer allowance
+overseasTransferAllowance.error.required = Enter the transfer amount
+overseasTransferAllowance.change.hidden = Transfer allowance
+overseasTransferAllowance.hint = Put the exact amount to 2 decimal places for example, £600,000.00 or £193,243.54.
