@@ -295,6 +295,7 @@ case class SchemeManagersAddress(
   val line2: String                     = addressLine2
   val line3: Option[String]             = addressLine3
   val line4: Option[String]             = addressLine4
+  val line5: Option[String]             = addressLine5
   val countryCode: Country              = country
   val poBox: Option[String]             = None
   override val postcode: Option[String] = None
