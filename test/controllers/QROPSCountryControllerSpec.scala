@@ -16,7 +16,7 @@
 
 package controllers
 
-import base.SpecBase
+import base.AddressBase
 import forms.QROPSCountryFormProvider
 import models.NormalMode
 import models.address.Country
@@ -35,7 +35,7 @@ import views.html.QROPSCountryView
 
 import scala.concurrent.Future
 
-class QROPSCountryControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
 
   private val formProvider = new QROPSCountryFormProvider()
   private val form         = formProvider()
@@ -46,6 +46,8 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
   )
   private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
   private val mockCountryService     = mock[CountryService]
+
+  private val userAnswers = emptyUserAnswers.set(QROPSCountryPage, testCountries.head).success.value
 
   private lazy val qropsCountryRoute = routes.QROPSCountryController.onPageLoad(NormalMode).url
 
@@ -73,12 +75,13 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(QROPSCountryPage, "answer").success.value
+      when(mockCountryService.countries).thenReturn(testCountries)
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
+      val application = applicationBuilder(Some(userAnswers))
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        ).build()
+        )
+        .build()
 
       running(application) {
         val request = FakeRequest(GET, qropsCountryRoute)
@@ -88,7 +91,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), countrySelectViewModel, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(testCountries.head.code), countrySelectViewModel, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -106,7 +109,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       running(application) {
         val request =
           FakeRequest(POST, qropsCountryRoute)
-            .withFormUrlEncodedBody(("countryCode", "answer"))
+            .withFormUrlEncodedBody(("countryCode", "GB"))
 
         val result = route(application, request).value
 

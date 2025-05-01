@@ -17,22 +17,25 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.address.Country
+import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QROPSCountryPage extends QuestionPage[String] {
+case object QROPSCountryPage extends QuestionPage[Country] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "qROPSCountry"
+  override def toString: String = "qropsCountry"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    routes.QROPSDetailsCYAController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.QROPSDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
     routes.QROPSCountryController.onPageLoad(CheckMode)
+
+  val recoveryModeReturnUrl: String = routes.QROPSCountryController.onPageLoad(NormalMode).url
 }

@@ -28,7 +28,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
   ".addressLine1" - {
 
     val fieldName   = "addressLine1"
-    val requiredKey = "qROPSAddress.error.addressLine1.required"
+    val requiredKey = "qropsAddress.error.addressLine1.required"
     val lengthKey   = "common.addressInput.error.addressLine1.length"
     val patternKey  = "common.addressInput.error.addressLine1.pattern"
     val maxLength   = 35
@@ -63,7 +63,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
   ".addressLine2" - {
 
     val fieldName   = "addressLine2"
-    val requiredKey = "qROPSAddress.error.addressLine2.required"
+    val requiredKey = "qropsAddress.error.addressLine2.required"
     val lengthKey   = "common.addressInput.error.addressLine2.length"
     val patternKey  = "common.addressInput.error.addressLine2.pattern"
     val maxLength   = 35

@@ -23,6 +23,9 @@
 @import views.html.components.QTNumber
 @import models.requests.DisplayRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.govuk.all.ButtonViewModel
+
 
 @this(
         layout: templates.Layout,
@@ -44,4 +47,9 @@
 
     @govukSummaryList(list)
 
+    @formHelper(action = routes.MemberDetailsCYAController.onSubmit(), Symbol("autoComplete") -> "off") {
+        @govukButton(
+         ButtonViewModel(Text(messages("site.continue")))
+        )
+    }
 }

@@ -24,6 +24,7 @@ sealed trait Address {
   val line2: String
   val line3: Option[String]
   val line4: Option[String]
+  val line5: Option[String]
   val country: Country
   val postcode: Option[String]
   val poBox: Option[String]
@@ -81,6 +82,7 @@ case class MembersLastUKAddress(
   val line2: String            = addressLine2
   val line3: Option[String]    = Option(addressLine3.getOrElse(""))
   val line4: Option[String]    = Option(addressLine4.getOrElse(""))
+  val line5: Option[Nothing]   = None
   val country: Country         = Countries.UK
   val postcode: Option[String] = Some(rawPostcode)
   val poBox: Option[String]    = None
@@ -127,7 +129,9 @@ case class MembersLookupLastUkAddress(
     country: Country,
     postcode: Option[String],
     poBox: Option[String]
-  ) extends Address {}
+  ) extends Address {
+  val line5: Option[Nothing] = None
+}
 
 object MembersLookupLastUkAddress {
 
@@ -179,10 +183,11 @@ case class MembersCurrentAddress(
     postcode: Option[String],
     poBox: Option[String]
   ) extends Address {
-  val line1: String         = addressLine1
-  val line2: String         = addressLine2
-  val line3: Option[String] = addressLine3
-  val line4: Option[String] = addressLine4
+  val line1: String          = addressLine1
+  val line2: String          = addressLine2
+  val line3: Option[String]  = addressLine3
+  val line4: Option[String]  = addressLine4
+  val line5: Option[Nothing] = None
 }
 
 object MembersCurrentAddress {
@@ -236,6 +241,7 @@ case class QROPSAddress(
   val line2: String                     = addressLine2
   val line3: Option[String]             = addressLine3
   val line4: Option[String]             = addressLine4
+  val line5: Option[String]             = addressLine5
   val countryCode: Country              = country
   val poBox: Option[String]             = None
   override val postcode: Option[String] = None
@@ -258,7 +264,7 @@ object QROPSAddress {
       "line2"   -> address.line2,
       "line3"   -> address.line3,
       "line4"   -> address.line4,
-      "line5"   -> address.addressLine5,
+      "line5"   -> address.line5,
       "country" -> address.country
     )
   }
@@ -271,7 +277,7 @@ object QROPSAddress {
       addressLine2 = address.line2,
       addressLine3 = address.line3,
       addressLine4 = address.line4,
-      addressLine5 = None,
+      addressLine5 = address.line5,
       country      = address.country
     )
   }
@@ -289,6 +295,7 @@ case class SchemeManagersAddress(
   val line2: String                     = addressLine2
   val line3: Option[String]             = addressLine3
   val line4: Option[String]             = addressLine4
+  val line5: Option[String]             = addressLine5
   val countryCode: Country              = country
   val poBox: Option[String]             = None
   override val postcode: Option[String] = None

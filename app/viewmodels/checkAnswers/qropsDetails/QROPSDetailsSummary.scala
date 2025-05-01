@@ -16,27 +16,23 @@
 
 package viewmodels.checkAnswers.qropsDetails
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages.QROPSCountryPage
+import models.UserAnswers
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
-object QROPSCountrySummary {
+case object QROPSDetailsSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QROPSCountryPage).map {
-      country =>
-        SummaryListRowViewModel(
-          key     = "qropsCountry.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(country.name).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", QROPSCountryPage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("qropsCountry.change.hidden"))
-          )
-        )
-    }
+  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val nameRow: Option[SummaryListRow]      = QROPSNameSummary.row(userAnswers)
+    val referenceRow: Option[SummaryListRow] = QROPSReferenceSummary.row(userAnswers)
+    val addressRow: Option[SummaryListRow]   = QROPSAddressSummary.row(userAnswers)
+    val countryRow: Option[SummaryListRow]   = QROPSCountrySummary.row(userAnswers)
+
+    Seq(
+      nameRow,
+      referenceRow,
+      addressRow,
+      countryRow
+    ).flatten
+  }
 }

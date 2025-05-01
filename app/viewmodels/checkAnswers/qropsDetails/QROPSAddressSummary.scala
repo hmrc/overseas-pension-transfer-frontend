@@ -19,9 +19,9 @@ package viewmodels.checkAnswers.qropsDetails
 import models.UserAnswers
 import pages.QROPSAddressPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.AddressViewModel
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
@@ -30,14 +30,14 @@ object QROPSAddressSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(QROPSAddressPage).map {
       answer =>
-        val value = HtmlFormat.escape(answer.addressLine1).toString + "<br/>" + HtmlFormat.escape(answer.addressLine2).toString
+        val value = AddressViewModel.formatAddressWithLineBreaks(answer, ukMode = false)
 
         SummaryListRowViewModel(
-          key     = "qROPSAddress.checkYourAnswersLabel",
+          key     = "qropsAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
             ActionItemViewModel("site.change", QROPSAddressPage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("qROPSAddress.change.hidden"))
+              .withVisuallyHiddenText(messages("qropsAddress.change.hidden"))
           )
         )
     }

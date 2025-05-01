@@ -30,11 +30,11 @@ object QROPSReferenceSummary {
     answers.get(QROPSReferencePage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "qROPSReference.checkYourAnswersLabel",
+          key     = "qropsReference.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", QROPSReferencePage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("qROPSReference.change.hidden"))
+              .withVisuallyHiddenText(messages("qropsReference.change.hidden"))
           )
         )
     }
