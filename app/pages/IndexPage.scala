@@ -16,7 +16,7 @@
 
 package pages
 
-import controllers.routes
+import controllers.memberDetails.routes
 import models.{NormalMode, UserAnswers}
 import play.api.mvc.Call
 

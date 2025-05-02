@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.memberDetails
 import base.SpecBase
 import models.address._
 import org.scalatest.freespec.AnyFreeSpec
-import pages.MembersCurrentAddressPage
+import pages.memberDetails.MembersCurrentAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
