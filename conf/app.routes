@@ -158,3 +158,8 @@ GET        /overseas-transfer-allowance                              controllers
 POST       /overseas-transfer-allowance                              controllers.OverseasTransferAllowanceController.onSubmit(mode: Mode = NormalMode)
 GET        /change-overseas-transfer-allowance                       controllers.OverseasTransferAllowanceController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-overseas-transfer-allowance                       controllers.OverseasTransferAllowanceController.onSubmit(mode: Mode = CheckMode)
+
+GET        /is-transfer-taxable                                      controllers.IsTransferTaxableController.onPageLoad(mode: Mode = NormalMode)
+POST       /is-transfer-taxable                                      controllers.IsTransferTaxableController.onSubmit(mode: Mode = NormalMode)
+GET        /change-is-transfer-taxable                               controllers.IsTransferTaxableController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-is-transfer-taxable                               controllers.IsTransferTaxableController.onSubmit(mode: Mode = CheckMode)
