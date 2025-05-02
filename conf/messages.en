@@ -300,3 +300,9 @@ overseasTransferAllowance.checkYourAnswersLabel = Transfer allowance
 overseasTransferAllowance.error.required = Enter the transfer amount
 overseasTransferAllowance.change.hidden = Transfer allowance
 overseasTransferAllowance.hint = Put the exact amount to 2 decimal places for example, £600,000.00 or £193,243.54.
+
+isTransferTaxable.title = Is this transfer payment a taxable overseas transfer?
+isTransferTaxable.heading = Is this transfer payment a taxable overseas transfer?
+isTransferTaxable.checkYourAnswersLabel = Is transfer taxable
+isTransferTaxable.error.required = Select one option
+isTransferTaxable.change.hidden = Is transfer taxable
