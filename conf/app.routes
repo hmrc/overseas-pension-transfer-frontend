@@ -12,6 +12,8 @@ GET        /refresh-session                                          controllers
 
 GET        /there-is-a-problem                                       controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
+GET        /check-your-answers                                       controllers.CheckYourAnswersController.onPageLoad()
+
 GET        /member-details/check-your-answers                        controllers.MemberDetailsCYAController.onPageLoad()
 POST       /member-details/check-your-answers                        controllers.MemberDetailsCYAController.onSubmit()
 
