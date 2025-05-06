@@ -1,3 +1,19 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package pages
 
 import controllers.routes
@@ -14,7 +30,7 @@ class IsTransferCashOnlyPageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to Index" in {
-
+        // TODO will need to be changed once pages are connected
         IsTransferCashOnlyPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
       }
     }
@@ -23,7 +39,7 @@ class IsTransferCashOnlyPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        IsTransferCashOnlyPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        IsTransferCashOnlyPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
   }
