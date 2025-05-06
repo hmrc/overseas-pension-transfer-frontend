@@ -40,6 +40,7 @@ class MemberDetailsCYAController @Inject() (
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val list = SummaryListViewModel(MemberDetailsSummary.rows(request.userAnswers))
+
       Ok(view(list))
   }
 

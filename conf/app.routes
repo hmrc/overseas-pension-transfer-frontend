@@ -16,6 +16,7 @@ GET        /member-details/check-your-answers                        controllers
 POST       /member-details/check-your-answers                        controllers.memberDetails.MemberDetailsCYAController.onSubmit()
 
 GET        /qrops-details/check-your-answers                         controllers.QROPSDetailsCYAController.onPageLoad()
+POST        /qrops-details/check-your-answers                         controllers.QROPSDetailsCYAController.onSubmit()
 
 GET        /scheme-manager-details/check-your-answers                controllers.SchemeManagerDetailsCYAController.onPageLoad()
 POST       /scheme-manager-details/check-your-answers                controllers.SchemeManagerDetailsCYAController.onSubmit()
