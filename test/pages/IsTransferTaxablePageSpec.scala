@@ -29,8 +29,8 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
-
+      "must go to the Next page" in {
+        // TODO will need to be changed once pages are connected
         IsTransferTaxablePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
       }
     }
