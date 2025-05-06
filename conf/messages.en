@@ -293,3 +293,9 @@ schemeManagersContact.error.required = Enter the scheme manager''s telephone num
 schemeManagersContact.error.length = Telephone number must be 35 characters or less
 schemeManagersContact.error.pattern = Telephone number must only include numbers or a + at the beginning
 schemeManagersContact.change.hidden = Manager telephone number
+
+isTransferCashOnly.title = Is the transfer made up of cash only?
+isTransferCashOnly.heading = Is the transfer made up of cash only?
+isTransferCashOnly.checkYourAnswersLabel = Is transfer cash only
+isTransferCashOnly.error.required = Select one option
+isTransferCashOnly.change.hidden = Is transfer cash only
