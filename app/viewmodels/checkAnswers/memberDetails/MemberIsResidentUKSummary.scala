@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.memberDetails
 
 import models.UserAnswers
-import pages.MemberIsResidentUKPage
+import pages.memberDetails.MemberIsResidentUKPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
