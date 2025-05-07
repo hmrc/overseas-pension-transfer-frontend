@@ -304,7 +304,7 @@ overseasTransferAllowance.hint = Put the exact amount to 2 decimal places for ex
 isTransferTaxable.title = Is this transfer payment a taxable overseas transfer?
 isTransferTaxable.heading = Is this transfer payment a taxable overseas transfer?
 isTransferTaxable.checkYourAnswersLabel = Is transfer taxable
-isTransferTaxable.error.required = Select one option
+isTransferTaxable.error.required = Select yes if the transfer payment is taxable
 isTransferTaxable.change.hidden = Is transfer taxable
 
 isTransferCashOnly.title = Is the transfer made up of cash only?
