@@ -310,5 +310,5 @@ isTransferTaxable.change.hidden = Is transfer taxable
 isTransferCashOnly.title = Is the transfer made up of cash only?
 isTransferCashOnly.heading = Is the transfer made up of cash only?
 isTransferCashOnly.checkYourAnswersLabel = Is transfer cash only
-isTransferCashOnly.error.required = Select one option
+isTransferCashOnly.error.required = Select yes if the transfer is cash only
 isTransferCashOnly.change.hidden = Is transfer cash only
