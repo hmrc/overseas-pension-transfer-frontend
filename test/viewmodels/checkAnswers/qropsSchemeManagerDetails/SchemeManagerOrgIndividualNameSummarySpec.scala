@@ -19,18 +19,18 @@ package viewmodels.checkAnswers.qropsSchemeManagerDetails
 import base.SpecBase
 import models.PersonName
 import org.scalatest.freespec.AnyFreeSpec
-import pages.OrgIndividualNamePage
+import pages.SchemeManagerOrgIndividualNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class OrgIndividualNameSummarySpec extends AnyFreeSpec with SpecBase {
+class SchemeManagerOrgIndividualNameSummarySpec extends AnyFreeSpec with SpecBase {
 
   "Organisation individual's name Summary" - {
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when OrgIndividualNamePage has a value" in {
-      val answers = emptyUserAnswers.set(OrgIndividualNamePage, PersonName("FirstName", "LastName")).success.value
-      val result  = OrgIndividualNameSummary.row(answers)
+      val answers = emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("FirstName", "LastName")).success.value
+      val result  = SchemeManagerOrgIndividualNameSummary.row(answers)
 
       result mustBe defined
       result.get.key.content.asHtml.body must include("orgIndividualName.checkYourAnswersLabel")

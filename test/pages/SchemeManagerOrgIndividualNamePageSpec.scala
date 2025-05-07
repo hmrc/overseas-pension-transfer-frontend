@@ -21,7 +21,7 @@ import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class OrgIndividualNamePageSpec extends AnyFreeSpec with Matchers {
+class SchemeManagerOrgIndividualNamePageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -29,13 +29,13 @@ class OrgIndividualNamePageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
       "must go to Scheme manager address page" in {
-        OrgIndividualNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersAddressController.onPageLoad(NormalMode)
+        SchemeManagerOrgIndividualNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersAddressController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
       "must go to Check your answers" in {
-        OrgIndividualNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagerOrgIndividualNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
   }

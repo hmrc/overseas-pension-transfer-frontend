@@ -31,7 +31,7 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Organisation individual name page" in {
 
-        SchemeManagerOrganisationNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.OrgIndividualNameController.onPageLoad(NormalMode)
+        SchemeManagerOrganisationNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode)
       }
     }
 

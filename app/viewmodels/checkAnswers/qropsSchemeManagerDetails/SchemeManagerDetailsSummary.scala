@@ -28,7 +28,7 @@ case object SchemeManagerDetailsSummary {
     val managersName: Option[SummaryListRow] = SchemeManagersNameSummary.row(userAnswers)
 
     val orgName: Option[SummaryListRow]       = SchemeManagerOrganisationNameSummary.row(userAnswers)
-    val orgIndividual: Option[SummaryListRow] = OrgIndividualNameSummary.row(userAnswers)
+    val orgIndividual: Option[SummaryListRow] = SchemeManagerOrgIndividualNameSummary.row(userAnswers)
 
     val managerAddress: Option[SummaryListRow]  = SchemeManagersAddressSummary.row(userAnswers)
     val managersEmail: Option[SummaryListRow]   = SchemeManagersEmailSummary.row(userAnswers)

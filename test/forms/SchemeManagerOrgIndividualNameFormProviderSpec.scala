@@ -20,9 +20,9 @@ import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
 import play.api.data.FormError
 
-class OrgIndividualNameFormProviderSpec extends StringFieldBehaviours with Regex {
+class SchemeManagerOrgIndividualNameFormProviderSpec extends StringFieldBehaviours with Regex {
 
-  val form = new OrgIndividualNameFormProvider()()
+  val form = new SchemeManagerOrgIndividualNameFormProvider()()
 
   ".orgIndFirstName" - {
 

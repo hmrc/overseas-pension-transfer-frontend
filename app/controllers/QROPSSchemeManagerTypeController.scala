@@ -19,7 +19,7 @@ package controllers
 import controllers.actions._
 import forms.QROPSSchemeManagerTypeFormProvider
 import models.{Mode, NormalMode, QROPSSchemeManagerType}
-import pages.{OrgIndividualNamePage, QROPSSchemeManagerTypePage, SchemeManagerOrganisationNamePage, SchemeManagersNamePage}
+import pages.{QROPSSchemeManagerTypePage, SchemeManagerOrgIndividualNamePage, SchemeManagerOrganisationNamePage, SchemeManagersNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -70,7 +70,7 @@ class QROPSSchemeManagerTypeController @Inject() (
                                     .remove(SchemeManagersNamePage))
                                 case (Some(QROPSSchemeManagerType.Organisation), QROPSSchemeManagerType.Individual) => Future.fromTry(baseAnswers
                                     .remove(SchemeManagerOrganisationNamePage)
-                                    .flatMap(_.remove(OrgIndividualNamePage)))
+                                    .flatMap(_.remove(SchemeManagerOrgIndividualNamePage)))
                                 case _                                                                              => Future.successful(baseAnswers)
                               }
             _              <- sessionRepository.set(updatedAnswers)

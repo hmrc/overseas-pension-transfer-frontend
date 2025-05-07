@@ -17,13 +17,13 @@
 package controllers
 
 import base.SpecBase
-import forms.OrgIndividualNameFormProvider
+import forms.SchemeManagerOrgIndividualNameFormProvider
 import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.OrgIndividualNamePage
+import pages.SchemeManagerOrgIndividualNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -32,15 +32,15 @@ import views.html.OrgIndividualNameView
 
 import scala.concurrent.Future
 
-class OrgIndividualNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new OrgIndividualNameFormProvider()
+  private val formProvider = new SchemeManagerOrgIndividualNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val orgIndNameRoute = routes.OrgIndividualNameController.onPageLoad(NormalMode).url
+  private lazy val orgIndNameRoute = routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode).url
 
   private val validAnswer = PersonName("value 1", "value 2")
-  private val userAnswers = userAnswersQtNumber.set(OrgIndividualNamePage, validAnswer).success.value
+  private val userAnswers = userAnswersQtNumber.set(SchemeManagerOrgIndividualNamePage, validAnswer).success.value
 
   "MemberName Controller" - {
 
@@ -100,7 +100,7 @@ class OrgIndividualNameControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OrgIndividualNamePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual SchemeManagerOrgIndividualNamePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 

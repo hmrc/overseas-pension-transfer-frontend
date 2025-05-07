@@ -21,7 +21,7 @@ import models.{CheckMode, NormalMode, PersonName, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object OrgIndividualNamePage extends QuestionPage[PersonName] {
+case object SchemeManagerOrgIndividualNamePage extends QuestionPage[PersonName] {
 
   override def path: JsPath = JsPath \ toString
 
@@ -34,5 +34,5 @@ case object OrgIndividualNamePage extends QuestionPage[PersonName] {
     routes.SchemeManagerDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.OrgIndividualNameController.onPageLoad(CheckMode)
+    routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
 }

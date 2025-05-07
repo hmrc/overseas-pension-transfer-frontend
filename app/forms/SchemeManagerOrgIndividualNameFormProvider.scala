@@ -23,7 +23,7 @@ import play.api.data.Forms._
 
 import javax.inject.Inject
 
-class OrgIndividualNameFormProvider @Inject() extends Mappings with Regex {
+class SchemeManagerOrgIndividualNameFormProvider @Inject() extends Mappings with Regex {
 
   def apply(): Form[PersonName] = Form(
     mapping(
