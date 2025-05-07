@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.memberDetails
 
 import models.UserAnswers
-import pages.MemberDateOfLeavingUKPage
+import pages.memberDetails.MemberDateOfLeavingUKPage
 import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.DateTimeFormats.dateTimeFormat
