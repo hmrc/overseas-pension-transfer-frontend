@@ -17,9 +17,9 @@
 package controllers
 
 import controllers.actions._
-import forms.OrganisationNameFormProvider
+import forms.SchemeManagerOrganisationNameFormProvider
 import models.Mode
-import pages.OrganisationNamePage
+import pages.SchemeManagerOrganisationNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -29,14 +29,14 @@ import views.html.OrganisationNameView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OrganisationNameController @Inject() (
+class SchemeManagerOrganisationNameController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: OrganisationNameFormProvider,
+    formProvider: SchemeManagerOrganisationNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: OrganisationNameView
   )(implicit ec: ExecutionContext
@@ -46,7 +46,7 @@ class OrganisationNameController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(OrganisationNamePage) match {
+      val preparedForm = request.userAnswers.get(SchemeManagerOrganisationNamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -61,9 +61,9 @@ class OrganisationNameController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(OrganisationNamePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(OrganisationNamePage.nextPage(mode, updatedAnswers))
+          } yield Redirect(SchemeManagerOrganisationNamePage.nextPage(mode, updatedAnswers))
       )
   }
 }

@@ -17,23 +17,23 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import models.UserAnswers
-import pages.OrganisationNamePage
+import pages.SchemeManagerOrganisationNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OrganisationNameSummary {
+object SchemeManagerOrganisationNameSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OrganisationNamePage).map {
+    answers.get(SchemeManagerOrganisationNamePage).map {
       answer =>
         SummaryListRowViewModel(
           key     = "organisationName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", OrganisationNamePage.changeLink(answers).url)
+            ActionItemViewModel("site.change", SchemeManagerOrganisationNamePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("organisationName.change.hidden"))
           )
         )

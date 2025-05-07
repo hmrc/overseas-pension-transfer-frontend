@@ -20,14 +20,14 @@ import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
 import play.api.data.FormError
 
-class OrganisationNameFormProviderSpec extends StringFieldBehaviours with Regex {
+class SchemeManagerOrganisationNameFormProviderSpec extends StringFieldBehaviours with Regex {
 
   val requiredKey = "organisationName.error.required"
   val lengthKey   = "organisationName.error.length"
   val patternKey  = "organisationName.error.pattern"
   val maxLength   = 160
 
-  val form = new OrganisationNameFormProvider()()
+  val form = new SchemeManagerOrganisationNameFormProvider()()
 
   ".organisationName" - {
 

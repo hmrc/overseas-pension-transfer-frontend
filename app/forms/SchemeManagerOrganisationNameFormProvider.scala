@@ -20,7 +20,7 @@ import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
 
-class OrganisationNameFormProvider @Inject() extends Mappings with Regex {
+class SchemeManagerOrganisationNameFormProvider @Inject() extends Mappings with Regex {
 
   def apply(): Form[String] =
     Form(

@@ -39,7 +39,7 @@
 
 @layout(pageTitle = title(form, messages("organisationName.title"))) {
 
-    @formHelper(action = routes.OrganisationNameController.onSubmit(mode)) {
+    @formHelper(action = routes.SchemeManagerOrganisationNameController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

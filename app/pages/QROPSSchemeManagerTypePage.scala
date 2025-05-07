@@ -30,7 +30,7 @@ case object QROPSSchemeManagerTypePage extends QuestionPage[QROPSSchemeManagerTy
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     answers.get(QROPSSchemeManagerTypePage) match {
       case Some(QROPSSchemeManagerType.Individual)   => routes.SchemeManagersNameController.onPageLoad(NormalMode)
-      case Some(QROPSSchemeManagerType.Organisation) => routes.OrganisationNameController.onPageLoad(NormalMode)
+      case Some(QROPSSchemeManagerType.Organisation) => routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode)
       case _                                         => routes.JourneyRecoveryController.onPageLoad()
     }
 

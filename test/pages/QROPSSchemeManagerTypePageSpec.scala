@@ -43,7 +43,7 @@ class QROPSSchemeManagerTypePageSpec extends AnyFreeSpec with Matchers {
         QROPSSchemeManagerTypePage.nextPage(
           NormalMode,
           emptyAnswers.set(QROPSSchemeManagerTypePage, QROPSSchemeManagerType.Organisation).success.value
-        ) mustEqual routes.OrganisationNameController.onPageLoad(NormalMode)
+        ) mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode)
       }
     }
 

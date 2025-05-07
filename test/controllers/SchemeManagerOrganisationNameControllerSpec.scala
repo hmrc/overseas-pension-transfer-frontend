@@ -17,13 +17,13 @@
 package controllers
 
 import base.SpecBase
-import forms.OrganisationNameFormProvider
+import forms.SchemeManagerOrganisationNameFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.OrganisationNamePage
+import pages.SchemeManagerOrganisationNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -32,12 +32,12 @@ import views.html.OrganisationNameView
 
 import scala.concurrent.Future
 
-class OrganisationNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new OrganisationNameFormProvider()
+  private val formProvider = new SchemeManagerOrganisationNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val organisationNameRoute = routes.OrganisationNameController.onPageLoad(NormalMode).url
+  private lazy val organisationNameRoute = routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
 
   "OrganisationName Controller" - {
 
@@ -59,7 +59,7 @@ class OrganisationNameControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(OrganisationNamePage, "answer").success.value
+      val userAnswers = userAnswersQtNumber.set(SchemeManagerOrganisationNamePage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -94,7 +94,7 @@ class OrganisationNameControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OrganisationNamePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual SchemeManagerOrganisationNamePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 

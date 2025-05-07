@@ -117,7 +117,7 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.OrganisationNameController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
       }
     }
 
@@ -142,7 +142,7 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.OrganisationNameController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())

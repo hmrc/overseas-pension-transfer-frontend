@@ -127,10 +127,10 @@ POST       /scheme-managers-name                                     controllers
 GET        /change-scheme-managers-name                              controllers.SchemeManagersNameController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-scheme-managers-name                              controllers.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
 
-GET        /organisation-name                                        controllers.OrganisationNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /organisation-name                                        controllers.OrganisationNameController.onSubmit(mode: Mode = NormalMode)
-GET        /change-organisation-name                                 controllers.OrganisationNameController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-organisation-name                                 controllers.OrganisationNameController.onSubmit(mode: Mode = CheckMode)
+GET        /organisation-name                                        controllers.SchemeManagerOrganisationNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /organisation-name                                        controllers.SchemeManagerOrganisationNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-organisation-name                                 controllers.SchemeManagerOrganisationNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-organisation-name                                 controllers.SchemeManagerOrganisationNameController.onSubmit(mode: Mode = CheckMode)
 
 GET        /organisation-individual-name                             controllers.OrgIndividualNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /organisation-individual-name                             controllers.OrgIndividualNameController.onSubmit(mode: Mode = NormalMode)
