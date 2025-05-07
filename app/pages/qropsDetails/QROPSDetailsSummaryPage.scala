@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package pages.qropsDetails
 
-import forms.mappings.Mappings
-import models.QROPSSchemeManagerType
-import play.api.data.Form
+import controllers.routes
+import models.{PersonName, UserAnswers}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import javax.inject.Inject
+case object QROPSDetailsSummaryPage extends QuestionPage[PersonName] {
 
-class QROPSSchemeManagerTypeFormProvider @Inject() extends Mappings {
+  override def path: JsPath = JsPath \ toString
 
-  def apply(): Form[QROPSSchemeManagerType] =
-    Form(
-      "value" -> enumerable[QROPSSchemeManagerType]("qropsSchemeManagerType.error.required")
-    )
+  override def toString: String = "qropsDetailsSummary"
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad() // TODO This will have to be changed to 'overseas transfer report' main page when exists
 }

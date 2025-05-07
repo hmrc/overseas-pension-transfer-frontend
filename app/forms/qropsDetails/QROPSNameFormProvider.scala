@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms
-
-import forms.mappings.Mappings
-import models.QROPSSchemeManagerType
-import play.api.data.Form
+package forms.qropsDetails
 
 import javax.inject.Inject
 
-class QROPSSchemeManagerTypeFormProvider @Inject() extends Mappings {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  def apply(): Form[QROPSSchemeManagerType] =
+class QROPSNameFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[String] =
     Form(
-      "value" -> enumerable[QROPSSchemeManagerType]("qropsSchemeManagerType.error.required")
+      "value" -> text("qropsName.error.required")
+        .verifying(maxLength(160, "qropsName.error.length"))
     )
 }

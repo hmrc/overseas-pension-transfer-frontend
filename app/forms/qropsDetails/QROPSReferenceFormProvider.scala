@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
-package forms
-
-import forms.mappings.Mappings
-import models.QROPSSchemeManagerType
-import play.api.data.Form
+package forms.qropsDetails
 
 import javax.inject.Inject
+import forms.mappings.{Mappings, Regex}
+import play.api.data.Form
 
-class QROPSSchemeManagerTypeFormProvider @Inject() extends Mappings {
+class QROPSReferenceFormProvider @Inject() extends Mappings with Regex {
 
-  def apply(): Form[QROPSSchemeManagerType] =
+  val referencePrefix = "QROPS"
+
+  def apply(): Form[String] =
     Form(
-      "value" -> enumerable[QROPSSchemeManagerType]("qropsSchemeManagerType.error.required")
+      "qropsRef" -> text("qropsReference.error.required")
+        .verifying(regexp(qropsRefRegex, "qropsReference.error.invalid"))
+        .transform[String](
+          raw => prependReferencePrefix(raw),
+          formatted => formatted
+        )
     )
+
+  private def prependReferencePrefix(raw: String): String = {
+    if (raw.startsWith(referencePrefix)) raw else s"$referencePrefix$raw"
+  }
 }

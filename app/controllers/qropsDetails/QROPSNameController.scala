@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.qropsDetails
 
 import controllers.actions._
-import forms.QROPSSchemeManagerTypeFormProvider
-import models.{Mode, NormalMode, QROPSSchemeManagerType}
-import pages.{OrgIndividualNamePage, OrganisationNamePage, QROPSSchemeManagerTypePage, SchemeManagersNamePage}
+import forms.qropsDetails.QROPSNameFormProvider
+import models.Mode
+import pages.qropsDetails.QROPSNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.QROPSSchemeManagerTypeView
+import views.html.qropsDetails.QROPSNameView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class QROPSSchemeManagerTypeController @Inject() (
+class QROPSNameController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: QROPSSchemeManagerTypeFormProvider,
+    formProvider: QROPSNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSSchemeManagerTypeView
+    view: QROPSNameView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -46,7 +46,7 @@ class QROPSSchemeManagerTypeController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSSchemeManagerTypePage) match {
+      val preparedForm = request.userAnswers.get(QROPSNamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -59,27 +59,11 @@ class QROPSSchemeManagerTypeController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value => {
-          val previousValue = request.userAnswers.get(QROPSSchemeManagerTypePage)
+        value =>
           for {
-            baseAnswers <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerTypePage, value))
-
-            // If the QROPSSchemeManagerType changes, remove the answers of previous corresponding questions
-            updatedAnswers <- (previousValue, value) match {
-                                case (Some(QROPSSchemeManagerType.Individual), QROPSSchemeManagerType.Organisation) => Future.fromTry(baseAnswers
-                                    .remove(SchemeManagersNamePage))
-                                case (Some(QROPSSchemeManagerType.Organisation), QROPSSchemeManagerType.Individual) => Future.fromTry(baseAnswers
-                                    .remove(OrganisationNamePage)
-                                    .flatMap(_.remove(OrgIndividualNamePage)))
-                                case _                                                                              => Future.successful(baseAnswers)
-                              }
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-
-            // If the QROPSSchemeManagerType changes, always switch to NormalMode to go through corresponding set of questions
-            redirectMode = if (!previousValue.contains(value)) NormalMode else mode
-
-          } yield Redirect(QROPSSchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
-        }
+          } yield Redirect(QROPSNamePage.nextPage(mode, updatedAnswers))
       )
   }
 }

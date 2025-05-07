@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package forms
-
-import forms.mappings.Mappings
-import models.QROPSSchemeManagerType
-import play.api.data.Form
+package forms.qropsDetails
 
 import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
 
-class QROPSSchemeManagerTypeFormProvider @Inject() extends Mappings {
+class QROPSCountryFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[QROPSSchemeManagerType] =
+  def apply(): Form[String] =
     Form(
-      "value" -> enumerable[QROPSSchemeManagerType]("qropsSchemeManagerType.error.required")
+      "countryCode" -> text("qropsCountry.error.required")
     )
 }
