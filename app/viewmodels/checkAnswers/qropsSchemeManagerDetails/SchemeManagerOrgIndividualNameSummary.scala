@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import models.UserAnswers
-import pages.SchemeManagerOrgIndividualNamePage
+import pages.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent

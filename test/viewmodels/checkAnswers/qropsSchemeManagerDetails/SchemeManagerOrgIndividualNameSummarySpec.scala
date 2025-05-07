@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.qropsSchemeManagerDetails
 import base.SpecBase
 import models.PersonName
 import org.scalatest.freespec.AnyFreeSpec
-import pages.SchemeManagerOrgIndividualNamePage
+import pages.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
