@@ -18,20 +18,18 @@ package base
 
 import connectors.HelloWorldConnector
 import controllers.actions._
-import models.{PersonName, UserAnswers}
 import models.requests.DisplayRequest
+import models.{PersonName, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
-import pages.MemberNamePage
+import pages.memberDetails.MemberNamePage
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import queries.QtNumber
-import services.CountryService
 
 trait SpecBase
     extends Matchers

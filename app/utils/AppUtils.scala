@@ -17,8 +17,7 @@
 package utils
 
 import models.UserAnswers
-import pages.MemberNamePage
-import play.api.i18n.Messages
+import pages.memberDetails.MemberNamePage
 import queries.QtNumber
 
 trait AppUtils {
