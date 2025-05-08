@@ -106,13 +106,14 @@ trait Constraints {
         Invalid(errorKey)
     }
 
-  protected def validEmail(errorKey: String): Constraint[String] =
+  protected def validEmail(errorKey: String): Constraint[String]                                                                  =
     Constraint { input =>
       Constraints.emailAddress()(input) match {
         case Valid      => Valid
         case Invalid(_) => Invalid(errorKey)
       }
     }
+
   protected def minimumCurrency(minimum: BigDecimal, errorKey: String)(implicit ev: Ordering[BigDecimal]): Constraint[BigDecimal] =
     Constraint {
       input =>
