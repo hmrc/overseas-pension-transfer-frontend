@@ -174,3 +174,8 @@ GET        /date-of-transfer                                         controllers
 POST       /date-of-transfer                                         controllers.DateOfTransferController.onSubmit(mode: Mode = NormalMode)
 GET        /change-date-of-transfer                                  controllers.DateOfTransferController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-date-of-transfer                                  controllers.DateOfTransferController.onSubmit(mode: Mode = CheckMode)
+
+GET        /applicable-tax-exclusions                                controllers.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = NormalMode)
+POST       /applicable-tax-exclusions                                controllers.ApplicableTaxExclusionsController.onSubmit(mode: Mode = NormalMode)
+GET        /change-applicable-tax-exclusions                         controllers.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-applicable-tax-exclusions                         controllers.ApplicableTaxExclusionsController.onSubmit(mode: Mode = CheckMode)
