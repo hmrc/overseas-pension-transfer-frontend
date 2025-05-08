@@ -38,7 +38,7 @@ class IndexControllerSpec extends AnyFreeSpec with SpecBase {
 
         val view = application.injector.instanceOf[IndexView]
 
-        val nextPage = controllers.routes.MemberNameController.onPageLoad(mode = NormalMode).url
+        val nextPage = controllers.memberDetails.routes.MemberNameController.onPageLoad(mode = NormalMode).url
 
         status(result) mustEqual OK
 

@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.memberDetails
 
 import models.UserAnswers
-import pages.MemberDoesNotHaveNinoPage
+import pages.memberDetails.MemberDoesNotHaveNinoPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

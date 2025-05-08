@@ -18,7 +18,7 @@ package base
 
 import models.address._
 import models.UserAnswers
-import pages.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
+import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 
 trait AddressBase extends SpecBase {
 
