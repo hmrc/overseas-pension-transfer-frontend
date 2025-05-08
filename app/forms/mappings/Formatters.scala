@@ -102,8 +102,8 @@ trait Formatters {
       args: Seq[String] = Seq.empty
     ): Formatter[BigDecimal] =
     new Formatter[BigDecimal] {
-      val isNumeric    = """(^£?\d*\$)|(^£?\d*\.\d*\$)"""
-      val validDecimal = """(^£?\d*\$)|(^£?\d*\.\d{1,2}\$)"""
+      val isNumeric    = """(^£?\d*)|(^£?\d*\.\d*)"""
+      val validDecimal = """(^£?\d*)|(^£?\d*\.\d{1,2})"""
 
       private val baseFormatter = stringFormatter(requiredKey, args)
 
