@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.transferDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.IsTransferTaxablePage
-import play.api.i18n.Messages
+import pages.DateOfTransferPage
+import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.DateTimeFormats.dateTimeFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object IsTransferTaxableSummary {
+object DateOfTransferSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(IsTransferTaxablePage).map {
+    answers.get(DateOfTransferPage).map {
       answer =>
-        val value = if (answer) "site.yes" else "site.no"
+        implicit val lang: Lang = messages.lang
 
         SummaryListRowViewModel(
-          key     = "isTransferTaxable.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key     = "dateOfTransfer.checkYourAnswersLabel",
+          value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.IsTransferTaxableController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("isTransferTaxable.change.hidden"))
+            ActionItemViewModel("site.change", routes.DateOfTransferController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("dateOfTransfer.change.hidden"))
           )
         )
     }
