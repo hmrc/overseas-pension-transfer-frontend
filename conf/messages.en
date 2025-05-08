@@ -299,5 +299,5 @@ whyTransferIsTaxable.heading = Why is this a taxable overseas transfer?
 whyTransferIsTaxable.transferExceedsOTCAllowance = Transfer exceeds member''s overseas transfer allowance and there is an applicable exclusion.
 whyTransferIsTaxable.noExclusion = There is no applicable exclusion.
 whyTransferIsTaxable.checkYourAnswersLabel = Why is this a taxable overseas transfer?
-whyTransferIsTaxable.error.required = Select at least one reason why the transfer isn't taxable
+whyTransferIsTaxable.error.required = Select why this is a taxable overseas transfer
 whyTransferIsTaxable.change.hidden = Why is this a taxable overseas transfer?
