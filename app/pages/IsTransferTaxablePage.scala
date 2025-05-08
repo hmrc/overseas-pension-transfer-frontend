@@ -34,5 +34,5 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
     routes.TransferDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.OverseasTransferAllowanceController.onPageLoad(CheckMode)
+    routes.IsTransferTaxableController.onPageLoad(CheckMode)
 }
