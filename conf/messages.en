@@ -294,6 +294,14 @@ schemeManagersContact.error.length = Telephone number must be 35 characters or l
 schemeManagersContact.error.pattern = Telephone number must only include numbers or a + at the beginning
 schemeManagersContact.change.hidden = Manager telephone number
 
+whyTransferIsTaxable.title = Why is this a taxable overseas transfer?
+whyTransferIsTaxable.heading = Why is this a taxable overseas transfer?
+whyTransferIsTaxable.transferExceedsOTCAllowance = Transfer exceeds member''s overseas transfer allowance and there is an applicable exclusion.
+whyTransferIsTaxable.noExclusion = There is no applicable exclusion.
+whyTransferIsTaxable.checkYourAnswersLabel = Why is this a taxable overseas transfer?
+whyTransferIsTaxable.error.required = Select why this is a taxable overseas transfer
+whyTransferIsTaxable.change.hidden = Why is this a taxable overseas transfer?
+
 overseasTransferAllowance.title = What is the amount of the overseas transfer allowance before making this transfer?
 overseasTransferAllowance.heading = What is the amount of the overseas transfer allowance before making this transfer?
 overseasTransferAllowance.checkYourAnswersLabel = Transfer allowance
