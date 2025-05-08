@@ -16,25 +16,33 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import models.UserAnswers
-import pages.transferDetails.OverseasTransferAllowancePage
+import controllers.transferDetails.routes
+import models.{CheckMode, UserAnswers}
+import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OverseasTransferAllowanceSummary {
+object WhyTransferIsTaxableSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OverseasTransferAllowancePage).map {
+    answers.get(WhyTransferIsTaxablePage).map {
       answer =>
+        val value = ValueViewModel(
+          HtmlContent(
+            HtmlFormat.escape(messages(s"whyTransferIsTaxable.$answer"))
+          )
+        )
+
         SummaryListRowViewModel(
-          key     = "overseasTransferAllowance.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key     = "whyTransferIsTaxable.checkYourAnswersLabel",
+          value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", OverseasTransferAllowancePage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("overseasTransferAllowance.change.hidden"))
+            ActionItemViewModel("site.change", routes.WhyTransferIsTaxableController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("whyTransferIsTaxable.change.hidden"))
           )
         )
     }
