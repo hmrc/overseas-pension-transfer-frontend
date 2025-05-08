@@ -32,7 +32,7 @@ class TypeOfAssetFormProviderSpec extends CheckboxFieldBehaviours {
     behave like checkboxField[TypeOfAsset](
       form,
       fieldName,
-      validValues  = TypeOfAsset.values,
+      validValues  = TypeOfAsset.values.filterNot(_ == TypeOfAsset.Cash),
       invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
 
@@ -41,5 +41,12 @@ class TypeOfAssetFormProviderSpec extends CheckboxFieldBehaviours {
       fieldName,
       requiredKey
     )
+
+    "fail when only Cash is selected" in {
+      val form   = new TypeOfAssetFormProvider()()
+      val result = form.bind(Map("value[0]" -> TypeOfAsset.Cash.toString))
+
+      result.errors must contain only FormError("value", "typeOfAsset.error.cashOnly")
+    }
   }
 }

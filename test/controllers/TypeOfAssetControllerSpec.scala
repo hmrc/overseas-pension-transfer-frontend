@@ -90,9 +90,15 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
           .build()
 
       running(application) {
+        val cash    = TypeOfAsset.Cash
+        val another = TypeOfAsset.values.find(_ != cash).get
+
         val request =
           FakeRequest(POST, typeOfAssetRoute)
-            .withFormUrlEncodedBody(("value[0]", TypeOfAsset.values.head.toString))
+            .withFormUrlEncodedBody(
+              "value[0]" -> cash.toString,
+              "value[1]" -> another.toString
+            )
 
         val result = route(application, request).value
 
