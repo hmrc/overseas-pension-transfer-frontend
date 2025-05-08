@@ -17,15 +17,15 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{ApplicableTaxExclusions, CheckMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object IsTransferTaxablePage extends QuestionPage[Boolean] {
+case object ApplicableTaxExclusionsPage extends QuestionPage[Set[ApplicableTaxExclusions]] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "isTransferTaxable"
+  override def toString: String = "applicableTaxExclusions"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad() // TODO change while connecting the pages
@@ -34,5 +34,5 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
     routes.TransferDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.IsTransferTaxableController.onPageLoad(CheckMode)
+    routes.ApplicableTaxExclusionsController.onPageLoad(CheckMode)
 }
