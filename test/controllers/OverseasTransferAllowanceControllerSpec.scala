@@ -37,6 +37,8 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
   private val formProvider = new OverseasTransferAllowanceFormProvider()
   private val form         = formProvider()
 
+  val validAnswer = BigDecimal(0.01)
+
   private lazy val overseasTransferAllowanceRoute = routes.OverseasTransferAllowanceController.onPageLoad(NormalMode).url
 
   "OverseasTransferAllowance Controller" - {
@@ -59,7 +61,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(OverseasTransferAllowancePage, "answer").success.value
+      val userAnswers = userAnswersQtNumber.set(OverseasTransferAllowancePage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +73,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -89,7 +91,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
       running(application) {
         val request =
           FakeRequest(POST, overseasTransferAllowanceRoute)
-            .withFormUrlEncodedBody(("otAllowance", "answer"))
+            .withFormUrlEncodedBody(("otAllowance", validAnswer.toString))
 
         val result = route(application, request).value
 
@@ -105,9 +107,9 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
       running(application) {
         val request =
           FakeRequest(POST, overseasTransferAllowanceRoute)
-            .withFormUrlEncodedBody(("otAllowance", ""))
+            .withFormUrlEncodedBody(("otAllowance", "invalid value"))
 
-        val boundForm = form.bind(Map("otAllowance" -> ""))
+        val boundForm = form.bind(Map("otAllowance" -> "invalid value"))
 
         val view = application.injector.instanceOf[OverseasTransferAllowanceView]
 
@@ -139,11 +141,12 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
       running(application) {
         val request =
           FakeRequest(POST, overseasTransferAllowanceRoute)
-            .withFormUrlEncodedBody(("otAllowance", "answer"))
+            .withFormUrlEncodedBody(("otAllowance", validAnswer.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
+
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
