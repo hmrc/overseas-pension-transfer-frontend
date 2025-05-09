@@ -10,7 +10,6 @@ class $className$FormProvider @Inject() extends Mappings {
     Form(
       "value" -> currency(
         "$className;format="decap"$.error.required",
-        "$className;format="decap"$.error.invalidNumeric",
         "$className;format="decap"$.error.nonNumeric"
       )
       .verifying(minimumCurrency($minimum$, "$className;format="decap"$.error.belowMinimum"))

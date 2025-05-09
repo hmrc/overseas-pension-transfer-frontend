@@ -97,13 +97,11 @@ trait Formatters {
 
   private[mappings] def currencyFormatter(
       requiredKey: String,
-      invalidNumericKey: String,
       nonNumericKey: String,
       args: Seq[String] = Seq.empty
     ): Formatter[BigDecimal] =
     new Formatter[BigDecimal] {
-      val isNumeric    = """(^£?\d*)|(^£?\d*\.\d*)"""
-      val validDecimal = """(^£?\d*)|(^£?\d*\.\d{1,2})"""
+      val isNumeric = """(^£?\d*)|(^£?\d*\.\d{1,2})"""
 
       private val baseFormatter = stringFormatter(requiredKey, args)
 
@@ -112,11 +110,9 @@ trait Formatters {
           .bind(key, data)
           .map(_.replace(",", "").replace(" ", ""))
           .flatMap {
-            case s if !s.matches(isNumeric)    =>
+            case s if !s.matches(isNumeric) =>
               Left(Seq(FormError(key, nonNumericKey, args)))
-            case s if !s.matches(validDecimal) =>
-              Left(Seq(FormError(key, invalidNumericKey, args)))
-            case s                             =>
+            case s                          =>
               nonFatalCatch
                 .either(BigDecimal(s.replace("£", "")))
                 .left.map(_ => Seq(FormError(key, nonNumericKey, args)))
