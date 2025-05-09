@@ -33,7 +33,6 @@ class $className$FormProviderSpec extends CurrencyFieldBehaviours {
       form,
       fieldName,
       nonNumericError     = FormError(fieldName, "$className;format="decap"$.error.nonNumeric"),
-    invalidNumericError = FormError(fieldName, "$className;format="decap"$.error.invalidNumeric")
     )
 
     behave like currencyFieldWithMaximum(

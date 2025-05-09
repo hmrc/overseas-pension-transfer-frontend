@@ -19,7 +19,6 @@ echo "$className;format="decap"$.heading = $className$" >> ../conf/messages.en
 echo "$className;format="decap"$.checkYourAnswersLabel = $className$" >> ../conf/messages.en
 echo "$className;format="decap"$.error.nonNumeric = Enter your $className;format="decap"$ using numbers and a decimal point" >> ../conf/messages.en
 echo "$className;format="decap"$.error.required = Enter your $className;format="decap"$" >> ../conf/messages.en
-echo "$className;format="decap"$.error.invalidNumeric = Enter your $className;format="decap"$ using up to two decimal places" >> ../conf/messages.en
 echo "$className;format="decap"$.error.aboveMaximum = $className$ must be {0} or less" >> ../conf/messages.en
 echo "$className;format="decap"$.error.belowMinimum = $className$ must be {0} or more" >> ../conf/messages.en
 echo "$className;format="decap"$.change.hidden = $className$" >> ../conf/messages.en

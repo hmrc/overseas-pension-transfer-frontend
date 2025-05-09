@@ -215,11 +215,6 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
       result.errors must contain(FormError("value", "error.required"))
     }
 
-    "must not bind a number with more than 2 decimal places" in {
-      val result = testForm.bind(Map("value" -> "1.234"))
-      result.errors must contain only FormError("value", "error.invalidNumeric")
-    }
-
     "must not bind negative numbers" in {
       val result = testForm.bind(Map("value" -> "-1"))
       result.errors must contain only FormError("value", "error.nonNumeric")
