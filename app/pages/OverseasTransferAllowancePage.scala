@@ -21,7 +21,7 @@ import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object OverseasTransferAllowancePage extends QuestionPage[String] {
+case object OverseasTransferAllowancePage extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ toString
 
