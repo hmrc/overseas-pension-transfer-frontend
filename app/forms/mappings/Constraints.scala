@@ -18,6 +18,7 @@ package forms.mappings
 
 import java.time.LocalDate
 import play.api.data.validation.{Constraint, Constraints, Invalid, Valid}
+import utils.CurrencyFormats
 
 trait Constraints {
 
@@ -106,7 +107,7 @@ trait Constraints {
         Invalid(errorKey)
     }
 
-  protected def validEmail(errorKey: String): Constraint[String]                                                                  =
+  protected def validEmail(errorKey: String): Constraint[String] =
     Constraint { input =>
       Constraints.emailAddress()(input) match {
         case Valid      => Valid
@@ -120,7 +121,7 @@ trait Constraints {
         if (input >= minimum) {
           Valid
         } else {
-          Invalid(errorKey, CurrencyFormatter.currencyFormat(minimum))
+          Invalid(errorKey, CurrencyFormats.currencyFormat(minimum))
         }
     }
 
@@ -130,7 +131,7 @@ trait Constraints {
         if (input <= maximum) {
           Valid
         } else {
-          Invalid(errorKey, CurrencyFormatter.currencyFormat(maximum))
+          Invalid(errorKey, CurrencyFormats.currencyFormat(maximum))
         }
     }
 }

@@ -13,6 +13,7 @@ class $className$FormProvider @Inject() extends Mappings {
         "$className;format="decap"$.error.invalidNumeric",
         "$className;format="decap"$.error.nonNumeric"
       )
+      .verifying(minimumCurrency($minimum$, "$className;format="decap"$.error.belowMinimum"))
       .verifying(maximumCurrency($maximum$, "$className;format="decap"$.error.aboveMaximum"))
     )
 }

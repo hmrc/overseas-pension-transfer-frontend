@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package forms.mappings
+package utils
 
-trait CurrencyFormatter {
-  def currencyFormat(amt: BigDecimal): String = s"£$amt,1.2f".replace(".00", "")
+trait CurrencyFormats {
+  def currencyFormat(amt: BigDecimal): String = s"£$amt%,1.2f".replace(".00", "")
 }
 
-object CurrencyFormatter extends CurrencyFormatter
+object CurrencyFormats extends CurrencyFormats
