@@ -3,7 +3,6 @@ package controllers
 import base.SpecBase
 import forms.$className$FormProvider
 import models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -23,9 +22,7 @@ class $className$ControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
   val formProvider = new $className$FormProvider()
   val form = formProvider()
 
-  def onwardRoute = Call("GET", "/foo")
-
-  val validAnswer = $minimum$
+  val validAnswer = BigDecimal($minimum$)
 
   lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(NormalMode).url
 
@@ -86,7 +83,7 @@ class $className$ControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual $className$Page.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
