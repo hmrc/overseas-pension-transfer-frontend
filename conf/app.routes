@@ -176,3 +176,8 @@ GET        /is-transfer-cash-only                                    controllers
 POST       /is-transfer-cash-only                                    controllers.IsTransferCashOnlyController.onSubmit(mode: Mode = NormalMode)
 GET        /change-is-transfer-cash-only                             controllers.IsTransferCashOnlyController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-is-transfer-cash-only                             controllers.IsTransferCashOnlyController.onSubmit(mode: Mode = CheckMode)
+
+GET        /cash-amount-in-transfer                                  controllers.CashAmountInTransferController.onPageLoad(mode: Mode = NormalMode)
+POST       /cash-amount-in-transfer                                  controllers.CashAmountInTransferController.onSubmit(mode: Mode = NormalMode)
+GET        /change-cash-amount-in-transfer                           controllers.CashAmountInTransferController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-cash-amount-in-transfer                           controllers.CashAmountInTransferController.onSubmit(mode: Mode = CheckMode)
