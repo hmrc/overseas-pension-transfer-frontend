@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.transferDetails
 
-import utils.CurrencyFormats.currencyFormat
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.CashAmountInTransferPage
+import pages.AmountOfTaxDeductedPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.CurrencyFormats.currencyFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object CashAmountInTransferSummary {
+object AmountOfTaxDeductedSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CashAmountInTransferPage).map {
+    answers.get(AmountOfTaxDeductedPage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "cashAmountInTransfer.checkYourAnswersLabel",
+          key     = "amountOfTaxDeducted.checkYourAnswersLabel",
           value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.CashAmountInTransferController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("cashAmountInTransfer.change.hidden"))
+            ActionItemViewModel("site.change", routes.AmountOfTaxDeductedController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("amountOfTaxDeducted.change.hidden"))
           )
         )
     }
