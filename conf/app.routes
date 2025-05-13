@@ -177,6 +177,11 @@ POST       /is-transfer-cash-only                                    controllers
 GET        /change-is-transfer-cash-only                             controllers.IsTransferCashOnlyController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-is-transfer-cash-only                             controllers.IsTransferCashOnlyController.onSubmit(mode: Mode = CheckMode)
 
+GET        /type-of-asset                                            controllers.TypeOfAssetController.onPageLoad(mode: Mode = NormalMode)
+POST       /type-of-asset                                            controllers.TypeOfAssetController.onSubmit(mode: Mode = NormalMode)
+GET        /change-type-of-asset                                     controllers.TypeOfAssetController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-type-of-asset                                     controllers.TypeOfAssetController.onSubmit(mode: Mode = CheckMode)
+
 GET        /date-of-transfer                                         controllers.DateOfTransferController.onPageLoad(mode: Mode = NormalMode)
 POST       /date-of-transfer                                         controllers.DateOfTransferController.onSubmit(mode: Mode = NormalMode)
 GET        /change-date-of-transfer                                  controllers.DateOfTransferController.onPageLoad(mode: Mode = CheckMode)
