@@ -17,7 +17,7 @@
 package controllers.actions
 
 import connectors.HelloWorldConnector
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 

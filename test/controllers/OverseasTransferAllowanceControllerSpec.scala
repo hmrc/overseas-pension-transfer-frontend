@@ -21,13 +21,13 @@ import forms.OverseasTransferAllowanceFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.OverseasTransferAllowancePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import org.scalatest.freespec.AnyFreeSpec
 import views.html.OverseasTransferAllowanceView
 
 import scala.concurrent.Future

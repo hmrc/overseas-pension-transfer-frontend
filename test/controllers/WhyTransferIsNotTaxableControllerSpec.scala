@@ -18,16 +18,16 @@ package controllers
 
 import base.SpecBase
 import forms.WhyTransferIsNotTaxableFormProvider
-import models.{NormalMode, UserAnswers, WhyTransferIsNotTaxable}
+import models.{NormalMode, WhyTransferIsNotTaxable}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.WhyTransferIsNotTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import org.scalatest.freespec.AnyFreeSpec
 import views.html.WhyTransferIsNotTaxableView
 
 import scala.concurrent.Future

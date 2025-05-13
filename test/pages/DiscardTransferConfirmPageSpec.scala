@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 

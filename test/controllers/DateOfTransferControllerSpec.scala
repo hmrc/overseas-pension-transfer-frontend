@@ -16,13 +16,12 @@
 
 package controllers
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import forms.DateOfTransferFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DateOfTransferPage
 import play.api.i18n.Messages
@@ -31,11 +30,10 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import org.scalatest.freespec.AnyFreeSpec
 import views.html.DateOfTransferView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
-import org.scalatest.freespec.AnyFreeSpec
 
 class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
