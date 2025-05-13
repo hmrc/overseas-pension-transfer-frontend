@@ -17,61 +17,62 @@
 package controllers
 
 import base.SpecBase
-import forms.WhyTransferIsTaxableFormProvider
-import models.{NormalMode, WhyTransferIsTaxable}
+import forms.WhyTransferIsNotTaxableFormProvider
+import models.{NormalMode, WhyTransferIsNotTaxable}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.WhyTransferIsTaxablePage
+import pages.WhyTransferIsNotTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.WhyTransferIsTaxableView
+import views.html.WhyTransferIsNotTaxableView
 
 import scala.concurrent.Future
 
-class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val whyTransferIsTaxableRoute = routes.WhyTransferIsTaxableController.onPageLoad(NormalMode).url
+  private lazy val whyTransferIsNotTaxableRoute = routes.WhyTransferIsNotTaxableController.onPageLoad(NormalMode).url
 
-  private val formProvider = new WhyTransferIsTaxableFormProvider()
+  private val formProvider = new WhyTransferIsNotTaxableFormProvider()
   private val form         = formProvider()
 
-  "WhyTransferIsTaxable Controller" - {
+  "WhyTransferIsNotTaxable Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, whyTransferIsTaxableRoute)
+        val request = FakeRequest(GET, whyTransferIsNotTaxableRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[WhyTransferIsTaxableView]
+        val view = application.injector.instanceOf[WhyTransferIsNotTaxableView]
 
         status(result) mustEqual OK
+
         contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(WhyTransferIsTaxablePage, WhyTransferIsTaxable.values.head).success.value
+      val userAnswers = userAnswersQtNumber.set(WhyTransferIsNotTaxablePage, WhyTransferIsNotTaxable.values.toSet).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, whyTransferIsTaxableRoute)
+        val request = FakeRequest(GET, whyTransferIsNotTaxableRoute)
 
-        val view = application.injector.instanceOf[WhyTransferIsTaxableView]
+        val view = application.injector.instanceOf[WhyTransferIsNotTaxableView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(WhyTransferIsTaxable.values.head), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(WhyTransferIsNotTaxable.values.toSet), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -85,7 +86,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -93,13 +94,13 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, whyTransferIsTaxableRoute)
-            .withFormUrlEncodedBody(("value", WhyTransferIsTaxable.values.head.toString))
+          FakeRequest(POST, whyTransferIsNotTaxableRoute)
+            .withFormUrlEncodedBody(("value[0]", WhyTransferIsNotTaxable.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual WhyTransferIsTaxablePage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual WhyTransferIsNotTaxablePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -109,12 +110,12 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, whyTransferIsTaxableRoute)
+          FakeRequest(POST, whyTransferIsNotTaxableRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[WhyTransferIsTaxableView]
+        val view = application.injector.instanceOf[WhyTransferIsNotTaxableView]
 
         val result = route(application, request).value
 
@@ -128,7 +129,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, whyTransferIsTaxableRoute)
+        val request = FakeRequest(GET, whyTransferIsNotTaxableRoute)
 
         val result = route(application, request).value
 
@@ -137,19 +138,18 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
       }
     }
 
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
+    "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, whyTransferIsTaxableRoute)
-            .withFormUrlEncodedBody(("value", WhyTransferIsTaxable.values.head.toString))
+          FakeRequest(POST, whyTransferIsNotTaxableRoute)
+            .withFormUrlEncodedBody(("value[0]", WhyTransferIsNotTaxable.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }

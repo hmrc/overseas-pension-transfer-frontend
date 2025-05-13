@@ -21,6 +21,7 @@ import forms.DiscardTransferConfirmFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DiscardTransferConfirmPage
 import play.api.inject.bind
@@ -28,7 +29,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.DiscardTransferConfirmView
-import org.scalatest.freespec.AnyFreeSpec
 
 import scala.concurrent.Future
 

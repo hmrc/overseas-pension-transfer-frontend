@@ -16,45 +16,45 @@
 
 package models
 
+import generators.ModelGenerators
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class WhyTransferIsTaxableSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class WhyTransferIsNotTaxableSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with ModelGenerators {
 
-  "WhyTransferIsTaxable" - {
+  "WhyTransferIsNotTaxable" - {
 
     "must deserialise valid values" in {
 
-      val gen = Gen.oneOf(WhyTransferIsTaxable.values.toSeq)
+      val gen = arbitrary[WhyTransferIsNotTaxable]
 
       forAll(gen) {
-        whyTransferIsTaxable =>
-          JsString(whyTransferIsTaxable.toString).validate[WhyTransferIsTaxable].asOpt.value mustEqual whyTransferIsTaxable
+        whyTransferIsNotTaxable =>
+          JsString(whyTransferIsNotTaxable.toString).validate[WhyTransferIsNotTaxable].asOpt.value mustEqual whyTransferIsNotTaxable
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] suchThat (!WhyTransferIsTaxable.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!WhyTransferIsNotTaxable.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[WhyTransferIsTaxable] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[WhyTransferIsNotTaxable] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
 
-      val gen = Gen.oneOf(WhyTransferIsTaxable.values.toSeq)
+      val gen = arbitrary[WhyTransferIsNotTaxable]
 
       forAll(gen) {
-        whyTransferIsTaxable =>
-          Json.toJson(whyTransferIsTaxable) mustEqual JsString(whyTransferIsTaxable.toString)
+        whyTransferIsNotTaxable =>
+          Json.toJson(whyTransferIsNotTaxable) mustEqual JsString(whyTransferIsNotTaxable.toString)
       }
     }
   }

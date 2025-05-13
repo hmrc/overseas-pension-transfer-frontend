@@ -16,26 +16,30 @@
 
 package forms
 
-import forms.behaviours.DateBehaviours
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
+import forms.behaviours.CheckboxFieldBehaviours
+import models.WhyTransferIsNotTaxable
+import play.api.data.FormError
 
-import java.time.{LocalDate, ZoneOffset}
+class WhyTransferIsNotTaxableFormProviderSpec extends CheckboxFieldBehaviours {
 
-class DateOfTransferFormProviderSpec extends DateBehaviours {
-
-  implicit private val messages: Messages = stubMessages()
-  private val form                        = new DateOfTransferFormProvider()()
+  val form = new WhyTransferIsNotTaxableFormProvider()()
 
   ".value" - {
 
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+    val fieldName   = "value"
+    val requiredKey = "whyTransferIsNotTaxable.error.required"
+
+    behave like checkboxField[WhyTransferIsNotTaxable](
+      form,
+      fieldName,
+      validValues  = WhyTransferIsNotTaxable.values,
+      invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
 
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "dateOfTransfer.error.required.all")
+    behave like mandatoryCheckboxField(
+      form,
+      fieldName,
+      requiredKey
+    )
   }
 }

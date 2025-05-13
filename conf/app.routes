@@ -157,6 +157,11 @@ POST       /scheme-managers-contact                                  controllers
 GET        /change-scheme-managers-contact                           controllers.SchemeManagersContactController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-scheme-managers-contact                           controllers.SchemeManagersContactController.onSubmit(mode: Mode = CheckMode)
 
+GET        /why-transfer-is-not-taxable                              controllers.WhyTransferIsNotTaxableController.onPageLoad(mode: Mode = NormalMode)
+POST       /why-transfer-is-not-taxable                              controllers.WhyTransferIsNotTaxableController.onSubmit(mode: Mode = NormalMode)
+GET        /change-why-transfer-is-not-taxable                       controllers.WhyTransferIsNotTaxableController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-why-transfer-is-not-taxable                       controllers.WhyTransferIsNotTaxableController.onSubmit(mode: Mode = CheckMode)
+
 GET        /why-transfer-is-taxable                                  controllers.WhyTransferIsTaxableController.onPageLoad(mode: Mode = NormalMode)
 POST       /why-transfer-is-taxable                                  controllers.WhyTransferIsTaxableController.onSubmit(mode: Mode = NormalMode)
 GET        /change-why-transfer-is-taxable                           controllers.WhyTransferIsTaxableController.onPageLoad(mode: Mode = CheckMode)

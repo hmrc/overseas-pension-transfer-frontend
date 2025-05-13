@@ -17,11 +17,11 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers {
+class WhyTransferIsNotTaxablePageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -31,7 +31,15 @@ class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        DiscardTransferConfirmPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        WhyTransferIsNotTaxablePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+      }
+    }
+
+    "in Check Mode" - {
+
+      "must go to Check Answers" in {
+
+        WhyTransferIsNotTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }
