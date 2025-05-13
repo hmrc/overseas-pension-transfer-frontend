@@ -187,6 +187,11 @@ POST       /amount-of-tax-deducted                                   controllers
 GET        /change-amount-of-tax-deducted                            controllers.AmountOfTaxDeductedController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-amount-of-tax-deducted                            controllers.AmountOfTaxDeductedController.onSubmit(mode: Mode = CheckMode)
 
+GET        /type-of-asset                                            controllers.TypeOfAssetController.onPageLoad(mode: Mode = NormalMode)
+POST       /type-of-asset                                            controllers.TypeOfAssetController.onSubmit(mode: Mode = NormalMode)
+GET        /change-type-of-asset                                     controllers.TypeOfAssetController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-type-of-asset                                     controllers.TypeOfAssetController.onSubmit(mode: Mode = CheckMode)
+
 GET        /date-of-transfer                                         controllers.DateOfTransferController.onPageLoad(mode: Mode = NormalMode)
 POST       /date-of-transfer                                         controllers.DateOfTransferController.onSubmit(mode: Mode = NormalMode)
 GET        /change-date-of-transfer                                  controllers.DateOfTransferController.onPageLoad(mode: Mode = CheckMode)

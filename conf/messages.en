@@ -341,6 +341,19 @@ amountOfTaxDeducted.error.belowMinimum = The tax amount must be £0.01 or more
 amountOfTaxDeducted.change.hidden = Amount deducted at 25%
 amountOfTaxDeducted.hint = For example, £60000 or £19,300.54.
 
+typeOfAsset.title = Type of assets included in the transfer
+typeOfAsset.heading = Type of assets included in the transfer
+typeOfAsset.cash = Cash
+typeOfAsset.unquotedShares = Unquoted shares
+typeOfAsset.quotedShares = Quoted shares
+typeOfAsset.property = Property
+typeOfAsset.other = Other
+typeOfAsset.hint = Select all that apply.
+typeOfAsset.checkYourAnswersLabel = Type of assets included in the transfer
+typeOfAsset.error.required = Select at least one type of asset
+typeOfAsset.error.cashOnly = You cannot select ''Cash'' only. Select at least one other asset type. If your transfer is cash only, return to the previous question and update your answer.
+typeOfAsset.change.hidden = Type of assets included in the transfer
+
 dateOfTransfer.title = What was the date of the transfer?
 dateOfTransfer.heading = What was the date of the transfer?
 dateOfTransfer.instruction = This cannot be a date in the future.
