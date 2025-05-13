@@ -36,7 +36,7 @@ trait CheckboxFluency {
         form: Form[_],
         name: String,
         items: Seq[CheckboxItem],
-        legend: Legend = Legend()
+        legend: Legend
       )(implicit messages: Messages
       ): Checkboxes =
       apply(
@@ -68,6 +68,9 @@ trait CheckboxFluency {
 
     def describedBy(value: String): Checkboxes =
       checkboxes.copy(describedBy = Some(value))
+
+    def withHint(hint: Hint): Checkboxes =
+      checkboxes.copy(hint = Some(hint))
   }
 
   object CheckboxItemViewModel {
