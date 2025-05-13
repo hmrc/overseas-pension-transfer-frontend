@@ -17,13 +17,13 @@
 package forms.mappings
 
 import java.time.LocalDate
-
 import generators.Generators
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.data.validation.{Invalid, Valid}
+import utils.CurrencyFormats
 
 class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
 
@@ -181,6 +181,42 @@ class ConstraintsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
           val result = minDate(min, "error.past", "foo")(date)
           result mustEqual Invalid("error.past", "foo")
       }
+    }
+  }
+
+  "minimumCurrency" - {
+
+    "must return Valid for a number greater than the threshold" in {
+      val result = minimumCurrency(1, "error.min").apply(BigDecimal(1.01))
+      result mustEqual Valid
+    }
+
+    "must return Valid for a number equal to the threshold" in {
+      val result = minimumCurrency(1, "error.min").apply(1)
+      result mustEqual Valid
+    }
+
+    "must return Invalid for a number below the threshold" in {
+      val result = minimumCurrency(1, "error.min").apply(0.99)
+      result mustEqual Invalid("error.min", CurrencyFormats.currencyFormat(1))
+    }
+  }
+
+  "maximumCurrency" - {
+
+    "must return Valid for a number less than the threshold" in {
+      val result = maximumCurrency(1, "error.max").apply(0)
+      result mustEqual Valid
+    }
+
+    "must return Valid for a number equal to the threshold" in {
+      val result = maximumCurrency(1, "error.max").apply(1)
+      result mustEqual Valid
+    }
+
+    "must return Invalid for a number above the threshold" in {
+      val result = maximumCurrency(1, "error.max").apply(1.01)
+      result mustEqual Invalid("error.max", CurrencyFormats.currencyFormat(1))
     }
   }
 }

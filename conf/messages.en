@@ -333,3 +333,11 @@ typeOfAsset.checkYourAnswersLabel = Type of assets included in the transfer
 typeOfAsset.error.required = Select at least one type of asset
 typeOfAsset.error.cashOnly = You cannot select ''Cash'' only. Select at least one other asset type. If your transfer is cash only, return to the previous question and update your answer.
 typeOfAsset.change.hidden = Type of assets included in the transfer
+
+dateOfTransfer.title = What was the date of the transfer?
+dateOfTransfer.heading = What was the date of the transfer?
+dateOfTransfer.instruction = This cannot be a date in the future.
+dateOfTransfer.hint = For example, 31 03 2023.
+dateOfTransfer.checkYourAnswersLabel = Date of transfer
+dateOfTransfer.error.required.all = Enter the date of the transfer
+dateOfTransfer.change.hidden = Date of transfer

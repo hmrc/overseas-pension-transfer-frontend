@@ -181,3 +181,8 @@ GET        /type-of-asset                                            controllers
 POST       /type-of-asset                                            controllers.TypeOfAssetController.onSubmit(mode: Mode = NormalMode)
 GET        /change-type-of-asset                                     controllers.TypeOfAssetController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-type-of-asset                                     controllers.TypeOfAssetController.onSubmit(mode: Mode = CheckMode)
+
+GET        /date-of-transfer                                         controllers.DateOfTransferController.onPageLoad(mode: Mode = NormalMode)
+POST       /date-of-transfer                                         controllers.DateOfTransferController.onSubmit(mode: Mode = NormalMode)
+GET        /change-date-of-transfer                                  controllers.DateOfTransferController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-date-of-transfer                                  controllers.DateOfTransferController.onSubmit(mode: Mode = CheckMode)
