@@ -339,3 +339,13 @@ applicableTaxExclusions.hint = Select all that apply.
 applicableTaxExclusions.checkYourAnswersLabel = Why transfer is not taxable
 applicableTaxExclusions.error.required = Select at least one reason why the transfer is not taxable
 applicableTaxExclusions.change.hidden = Why transfer is not taxable
+
+netTransferAmount.title = What is the net amount of the transfer after deducting the tax charge?
+netTransferAmount.heading = What is the net amount of the transfer after deducting the tax charge?
+netTransferAmount.checkYourAnswersLabel = Net amount
+netTransferAmount.error.nonNumeric = The net amount of the transfer must be an amount of money, like £123 or 123.00
+netTransferAmount.error.required = Enter the net amount of the transfer after tax
+netTransferAmount.error.aboveMaximum = The net amount of the transfer must be {0} or less
+netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0} or more
+netTransferAmount.change.hidden = Net amount
+netTransferAmount.hint = For example, £60000 or £19,300.54.

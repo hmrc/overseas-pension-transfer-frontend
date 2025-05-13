@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package utils
+package forms
 
-trait CurrencyFormats {
-  def currencyFormat(amt: BigDecimal): String = f"£$amt%,1.2f".replace(".00", "")
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
+
+class NetTransferAmountFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[BigDecimal] =
+    Form(
+      "netAmount" -> currency(
+        "netTransferAmount.error.required",
+        "netTransferAmount.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(0.01, "netTransferAmount.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "netTransferAmount.error.aboveMaximum"))
+    )
 }
-
-object CurrencyFormats extends CurrencyFormats
