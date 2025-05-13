@@ -94,4 +94,31 @@ trait Formatters {
       override def unbind(key: String, value: A): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
     }
+
+  private[mappings] def currencyFormatter(
+      requiredKey: String,
+      nonNumericKey: String,
+      args: Seq[String] = Seq.empty
+    ): Formatter[BigDecimal] =
+    new Formatter[BigDecimal] {
+      val isNumeric = """(^£?\d*)|(^£?\d*\.\d{1,2})"""
+
+      private val baseFormatter = stringFormatter(requiredKey, args)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
+        baseFormatter
+          .bind(key, data)
+          .map(_.replace(",", "").replace(" ", ""))
+          .flatMap {
+            case s if !s.matches(isNumeric) =>
+              Left(Seq(FormError(key, nonNumericKey, args)))
+            case s                          =>
+              nonFatalCatch
+                .either(BigDecimal(s.replace("£", "")))
+                .left.map(_ => Seq(FormError(key, nonNumericKey, args)))
+          }
+
+      override def unbind(key: String, value: BigDecimal): Map[String, String] =
+        baseFormatter.unbind(key, value.toString)
+    }
 }
