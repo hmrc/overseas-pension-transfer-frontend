@@ -320,3 +320,11 @@ isTransferCashOnly.heading = Is the transfer made up of cash only?
 isTransferCashOnly.checkYourAnswersLabel = Is transfer cash only
 isTransferCashOnly.error.required = Select yes if the transfer is cash only
 isTransferCashOnly.change.hidden = Is transfer cash only
+
+dateOfTransfer.title = What was the date of the transfer?
+dateOfTransfer.heading = What was the date of the transfer?
+dateOfTransfer.instruction = This cannot be a date in the future.
+dateOfTransfer.hint = For example, 31 03 2023.
+dateOfTransfer.checkYourAnswersLabel = Date of transfer
+dateOfTransfer.error.required.all = Enter the date of the transfer
+dateOfTransfer.change.hidden = Date of transfer
