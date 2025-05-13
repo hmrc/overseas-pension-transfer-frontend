@@ -181,3 +181,13 @@ GET        /is-transfer-cash-only                                    controllers
 POST       /is-transfer-cash-only                                    controllers.IsTransferCashOnlyController.onSubmit(mode: Mode = NormalMode)
 GET        /change-is-transfer-cash-only                             controllers.IsTransferCashOnlyController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-is-transfer-cash-only                             controllers.IsTransferCashOnlyController.onSubmit(mode: Mode = CheckMode)
+
+GET        /date-of-transfer                                         controllers.DateOfTransferController.onPageLoad(mode: Mode = NormalMode)
+POST       /date-of-transfer                                         controllers.DateOfTransferController.onSubmit(mode: Mode = NormalMode)
+GET        /change-date-of-transfer                                  controllers.DateOfTransferController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-date-of-transfer                                  controllers.DateOfTransferController.onSubmit(mode: Mode = CheckMode)
+
+GET        /applicable-tax-exclusions                                controllers.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = NormalMode)
+POST       /applicable-tax-exclusions                                controllers.ApplicableTaxExclusionsController.onSubmit(mode: Mode = NormalMode)
+GET        /change-applicable-tax-exclusions                         controllers.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-applicable-tax-exclusions                         controllers.ApplicableTaxExclusionsController.onSubmit(mode: Mode = CheckMode)

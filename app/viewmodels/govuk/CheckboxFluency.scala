@@ -36,7 +36,7 @@ trait CheckboxFluency {
         form: Form[_],
         name: String,
         items: Seq[CheckboxItem],
-        legend: Legend = Legend()
+        legend: Legend
       )(implicit messages: Messages
       ): Checkboxes =
       apply(
