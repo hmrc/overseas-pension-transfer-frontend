@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
+
+import forms.DateOfTransferFormProvider
 
 import java.time.{LocalDate, ZoneOffset}
 import forms.behaviours.DateBehaviours

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
 
+import forms.ApplicableTaxExclusionsFormProvider
 import forms.behaviours.CheckboxFieldBehaviours
 import models.ApplicableTaxExclusions
 import play.api.data.FormError

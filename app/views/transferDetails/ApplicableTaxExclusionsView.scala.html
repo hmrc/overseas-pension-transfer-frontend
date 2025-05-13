@@ -16,10 +16,11 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukDateInput
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukCheckboxes
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
+@import viewmodels.LegendSize
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
@@ -28,38 +29,34 @@
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukDateInput: GovukDateInput,
+    govukCheckboxes: GovukCheckboxes,
     govukButton: GovukButton,
     qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("dateOfTransfer.title"))) {
+@layout(pageTitle = title(form, messages("applicableTaxExclusions.title"))) {
 
-    @formHelper(action = routes.DateOfTransferController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.transferDetails.routes.ApplicableTaxExclusionsController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @{
-                val missingFields = form.errors.head.args
-                val fieldToHighlight = missingFields.find(List("month", "year", "day").contains).getOrElse("day")
-                val errorField = "value." + fieldToHighlight
-
-                govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> errorField)))
-            }
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("dateOfTransfer.heading")</h1>
-        <p class="govuk-body-m">
-            @Html(messages("dateOfTransfer.instruction"))
-        </p>
 
-        @govukDateInput(
-            DateViewModel(
-                field  = form("value")
-            )
-            .withHint(HintViewModel(Text(messages("dateOfTransfer.hint"))))
+        @govukCheckboxes(
+            CheckboxesViewModel(
+                form   = form,
+                name   = "value",
+                legend = LegendViewModel(
+                            messages("applicableTaxExclusions.heading")
+                         )
+                         .asPageHeading(size = LegendSize.Large)
+                         .withCssClass("govuk-!-margin-bottom-6"),
+                items  = ApplicableTaxExclusions.checkboxItems
+            ).withHint(HintViewModel(Text(messages("applicableTaxExclusions.hint"))))
         )
 
         @govukButton(

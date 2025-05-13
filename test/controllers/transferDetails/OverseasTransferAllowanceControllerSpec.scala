@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import forms.transferDetails.OverseasTransferAllowanceFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

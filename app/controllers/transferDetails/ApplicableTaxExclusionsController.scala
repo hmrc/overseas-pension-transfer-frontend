@@ -14,39 +14,40 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
 import controllers.actions._
-import forms.DateOfTransferFormProvider
+import forms.ApplicableTaxExclusionsFormProvider
+
 import javax.inject.Inject
 import models.Mode
-import pages.DateOfTransferPage
+import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.DateOfTransferView
+import views.html.transferDetails.ApplicableTaxExclusionsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DateOfTransferController @Inject() (
+class ApplicableTaxExclusionsController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: DateOfTransferFormProvider,
+    formProvider: ApplicableTaxExclusionsFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: DateOfTransferView
+    view: ApplicableTaxExclusionsView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
+  val form = formProvider()
+
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val form = formProvider()
-
-      val preparedForm = request.userAnswers.get(DateOfTransferPage) match {
+      val preparedForm = request.userAnswers.get(ApplicableTaxExclusionsPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -56,16 +57,14 @@ class DateOfTransferController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
-      val form = formProvider()
-
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfTransferPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ApplicableTaxExclusionsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(ApplicableTaxExclusionsPage.nextPage(mode, updatedAnswers))
       )
   }
 }

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transferDetails
 
-import controllers.routes
+import controllers.transferDetails.routes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -31,7 +31,7 @@ class ApplicableTaxExclusionsPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        ApplicableTaxExclusionsPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        ApplicableTaxExclusionsPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
       }
     }
 

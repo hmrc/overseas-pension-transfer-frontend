@@ -14,68 +14,77 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
 import base.SpecBase
-import forms.ApplicableTaxExclusionsFormProvider
-import models.{ApplicableTaxExclusions, NormalMode, UserAnswers}
+import forms.DateOfTransferFormProvider
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.ApplicableTaxExclusionsPage
+import pages.transferDetails.DateOfTransferPage
+import play.api.i18n.Messages
 import play.api.inject.bind
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import org.scalatest.freespec.AnyFreeSpec
-import views.html.ApplicableTaxExclusionsView
+import views.html.transferDetails.DateOfTransferView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
-class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val applicableTaxExclusionsRoute = routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode).url
+  implicit private val messages: Messages = stubMessages()
 
-  private val formProvider = new ApplicableTaxExclusionsFormProvider()
-  private val form         = formProvider()
+  private val formProvider = new DateOfTransferFormProvider()
+  private def form         = formProvider()
 
-  "ApplicableTaxExclusions Controller" - {
+  private val validAnswer              = LocalDate.now(ZoneOffset.UTC)
+  private lazy val dateOfTransferRoute = routes.DateOfTransferController.onPageLoad(NormalMode).url
+
+  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest(GET, dateOfTransferRoute)
+
+  def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
+    FakeRequest(POST, dateOfTransferRoute)
+      .withFormUrlEncodedBody(
+        "value.day"   -> validAnswer.getDayOfMonth.toString,
+        "value.month" -> validAnswer.getMonthValue.toString,
+        "value.year"  -> validAnswer.getYear.toString
+      )
+
+  "DateOfTransfer Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, applicableTaxExclusionsRoute)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[ApplicableTaxExclusionsView]
+        val result  = route(application, getRequest()).value
+        val request = getRequest()
+        val view    = application.injector.instanceOf[DateOfTransferView]
 
         status(result) mustEqual OK
-
         contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(ApplicableTaxExclusionsPage, ApplicableTaxExclusions.values.toSet).success.value
+      val userAnswers = userAnswersQtNumber.set(DateOfTransferPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, applicableTaxExclusionsRoute)
-
-        val view = application.injector.instanceOf[ApplicableTaxExclusionsView]
-
-        val result = route(application, request).value
+        val view    = application.injector.instanceOf[DateOfTransferView]
+        val request = getRequest()
+        val result  = route(application, getRequest()).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(ApplicableTaxExclusions.values.toSet), NormalMode)(
-          fakeDisplayRequest(request),
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -93,14 +102,10 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
           .build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, applicableTaxExclusionsRoute)
-            .withFormUrlEncodedBody(("value[0]", ApplicableTaxExclusions.values.head.toString))
-
-        val result = route(application, request).value
+        val result = route(application, postRequest()).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ApplicableTaxExclusionsPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -108,14 +113,14 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, applicableTaxExclusionsRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+      val request =
+        FakeRequest(POST, dateOfTransferRoute)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
+      running(application) {
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[ApplicableTaxExclusionsView]
+        val view = application.injector.instanceOf[DateOfTransferView]
 
         val result = route(application, request).value
 
@@ -129,12 +134,10 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, applicableTaxExclusionsRoute)
-
-        val result = route(application, request).value
+        val result = route(application, getRequest()).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -143,14 +146,10 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request =
-          FakeRequest(POST, applicableTaxExclusionsRoute)
-            .withFormUrlEncodedBody(("value[0]", ApplicableTaxExclusions.values.head.toString))
-
-        val result = route(application, request).value
+        val result = route(application, postRequest()).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
