@@ -320,3 +320,22 @@ isTransferCashOnly.heading = Is the transfer made up of cash only?
 isTransferCashOnly.checkYourAnswersLabel = Is transfer cash only
 isTransferCashOnly.error.required = Select yes if the transfer is cash only
 isTransferCashOnly.change.hidden = Is transfer cash only
+
+dateOfTransfer.title = What was the date of the transfer?
+dateOfTransfer.heading = What was the date of the transfer?
+dateOfTransfer.instruction = This cannot be a date in the future.
+dateOfTransfer.hint = For example, 31 03 2023.
+dateOfTransfer.checkYourAnswersLabel = Date of transfer
+dateOfTransfer.error.required.all = Enter the date of the transfer
+dateOfTransfer.change.hidden = Date of transfer
+
+applicableTaxExclusions.title = Please provide the applicable exclusion
+applicableTaxExclusions.heading = Please provide the applicable exclusion
+applicableTaxExclusions.occupational = The QROPS is an occupational pension scheme and the individual is an employee of the sponsoring employer.
+applicableTaxExclusions.publicService = The QROPS is an overseas public service scheme and the individual is employed by the public service.
+applicableTaxExclusions.internationalOrg = The QROPS is a pension scheme of an international organisation and the individual is employed by that international organisation.
+applicableTaxExclusions.resident = Both the individual and QROPS are resident in the same country.
+applicableTaxExclusions.hint = Select all that apply.
+applicableTaxExclusions.checkYourAnswersLabel = Why transfer is not taxable
+applicableTaxExclusions.error.required = Select at least one reason why the transfer is not taxable
+applicableTaxExclusions.change.hidden = Why transfer is not taxable
