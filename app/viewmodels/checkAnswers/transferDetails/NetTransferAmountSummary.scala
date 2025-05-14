@@ -18,25 +18,24 @@ package viewmodels.checkAnswers.transferDetails
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.IsTransferCashOnlyPage
+import pages.NetTransferAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.CurrencyFormats.currencyFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object IsTransferCashOnlySummary {
+object NetTransferAmountSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(IsTransferCashOnlyPage).map {
+    answers.get(NetTransferAmountPage).map {
       answer =>
-        val value = if (answer) "site.yes" else "site.no"
-
         SummaryListRowViewModel(
-          key     = "isTransferCashOnly.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
+          key     = "netTransferAmount.checkYourAnswersLabel",
+          value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", IsTransferCashOnlyPage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("isTransferCashOnly.change.hidden"))
+            ActionItemViewModel("site.change", NetTransferAmountPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("netTransferAmount.change.hidden"))
           )
         )
     }

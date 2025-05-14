@@ -36,7 +36,7 @@ object DateOfTransferSummary {
           key     = "dateOfTransfer.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DateOfTransferController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", DateOfTransferPage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("dateOfTransfer.change.hidden"))
           )
         )

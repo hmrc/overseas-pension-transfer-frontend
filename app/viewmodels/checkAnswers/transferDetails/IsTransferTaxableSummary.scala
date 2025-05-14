@@ -35,7 +35,7 @@ object IsTransferTaxableSummary {
           key     = "isTransferTaxable.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.IsTransferTaxableController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", IsTransferTaxablePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("isTransferTaxable.change.hidden"))
           )
         )
