@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-package utils
+package pages
 
-trait CurrencyFormats {
-  def currencyFormat(amt: BigDecimal): String = f"£$amt%,1.2f".replace(".00", "")
+import controllers.routes
+import models.UserAnswers
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
+
+case object AmountOfTransferPage extends QuestionPage[BigDecimal] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "amountOfTransfer"
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
 }
-
-object CurrencyFormats extends CurrencyFormats
