@@ -17,7 +17,7 @@
 package utils
 
 trait CurrencyFormats {
-  def currencyFormat(amt: BigDecimal): String = s"£$amt%,1.2f".replace(".00", "")
+  def currencyFormat(amt: BigDecimal): String = f"£$amt%,1.2f".replace(".00", "")
 }
 
 object CurrencyFormats extends CurrencyFormats

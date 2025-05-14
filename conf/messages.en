@@ -305,9 +305,14 @@ whyTransferIsTaxable.change.hidden = Why is this a taxable overseas transfer?
 overseasTransferAllowance.title = What is the amount of the overseas transfer allowance before making this transfer?
 overseasTransferAllowance.heading = What is the amount of the overseas transfer allowance before making this transfer?
 overseasTransferAllowance.checkYourAnswersLabel = Transfer allowance
-overseasTransferAllowance.error.required = Enter the transfer amount
+overseasTransferAllowance.error.required = Enter the amount of the transfer allowance
+overseasTransferAllowance.error.nonNumeric = The transfer allowance must be an amount of money, like 123 or 123.00
+overseasTransferAllowance.error.aboveMaximum = The transfer allowance amount must be {0} or less
+overseasTransferAllowance.error.belowMinimum = The transfer allowance amount must be {0} or more
 overseasTransferAllowance.change.hidden = Transfer allowance
-overseasTransferAllowance.hint = Put the exact amount to 2 decimal places for example, £600,000.00 or £193,243.54.
+overseasTransferAllowance.hint = For example, £60000 or £19,300.54.
+overseasTransferAllowance.help.title = Help with available allowance
+overseasTransferAllowance.help.details = You will need to contact your member to confirm what their available allowance is, as it may have been used across multiple schemes.
 
 isTransferTaxable.title = Is this transfer payment a taxable overseas transfer?
 isTransferTaxable.heading = Is this transfer payment a taxable overseas transfer?
