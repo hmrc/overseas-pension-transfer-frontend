@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import utils.CurrencyFormats.currencyFormat
 import models.UserAnswers
-import pages.OverseasTransferAllowancePage
+import pages.transferDetails.OverseasTransferAllowancePage
+import utils.CurrencyFormats.currencyFormat
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
