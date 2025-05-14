@@ -177,6 +177,16 @@ POST       /is-transfer-cash-only                                    controllers
 GET        /change-is-transfer-cash-only                             controllers.IsTransferCashOnlyController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-is-transfer-cash-only                             controllers.IsTransferCashOnlyController.onSubmit(mode: Mode = CheckMode)
 
+GET        /cash-amount-in-transfer                                  controllers.CashAmountInTransferController.onPageLoad(mode: Mode = NormalMode)
+POST       /cash-amount-in-transfer                                  controllers.CashAmountInTransferController.onSubmit(mode: Mode = NormalMode)
+GET        /change-cash-amount-in-transfer                           controllers.CashAmountInTransferController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-cash-amount-in-transfer                           controllers.CashAmountInTransferController.onSubmit(mode: Mode = CheckMode)
+
+GET        /amount-of-tax-deducted                                   controllers.AmountOfTaxDeductedController.onPageLoad(mode: Mode = NormalMode)
+POST       /amount-of-tax-deducted                                   controllers.AmountOfTaxDeductedController.onSubmit(mode: Mode = NormalMode)
+GET        /change-amount-of-tax-deducted                            controllers.AmountOfTaxDeductedController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-amount-of-tax-deducted                            controllers.AmountOfTaxDeductedController.onSubmit(mode: Mode = CheckMode)
+
 GET        /type-of-asset                                            controllers.TypeOfAssetController.onPageLoad(mode: Mode = NormalMode)
 POST       /type-of-asset                                            controllers.TypeOfAssetController.onSubmit(mode: Mode = NormalMode)
 GET        /change-type-of-asset                                     controllers.TypeOfAssetController.onPageLoad(mode: Mode = CheckMode)
