@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.TypeOfAssetFormProvider
-import javax.inject.Inject
 import models.Mode
 import pages.TypeOfAssetPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,6 +26,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.TypeOfAssetView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TypeOfAssetController @Inject() (

@@ -17,9 +17,9 @@
 package services
 
 import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
-import forms.{QROPSAddressFormData, SchemeManagersAddressFormData}
 import forms.memberDetails.MembersCurrentAddressFormData
-import models.address.{FoundAddress, FoundAddressResponse, FoundAddressSet, MembersCurrentAddress, QROPSAddress, SchemeManagersAddress}
+import forms.{QROPSAddressFormData, SchemeManagersAddressFormData}
+import models.address._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject

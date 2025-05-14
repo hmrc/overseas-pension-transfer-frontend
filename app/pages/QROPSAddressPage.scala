@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.address.{Address, QROPSAddress}
+import models.address.Address
 import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

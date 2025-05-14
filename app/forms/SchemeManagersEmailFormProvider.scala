@@ -16,9 +16,10 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data._
+
+import javax.inject.Inject
 
 class SchemeManagersEmailFormProvider @Inject() extends Mappings {
 

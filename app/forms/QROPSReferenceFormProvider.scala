@@ -16,9 +16,10 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class QROPSReferenceFormProvider @Inject() extends Mappings with Regex {
 

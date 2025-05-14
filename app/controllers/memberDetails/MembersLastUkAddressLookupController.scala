@@ -19,7 +19,7 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.Mode
-import models.address.{FoundAddressResponse, FoundAddressSet, NoAddressFound}
+import models.address.{FoundAddressSet, NoAddressFound}
 import pages.memberDetails.MembersLastUkAddressLookupPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}

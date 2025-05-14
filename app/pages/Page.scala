@@ -16,7 +16,6 @@
 
 package pages
 
-import controllers.routes
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl

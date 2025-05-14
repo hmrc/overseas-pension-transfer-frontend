@@ -16,11 +16,12 @@
 
 package forms
 
-import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
-import play.api.data.{Form, Forms}
-import play.api.data.Forms._
 import models.address.SchemeManagersAddress
+import play.api.data.Forms._
+import play.api.data.{Form, Forms}
+
+import javax.inject.Inject
 
 case class SchemeManagersAddressFormData(
     addressLine1: String,

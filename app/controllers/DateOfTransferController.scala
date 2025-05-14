@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions._
 import forms.DateOfTransferFormProvider
-import javax.inject.Inject
 import models.Mode
 import pages.DateOfTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,6 +26,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DateOfTransferView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfTransferController @Inject() (

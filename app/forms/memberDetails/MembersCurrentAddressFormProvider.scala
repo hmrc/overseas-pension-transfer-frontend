@@ -16,12 +16,13 @@
 
 package forms.memberDetails
 
-import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
-import play.api.data.{Form, Forms}
-import play.api.data.Forms._
 import models.address._
 import models.requests.DisplayRequest
+import play.api.data.Forms._
+import play.api.data.{Form, Forms}
+
+import javax.inject.Inject
 
 case class MembersCurrentAddressFormData(
     addressLine1: String,
