@@ -18,23 +18,22 @@ package controllers
 
 import controllers.actions._
 import forms.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
-
-import javax.inject.Inject
 import models.Mode
-import models.address.{Country, SchemeManagersAddress}
+import models.address.SchemeManagersAddress
 import pages.SchemeManagersAddressPage
 import play.api.Logging
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.CountryService
+import services.{AddressService, CountryService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.CountrySelectViewModel
 import views.html.SchemeManagersAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeManagersAddressController @Inject() (
@@ -45,12 +44,13 @@ class SchemeManagersAddressController @Inject() (
     requireData: DataRequiredAction,
     formProvider: SchemeManagersAddressFormProvider,
     countryService: CountryService,
+    addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: SchemeManagersAddressView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  private def form()(implicit messages: Messages): Form[SchemeManagersAddressFormData] = formProvider()
+  private def form: Form[SchemeManagersAddressFormData] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -73,9 +73,7 @@ class SchemeManagersAddressController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
         },
         formData => {
-          val maybeCountry: Option[Country] =
-            countryService.find(formData.countryCode)
-          maybeCountry match {
+          addressService.schemeManagersAddress(formData) match {
             case None          =>
               Future.successful(
                 Redirect(
@@ -84,17 +82,9 @@ class SchemeManagersAddressController @Inject() (
                   )
                 )
               )
-            case Some(country) =>
-              val addressToSave = SchemeManagersAddress(
-                addressLine1 = formData.addressLine1,
-                addressLine2 = formData.addressLine2,
-                addressLine3 = formData.addressLine3,
-                addressLine4 = formData.addressLine4,
-                addressLine5 = formData.addressLine5,
-                country      = country
-              )
+            case Some(address) =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersAddressPage, addressToSave))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersAddressPage, address))
                 _              <- {
                   logger.info(Json.stringify(updatedAnswers.data))
                   sessionRepository.set(updatedAnswers)

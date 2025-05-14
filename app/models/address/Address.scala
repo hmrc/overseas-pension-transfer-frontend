@@ -46,6 +46,9 @@ object Address {
       case "QROPSAddress" =>
         QROPSAddress.reads.widen[Address]
 
+      case "SchemeManagersAddress" =>
+        SchemeManagersAddress.reads.widen[Address]
+
       case other =>
         Reads(_ => JsError(s"Unknown Address type: $other"))
     }
@@ -66,6 +69,10 @@ object Address {
     case a: QROPSAddress =>
       QROPSAddress.writes.writes(a).as[JsObject] +
         ("type" -> JsString("QROPSAddress"))
+
+    case a: SchemeManagersAddress =>
+      SchemeManagersAddress.writes.writes(a).as[JsObject] +
+        ("type" -> JsString("SchemeManagersAddress"))
   }
 
   implicit val format: OFormat[Address] = OFormat(reads, writes)

@@ -58,7 +58,7 @@ object AddressViewModel {
       toOption(vm.country).filterNot(_ => ukMode),
       toOption(vm.postcode),
       toOption(vm.poBox)
-    ).flatten
+    ).flatten.filterNot(_.isBlank)
   }
 
   def formatAddressAsString(vm: AddressViewModel): String =

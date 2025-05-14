@@ -17,12 +17,12 @@
 package pages
 
 import controllers.routes
-import models.address.SchemeManagersAddress
+import models.address.Address
 import models.{CheckMode, NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SchemeManagersAddressPage extends QuestionPage[SchemeManagersAddress] {
+case object SchemeManagersAddressPage extends QuestionPage[Address] {
 
   override def path: JsPath = JsPath \ toString
 
