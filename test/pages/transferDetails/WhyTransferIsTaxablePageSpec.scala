@@ -16,7 +16,7 @@
 
 package pages.transferDetails
 
-import controllers.routes
+import controllers.checkYourAnswers.routes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -31,7 +31,7 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        WhyTransferIsTaxablePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        WhyTransferIsTaxablePage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
       }
     }
 

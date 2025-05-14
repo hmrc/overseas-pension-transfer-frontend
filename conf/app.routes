@@ -12,7 +12,7 @@ GET        /refresh-session                                          controllers
 
 GET        /there-is-a-problem                                       controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET        /check-your-answers                                       controllers.CheckYourAnswersController.onPageLoad()
+GET        /check-your-answers                                       controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
 
 GET        /member-details/check-your-answers                        controllers.memberDetails.MemberDetailsCYAController.onPageLoad()
 POST       /member-details/check-your-answers                        controllers.memberDetails.MemberDetailsCYAController.onSubmit()
@@ -182,10 +182,10 @@ POST       /date-of-transfer                                         controllers
 GET        /change-date-of-transfer                                  controllers.transferDetails.DateOfTransferController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-date-of-transfer                                  controllers.transferDetails.DateOfTransferController.onSubmit(mode: Mode = CheckMode)
 
-GET        /type-of-asset                                            controllers.TypeOfAssetController.onPageLoad(mode: Mode = NormalMode)
-POST       /type-of-asset                                            controllers.TypeOfAssetController.onSubmit(mode: Mode = NormalMode)
-GET        /change-type-of-asset                                     controllers.TypeOfAssetController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-type-of-asset                                     controllers.TypeOfAssetController.onSubmit(mode: Mode = CheckMode)
+GET        /type-of-asset                                            controllers.transferDetails.TypeOfAssetController.onPageLoad(mode: Mode = NormalMode)
+POST       /type-of-asset                                            controllers.transferDetails.TypeOfAssetController.onSubmit(mode: Mode = NormalMode)
+GET        /change-type-of-asset                                     controllers.transferDetails.TypeOfAssetController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-type-of-asset                                     controllers.transferDetails.TypeOfAssetController.onSubmit(mode: Mode = CheckMode)
 
 GET        /applicable-tax-exclusions                                controllers.transferDetails.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = NormalMode)
 POST       /applicable-tax-exclusions                                controllers.transferDetails.ApplicableTaxExclusionsController.onSubmit(mode: Mode = NormalMode)
