@@ -182,6 +182,11 @@ POST       /date-of-transfer                                         controllers
 GET        /change-date-of-transfer                                  controllers.transferDetails.DateOfTransferController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-date-of-transfer                                  controllers.transferDetails.DateOfTransferController.onSubmit(mode: Mode = CheckMode)
 
+GET        /type-of-asset                                            controllers.TypeOfAssetController.onPageLoad(mode: Mode = NormalMode)
+POST       /type-of-asset                                            controllers.TypeOfAssetController.onSubmit(mode: Mode = NormalMode)
+GET        /change-type-of-asset                                     controllers.TypeOfAssetController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-type-of-asset                                     controllers.TypeOfAssetController.onSubmit(mode: Mode = CheckMode)
+
 GET        /applicable-tax-exclusions                                controllers.transferDetails.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = NormalMode)
 POST       /applicable-tax-exclusions                                controllers.transferDetails.ApplicableTaxExclusionsController.onSubmit(mode: Mode = NormalMode)
 GET        /change-applicable-tax-exclusions                         controllers.transferDetails.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = CheckMode)

@@ -14,66 +14,65 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers
 
 import base.SpecBase
-import forms.transferDetails.OverseasTransferAllowanceFormProvider
-import models.NormalMode
+import forms.TypeOfAssetFormProvider
+import models.{NormalMode, TypeOfAsset, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.OverseasTransferAllowancePage
+import pages.TypeOfAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.OverseasTransferAllowanceView
+import org.scalatest.freespec.AnyFreeSpec
+import views.html.TypeOfAssetView
 
 import scala.concurrent.Future
 
-class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new OverseasTransferAllowanceFormProvider()
+  private lazy val typeOfAssetRoute = routes.TypeOfAssetController.onPageLoad(NormalMode).url
+
+  private val formProvider = new TypeOfAssetFormProvider()
   private val form         = formProvider()
 
-  val validAnswer = BigDecimal(0.01)
-
-  private lazy val overseasTransferAllowanceRoute = routes.OverseasTransferAllowanceController.onPageLoad(NormalMode).url
-
-  "OverseasTransferAllowance Controller" - {
+  "TypeOfAsset Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, overseasTransferAllowanceRoute)
+        val request = FakeRequest(GET, typeOfAssetRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[OverseasTransferAllowanceView]
+        val view = application.injector.instanceOf[TypeOfAssetView]
 
         status(result) mustEqual OK
+
         contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(OverseasTransferAllowancePage, validAnswer).success.value
+      val userAnswers = userAnswersQtNumber.set(TypeOfAssetPage, TypeOfAsset.values.toSet).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, overseasTransferAllowanceRoute)
+        val request = FakeRequest(GET, typeOfAssetRoute)
 
-        val view = application.injector.instanceOf[OverseasTransferAllowanceView]
+        val view = application.injector.instanceOf[TypeOfAssetView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(TypeOfAsset.values.toSet), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -84,19 +83,27 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
           .build()
 
       running(application) {
+        val cash    = TypeOfAsset.Cash
+        val another = TypeOfAsset.values.find(_ != cash).get
+
         val request =
-          FakeRequest(POST, overseasTransferAllowanceRoute)
-            .withFormUrlEncodedBody(("otAllowance", validAnswer.toString))
+          FakeRequest(POST, typeOfAssetRoute)
+            .withFormUrlEncodedBody(
+              "value[0]" -> cash.toString,
+              "value[1]" -> another.toString
+            )
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OverseasTransferAllowancePage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual TypeOfAssetPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -106,12 +113,12 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, overseasTransferAllowanceRoute)
-            .withFormUrlEncodedBody(("otAllowance", "invalid value"))
+          FakeRequest(POST, typeOfAssetRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("otAllowance" -> "invalid value"))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[OverseasTransferAllowanceView]
+        val view = application.injector.instanceOf[TypeOfAssetView]
 
         val result = route(application, request).value
 
@@ -125,12 +132,12 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, overseasTransferAllowanceRoute)
+        val request = FakeRequest(GET, typeOfAssetRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -140,14 +147,13 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, overseasTransferAllowanceRoute)
-            .withFormUrlEncodedBody(("otAllowance", validAnswer.toString))
+          FakeRequest(POST, typeOfAssetRoute)
+            .withFormUrlEncodedBody(("value[0]", TypeOfAsset.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

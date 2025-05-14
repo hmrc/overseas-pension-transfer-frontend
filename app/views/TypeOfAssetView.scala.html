@@ -14,15 +14,13 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukDetails
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukCheckboxes
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
-@import viewmodels.LabelSize.Large
+@import viewmodels.LegendSize
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
@@ -31,38 +29,36 @@
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukDetails: GovukDetails,
+    govukCheckboxes: GovukCheckboxes,
     govukButton: GovukButton,
     qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("overseasTransferAllowance.title"))) {
+@layout(pageTitle = title(form, messages("typeOfAsset.title"))) {
 
-    @formHelper(action = controllers.transferDetails.routes.OverseasTransferAllowanceController.onSubmit(mode)) {
+    @formHelper(action = routes.TypeOfAssetController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         @qtNumber()
-        @govukInput(
-            InputViewModel(
-                field = form("otAllowance"),
-                label = LabelViewModel(Text(messages("overseasTransferAllowance.heading")))
-                        .withCssClass("govuk-!-margin-bottom-6")
-                        .asPageHeading(size = Large)
-            )
-            .withHint(HintViewModel(messages("overseasTransferAllowance.hint")))
-            .withPrefix(PrefixOrSuffix(content = Text("£")))
-            .withWidth(Fixed5)
+
+        @govukCheckboxes(
+            CheckboxesViewModel(
+                form   = form,
+                name   = "value",
+                legend = LegendViewModel(
+                            messages("typeOfAsset.heading")
+                         )
+                         .asPageHeading(size = LegendSize.Large)
+                         .withCssClass("govuk-!-margin-bottom-6"),
+                items  = TypeOfAsset.checkboxItems
+            ).withHint(HintViewModel(Text(messages("typeOfAsset.hint"))))
         )
-        @govukDetails(Details(
-            summary = Text(messages("overseasTransferAllowance.help.title")),
-            content = Text(messages("overseasTransferAllowance.help.details"))
-        ))
+
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
         )

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package pages
 
-import controllers.transferDetails.routes
+import controllers.routes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class OverseasTransferAllowancePageSpec extends AnyFreeSpec with Matchers {
+class TypeOfAssetPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -31,7 +31,7 @@ class OverseasTransferAllowancePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to the Next page" in {
         // TODO change when pages are connected
-        OverseasTransferAllowancePage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        TypeOfAssetPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
       }
     }
 
@@ -39,7 +39,7 @@ class OverseasTransferAllowancePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        OverseasTransferAllowancePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        TypeOfAssetPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
   }

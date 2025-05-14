@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package pages
 
-import controllers.transferDetails.routes
-import models.{CheckMode, UserAnswers}
-import pages.QuestionPage
+import controllers.routes
+import models.{CheckMode, TypeOfAsset, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object OverseasTransferAllowancePage extends QuestionPage[BigDecimal] {
+case object TypeOfAssetPage extends QuestionPage[Set[TypeOfAsset]] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "overseasTransferAllowance"
+  override def toString: String = "typeOfAsset"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    routes.IndexController.onPageLoad() // TODO change while connecting the pages
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.OverseasTransferAllowanceController.onPageLoad(CheckMode)
+    routes.TypeOfAssetController.onPageLoad(CheckMode)
 }

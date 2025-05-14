@@ -16,23 +16,49 @@
 
 package forms.transferDetails
 
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.CurrencyFieldBehaviours
+import org.scalacheck.Gen
 import play.api.data.FormError
+import utils.CurrencyFormats.currencyFormat
 
-class OverseasTransferAllowanceFormProviderSpec extends StringFieldBehaviours {
+import scala.math.BigDecimal.RoundingMode
 
-  val requiredKey = "overseasTransferAllowance.error.required"
+class OverseasTransferAllowanceFormProviderSpec extends CurrencyFieldBehaviours {
+
+  val requiredKey   = "overseasTransferAllowance.error.required"
+  val nonNumericKey = "overseasTransferAllowance.error.nonNumeric"
+  val maximumKey    = "overseasTransferAllowance.error.aboveMaximum"
 
   val form = new OverseasTransferAllowanceFormProvider()()
 
   ".value" - {
 
     val fieldName = "otAllowance"
+    val minimum   = 0.01
+    val maximum   = 999999999.99
+
+    val validDataGenerator =
+      Gen.choose[BigDecimal](minimum, maximum)
+        .map(_.setScale(2, RoundingMode.HALF_UP))
+        .map(_.toString)
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      decimals
+      validDataGenerator
+    )
+
+    behave like currencyField(
+      form,
+      fieldName,
+      nonNumericError = FormError(fieldName, nonNumericKey)
+    )
+
+    behave like currencyFieldWithMaximum(
+      form,
+      fieldName,
+      maximum,
+      FormError(fieldName, maximumKey, Seq(currencyFormat(maximum)))
     )
 
     behave like mandatoryField(

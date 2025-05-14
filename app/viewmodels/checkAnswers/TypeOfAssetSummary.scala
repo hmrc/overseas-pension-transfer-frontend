@@ -14,27 +14,38 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels.checkAnswers
 
-import models.UserAnswers
-import pages.transferDetails.OverseasTransferAllowancePage
-import utils.CurrencyFormats.currencyFormat
+import controllers.routes
+import models.{CheckMode, UserAnswers}
+import pages.TypeOfAssetPage
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OverseasTransferAllowanceSummary {
+object TypeOfAssetSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OverseasTransferAllowancePage).map {
-      answer =>
+    answers.get(TypeOfAssetPage).map {
+      answers =>
+        val value = ValueViewModel(
+          HtmlContent(
+            answers.map {
+              answer => HtmlFormat.escape(messages(s"typeOfAsset.$answer")).toString
+            }
+              .mkString(",<br>")
+          )
+        )
+
         SummaryListRowViewModel(
-          key     = "overseasTransferAllowance.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
+          key     = "typeOfAsset.checkYourAnswersLabel",
+          value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", OverseasTransferAllowancePage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("overseasTransferAllowance.change.hidden"))
+            ActionItemViewModel("site.change", routes.TypeOfAssetController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("typeOfAsset.change.hidden"))
           )
         )
     }

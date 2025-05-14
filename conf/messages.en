@@ -305,9 +305,14 @@ whyTransferIsTaxable.change.hidden = Why is this a taxable overseas transfer?
 overseasTransferAllowance.title = What is the amount of the overseas transfer allowance before making this transfer?
 overseasTransferAllowance.heading = What is the amount of the overseas transfer allowance before making this transfer?
 overseasTransferAllowance.checkYourAnswersLabel = Transfer allowance
-overseasTransferAllowance.error.required = Enter the transfer amount
+overseasTransferAllowance.error.required = Enter the amount of the transfer allowance
+overseasTransferAllowance.error.nonNumeric = The transfer allowance must be an amount of money, like 123 or 123.00
+overseasTransferAllowance.error.aboveMaximum = The transfer allowance amount must be {0} or less
+overseasTransferAllowance.error.belowMinimum = The transfer allowance amount must be {0} or more
 overseasTransferAllowance.change.hidden = Transfer allowance
-overseasTransferAllowance.hint = Put the exact amount to 2 decimal places for example, £600,000.00 or £193,243.54.
+overseasTransferAllowance.hint = For example, £60000 or £19,300.54.
+overseasTransferAllowance.help.title = Help with available allowance
+overseasTransferAllowance.help.details = You will need to contact your member to confirm what their available allowance is, as it may have been used across multiple schemes.
 
 isTransferTaxable.title = Is this transfer payment a taxable overseas transfer?
 isTransferTaxable.heading = Is this transfer payment a taxable overseas transfer?
@@ -320,6 +325,19 @@ isTransferCashOnly.heading = Is the transfer made up of cash only?
 isTransferCashOnly.checkYourAnswersLabel = Is transfer cash only
 isTransferCashOnly.error.required = Select yes if the transfer is cash only
 isTransferCashOnly.change.hidden = Is transfer cash only
+
+typeOfAsset.title = Type of assets included in the transfer
+typeOfAsset.heading = Type of assets included in the transfer
+typeOfAsset.cash = Cash
+typeOfAsset.unquotedShares = Unquoted shares
+typeOfAsset.quotedShares = Quoted shares
+typeOfAsset.property = Property
+typeOfAsset.other = Other
+typeOfAsset.hint = Select all that apply.
+typeOfAsset.checkYourAnswersLabel = Type of assets included in the transfer
+typeOfAsset.error.required = Select at least one type of asset
+typeOfAsset.error.cashOnly = You cannot select ''Cash'' only. Select at least one other asset type. If your transfer is cash only, return to the previous question and update your answer.
+typeOfAsset.change.hidden = Type of assets included in the transfer
 
 dateOfTransfer.title = What was the date of the transfer?
 dateOfTransfer.heading = What was the date of the transfer?

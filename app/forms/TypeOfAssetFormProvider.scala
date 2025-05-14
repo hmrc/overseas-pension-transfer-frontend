@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package forms.transferDetails
+package forms
 
 import javax.inject.Inject
 
 import forms.mappings.Mappings
 import play.api.data.Form
+import play.api.data.Forms.set
+import models.TypeOfAsset
 
-class OverseasTransferAllowanceFormProvider @Inject() extends Mappings {
+class TypeOfAssetFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[BigDecimal] =
+  def apply(): Form[Set[TypeOfAsset]] =
     Form(
-      "otAllowance" -> currency(
-        "overseasTransferAllowance.error.required",
-        "overseasTransferAllowance.error.nonNumeric"
-      )
-        .verifying(minimumCurrency(0.01, "overseasTransferAllowance.error.belowMinimum"))
-        .verifying(maximumCurrency(999999999.99, "overseasTransferAllowance.error.aboveMaximum"))
+      "value" -> set(enumerable[TypeOfAsset]("typeOfAsset.error.required"))
+        .verifying(nonEmptySet("typeOfAsset.error.required"))
+        .verifying("typeOfAsset.error.cashOnly", selection => !isOnlyCashSelected(selection))
     )
+
+  private def isOnlyCashSelected(selection: Set[TypeOfAsset]): Boolean = {
+    selection.size == 1 && selection.head == TypeOfAsset.Cash
+  }
 }
