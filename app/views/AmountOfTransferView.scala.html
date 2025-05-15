@@ -52,9 +52,10 @@
         @govukInput(
             InputViewModel(
                 field = form("value")
-        )
-    .withPrefix(PrefixOrSuffix(content = "£"))
-        .withWidth(Fixed10)
+            )
+            .withPrefix(PrefixOrSuffix(content = "£"))
+            .withWidth(Fixed10)
+            .withHint(HintViewModel(Text(messages("amountOfTransfer.hint"))))
         )
 
         @govukButton(
