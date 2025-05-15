@@ -27,6 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.MemberDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberNinoView
@@ -41,6 +42,7 @@ class MemberNinoController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    memberDetailsService: MemberDetailsService,
     formProvider: MemberNinoFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberNinoView,
@@ -67,22 +69,9 @@ class MemberNinoController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            ninoUserAnswers  <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value).flatMap(_.remove(MemberDoesNotHaveNinoPage)))
-            // TODO: look into best way to implement headers
-            hc: HeaderCarrier = new HeaderCarrier()
-            backendResponse  <- userAnswersConnector.putAnswers(ninoUserAnswers.id, UserAnswersDTO.fromUserAnswers(ninoUserAnswers))(hc, ec)
-            updatedAnswers    = backendResponse match {
-                                  case UserAnswersSuccessResponse(userAnswersDTO) =>
-                                    UserAnswersDTO.toUserAnswers(userAnswersDTO)
-                                  case UserAnswersErrorResponse(error)            =>
-                                    // TODO: how to fail gracefully here
-                                    logger.warn(s"Failed to store user answers in backend: ${error.getMessage}", error)
-                                    ninoUserAnswers
-                                }
-            _                <- {
-              logger.info(Json.stringify(updatedAnswers.data))
-              sessionRepository.set(updatedAnswers)
-            }
+            userAnswers    <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value).flatMap(_.remove(MemberDoesNotHaveNinoPage)))
+            updatedAnswers <- memberDetailsService.postMemberNinoUserAnswers(userAnswers.id, userAnswers)
+            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
       )
   }

@@ -24,6 +24,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.MemberDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberHasEverBeenResidentUKView
 
@@ -37,6 +38,7 @@ class MemberHasEverBeenResidentUKController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    memberDetailsService: MemberDetailsService,
     formProvider: MemberHasEverBeenResidentUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberHasEverBeenResidentUKView
@@ -62,26 +64,11 @@ class MemberHasEverBeenResidentUKController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           val previousValue = request.userAnswers.get(MemberHasEverBeenResidentUKPage)
-
           for {
-            baseAnswers <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
-
-            // If going from true → false, remove the answers of next questions
-            updatedAnswers <- (previousValue, value) match {
-                                case (Some(true), false) => Future.fromTry(baseAnswers
-                                    .remove(MembersLastUKAddressPage)
-                                    .flatMap(_.remove(MemberDateOfLeavingUKPage)))
-                                case _                   => Future.successful(baseAnswers)
-                              }
-
-            _ <- sessionRepository.set(updatedAnswers)
-
-            // If going from false → true in CheckMode, switch to NormalMode to question membersLastUKAddress
-            redirectMode = (mode, previousValue, value) match {
-                             case (CheckMode, Some(false), true) => NormalMode
-                             case _                              => mode
-                           }
-
+            baseAnswers    <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
+            updatedAnswers <- memberDetailsService.updateMemberHasEverBeenResidentUKAnswers(baseAnswers, previousValue, value)
+            _              <- sessionRepository.set(updatedAnswers)
+            redirectMode    = memberDetailsService.getMemberHasEverBeenResidentUKRedirectMode(mode, previousValue, value)
           } yield Redirect(MemberHasEverBeenResidentUKPage.nextPage(redirectMode, updatedAnswers))
         }
       )
