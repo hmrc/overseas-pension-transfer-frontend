@@ -19,7 +19,9 @@ package services
 import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.{QROPSAddressFormData, SchemeManagersAddressFormData}
+import models.UserAnswers
 import models.address._
+import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -76,4 +78,10 @@ class AddressService @Inject() (countryService: CountryService, addressLookupCon
 
   def findAddressById(found: FoundAddressSet, selectedId: String): Option[FoundAddress] =
     found.addresses.find(_.id == selectedId)
+
+  def clearAddressLookups(answers: UserAnswers): Future[UserAnswers] =
+    Future.fromTry(answers
+      .remove(MembersLastUkAddressLookupPage)
+      .flatMap(_.remove(MembersLastUkAddressSelectPage)))
+
 }
