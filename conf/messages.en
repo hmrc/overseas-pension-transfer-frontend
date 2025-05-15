@@ -361,4 +361,4 @@ amountOfTransfer.error.required = Enter the transfer amount
 amountOfTransfer.error.aboveMaximum = The transfer amount must be {0} or less
 amountOfTransfer.error.belowMinimum = The transfer allowance amount must be {0} or more
 amountOfTransfer.change.hidden = Amount of transfer
-amountOfTransfer.hint = Put the exact amount to 2 decimal places for example, £600.00 or £193.54.
+amountOfTransfer.hint = For example, £60000 or £19,300.54.
