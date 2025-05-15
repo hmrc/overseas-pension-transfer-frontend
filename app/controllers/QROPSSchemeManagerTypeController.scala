@@ -23,6 +23,7 @@ import pages.{OrgIndividualNamePage, OrganisationNamePage, QROPSSchemeManagerTyp
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SchemeManagerService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.QROPSSchemeManagerTypeView
 
@@ -36,6 +37,7 @@ class QROPSSchemeManagerTypeController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    schemeManagerService: SchemeManagerService,
     formProvider: QROPSSchemeManagerTypeFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: QROPSSchemeManagerTypeView
@@ -62,22 +64,9 @@ class QROPSSchemeManagerTypeController @Inject() (
         value => {
           val previousValue = request.userAnswers.get(QROPSSchemeManagerTypePage)
           for {
-            baseAnswers <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerTypePage, value))
-
-            // If the QROPSSchemeManagerType changes, remove the answers of previous corresponding questions
-            updatedAnswers <- (previousValue, value) match {
-                                case (Some(QROPSSchemeManagerType.Individual), QROPSSchemeManagerType.Organisation) => Future.fromTry(baseAnswers
-                                    .remove(SchemeManagersNamePage))
-                                case (Some(QROPSSchemeManagerType.Organisation), QROPSSchemeManagerType.Individual) => Future.fromTry(baseAnswers
-                                    .remove(OrganisationNamePage)
-                                    .flatMap(_.remove(OrgIndividualNamePage)))
-                                case _                                                                              => Future.successful(baseAnswers)
-                              }
-            _              <- sessionRepository.set(updatedAnswers)
-
-            // If the QROPSSchemeManagerType changes, always switch to NormalMode to go through corresponding set of questions
-            redirectMode = if (!previousValue.contains(value)) NormalMode else mode
-
+            baseAnswers    <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerTypePage, value))
+            updatedAnswers <- schemeManagerService.updateSchemeManagerTypeAnswers(baseAnswers, previousValue, value)
+            redirectMode    = schemeManagerService.getSchemeManagerTypeRedirectMode(mode, previousValue, value)
           } yield Redirect(QROPSSchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
         }
       )
