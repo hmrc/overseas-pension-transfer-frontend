@@ -18,8 +18,8 @@ package controllers
 
 import controllers.actions._
 import forms.QROPSSchemeManagerTypeFormProvider
-import models.{Mode, NormalMode, QROPSSchemeManagerType}
-import pages.{OrgIndividualNamePage, OrganisationNamePage, QROPSSchemeManagerTypePage, SchemeManagersNamePage}
+import models.Mode
+import pages.QROPSSchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -67,6 +67,7 @@ class QROPSSchemeManagerTypeController @Inject() (
             baseAnswers    <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerTypePage, value))
             updatedAnswers <- schemeManagerService.updateSchemeManagerTypeAnswers(baseAnswers, previousValue, value)
             redirectMode    = schemeManagerService.getSchemeManagerTypeRedirectMode(mode, previousValue, value)
+            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(QROPSSchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
         }
       )
