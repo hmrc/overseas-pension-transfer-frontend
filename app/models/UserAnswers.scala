@@ -17,10 +17,10 @@
 package models
 
 import play.api.libs.json._
+import java.time.Instant
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
-import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
@@ -65,6 +65,26 @@ final case class UserAnswers(
   }
 }
 
+/*
+final case class UserAnswers(
+    id: String,
+    data: FormData       = FormData(),
+    lastUpdated: Instant = Instant.now
+  ) {
+
+  /** Generic getter using a function to extract a value */
+  def get[A](f: FormData => Option[A]): Option[A] =
+    f(data)
+
+  /** Generic setter using a copy-transform pattern */
+  def set(f: FormData => FormData): UserAnswers =
+    copy(data = f(data), lastUpdated = Instant.now)
+
+  /** Optional remove-style pattern to clear a section */
+  def remove(f: FormData => FormData): UserAnswers =
+    copy(data = f(data), lastUpdated = Instant.now)
+}
+ */
 object UserAnswers {
 
   val reads: Reads[UserAnswers] = {
@@ -91,3 +111,8 @@ object UserAnswers {
 
   implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)
 }
+/*
+object UserAnswers {
+  implicit val format: OFormat[UserAnswers] = Json.format[UserAnswers]
+}
+ */

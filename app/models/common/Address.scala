@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package models
+package models.common
 
-import play.api.libs.json._
+import models.AddressType
+import play.api.libs.json.{Json, OFormat}
 
-case class PersonName(firstName: String, lastName: String) {
-  def fullName: String = s"$firstName $lastName".trim
-}
+case class Address(
+    line1: String,
+    line2: String,
+    line3: Option[String],
+    line4: Option[String],
+    line5: Option[String],
+    country: Country,
+    postcode: Option[String],
+    poBox: Option[String],
+    addressType: AddressType
+  )
 
-object PersonName {
-  implicit val format: OFormat[PersonName] = Json.format[PersonName]
+object Address {
+  implicit val format: OFormat[Address] = Json.format[Address]
 }

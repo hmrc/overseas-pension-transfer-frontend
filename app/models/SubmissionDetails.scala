@@ -16,12 +16,12 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.{Json, OFormat}
 
-case class PersonName(firstName: String, lastName: String) {
-  def fullName: String = s"$firstName $lastName".trim
-}
+case class SubmissionDetails(
+    id: String // TODO all other fields
+  )
 
-object PersonName {
-  implicit val format: OFormat[PersonName] = Json.format[PersonName]
+object SubmissionDetails {
+  implicit val format: OFormat[SubmissionDetails] = Json.format[SubmissionDetails]
 }

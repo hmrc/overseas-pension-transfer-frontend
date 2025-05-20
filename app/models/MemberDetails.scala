@@ -16,12 +16,23 @@
 
 package models
 
-import play.api.libs.json._
+import models.common._
 
-case class PersonName(firstName: String, lastName: String) {
-  def fullName: String = s"$firstName $lastName".trim
-}
+import java.time.LocalDate
+import play.api.libs.json.{Json, OFormat}
 
-object PersonName {
-  implicit val format: OFormat[PersonName] = Json.format[PersonName]
+case class MemberDetails(
+    memberName: PersonName,
+    memberDateOfBirth: LocalDate,
+    memberNino: Option[String],
+    memberDoesNotHaveNino: Option[String],
+    membersCurrentAddress: Address,
+    memberIsResidentUK: Boolean,
+    memberHasEverBeenResidentUK: Option[Boolean],
+    membersLastUKAddress: Option[Address],
+    memberDateOfLeavingUK: Option[LocalDate]
+  )
+
+object MemberDetails {
+  implicit val format: OFormat[MemberDetails] = Json.format[MemberDetails]
 }

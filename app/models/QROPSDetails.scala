@@ -16,12 +16,16 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.{Json, OFormat}
+import models.common._
 
-case class PersonName(firstName: String, lastName: String) {
-  def fullName: String = s"$firstName $lastName".trim
-}
+case class QROPSDetails(
+    qropsName: String,
+    qropsReference: String,
+    qropsAddress: Address,
+    qropsCountry: Country
+  )
 
-object PersonName {
-  implicit val format: OFormat[PersonName] = Json.format[PersonName]
+object QROPSDetails {
+  implicit val format: OFormat[QROPSDetails] = Json.format[QROPSDetails]
 }
