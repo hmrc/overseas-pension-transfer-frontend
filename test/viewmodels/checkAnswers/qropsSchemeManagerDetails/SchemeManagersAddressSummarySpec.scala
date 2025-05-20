@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.qropsSchemeManagerDetails
 import base.SpecBase
 import models.address.{Country, SchemeManagersAddress}
 import org.scalatest.freespec.AnyFreeSpec
-import pages.SchemeManagersAddressPage
+import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
