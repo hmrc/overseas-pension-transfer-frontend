@@ -23,18 +23,13 @@ import javax.inject.Inject
 
 class OverseasTransferAllowanceFormProvider @Inject() extends Mappings {
 
-  val amountPrefix = "£"
-
-  def apply(): Form[String] =
+  def apply(): Form[BigDecimal] =
     Form(
-      "otAllowance" -> text("overseasTransferAllowance.error.required")
-        .transform[String](
-          raw => prependAmountPrefix(raw),
-          formatted => formatted
-        )
+      "otAllowance" -> currency(
+        "overseasTransferAllowance.error.required",
+        "overseasTransferAllowance.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(0.01, "overseasTransferAllowance.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "overseasTransferAllowance.error.aboveMaximum"))
     )
-
-  private def prependAmountPrefix(raw: String): String = {
-    if (raw.startsWith(amountPrefix)) raw else s"$amountPrefix$raw"
-  }
 }

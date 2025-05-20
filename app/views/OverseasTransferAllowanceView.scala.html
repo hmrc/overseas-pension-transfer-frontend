@@ -20,6 +20,16 @@
 @import viewmodels.InputWidth._
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukDetails
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.title
+@import viewmodels.govuk.all._
+@import viewmodels.LabelSize.Large
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 
 @this(
@@ -27,6 +37,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
+    govukDetails: GovukDetails,
     govukButton: GovukButton,
     qtNumber: QTNumber
 )
@@ -42,17 +53,21 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("overseasTransferAllowance.heading")</h1>
-
         @govukInput(
             InputViewModel(
-                field = form("otAllowance")
+                field = form("otAllowance"),
+                label = LabelViewModel(Text(messages("overseasTransferAllowance.heading")))
+                        .withCssClass("govuk-!-margin-bottom-6")
+                        .asPageHeading(size = Large)
             )
             .withHint(HintViewModel(messages("overseasTransferAllowance.hint")))
             .withPrefix(PrefixOrSuffix(content = Text("£")))
-            .withWidth(OneHalf)
+            .withWidth(Fixed5)
         )
-
+        @govukDetails(Details(
+            summary = Text(messages("overseasTransferAllowance.help.title")),
+            content = Text(messages("overseasTransferAllowance.help.details"))
+        ))
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
         )
