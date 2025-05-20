@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import controllers.routes
+import controllers.qropsSchemeManagerDetails.routes
 import models.{CheckMode, UserAnswers}
-import pages.SchemeManagersEmailPage
+import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
