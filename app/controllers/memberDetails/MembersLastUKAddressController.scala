@@ -69,10 +69,7 @@ class MembersLastUKAddressController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, value))
-            _              <- {
-              logger.info(Json.stringify(updatedAnswers.data))
-              sessionRepository.set(updatedAnswers)
-            }
+            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
       )
   }

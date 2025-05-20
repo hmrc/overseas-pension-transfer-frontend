@@ -85,10 +85,7 @@ class SchemeManagersAddressController @Inject() (
             case Some(address) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersAddressPage, address))
-                _              <- {
-                  logger.info(Json.stringify(updatedAnswers.data))
-                  sessionRepository.set(updatedAnswers)
-                }
+                _              <- sessionRepository.set(updatedAnswers)
               } yield Redirect(SchemeManagersAddressPage.nextPage(mode, updatedAnswers))
           }
         }

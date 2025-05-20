@@ -63,10 +63,7 @@ class MemberNameController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
-            _              <- {
-              logger.info(Json.stringify(updatedAnswers.data))
-              sessionRepository.set(updatedAnswers)
-            }
+            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
       )
   }

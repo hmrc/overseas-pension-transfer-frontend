@@ -16,19 +16,15 @@
 
 package controllers.memberDetails
 
-import connectors.{UserAnswersConnector, UserAnswersErrorResponse, UserAnswersSuccessResponse}
 import controllers.actions._
 import forms.memberDetails.MemberNinoFormProvider
 import models.Mode
-import models.dtos.UserAnswersDTO
 import pages.memberDetails.{MemberDoesNotHaveNinoPage, MemberNinoPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.MemberDetailsService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberNinoView
 
@@ -45,8 +41,7 @@ class MemberNinoController @Inject() (
     memberDetailsService: MemberDetailsService,
     formProvider: MemberNinoFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MemberNinoView,
-    userAnswersConnector: UserAnswersConnector
+    view: MemberNinoView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 

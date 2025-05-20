@@ -80,8 +80,7 @@ class MembersLastUkAddressLookupController @Inject() (
                     userAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, fas))
                     _           <- sessionRepository.set(userAnswers)
                   } yield Redirect(MembersLastUkAddressLookupPage.nextPage(mode, userAnswers))
-
-                case naf: NoAddressFound =>
+                case naf: NoAddressFound  =>
                   for {
                     userAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, naf))
                     _           <- sessionRepository.set(userAnswers)
