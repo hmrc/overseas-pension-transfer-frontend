@@ -1,42 +1,58 @@
-package controllers
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers.transferDetails
 
 import base.SpecBase
-import forms.$className$FormProvider
+import forms.transferDetails.AmountOfTransferFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.$className$Page
+import pages.transferDetails.AmountOfTransferPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import org.scalatest.freespec.AnyFreeSpec
-import views.html.$className$View
+import views.html.transferDetails.AmountOfTransferView
 
 import scala.concurrent.Future
 
-class $className$ControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  val formProvider = new $className$FormProvider()
-  val form = formProvider()
+  val formProvider = new AmountOfTransferFormProvider()
+  val form         = formProvider()
 
-  val validAnswer = BigDecimal($minimum$)
+  val validAnswer = BigDecimal(0.01)
 
-  lazy val $className;format="decap"$Route = routes.$className$Controller.onPageLoad(NormalMode).url
+  lazy val amountOfTransferRoute = routes.AmountOfTransferController.onPageLoad(NormalMode).url
 
-  "$className$ Controller" - {
+  "AmountOfTransfer Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, $className;format="decap"$Route)
+        val request = FakeRequest(GET, amountOfTransferRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[$className$View]
+        val view = application.injector.instanceOf[AmountOfTransferView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
@@ -45,14 +61,14 @@ class $className$ControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set($className$Page, validAnswer).success.value
+      val userAnswers = userAnswersQtNumber.set(AmountOfTransferPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, $className;format="decap"$Route)
+        val request = FakeRequest(GET, amountOfTransferRoute)
 
-        val view = application.injector.instanceOf[$className$View]
+        val view = application.injector.instanceOf[AmountOfTransferView]
 
         val result = route(application, request).value
 
@@ -76,13 +92,13 @@ class $className$ControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
       running(application) {
         val request =
-          FakeRequest(POST, $className;format="decap"$Route)
-      .withFormUrlEncodedBody(("value", validAnswer.toString))
+          FakeRequest(POST, amountOfTransferRoute)
+            .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual $className$Page.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual AmountOfTransferPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -92,12 +108,12 @@ class $className$ControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
       running(application) {
         val request =
-          FakeRequest(POST, $className;format="decap"$Route)
-      .withFormUrlEncodedBody(("value", "invalid value"))
+          FakeRequest(POST, amountOfTransferRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[$className$View]
+        val view = application.injector.instanceOf[AmountOfTransferView]
 
         val result = route(application, request).value
 
@@ -111,12 +127,12 @@ class $className$ControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, $className;format="decap"$Route)
+        val request = FakeRequest(GET, amountOfTransferRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -126,14 +142,14 @@ class $className$ControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
       running(application) {
         val request =
-          FakeRequest(POST, $className;format="decap"$Route)
-      .withFormUrlEncodedBody(("value", validAnswer.toString))
+          FakeRequest(POST, amountOfTransferRoute)
+            .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
