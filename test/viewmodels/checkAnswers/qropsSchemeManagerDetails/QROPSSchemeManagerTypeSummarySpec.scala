@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.qropsSchemeManagerDetails
 import base.SpecBase
 import models.QROPSSchemeManagerType
 import org.scalatest.freespec.AnyFreeSpec
-import pages.QROPSSchemeManagerTypePage
+import pages.qropsSchemeManagerDetails.QROPSSchemeManagerTypePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
