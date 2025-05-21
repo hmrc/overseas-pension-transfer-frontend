@@ -192,7 +192,7 @@ POST       /applicable-tax-exclusions                                controllers
 GET        /change-applicable-tax-exclusions                         controllers.transferDetails.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-applicable-tax-exclusions                         controllers.transferDetails.ApplicableTaxExclusionsController.onSubmit(mode: Mode = CheckMode)
 
-GET        /amount-of-transfer                                       controllers.AmountOfTransferController.onPageLoad(mode: Mode = NormalMode)
-POST       /amount-of-transfer                                       controllers.AmountOfTransferController.onSubmit(mode: Mode = NormalMode)
-GET        /change-amount-of-transfer                                controllers.AmountOfTransferController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-amount-of-transfer                                controllers.AmountOfTransferController.onSubmit(mode: Mode = CheckMode)
+GET        /amount-of-transfer                                       controllers.transferDetails.AmountOfTransferController.onPageLoad(mode: Mode = NormalMode)
+POST       /amount-of-transfer                                       controllers.transferDetails.AmountOfTransferController.onSubmit(mode: Mode = NormalMode)
+GET        /change-amount-of-transfer                                controllers.transferDetails.AmountOfTransferController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-amount-of-transfer                                controllers.transferDetails.AmountOfTransferController.onSubmit(mode: Mode = CheckMode)

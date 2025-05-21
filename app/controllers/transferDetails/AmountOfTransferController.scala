@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
 import controllers.actions._
-import forms.AmountOfTransferFormProvider
-import javax.inject.Inject
+import forms.transferDetails.AmountOfTransferFormProvider
 import models.Mode
-import pages.AmountOfTransferPage
+import pages.transferDetails.AmountOfTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.AmountOfTransferView
+import views.html.transferDetails.AmountOfTransferView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AmountOfTransferController @Inject() (

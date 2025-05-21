@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
 
-import utils.CurrencyFormats.currencyFormat
 import forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
+import utils.CurrencyFormats.currencyFormat
 
 import scala.math.BigDecimal.RoundingMode
 
