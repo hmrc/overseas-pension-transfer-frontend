@@ -29,7 +29,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.transferDetails.TypeOfAssetView
-import views.html.TypeOfAssetView
 
 import scala.concurrent.Future
 
