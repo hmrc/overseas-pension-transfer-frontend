@@ -19,7 +19,6 @@ package forms.memberDetails
 import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
-import models.address._
 import play.api.data.FormError
 
 class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with SpecBase with Regex {
