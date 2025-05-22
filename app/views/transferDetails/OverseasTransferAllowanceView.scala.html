@@ -1,0 +1,75 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.requests.DisplayRequest
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
+@import viewmodels.InputWidth._
+@import viewmodels.govuk.all._
+@import views.ViewUtils.title
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukDetails
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.title
+@import viewmodels.govuk.all._
+@import viewmodels.LabelSize.Large
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import models.requests.DisplayRequest
+@import views.html.components.QTNumber
+
+@this(
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukDetails: GovukDetails,
+    govukButton: GovukButton,
+    qtNumber: QTNumber
+)
+
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages("overseasTransferAllowance.title"))) {
+
+    @formHelper(action = controllers.transferDetails.routes.OverseasTransferAllowanceController.onSubmit(mode)) {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
+
+        @qtNumber()
+        @govukInput(
+            InputViewModel(
+                field = form("otAllowance"),
+                label = LabelViewModel(Text(messages("overseasTransferAllowance.heading")))
+                        .withCssClass("govuk-!-margin-bottom-6")
+                        .asPageHeading(size = Large)
+            )
+            .withHint(HintViewModel(messages("overseasTransferAllowance.hint")))
+            .withPrefix(PrefixOrSuffix(content = Text("£")))
+            .withWidth(Fixed5)
+        )
+        @govukDetails(Details(
+            summary = Text(messages("overseasTransferAllowance.help.title")),
+            content = Text(messages("overseasTransferAllowance.help.details"))
+        ))
+        @govukButton(
+            ButtonViewModel(Text(messages("site.saveAndContinue")))
+        )
+    }
+}

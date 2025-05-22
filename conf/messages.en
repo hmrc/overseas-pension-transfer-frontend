@@ -357,3 +357,13 @@ applicableTaxExclusions.hint = Select all that apply.
 applicableTaxExclusions.checkYourAnswersLabel = Why transfer is not taxable
 applicableTaxExclusions.error.required = Select at least one reason why the transfer is not taxable
 applicableTaxExclusions.change.hidden = Why transfer is not taxable
+
+amountOfTransfer.title = What is the amount of the transfer?
+amountOfTransfer.heading = What is the amount of the transfer?
+amountOfTransfer.checkYourAnswersLabel = Amount of transfer
+amountOfTransfer.error.nonNumeric = The transfer amount must be an amount of money, like 123 or 123.00
+amountOfTransfer.error.required = Enter the transfer amount
+amountOfTransfer.error.aboveMaximum = The transfer amount must be {0} or less
+amountOfTransfer.error.belowMinimum = The transfer allowance amount must be {0} or more
+amountOfTransfer.change.hidden = Amount of transfer
+amountOfTransfer.hint = For example, £60000 or £19,300.54.
