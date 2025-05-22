@@ -18,14 +18,14 @@ package pages.qropsDetails
 
 import controllers.qropsDetails.routes
 import models.address.Address
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object QROPSAddressPage extends QuestionPage[Address] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.QROPSDetails.toString \ toString
 
   override def toString: String = "qropsAddress"
 
