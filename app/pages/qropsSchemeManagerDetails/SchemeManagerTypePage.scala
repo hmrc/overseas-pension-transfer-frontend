@@ -17,27 +17,27 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, NormalMode, QROPSSchemeManagerType, UserAnswers}
+import models.{CheckMode, NormalMode, SchemeManagerType, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QROPSSchemeManagerTypePage extends QuestionPage[QROPSSchemeManagerType] {
+case object SchemeManagerTypePage extends QuestionPage[SchemeManagerType] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "qropsSchemeManagerType"
+  override def toString: String = "schemeManagerType"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    answers.get(QROPSSchemeManagerTypePage) match {
-      case Some(QROPSSchemeManagerType.Individual)   => routes.SchemeManagersNameController.onPageLoad(NormalMode)
-      case Some(QROPSSchemeManagerType.Organisation) => routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode)
-      case _                                         => controllers.routes.JourneyRecoveryController.onPageLoad()
+    answers.get(SchemeManagerTypePage) match {
+      case Some(SchemeManagerType.Individual)   => routes.SchemeManagersNameController.onPageLoad(NormalMode)
+      case Some(SchemeManagerType.Organisation) => routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode)
+      case _                                    => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.SchemeManagerDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.QROPSSchemeManagerTypeController.onPageLoad(CheckMode)
+    routes.SchemeManagerTypeController.onPageLoad(CheckMode)
 }

@@ -17,24 +17,24 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
-import models.QROPSSchemeManagerType
+import models.SchemeManagerType
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.QROPSSchemeManagerTypePage
+import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class QROPSSchemeManagerTypeSummarySpec extends AnyFreeSpec with SpecBase {
+class SchemeManagerTypeSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "QROPS scheme manager type Summary" - {
+  "Scheme manager type Summary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when QROPSSchemeManagerTypePage has a value" in {
-      val answers = emptyUserAnswers.set(QROPSSchemeManagerTypePage, QROPSSchemeManagerType.Individual).success.value
-      val result  = QROPSSchemeManagerTypeSummary.row(answers)
+    "must return a SummaryListRow when SchemeManagerTypePage has a value" in {
+      val answers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+      val result  = SchemeManagerTypeSummary.row(answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("qropsSchemeManagerType.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include(QROPSSchemeManagerType.Individual.toString)
+      result.get.key.content.asHtml.body must include("schemeManagerType.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include(SchemeManagerType.Individual.toString)
     }
   }
 }

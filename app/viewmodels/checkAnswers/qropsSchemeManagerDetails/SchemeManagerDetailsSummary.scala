@@ -23,7 +23,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 case object SchemeManagerDetailsSummary {
 
   def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val managersType: Option[SummaryListRow] = QROPSSchemeManagerTypeSummary.row(userAnswers)
+    val managersType: Option[SummaryListRow] = SchemeManagerTypeSummary.row(userAnswers)
 
     val managersName: Option[SummaryListRow] = SchemeManagersNameSummary.row(userAnswers)
 

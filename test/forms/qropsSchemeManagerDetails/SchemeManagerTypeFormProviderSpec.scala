@@ -17,22 +17,22 @@
 package forms.qropsSchemeManagerDetails
 
 import forms.behaviours.OptionFieldBehaviours
-import models.QROPSSchemeManagerType
+import models.SchemeManagerType
 import play.api.data.FormError
 
-class QROPSSchemeManagerTypeFormProviderSpec extends OptionFieldBehaviours {
+class SchemeManagerTypeFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new QROPSSchemeManagerTypeFormProvider()()
+  val form = new SchemeManagerTypeFormProvider()()
 
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "qropsSchemeManagerType.error.required"
+    val requiredKey = "schemeManagerType.error.required"
 
-    behave like optionsField[QROPSSchemeManagerType](
+    behave like optionsField[SchemeManagerType](
       form,
       fieldName,
-      validValues  = QROPSSchemeManagerType.values,
+      validValues  = SchemeManagerType.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

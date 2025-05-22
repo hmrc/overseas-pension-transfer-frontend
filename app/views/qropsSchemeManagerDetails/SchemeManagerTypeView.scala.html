@@ -22,31 +22,31 @@
 @import views.html.components.QTNumber
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("qropsSchemeManagerType.title"))) {
+@layout(pageTitle = title(form, messages("schemeManagerType.title"))) {
 
-    @formHelper(action = controllers.qropsSchemeManagerDetails.routes.QROPSSchemeManagerTypeController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("qropsSchemeManagerType.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("schemeManagerType.heading")</h1>
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                items  = QROPSSchemeManagerType.options
+                items  = SchemeManagerType.options
             )
             .withHint(HintViewModel(Text(messages("radios.hint"))))
         )

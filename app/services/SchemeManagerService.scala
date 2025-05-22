@@ -16,7 +16,7 @@
 
 package services
 
-import models.{Mode, NormalMode, QROPSSchemeManagerType, UserAnswers}
+import models.{Mode, NormalMode, SchemeManagerType, UserAnswers}
 import pages.qropsSchemeManagerDetails.{SchemeManagerOrgIndividualNamePage, SchemeManagerOrganisationNamePage, SchemeManagersNamePage}
 
 import javax.inject.Inject
@@ -24,24 +24,24 @@ import scala.concurrent.Future
 
 class SchemeManagerService @Inject() {
 
-  // If the QROPSSchemeManagerType changes, remove the answers of previous corresponding questions
+  // If the SchemeManagerType changes, remove the answers of previous corresponding questions
   def updateSchemeManagerTypeAnswers(
       answers: UserAnswers,
-      previousValue: Option[QROPSSchemeManagerType],
-      value: QROPSSchemeManagerType
+      previousValue: Option[SchemeManagerType],
+      value: SchemeManagerType
     ): Future[UserAnswers] = {
     (previousValue, value) match {
-      case (Some(QROPSSchemeManagerType.Individual), QROPSSchemeManagerType.Organisation) => Future.fromTry(answers
+      case (Some(SchemeManagerType.Individual), SchemeManagerType.Organisation) => Future.fromTry(answers
           .remove(SchemeManagersNamePage))
-      case (Some(QROPSSchemeManagerType.Organisation), QROPSSchemeManagerType.Individual) => Future.fromTry(answers
+      case (Some(SchemeManagerType.Organisation), SchemeManagerType.Individual) => Future.fromTry(answers
           .remove(SchemeManagerOrganisationNamePage)
           .flatMap(_.remove(SchemeManagerOrgIndividualNamePage)))
-      case _                                                                              => Future.successful(answers)
+      case _                                                                    => Future.successful(answers)
     }
   }
 
-  // If the QROPSSchemeManagerType changes, always switch to NormalMode to go through corresponding set of questions
-  def getSchemeManagerTypeRedirectMode(mode: Mode, previousValue: Option[QROPSSchemeManagerType], value: QROPSSchemeManagerType): Mode = {
+  // If the SchemeManagerType changes, always switch to NormalMode to go through corresponding set of questions
+  def getSchemeManagerTypeRedirectMode(mode: Mode, previousValue: Option[SchemeManagerType], value: SchemeManagerType): Mode = {
     if (!previousValue.contains(value)) NormalMode else mode
   }
 }

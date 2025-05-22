@@ -37,9 +37,9 @@ trait ModelGenerators {
       Gen.oneOf(WhyTransferIsTaxable.values.toSeq)
     }
 
-  implicit lazy val arbitraryQROPSSchemeManagerIsIndividualOrOrg: Arbitrary[QROPSSchemeManagerType] =
+  implicit lazy val arbitraryQROPSSchemeManagerIsIndividualOrOrg: Arbitrary[SchemeManagerType] =
     Arbitrary {
-      Gen.oneOf(QROPSSchemeManagerType.values)
+      Gen.oneOf(SchemeManagerType.values)
     }
 
   implicit lazy val arbitrarySchemeManagersName: Arbitrary[SchemeManagersName] =

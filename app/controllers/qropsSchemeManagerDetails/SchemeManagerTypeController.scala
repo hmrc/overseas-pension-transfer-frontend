@@ -17,20 +17,20 @@
 package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
-import forms.qropsSchemeManagerDetails.QROPSSchemeManagerTypeFormProvider
+import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.Mode
-import pages.qropsSchemeManagerDetails.QROPSSchemeManagerTypePage
+import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.SchemeManagerService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.qropsSchemeManagerDetails.QROPSSchemeManagerTypeView
+import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class QROPSSchemeManagerTypeController @Inject() (
+class SchemeManagerTypeController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
@@ -38,9 +38,9 @@ class QROPSSchemeManagerTypeController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     schemeManagerService: SchemeManagerService,
-    formProvider: QROPSSchemeManagerTypeFormProvider,
+    formProvider: SchemeManagerTypeFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSSchemeManagerTypeView
+    view: SchemeManagerTypeView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -48,7 +48,7 @@ class QROPSSchemeManagerTypeController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSSchemeManagerTypePage) match {
+      val preparedForm = request.userAnswers.get(SchemeManagerTypePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -62,13 +62,13 @@ class QROPSSchemeManagerTypeController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          val previousValue = request.userAnswers.get(QROPSSchemeManagerTypePage)
+          val previousValue = request.userAnswers.get(SchemeManagerTypePage)
           for {
-            baseAnswers    <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerTypePage, value))
+            baseAnswers    <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
             updatedAnswers <- schemeManagerService.updateSchemeManagerTypeAnswers(baseAnswers, previousValue, value)
             redirectMode    = schemeManagerService.getSchemeManagerTypeRedirectMode(mode, previousValue, value)
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(QROPSSchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
+          } yield Redirect(SchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
         }
       )
   }
