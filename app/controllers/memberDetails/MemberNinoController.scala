@@ -56,7 +56,10 @@ class MemberNinoController @Inject() (
         case None        => form
         case Some(value) => form.fill(value)
       }
-
+      /*val preparedForm = request.userAnswers.get(_.memberDetails.flatMap(_.memberNino)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }*/
       Ok(view(preparedForm, mode))
   }
 
@@ -84,6 +87,41 @@ class MemberNinoController @Inject() (
               sessionRepository.set(updatedAnswers)
             }
           } yield Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
+        /*value => {
+          val answers           = request.userAnswers
+          // Update typed formData by setting memberNino and clearing doesNotHaveNino
+          val ninoUserAnswers   = answers.updateMemberDetails(
+            _.copy(
+              memberNino            = Some(value),
+              memberDoesNotHaveNino = None
+            )
+          )
+          // Prepare HeaderCarrier for backend call
+          val hc: HeaderCarrier = new HeaderCarrier()
+          for {
+            // Call backend to persist data
+            backendResponse <- userAnswersConnector.putAnswers(
+                                 ninoUserAnswers.id,
+                                 UserAnswersDTO.fromUserAnswers(ninoUserAnswers)
+                               )(hc, ec)
+
+            // Handle backend response
+            updatedAnswers   = backendResponse match {
+                                 case UserAnswersSuccessResponse(uaDTO) => UserAnswersDTO.toUserAnswers(uaDTO)
+                                 case UserAnswersErrorResponse(error)   =>
+                                   // TODO: how to fail gracefully here
+                                   logger.warn(s"Failed to store user answers in backend: ${error.getMessage}", error)
+                                   ninoUserAnswers
+                               }
+
+            // Persist in session
+            _               <- {
+              logger.info(Json.stringify(updatedAnswers.data))
+              sessionRepository.set(updatedAnswers)
+            }
+
+          } yield Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
+        }*/
       )
   }
 }

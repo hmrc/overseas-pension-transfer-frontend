@@ -22,12 +22,20 @@ import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import utils.UserAnswersOps._
+import scala.util.Try
 
 case object MemberIsResidentUKPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "memberIsResidentUK"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.syncToFormData(value)(this)(value => _.updateMemberDetailsOrCreate(_.copy(memberIsResidentUK = Some(value))))(userAnswers)
+
+  override def read(userAnswers: UserAnswers): Option[Boolean] =
+    userAnswers.get(_.memberDetails.flatMap(_.memberIsResidentUK))
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     answers.get(MemberIsResidentUKPage) match {

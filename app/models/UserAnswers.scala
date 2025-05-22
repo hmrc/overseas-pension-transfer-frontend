@@ -16,7 +16,9 @@
 
 package models
 
+import pages.QuestionPage
 import play.api.libs.json._
+
 import java.time.Instant
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -26,11 +28,25 @@ import scala.util.{Failure, Success, Try}
 final case class UserAnswers(
     id: String,
     data: JsObject       = Json.obj(),
+    formData: FormData   = FormData(),
     lastUpdated: Instant = Instant.now
   ) {
 
+  /*
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+   */
+
+  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
+    val fromTyped: Option[A] = page match {
+      case p: QuestionPage[A] => p.read(this)
+      case _                  => None
+    }
+
+    val fromUntyped = Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+
+    fromTyped.orElse(fromUntyped)
+  }
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
@@ -63,28 +79,20 @@ final case class UserAnswers(
         page.cleanup(None, updatedAnswers)
     }
   }
-}
-
-/*
-final case class UserAnswers(
-    id: String,
-    data: FormData       = FormData(),
-    lastUpdated: Instant = Instant.now
-  ) {
 
   /** Generic getter using a function to extract a value */
   def get[A](f: FormData => Option[A]): Option[A] =
-    f(data)
+    f(formData)
 
   /** Generic setter using a copy-transform pattern */
   def set(f: FormData => FormData): UserAnswers =
-    copy(data = f(data), lastUpdated = Instant.now)
+    copy(formData = f(formData), lastUpdated = Instant.now)
 
   /** Optional remove-style pattern to clear a section */
   def remove(f: FormData => FormData): UserAnswers =
-    copy(data = f(data), lastUpdated = Instant.now)
+    copy(formData = f(formData), lastUpdated = Instant.now)
 }
- */
+
 object UserAnswers {
 
   val reads: Reads[UserAnswers] = {
@@ -94,6 +102,7 @@ object UserAnswers {
     (
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
+        (__ \ "formData").read[FormData] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
     )(UserAnswers.apply _)
   }
@@ -105,14 +114,11 @@ object UserAnswers {
     (
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
+        (__ \ "formData").write[FormData] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
-    )(ua => (ua.id, ua.data, ua.lastUpdated))
+    )(ua => (ua.id, ua.data, ua.formData, ua.lastUpdated))
   }
 
   implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)
+  // implicit val format: OFormat[UserAnswers] = Json.format[UserAnswers]
 }
-/*
-object UserAnswers {
-  implicit val format: OFormat[UserAnswers] = Json.format[UserAnswers]
-}
- */

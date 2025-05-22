@@ -21,14 +21,21 @@ import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.mvc.Call
 import play.api.libs.json.JsPath
-
+import utils.UserAnswersOps._
 import java.time.LocalDate
+import scala.util.Try
 
 case object MemberDateOfLeavingUKPage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "memberDateOfLeavingUK"
+
+  override def cleanup(value: Option[LocalDate], userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.syncToFormData(value)(this)(name => _.updateMemberDetailsOrCreate(_.copy(memberDateOfLeavingUK = Some(name))))(userAnswers)
+
+  override def read(userAnswers: UserAnswers): Option[LocalDate] =
+    userAnswers.get(_.memberDetails.flatMap(_.memberDateOfLeavingUK))
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberDetailsCYAController.onPageLoad()

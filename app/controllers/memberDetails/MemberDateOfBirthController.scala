@@ -25,6 +25,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberDateOfBirthView
+import utils.UserAnswersOps._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,6 +47,7 @@ class MemberDateOfBirthController @Inject() (
     implicit request =>
       val form = formProvider()
 
+      // val preparedForm = request.userAnswers.get(_.memberDetails.flatMap(_.memberDateOfBirth)) match {
       val preparedForm = request.userAnswers.get(MemberDateOfBirthPage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -66,6 +68,19 @@ class MemberDateOfBirthController @Inject() (
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfBirthPage, value))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(MemberDateOfBirthPage.nextPage(mode, updatedAnswers))
+
+        /*
+        value => {
+          val answers        = request.userAnswers
+          val updatedAnswers = answers.updateMemberDetailsOrCreate(
+            _.copy(memberDateOfBirth = Some(value))
+          )
+
+          for {
+            _ <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(MemberDateOfBirthPage.nextPage(mode, updatedAnswers))
+        }
+         */
       )
   }
 }

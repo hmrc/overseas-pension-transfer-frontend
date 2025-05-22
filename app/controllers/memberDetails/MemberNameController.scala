@@ -27,6 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberNameView
+//import utils.UserAnswersOps._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,6 +48,7 @@ class MemberNameController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      // val preparedForm = request.userAnswers.get(_.memberDetails.flatMap(_.memberName)) match {
       val preparedForm = request.userAnswers.get(MemberNamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -68,6 +70,18 @@ class MemberNameController @Inject() (
               sessionRepository.set(updatedAnswers)
             }
           } yield Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
+        /*
+        value => {
+          val answers        = request.userAnswers
+          val updatedAnswers = answers.updateMemberDetailsOrCreate(
+            _.copy(memberName = Some(value))
+          )
+
+          for {
+            _ <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
+        }
+         */
       )
   }
 }

@@ -26,7 +26,9 @@ sealed trait Query {
   def path: JsPath
 }
 
-trait Gettable[A] extends Query
+trait Gettable[A] extends Query {
+  def read(userAnswers: UserAnswers): Option[A] = None
+}
 
 trait Settable[A] extends Query {
 

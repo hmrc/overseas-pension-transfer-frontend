@@ -21,15 +21,23 @@ import models.{CheckMode, NormalMode, PersonName, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import utils.UserAnswersOps._
+import scala.util.{Success, Try}
 
 case object MemberNamePage extends QuestionPage[PersonName] {
 
-  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "memberName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberNinoController.onPageLoad(NormalMode)
+
+  override def cleanup(value: Option[PersonName], userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.syncToFormData(value)(this)(name => _.updateMemberDetailsOrCreate(_.copy(memberName = Some(name))))(userAnswers)
+
+  override def read(userAnswers: UserAnswers): Option[PersonName] =
+    userAnswers.get(_.memberDetails.flatMap(_.memberName))
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.MemberDetailsCYAController.onPageLoad()

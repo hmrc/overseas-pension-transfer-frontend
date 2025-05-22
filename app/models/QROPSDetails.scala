@@ -16,8 +16,8 @@
 
 package models
 
+import models.address.{Address, Country}
 import play.api.libs.json.{Json, OFormat}
-import models.common._
 
 case class QROPSDetails(
     qropsName: String,

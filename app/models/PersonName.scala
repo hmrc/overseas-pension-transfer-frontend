@@ -24,4 +24,5 @@ case class PersonName(firstName: String, lastName: String) {
 
 object PersonName {
   implicit val format: OFormat[PersonName] = Json.format[PersonName]
+  val empty: PersonName                    = PersonName("", "")
 }

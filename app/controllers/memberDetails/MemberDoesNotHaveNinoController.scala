@@ -25,6 +25,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberDoesNotHaveNinoView
+//import utils.UserAnswersOps._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,6 +47,7 @@ class MemberDoesNotHaveNinoController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      // val preparedForm = request.userAnswers.get(_.memberDetails.flatMap(_.memberDoesNotHaveNino)) match {
       val preparedForm = request.userAnswers.get(MemberDoesNotHaveNinoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -63,6 +65,22 @@ class MemberDoesNotHaveNinoController @Inject() (
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value).flatMap(_.remove(MemberNinoPage)))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(MemberDoesNotHaveNinoPage.nextPage(mode, updatedAnswers))
+        /*
+        value => {
+          val answers = request.userAnswers
+
+          // Update typed formData by setting doesNotHaveNino and clearing memberNino
+          val updatedAnswers = answers.updateMemberDetails(
+            _.copy(
+              memberNino            = None,
+              memberDoesNotHaveNino = Some(value)
+            )
+          )
+          for {
+            _ <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(MemberDoesNotHaveNinoPage.nextPage(mode, updatedAnswers))
+        }
+         */
       )
   }
 }

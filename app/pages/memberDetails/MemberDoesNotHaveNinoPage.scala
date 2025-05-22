@@ -17,16 +17,25 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import utils.UserAnswersOps._
+
+import scala.util.Try
 
 case object MemberDoesNotHaveNinoPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "memberDoesNotHaveNino"
+
+  override def cleanup(value: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.syncToFormData(value)(this)(name => _.updateMemberDetailsOrCreate(_.copy(memberDoesNotHaveNino = Some(name))))(userAnswers)
+
+  override def read(userAnswers: UserAnswers): Option[String] =
+    userAnswers.get(_.memberDetails.flatMap(_.memberDoesNotHaveNino))
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberDateOfBirthController.onPageLoad(NormalMode)

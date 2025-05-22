@@ -17,18 +17,27 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.mvc.Call
 import play.api.libs.json.JsPath
 
 import java.time.LocalDate
+import utils.UserAnswersOps._
+
+import scala.util.Try
 
 case object MemberDateOfBirthPage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
+  override def path: JsPath = JsPath \ toString
 
   override def toString: String = "memberDateOfBirth"
+
+  override def cleanup(value: Option[LocalDate], userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.syncToFormData(value)(this)(name => _.updateMemberDetailsOrCreate(_.copy(memberDateOfBirth = Some(name))))(userAnswers)
+
+  override def read(userAnswers: UserAnswers): Option[LocalDate] =
+    userAnswers.get(_.memberDetails.flatMap(_.memberDateOfBirth))
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MembersCurrentAddressController.onPageLoad(NormalMode)

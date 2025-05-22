@@ -16,23 +16,24 @@
 
 package models
 
-import models.common._
+import models.address.Address
 
 import java.time.LocalDate
 import play.api.libs.json.{Json, OFormat}
 
 case class MemberDetails(
-    memberName: PersonName,
-    memberDateOfBirth: LocalDate,
-    memberNino: Option[String],
-    memberDoesNotHaveNino: Option[String],
-    membersCurrentAddress: Address,
-    memberIsResidentUK: Boolean,
-    memberHasEverBeenResidentUK: Option[Boolean],
-    membersLastUKAddress: Option[Address],
-    memberDateOfLeavingUK: Option[LocalDate]
+    memberName: Option[PersonName]               = None, // PersonName.empty,
+    memberDateOfBirth: Option[LocalDate]         = None, // LocalDate.MIN,
+    memberNino: Option[String]                   = None,
+    memberDoesNotHaveNino: Option[String]        = None,
+    membersCurrentAddress: Option[Address]       = None, // Address.empty,
+    memberIsResidentUK: Option[Boolean]          = None, // true,
+    memberHasEverBeenResidentUK: Option[Boolean] = None,
+    membersLastUKAddress: Option[Address]        = None,
+    memberDateOfLeavingUK: Option[LocalDate]     = None
   )
 
 object MemberDetails {
   implicit val format: OFormat[MemberDetails] = Json.format[MemberDetails]
+  val empty: MemberDetails                    = MemberDetails()
 }

@@ -16,7 +16,7 @@
 
 package models
 
-import models.common.Address
+import models.address.Address
 import play.api.libs.json.{Json, OFormat}
 
 case class SchemeManagersDetails(

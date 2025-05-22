@@ -18,13 +18,15 @@ package models.dtos
 
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
 import java.time.Instant
-import models.UserAnswers
+import models.{FormData, UserAnswers}
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 
 final case class UserAnswersDTO(
     id: String,
     data: JsObject,
+    formData: FormData = FormData(),
     lastUpdated: Instant
   )
 
@@ -34,12 +36,14 @@ object UserAnswersDTO {
     val reads: Reads[UserAnswersDTO] = (
       (__ \ "id").read[String] and
         (__ \ "data").read[JsObject] and
+        (__ \ "formData").read[FormData] and
         (__ \ "lastUpdated").read[Instant]
     )(UserAnswersDTO.apply _)
 
     val writes: OWrites[UserAnswersDTO] = (
       (__ \ "id").write[String] and
         (__ \ "data").write[JsObject] and
+        (__ \ "formData").write[FormData] and
         (__ \ "lastUpdated").write[Instant]
     )(unlift(UserAnswersDTO.unapply))
 
@@ -50,6 +54,7 @@ object UserAnswersDTO {
     UserAnswersDTO(
       id          = ua.id,
       data        = ua.data,
+      formData    = ua.formData,
       lastUpdated = ua.lastUpdated
     )
 
@@ -57,6 +62,7 @@ object UserAnswersDTO {
     UserAnswers(
       id          = dto.id,
       data        = dto.data,
+      formData    = dto.formData,
       lastUpdated = dto.lastUpdated
     )
 }
