@@ -18,18 +18,12 @@ package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
-
-import javax.inject.Inject
-import forms.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.Mode
 import models.address.SchemeManagersAddress
-import pages.SchemeManagersAddressPage
-import models.address.{Country, SchemeManagersAddress}
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{AddressService, CountryService}

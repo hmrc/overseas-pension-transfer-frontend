@@ -18,16 +18,8 @@ package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
 import forms.qropsSchemeManagerDetails.QROPSSchemeManagerTypeFormProvider
-import models.{Mode, NormalMode, QROPSSchemeManagerType}
-import pages.qropsSchemeManagerDetails.{
-  QROPSSchemeManagerTypePage,
-  SchemeManagerOrgIndividualNamePage,
-  SchemeManagerOrganisationNamePage,
-  SchemeManagersNamePage
-}
-import forms.QROPSSchemeManagerTypeFormProvider
 import models.Mode
-import pages.QROPSSchemeManagerTypePage
+import pages.qropsSchemeManagerDetails.QROPSSchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

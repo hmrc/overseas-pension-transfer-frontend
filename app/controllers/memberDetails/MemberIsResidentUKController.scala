@@ -18,8 +18,8 @@ package controllers.memberDetails
 
 import controllers.actions._
 import forms.memberDetails.MemberIsResidentUKFormProvider
-import models.{CheckMode, Mode, NormalMode}
-import pages.memberDetails.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MemberIsResidentUKPage, MembersLastUKAddressPage}
+import models.Mode
+import pages.memberDetails.MemberIsResidentUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

@@ -19,18 +19,11 @@ package services
 import connectors.{UserAnswersConnector, UserAnswersErrorResponse, UserAnswersSuccessResponse}
 import models.dtos.UserAnswersDTO
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import pages.memberDetails.{
-  MemberDateOfLeavingUKPage,
-  MemberHasEverBeenResidentUKPage,
-  MembersLastUKAddressPage,
-  MembersLastUkAddressLookupPage,
-  MembersLastUkAddressSelectPage
-}
+import pages.memberDetails.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class MemberDetailsService @Inject() (userAnswersConnector: UserAnswersConnector) {
 

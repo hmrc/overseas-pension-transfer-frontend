@@ -21,7 +21,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class OrganisationNameFormProvider @Inject() extends Mappings with Regex {
+class SchemeManagerOrganisationNameFormProvider @Inject() extends Mappings with Regex {
 
   def apply(): Form[String] =
     Form(

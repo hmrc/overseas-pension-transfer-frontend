@@ -18,7 +18,8 @@ package services
 
 import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import forms.memberDetails.MembersCurrentAddressFormData
-import forms.{QROPSAddressFormData, SchemeManagersAddressFormData}
+import forms.qropsDetails.QROPSAddressFormData
+import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import models.UserAnswers
 import models.address._
 import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}

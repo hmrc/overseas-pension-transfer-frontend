@@ -18,8 +18,6 @@ package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
 import forms.qropsSchemeManagerDetails.SchemeManagersContactFormProvider
-import javax.inject.Inject
-import forms.SchemeManagersContactFormProvider
 import models.Mode
 import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.i18n.{I18nSupport, MessagesApi}

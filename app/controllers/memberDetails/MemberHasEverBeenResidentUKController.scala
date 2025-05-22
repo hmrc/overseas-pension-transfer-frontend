@@ -18,8 +18,8 @@ package controllers.memberDetails
 
 import controllers.actions._
 import forms.memberDetails.MemberHasEverBeenResidentUKFormProvider
-import models.{CheckMode, Mode, NormalMode}
-import pages.memberDetails.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
+import models.Mode
+import pages.memberDetails.MemberHasEverBeenResidentUKPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

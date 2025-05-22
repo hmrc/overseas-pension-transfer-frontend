@@ -17,8 +17,6 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.address.SchemeManagersAddress
-import controllers.routes
 import models.address.Address
 import models.{CheckMode, NormalMode, UserAnswers}
 import pages.QuestionPage

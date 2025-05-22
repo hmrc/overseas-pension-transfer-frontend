@@ -18,8 +18,9 @@ package services
 
 import base.AddressBase
 import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
-import forms.{QROPSAddressFormData, SchemeManagersAddressFormData}
 import forms.memberDetails.MembersCurrentAddressFormData
+import forms.qropsDetails.QROPSAddressFormData
+import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import models.address._
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
@@ -27,6 +28,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

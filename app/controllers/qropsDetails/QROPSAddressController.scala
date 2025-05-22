@@ -19,9 +19,8 @@ package controllers.qropsDetails
 import controllers.actions._
 import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
 import models.Mode
-import models.address.{Country, QROPSAddress}
+import models.address.QROPSAddress
 import pages.qropsDetails.QROPSAddressPage
-import pages.QROPSAddressPage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

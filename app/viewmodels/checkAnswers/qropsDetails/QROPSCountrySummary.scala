@@ -17,8 +17,6 @@
 package viewmodels.checkAnswers.qropsDetails
 
 import models.UserAnswers
-import pages.QROPSCountryPage
-import models.UserAnswers
 import pages.qropsDetails.QROPSCountryPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat

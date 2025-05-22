@@ -18,8 +18,6 @@ package pages.qropsDetails
 
 import controllers.qropsDetails.routes
 import models.address.Address
-import controllers.routes
-import models.address.Address
 import models.{CheckMode, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath

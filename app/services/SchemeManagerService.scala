@@ -17,7 +17,7 @@
 package services
 
 import models.{Mode, NormalMode, QROPSSchemeManagerType, UserAnswers}
-import pages.{OrgIndividualNamePage, OrganisationNamePage, SchemeManagersNamePage}
+import pages.qropsSchemeManagerDetails.{SchemeManagerOrgIndividualNamePage, SchemeManagerOrganisationNamePage, SchemeManagersNamePage}
 
 import javax.inject.Inject
 import scala.concurrent.Future
@@ -34,8 +34,8 @@ class SchemeManagerService @Inject() {
       case (Some(QROPSSchemeManagerType.Individual), QROPSSchemeManagerType.Organisation) => Future.fromTry(answers
           .remove(SchemeManagersNamePage))
       case (Some(QROPSSchemeManagerType.Organisation), QROPSSchemeManagerType.Individual) => Future.fromTry(answers
-          .remove(OrganisationNamePage)
-          .flatMap(_.remove(OrgIndividualNamePage)))
+          .remove(SchemeManagerOrganisationNamePage)
+          .flatMap(_.remove(SchemeManagerOrgIndividualNamePage)))
       case _                                                                              => Future.successful(answers)
     }
   }
