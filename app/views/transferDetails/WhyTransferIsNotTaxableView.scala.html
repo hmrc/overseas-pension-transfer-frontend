@@ -37,7 +37,7 @@
 
 @layout(pageTitle = title(form, messages("whyTransferIsNotTaxable.title"))) {
 
-    @formHelper(action = routes.WhyTransferIsNotTaxableController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.transferDetails.routes.WhyTransferIsNotTaxableController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))

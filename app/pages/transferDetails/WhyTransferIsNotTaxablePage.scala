@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transferDetails
 
 import controllers.routes
 import models.{UserAnswers, WhyTransferIsNotTaxable}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

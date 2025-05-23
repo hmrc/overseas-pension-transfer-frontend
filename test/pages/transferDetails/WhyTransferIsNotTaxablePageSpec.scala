@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transferDetails
 
 import controllers.routes
 import models.{CheckMode, NormalMode, UserAnswers}
@@ -39,7 +39,7 @@ class WhyTransferIsNotTaxablePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        WhyTransferIsNotTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+        WhyTransferIsNotTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }
