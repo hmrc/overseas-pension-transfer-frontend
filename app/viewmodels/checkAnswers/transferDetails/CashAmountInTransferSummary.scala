@@ -16,12 +16,12 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import utils.CurrencyFormats.currencyFormat
-import controllers.routes
+import controllers.transferDetails.routes
 import models.{CheckMode, UserAnswers}
-import pages.CashAmountInTransferPage
+import pages.transferDetails.CashAmountInTransferPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.CurrencyFormats.currencyFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 

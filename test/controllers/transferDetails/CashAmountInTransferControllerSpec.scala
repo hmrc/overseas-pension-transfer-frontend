@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
 import base.SpecBase
 import forms.CashAmountInTransferFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.CashAmountInTransferPage
+import pages.transferDetails.CashAmountInTransferPage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import org.scalatest.freespec.AnyFreeSpec
-import views.html.CashAmountInTransferView
+import views.html.transferDetails.CashAmountInTransferView
 
 import scala.concurrent.Future
 
@@ -133,7 +132,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -150,7 +149,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

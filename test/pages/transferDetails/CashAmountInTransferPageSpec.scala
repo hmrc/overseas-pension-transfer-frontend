@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transferDetails
 
-import controllers.routes
+import controllers.transferDetails.routes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -31,7 +31,7 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to the Next page" in {
         // TODO change when pages are connected
-        CashAmountInTransferPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        CashAmountInTransferPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
       }
     }
 

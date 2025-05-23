@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
 import controllers.actions._
-import forms.AmountOfTaxDeductedFormProvider
-import javax.inject.Inject
+import forms.CashAmountInTransferFormProvider
 import models.Mode
-import pages.AmountOfTaxDeductedPage
+import pages.transferDetails.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.AmountOfTaxDeductedView
+import views.html.transferDetails.CashAmountInTransferView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AmountOfTaxDeductedController @Inject() (
+class CashAmountInTransferController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: AmountOfTaxDeductedFormProvider,
+    formProvider: CashAmountInTransferFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: AmountOfTaxDeductedView
+    view: CashAmountInTransferView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -46,7 +46,7 @@ class AmountOfTaxDeductedController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AmountOfTaxDeductedPage) match {
+      val preparedForm = request.userAnswers.get(CashAmountInTransferPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -61,9 +61,9 @@ class AmountOfTaxDeductedController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountOfTaxDeductedPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AmountOfTaxDeductedPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(CashAmountInTransferPage.nextPage(mode, updatedAnswers))
       )
   }
 }

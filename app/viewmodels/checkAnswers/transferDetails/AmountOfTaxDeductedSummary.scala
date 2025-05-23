@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.routes
+import controllers.transferDetails.routes
 import models.{CheckMode, UserAnswers}
-import pages.AmountOfTaxDeductedPage
+import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.CurrencyFormats.currencyFormat

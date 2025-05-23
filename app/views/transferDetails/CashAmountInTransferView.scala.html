@@ -17,6 +17,7 @@
 @import viewmodels.InputWidth._
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
@@ -39,23 +40,24 @@
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("amountOfTaxDeducted.title"))) {
+@layout(pageTitle = title(form, messages("cashAmountInTransfer.title"))) {
 
-    @formHelper(action = routes.AmountOfTaxDeductedController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.transferDetails.routes.CashAmountInTransferController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @qtNumber()
+
         @govukInput(
             InputViewModel(
-                field = form("taxDeducted"),
-                label = LabelViewModel(Text(messages("amountOfTaxDeducted.heading")))
+                field = form("cashInTransfer"),
+                label = LabelViewModel(Text(messages("cashAmountInTransfer.heading")))
                         .withCssClass("govuk-!-margin-bottom-6")
                         .asPageHeading(size = Large)
             )
-            .withHint(HintViewModel(messages("amountOfTaxDeducted.hint")))
+            .withHint(HintViewModel(messages("cashAmountInTransfer.hint")))
             .withPrefix(PrefixOrSuffix(content = Text("£")))
             .withWidth(Fixed5)
         )

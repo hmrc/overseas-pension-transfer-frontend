@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transferDetails
 
-import controllers.routes
+import controllers.transferDetails.routes
 import models.{CheckMode, UserAnswers}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,7 +29,7 @@ case object AmountOfTaxDeductedPage extends QuestionPage[BigDecimal] {
   override def toString: String = "amountOfTaxDeducted"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()

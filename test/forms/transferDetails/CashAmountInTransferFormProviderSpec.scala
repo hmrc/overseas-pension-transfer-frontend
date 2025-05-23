@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
 
+import forms.CashAmountInTransferFormProvider
 import utils.CurrencyFormats.currencyFormat
 import forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen
@@ -23,16 +24,15 @@ import play.api.data.FormError
 
 import scala.math.BigDecimal.RoundingMode
 
-class AmountOfTaxDeductedFormProviderSpec extends CurrencyFieldBehaviours {
+class CashAmountInTransferFormProviderSpec extends CurrencyFieldBehaviours {
 
-  val form = new AmountOfTaxDeductedFormProvider()()
+  val form = new CashAmountInTransferFormProvider()()
 
   ".value" - {
 
-    val fieldName = "taxDeducted"
-
-    val minimum = .01
-    val maximum = 999999999.99
+    val fieldName = "cashInTransfer"
+    val minimum   = 0.01
+    val maximum   = 999999999.99
 
     val validDataGenerator =
       Gen.choose[BigDecimal](minimum, maximum)
@@ -48,20 +48,20 @@ class AmountOfTaxDeductedFormProviderSpec extends CurrencyFieldBehaviours {
     behave like currencyField(
       form,
       fieldName,
-      nonNumericError = FormError(fieldName, "amountOfTaxDeducted.error.nonNumeric")
+      nonNumericError = FormError(fieldName, "cashAmountInTransfer.error.nonNumeric")
     )
 
     behave like currencyFieldWithMaximum(
       form,
       fieldName,
       maximum,
-      FormError(fieldName, "amountOfTaxDeducted.error.aboveMaximum", Seq(currencyFormat(maximum)))
+      FormError(fieldName, "cashAmountInTransfer.error.aboveMaximum", Seq(currencyFormat(maximum)))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "amountOfTaxDeducted.error.required")
+      requiredError = FormError(fieldName, "cashAmountInTransfer.error.required")
     )
   }
 }
