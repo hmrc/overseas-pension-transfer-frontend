@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.mvc.Call
 import play.api.libs.json.JsPath
@@ -26,7 +26,7 @@ import java.time.LocalDate
 
 case object MemberDateOfLeavingUKPage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
   override def toString: String = "memberDateOfLeavingUK"
 

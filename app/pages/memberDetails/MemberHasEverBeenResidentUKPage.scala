@@ -18,14 +18,14 @@ package pages.memberDetails
 
 import controllers.routes
 import controllers.memberDetails
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object MemberHasEverBeenResidentUKPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
   override def toString: String = "memberHasEverBeenResidentUK"
 

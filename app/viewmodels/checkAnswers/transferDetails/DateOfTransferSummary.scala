@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.routes
+import controllers.transferDetails.routes
 import models.{CheckMode, UserAnswers}
-import pages.DateOfTransferPage
+import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.DateTimeFormats.dateTimeFormat
@@ -36,7 +36,7 @@ object DateOfTransferSummary {
           key     = "dateOfTransfer.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.DateOfTransferController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", DateOfTransferPage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("dateOfTransfer.change.hidden"))
           )
         )

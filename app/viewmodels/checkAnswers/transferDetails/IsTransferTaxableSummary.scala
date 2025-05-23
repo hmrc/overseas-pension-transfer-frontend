@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.routes
+import controllers.transferDetails.routes
 import models.{CheckMode, UserAnswers}
-import pages.IsTransferTaxablePage
+import pages.transferDetails.IsTransferTaxablePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -35,7 +35,7 @@ object IsTransferTaxableSummary {
           key     = "isTransferTaxable.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.IsTransferTaxableController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", IsTransferTaxablePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("isTransferTaxable.change.hidden"))
           )
         )
