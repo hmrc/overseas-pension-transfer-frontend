@@ -16,11 +16,12 @@
 
 package forms.qropsSchemeManagerDetails
 
-import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
+import models.SchemeManagersName
 import play.api.data.Form
 import play.api.data.Forms._
-import models.SchemeManagersName
+
+import javax.inject.Inject
 
 class SchemeManagersNameFormProvider @Inject() extends Mappings with Regex {
 

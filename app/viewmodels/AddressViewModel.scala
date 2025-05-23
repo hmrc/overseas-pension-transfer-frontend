@@ -19,6 +19,7 @@ package viewmodels
 import models.address._
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
+
 import scala.language.implicitConversions
 
 case class AddressViewModel(
@@ -58,7 +59,7 @@ object AddressViewModel {
       toOption(vm.country).filterNot(_ => ukMode),
       toOption(vm.postcode),
       toOption(vm.poBox)
-    ).flatten
+    ).flatten.filterNot(_.isBlank)
   }
 
   def formatAddressAsString(vm: AddressViewModel): String =

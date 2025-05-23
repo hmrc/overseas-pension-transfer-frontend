@@ -19,7 +19,6 @@ package viewmodels.checkAnswers.memberDetails
 import models.UserAnswers
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.AddressViewModel

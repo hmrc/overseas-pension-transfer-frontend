@@ -19,14 +19,13 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.Mode
-import models.address.{Country, MembersCurrentAddress}
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.CountryService
+import services.{AddressService, CountryService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.MembersCurrentAddressView
@@ -43,6 +42,7 @@ class MembersCurrentAddressController @Inject() (
     displayData: DisplayAction,
     formProvider: MembersCurrentAddressFormProvider,
     countryService: CountryService,
+    addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersCurrentAddressView
   )(implicit ec: ExecutionContext
@@ -50,15 +50,12 @@ class MembersCurrentAddressController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val form         = formProvider()
-      val userAnswers  = request.userAnswers
-      val preparedForm = userAnswers.get(MembersCurrentAddressPage) match {
+      val form                   = formProvider()
+      val preparedForm           = request.userAnswers.get(MembersCurrentAddressPage) match {
         case None          => form
-        case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(MembersCurrentAddress.fromAddress(address)))
+        case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(models.address.MembersCurrentAddress.fromAddress(address)))
       }
-
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
@@ -69,39 +66,19 @@ class MembersCurrentAddressController @Inject() (
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
           Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
-
         },
-        formData => {
-          val maybeCountry: Option[Country] =
-            countryService.find(formData.countryCode)
-          maybeCountry match {
-            case None          =>
+        formData =>
+          addressService.membersCurrentAddress(formData) match {
+            case None                =>
               Future.successful(
-                Redirect(
-                  MembersCurrentAddressPage.nextPageRecovery(
-                    Some(MembersCurrentAddressPage.recoveryModeReturnUrl)
-                  )
-                )
+                Redirect(MembersCurrentAddressPage.nextPageRecovery(Some(MembersCurrentAddressPage.recoveryModeReturnUrl)))
               )
-            case Some(country) =>
-              val addressToSave = MembersCurrentAddress(
-                addressLine1 = formData.addressLine1,
-                addressLine2 = formData.addressLine2,
-                addressLine3 = formData.addressLine3,
-                addressLine4 = formData.addressLine4,
-                country      = country,
-                postcode     = formData.postcode,
-                poBox        = formData.poBox
-              )
+            case Some(addressToSave) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
-                _              <- {
-                  logger.info(Json.stringify(updatedAnswers.data))
-                  sessionRepository.set(updatedAnswers)
-                }
+                _              <- sessionRepository.set(updatedAnswers).map(_ => logger.info(Json.stringify(updatedAnswers.data)))
               } yield Redirect(MembersCurrentAddressPage.nextPage(mode, updatedAnswers))
           }
-        }
       )
   }
 }

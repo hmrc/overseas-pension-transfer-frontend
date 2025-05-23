@@ -16,11 +16,11 @@
 
 package models.dtos
 
-import play.api.libs.json._
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-import java.time.Instant
 import models.UserAnswers
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
+import play.api.libs.json._
+
+import java.time.Instant
 
 final case class UserAnswersDTO(
     id: String,

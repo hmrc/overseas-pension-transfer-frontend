@@ -20,9 +20,9 @@ import config.FrontendAppConfig
 import models.address._
 import play.api.Logging
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.HttpReads.Implicits.readJsValue
 import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import java.net.URL
 import javax.inject.Inject

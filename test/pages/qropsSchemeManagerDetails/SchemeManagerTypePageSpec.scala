@@ -17,12 +17,12 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, NormalMode, QROPSSchemeManagerType, UserAnswers}
+import models.{CheckMode, NormalMode, SchemeManagerType, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class QROPSSchemeManagerTypePageSpec extends AnyFreeSpec with Matchers {
+class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -32,17 +32,17 @@ class QROPSSchemeManagerTypePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Manger's name page when the type is 'Individual'" in {
 
-        QROPSSchemeManagerTypePage.nextPage(
+        SchemeManagerTypePage.nextPage(
           NormalMode,
-          emptyAnswers.set(QROPSSchemeManagerTypePage, QROPSSchemeManagerType.Individual).success.value
+          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         ) mustEqual routes.SchemeManagersNameController.onPageLoad(NormalMode)
       }
 
       "must go to Organisation name page when the type is 'Organisation'" in {
 
-        QROPSSchemeManagerTypePage.nextPage(
+        SchemeManagerTypePage.nextPage(
           NormalMode,
-          emptyAnswers.set(QROPSSchemeManagerTypePage, QROPSSchemeManagerType.Organisation).success.value
+          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
         ) mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode)
       }
     }
@@ -51,7 +51,7 @@ class QROPSSchemeManagerTypePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        QROPSSchemeManagerTypePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagerTypePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
   }

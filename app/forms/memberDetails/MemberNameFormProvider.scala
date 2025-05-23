@@ -16,11 +16,12 @@
 
 package forms.memberDetails
 
-import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
+import models.PersonName
 import play.api.data.Form
 import play.api.data.Forms._
-import models.PersonName
+
+import javax.inject.Inject
 
 class MemberNameFormProvider @Inject() extends Mappings with Regex {
 

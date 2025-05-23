@@ -33,8 +33,5 @@ case object MembersLastUkAddressConfirmPage extends Page {
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.MemberDetailsCYAController.onPageLoad()
 
-  def clearAddressLookups(answers: UserAnswers): Try[UserAnswers] =
-    answers.remove(MembersLastUkAddressLookupPage).get.remove(MembersLastUkAddressSelectPage)
-
   val recoveryModeReturnUrl: String = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
 }

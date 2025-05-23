@@ -19,7 +19,7 @@ package controllers.qropsDetails
 import controllers.actions._
 import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
 import models.Mode
-import models.address.{Country, QROPSAddress}
+import models.address.QROPSAddress
 import pages.qropsDetails.QROPSAddressPage
 import play.api.Logging
 import play.api.data.Form
@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.CountryService
+import services.{AddressService, CountryService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.CountrySelectViewModel
@@ -44,6 +44,7 @@ class QROPSAddressController @Inject() (
     requireData: DataRequiredAction,
     formProvider: QROPSAddressFormProvider,
     countryService: CountryService,
+    addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: QROPSAddressView
   )(implicit ec: ExecutionContext
@@ -53,8 +54,7 @@ class QROPSAddressController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val userAnswers  = request.userAnswers
-      val preparedForm = userAnswers.get(QROPSAddressPage) match {
+      val preparedForm = request.userAnswers.get(QROPSAddressPage) match {
         case None          => form()
         case Some(address) => form().fill(QROPSAddressFormData.fromDomain(QROPSAddress.fromAddress(address)))
       }
@@ -71,36 +71,18 @@ class QROPSAddressController @Inject() (
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
           Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
         },
-        formData => {
-          val maybeCountry: Option[Country] =
-            countryService.find(formData.countryCode)
-          maybeCountry match {
+        formData =>
+          addressService.qropsAddress(formData) match {
             case None          =>
               Future.successful(
-                Redirect(
-                  QROPSAddressPage.nextPageRecovery(
-                    Some(QROPSAddressPage.recoveryModeReturnUrl)
-                  )
-                )
+                Redirect(QROPSAddressPage.nextPageRecovery(Some(QROPSAddressPage.recoveryModeReturnUrl)))
               )
-            case Some(country) =>
-              val addressToSave = QROPSAddress(
-                addressLine1 = formData.addressLine1,
-                addressLine2 = formData.addressLine2,
-                addressLine3 = formData.addressLine3,
-                addressLine4 = formData.addressLine4,
-                addressLine5 = formData.addressLine5,
-                country      = country
-              )
+            case Some(address) =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSAddressPage, addressToSave))
-                _              <- {
-                  logger.info(Json.stringify(updatedAnswers.data))
-                  sessionRepository.set(updatedAnswers)
-                }
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSAddressPage, address))
+                _              <- sessionRepository.set(updatedAnswers).map(_ => logger.info(Json.stringify(updatedAnswers.data)))
               } yield Redirect(QROPSAddressPage.nextPage(mode, updatedAnswers))
           }
-        }
       )
   }
 }

@@ -16,12 +16,12 @@
 
 package services
 
-import javax.inject.{Inject, Singleton}
 import models.address.Country
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import play.api.Environment
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
+import javax.inject.{Inject, Singleton}
 import scala.io.Source
 
 @Singleton

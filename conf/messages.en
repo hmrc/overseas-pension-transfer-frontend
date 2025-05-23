@@ -231,13 +231,13 @@ qropsCountry.error.required = Enter a country or territory
 qropsCountry.error.length = QROPSCountry must be 100 characters or less
 qropsCountry.change.hidden = QROPS country
 
-qropsSchemeManagerType.title = Is the scheme manager an individual or organisation?
-qropsSchemeManagerType.heading = Is the scheme manager an individual or organisation?
-qropsSchemeManagerType.individual = Individual
-qropsSchemeManagerType.organisation = Organisation
-qropsSchemeManagerType.checkYourAnswersLabel = Organisation or individual
-qropsSchemeManagerType.error.required = Select if the scheme manager is an individual or an organisation
-qropsSchemeManagerType.change.hidden = Organisation or individual
+schemeManagerType.title = Is the scheme manager an individual or organisation?
+schemeManagerType.heading = Is the scheme manager an individual or organisation?
+schemeManagerType.individual = Individual
+schemeManagerType.organisation = Organisation
+schemeManagerType.checkYourAnswersLabel = Organisation or individual
+schemeManagerType.error.required = Select if the scheme manager is an individual or an organisation
+schemeManagerType.change.hidden = Organisation or individual
 
 schemeManagersName.title = What is the manager''s name?
 schemeManagersName.heading = What is the manager''s name?

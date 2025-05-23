@@ -14,17 +14,13 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.html.components.DisplayConfirmableAddress
-@import viewmodels.AddressViewModel
+@import models.requests.DisplayRequest
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukRadios}
+@import viewmodels.AddressViewModel
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
-@import views.html.components.QTNumber
-@import models.requests.DisplayRequest
+@import views.html.components.{DisplayConfirmableAddress, QTNumber}
 
 @this(
         layout: templates.Layout,

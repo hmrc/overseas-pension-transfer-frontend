@@ -16,9 +16,10 @@
 
 package forms.qropsDetails
 
-import javax.inject.Inject
 import forms.mappings.Mappings
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class QROPSCountryFormProvider @Inject() extends Mappings {
 

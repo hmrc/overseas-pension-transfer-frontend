@@ -16,10 +16,10 @@
 
 package forms.memberDetails
 
-import javax.inject.Inject
-
 import play.api.data.Form
 import play.api.data.Forms._
+
+import javax.inject.Inject
 
 class MemberConfirmLastUkAddressFormProvider @Inject() {
 
