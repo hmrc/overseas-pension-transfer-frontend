@@ -326,6 +326,26 @@ isTransferCashOnly.checkYourAnswersLabel = Is transfer cash only
 isTransferCashOnly.error.required = Select yes if the transfer is cash only
 isTransferCashOnly.change.hidden = Is transfer cash only
 
+cashAmountInTransfer.title = What is the amount of cash?
+cashAmountInTransfer.heading = What is the amount of cash?
+cashAmountInTransfer.checkYourAnswersLabel = CashAmountInTransfer
+cashAmountInTransfer.error.nonNumeric = The transfer amount must be an amount of money, like 123 or 123.00
+cashAmountInTransfer.error.required = Enter the amount of cash being transferred
+cashAmountInTransfer.error.aboveMaximum = The transfer amount must be {0} or less
+cashAmountInTransfer.error.belowMinimum = The transfer allowance amount must be {0} or more
+cashAmountInTransfer.change.hidden = CashAmountInTransfer
+cashAmountInTransfer.hint = For example, £60000 or £19,300.54.
+
+amountOfTaxDeducted.title = What is the amount of tax deducted at 25%?
+amountOfTaxDeducted.heading = What is the amount of tax deducted at 25%?
+amountOfTaxDeducted.checkYourAnswersLabel = Amount deducted at 25%
+amountOfTaxDeducted.error.nonNumeric = The tax amount must be an amount of money, like 123 or 123.00
+amountOfTaxDeducted.error.required = Enter the amount of tax deducted at 25%, in pounds
+amountOfTaxDeducted.error.aboveMaximum = The tax amount must be {0} or less
+amountOfTaxDeducted.error.belowMinimum = The tax amount must be {0} or more
+amountOfTaxDeducted.change.hidden = Amount deducted at 25%
+amountOfTaxDeducted.hint = For example, £60000 or £19,300.54.
+
 typeOfAsset.title = Type of assets included in the transfer
 typeOfAsset.heading = Type of assets included in the transfer
 typeOfAsset.cash = Cash
@@ -367,3 +387,13 @@ amountOfTransfer.error.aboveMaximum = The transfer amount must be {0} or less
 amountOfTransfer.error.belowMinimum = The transfer allowance amount must be {0} or more
 amountOfTransfer.change.hidden = Amount of transfer
 amountOfTransfer.hint = For example, £60000 or £19,300.54.
+
+netTransferAmount.title = What is the net amount of the transfer after deducting the tax charge?
+netTransferAmount.heading = What is the net amount of the transfer after deducting the tax charge?
+netTransferAmount.checkYourAnswersLabel = Net amount
+netTransferAmount.error.nonNumeric = The net amount of the transfer must be an amount of money, like £123 or 123.00
+netTransferAmount.error.required = Enter the net amount of the transfer after tax
+netTransferAmount.error.aboveMaximum = The net amount of the transfer must be {0} or less
+netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0} or more
+netTransferAmount.change.hidden = Net amount
+netTransferAmount.hint = For example, £60000 or £19,300.54.

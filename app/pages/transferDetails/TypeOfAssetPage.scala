@@ -17,14 +17,14 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, TypeOfAsset, UserAnswers}
+import models.{CheckMode, TaskCategory, TypeOfAsset, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object TypeOfAssetPage extends QuestionPage[Set[TypeOfAsset]] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = "typeOfAsset"
 

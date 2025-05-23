@@ -28,8 +28,8 @@ import viewmodels.implicits._
 
 object ApplicableTaxExclusionsSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ApplicableTaxExclusionsPage).map {
+  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(ApplicableTaxExclusionsPage).map {
       answers =>
         val value = ValueViewModel(
           HtmlContent(
@@ -44,7 +44,7 @@ object ApplicableTaxExclusionsSummary {
           key     = "applicableTaxExclusions.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.ApplicableTaxExclusionsController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", ApplicableTaxExclusionsPage.changeLink(userAnswers).url)
               .withVisuallyHiddenText(messages("applicableTaxExclusions.change.hidden"))
           )
         )

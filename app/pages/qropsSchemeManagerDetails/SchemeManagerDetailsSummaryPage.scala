@@ -17,14 +17,14 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.routes
-import models.{PersonName, UserAnswers}
+import models.{PersonName, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object SchemeManagerDetailsSummaryPage extends QuestionPage[PersonName] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.SchemeManagerDetails.toString \ toString
 
   override def toString: String = "schemeManagerDetailsSummary"
 

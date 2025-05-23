@@ -17,15 +17,15 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
+import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import models.address._
-import models.{CheckMode, NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object MembersCurrentAddressPage extends QuestionPage[Address] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
   override def toString: String = "membersCurrentAddress"
 

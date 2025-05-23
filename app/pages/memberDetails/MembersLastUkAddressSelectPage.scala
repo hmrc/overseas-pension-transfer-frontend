@@ -18,14 +18,14 @@ package pages.memberDetails
 
 import controllers.memberDetails.routes
 import models.address.FoundAddress
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object MembersLastUkAddressSelectPage extends QuestionPage[FoundAddress] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
   override def toString: String = "memberSelectLastUkAddress"
 
