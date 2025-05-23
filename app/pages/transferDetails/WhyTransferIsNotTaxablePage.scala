@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package pages.transferDetails
 
-import connectors.HelloWorldConnector
-import uk.gov.hmrc.http.HeaderCarrier
+import controllers.routes
+import models.{UserAnswers, WhyTransferIsNotTaxable}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-import scala.concurrent.{ExecutionContext, Future}
+case object WhyTransferIsNotTaxablePage extends QuestionPage[Set[WhyTransferIsNotTaxable]] {
 
-// THIS IS NOT GOOD PRACTICE AND IS ONLY HERE BECAUSE A FULL IMPLEMENTATION IS BEYOND THE SCOPE OF THIS TICKET
-class FakeHelloWorldConnector extends HelloWorldConnector(null, null) {
+  override def path: JsPath = JsPath \ toString
 
-  override def getHelloWorld()(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[String] = {
-    Future.successful("Hello world!")
-  }
+  override def toString: String = "whyTransferIsNotTaxable"
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
 }

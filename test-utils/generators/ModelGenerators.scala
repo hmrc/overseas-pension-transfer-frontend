@@ -22,6 +22,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryWhyTransferIsNotTaxable: Arbitrary[WhyTransferIsNotTaxable] =
+    Arbitrary {
+      Gen.oneOf(WhyTransferIsNotTaxable.values)
+    }
+
   implicit lazy val arbitraryTypeOfAsset: Arbitrary[TypeOfAsset] =
     Arbitrary {
       Gen.oneOf(TypeOfAsset.values)
