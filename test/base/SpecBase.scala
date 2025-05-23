@@ -16,7 +16,6 @@
 
 package base
 
-import connectors.HelloWorldConnector
 import controllers.actions._
 import models.requests.DisplayRequest
 import models.{PersonName, UserAnswers}
@@ -60,8 +59,7 @@ trait SpecBase
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
-        bind[DisplayAction].to[FakeDisplayAction],
-        bind[HelloWorldConnector].to[FakeHelloWorldConnector]
+        bind[DisplayAction].to[FakeDisplayAction]
       )
 
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
