@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
 import controllers.actions._
 import forms.NetTransferAmountFormProvider
-import javax.inject.Inject
 import models.Mode
-import pages.NetTransferAmountPage
+import pages.transferDetails.NetTransferAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.NetTransferAmountView
+import views.html.transferDetails.NetTransferAmountView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NetTransferAmountController @Inject() (

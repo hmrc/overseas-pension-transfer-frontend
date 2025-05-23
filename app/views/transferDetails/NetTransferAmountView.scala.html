@@ -42,7 +42,7 @@
 
 @layout(pageTitle = title(form, messages("netTransferAmount.title"))) {
 
-    @formHelper(action = routes.NetTransferAmountController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.transferDetails.routes.NetTransferAmountController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

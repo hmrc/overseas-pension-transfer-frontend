@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
 import base.SpecBase
 import forms.NetTransferAmountFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.NetTransferAmountPage
+import pages.transferDetails.NetTransferAmountPage
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import org.scalatest.freespec.AnyFreeSpec
-import views.html.NetTransferAmountView
+import views.html.transferDetails.NetTransferAmountView
 
 import scala.concurrent.Future
 
@@ -133,7 +132,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -150,7 +149,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

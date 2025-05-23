@@ -16,9 +16,8 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages.NetTransferAmountPage
+import models.UserAnswers
+import pages.transferDetails.NetTransferAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.CurrencyFormats.currencyFormat
