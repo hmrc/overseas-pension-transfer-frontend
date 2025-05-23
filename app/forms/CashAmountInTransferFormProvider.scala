@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package pages
+package forms
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import forms.mappings.Mappings
+import javax.inject.Inject
+import play.api.data.Form
 
-class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers {
+class CashAmountInTransferFormProvider @Inject() extends Mappings {
 
-  ".nextPage" - {
-
-    val emptyAnswers = UserAnswers("id")
-
-    "in Normal Mode" - {
-
-      "must go to Index" in {
-
-        DiscardTransferConfirmPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
-      }
-    }
-  }
+  def apply(): Form[BigDecimal] =
+    Form(
+      "cashInTransfer" -> currency(
+        "cashAmountInTransfer.error.required",
+        "cashAmountInTransfer.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(0.01, "cashAmountInTransfer.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "cashAmountInTransfer.error.aboveMaximum"))
+    )
 }

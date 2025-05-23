@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transferDetails
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
+import controllers.transferDetails.routes
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers {
+class CashAmountInTransferPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -29,9 +29,17 @@ class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to the Next page" in {
+        // TODO change when pages are connected
+        CashAmountInTransferPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+      }
+    }
 
-        DiscardTransferConfirmPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+    "in Check Mode" - {
+
+      "must go to Check Answers" in {
+
+        CashAmountInTransferPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
   }

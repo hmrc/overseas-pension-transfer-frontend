@@ -201,3 +201,13 @@ GET        /net-transfer-amount                                      controllers
 POST       /net-transfer-amount                                      controllers.transferDetails.NetTransferAmountController.onSubmit(mode: Mode = NormalMode)
 GET        /change-net-transfer-amount                               controllers.transferDetails.NetTransferAmountController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-net-transfer-amount                               controllers.transferDetails.NetTransferAmountController.onSubmit(mode: Mode = CheckMode)
+
+GET        /cash-amount-in-transfer                                  controllers.transferDetails.CashAmountInTransferController.onPageLoad(mode: Mode = NormalMode)
+POST       /cash-amount-in-transfer                                  controllers.transferDetails.CashAmountInTransferController.onSubmit(mode: Mode = NormalMode)
+GET        /change-cash-amount-in-transfer                           controllers.transferDetails.CashAmountInTransferController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-cash-amount-in-transfer                           controllers.transferDetails.CashAmountInTransferController.onSubmit(mode: Mode = CheckMode)
+
+GET        /amount-of-tax-deducted                                   controllers.transferDetails.AmountOfTaxDeductedController.onPageLoad(mode: Mode = NormalMode)
+POST       /amount-of-tax-deducted                                   controllers.transferDetails.AmountOfTaxDeductedController.onSubmit(mode: Mode = NormalMode)
+GET        /change-amount-of-tax-deducted                            controllers.transferDetails.AmountOfTaxDeductedController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-amount-of-tax-deducted                            controllers.transferDetails.AmountOfTaxDeductedController.onSubmit(mode: Mode = CheckMode)
