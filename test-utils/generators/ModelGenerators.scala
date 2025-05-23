@@ -22,6 +22,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryTypeOfAsset: Arbitrary[TypeOfAsset] =
+    Arbitrary {
+      Gen.oneOf(TypeOfAsset.values)
+    }
+
   implicit lazy val arbitraryApplicableTaxExclusions: Arbitrary[ApplicableTaxExclusions] =
     Arbitrary {
       Gen.oneOf(ApplicableTaxExclusions.values)

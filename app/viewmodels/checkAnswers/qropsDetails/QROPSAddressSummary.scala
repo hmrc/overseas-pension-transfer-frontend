@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.qropsDetails
 
 import models.UserAnswers
-import pages.QROPSAddressPage
+import pages.qropsDetails.QROPSAddressPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

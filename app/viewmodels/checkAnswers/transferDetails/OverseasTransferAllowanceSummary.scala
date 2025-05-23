@@ -16,11 +16,10 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.routes
-import models.{CheckMode, UserAnswers}
-import pages.OverseasTransferAllowancePage
+import models.UserAnswers
+import pages.transferDetails.OverseasTransferAllowancePage
+import utils.CurrencyFormats.currencyFormat
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -32,7 +31,7 @@ object OverseasTransferAllowanceSummary {
       answer =>
         SummaryListRowViewModel(
           key     = "overseasTransferAllowance.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
             ActionItemViewModel("site.change", OverseasTransferAllowancePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("overseasTransferAllowance.change.hidden"))
