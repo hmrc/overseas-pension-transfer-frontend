@@ -11,7 +11,7 @@ ThisBuild / scalaVersion := "2.13.16"
 lazy val microservice = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
-  .settings(inConfig(Test)(testSettings): _*)
+  .settings(inConfig(Test)(testSettings) *)
   .settings(ThisBuild / useSuperShell := false)
   .settings(
     name := appName,
@@ -39,8 +39,9 @@ lazy val microservice = (project in file("."))
     ScoverageKeys.coverageHighlighting := true,
     scalacOptions ++= Seq(
       "-feature",
-      "-Wconf:cat=deprecation:ws,cat=feature:ws,cat=optimizer:ws,src=target/.*:s"
+      "-Wconf:cat=deprecation:ws,cat=feature:ws,cat=optimizer:ws,src=target/.*:s",
     ),
+    scalacOptions := Seq("-unchecked", "-deprecation"),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     pipelineStages := Seq(digest),
@@ -48,7 +49,7 @@ lazy val microservice = (project in file("."))
     scalafmtOnCompile := true
   )
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork := true,
   unmanagedSourceDirectories += baseDirectory.value / "test-utils"
 )
