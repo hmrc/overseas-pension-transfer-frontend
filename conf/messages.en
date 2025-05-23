@@ -367,3 +367,13 @@ amountOfTransfer.error.aboveMaximum = The transfer amount must be {0} or less
 amountOfTransfer.error.belowMinimum = The transfer allowance amount must be {0} or more
 amountOfTransfer.change.hidden = Amount of transfer
 amountOfTransfer.hint = For example, £60000 or £19,300.54.
+
+netTransferAmount.title = What is the net amount of the transfer after deducting the tax charge?
+netTransferAmount.heading = What is the net amount of the transfer after deducting the tax charge?
+netTransferAmount.checkYourAnswersLabel = Net amount
+netTransferAmount.error.nonNumeric = The net amount of the transfer must be an amount of money, like £123 or 123.00
+netTransferAmount.error.required = Enter the net amount of the transfer after tax
+netTransferAmount.error.aboveMaximum = The net amount of the transfer must be {0} or less
+netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0} or more
+netTransferAmount.change.hidden = Net amount
+netTransferAmount.hint = For example, £60000 or £19,300.54.

@@ -35,7 +35,7 @@ object IsTransferCashOnlySummary {
           key     = "isTransferCashOnly.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.IsTransferCashOnlyController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", IsTransferCashOnlyPage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("isTransferCashOnly.change.hidden"))
           )
         )

@@ -16,28 +16,25 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.routes
-import models.{CheckMode, UserAnswers}
-import pages.transferDetails.DateOfTransferPage
-import play.api.i18n.{Lang, Messages}
+import models.UserAnswers
+import pages.transferDetails.NetTransferAmountPage
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.DateTimeFormats.dateTimeFormat
+import utils.CurrencyFormats.currencyFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object DateOfTransferSummary {
+object NetTransferAmountSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DateOfTransferPage).map {
+    answers.get(NetTransferAmountPage).map {
       answer =>
-        implicit val lang: Lang = messages.lang
-
         SummaryListRowViewModel(
-          key     = "dateOfTransfer.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.format(dateTimeFormat())),
+          key     = "netTransferAmount.checkYourAnswersLabel",
+          value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", DateOfTransferPage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("dateOfTransfer.change.hidden"))
+            ActionItemViewModel("site.change", NetTransferAmountPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("netTransferAmount.change.hidden"))
           )
         )
     }
