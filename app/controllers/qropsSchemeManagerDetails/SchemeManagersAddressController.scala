@@ -18,14 +18,12 @@ package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
-
-import javax.inject.Inject
 import models.Mode
 import models.address.{Country, SchemeManagersAddress}
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.Logging
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,6 +33,7 @@ import utils.AppUtils
 import viewmodels.CountrySelectViewModel
 import views.html.qropsSchemeManagerDetails.SchemeManagersAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeManagersAddressController @Inject() (
@@ -50,7 +49,7 @@ class SchemeManagersAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
-  private def form()(implicit messages: Messages): Form[SchemeManagersAddressFormData] = formProvider()
+  private def form: Form[SchemeManagersAddressFormData] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

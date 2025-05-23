@@ -17,12 +17,11 @@
 package viewmodels.checkAnswers.transferDetails
 
 import models.UserAnswers
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case object TransferDetailsSummary {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+  def rows(userAnswers: UserAnswers): Seq[SummaryListRow] = {
     Seq(List.empty).flatten
   }
 }

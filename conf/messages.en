@@ -46,9 +46,6 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-helloWorld.title = helloWorld
-helloWorld.heading = helloWorld
-
 radios.hint = Select one.
 
 common.addressInput.addressLine1 = Address line 1

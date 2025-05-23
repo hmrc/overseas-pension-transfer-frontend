@@ -22,8 +22,8 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object DateTimeFormats {
-
-  private val dateTimeFormatter        = DateTimeFormatter.ofPattern("d MMMM yyyy")
+  // Optional dateTimeFormatter, not currently used
+  // private val dateTimeFormatter        = DateTimeFormatter.ofPattern("d MMMM yyyy")
   private val dateTimeFormatterNumeric = DateTimeFormatter.ofPattern("d M yyyy")
 
   private val localisedDateTimeFormatters = Map(

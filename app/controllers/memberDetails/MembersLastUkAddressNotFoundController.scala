@@ -36,14 +36,14 @@ class MembersLastUkAddressNotFoundController @Inject() (
     view: MembersLastUkAddressNotFoundView
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
-    implicit request =>
+  def onPageLoad: Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen displayData) { implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
-        case Some(value) =>
-          value match {
-            case NoAddressFound(searchedPostcode) =>
-              Ok(view(searchedPostcode))
-          }
+        case Some(NoAddressFound(searchedPostcode)) =>
+          Ok(view(searchedPostcode))
+        case _                                      =>
+          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }
-  }
+    }
+
 }

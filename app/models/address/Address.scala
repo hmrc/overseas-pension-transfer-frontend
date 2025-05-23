@@ -66,6 +66,11 @@ object Address {
     case a: QROPSAddress =>
       QROPSAddress.writes.writes(a).as[JsObject] +
         ("type" -> JsString("QROPSAddress"))
+
+    case e =>
+      throw new IllegalStateException(
+        s"[Address.writes] Cannot serialise unsupported subtype: ${e.getClass.getName}"
+      )
   }
 
   implicit val format: OFormat[Address] = OFormat(reads, writes)

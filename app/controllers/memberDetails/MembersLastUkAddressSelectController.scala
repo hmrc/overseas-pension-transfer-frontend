@@ -69,47 +69,54 @@ class MembersLastUkAddressSelectController @Inject() (
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
-        case Some(value) =>
-          value match {
-            case FoundAddressSet(searchedPostcode, addresses) =>
-              val validIds      = addresses.map(_.id)
-              val form          = formProvider(validIds)
-              val addressRadios = AddressViewModel.addressRadios(addresses)
-              form.bindFromRequest().fold(
-                formWithErrors =>
-                  Future.successful(BadRequest(view(formWithErrors, mode, addressRadios, searchedPostcode))),
-                selectedId => {
-                  if (validIds.contains(selectedId)) {
-                    val maybeSelectedAddress = addresses.find(_.id == selectedId)
-                    maybeSelectedAddress match {
-                      case Some(selectedAddress) =>
-                        for {
-                          updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressSelectPage, selectedAddress))
-                          _              <- sessionRepository.set(updatedAnswers)
+        case Some(FoundAddressSet(searchedPostcode, addresses)) =>
+          val validIds      = addresses.map(_.id)
+          val form          = formProvider(validIds)
+          val addressRadios = AddressViewModel.addressRadios(addresses)
 
-                        } yield Redirect(MembersLastUkAddressSelectPage.nextPage(mode, updatedAnswers))
-                      case _                     =>
-                        Future.successful(
-                          Redirect(
-                            MembersLastUkAddressSelectPage.nextPageRecovery(
-                              Some(MembersLastUkAddressSelectPage.recoveryModeReturnUrl)
-                            )
-                          )
+          form.bindFromRequest().fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, mode, addressRadios, searchedPostcode))
+              ),
+            selectedId =>
+              if (validIds.contains(selectedId)) {
+                addresses.find(_.id == selectedId) match {
+                  case Some(selectedAddress) =>
+                    for {
+                      updatedAnswers <- Future.fromTry(
+                                          request.userAnswers.set(MembersLastUkAddressSelectPage, selectedAddress)
+                                        )
+                      _              <- sessionRepository.set(updatedAnswers)
+                    } yield Redirect(MembersLastUkAddressSelectPage.nextPage(mode, updatedAnswers))
+                  case None                  =>
+                    Future.successful(
+                      Redirect(
+                        MembersLastUkAddressSelectPage.nextPageRecovery(
+                          Some(MembersLastUkAddressSelectPage.recoveryModeReturnUrl)
                         )
-                    }
-                  } else {
-                    Future.successful(Redirect(
-                      MembersLastUkAddressSelectPage.nextPageRecovery(
-                        Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
                       )
-                    ))
-                  }
+                    )
                 }
-              )
-          }
+              } else {
+                Future.successful(
+                  Redirect(
+                    MembersLastUkAddressSelectPage.nextPageRecovery(
+                      Some(routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url)
+                    )
+                  )
+                )
+              }
+          )
+        case _                                                  =>
+          Future.successful(
+            Redirect(MembersLastUkAddressSelectPage.nextPageRecovery(
+              Some(MembersLastUkAddressSelectPage.recoveryModeReturnUrl)
+            ))
+          )
       }
-  }
+    }
 }
