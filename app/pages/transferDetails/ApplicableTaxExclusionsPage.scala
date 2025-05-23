@@ -17,14 +17,14 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{ApplicableTaxExclusions, CheckMode, UserAnswers}
+import models.{ApplicableTaxExclusions, CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object ApplicableTaxExclusionsPage extends QuestionPage[Set[ApplicableTaxExclusions]] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = "applicableTaxExclusions"
 

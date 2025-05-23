@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.mvc.Call
 import play.api.libs.json.JsPath
@@ -26,7 +26,7 @@ import java.time.LocalDate
 
 case object DateOfTransferPage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = "dateOfTransfer"
 
