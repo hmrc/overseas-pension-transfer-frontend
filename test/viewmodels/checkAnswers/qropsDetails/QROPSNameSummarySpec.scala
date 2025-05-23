@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.qropsDetails
 
 import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
-import pages.QROPSNamePage
+import pages.qropsDetails.QROPSNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 

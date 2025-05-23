@@ -27,6 +27,11 @@ trait ModelGenerators {
       Gen.oneOf(WhyTransferIsNotTaxable.values)
     }
 
+  implicit lazy val arbitraryTypeOfAsset: Arbitrary[TypeOfAsset] =
+    Arbitrary {
+      Gen.oneOf(TypeOfAsset.values)
+    }
+
   implicit lazy val arbitraryApplicableTaxExclusions: Arbitrary[ApplicableTaxExclusions] =
     Arbitrary {
       Gen.oneOf(ApplicableTaxExclusions.values)
