@@ -118,6 +118,11 @@ common.dateInput.error.invalid.character = The Day/Month/Year Field must only in
 common.dateInput.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 1970
 common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the future
 
+taskList.taskStatus.cannotStart = Cannot start yet
+taskList.taskStatus.notStarted = Not started yet
+taskList.taskStatus.inProgress = In progress
+taskList.taskStatus.completed = Completed
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
