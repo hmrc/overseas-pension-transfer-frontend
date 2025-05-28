@@ -22,14 +22,15 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
+@import viewmodels.LabelSize.Large
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
