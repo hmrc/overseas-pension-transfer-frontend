@@ -73,6 +73,11 @@ object Address {
     case a: SchemeManagersAddress =>
       SchemeManagersAddress.writes.writes(a).as[JsObject] +
         ("type" -> JsString("SchemeManagersAddress"))
+
+    case e =>
+      throw new IllegalStateException(
+        s"[Address.writes] Cannot serialise unsupported subtype: ${e.getClass.getName}"
+      )
   }
 
   implicit val format: OFormat[Address] = OFormat(reads, writes)
