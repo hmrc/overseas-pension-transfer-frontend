@@ -16,10 +16,8 @@
 
 package views
 
-import models.address.Country
 import play.api.data.Form
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 object ViewUtils {
 

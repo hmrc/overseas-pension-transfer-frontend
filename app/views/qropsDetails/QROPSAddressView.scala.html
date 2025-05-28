@@ -14,19 +14,13 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.title
-@import viewmodels.govuk.all._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
-@import views.ViewUtils
-@import views.html.components.InputCountry
-@import models.address.Country
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
 @import viewmodels.CountrySelectViewModel
+@import viewmodels.InputWidth._
+@import viewmodels.govuk.all._
+@import views.ViewUtils.title
+@import views.html.components.InputCountry
 
 @this(
     layout: templates.Layout,

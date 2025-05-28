@@ -16,9 +16,8 @@
 
 package pages.memberDetails
 
-import controllers.routes
-import controllers.memberDetails
 import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import controllers.{memberDetails, routes}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

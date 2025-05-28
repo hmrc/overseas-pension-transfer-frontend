@@ -24,7 +24,6 @@ import pages.memberDetails.MembersLastUKAddressPage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -69,10 +68,7 @@ class MembersLastUKAddressController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, value))
-            _              <- {
-              logger.info(Json.stringify(updatedAnswers.data))
-              sessionRepository.set(updatedAnswers)
-            }
+            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
       )
   }

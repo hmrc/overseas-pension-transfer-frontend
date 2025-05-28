@@ -17,15 +17,15 @@
 package forms.qropsSchemeManagerDetails
 
 import forms.mappings.Mappings
-import models.QROPSSchemeManagerType
+import models.SchemeManagerType
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class QROPSSchemeManagerTypeFormProvider @Inject() extends Mappings {
+class SchemeManagerTypeFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[QROPSSchemeManagerType] =
+  def apply(): Form[SchemeManagerType] =
     Form(
-      "value" -> enumerable[QROPSSchemeManagerType]("qropsSchemeManagerType.error.required")
+      "value" -> enumerable[SchemeManagerType]("schemeManagerType.error.required")
     )
 }

@@ -18,8 +18,6 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.ApplicableTaxExclusionsFormProvider
-
-import javax.inject.Inject
 import models.Mode
 import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,6 +26,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.ApplicableTaxExclusionsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ApplicableTaxExclusionsController @Inject() (

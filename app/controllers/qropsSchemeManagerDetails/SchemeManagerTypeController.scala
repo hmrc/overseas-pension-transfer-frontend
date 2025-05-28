@@ -17,33 +17,30 @@
 package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
-import forms.qropsSchemeManagerDetails.QROPSSchemeManagerTypeFormProvider
-import models.{Mode, NormalMode, QROPSSchemeManagerType}
-import pages.qropsSchemeManagerDetails.{
-  QROPSSchemeManagerTypePage,
-  SchemeManagerOrgIndividualNamePage,
-  SchemeManagerOrganisationNamePage,
-  SchemeManagersNamePage
-}
+import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
+import models.Mode
+import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SchemeManagerService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.qropsSchemeManagerDetails.QROPSSchemeManagerTypeView
+import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class QROPSSchemeManagerTypeController @Inject() (
+class SchemeManagerTypeController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: QROPSSchemeManagerTypeFormProvider,
+    schemeManagerService: SchemeManagerService,
+    formProvider: SchemeManagerTypeFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSSchemeManagerTypeView
+    view: SchemeManagerTypeView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -51,7 +48,7 @@ class QROPSSchemeManagerTypeController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSSchemeManagerTypePage) match {
+      val preparedForm = request.userAnswers.get(SchemeManagerTypePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -65,25 +62,13 @@ class QROPSSchemeManagerTypeController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          val previousValue = request.userAnswers.get(QROPSSchemeManagerTypePage)
+          val previousValue = request.userAnswers.get(SchemeManagerTypePage)
           for {
-            baseAnswers <- Future.fromTry(request.userAnswers.set(QROPSSchemeManagerTypePage, value))
-
-            // If the QROPSSchemeManagerType changes, remove the answers of previous corresponding questions
-            updatedAnswers <- (previousValue, value) match {
-                                case (Some(QROPSSchemeManagerType.Individual), QROPSSchemeManagerType.Organisation) => Future.fromTry(baseAnswers
-                                    .remove(SchemeManagersNamePage))
-                                case (Some(QROPSSchemeManagerType.Organisation), QROPSSchemeManagerType.Individual) => Future.fromTry(baseAnswers
-                                    .remove(SchemeManagerOrganisationNamePage)
-                                    .flatMap(_.remove(SchemeManagerOrgIndividualNamePage)))
-                                case _                                                                              => Future.successful(baseAnswers)
-                              }
+            baseAnswers    <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
+            updatedAnswers <- schemeManagerService.updateSchemeManagerTypeAnswers(baseAnswers, previousValue, value)
+            redirectMode    = schemeManagerService.getSchemeManagerTypeRedirectMode(mode, previousValue, value)
             _              <- sessionRepository.set(updatedAnswers)
-
-            // If the QROPSSchemeManagerType changes, always switch to NormalMode to go through corresponding set of questions
-            redirectMode = if (!previousValue.contains(value)) NormalMode else mode
-
-          } yield Redirect(QROPSSchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
+          } yield Redirect(SchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
         }
       )
   }

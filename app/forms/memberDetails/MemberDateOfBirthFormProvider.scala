@@ -20,8 +20,8 @@ import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
 
-import java.time.{LocalDate, ZoneOffset}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, ZoneOffset}
 import javax.inject.Inject
 
 class MemberDateOfBirthFormProvider @Inject() extends Mappings {

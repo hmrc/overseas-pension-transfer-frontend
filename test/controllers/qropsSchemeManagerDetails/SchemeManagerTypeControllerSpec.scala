@@ -17,41 +17,41 @@
 package controllers.qropsSchemeManagerDetails
 
 import base.SpecBase
-import forms.qropsSchemeManagerDetails.QROPSSchemeManagerTypeFormProvider
-import models.{CheckMode, NormalMode, QROPSSchemeManagerType, SchemeManagersName, UserAnswers}
+import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
+import models.{CheckMode, NormalMode, SchemeManagerType, SchemeManagersName, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.qropsSchemeManagerDetails.{QROPSSchemeManagerTypePage, SchemeManagersNamePage}
+import pages.qropsSchemeManagerDetails.{SchemeManagerTypePage, SchemeManagersNamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.qropsSchemeManagerDetails.QROPSSchemeManagerTypeView
+import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
 import scala.concurrent.Future
 
-class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val qropsSchemeManagerTypeRoute = routes.QROPSSchemeManagerTypeController.onPageLoad(NormalMode).url
+  private lazy val schemeManagerTypeRoute = routes.SchemeManagerTypeController.onPageLoad(NormalMode).url
 
-  private val formProvider = new QROPSSchemeManagerTypeFormProvider()
+  private val formProvider = new SchemeManagerTypeFormProvider()
   private val form         = formProvider()
 
-  "QROPSSchemeManagerType Controller" - {
+  "SchemeManagerType Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsSchemeManagerTypeRoute)
+        val request = FakeRequest(GET, schemeManagerTypeRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[QROPSSchemeManagerTypeView]
+        val view = application.injector.instanceOf[SchemeManagerTypeView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
@@ -60,19 +60,19 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(QROPSSchemeManagerTypePage, QROPSSchemeManagerType.values.head).success.value
+      val userAnswers = userAnswersQtNumber.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsSchemeManagerTypeRoute)
+        val request = FakeRequest(GET, schemeManagerTypeRoute)
 
-        val view = application.injector.instanceOf[QROPSSchemeManagerTypeView]
+        val view = application.injector.instanceOf[SchemeManagerTypeView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(QROPSSchemeManagerType.values.head), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(SchemeManagerType.values.head), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -82,7 +82,7 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
     "must redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
-      val userAnswers           = emptyUserAnswers.set(QROPSSchemeManagerTypePage, QROPSSchemeManagerType.values.head).success.value
+      val userAnswers           = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -95,24 +95,24 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsSchemeManagerTypeRoute)
-            .withFormUrlEncodedBody(("value", QROPSSchemeManagerType.values.head.toString))
+          FakeRequest(POST, schemeManagerTypeRoute)
+            .withFormUrlEncodedBody(("value", SchemeManagerType.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QROPSSchemeManagerTypePage.nextPage(NormalMode, userAnswers).url
+        redirectLocation(result).value mustEqual SchemeManagerTypePage.nextPage(NormalMode, userAnswers).url
       }
     }
 
     "must redirect to NormalMode if changed from 'Individual' to 'Organisation' in CheckMode" in {
-      val previousAnswers = emptyUserAnswers.set(QROPSSchemeManagerTypePage, QROPSSchemeManagerType.Individual).success.value
+      val previousAnswers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
       val application     = applicationBuilder(userAnswers = Some(previousAnswers)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, routes.QROPSSchemeManagerTypeController.onSubmit(CheckMode).url)
-            .withFormUrlEncodedBody("value" -> QROPSSchemeManagerType.Organisation.toString)
+          FakeRequest(POST, routes.SchemeManagerTypeController.onSubmit(CheckMode).url)
+            .withFormUrlEncodedBody("value" -> SchemeManagerType.Organisation.toString)
 
         val result = route(application, request).value
 
@@ -121,10 +121,10 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
       }
     }
 
-    "must remove previous data if QROPSSchemeManagerType changes" in {
+    "must remove previous data if SchemeManagerType changes" in {
       val mngrName        = SchemeManagersName("FirstNameMngr", "LastNameMngr")
       val previousAnswers = emptyUserAnswers
-        .set(QROPSSchemeManagerTypePage, QROPSSchemeManagerType.Individual).success.value
+        .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         .set(SchemeManagersNamePage, mngrName).success.value
 
       val mockSessionRepository = mock[SessionRepository]
@@ -136,8 +136,8 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, routes.QROPSSchemeManagerTypeController.onSubmit(NormalMode).url)
-            .withFormUrlEncodedBody("value" -> QROPSSchemeManagerType.Organisation.toString)
+          FakeRequest(POST, routes.SchemeManagerTypeController.onSubmit(NormalMode).url)
+            .withFormUrlEncodedBody("value" -> SchemeManagerType.Organisation.toString)
 
         val result = route(application, request).value
 
@@ -158,12 +158,12 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsSchemeManagerTypeRoute)
+          FakeRequest(POST, schemeManagerTypeRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[QROPSSchemeManagerTypeView]
+        val view = application.injector.instanceOf[SchemeManagerTypeView]
 
         val result = route(application, request).value
 
@@ -177,7 +177,7 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsSchemeManagerTypeRoute)
+        val request = FakeRequest(GET, schemeManagerTypeRoute)
 
         val result = route(application, request).value
 
@@ -192,8 +192,8 @@ class QROPSSchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsSchemeManagerTypeRoute)
-            .withFormUrlEncodedBody(("value", QROPSSchemeManagerType.values.head.toString))
+          FakeRequest(POST, schemeManagerTypeRoute)
+            .withFormUrlEncodedBody(("value", SchemeManagerType.values.head.toString))
 
         val result = route(application, request).value
 

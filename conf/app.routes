@@ -121,10 +121,10 @@ POST       /qrops-country                                            controllers
 GET        /change-qrops-country                                     controllers.qropsDetails.QROPSCountryController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-qrops-country                                     controllers.qropsDetails.QROPSCountryController.onSubmit(mode: Mode = CheckMode)
 
-GET        /qrops-scheme-manager-type                                controllers.qropsSchemeManagerDetails.QROPSSchemeManagerTypeController.onPageLoad(mode: Mode = NormalMode)
-POST       /qrops-scheme-manager-type                                controllers.qropsSchemeManagerDetails.QROPSSchemeManagerTypeController.onSubmit(mode: Mode = NormalMode)
-GET        /change-qrops-scheme-manager-type                         controllers.qropsSchemeManagerDetails.QROPSSchemeManagerTypeController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-qrops-scheme-manager-type                         controllers.qropsSchemeManagerDetails.QROPSSchemeManagerTypeController.onSubmit(mode: Mode = CheckMode)
+GET        /scheme-manager-type                                      controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onPageLoad(mode: Mode = NormalMode)
+POST       /scheme-manager-type                                      controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onSubmit(mode: Mode = NormalMode)
+GET        /change-scheme-manager-type                               controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-scheme-manager-type                               controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onSubmit(mode: Mode = CheckMode)
 
 GET        /scheme-managers-name                                     controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /scheme-managers-name                                     controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onSubmit(mode: Mode = NormalMode)
