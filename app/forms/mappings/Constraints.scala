@@ -21,6 +21,8 @@ import play.api.data.validation
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import utils.CurrencyFormats
 
+import java.time.LocalDate
+
 trait Constraints {
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =

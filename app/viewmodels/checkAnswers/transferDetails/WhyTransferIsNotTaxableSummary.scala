@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.transferDetails
 
-import models.UserAnswers
-import pages.qropsSchemeManagerDetails.QROPSSchemeManagerTypePage
+import controllers.transferDetails.routes
+import models.{CheckMode, UserAnswers}
+import pages.transferDetails.WhyTransferIsNotTaxablePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -25,23 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object QROPSSchemeManagerTypeSummary {
+object WhyTransferIsNotTaxableSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QROPSSchemeManagerTypePage).map {
-      answer =>
+    answers.get(WhyTransferIsNotTaxablePage).map {
+      answers =>
         val value = ValueViewModel(
           HtmlContent(
-            HtmlFormat.escape(messages(s"qropsSchemeManagerType.$answer"))
+            answers.map {
+              answer => HtmlFormat.escape(messages(s"whyTransferIsNotTaxable.$answer")).toString
+            }
+              .mkString(",<br>")
           )
         )
 
         SummaryListRowViewModel(
-          key     = "qropsSchemeManagerType.checkYourAnswersLabel",
+          key     = "whyTransferIsNotTaxable.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", QROPSSchemeManagerTypePage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("qropsSchemeManagerType.change.hidden"))
+            ActionItemViewModel("site.change", routes.WhyTransferIsNotTaxableController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("whyTransferIsNotTaxable.change.hidden"))
           )
         )
     }

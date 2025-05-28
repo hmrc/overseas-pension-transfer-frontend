@@ -18,10 +18,11 @@ package forms.transferDetails
 
 import forms.DateOfTransferFormProvider
 
-import java.time.{LocalDate, ZoneOffset}
 import forms.behaviours.DateBehaviours
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+
+import java.time.{LocalDate, ZoneOffset}
 
 class DateOfTransferFormProviderSpec extends DateBehaviours {
 

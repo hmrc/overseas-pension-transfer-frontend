@@ -16,12 +16,12 @@
 
 package forms
 
-import javax.inject.Inject
-
 import forms.mappings.Mappings
+import models.TypeOfAsset
 import play.api.data.Form
 import play.api.data.Forms.set
-import models.TypeOfAsset
+
+import javax.inject.Inject
 
 class TypeOfAssetFormProvider @Inject() extends Mappings {
 

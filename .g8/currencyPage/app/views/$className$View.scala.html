@@ -10,6 +10,7 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
+@import viewmodels.LabelSize.Large
 
 
 @this(
@@ -32,14 +33,16 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("$className;format="decap"$.heading")</h1>
 
         @govukInput(
             InputViewModel(
-                field = form("value")
-        )
-    .withPrefix(PrefixOrSuffix(content = "£"))
-        .withWidth(Fixed10)
+                field = form("value"),
+                label = LabelViewModel(Text(messages("$className;format="decap"$.heading")))
+                    .withCssClass("govuk-!-margin-bottom-6")
+                    .asPageHeading(size = Large)
+            )
+            .withPrefix(PrefixOrSuffix(content = "£"))
+            .withWidth(Fixed10)
         )
 
         @govukButton(

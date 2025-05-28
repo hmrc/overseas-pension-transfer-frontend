@@ -16,17 +16,16 @@
 
 package controllers.memberDetails
 
-import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import controllers.actions._
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.Mode
-import models.address.{FoundAddressResponse, FoundAddressSet, NoAddressFound}
+import models.address.{FoundAddressSet, NoAddressFound}
 import pages.memberDetails.MembersLastUkAddressLookupPage
 import play.api.Logging
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.AddressService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MembersLastUkAddressLookupView
 
@@ -41,59 +40,53 @@ class MembersLastUkAddressLookupController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: MembersLastUkAddressLookupFormProvider,
+    addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
-    val addressLookupConnector: AddressLookupConnector,
     view: MembersLastUkAddressLookupView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  val form: Form[String] = formProvider()
+  private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen displayData) { implicit request =>
       val preparedForm = request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case None        => form
         case Some(value) =>
           value match {
-            case FoundAddressSet(searchedPostcode, _) => form.fill(searchedPostcode)
-            case NoAddressFound(searchedPostcode)     => form.fill(searchedPostcode)
+            case FoundAddressSet(pc, _) => form.fill(pc)
+            case NoAddressFound(pc)     => form.fill(pc)
           }
       }
       Ok(view(preparedForm, mode))
-  }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
-    form.bindFromRequest().fold(
-      formWithErrors =>
-        Future.successful(BadRequest(view(formWithErrors, mode))),
-      postcode =>
-        addressLookupConnector.lookup(postcode).flatMap {
-          case AddressLookupErrorResponse(e)                             =>
-            logger.warn(s"Error: $e")
-            Future.successful(Redirect(
-              MembersLastUkAddressLookupPage.nextPageRecovery(
-                Some(MembersLastUkAddressLookupPage.recoveryModeReturnUrl)
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
+      form.bindFromRequest().fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        postcode =>
+          addressService.membersLastUkAddressLookup(postcode).flatMap {
+            case None         =>
+              Future.successful(
+                Redirect(MembersLastUkAddressLookupPage.nextPageRecovery(
+                  Some(MembersLastUkAddressLookupPage.recoveryModeReturnUrl)
+                ))
               )
-            ))
-          case AddressLookupSuccessResponse(searchedPostcode, recordSet) =>
-            val foundResponse: FoundAddressResponse = FoundAddressResponse.fromRecordSet(searchedPostcode, recordSet)
-            foundResponse match {
-              case fas: FoundAddressSet =>
-                for {
-                  updatedAnswers <- Future.fromTry(
-                                      request.userAnswers.set(MembersLastUkAddressLookupPage, fas)
-                                    )
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
-              case naf: NoAddressFound  =>
-                for {
-                  updatedAnswers <- Future.fromTry(
-                                      request.userAnswers.set(MembersLastUkAddressLookupPage, naf)
-                                    )
-                  _              <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
-            }
-        }
-    )
-  }
+            case Some(result) =>
+              result match {
+                case fas: FoundAddressSet =>
+                  for {
+                    userAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, fas))
+                    _           <- sessionRepository.set(userAnswers)
+                  } yield Redirect(MembersLastUkAddressLookupPage.nextPage(mode, userAnswers))
+                case naf: NoAddressFound  =>
+                  for {
+                    userAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, naf))
+                    _           <- sessionRepository.set(userAnswers)
+                  } yield Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
+              }
+          }
+      )
+    }
 }

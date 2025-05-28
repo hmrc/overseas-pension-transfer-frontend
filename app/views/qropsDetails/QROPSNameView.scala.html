@@ -14,17 +14,14 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.title
-@import viewmodels.govuk.all._
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.LabelSize.Large
-@import views.html.components.QTNumber
 @import models.requests.DisplayRequest
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
+@import viewmodels.InputWidth._
+@import viewmodels.govuk.all._
+@import views.ViewUtils.title
+@import views.html.components.QTNumber
+@import viewmodels.LabelSize.Large
 
 @this(
         layout: templates.Layout,
@@ -46,11 +43,13 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("qropsName.heading")</h1>
 
         @govukInput(
             InputViewModel(
-                field = form("value")
+                field = form("value"),
+                label = LabelViewModel(Text(messages("qropsName.heading")))
+                    .withCssClass("govuk-!-margin-bottom-6")
+                    .asPageHeading(size = Large)
             )
             .withWidth(OneHalf)
         )

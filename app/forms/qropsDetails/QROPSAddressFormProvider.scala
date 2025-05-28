@@ -16,11 +16,12 @@
 
 package forms.qropsDetails
 
-import javax.inject.Inject
 import forms.mappings.{Mappings, Regex}
 import models.address.QROPSAddress
-import play.api.data.{Form, Forms}
 import play.api.data.Forms._
+import play.api.data.{Form, Forms}
+
+import javax.inject.Inject
 
 case class QROPSAddressFormData(
     addressLine1: String,

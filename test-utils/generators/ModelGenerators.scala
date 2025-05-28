@@ -22,6 +22,11 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
+  implicit lazy val arbitraryWhyTransferIsNotTaxable: Arbitrary[WhyTransferIsNotTaxable] =
+    Arbitrary {
+      Gen.oneOf(WhyTransferIsNotTaxable.values)
+    }
+
   implicit lazy val arbitraryTypeOfAsset: Arbitrary[TypeOfAsset] =
     Arbitrary {
       Gen.oneOf(TypeOfAsset.values)
@@ -37,9 +42,9 @@ trait ModelGenerators {
       Gen.oneOf(WhyTransferIsTaxable.values.toSeq)
     }
 
-  implicit lazy val arbitraryQROPSSchemeManagerIsIndividualOrOrg: Arbitrary[QROPSSchemeManagerType] =
+  implicit lazy val arbitraryQROPSSchemeManagerIsIndividualOrOrg: Arbitrary[SchemeManagerType] =
     Arbitrary {
-      Gen.oneOf(QROPSSchemeManagerType.values)
+      Gen.oneOf(SchemeManagerType.values)
     }
 
   implicit lazy val arbitrarySchemeManagersName: Arbitrary[SchemeManagersName] =

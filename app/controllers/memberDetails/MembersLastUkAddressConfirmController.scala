@@ -24,6 +24,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.AddressService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.AddressViewModel
 import views.html.memberDetails.MembersLastUkAddressConfirmView
@@ -38,6 +39,7 @@ class MembersLastUkAddressConfirmController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    addressService: AddressService,
     formProvider: MemberConfirmLastUkAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressConfirmView
@@ -72,11 +74,10 @@ class MembersLastUkAddressConfirmController @Inject() (
             },
             _ =>
               for {
-                clearedLookupUA <- Future.fromTry(MembersLastUkAddressConfirmPage.clearAddressLookups(request.userAnswers))
+                clearedLookupUA <- addressService.clearAddressLookups(request.userAnswers)
                 updatedAnswers  <-
                   Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, selectedAddress.address))
-
-                _ <- sessionRepository.set(updatedAnswers)
+                _               <- sessionRepository.set(updatedAnswers)
               } yield Redirect(MembersLastUkAddressConfirmPage.nextPage(mode, updatedAnswers))
           )
         case _                     =>

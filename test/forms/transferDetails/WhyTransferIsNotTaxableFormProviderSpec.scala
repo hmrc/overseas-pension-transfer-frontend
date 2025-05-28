@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package forms.qropsSchemeManagerDetails
+package forms.transferDetails
 
-import forms.behaviours.OptionFieldBehaviours
-import models.QROPSSchemeManagerType
+import forms.WhyTransferIsNotTaxableFormProvider
+import forms.behaviours.CheckboxFieldBehaviours
+import models.WhyTransferIsNotTaxable
 import play.api.data.FormError
 
-class QROPSSchemeManagerTypeFormProviderSpec extends OptionFieldBehaviours {
+class WhyTransferIsNotTaxableFormProviderSpec extends CheckboxFieldBehaviours {
 
-  val form = new QROPSSchemeManagerTypeFormProvider()()
+  val form = new WhyTransferIsNotTaxableFormProvider()()
 
   ".value" - {
 
     val fieldName   = "value"
-    val requiredKey = "qropsSchemeManagerType.error.required"
+    val requiredKey = "whyTransferIsNotTaxable.error.required"
 
-    behave like optionsField[QROPSSchemeManagerType](
+    behave like checkboxField[WhyTransferIsNotTaxable](
       form,
       fieldName,
-      validValues  = QROPSSchemeManagerType.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      validValues  = WhyTransferIsNotTaxable.values,
+      invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
 
-    behave like mandatoryField(
+    behave like mandatoryCheckboxField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredKey
     )
   }
 }

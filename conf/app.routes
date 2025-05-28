@@ -116,16 +116,15 @@ GET        /qrops-address                                            controllers
 POST       /qrops-address                                            controllers.qropsDetails.QROPSAddressController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-address                                     controllers.qropsDetails.QROPSAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-qrops-address                                     controllers.qropsDetails.QROPSAddressController.onSubmit(mode: Mode = CheckMode)
-
 GET        /qrops-country                                            controllers.qropsDetails.QROPSCountryController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-country                                            controllers.qropsDetails.QROPSCountryController.onSubmit(mode: Mode = NormalMode)
 GET        /change-qrops-country                                     controllers.qropsDetails.QROPSCountryController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-qrops-country                                     controllers.qropsDetails.QROPSCountryController.onSubmit(mode: Mode = CheckMode)
 
-GET        /qrops-scheme-manager-type                                controllers.qropsSchemeManagerDetails.QROPSSchemeManagerTypeController.onPageLoad(mode: Mode = NormalMode)
-POST       /qrops-scheme-manager-type                                controllers.qropsSchemeManagerDetails.QROPSSchemeManagerTypeController.onSubmit(mode: Mode = NormalMode)
-GET        /change-qrops-scheme-manager-type                         controllers.qropsSchemeManagerDetails.QROPSSchemeManagerTypeController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-qrops-scheme-manager-type                         controllers.qropsSchemeManagerDetails.QROPSSchemeManagerTypeController.onSubmit(mode: Mode = CheckMode)
+GET        /scheme-manager-type                                      controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onPageLoad(mode: Mode = NormalMode)
+POST       /scheme-manager-type                                      controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onSubmit(mode: Mode = NormalMode)
+GET        /change-scheme-manager-type                               controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-scheme-manager-type                               controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onSubmit(mode: Mode = CheckMode)
 
 GET        /scheme-managers-name                                     controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /scheme-managers-name                                     controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onSubmit(mode: Mode = NormalMode)
@@ -196,3 +195,28 @@ GET        /amount-of-transfer                                       controllers
 POST       /amount-of-transfer                                       controllers.transferDetails.AmountOfTransferController.onSubmit(mode: Mode = NormalMode)
 GET        /change-amount-of-transfer                                controllers.transferDetails.AmountOfTransferController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-amount-of-transfer                                controllers.transferDetails.AmountOfTransferController.onSubmit(mode: Mode = CheckMode)
+
+GET        /net-transfer-amount                                      controllers.transferDetails.NetTransferAmountController.onPageLoad(mode: Mode = NormalMode)
+POST       /net-transfer-amount                                      controllers.transferDetails.NetTransferAmountController.onSubmit(mode: Mode = NormalMode)
+GET        /change-net-transfer-amount                               controllers.transferDetails.NetTransferAmountController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-net-transfer-amount                               controllers.transferDetails.NetTransferAmountController.onSubmit(mode: Mode = CheckMode)
+
+GET        /cash-amount-in-transfer                                  controllers.transferDetails.CashAmountInTransferController.onPageLoad(mode: Mode = NormalMode)
+POST       /cash-amount-in-transfer                                  controllers.transferDetails.CashAmountInTransferController.onSubmit(mode: Mode = NormalMode)
+GET        /change-cash-amount-in-transfer                           controllers.transferDetails.CashAmountInTransferController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-cash-amount-in-transfer                           controllers.transferDetails.CashAmountInTransferController.onSubmit(mode: Mode = CheckMode)
+
+GET        /amount-of-tax-deducted                                   controllers.transferDetails.AmountOfTaxDeductedController.onPageLoad(mode: Mode = NormalMode)
+POST       /amount-of-tax-deducted                                   controllers.transferDetails.AmountOfTaxDeductedController.onSubmit(mode: Mode = NormalMode)
+GET        /change-amount-of-tax-deducted                            controllers.transferDetails.AmountOfTaxDeductedController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-amount-of-tax-deducted                            controllers.transferDetails.AmountOfTaxDeductedController.onSubmit(mode: Mode = CheckMode)
+
+GET        /why-transfer-is-not-taxable                              controllers.transferDetails.WhyTransferIsNotTaxableController.onPageLoad(mode: Mode = NormalMode)
+POST       /why-transfer-is-not-taxable                              controllers.transferDetails.WhyTransferIsNotTaxableController.onSubmit(mode: Mode = NormalMode)
+GET        /change-why-transfer-is-not-taxable                       controllers.transferDetails.WhyTransferIsNotTaxableController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-why-transfer-is-not-taxable                       controllers.transferDetails.WhyTransferIsNotTaxableController.onSubmit(mode: Mode = CheckMode)
+
+GET        /why-transfer-is-taxable                                  controllers.transferDetails.WhyTransferIsTaxableController.onPageLoad(mode: Mode = NormalMode)
+POST       /why-transfer-is-taxable                                  controllers.transferDetails.WhyTransferIsTaxableController.onSubmit(mode: Mode = NormalMode)
+GET        /change-why-transfer-is-taxable                           controllers.transferDetails.WhyTransferIsTaxableController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-why-transfer-is-taxable                           controllers.transferDetails.WhyTransferIsTaxableController.onSubmit(mode: Mode = CheckMode)

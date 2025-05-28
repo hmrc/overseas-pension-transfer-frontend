@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package forms.qropsSchemeManagerDetails
+package forms
 
 import forms.mappings.Mappings
-import models.QROPSSchemeManagerType
+import javax.inject.Inject
 import play.api.data.Form
 
-import javax.inject.Inject
+class AmountOfTaxDeductedFormProvider @Inject() extends Mappings {
 
-class QROPSSchemeManagerTypeFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[QROPSSchemeManagerType] =
+  def apply(): Form[BigDecimal] =
     Form(
-      "value" -> enumerable[QROPSSchemeManagerType]("qropsSchemeManagerType.error.required")
+      "taxDeducted" -> currency(
+        "amountOfTaxDeducted.error.required",
+        "amountOfTaxDeducted.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(.01, "amountOfTaxDeducted.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "amountOfTaxDeducted.error.aboveMaximum"))
     )
 }
