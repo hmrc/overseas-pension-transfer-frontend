@@ -14,64 +14,68 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
 import base.SpecBase
-import forms.DiscardTransferConfirmFormProvider
-import models.NormalMode
+import forms.WhyTransferIsNotTaxableFormProvider
+import models.{NormalMode, WhyTransferIsNotTaxable}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DiscardTransferConfirmPage
+import pages.transferDetails.WhyTransferIsNotTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.DiscardTransferConfirmView
+import views.html.transferDetails.WhyTransferIsNotTaxableView
 
 import scala.concurrent.Future
 
-class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new DiscardTransferConfirmFormProvider()
+  private lazy val whyTransferIsNotTaxableRoute = routes.WhyTransferIsNotTaxableController.onPageLoad(NormalMode).url
+
+  private val formProvider = new WhyTransferIsNotTaxableFormProvider()
   private val form         = formProvider()
 
-  private lazy val discardTransferConfirmRoute = routes.DiscardTransferConfirmController.onPageLoad().url
-
-  "DiscardTransferConfirm Controller" - {
+  "WhyTransferIsNotTaxable Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, discardTransferConfirmRoute)
+        val request = FakeRequest(GET, whyTransferIsNotTaxableRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[DiscardTransferConfirmView]
+        val view = application.injector.instanceOf[WhyTransferIsNotTaxableView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form)(request, messages(application)).toString
+
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
+      val userAnswers = userAnswersQtNumber.set(WhyTransferIsNotTaxablePage, WhyTransferIsNotTaxable.values.toSet).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, discardTransferConfirmRoute)
+        val request = FakeRequest(GET, whyTransferIsNotTaxableRoute)
 
-        val view = application.injector.instanceOf[DiscardTransferConfirmView]
+        val view = application.injector.instanceOf[WhyTransferIsNotTaxableView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true))(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(WhyTransferIsNotTaxable.values.toSet), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -90,33 +94,33 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, discardTransferConfirmRoute)
-            .withFormUrlEncodedBody(("discardTransfer", "true"))
+          FakeRequest(POST, whyTransferIsNotTaxableRoute)
+            .withFormUrlEncodedBody(("value[0]", WhyTransferIsNotTaxable.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual DiscardTransferConfirmPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual WhyTransferIsNotTaxablePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, discardTransferConfirmRoute)
-            .withFormUrlEncodedBody(("discardTransfer", ""))
+          FakeRequest(POST, whyTransferIsNotTaxableRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("discardTransfer" -> ""))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[DiscardTransferConfirmView]
+        val view = application.injector.instanceOf[WhyTransferIsNotTaxableView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -125,12 +129,12 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, discardTransferConfirmRoute)
+        val request = FakeRequest(GET, whyTransferIsNotTaxableRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -140,13 +144,13 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, discardTransferConfirmRoute)
-            .withFormUrlEncodedBody(("discardTransfer", "true"))
+          FakeRequest(POST, whyTransferIsNotTaxableRoute)
+            .withFormUrlEncodedBody(("value[0]", WhyTransferIsNotTaxable.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package forms
 
-import connectors.HelloWorldConnector
-import uk.gov.hmrc.http.HeaderCarrier
+import javax.inject.Inject
 
-import scala.concurrent.{ExecutionContext, Future}
+import forms.mappings.Mappings
+import play.api.data.Form
+import play.api.data.Forms.set
+import models.WhyTransferIsNotTaxable
 
-// THIS IS NOT GOOD PRACTICE AND IS ONLY HERE BECAUSE A FULL IMPLEMENTATION IS BEYOND THE SCOPE OF THIS TICKET
-class FakeHelloWorldConnector extends HelloWorldConnector(null, null) {
+class WhyTransferIsNotTaxableFormProvider @Inject() extends Mappings {
 
-  override def getHelloWorld()(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[String] = {
-    Future.successful("Hello world!")
-  }
+  def apply(): Form[Set[WhyTransferIsNotTaxable]] =
+    Form(
+      "value" -> set(enumerable[WhyTransferIsNotTaxable]("whyTransferIsNotTaxable.error.required")).verifying(
+        nonEmptySet("whyTransferIsNotTaxable.error.required")
+      )
+    )
 }

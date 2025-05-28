@@ -42,11 +42,13 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("qropsName.heading")</h1>
 
         @govukInput(
             InputViewModel(
-                field = form("value")
+                field = form("value"),
+                label = LabelViewModel(Text(messages("qropsName.heading")))
+                    .withCssClass("govuk-!-margin-bottom-6")
+                    .asPageHeading(size = Large)
             )
             .withWidth(OneHalf)
         )

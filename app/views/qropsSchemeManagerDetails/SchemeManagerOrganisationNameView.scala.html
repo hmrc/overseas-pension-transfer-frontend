@@ -21,7 +21,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
-
+@import viewmodels.LabelSize.Large
 
 @this(
         layout: templates.Layout,
@@ -48,7 +48,10 @@
 
         @govukInput(
             InputViewModel(
-                field = form("organisationName")
+                field = form("organisationName"),
+                label = LabelViewModel(Text(messages("organisationName.heading")))
+                    .withCssClass("govuk-!-margin-bottom-6")
+                    .asPageHeading(size = Large)
             )
             .withWidth(OneHalf)
         )

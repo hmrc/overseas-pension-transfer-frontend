@@ -17,8 +17,7 @@
 package forms.memberDetails
 
 import forms.FormSpec
-import play.api.data.Form
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 
 class MemberConfirmLastUkAddressFormProviderSpec extends FormSpec {
 

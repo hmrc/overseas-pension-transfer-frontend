@@ -14,52 +14,46 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
-@import controllers.transferDetails.routes
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukCheckboxes
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
-@import viewmodels.LabelSize.Large
-
 
 @this(
-        layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
-        govukButton: GovukButton,
-        qtNumber: QTNumber
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukCheckboxes: GovukCheckboxes,
+    govukButton: GovukButton,
+    qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("amountOfTransfer.title"))) {
+@layout(pageTitle = title(form, messages("whyTransferIsNotTaxable.title"))) {
 
-    @formHelper(action = routes.AmountOfTransferController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.transferDetails.routes.WhyTransferIsNotTaxableController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
+            @govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> "value_0")))
         }
 
         @qtNumber()
+        <h1 class="govuk-heading-l">@messages("whyTransferIsNotTaxable.heading")</h1>
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(Text(messages("organisationName.heading")))
-                    .withCssClass("govuk-!-margin-bottom-6")
-                    .asPageHeading(size = Large)
-            )
-            .withPrefix(PrefixOrSuffix(content = "£"))
-            .withWidth(Fixed5)
-            .withHint(HintViewModel(Text(messages("amountOfTransfer.hint"))))
+        <p class="govuk-body">@messages("whyTransferIsNotTaxable.paragraph")</p>
+
+        @govukCheckboxes(
+            CheckboxesViewModel(
+                form   = form,
+                name   = "value",
+                items  = WhyTransferIsNotTaxable.checkboxItems
+            ).withHint(HintViewModel(Text(messages("whyTransferIsNotTaxable.hint"))))
         )
 
         @govukButton(
