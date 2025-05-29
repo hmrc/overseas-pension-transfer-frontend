@@ -23,25 +23,25 @@ case class FooterLink(id: String, href: String, text: String)
 
 object FooterLink {
 
-  def build(showCYAFooter: Boolean, showStartFooter: Boolean, showPageFooter: Boolean)(implicit messages: Messages): Seq[FooterLink] = {
+  def build(showCYAFooter: Boolean = false, showStartFooter: Boolean = false, showPageFooter: Boolean = true)(implicit messages: Messages): Seq[FooterLink] = {
     val links = Seq.newBuilder[FooterLink]
 
     if (showCYAFooter) {
       links += FooterLink(
         id   = "discardReportLink",
         href = routes.DiscardTransferConfirmController.onPageLoad().url,
-        text = messages("footer.discard.report")
+        text = messages("footer.link.text.discard.report")
       )
       links += FooterLink(
         id   = "returnDashboardLink",
         href = routes.IndexController.onPageLoad().url, // TODO Index to be as Dashboard once implemented
-        text = messages("footer.return.dashboard")
+        text = messages("footer.link.text.dashboard")
       )
     } else if (showStartFooter) {
       links += FooterLink(
         id   = "returnDashboardLink",
         href = routes.IndexController.onPageLoad().url, // TODO Index to be as Dashboard once implemented
-        text = messages("footer.return.dashboard")
+        text = messages("footer.link.text.dashboard")
       )
     }
 
@@ -49,7 +49,7 @@ object FooterLink {
       links += FooterLink(
         id   = "returnTaskListLink",
         href = "", // TODO routes.TaskListController.onPageLoad().url once implemented
-        text = messages("footer.return.to.tasklist")
+        text = messages("footer.link.text.tasklist")
       )
     }
     links.result()

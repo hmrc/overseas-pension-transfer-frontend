@@ -28,9 +28,9 @@ error.title.prefix = Error:
 error.prefix = Error
 error.summary.title = There is a problem
 
-footer.discard.report = Discard transfer report
-footer.return.dashboard = Return to overseas pension transfer dashboard
-footer.return.to.tasklist = Return to task list
+footer.link.text.discard.report = Discard transfer report
+footer.link.text.dashboard = Return to overseas pension transfer dashboard
+footer.link.text.tasklist = Return to task list
 
 index.title = overseas-pension-transfer-frontend
 index.heading = overseas-pension-transfer-frontend
@@ -38,7 +38,7 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 
 requiredInfo.title = What you will need
 requiredInfo.heading = What you will need
-requiredInfo.text.bold = You do not have to complete everything at once
+requiredInfo.text.bold = You do not have to complete everything at once.
 requiredInfo.text.normal = Once you've added in the member's name and National Insurance information, we'll create a unique transfer reference (e.g. QT123456) so you can save the transfer in a state of 'In progress', and come back to complete it later.
 requiredInfo.memberDetails.heading = The member''s details
 requiredInfo.memberDetails.bullet1 = The member''s name, National Insurance number and date of birth
