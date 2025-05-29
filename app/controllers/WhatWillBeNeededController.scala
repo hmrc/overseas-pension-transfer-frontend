@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.IdentifierAction
 import models.{NormalMode, UserAnswers}
-import pages.IndexPage
+import pages.WhatWillBeNeededPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -40,7 +40,7 @@ class WhatWillBeNeededController @Inject() (
     val userAnswers = UserAnswers(request.userId)
 
     sessionRepository.set(userAnswers).map { _ =>
-      Ok(view(IndexPage.nextPage(mode = NormalMode, userAnswers).url))
+      Ok(view(WhatWillBeNeededPage.nextPage(mode = NormalMode, userAnswers).url))
     }
   }
 }

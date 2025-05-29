@@ -18,30 +18,21 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
-@import views.html.components.Paragraph
 @import play.twirl.api.Html
 
 
 @this(
         layout: templates.Layout,
-        paragraph: Paragraph,
         govukButton: GovukButton
 )
 
 @(nextPage: String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle    = titleNoForm(messages("requiredInfo.title")),
-    showBackLink = false
-) {
+@layout(pageTitle = titleNoForm(messages("requiredInfo.title")), showPageFooter = false, showStartFooter = true) {
 
     <h1 class="govuk-heading-l">@messages("requiredInfo.heading")</h1>
-    @paragraph(
-        HtmlContent(
-            "<b>" + messages("requiredInfo.text.bold") + "</b>" +
-            messages("requiredInfo.text.normal")
-        )
-    )
+    <p class="govuk-body"><b>@messages("requiredInfo.text.bold")</b>@messages("requiredInfo.text.normal")</p>
+
     <h3 class="govuk-heading-s">@messages("requiredInfo.memberDetails.heading")</h3>
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("requiredInfo.memberDetails.bullet1")</li>

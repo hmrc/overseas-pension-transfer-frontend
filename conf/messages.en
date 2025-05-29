@@ -119,8 +119,6 @@ common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
-checkYourAnswers.discard.report = Discard transfer report
-checkYourAnswers.return.dashboard = Return to overseas pension transfer dashboard
 
 checkYourAnswers.memberDetails.heading = The member''s details
 checkYourAnswers.memberDetails.insetText = Take note of the transfer reference (e.g., QT123456) or National Insurance number as you will be able to identify the form and search by these details later.
