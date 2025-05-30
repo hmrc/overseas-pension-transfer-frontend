@@ -17,27 +17,29 @@
 package controllers
 
 import base.SpecBase
+import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.IndexView
+import views.html.WhatWillBeNeededView
 
-class IndexControllerSpec extends AnyFreeSpec with SpecBase {
+class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase {
 
-  "Index Controller" - {
+  "WhatWillBeNeeded Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.WhatWillBeNeededController.onPageLoad().url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[IndexView]
+        val view = application.injector.instanceOf[WhatWillBeNeededView]
 
-        val nextPage = controllers.routes.WhatWillBeNeededController.onPageLoad().url
+        // TODO this will change to TaskListController once implemented
+        val nextPage = controllers.memberDetails.routes.MemberNameController.onPageLoad(mode = NormalMode).url
 
         status(result) mustEqual OK
 

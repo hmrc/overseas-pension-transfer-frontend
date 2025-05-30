@@ -18,24 +18,29 @@ package controllers
 
 import controllers.actions.IdentifierAction
 import models.{NormalMode, UserAnswers}
-import pages.IndexPage
+import pages.WhatWillBeNeededPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.IndexView
+import views.html.WhatWillBeNeededView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class IndexController @Inject() (
+class WhatWillBeNeededController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
-    view: IndexView
+    view: WhatWillBeNeededView,
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = identify { implicit request =>
+  def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
     val userAnswers = UserAnswers(request.userId)
-    Ok(view(IndexPage.nextPage(mode = NormalMode, userAnswers).url))
+
+    sessionRepository.set(userAnswers).map { _ =>
+      Ok(view(WhatWillBeNeededPage.nextPage(mode = NormalMode, userAnswers).url))
+    }
   }
 }

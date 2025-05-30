@@ -36,7 +36,7 @@
 
 @(list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showReturnToTaskListLink = false, showCYAFooter = true) {
+@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showPageFooter = false, showCYAFooter = true) {
 
     @qtNumber()
     @heading(messages("checkYourAnswers.heading"), Some(messages("checkYourAnswers.qropsDetails.heading")))
