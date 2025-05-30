@@ -16,7 +16,6 @@
 
 package forms.transferDetails
 
-import forms.CashAmountInTransferFormProvider
 import utils.CurrencyFormats.currencyFormat
 import forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen

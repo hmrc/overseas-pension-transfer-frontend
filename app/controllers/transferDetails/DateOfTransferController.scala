@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.DateOfTransferFormProvider
+import forms.transferDetails.DateOfTransferFormProvider
 import models.Mode
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
