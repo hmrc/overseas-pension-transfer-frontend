@@ -406,3 +406,8 @@ netTransferAmount.error.aboveMaximum = The net amount of the transfer must be {0
 netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0} or more
 netTransferAmount.change.hidden = Net amount
 netTransferAmount.hint = For example, £60000 or £19,300.54.
+
+unquotedShareStart.title = Add unquoted shares
+unquotedShareStart.heading = Add unquoted shares
+unquotedShareStart.paragraph = The following questions are about unquoted shares that are part of this transfer.
+
