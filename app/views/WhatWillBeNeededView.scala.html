@@ -28,7 +28,7 @@
 
 @(nextPage: String)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("requiredInfo.title")), showPageFooter = false, showStartFooter = true) {
+@layout(pageTitle = titleNoForm(messages("requiredInfo.title")), showStartFooter = true) {
 
     <h1 class="govuk-heading-l">@messages("requiredInfo.heading")</h1>
     <p class="govuk-body"><b>@messages("requiredInfo.text.bold") </b>@messages("requiredInfo.text.normal")</p>
