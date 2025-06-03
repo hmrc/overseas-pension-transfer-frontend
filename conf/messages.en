@@ -406,3 +406,10 @@ netTransferAmount.error.aboveMaximum = The net amount of the transfer must be {0
 netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0} or more
 netTransferAmount.change.hidden = Net amount
 netTransferAmount.hint = For example, £60000 or £19,300.54.
+
+quotedShareCompanyName.title = What is the name of the company these quoted shares relate to?
+quotedShareCompanyName.heading = What is the name of the company these quoted shares relate to?
+quotedShareCompanyName.checkYourAnswersLabel = Quoted shares company name
+quotedShareCompanyName.error.required = Enter the company name
+quotedShareCompanyName.error.length = The company name must be 160 characters or less
+quotedShareCompanyName.change.hidden = Quoted share company name
