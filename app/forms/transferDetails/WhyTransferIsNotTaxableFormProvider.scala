@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
 
 import forms.mappings.Mappings
-import models.ApplicableTaxExclusions
+import models.WhyTransferIsNotTaxable
 import play.api.data.Form
 import play.api.data.Forms.set
 
 import javax.inject.Inject
 
-class ApplicableTaxExclusionsFormProvider @Inject() extends Mappings {
+class WhyTransferIsNotTaxableFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Set[ApplicableTaxExclusions]] =
+  def apply(): Form[Set[WhyTransferIsNotTaxable]] =
     Form(
-      "value" -> set(enumerable[ApplicableTaxExclusions]("applicableTaxExclusions.error.required")).verifying(
-        nonEmptySet("applicableTaxExclusions.error.required")
+      "value" -> set(enumerable[WhyTransferIsNotTaxable]("whyTransferIsNotTaxable.error.required")).verifying(
+        nonEmptySet("whyTransferIsNotTaxable.error.required")
       )
     )
 }

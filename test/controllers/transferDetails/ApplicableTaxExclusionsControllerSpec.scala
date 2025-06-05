@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.ApplicableTaxExclusionsFormProvider
+import forms.transferDetails.ApplicableTaxExclusionsFormProvider
 import models.{ApplicableTaxExclusions, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

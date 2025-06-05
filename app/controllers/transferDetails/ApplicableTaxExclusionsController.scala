@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.ApplicableTaxExclusionsFormProvider
+import forms.transferDetails.ApplicableTaxExclusionsFormProvider
 import models.Mode
 import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.i18n.{I18nSupport, MessagesApi}

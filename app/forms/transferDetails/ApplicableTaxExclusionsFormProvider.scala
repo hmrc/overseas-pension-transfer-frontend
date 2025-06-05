@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package forms.transferDetails
 
-@()
+import forms.mappings.Mappings
+import models.ApplicableTaxExclusions
+import play.api.data.Form
+import play.api.data.Forms.set
 
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+import javax.inject.Inject
 
-<a
- class="govuk-link govuk-body"
- target="_blank"
- href=""
->
- Return to task list
-</a>
+class ApplicableTaxExclusionsFormProvider @Inject() extends Mappings {
 
-<hr class="govuk-section-break govuk-section-break--l">
-
-
-
+  def apply(): Form[Set[ApplicableTaxExclusions]] =
+    Form(
+      "value" -> set(enumerable[ApplicableTaxExclusions]("applicableTaxExclusions.error.required")).verifying(
+        nonEmptySet("applicableTaxExclusions.error.required")
+      )
+    )
+}

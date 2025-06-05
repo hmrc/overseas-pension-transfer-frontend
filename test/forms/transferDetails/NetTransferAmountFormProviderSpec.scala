@@ -16,7 +16,6 @@
 
 package forms.transferDetails
 
-import forms.NetTransferAmountFormProvider
 import forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
