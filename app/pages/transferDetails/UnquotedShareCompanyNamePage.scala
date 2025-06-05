@@ -17,14 +17,14 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.UserAnswers
+import models.{TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object UnquotedShareCompanyNamePage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = "unquotedShareCompanyName"
 
