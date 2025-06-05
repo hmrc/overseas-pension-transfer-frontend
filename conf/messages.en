@@ -406,3 +406,13 @@ netTransferAmount.error.aboveMaximum = The net amount of the transfer must be {0
 netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0} or more
 netTransferAmount.change.hidden = Net amount
 netTransferAmount.hint = For example, £60000 or £19,300.54.
+
+quotedShareValue.title = What is the value of these quoted shares?
+quotedShareValue.heading = What is the value of these quoted shares?
+quotedShareValue.checkYourAnswersLabel = Quoted share value
+quotedShareValue.error.nonNumeric = The value of quoted shares must be an amount of money, like £123 or 123.00
+quotedShareValue.error.required = Enter the value of quoted shares
+quotedShareValue.error.aboveMaximum = The value of quoted shares must be {0} or less
+quotedShareValue.error.belowMinimum = The value of quoted shares must be {0} or more
+quotedShareValue.change.hidden = Quoted share value
+quotedShareValue.hint = For example, £1000 or £1934.50.
