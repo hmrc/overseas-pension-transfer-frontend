@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.transferDetails
 
 import forms.mappings.Mappings
 import play.api.data.Form
-import play.api.data.Forms.set
-import models.WhyTransferIsNotTaxable
 
-class WhyTransferIsNotTaxableFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[Set[WhyTransferIsNotTaxable]] =
+class AmountOfTaxDeductedFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[BigDecimal] =
     Form(
-      "value" -> set(enumerable[WhyTransferIsNotTaxable]("whyTransferIsNotTaxable.error.required")).verifying(
-        nonEmptySet("whyTransferIsNotTaxable.error.required")
+      "taxDeducted" -> currency(
+        "amountOfTaxDeducted.error.required",
+        "amountOfTaxDeducted.error.nonNumeric"
       )
+        .verifying(minimumCurrency(.01, "amountOfTaxDeducted.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "amountOfTaxDeducted.error.aboveMaximum"))
     )
 }

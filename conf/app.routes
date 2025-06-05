@@ -222,3 +222,8 @@ GET        /why-transfer-is-taxable                                  controllers
 POST       /why-transfer-is-taxable                                  controllers.transferDetails.WhyTransferIsTaxableController.onSubmit(mode: Mode = NormalMode)
 GET        /change-why-transfer-is-taxable                           controllers.transferDetails.WhyTransferIsTaxableController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-why-transfer-is-taxable                           controllers.transferDetails.WhyTransferIsTaxableController.onSubmit(mode: Mode = CheckMode)
+
+GET        /unquoted-share-company-name                              controllers.transferDetails.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /unquoted-share-company-name                              controllers.transferDetails.UnquotedShareCompanyNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-unquoted-share-company-name                       controllers.transferDetails.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-unquoted-share-company-name                       controllers.transferDetails.UnquotedShareCompanyNameController.onSubmit(mode: Mode = CheckMode)
