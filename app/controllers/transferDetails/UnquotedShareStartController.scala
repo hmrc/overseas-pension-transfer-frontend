@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
-import controllers.actions.IdentifierAction
-import models.{NormalMode, UserAnswers}
-import pages.IndexPage
-import play.api.i18n.I18nSupport
+import controllers.actions._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.IndexView
+import views.html.transferDetails.UnquotedShareStartView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
-class IndexController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
+class UnquotedShareStartController @Inject() (
+    override val messagesApi: MessagesApi,
     identify: IdentifierAction,
-    view: IndexView
-  )(implicit ec: ExecutionContext
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    displayData: DisplayAction,
+    val controllerComponents: MessagesControllerComponents,
+    view: UnquotedShareStartView
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = identify { implicit request =>
-    val userAnswers = UserAnswers(request.userId)
-    Ok(view(IndexPage.nextPage(mode = NormalMode, userAnswers).url))
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+    implicit request =>
+      Ok(view())
   }
 }

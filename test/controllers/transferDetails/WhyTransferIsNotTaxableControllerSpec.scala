@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.WhyTransferIsNotTaxableFormProvider
+import forms.transferDetails.WhyTransferIsNotTaxableFormProvider
 import models.{NormalMode, WhyTransferIsNotTaxable}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

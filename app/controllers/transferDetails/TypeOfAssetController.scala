@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.TypeOfAssetFormProvider
+import forms.transferDetails.TypeOfAssetFormProvider
 import models.Mode
 import pages.transferDetails.TypeOfAssetPage
 import play.api.i18n.{I18nSupport, MessagesApi}

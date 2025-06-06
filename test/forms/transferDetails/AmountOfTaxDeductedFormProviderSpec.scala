@@ -16,7 +16,6 @@
 
 package forms.transferDetails
 
-import forms.AmountOfTaxDeductedFormProvider
 import utils.CurrencyFormats.currencyFormat
 import forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen

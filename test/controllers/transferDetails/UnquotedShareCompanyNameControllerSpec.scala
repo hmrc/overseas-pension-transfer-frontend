@@ -17,62 +17,61 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.transferDetails.TypeOfAssetFormProvider
-import models.{NormalMode, TypeOfAsset}
+import forms.transferDetails.UnquotedShareCompanyNameFormProvider
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.TypeOfAssetPage
+import pages.transferDetails.UnquotedShareCompanyNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.TypeOfAssetView
+import views.html.transferDetails.UnquotedShareCompanyNameView
 
 import scala.concurrent.Future
 
-class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val typeOfAssetRoute = routes.TypeOfAssetController.onPageLoad(NormalMode).url
-
-  private val formProvider = new TypeOfAssetFormProvider()
+  private val formProvider = new UnquotedShareCompanyNameFormProvider()
   private val form         = formProvider()
 
-  "TypeOfAsset Controller" - {
+  private lazy val unquotedShareCompanyNameRoute = routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode).url
+
+  "UnquotedShareCompanyName Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, typeOfAssetRoute)
+        val request = FakeRequest(GET, unquotedShareCompanyNameRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[TypeOfAssetView]
+        val view = application.injector.instanceOf[UnquotedShareCompanyNameView]
 
         status(result) mustEqual OK
-
         contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(TypeOfAssetPage, TypeOfAsset.values.toSet).success.value
+      val userAnswers = userAnswersQtNumber.set(UnquotedShareCompanyNamePage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, typeOfAssetRoute)
+        val request = FakeRequest(GET, unquotedShareCompanyNameRoute)
 
-        val view = application.injector.instanceOf[TypeOfAssetView]
+        val view = application.injector.instanceOf[UnquotedShareCompanyNameView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TypeOfAsset.values.toSet), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -83,27 +82,19 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
-        val cash    = TypeOfAsset.Cash
-        val another = TypeOfAsset.values.find(_ != cash).get
-
         val request =
-          FakeRequest(POST, typeOfAssetRoute)
-            .withFormUrlEncodedBody(
-              "value[0]" -> cash.toString,
-              "value[1]" -> another.toString
-            )
+          FakeRequest(POST, unquotedShareCompanyNameRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TypeOfAssetPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual UnquotedShareCompanyNamePage.nextPage(NormalMode, userAnswersQtNumber).url
       }
     }
 
@@ -113,12 +104,12 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
       running(application) {
         val request =
-          FakeRequest(POST, typeOfAssetRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+          FakeRequest(POST, unquotedShareCompanyNameRoute)
+            .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+        val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[TypeOfAssetView]
+        val view = application.injector.instanceOf[UnquotedShareCompanyNameView]
 
         val result = route(application, request).value
 
@@ -132,7 +123,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, typeOfAssetRoute)
+        val request = FakeRequest(GET, unquotedShareCompanyNameRoute)
 
         val result = route(application, request).value
 
@@ -147,8 +138,8 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
       running(application) {
         val request =
-          FakeRequest(POST, typeOfAssetRoute)
-            .withFormUrlEncodedBody(("value[0]", TypeOfAsset.values.head.toString))
+          FakeRequest(POST, unquotedShareCompanyNameRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
