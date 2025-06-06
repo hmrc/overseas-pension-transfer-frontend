@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.TypeOfAssetFormProvider
+import forms.transferDetails.TypeOfAssetFormProvider
 import models.{NormalMode, TypeOfAsset}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

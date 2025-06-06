@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.AmountOfTaxDeductedFormProvider
+import forms.transferDetails.AmountOfTaxDeductedFormProvider
 import models.Mode
 import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.i18n.{I18nSupport, MessagesApi}

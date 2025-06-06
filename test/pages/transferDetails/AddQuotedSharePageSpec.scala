@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package forms
+package pages.transferDetails
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import models.{NormalMode, UserAnswers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-class CashAmountInTransferFormProvider @Inject() extends Mappings {
+class AddQuotedSharePageSpec extends AnyFreeSpec with Matchers {
 
-  def apply(): Form[BigDecimal] =
-    Form(
-      "cashInTransfer" -> currency(
-        "cashAmountInTransfer.error.required",
-        "cashAmountInTransfer.error.nonNumeric"
-      )
-        .verifying(minimumCurrency(0.01, "cashAmountInTransfer.error.belowMinimum"))
-        .verifying(maximumCurrency(999999999.99, "cashAmountInTransfer.error.aboveMaximum"))
-    )
+  ".nextPage" - {
+
+    val emptyAnswers = UserAnswers("id")
+
+    "in Normal Mode" - {
+
+      "must go to the Next page" in {
+        // TODO change when pages are connected
+        AddQuotedSharePage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+      }
+    }
+  }
 }

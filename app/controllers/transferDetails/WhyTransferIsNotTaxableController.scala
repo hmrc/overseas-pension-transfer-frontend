@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.WhyTransferIsNotTaxableFormProvider
+import forms.transferDetails.WhyTransferIsNotTaxableFormProvider
 import models.Mode
 import pages.transferDetails.WhyTransferIsNotTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}

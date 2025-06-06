@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.NetTransferAmountFormProvider
+import forms.transferDetails.NetTransferAmountFormProvider
 import models.Mode
 import pages.transferDetails.NetTransferAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}

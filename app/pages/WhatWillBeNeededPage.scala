@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import controllers.memberDetails.routes
+import models.{NormalMode, UserAnswers}
+import play.api.mvc.Call
 
-class NetTransferAmountFormProvider @Inject() extends Mappings {
+object WhatWillBeNeededPage extends Page {
 
-  def apply(): Form[BigDecimal] =
-    Form(
-      "netAmount" -> currency(
-        "netTransferAmount.error.required",
-        "netTransferAmount.error.nonNumeric"
-      )
-        .verifying(minimumCurrency(0.01, "netTransferAmount.error.belowMinimum"))
-        .verifying(maximumCurrency(999999999.99, "netTransferAmount.error.aboveMaximum"))
-    )
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    // TODO this will change to TaskListController once implemented
+    routes.MemberNameController.onPageLoad(mode = NormalMode)
 }

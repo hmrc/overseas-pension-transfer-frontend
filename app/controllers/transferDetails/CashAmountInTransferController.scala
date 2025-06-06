@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.CashAmountInTransferFormProvider
+import forms.transferDetails.CashAmountInTransferFormProvider
 import models.Mode
 import pages.transferDetails.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}

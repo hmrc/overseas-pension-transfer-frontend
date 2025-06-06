@@ -17,22 +17,18 @@
 package forms
 
 import forms.mappings.Mappings
-import models.TypeOfAsset
-import play.api.data.Form
-import play.api.data.Forms.set
-
 import javax.inject.Inject
+import play.api.data.Form
 
-class TypeOfAssetFormProvider @Inject() extends Mappings {
+class UnquotedShareValueFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Set[TypeOfAsset]] =
+  def apply(): Form[BigDecimal] =
     Form(
-      "value" -> set(enumerable[TypeOfAsset]("typeOfAsset.error.required"))
-        .verifying(nonEmptySet("typeOfAsset.error.required"))
-        .verifying("typeOfAsset.error.cashOnly", selection => !isOnlyCashSelected(selection))
+      "value" -> currency(
+        "unquotedShareValue.error.required",
+        "unquotedShareValue.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(0.01, "unquotedShareValue.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "unquotedShareValue.error.aboveMaximum"))
     )
-
-  private def isOnlyCashSelected(selection: Set[TypeOfAsset]): Boolean = {
-    selection.size == 1 && selection.head == TypeOfAsset.Cash
-  }
 }

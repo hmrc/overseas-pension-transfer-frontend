@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.transferDetails
 
-import javax.inject.Inject
+import models.UserAnswers
+import pages.Page
+import play.api.mvc.Call
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import play.api.data.Forms.set
-import models.WhyTransferIsNotTaxable
+object AddQuotedSharePage extends Page {
 
-class WhyTransferIsNotTaxableFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Set[WhyTransferIsNotTaxable]] =
-    Form(
-      "value" -> set(enumerable[WhyTransferIsNotTaxable]("whyTransferIsNotTaxable.error.required")).verifying(
-        nonEmptySet("whyTransferIsNotTaxable.error.required")
-      )
-    )
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
 }
