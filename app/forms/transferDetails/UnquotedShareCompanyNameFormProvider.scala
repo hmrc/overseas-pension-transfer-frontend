@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
 
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
 
-class NetTransferAmountFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[BigDecimal] =
+class UnquotedShareCompanyNameFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[String] =
     Form(
-      "netAmount" -> currency(
-        "netTransferAmount.error.required",
-        "netTransferAmount.error.nonNumeric"
-      )
-        .verifying(minimumCurrency(0.01, "netTransferAmount.error.belowMinimum"))
-        .verifying(maximumCurrency(999999999.99, "netTransferAmount.error.aboveMaximum"))
+      "value" -> text("unquotedShareCompanyName.error.required")
+        .verifying(maxLength(160, "unquotedShareCompanyName.error.length"))
     )
 }

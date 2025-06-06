@@ -28,9 +28,40 @@ error.title.prefix = Error:
 error.prefix = Error
 error.summary.title = There is a problem
 
+footer.link.text.discard.report = Discard transfer report
+footer.link.text.dashboard = Return to overseas pension transfer dashboard
+footer.link.text.tasklist = Return to task list
+
 index.title = overseas-pension-transfer-frontend
 index.heading = overseas-pension-transfer-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+
+requiredInfo.title = What you will need
+requiredInfo.heading = What you will need
+requiredInfo.text.bold = You do not have to complete everything at once.
+requiredInfo.text.normal = Once you've added in the member's name and National Insurance information, we'll create a unique transfer reference (e.g. QT123456) so you can save the transfer in a state of 'In progress', and come back to complete it later.
+requiredInfo.memberDetails.heading = The member''s details
+requiredInfo.memberDetails.bullet1 = The member''s name, National Insurance number and date of birth
+requiredInfo.memberDetails.bullet2 = The member''s address
+requiredInfo.memberDetails.bullet3 = If the member is or was resident in the UK for tax purposes
+requiredInfo.memberDetails.bullet4 = Their last residential address in the UK
+requiredInfo.memberDetails.bullet5 = The date the member left the UK, if they have left
+requiredInfo.transferDetails.heading = The transfer details
+requiredInfo.transferDetails.bullet1 = The member''s available overseas transfer allowance before this transfer takes place
+requiredInfo.transferDetails.bullet2 = The amount of the transfer
+requiredInfo.transferDetails.bullet3 = Whether the transfer is taxable
+requiredInfo.transferDetails.bullet4 = Why the transfer is taxable or not
+requiredInfo.transferDetails.bullet5 = The amount of tax deducted at 25%
+requiredInfo.transferDetails.bullet6 = The transfer date
+requiredInfo.transferDetails.bullet7 = Whether the transfer is cash only or a mix of cash and assets; and if the latter, details of the assets and amounts
+requiredInfo.qropsDetails.heading = The QROPS details
+requiredInfo.qropsDetails.bullet1 = The full name of the QROPS
+requiredInfo.qropsDetails.bullet2 = The QROPS reference (ID)
+requiredInfo.qropsDetails.bullet3 = The country or territory in which the QROPS was established
+requiredInfo.qropsDetails.bullet4 = The address of the QROPS
+requiredInfo.schemeManager.heading = The QROPS scheme manager
+requiredInfo.schemeManager.bullet1 = The name of the scheme manager, either an individual or organisation
+requiredInfo.schemeManager.bullet2 = The scheme manager's address and contact details
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service
@@ -88,8 +119,6 @@ common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
-checkYourAnswers.discard.report = Discard transfer report
-checkYourAnswers.return.dashboard = Return to overseas pension transfer dashboard
 
 checkYourAnswers.memberDetails.heading = The member''s details
 checkYourAnswers.memberDetails.insetText = Take note of the transfer reference (e.g., QT123456) or National Insurance number as you will be able to identify the form and search by these details later.
@@ -413,3 +442,14 @@ quotedShareCompanyName.checkYourAnswersLabel = Quoted shares company name
 quotedShareCompanyName.error.required = Enter the company name
 quotedShareCompanyName.error.length = The company name must be 160 characters or less
 quotedShareCompanyName.change.hidden = Quoted share company name
+
+unquotedShareStart.title = Add unquoted shares
+unquotedShareStart.heading = Add unquoted shares
+unquotedShareStart.paragraph = The following questions are about unquoted shares that are part of this transfer.
+
+unquotedShareCompanyName.title = What is the name of the company these unquoted shares relate to?
+unquotedShareCompanyName.heading = What is the name of the company these unquoted shares relate to?
+unquotedShareCompanyName.checkYourAnswersLabel = Unquoted share company name
+unquotedShareCompanyName.error.required = Enter company name
+unquotedShareCompanyName.error.length = The company name must be 160 characters or less
+unquotedShareCompanyName.change.hidden = Unquoted share company name

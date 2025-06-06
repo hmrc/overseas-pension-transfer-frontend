@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.CashAmountInTransferFormProvider
+import forms.transferDetails.CashAmountInTransferFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
