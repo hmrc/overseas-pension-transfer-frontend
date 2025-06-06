@@ -446,6 +446,13 @@ unquotedShareValue.error.aboveMaximum = The value of unquoted shares must be {0}
 unquotedShareValue.error.belowMinimum = The value of unquoted shares must be {0} or more
 unquotedShareValue.change.hidden = Value of unquoted shares
 
+quotedShareCompanyName.title = What is the name of the company these quoted shares relate to?
+quotedShareCompanyName.heading = What is the name of the company these quoted shares relate to?
+quotedShareCompanyName.checkYourAnswersLabel = Quoted shares company name
+quotedShareCompanyName.error.required = Enter the company name
+quotedShareCompanyName.error.length = The company name must be 160 characters or less
+quotedShareCompanyName.change.hidden = Quoted share company name
+
 unquotedShareStart.title = Add unquoted shares
 unquotedShareStart.heading = Add unquoted shares
 unquotedShareStart.paragraph = The following questions are about unquoted shares that are part of this transfer.
