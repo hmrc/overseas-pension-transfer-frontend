@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
 
 import forms.mappings.Mappings
-import javax.inject.Inject
+import models.TypeOfAsset
 import play.api.data.Form
+import play.api.data.Forms.set
 
-class NetTransferAmountFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
 
-  def apply(): Form[BigDecimal] =
+class TypeOfAssetFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Set[TypeOfAsset]] =
     Form(
-      "netAmount" -> currency(
-        "netTransferAmount.error.required",
-        "netTransferAmount.error.nonNumeric"
-      )
-        .verifying(minimumCurrency(0.01, "netTransferAmount.error.belowMinimum"))
-        .verifying(maximumCurrency(999999999.99, "netTransferAmount.error.aboveMaximum"))
+      "value" -> set(enumerable[TypeOfAsset]("typeOfAsset.error.required"))
+        .verifying(nonEmptySet("typeOfAsset.error.required"))
+        .verifying("typeOfAsset.error.cashOnly", selection => !isOnlyCashSelected(selection))
     )
+
+  private def isOnlyCashSelected(selection: Set[TypeOfAsset]): Boolean = {
+    selection.size == 1 && selection.head == TypeOfAsset.Cash
+  }
 }

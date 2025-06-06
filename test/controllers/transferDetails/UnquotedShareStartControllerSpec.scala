@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,34 +14,37 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transferDetails
 
 import base.SpecBase
+import models.NormalMode
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.transferDetails.OverseasTransferAllowancePage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.IndexView
+import views.html.transferDetails.UnquotedShareStartView
 
-class IndexControllerSpec extends AnyFreeSpec with SpecBase {
+class UnquotedShareStartControllerSpec extends AnyFreeSpec with SpecBase {
 
-  "Index Controller" - {
+  "UnquotedShareStart Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.UnquotedShareStartController.onPageLoad().url)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[IndexView]
-
-        val nextPage = controllers.routes.WhatWillBeNeededController.onPageLoad().url
+        val view = application.injector.instanceOf[UnquotedShareStartView]
 
         status(result) mustEqual OK
-
-        contentAsString(result) mustEqual view(nextPage)(request, messages(application)).toString
+        contentAsString(result) mustEqual view()(fakeDisplayRequest(request), messages(application)).toString
       }
     }
   }

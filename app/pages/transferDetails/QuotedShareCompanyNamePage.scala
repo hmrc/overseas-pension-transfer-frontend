@@ -14,14 +14,26 @@
  * limitations under the License.
  */
 
-package pages
+package pages.transferDetails
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
+import controllers.transferDetails.routes
+import models.{CheckMode, TaskCategory, UserAnswers}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-object IndexPage extends Page {
+case object QuotedShareCompanyNamePage extends QuestionPage[String] {
+
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
+
+  override def toString: String = "quotedShareCompanyName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.WhatWillBeNeededController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.TransferDetailsCYAController.onPageLoad()
+
+  final def changeLink(answers: UserAnswers): Call =
+    routes.QuotedShareCompanyNameController.onPageLoad(CheckMode)
 }

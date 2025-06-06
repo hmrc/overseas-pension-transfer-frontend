@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
 
 import forms.mappings.Mappings
-import models.TypeOfAsset
 import play.api.data.Form
-import play.api.data.Forms.set
 
 import javax.inject.Inject
 
-class TypeOfAssetFormProvider @Inject() extends Mappings {
+class AmountOfTaxDeductedFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Set[TypeOfAsset]] =
+  def apply(): Form[BigDecimal] =
     Form(
-      "value" -> set(enumerable[TypeOfAsset]("typeOfAsset.error.required"))
-        .verifying(nonEmptySet("typeOfAsset.error.required"))
-        .verifying("typeOfAsset.error.cashOnly", selection => !isOnlyCashSelected(selection))
+      "taxDeducted" -> currency(
+        "amountOfTaxDeducted.error.required",
+        "amountOfTaxDeducted.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(.01, "amountOfTaxDeducted.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "amountOfTaxDeducted.error.aboveMaximum"))
     )
-
-  private def isOnlyCashSelected(selection: Set[TypeOfAsset]): Boolean = {
-    selection.size == 1 && selection.head == TypeOfAsset.Cash
-  }
 }

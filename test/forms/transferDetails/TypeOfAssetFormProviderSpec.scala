@@ -16,7 +16,6 @@
 
 package forms.transferDetails
 
-import forms.TypeOfAssetFormProvider
 import forms.behaviours.CheckboxFieldBehaviours
 import models.TypeOfAsset
 import play.api.data.FormError

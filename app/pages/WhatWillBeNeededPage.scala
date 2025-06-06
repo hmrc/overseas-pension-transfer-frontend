@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package forms
+package pages
 
-import javax.inject.Inject
+import controllers.memberDetails.routes
+import models.{NormalMode, UserAnswers}
+import play.api.mvc.Call
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import play.api.data.Forms.set
-import models.WhyTransferIsNotTaxable
+object WhatWillBeNeededPage extends Page {
 
-class WhyTransferIsNotTaxableFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Set[WhyTransferIsNotTaxable]] =
-    Form(
-      "value" -> set(enumerable[WhyTransferIsNotTaxable]("whyTransferIsNotTaxable.error.required")).verifying(
-        nonEmptySet("whyTransferIsNotTaxable.error.required")
-      )
-    )
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    // TODO this will change to TaskListController once implemented
+    routes.MemberNameController.onPageLoad(mode = NormalMode)
 }

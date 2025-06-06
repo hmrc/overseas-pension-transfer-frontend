@@ -16,30 +16,39 @@
 
 package forms.transferDetails
 
-import forms.behaviours.CheckboxFieldBehaviours
-import models.ApplicableTaxExclusions
+import forms.QuotedShareCompanyNameFormProvider
+import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class ApplicableTaxExclusionsFormProviderSpec extends CheckboxFieldBehaviours {
+class QuotedShareCompanyNameFormProviderSpec extends StringFieldBehaviours {
 
-  val form = new ApplicableTaxExclusionsFormProvider()()
+  val requiredKey = "quotedShareCompanyName.error.required"
+  val lengthKey   = "quotedShareCompanyName.error.length"
+  val maxLength   = 160
+
+  val form = new QuotedShareCompanyNameFormProvider()()
 
   ".value" - {
 
-    val fieldName   = "value"
-    val requiredKey = "applicableTaxExclusions.error.required"
+    val fieldName = "value"
 
-    behave like checkboxField[ApplicableTaxExclusions](
+    behave like fieldThatBindsValidData(
       form,
       fieldName,
-      validValues  = ApplicableTaxExclusions.values,
-      invalidError = FormError(s"$fieldName[0]", "error.invalid")
+      stringsWithMaxLength(maxLength)
     )
 
-    behave like mandatoryCheckboxField(
+    behave like fieldWithMaxLength(
       form,
       fieldName,
-      requiredKey
+      maxLength   = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

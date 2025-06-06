@@ -16,26 +16,20 @@
 
 package forms.transferDetails
 
-import forms.behaviours.DateBehaviours
-import play.api.i18n.Messages
-import play.api.test.Helpers.stubMessages
+import forms.mappings.Mappings
+import play.api.data.Form
 
-import java.time.{LocalDate, ZoneOffset}
+import javax.inject.Inject
 
-class DateOfTransferFormProviderSpec extends DateBehaviours {
+class NetTransferAmountFormProvider @Inject() extends Mappings {
 
-  implicit private val messages: Messages = stubMessages()
-  private val form                        = new DateOfTransferFormProvider()()
-
-  ".value" - {
-
-    val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+  def apply(): Form[BigDecimal] =
+    Form(
+      "netAmount" -> currency(
+        "netTransferAmount.error.required",
+        "netTransferAmount.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(0.01, "netTransferAmount.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "netTransferAmount.error.aboveMaximum"))
     )
-
-    behave like dateField(form, "value", validData)
-
-    behave like mandatoryDateField(form, "value", "dateOfTransfer.error.required.all")
-  }
 }
