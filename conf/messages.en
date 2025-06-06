@@ -436,6 +436,10 @@ netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0
 netTransferAmount.change.hidden = Net amount
 netTransferAmount.hint = For example, £60000 or £19,300.54.
 
+addQuotedShare.title = Add quoted shares
+addQuotedShare.heading = Add quoted shares
+addQuotedShare.text = The following questions are about quoted shares that are part of this transfer.
+
 unquotedShareValue.title = What is the value of these unquoted shares?
 unquotedShareValue.heading = What is the value of these unquoted shares?
 unquotedShareValue.hint = For example, £1000 or £1934.50.
