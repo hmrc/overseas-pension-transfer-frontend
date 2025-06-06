@@ -16,12 +16,12 @@
 
 package pages
 
-import controllers.memberDetails.routes
+import controllers.routes
 import models.{NormalMode, UserAnswers}
 import play.api.mvc.Call
 
 object IndexPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.MemberNameController.onPageLoad(mode = NormalMode)
+    routes.WhatWillBeNeededController.onPageLoad()
 }

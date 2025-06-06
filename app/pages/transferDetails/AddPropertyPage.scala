@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package pages.transferDetails
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import models.UserAnswers
+import pages.Page
+import play.api.mvc.Call
 
-class CashAmountInTransferFormProvider @Inject() extends Mappings {
+object AddPropertyPage extends Page {
 
-  def apply(): Form[BigDecimal] =
-    Form(
-      "cashInTransfer" -> currency(
-        "cashAmountInTransfer.error.required",
-        "cashAmountInTransfer.error.nonNumeric"
-      )
-        .verifying(minimumCurrency(0.01, "cashAmountInTransfer.error.belowMinimum"))
-        .verifying(maximumCurrency(999999999.99, "cashAmountInTransfer.error.aboveMaximum"))
-    )
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
 }

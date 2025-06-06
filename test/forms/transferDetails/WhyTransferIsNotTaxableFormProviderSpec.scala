@@ -16,7 +16,6 @@
 
 package forms.transferDetails
 
-import forms.WhyTransferIsNotTaxableFormProvider
 import forms.behaviours.CheckboxFieldBehaviours
 import models.WhyTransferIsNotTaxable
 import play.api.data.FormError

@@ -4,6 +4,8 @@
 
 GET        /                                                         controllers.IndexController.onPageLoad()
 
+GET        /what-will-be-needed                                      controllers.WhatWillBeNeededController.onPageLoad()
+
 GET        /assets/*file                                             controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /language/:lang                                           controllers.LanguageSwitchController.switchToLanguage(lang: String)
@@ -225,3 +227,24 @@ GET        /quoted-share-value                                       controllers
 POST       /quoted-share-value                                       controllers.transferDetails.QuotedShareValueController.onSubmit(mode: Mode = NormalMode)
 GET        /change-quoted-share-value                                controllers.transferDetails.QuotedShareValueController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-quoted-share-value                                controllers.transferDetails.QuotedShareValueController.onSubmit(mode: Mode = CheckMode)
+
+GET        /add-property                                             controllers.transferDetails.AddPropertyController.onPageLoad()
+
+GET        /add-quoted-share                                         controllers.transferDetails.AddQuotedShareController.onPageLoad()
+
+GET        /unquoted-share-value                                     controllers.transferDetails.UnquotedShareValueController.onPageLoad(mode: Mode = NormalMode)
+POST       /unquoted-share-value                                     controllers.transferDetails.UnquotedShareValueController.onSubmit(mode: Mode = NormalMode)
+GET        /change-unquoted-share-value                              controllers.transferDetails.UnquotedShareValueController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-unquoted-share-value                              controllers.transferDetails.UnquotedShareValueController.onSubmit(mode: Mode = CheckMode)
+
+GET        /quoted-share-company-name                                controllers.transferDetails.QuotedShareCompanyNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /quoted-share-company-name                                controllers.transferDetails.QuotedShareCompanyNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-quoted-share-company-name                         controllers.transferDetails.QuotedShareCompanyNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-quoted-share-company-name                         controllers.transferDetails.QuotedShareCompanyNameController.onSubmit(mode: Mode = CheckMode)
+
+GET        /unquoted-share-start                                     controllers.transferDetails.UnquotedShareStartController.onPageLoad()
+
+GET        /unquoted-share-company-name                              controllers.transferDetails.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /unquoted-share-company-name                              controllers.transferDetails.UnquotedShareCompanyNameController.onSubmit(mode: Mode = NormalMode)
+GET        /change-unquoted-share-company-name                       controllers.transferDetails.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-unquoted-share-company-name                       controllers.transferDetails.UnquotedShareCompanyNameController.onSubmit(mode: Mode = CheckMode)

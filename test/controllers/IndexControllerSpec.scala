@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,7 +37,7 @@ class IndexControllerSpec extends AnyFreeSpec with SpecBase {
 
         val view = application.injector.instanceOf[IndexView]
 
-        val nextPage = controllers.memberDetails.routes.MemberNameController.onPageLoad(mode = NormalMode).url
+        val nextPage = controllers.routes.WhatWillBeNeededController.onPageLoad().url
 
         status(result) mustEqual OK
 

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package forms
 
-@()
+import javax.inject.Inject
 
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+import forms.mappings.Mappings
+import play.api.data.Form
 
-<a
- class="govuk-link govuk-body"
- target="_blank"
- href=""
->
- Return to task list
-</a>
+class QuotedShareCompanyNameFormProvider @Inject() extends Mappings {
 
-<hr class="govuk-section-break govuk-section-break--l">
-
-
-
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("quotedShareCompanyName.error.required")
+        .verifying(maxLength(160, "quotedShareCompanyName.error.length"))
+    )
+}
