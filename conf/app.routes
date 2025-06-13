@@ -24,7 +24,7 @@ GET        /account/sign-out-survey                                             
 GET        /account/sign-out                                                                      controllers.auth.AuthController.signOutNoSurvey()
 GET        /account/signed-out                                                                    controllers.auth.SignedOutController.onPageLoad()
 
-GET        /unauthorised                                                                          controllers.UnauthorisedController.onPageLoad()
+GET        /unauthorised                                                                          controllers.auth.UnauthorisedController.onPageLoad()
 
 GET        /member-details/member-name                                                            controllers.memberDetails.MemberNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/member-name                                                            controllers.memberDetails.MemberNameController.onSubmit(mode: Mode = NormalMode)
