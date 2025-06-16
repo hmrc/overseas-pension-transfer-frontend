@@ -481,3 +481,13 @@ unquotedShareCompanyName.checkYourAnswersLabel = Unquoted share company name
 unquotedShareCompanyName.error.required = Enter company name
 unquotedShareCompanyName.error.length = The company name must be 160 characters or less
 unquotedShareCompanyName.change.hidden = Unquoted share company name
+
+valueOfThisProperty.title = What is the value of this property?
+valueOfThisProperty.heading = What is the value of this property?
+valueOfThisProperty.hint = For example, £10000 or £193,540
+valueOfThisProperty.checkYourAnswersLabel = Property value
+valueOfThisProperty.error.nonNumeric = The property value must be an amount of money, like £123 or 123.00
+valueOfThisProperty.error.required = Enter the property value
+valueOfThisProperty.error.aboveMaximum = The property value must be {0} or less
+valueOfThisProperty.error.belowMinimum = The property value must be {0} or more
+valueOfThisProperty.change.hidden = Property value
