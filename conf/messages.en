@@ -481,3 +481,13 @@ unquotedShareCompanyName.checkYourAnswersLabel = Unquoted share company name
 unquotedShareCompanyName.error.required = Enter company name
 unquotedShareCompanyName.error.length = The company name must be 160 characters or less
 unquotedShareCompanyName.change.hidden = Unquoted share company name
+
+valueOfAsset.title = What is the value of the asset?
+valueOfAsset.heading = What is the value of the asset?
+valueOfAsset.hint = For example, £1000 or £1934.50
+valueOfAsset.checkYourAnswersLabel = Value of asset
+valueOfAsset.error.nonNumeric = The asset value must be an amount of money, like 123 or 123.00
+valueOfAsset.error.required = Enter the asset value
+valueOfAsset.error.aboveMaximum = The asset value must be {0} or less
+valueOfAsset.error.belowMinimum = The asset value must be {0} or more
+valueOfAsset.change.hidden = Value of asset
