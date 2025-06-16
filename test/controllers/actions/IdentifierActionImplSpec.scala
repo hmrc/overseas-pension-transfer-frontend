@@ -36,26 +36,27 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
   implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
-  private val bodyParsers       = new GuiceApplicationBuilder().build().injector.instanceOf[BodyParsers.Default]
+  private val application = new GuiceApplicationBuilder().build()
+
+  private val bodyParsers       = application.injector.instanceOf[BodyParsers.Default]
+  private val appConfig         = application.injector.instanceOf[FrontendAppConfig]
   private val mockAuthConnector = mock[AuthConnector]
-  private val mockAppConfig     = mock[FrontendAppConfig]
 
   private val internalIdValue = "test-user-id"
-  private val enrolmentKey    = "HMRC-PSA-ORG"
+  private val enrolmentKey    = "HMRC-PODS-ORG"
   private val identifierKey   = "PSAID"
   private val identifierValue = "A1234567"
+  private val fakeRequest     = FakeRequest()
 
-  private val fakeRequest = FakeRequest()
-  private val action      = new IdentifierActionImpl(mockAuthConnector, mockAppConfig, bodyParsers)
+  private val action = new IdentifierActionImpl(mockAuthConnector, appConfig, bodyParsers)
 
   "IdentifierAction" - {
 
-    "allow access with valid internalId and enrolment" in {
+    "must allow access with valid internalId and required enrolment" in {
       val enrolment = Enrolment(
         enrolmentKey,
         Seq(EnrolmentIdentifier(identifierKey, identifierValue)),
-        "Activated",
-        None
+        "Activated"
       )
 
       type RetrievalResult = Option[String] ~ Enrolments
@@ -66,9 +67,6 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
       when(mockAuthConnector.authorise[RetrievalResult](any(), any[Retrieval[RetrievalResult]])(any(), any()))
         .thenReturn(Future.successful(expectedRetrieval))
 
-      when(mockAppConfig.psaEnrolment).thenReturn(mockAppConfig.EnrolmentConfig(enrolmentKey, identifierKey))
-      when(mockAppConfig.pspEnrolment).thenReturn(mockAppConfig.EnrolmentConfig("ignored", "ignored"))
-
       val result = action.invokeBlock(
         fakeRequest,
         { request: IdentifierRequest[AnyContent] =>
@@ -77,25 +75,21 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
       )
 
       status(result) mustBe OK
-      contentAsString(result) must include(s"OK - ${internalIdValue} - ${identifierValue}")
+      contentAsString(result) must include(s"OK - $internalIdValue - $identifierValue")
     }
 
-    "redirect to login if NoActiveSession" in {
-      when(mockAuthConnector.authorise(any(), any())(any(), any()))
-        .thenReturn(Future.failed(BearerTokenExpired()))
+    "must redirect to login if no active session" in {
+      when(mockAuthConnector.authorise(any(), any())(any(), any())).thenReturn(Future.failed(BearerTokenExpired()))
 
-      when(mockAppConfig.loginUrl).thenReturn("/gg/login")
-      when(mockAppConfig.loginContinueUrl).thenReturn("/continue")
-
-      val result = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
+      val result             = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
+      val redirectedLocation = java.net.URLDecoder.decode(redirectLocation(result).get, "UTF-8")
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some("/gg/login?continue=%2Fcontinue")
+      redirectedLocation mustBe s"${appConfig.loginUrl}?continue=${appConfig.loginContinueUrl}"
     }
 
-    "redirect to unauthorised page on InsufficientEnrolments" in {
-      when(mockAuthConnector.authorise(any(), any())(any(), any()))
-        .thenReturn(Future.failed(InsufficientEnrolments()))
+    "must redirect to unauthorised page on InsufficientEnrolments" in {
+      when(mockAuthConnector.authorise(any(), any())(any(), any())).thenReturn(Future.failed(InsufficientEnrolments()))
 
       val result = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
 
@@ -103,7 +97,7 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
 
-    "redirect to unauthorised page on unexpected error" in {
+    "must redirect to unauthorised page on unexpected error" in {
       when(mockAuthConnector.authorise(any(), any())(any(), any()))
         .thenReturn(Future.failed(new RuntimeException("Unexpected error")))
 
