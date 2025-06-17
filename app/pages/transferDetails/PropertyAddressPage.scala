@@ -25,7 +25,7 @@ import play.api.mvc.Call
 
 case object PropertyAddressPage extends QuestionPage[Address] {
 
-  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = "propertyAddress"
 
