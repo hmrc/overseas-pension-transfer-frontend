@@ -18,8 +18,7 @@ package forms.mappings
 
 trait Regex {
 
-  val nameRegex: String =
-    "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+  val nameRegex: String = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
   val ninoRegex: String = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
 
@@ -34,4 +33,6 @@ trait Regex {
   val qropsRefRegex: String = "^(QROPS\\d{6}|QROPS|\\d{6})$"
 
   val phoneNumberRegex: String = "^\\+?[0-9]+$"
+
+  val descriptionRegex: String = """^[A-Za-z0-9 \-,.&'/]+$"""
 }

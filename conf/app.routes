@@ -245,3 +245,8 @@ GET        /transfer-details/class-of-quoted-shares                             
 POST       /transfer-details/class-of-quoted-shares                                   controllers.transferDetails.ClassOfQuotedSharesController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-class-of-quoted-shares                            controllers.transferDetails.ClassOfQuotedSharesController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-class-of-quoted-shares                            controllers.transferDetails.ClassOfQuotedSharesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/property-value-description                               controllers.transferDetails.PropertyValueDescriptionController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/property-value-description                               controllers.transferDetails.PropertyValueDescriptionController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-property-value-description                        controllers.transferDetails.PropertyValueDescriptionController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-property-value-description                        controllers.transferDetails.PropertyValueDescriptionController.onSubmit(mode: Mode = CheckMode)
