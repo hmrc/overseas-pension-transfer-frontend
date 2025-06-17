@@ -488,7 +488,4 @@ numberOfUnquotedShares.checkYourAnswersLabel = Number of unquoted shares
 numberOfUnquotedShares.error.required = Enter the number of unquoted shares
 numberOfUnquotedShares.error.negative = The number of unquoted shares must be more than 0
 numberOfUnquotedShares.error.invalid = The number of unquoted shares must be a number, like 10 or 125
-numberOfUnquotedShares.error.nonNumeric = The number of unquoted shares must be a number, like 10 or 125
-numberOfUnquotedShares.error.wholeNumber = The number of unquoted shares must be a number, like 10 or 125
-numberOfUnquotedShares.error.outOfRange = TThe number of unquoted shares must be a number, like 10 or 125
 numberOfUnquotedShares.change.hidden = Number of unquoted shares
