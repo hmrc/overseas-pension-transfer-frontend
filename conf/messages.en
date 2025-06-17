@@ -74,8 +74,8 @@ signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+unauthorised.title = You can''t access this service with this account
+unauthorised.heading = You can''t access this service with this account
 
 radios.hint = Select one.
 
@@ -491,3 +491,11 @@ valueOfThisProperty.error.required = Enter the property value
 valueOfThisProperty.error.aboveMaximum = The property value must be {0} or less
 valueOfThisProperty.error.belowMinimum = The property value must be {0} or more
 valueOfThisProperty.change.hidden = Property value
+
+classOfQuotedShares.title = What class are these quoted shares?
+classOfQuotedShares.heading = What class are these quoted shares?
+classOfQuotedShares.checkYourAnswersLabel = Class of quoted shares
+classOfQuotedShares.error.required = Enter the class of quoted shares
+classOfQuotedShares.error.length = The class of quoted shares must be 160 characters or less
+classOfQuotedShares.error.pattern = The class of quoted shares must only include letters, spaces, apostrophes and hyphens
+classOfQuotedShares.change.hidden = Class of quoted shares
