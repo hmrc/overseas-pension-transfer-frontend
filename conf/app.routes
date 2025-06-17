@@ -250,3 +250,8 @@ GET        /transfer-details/property-value-description                         
 POST       /transfer-details/property-value-description                               controllers.transferDetails.PropertyValueDescriptionController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-property-value-description                        controllers.transferDetails.PropertyValueDescriptionController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-property-value-description                        controllers.transferDetails.PropertyValueDescriptionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/asset-value-description                                  controllers.transferDetails.AssetValueDescriptionController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/asset-value-description                                  controllers.transferDetails.AssetValueDescriptionController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-asset-value-description                           controllers.transferDetails.AssetValueDescriptionController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-asset-value-description                           controllers.transferDetails.AssetValueDescriptionController.onSubmit(mode: Mode = CheckMode)
