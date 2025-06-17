@@ -489,3 +489,11 @@ numberOfUnquotedShares.error.required = Enter the number of unquoted shares
 numberOfUnquotedShares.error.negative = The number of unquoted shares must be more than 0
 numberOfUnquotedShares.error.invalid = The number of unquoted shares must be a number, like 10 or 125
 numberOfUnquotedShares.change.hidden = Number of unquoted shares
+
+numberOfQuotedShares.title = How many quoted shares in this company are part of this transfer?
+numberOfQuotedShares.heading = How many quoted shares in this company are part of this transfer?
+numberOfQuotedShares.checkYourAnswersLabel = Number of quoted shares
+numberOfQuotedShares.error.required = Enter the number of quoted shares
+numberOfQuotedShares.error.negative = The number of quoted shares must be more than 0
+numberOfQuotedShares.error.invalid = The number of quoted shares must be a number, like 10 or 125
+numberOfQuotedShares.change.hidden = Number of quoted shares
