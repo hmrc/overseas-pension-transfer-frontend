@@ -17,14 +17,14 @@
 package pages.transferDetails
 
 import controllers.routes
-import models.{UserAnswers, WhyTransferIsNotTaxable}
+import models.{TaskCategory, UserAnswers, WhyTransferIsNotTaxable}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object WhyTransferIsNotTaxablePage extends QuestionPage[Set[WhyTransferIsNotTaxable]] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = "whyTransferIsNotTaxable"
 
