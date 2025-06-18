@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 
-package models.requests
+package forms.transferDetails
 
-import play.api.mvc.{Request, WrappedRequest}
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case class IdentifierRequest[A](request: Request[A], userId: String, psaPspId: String) extends WrappedRequest[A](request)
+import javax.inject.Inject
+
+class ValueOfThisPropertyFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[BigDecimal] =
+    Form(
+      "value" -> currency(
+        "valueOfThisProperty.error.required",
+        "valueOfThisProperty.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(0.01, "valueOfThisProperty.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "valueOfThisProperty.error.aboveMaximum"))
+    )
+}

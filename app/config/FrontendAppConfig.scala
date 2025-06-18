@@ -51,6 +51,17 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     "cy" -> Lang("cy")
   )
 
+  case class EnrolmentConfig(serviceName: String, identifierKey: String)
+
+  private def loadEnrolmentConfig(role: String): EnrolmentConfig =
+    EnrolmentConfig(
+      configuration.get[String](s"enrolments.$role.serviceName"),
+      configuration.get[String](s"enrolments.$role.identifierKey")
+    )
+
+  val psaEnrolment: EnrolmentConfig = loadEnrolmentConfig("psa")
+  val pspEnrolment: EnrolmentConfig = loadEnrolmentConfig("psp")
+
   val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 

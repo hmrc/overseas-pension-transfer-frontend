@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package forms.transferDetails
 
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UnauthorisedView
+import forms.mappings.{Mappings, Regex}
+import play.api.data.Form
 
 import javax.inject.Inject
 
-class UnauthorisedController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    view: UnauthorisedView
-  ) extends FrontendBaseController with I18nSupport {
+class ClassOfQuotedSharesFormProvider @Inject() extends Mappings with Regex {
 
-  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
-    Ok(view())
-  }
+  val maxLength = 160
+
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("classOfQuotedShares.error.required")
+        .verifying(maxLength(maxLength, "classOfQuotedShares.error.length"))
+        .verifying(regexp(nameRegex, "classOfQuotedShares.error.pattern"))
+    )
 }
