@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.auth
 
 import base.SpecBase
+import controllers.auth.routes
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

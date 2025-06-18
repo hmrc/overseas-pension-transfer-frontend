@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,41 +16,51 @@
 
 package controllers.actions
 
+import controllers.auth.routes
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import controllers.routes
 import models.requests.IdentifierRequest
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import utils.AuthSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
+trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent]
 
-class AuthenticatedIdentifierAction @Inject() (
+class IdentifierActionImpl @Inject() (
     override val authConnector: AuthConnector,
     config: FrontendAppConfig,
     val parser: BodyParsers.Default
   )(implicit val executionContext: ExecutionContext
-  ) extends IdentifierAction with AuthorisedFunctions {
+  ) extends IdentifierAction
+    with AuthorisedFunctions with AuthSupport {
+
+  private def predicate: Predicate = buildPredicate(config)
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.internalId) {
-      _.map {
-        internalId => block(IdentifierRequest(request, internalId))
-      }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
-    } recover {
-      case _: NoActiveSession        =>
-        Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case _: AuthorisationException =>
-        Redirect(routes.UnauthorisedController.onPageLoad())
-    }
+    authorised(predicate).retrieve(internalId and allEnrolments) {
+      case optInternalId ~ enrolments =>
+        val internalId = getOrElseFailWithUnauthorised(optInternalId, "Unable to retrieve internalId")
+        val psaPspId   = extractPsaPspId(enrolments, config)
+        block(IdentifierRequest(request, internalId, psaPspId))
+    } recover handleAuthException
+  }
+
+  private def handleAuthException: PartialFunction[Throwable, Result] = {
+    case _: NoActiveSession =>
+      Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
+    case e                  =>
+      logger.error("Unexpected error during authorisation", e)
+      Redirect(routes.UnauthorisedController.onPageLoad())
   }
 }

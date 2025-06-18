@@ -24,7 +24,7 @@ GET        /account/sign-out-survey                                             
 GET        /account/sign-out                                                                      controllers.auth.AuthController.signOutNoSurvey()
 GET        /account/signed-out                                                                    controllers.auth.SignedOutController.onPageLoad()
 
-GET        /unauthorised                                                                          controllers.UnauthorisedController.onPageLoad()
+GET        /unauthorised                                                                          controllers.auth.UnauthorisedController.onPageLoad()
 
 GET        /member-details/member-name                                                            controllers.memberDetails.MemberNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/member-name                                                            controllers.memberDetails.MemberNameController.onSubmit(mode: Mode = NormalMode)
@@ -250,3 +250,13 @@ GET        /transfer-details/number-of-quoted-shares                            
 POST       /transfer-details/number-of-quoted-shares                                  controllers.transferDetails.NumberOfQuotedSharesController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-number-of-quoted-shares                           controllers.transferDetails.NumberOfQuotedSharesController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-number-of-quoted-shares                           controllers.transferDetails.NumberOfQuotedSharesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /value-of-the-property                                                     controllers.transferDetails.ValueOfThisPropertyController.onPageLoad(mode: Mode = NormalMode)
+POST       /value-of-the-property                                                     controllers.transferDetails.ValueOfThisPropertyController.onSubmit(mode: Mode = NormalMode)
+GET        /change-value-of-the-property                                              controllers.transferDetails.ValueOfThisPropertyController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-value-of-the-property                                              controllers.transferDetails.ValueOfThisPropertyController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/class-of-quoted-shares                                   controllers.transferDetails.ClassOfQuotedSharesController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/class-of-quoted-shares                                   controllers.transferDetails.ClassOfQuotedSharesController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-class-of-quoted-shares                            controllers.transferDetails.ClassOfQuotedSharesController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-class-of-quoted-shares                            controllers.transferDetails.ClassOfQuotedSharesController.onSubmit(mode: Mode = CheckMode)
