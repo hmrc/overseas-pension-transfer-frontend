@@ -78,6 +78,34 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
+  private[mappings] def numberOfSharesFormatter(
+      requiredKey: String,
+      invalidKey: String,
+      negativeKey: String,
+      args: Seq[String] = Seq.empty
+    ): Formatter[String] = new Formatter[String] {
+
+    private val baseFormatter = stringFormatter(requiredKey, args)
+
+    private val numberPattern = """^(?!0+(?:\.0+)?$)\d+(?:\.\d+)?$""".r
+
+    override def bind(key: String, data: Map[String, String]) =
+      baseFormatter
+        .bind(key, data)
+        .map(_.trim)
+        .flatMap {
+          case s if s.startsWith("-")        =>
+            Left(Seq(FormError(key, negativeKey, args)))
+          case s if numberPattern.matches(s) =>
+            Right(s)
+          case _                             =>
+            Left(Seq(FormError(key, invalidKey, args)))
+        }
+
+    override def unbind(key: String, value: String) =
+      baseFormatter.unbind(key, value)
+  }
+
   private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String, args: Seq[String] = Seq.empty)(implicit ev: Enumerable[A]): Formatter[A] =
     new Formatter[A] {
 

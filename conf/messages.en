@@ -490,6 +490,22 @@ propertyAddress.error.addressLine2.required = Enter the second line of the prope
 propertyAddress.countryCode.change.hidden = Country (optional)
 propertyAddress.change.hidden = Property address
 
+numberOfUnquotedShares.title = How many unquoted shares in this company are part of this transfer?
+numberOfUnquotedShares.heading = How many unquoted shares in this company are part of this transfer?
+numberOfUnquotedShares.checkYourAnswersLabel = Number of unquoted shares
+numberOfUnquotedShares.error.required = Enter the number of unquoted shares
+numberOfUnquotedShares.error.negative = The number of unquoted shares must be more than 0
+numberOfUnquotedShares.error.invalid = The number of unquoted shares must be a number, like 10 or 125
+numberOfUnquotedShares.change.hidden = Number of unquoted shares
+
+numberOfQuotedShares.title = How many quoted shares in this company are part of this transfer?
+numberOfQuotedShares.heading = How many quoted shares in this company are part of this transfer?
+numberOfQuotedShares.checkYourAnswersLabel = Number of quoted shares
+numberOfQuotedShares.error.required = Enter the number of quoted shares
+numberOfQuotedShares.error.negative = The number of quoted shares must be more than 0
+numberOfQuotedShares.error.invalid = The number of quoted shares must be a number, like 10 or 125
+numberOfQuotedShares.change.hidden = Number of quoted shares
+
 valueOfThisProperty.title = What is the value of this property?
 valueOfThisProperty.heading = What is the value of this property?
 valueOfThisProperty.hint = For example, £10000 or £193,540
