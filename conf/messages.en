@@ -74,8 +74,8 @@ signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 
-unauthorised.title = You can’t access this service with this account
-unauthorised.heading = You can’t access this service with this account
+unauthorised.title = You can''t access this service with this account
+unauthorised.heading = You can''t access this service with this account
 
 radios.hint = Select one.
 
@@ -491,3 +491,37 @@ valueOfAsset.error.required = Enter the asset value
 valueOfAsset.error.aboveMaximum = The asset value must be {0} or less
 valueOfAsset.error.belowMinimum = The asset value must be {0} or more
 valueOfAsset.change.hidden = Value of asset
+
+numberOfUnquotedShares.title = How many unquoted shares in this company are part of this transfer?
+numberOfUnquotedShares.heading = How many unquoted shares in this company are part of this transfer?
+numberOfUnquotedShares.checkYourAnswersLabel = Number of unquoted shares
+numberOfUnquotedShares.error.required = Enter the number of unquoted shares
+numberOfUnquotedShares.error.negative = The number of unquoted shares must be more than 0
+numberOfUnquotedShares.error.invalid = The number of unquoted shares must be a number, like 10 or 125
+numberOfUnquotedShares.change.hidden = Number of unquoted shares
+
+numberOfQuotedShares.title = How many quoted shares in this company are part of this transfer?
+numberOfQuotedShares.heading = How many quoted shares in this company are part of this transfer?
+numberOfQuotedShares.checkYourAnswersLabel = Number of quoted shares
+numberOfQuotedShares.error.required = Enter the number of quoted shares
+numberOfQuotedShares.error.negative = The number of quoted shares must be more than 0
+numberOfQuotedShares.error.invalid = The number of quoted shares must be a number, like 10 or 125
+numberOfQuotedShares.change.hidden = Number of quoted shares
+
+valueOfThisProperty.title = What is the value of this property?
+valueOfThisProperty.heading = What is the value of this property?
+valueOfThisProperty.hint = For example, £10000 or £193,540
+valueOfThisProperty.checkYourAnswersLabel = Property value
+valueOfThisProperty.error.nonNumeric = The property value must be an amount of money, like £123 or 123.00
+valueOfThisProperty.error.required = Enter the property value
+valueOfThisProperty.error.aboveMaximum = The property value must be {0} or less
+valueOfThisProperty.error.belowMinimum = The property value must be {0} or more
+valueOfThisProperty.change.hidden = Property value
+
+classOfQuotedShares.title = What class are these quoted shares?
+classOfQuotedShares.heading = What class are these quoted shares?
+classOfQuotedShares.checkYourAnswersLabel = Class of quoted shares
+classOfQuotedShares.error.required = Enter the class of quoted shares
+classOfQuotedShares.error.length = The class of quoted shares must be 160 characters or less
+classOfQuotedShares.error.pattern = The class of quoted shares must only include letters, spaces, apostrophes and hyphens
+classOfQuotedShares.change.hidden = Class of quoted shares

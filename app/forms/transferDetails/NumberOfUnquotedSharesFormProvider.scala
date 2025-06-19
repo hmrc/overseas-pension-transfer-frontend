@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package forms.transferDetails
 
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UnauthorisedView
+import forms.mappings.Mappings
+import play.api.data.Form
 
 import javax.inject.Inject
 
-class UnauthorisedController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    view: UnauthorisedView
-  ) extends FrontendBaseController with I18nSupport {
+class NumberOfUnquotedSharesFormProvider @Inject() extends Mappings {
 
-  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
-    Ok(view())
-  }
+  def apply(): Form[String] =
+    Form(
+      "value" -> numberOfShares(
+        "numberOfUnquotedShares.error.required",
+        "numberOfUnquotedShares.error.invalid",
+        "numberOfUnquotedShares.error.negative"
+      )
+    )
 }

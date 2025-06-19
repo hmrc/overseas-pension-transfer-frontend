@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package forms.transferDetails
 
-import controllers.routes
-import models.{TaskCategory, UserAnswers, WhyTransferIsNotTaxable}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.{Mappings, Regex}
+import play.api.data.Form
 
-case object WhyTransferIsNotTaxablePage extends QuestionPage[Set[WhyTransferIsNotTaxable]] {
+import javax.inject.Inject
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
+class ClassOfQuotedSharesFormProvider @Inject() extends Mappings with Regex {
 
-  override def toString: String = "whyTransferIsNotTaxable"
+  val maxLength = 160
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("classOfQuotedShares.error.required")
+        .verifying(maxLength(maxLength, "classOfQuotedShares.error.length"))
+        .verifying(regexp(nameRegex, "classOfQuotedShares.error.pattern"))
+    )
 }

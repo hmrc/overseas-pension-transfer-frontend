@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package forms.transferDetails
 
-import controllers.routes
-import models.{TaskCategory, UserAnswers, WhyTransferIsNotTaxable}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case object WhyTransferIsNotTaxablePage extends QuestionPage[Set[WhyTransferIsNotTaxable]] {
+import javax.inject.Inject
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
+class ValueOfThisPropertyFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "whyTransferIsNotTaxable"
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+  def apply(): Form[BigDecimal] =
+    Form(
+      "value" -> currency(
+        "valueOfThisProperty.error.required",
+        "valueOfThisProperty.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(0.01, "valueOfThisProperty.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "valueOfThisProperty.error.aboveMaximum"))
+    )
 }

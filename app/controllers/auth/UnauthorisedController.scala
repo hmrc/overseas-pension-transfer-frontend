@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package controllers.auth
 
-import models.requests.IdentifierRequest
-import play.api.mvc._
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.UnauthorisedView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
-class FakeIdentifierAction @Inject() (bodyParsers: PlayBodyParsers) extends IdentifierAction {
+class UnauthorisedController @Inject() (
+    val controllerComponents: MessagesControllerComponents,
+    view: UnauthorisedView
+  ) extends FrontendBaseController with I18nSupport {
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
-    block(IdentifierRequest(request, "id", "pasPspId"))
-
-  override def parser: BodyParser[AnyContent] =
-    bodyParsers.default
-
-  override protected def executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
+    Ok(view())
+  }
 }

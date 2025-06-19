@@ -22,18 +22,18 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AmountOfTaxDeductedPage extends QuestionPage[BigDecimal] {
+case object ValueOfThisPropertyPage extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "amountOfTaxDeducted"
+  override def toString: String = "valueOfThisProperty"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.AmountOfTaxDeductedController.onPageLoad(CheckMode)
+    routes.ValueOfThisPropertyController.onPageLoad(CheckMode)
 }
