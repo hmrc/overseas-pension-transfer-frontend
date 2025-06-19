@@ -533,3 +533,21 @@ classOfQuotedShares.error.required = Enter the class of quoted shares
 classOfQuotedShares.error.length = The class of quoted shares must be 160 characters or less
 classOfQuotedShares.error.pattern = The class of quoted shares must only include letters, spaces, apostrophes and hyphens
 classOfQuotedShares.change.hidden = Class of quoted shares
+
+propertyValueDescription.title = Describe the property and how it was valued
+propertyValueDescription.heading = Describe the property and how it was valued
+propertyValueDescription.hint = For example, 'a commercial property supported by an independent valuation'.
+propertyValueDescription.checkYourAnswersLabel = Description of the property and valuation
+propertyValueDescription.error.required = Enter a description of the property and how it was valued
+propertyValueDescription.error.length = The property description must be 160 characters or less
+propertyValueDescription.error.pattern = The property description must only include  letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+propertyValueDescription.change.hidden = Description of the property and valuation
+
+assetValueDescription.title = Describe the asset and how it was valued
+assetValueDescription.heading = Describe the asset and how it was valued
+assetValueDescription.hint = For example, 'bonds, supported by an independent valuation'.
+assetValueDescription.checkYourAnswersLabel = Description of asset and valuation
+assetValueDescription.error.required = Enter a description of the asset and how it was valued
+assetValueDescription.error.length = The asset description must be 160 characters or less
+assetValueDescription.error.pattern = The asset description must only include  letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+assetValueDescription.change.hidden = Description of asset and valuation
