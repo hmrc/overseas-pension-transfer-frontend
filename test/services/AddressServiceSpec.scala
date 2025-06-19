@@ -21,6 +21,7 @@ import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLo
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
+import forms.transferDetails.PropertyAddressFormData
 import models.address._
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
@@ -44,6 +45,24 @@ class AddressServiceSpec
   private val mockAddressLookupConnector = mock[AddressLookupConnector]
 
   private val service = new AddressService(mockCountryService, mockAddressLookupConnector)
+
+  ".propertyAddress" - {
+
+    "must map the form data (including postcode and PO box)" in {
+      when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
+
+      val formData = PropertyAddressFormData(
+        addressLine1 = propertyAddress.addressLine1,
+        addressLine2 = propertyAddress.addressLine2,
+        addressLine3 = propertyAddress.addressLine3,
+        addressLine4 = propertyAddress.addressLine4,
+        countryCode  = propertyAddress.countryCode.code,
+        postcode     = propertyAddress.postcode
+      )
+
+      service.propertyAddress(formData).value mustBe propertyAddress
+    }
+  }
 
   ".schemeManagersAddress" - {
     val formData = SchemeManagersAddressFormData(
@@ -99,7 +118,7 @@ class AddressServiceSpec
         addressLine2 = membersCurrentAddress.addressLine2,
         addressLine3 = membersCurrentAddress.addressLine3,
         addressLine4 = membersCurrentAddress.addressLine4,
-        countryCode  = qropsAddress.countryCode.code,
+        countryCode  = membersCurrentAddress.countryCode.code,
         postcode     = membersCurrentAddress.postcode,
         poBox        = membersCurrentAddress.poBox
       )

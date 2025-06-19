@@ -246,6 +246,11 @@ POST       /transfer-details/value-of-asset                                     
 GET        /transfer-details/change-value-of-asset                                    controllers.transferDetails.ValueOfAssetController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-value-of-asset                                    controllers.transferDetails.ValueOfAssetController.onSubmit(mode: Mode = CheckMode)
 
+GET        /transfer-details/property-address                                         controllers.transferDetails.PropertyAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/property-address                                         controllers.transferDetails.PropertyAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-property-address                                  controllers.transferDetails.PropertyAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-property-address                                  controllers.transferDetails.PropertyAddressController.onSubmit(mode: Mode = CheckMode)
+
 GET        /transfer-details/number-of-unquoted-shares                                controllers.transferDetails.NumberOfUnquotedSharesController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/number-of-unquoted-shares                                controllers.transferDetails.NumberOfUnquotedSharesController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-number-of-unquoted-shares                         controllers.transferDetails.NumberOfUnquotedSharesController.onPageLoad(mode: Mode = CheckMode)
