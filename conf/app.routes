@@ -261,10 +261,10 @@ POST       /transfer-details/number-of-quoted-shares                            
 GET        /transfer-details/change-number-of-quoted-shares                           controllers.transferDetails.NumberOfQuotedSharesController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-number-of-quoted-shares                           controllers.transferDetails.NumberOfQuotedSharesController.onSubmit(mode: Mode = CheckMode)
 
-GET        /value-of-the-property                                                     controllers.transferDetails.ValueOfThisPropertyController.onPageLoad(mode: Mode = NormalMode)
-POST       /value-of-the-property                                                     controllers.transferDetails.ValueOfThisPropertyController.onSubmit(mode: Mode = NormalMode)
-GET        /change-value-of-the-property                                              controllers.transferDetails.ValueOfThisPropertyController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-value-of-the-property                                              controllers.transferDetails.ValueOfThisPropertyController.onSubmit(mode: Mode = CheckMode)
+GET        /transfer-details/value-of-the-property                                    controllers.transferDetails.ValueOfThisPropertyController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/value-of-the-property                                    controllers.transferDetails.ValueOfThisPropertyController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-value-of-the-property                             controllers.transferDetails.ValueOfThisPropertyController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-value-of-the-property                             controllers.transferDetails.ValueOfThisPropertyController.onSubmit(mode: Mode = CheckMode)
 
 GET        /transfer-details/class-of-quoted-shares                                   controllers.transferDetails.ClassOfQuotedSharesController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/class-of-quoted-shares                                   controllers.transferDetails.ClassOfQuotedSharesController.onSubmit(mode: Mode = NormalMode)
