@@ -241,6 +241,11 @@ POST       /transfer-details/change-unquoted-share-company-name                 
 GET        /transfer-details/check-your-answers                                       controllers.transferDetails.TransferDetailsCYAController.onPageLoad()
 POST       /transfer-details/check-your-answers                                       controllers.transferDetails.TransferDetailsCYAController.onSubmit()
 
+GET        /transfer-details/property-address                                         controllers.transferDetails.PropertyAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/property-address                                         controllers.transferDetails.PropertyAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-property-address                                  controllers.transferDetails.PropertyAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-property-address                                  controllers.transferDetails.PropertyAddressController.onSubmit(mode: Mode = CheckMode)
+
 GET        /transfer-details/number-of-unquoted-shares                                controllers.transferDetails.NumberOfUnquotedSharesController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/number-of-unquoted-shares                                controllers.transferDetails.NumberOfUnquotedSharesController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-number-of-unquoted-shares                         controllers.transferDetails.NumberOfUnquotedSharesController.onPageLoad(mode: Mode = CheckMode)

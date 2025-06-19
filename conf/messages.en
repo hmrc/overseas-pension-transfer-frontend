@@ -482,6 +482,14 @@ unquotedShareCompanyName.error.required = Enter company name
 unquotedShareCompanyName.error.length = The company name must be 160 characters or less
 unquotedShareCompanyName.change.hidden = Unquoted share company name
 
+propertyAddress.title = What is the property address?
+propertyAddress.heading = What is the property address?
+propertyAddress.checkYourAnswersLabel = Property address
+propertyAddress.error.addressLine1.required = Enter the first line of the property address
+propertyAddress.error.addressLine2.required = Enter the second line of the property address
+propertyAddress.countryCode.change.hidden = Country (optional)
+propertyAddress.change.hidden = Property address
+
 numberOfUnquotedShares.title = How many unquoted shares in this company are part of this transfer?
 numberOfUnquotedShares.heading = How many unquoted shares in this company are part of this transfer?
 numberOfUnquotedShares.checkYourAnswersLabel = Number of unquoted shares

@@ -49,6 +49,9 @@ object Address {
       case "SchemeManagersAddress" =>
         SchemeManagersAddress.reads.widen[Address]
 
+      case "PropertyAddress" =>
+        PropertyAddress.reads.widen[Address]
+
       case other =>
         Reads(_ => JsError(s"Unknown Address type: $other"))
     }
@@ -73,6 +76,10 @@ object Address {
     case a: SchemeManagersAddress =>
       SchemeManagersAddress.writes.writes(a).as[JsObject] +
         ("type" -> JsString("SchemeManagersAddress"))
+
+    case a: PropertyAddress =>
+      PropertyAddress.writes.writes(a).as[JsObject] +
+        ("type" -> JsString("PropertyAddress"))
 
     case e =>
       throw new IllegalStateException(
@@ -195,11 +202,13 @@ case class MembersCurrentAddress(
     postcode: Option[String],
     poBox: Option[String]
   ) extends Address {
-  val line1: String          = addressLine1
-  val line2: String          = addressLine2
-  val line3: Option[String]  = addressLine3
-  val line4: Option[String]  = addressLine4
-  val line5: Option[Nothing] = None
+  val line1: String            = addressLine1
+  val line2: String            = addressLine2
+  val line3: Option[String]    = addressLine3
+  val line4: Option[String]    = addressLine4
+  val line5: Option[Nothing]   = None
+  val countryCode: Country     = country
+  val postCode: Option[String] = postcode
 }
 
 object MembersCurrentAddress {
@@ -345,6 +354,60 @@ object SchemeManagersAddress {
       addressLine4 = address.line4,
       addressLine5 = None,
       country      = address.country
+    )
+  }
+}
+
+case class PropertyAddress(
+    addressLine1: String,
+    addressLine2: String,
+    addressLine3: Option[String],
+    addressLine4: Option[String],
+    country: Country,
+    postcode: Option[String]
+  ) extends Address {
+  val line1: String                  = addressLine1
+  val line2: String                  = addressLine2
+  val line3: Option[String]          = addressLine3
+  val line4: Option[String]          = addressLine4
+  val line5: Option[Nothing]         = None
+  val countryCode: Country           = country
+  val postCode: Option[String]       = postcode
+  override val poBox: Option[String] = None
+}
+
+object PropertyAddress {
+
+  implicit val reads: Reads[PropertyAddress] = (
+    (__ \ "line1").read[String] and
+      (__ \ "line2").read[String] and
+      (__ \ "line3").readNullable[String] and
+      (__ \ "line4").readNullable[String] and
+      (__ \ "country").read[Country] and
+      (__ \ "postcode").readNullable[String]
+  )(PropertyAddress.apply _)
+
+  implicit val writes: OWrites[PropertyAddress] = OWrites[PropertyAddress] { address =>
+    Json.obj(
+      "line1"    -> address.line1,
+      "line2"    -> address.line2,
+      "line3"    -> address.line3,
+      "line4"    -> address.line4,
+      "country"  -> address.country,
+      "postcode" -> address.postcode
+    )
+  }
+
+  implicit val format: OFormat[PropertyAddress] = OFormat(reads, writes)
+
+  def fromAddress(address: Address): PropertyAddress = {
+    PropertyAddress(
+      addressLine1 = address.line1,
+      addressLine2 = address.line2,
+      addressLine3 = address.line3,
+      addressLine4 = address.line4,
+      country      = address.country,
+      postcode     = address.postcode
     )
   }
 }

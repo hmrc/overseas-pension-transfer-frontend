@@ -20,6 +20,7 @@ import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLo
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
+import forms.transferDetails.PropertyAddressFormData
 import models.UserAnswers
 import models.address._
 import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
@@ -29,6 +30,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddressService @Inject() (countryService: CountryService, addressLookupConnector: AddressLookupConnector)(implicit ex: ExecutionContext) {
+
+  def propertyAddress(data: PropertyAddressFormData): Option[PropertyAddress] =
+    countryService.find(data.countryCode).map { country =>
+      PropertyAddress(
+        data.addressLine1,
+        data.addressLine2,
+        data.addressLine3,
+        data.addressLine4,
+        country,
+        data.postcode
+      )
+    }
 
   def schemeManagersAddress(data: SchemeManagersAddressFormData): Option[SchemeManagersAddress] =
     countryService.find(data.countryCode).map { country =>
