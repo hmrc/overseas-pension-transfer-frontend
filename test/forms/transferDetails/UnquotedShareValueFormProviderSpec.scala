@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
 
+import forms.UnquotedShareValueFormProvider
 import utils.CurrencyFormats.currencyFormat
 import forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package forms
+package forms.transferDetails
 
 import forms.behaviours.StringFieldBehaviours
-import forms.transferDetails.UnquotedShareCompanyNameFormProvider
 import play.api.data.FormError
 
 class UnquotedShareCompanyNameFormProviderSpec extends StringFieldBehaviours {

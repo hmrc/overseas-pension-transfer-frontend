@@ -16,25 +16,25 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import models.UserAnswers
-import pages.transferDetails.UnquotedShareValuePage
+import models.{CheckMode, UserAnswers}
+import pages.transferDetails.UnquotedSharesClassPage
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.CurrencyFormats.currencyFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object UnquotedShareValueSummary {
+object UnquotedSharesClassSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(UnquotedShareValuePage).map {
+    answers.get(UnquotedSharesClassPage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "unquotedShareValue.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
+          key     = "unquotedSharesClass.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", UnquotedShareValuePage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("unquotedShareValue.change.hidden"))
+            ActionItemViewModel("site.change", UnquotedSharesClassPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("unquotedSharesClass.change.hidden"))
           )
         )
     }
