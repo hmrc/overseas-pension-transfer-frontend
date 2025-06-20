@@ -38,7 +38,7 @@ class UserAnswersConnector @Inject() (
   ) extends Logging {
 
   private def userAnswersUrl(id: String): URL =
-    url"${appConfig.backendService}/user-answers/$id"
+    url"${appConfig.backendService}/save-for-later/$id"
 
   def getAnswers(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[UserAnswersResponse] = {
     http.get(userAnswersUrl(id))
@@ -59,7 +59,7 @@ class UserAnswersConnector @Inject() (
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
     ): Future[UserAnswersResponse] = {
-    http.put(userAnswersUrl(id))
+    http.post(userAnswersUrl(id))
       .withBody(Json.toJson(userAnswersDTO))
       .execute[UserAnswersDTO]
       .map { updatedDto =>
