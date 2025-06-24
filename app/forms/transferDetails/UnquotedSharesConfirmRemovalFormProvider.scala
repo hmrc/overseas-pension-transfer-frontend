@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package forms.transferDetails
 
-import controllers.transferDetails.routes
-import models.{NormalMode, PersonName, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case object UnquotedShareSummaryPage extends QuestionPage[PersonName] {
+import javax.inject.Inject
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
+class UnquotedSharesConfirmRemovalFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "transferDetailsSummary"
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.AdditionalUnquotedShareController.onPageLoad(NormalMode)
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("unquotedSharesConfirmRemoval.error.required")
+    )
 }

@@ -17,17 +17,24 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{NormalMode, PersonName, TaskCategory, UserAnswers}
+import models.{NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object UnquotedShareSummaryPage extends QuestionPage[PersonName] {
+case object AdditionalUnquotedSharePage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "transferDetailsSummary"
+  override def toString: String = "additionalUnquotedShare"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.AdditionalUnquotedShareController.onPageLoad(NormalMode)
+    answers.get(AdditionalUnquotedSharePage) match {
+      case Some(false) => routes.TransferDetailsCYAController.onPageLoad()
+      case Some(true)  => routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode)
+      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.TransferDetailsCYAController.onPageLoad()
 }

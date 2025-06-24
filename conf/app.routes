@@ -288,3 +288,11 @@ POST       /transfer-details/change-unquoted-shares-class                       
 
 GET        /transfer-details/unquoted-share-check-your-answers                                    controllers.transferDetails.UnquotedShareCYAController.onPageLoad()
 POST       /transfer-details/unquoted-share-check-your-answers                                    controllers.transferDetails.UnquotedShareCYAController.onSubmit()
+
+GET        /transfer-details/additional-unquoted-share                                            controllers.transferDetails.AdditionalUnquotedShareController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/additional-unquoted-share                                            controllers.transferDetails.AdditionalUnquotedShareController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-additional-unquoted-share                                     controllers.transferDetails.AdditionalUnquotedShareController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-additional-unquoted-share                                     controllers.transferDetails.AdditionalUnquotedShareController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/unquoted-shares-confirm-removal                                      controllers.transferDetails.UnquotedSharesConfirmRemovalController.onPageLoad()
+POST       /transfer-details/unquoted-shares-confirm-removal                                      controllers.transferDetails.UnquotedSharesConfirmRemovalController.onSubmit()
