@@ -17,23 +17,12 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import models.{NormalMode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
 
-case object UnquotedShareCompanyNamePage extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
-
-  override def toString: String = "unquotedShareCompanyName"
+object UnQuotedShareStartPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.UnquotedShareValueController.onPageLoad(NormalMode)
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.UnquotedShareCYAController.onPageLoad()
-
-  final def changeLink(answers: UserAnswers): Call =
-    routes.UnquotedShareCompanyNameController.onPageLoad(CheckMode)
+    routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode)
 }

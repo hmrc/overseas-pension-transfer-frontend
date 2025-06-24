@@ -477,10 +477,10 @@ unquotedShareStart.paragraph = The following questions are about unquoted shares
 
 unquotedShareCompanyName.title = What is the name of the company these unquoted shares relate to?
 unquotedShareCompanyName.heading = What is the name of the company these unquoted shares relate to?
-unquotedShareCompanyName.checkYourAnswersLabel = Unquoted share company name
+unquotedShareCompanyName.checkYourAnswersLabel = Company name
 unquotedShareCompanyName.error.required = Enter company name
 unquotedShareCompanyName.error.length = The company name must be 160 characters or less
-unquotedShareCompanyName.change.hidden = Unquoted share company name
+unquotedShareCompanyName.change.hidden = Company name
 
 valueOfAsset.title = What is the value of the asset?
 valueOfAsset.heading = What is the value of the asset?

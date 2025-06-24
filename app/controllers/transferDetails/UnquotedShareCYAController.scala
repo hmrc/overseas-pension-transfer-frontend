@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,38 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
+import com.google.inject.Inject
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import models.NormalMode
-import pages.transferDetails.UnQuotedShareStartPage
+import pages.transferDetails.UnquotedShareSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.UnquotedShareStartView
+import viewmodels.checkAnswers.transferDetails.UnquotedShareSummary
+import viewmodels.govuk.summarylist._
+import views.html.transferDetails.UnquotedShareCYAView
 
-import javax.inject.Inject
-
-class UnquotedShareStartController @Inject() (
+class UnquotedShareCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     val controllerComponents: MessagesControllerComponents,
-    view: UnquotedShareStartView
+    view: UnquotedShareCYAView
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      Ok(view(UnQuotedShareStartPage.nextPage(mode = NormalMode, request.userAnswers).url))
+      val list = SummaryListViewModel(UnquotedShareSummary.rows(request.userAnswers))
+
+      Ok(view(list))
+  }
+
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      {
+        Redirect(UnquotedShareSummaryPage.nextPage(NormalMode, request.userAnswers))
+      }
   }
 }

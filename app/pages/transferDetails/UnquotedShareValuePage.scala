@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -29,10 +29,10 @@ case object UnquotedShareValuePage extends QuestionPage[BigDecimal] {
   override def toString: String = "unquotedShareValue"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    routes.NumberOfUnquotedSharesController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+    routes.UnquotedShareCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
     routes.UnquotedShareValueController.onPageLoad(CheckMode)

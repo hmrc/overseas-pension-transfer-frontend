@@ -29,10 +29,10 @@ case object UnquotedSharesClassPage extends QuestionPage[String] {
   override def toString: String = "unquotedSharesClass"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad()
+    routes.UnquotedShareCYAController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+    routes.UnquotedShareCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
     routes.UnquotedSharesClassController.onPageLoad(CheckMode)

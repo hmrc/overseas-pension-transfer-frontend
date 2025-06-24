@@ -31,7 +31,7 @@ class UnquotedSharesClassPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        UnquotedSharesClassPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        UnquotedSharesClassPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.UnquotedShareCYAController.onPageLoad()
       }
     }
 
@@ -39,7 +39,7 @@ class UnquotedSharesClassPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        UnquotedSharesClassPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        UnquotedSharesClassPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.UnquotedShareCYAController.onPageLoad()
       }
     }
   }

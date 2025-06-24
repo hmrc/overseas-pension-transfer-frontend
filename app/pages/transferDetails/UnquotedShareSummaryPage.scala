@@ -16,24 +16,18 @@
 
 package pages.transferDetails
 
-import controllers.transferDetails.routes
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import controllers.routes
+import models.{PersonName, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object UnquotedShareCompanyNamePage extends QuestionPage[String] {
+case object UnquotedShareSummaryPage extends QuestionPage[PersonName] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "unquotedShareCompanyName"
+  override def toString: String = "transferDetailsSummary"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.UnquotedShareValueController.onPageLoad(NormalMode)
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.UnquotedShareCYAController.onPageLoad()
-
-  final def changeLink(answers: UserAnswers): Call =
-    routes.UnquotedShareCompanyNameController.onPageLoad(CheckMode)
+    routes.IndexController.onPageLoad() // TODO This will have to be changed to 'overseas transfer report' main page when exists
 }

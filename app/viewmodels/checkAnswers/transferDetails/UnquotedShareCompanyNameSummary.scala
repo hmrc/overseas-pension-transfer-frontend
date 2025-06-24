@@ -34,7 +34,7 @@ object UnquotedShareCompanyNameSummary {
           key     = "unquotedShareCompanyName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.UnquotedShareCompanyNameController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", UnquotedShareCompanyNamePage.changeLink(answers).url)
               .withVisuallyHiddenText(messages("unquotedShareCompanyName.change.hidden"))
           )
         )
