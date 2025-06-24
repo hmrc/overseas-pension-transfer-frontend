@@ -18,7 +18,6 @@ package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
 import models.{CheckMode, UserAnswers}
-import pages.transferDetails.AdditionalUnquotedSharePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -26,18 +25,16 @@ import viewmodels.implicits._
 
 object AdditionalUnquotedShareSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AdditionalUnquotedSharePage).map {
-      answer =>
-        val value = if (answer) "site.yes" else "site.no"
+  def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
+    val valueText = messages("additionalUnquotedShare.summary.value", 1) // TODO process to count the number
 
-        SummaryListRowViewModel(
-          key     = "additionalUnquotedShare.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.AdditionalUnquotedShareController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("additionalUnquotedShare.change.hidden"))
-          )
-        )
-    }
+    SummaryListRowViewModel(
+      key     = "additionalUnquotedShare.checkYourAnswersLabel",
+      value   = ValueViewModel(valueText),
+      actions = Seq(
+        ActionItemViewModel("site.change", routes.AdditionalUnquotedShareController.onPageLoad(CheckMode).url)
+          .withVisuallyHiddenText(messages("additionalUnquotedShare.change.hidden"))
+      )
+    )
+  }
 }

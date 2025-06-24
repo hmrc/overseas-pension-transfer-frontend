@@ -19,10 +19,8 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.AdditionalUnquotedShareFormProvider
 import models.{CheckMode, Mode, NormalMode}
-import pages.transferDetails.AdditionalUnquotedSharePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.AdditionalUnquotedShareView
 
@@ -31,7 +29,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalUnquotedShareController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -46,10 +43,7 @@ class AdditionalUnquotedShareController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AdditionalUnquotedSharePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      val preparedForm = if (mode == CheckMode) form.fill(false) else form
 
       Ok(view(preparedForm, mode))
   }
@@ -60,17 +54,13 @@ class AdditionalUnquotedShareController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          val previousValue = request.userAnswers.get(AdditionalUnquotedSharePage)
-
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalUnquotedSharePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-
-            redirectMode = (mode, previousValue, value) match {
-                             case (CheckMode, Some(false), true) => NormalMode
-                             case _                              => mode
-                           }
-          } yield Redirect(AdditionalUnquotedSharePage.nextPage(redirectMode, updatedAnswers))
+          val redirectTarget = if (value) {
+            // TODO might have to do something for a new UnquotedShares
+            routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode)
+          } else {
+            routes.TransferDetailsCYAController.onPageLoad()
+          }
+          Future.successful(Redirect(redirectTarget))
         }
       )
   }
