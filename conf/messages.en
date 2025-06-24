@@ -536,7 +536,7 @@ classOfQuotedShares.change.hidden = Class of quoted shares
 
 propertyValueDescription.title = Describe the property and how it was valued
 propertyValueDescription.heading = Describe the property and how it was valued
-propertyValueDescription.hint = For example, 'a commercial property supported by an independent valuation'.
+propertyValueDescription.hint = For example, ''a commercial property supported by an independent valuation''.
 propertyValueDescription.checkYourAnswersLabel = Description of the property and valuation
 propertyValueDescription.error.required = Enter a description of the property and how it was valued
 propertyValueDescription.error.length = The property description must be 160 characters or less
