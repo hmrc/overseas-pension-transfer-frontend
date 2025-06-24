@@ -16,9 +16,10 @@
 
 package utils
 
-import models.UserAnswers
+import models.{ShareEntry, ShareType, TaskCategory, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import queries.QtNumber
+import play.api.libs.json._
 
 trait AppUtils {
 
@@ -31,4 +32,15 @@ trait AppUtils {
     userAnswers.get(QtNumber)
       .getOrElse("Undefined")
   }
+
+  def countShares(userAnswers: UserAnswers, shareType: ShareType): Int = {
+    sharesPathForType(shareType)
+      .read[List[ShareEntry]]
+      .reads(userAnswers.data)
+      .getOrElse(Nil)
+      .size
+  }
+
+  def sharesPathForType(shareType: ShareType): JsPath =
+    JsPath \ TaskCategory.TransferDetails.toString \ shareType.toString
 }

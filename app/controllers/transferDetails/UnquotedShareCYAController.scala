@@ -18,36 +18,66 @@ package controllers.transferDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
-import models.NormalMode
-import pages.transferDetails.UnquotedShareSummaryPage
+import models.{NormalMode, ShareEntry, ShareType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.UnquotedShareSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.UnquotedShareCYAView
+import play.api.libs.json._
+import repositories.SessionRepository
+import services.TransferDetailsService
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class UnquotedShareCYAController @Inject() (
     override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedShareCYAView
-  ) extends FrontendBaseController with I18nSupport {
+  )(implicit ec: ExecutionContext
+  ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
-    implicit request =>
-      val list = SummaryListViewModel(UnquotedShareSummary.rows(request.userAnswers))
+  private val shareType = ShareType.Unquoted
+  private val actions   = (identify andThen getData andThen requireData andThen displayData)
 
-      Ok(view(list))
+  def onPageLoad(): Action[AnyContent] = actions { implicit request =>
+    val list = SummaryListViewModel(UnquotedShareSummary.rows(request.userAnswers))
+
+    Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
-      {
-        Redirect(UnquotedShareSummaryPage.nextPage(NormalMode, request.userAnswers))
-      }
+  def onSubmit(): Action[AnyContent] = actions.async { implicit request =>
+    val path = sharesPathForType(shareType)
+
+    transferDetailsService.unquotedShareBuilder(request.userAnswers) match {
+      case Some(newUnquotedShare) =>
+        val existingUnquotedShares = request.userAnswers.data
+          .validate(path.read[List[ShareEntry]])
+          .getOrElse(Nil)
+
+        val updatedShares = existingUnquotedShares :+ newUnquotedShare
+
+        val updatedJson = request.userAnswers.data.deepMerge(
+          Json.obj("transferDetails" -> Json.obj(shareType.toString -> Json.toJson(updatedShares)))
+        )
+
+        val updatedAnswers = request.userAnswers.copy(data = updatedJson)
+        val clearedAnswers = transferDetailsService.clearUnquotedShareFields(updatedAnswers)
+
+        for {
+          _ <- sessionRepository.set(clearedAnswers)
+        } yield Redirect(routes.AdditionalUnquotedShareController.onPageLoad())
+
+      case None =>
+        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+    }
   }
 }

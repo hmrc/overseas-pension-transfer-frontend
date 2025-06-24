@@ -124,6 +124,7 @@ checkYourAnswers.memberDetails.heading = The member''s details
 checkYourAnswers.memberDetails.insetText = Take note of the transfer reference (e.g., QT123456) or National Insurance number as you will be able to identify the form and search by these details later.
 checkYourAnswers.qropsDetails.heading = The QROPS details
 checkYourAnswers.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
+checkYourAnswers.transferDetails.heading = The transfer details
 
 discardTransferConfirm.title = Are you sure you want to discard this transfer?
 discardTransferConfirm.heading = Are you sure you want to discard this transfer?
@@ -559,3 +560,15 @@ unquotedSharesClass.error.required = Enter the class of unquoted shares
 unquotedSharesClass.error.length = The class of unquoted shares must be 160 characters or less
 unquotedSharesClass.change.hidden = Class of unquoted shares
 unquotedSharesClass.error.pattern = The class of unquoted shares must only include letters, spaces, apostrophes and hyphens
+
+additionalUnquotedShare.title = Do you need to add more unquoted shares?
+additionalUnquotedShare.heading1 = You have added unquoted shares in {0} company
+additionalUnquotedShare.heading2 = Do you need to add more unquoted shares?
+additionalUnquotedShare.error.required = Please select an option
+additionalUnquotedShare.checkYourAnswersLabel = Unquoted shares
+additionalUnquotedShare.change.hidden = Unquoted shares
+additionalUnquotedShare.summary.value = {0} added
+
+unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
+unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
+unquotedSharesConfirmRemoval.error.required = Select one option
