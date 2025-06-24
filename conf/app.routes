@@ -281,7 +281,7 @@ POST       /transfer-details/asset-value-description                            
 GET        /transfer-details/change-asset-value-description                                       controllers.transferDetails.AssetValueDescriptionController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-asset-value-description                                       controllers.transferDetails.AssetValueDescriptionController.onSubmit(mode: Mode = CheckMode)
 
-GET        /transfer-details/unquotedSharesClass                                                  controllers.transferDetails.UnquotedSharesClassController.onPageLoad(mode: Mode = NormalMode)
-POST       /transfer-details/unquotedSharesClass                                                  controllers.transferDetails.UnquotedSharesClassController.onSubmit(mode: Mode = NormalMode)
-GET        /transfer-details/changeUnquotedSharesClass                                            controllers.transferDetails.UnquotedSharesClassController.onPageLoad(mode: Mode = CheckMode)
-POST       /transfer-details/changeUnquotedSharesClass                                            controllers.transferDetails.UnquotedSharesClassController.onSubmit(mode: Mode = CheckMode)
+GET        /transfer-details/unquoted-shares-class                                                controllers.transferDetails.UnquotedSharesClassController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/unquoted-shares-class                                                controllers.transferDetails.UnquotedSharesClassController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-unquoted-shares-class                                         controllers.transferDetails.UnquotedSharesClassController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-unquoted-shares-class                                         controllers.transferDetails.UnquotedSharesClassController.onSubmit(mode: Mode = CheckMode)

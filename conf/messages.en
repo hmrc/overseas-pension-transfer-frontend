@@ -554,8 +554,8 @@ assetValueDescription.change.hidden = Description of asset and valuation
 
 unquotedSharesClass.title = What class are these unquoted shares?
 unquotedSharesClass.heading = What class are these unquoted shares?
-unquotedSharesClass.checkYourAnswersLabel = Unquoted shares class
+unquotedSharesClass.checkYourAnswersLabel = Class of unquoted shares
 unquotedSharesClass.error.required = Enter the class of unquoted shares
 unquotedSharesClass.error.length = The class of unquoted shares must be 160 characters or less
-unquotedSharesClass.change.hidden = Unquoted shares class
+unquotedSharesClass.change.hidden = Class of unquoted shares
 unquotedSharesClass.error.pattern = The class of unquoted shares must only include letters, spaces, apostrophes and hyphens
