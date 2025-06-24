@@ -23,7 +23,7 @@ import play.api.libs.json._
 import java.time.Instant
 
 final case class UserAnswersDTO(
-    id: String,
+    referenceId: String,
     data: JsObject,
     lastUpdated: Instant
   )
@@ -32,13 +32,13 @@ object UserAnswersDTO {
 
   implicit val format: OFormat[UserAnswersDTO] = {
     val reads: Reads[UserAnswersDTO] = (
-      (__ \ "id").read[String] and
+      (__ \ "referenceId").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read[Instant]
     )(UserAnswersDTO.apply _)
 
     val writes: OWrites[UserAnswersDTO] = (
-      (__ \ "id").write[String] and
+      (__ \ "referenceId").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write[Instant]
     )(unlift(UserAnswersDTO.unapply))
@@ -48,14 +48,16 @@ object UserAnswersDTO {
 
   def fromUserAnswers(ua: UserAnswers): UserAnswersDTO =
     UserAnswersDTO(
-      id          = ua.id,
+      // The reference id WILL NOT be the user answers id. I only put this here because
+      // the actual implementation is outside the scope of my ticket.
+      referenceId = ua.id,
       data        = ua.data,
       lastUpdated = ua.lastUpdated
     )
 
   def toUserAnswers(dto: UserAnswersDTO): UserAnswers =
     UserAnswers(
-      id          = dto.id,
+      id          = dto.referenceId,
       data        = dto.data,
       lastUpdated = dto.lastUpdated
     )
