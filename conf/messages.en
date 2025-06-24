@@ -545,7 +545,7 @@ propertyValueDescription.change.hidden = Description of the property and valuati
 
 assetValueDescription.title = Describe the asset and how it was valued
 assetValueDescription.heading = Describe the asset and how it was valued
-assetValueDescription.hint = For example, 'bonds, supported by an independent valuation'.
+assetValueDescription.hint = For example, ''bonds, supported by an independent valuation''.
 assetValueDescription.checkYourAnswersLabel = Description of asset and valuation
 assetValueDescription.error.required = Enter a description of the asset and how it was valued
 assetValueDescription.error.length = The asset description must be 160 characters or less
