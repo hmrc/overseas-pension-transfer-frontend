@@ -280,3 +280,5 @@ GET        /transfer-details/asset-value-description                            
 POST       /transfer-details/asset-value-description                                  controllers.transferDetails.AssetValueDescriptionController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-asset-value-description                           controllers.transferDetails.AssetValueDescriptionController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-asset-value-description                           controllers.transferDetails.AssetValueDescriptionController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/add-other-assets                                         controllers.transferDetails.AddOtherAssetsController.onPageLoad()
