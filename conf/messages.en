@@ -551,3 +551,11 @@ assetValueDescription.error.required = Enter a description of the asset and how 
 assetValueDescription.error.length = The asset description must be 160 characters or less
 assetValueDescription.error.pattern = The asset description must only include  letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 assetValueDescription.change.hidden = Description of asset and valuation
+
+unquotedSharesClass.title = What class are these unquoted shares?
+unquotedSharesClass.heading = What class are these unquoted shares?
+unquotedSharesClass.checkYourAnswersLabel = Class of unquoted shares
+unquotedSharesClass.error.required = Enter the class of unquoted shares
+unquotedSharesClass.error.length = The class of unquoted shares must be 160 characters or less
+unquotedSharesClass.change.hidden = Class of unquoted shares
+unquotedSharesClass.error.pattern = The class of unquoted shares must only include letters, spaces, apostrophes and hyphens
