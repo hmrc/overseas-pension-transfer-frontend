@@ -27,6 +27,9 @@ class PropertyValueDescriptionFormProviderSpec extends StringFieldBehaviours {
   val maxLength                = 160
   val descriptionRegex: String = """^[A-Za-z0-9 \-,.&'/]+$"""
 
+  implicit override val generatorDrivenConfig: PropertyCheckConfiguration =
+    PropertyCheckConfiguration(minSuccessful = 1000)
+
   val form = new PropertyValueDescriptionFormProvider()()
 
   ".value" - {
