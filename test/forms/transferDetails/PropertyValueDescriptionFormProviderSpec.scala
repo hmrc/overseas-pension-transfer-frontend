@@ -37,6 +37,8 @@ class PropertyValueDescriptionFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       stringsMatchingRegex(descriptionRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
+
     )
 
     behave like fieldThatRejectsInvalidCharacters(
