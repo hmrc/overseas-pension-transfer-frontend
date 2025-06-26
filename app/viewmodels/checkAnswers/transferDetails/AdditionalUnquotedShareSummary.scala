@@ -22,11 +22,21 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import utils.AppUtils
+import models.ShareType
+import pages.transferDetails.UnquotedShareCompanyNamePage
+import models.{ShareEntry, ShareType}
+import play.api.libs.json._
+//import play.api.routing.Router.empty.routes
+import play.twirl.api.HtmlFormat
+import services.TransferDetailsService
 
-object AdditionalUnquotedShareSummary {
+object AdditionalUnquotedShareSummary extends AppUtils {
 
   def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
-    val valueText = messages("additionalUnquotedShare.summary.value", 1) // TODO process to count the number
+
+    val count: Int = countShares(answers, ShareType.Unquoted)
+    val valueText  = messages("additionalUnquotedShare.summary.value", count)
 
     SummaryListRowViewModel(
       key     = "additionalUnquotedShare.checkYourAnswersLabel",
@@ -38,3 +48,53 @@ object AdditionalUnquotedShareSummary {
     )
   }
 }
+/*
+  def rows(userAnswers: UserAnswers, transferDetailsService: TransferDetailsService)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val path = sharesPathForType(ShareType.Unquoted)
+
+    userAnswers.data
+      .validate(path.read[List[ShareEntry]])
+      .getOrElse(Nil)
+      .filter(_.companyName.trim != "")
+      .zipWithIndex
+      .map { case (entry, index) =>
+        SummaryListRowViewModel(
+          key   = "SomeKey",
+          value = ValueViewModel(HtmlFormat.escape(entry.companyName).toString)
+        )
+      }
+  }
+  def rows(userAnswers: UserAnswers, transferDetailsService: TransferDetailsService)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val path = sharesPathForType(ShareType.Unquoted)
+
+    userAnswers.data
+      .validate(path.read[List[ShareEntry]])
+      .getOrElse(Nil)
+      .zipWithIndex
+      .flatMap { case (entry, index) =>
+        // println(s"[rows] Index: $index, CompanyName: ${entry.companyName}")
+        row(entry, index)
+      }
+  }
+
+  def row(entry: ShareEntry, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    Option(entry.companyName)
+      .map { validName =>
+        SummaryListRowViewModel(
+          value   = ValueViewModel(HtmlFormat.escape(validName.trim).toString),
+          actions = Seq(
+            ActionItemViewModel("site.change", routes.UnquotedShareCYAController.onPageLoad().url)
+              .withVisuallyHiddenText(messages("unquotedShareCompanyName.change.hidden")),
+            ActionItemViewModel("site.remove", routes.UnquotedSharesConfirmRemovalController.onPageLoad().url)
+              .withVisuallyHiddenText(messages("unquotedShareCompanyName.remove.hidden"))
+          )
+        )
+      }
+}*/
+/*,
+         actions = Seq(
+           ActionItemViewModel("site.change", routes.UnquotedShareCYAController.onPageLoad().url)
+             .withVisuallyHiddenText(messages("unquotedShareCompanyName.change.hidden")),
+           ActionItemViewModel("site.remove", routes.UnquotedSharesConfirmRemovalController.onPageLoad().url)
+             .withVisuallyHiddenText(messages("unquotedShareCompanyName.remove.hidden"))
+         )*/

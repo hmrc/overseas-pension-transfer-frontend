@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
@@ -30,13 +31,14 @@
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
+    govukSummaryList: GovukSummaryList,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
     govukButton: GovukButton,
     qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, count: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("additionalUnquotedShare.title"))) {
 
@@ -47,8 +49,7 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("additionalUnquotedShare.heading1")</h1>
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        <h1 class="govuk-heading-l">@messages("additionalUnquotedShare.heading1", count)</h1>
 
         <h1 class="govuk-heading-m">@messages("additionalUnquotedShare.heading2")</h1>
 

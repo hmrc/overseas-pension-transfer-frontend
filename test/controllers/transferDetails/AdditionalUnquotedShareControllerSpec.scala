@@ -46,7 +46,7 @@ class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase wi
         val view = application.injector.instanceOf[AdditionalUnquotedShareView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, 0)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
     /*
@@ -117,7 +117,7 @@ class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, 0)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

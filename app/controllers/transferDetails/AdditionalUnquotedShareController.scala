@@ -18,11 +18,16 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.transferDetails.AdditionalUnquotedShareFormProvider
-import models.{CheckMode, Mode, NormalMode}
+import models.{CheckMode, Mode, NormalMode, ShareType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AppUtils
+import viewmodels.checkAnswers.transferDetails.AdditionalUnquotedShareSummary
 import views.html.transferDetails.AdditionalUnquotedShareView
+import viewmodels.govuk.summarylist._
+import uk.gov.hmrc.hmrcfrontend.views.html.components.AddToAList
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,25 +39,29 @@ class AdditionalUnquotedShareController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: AdditionalUnquotedShareFormProvider,
+    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     view: AdditionalUnquotedShareView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  val form = formProvider()
+  val form      = formProvider()
+  val shareType = ShareType.Unquoted
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val preparedForm = if (mode == CheckMode) form.fill(false) else form
+      // val list         = SummaryListViewModel(AdditionalUnquotedShareSummary.rows(request.userAnswers, transferDetailsService))
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, countShares(request.userAnswers, shareType)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
+      // val list = SummaryListViewModel(AdditionalUnquotedShareSummary.rows(request.userAnswers, transferDetailsService))
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, countShares(request.userAnswers, shareType)))),
         value => {
           val redirectTarget = if (value) {
             // TODO might have to do something for a new UnquotedShares
