@@ -24,4 +24,5 @@ object AddQuotedSharePage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+
 }

@@ -30,4 +30,7 @@ case object AdditionalQuotedSharePage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
 }
