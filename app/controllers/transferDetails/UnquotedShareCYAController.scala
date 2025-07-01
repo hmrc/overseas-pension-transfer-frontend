@@ -18,7 +18,6 @@ package controllers.transferDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
-import models.{NormalMode, ShareEntry, ShareType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -26,7 +25,6 @@ import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.UnquotedShareSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.UnquotedShareCYAView
-import play.api.libs.json._
 import repositories.SessionRepository
 import services.TransferDetailsService
 
@@ -45,18 +43,18 @@ class UnquotedShareCYAController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  private val shareType = ShareType.Unquoted
-  private val actions   = (identify andThen getData andThen requireData andThen displayData)
+  // private val shareType = ShareType.Unquoted
+  private val actions = (identify andThen getData andThen requireData andThen displayData)
 
-  def onPageLoad(): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(UnquotedShareSummary.rows(request.userAnswers))
+  def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
+    val list = SummaryListViewModel(UnquotedShareSummary.rows(request.userAnswers, index))
 
-    Ok(view(list))
+    Ok(view(list, index))
   }
 
-  def onSubmit(): Action[AnyContent] = actions.async { implicit request =>
-    val path = sharesPathForType(shareType)
-
+  def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
+    Redirect(routes.AdditionalUnquotedShareController.onPageLoad())
+  /*    val path = sharesPathForType(shareType)
     transferDetailsService.unquotedShareBuilder(request.userAnswers) match {
       case Some(newUnquotedShare) =>
         val existingUnquotedShares = request.userAnswers.data
@@ -78,6 +76,6 @@ class UnquotedShareCYAController @Inject() (
 
       case None =>
         Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-    }
+    }*/
   }
 }

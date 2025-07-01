@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
-import models.{ShareType, UserAnswers}
+import models.UserAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -30,7 +30,7 @@ object AdditionalUnquotedShareSummary extends AppUtils {
 
   def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
 
-    val count: Int = countShares(answers, ShareType.Unquoted)
+    val count: Int = answers.get(UnquotedShares).getOrElse(Nil).size
     val valueText  = messages("additionalUnquotedShare.summary.value", count)
 
     SummaryListRowViewModel(
@@ -43,15 +43,15 @@ object AdditionalUnquotedShareSummary extends AppUtils {
     )
   }
 
-  def rows(answers: UserAnswers): Seq[ListItem] =
-    answers.get(UnquotedShares).getOrElse(Nil).zipWithIndex.map {
+  def rows(answers: UserAnswers): Seq[ListItem] = {
+    val maybeEntries = answers.get(UnquotedShares)
+    maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(
           name      = entry.companyName,
-          // changeUrl = CheckChildDetailsPage(Index(index)).changeLink(waypoints, sourcePage).url,
-          changeUrl = routes.UnquotedShareCYAController.onPageLoad().url, // TODO should take index and change for that
-          // removeUrl = routes.RemoveChildController.onPageLoad(waypoints, Index(index)).url
-          removeUrl = routes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url // TODO should remove the indexed one
+          changeUrl = routes.UnquotedShareCYAController.onPageLoad(index).url,
+          removeUrl = routes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url
         )
     }
+  }
 }

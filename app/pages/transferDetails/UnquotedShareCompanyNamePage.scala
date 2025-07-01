@@ -17,23 +17,23 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, NormalMode, TaskCategory, TypeOfAsset, UserAnswers}
+import models.{CheckMode, NormalMode, ShareEntry, TaskCategory, TypeOfAsset, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object UnquotedShareCompanyNamePage extends QuestionPage[String] {
+case class UnquotedShareCompanyNamePage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString \ index \ toString
 
-  override def toString: String = "unquotedShareCompanyName"
+  override def toString: String = ShareEntry.CompanyName
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.UnquotedShareValueController.onPageLoad(NormalMode)
+    routes.UnquotedShareValueController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.UnquotedShareCYAController.onPageLoad()
+    routes.UnquotedShareCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.UnquotedShareCompanyNameController.onPageLoad(CheckMode)
+    routes.UnquotedShareCompanyNameController.onPageLoad(CheckMode, index)
 }

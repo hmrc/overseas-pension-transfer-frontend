@@ -22,35 +22,14 @@ case class ShareEntry(
     companyName: String,
     valueOfShares: BigDecimal,
     numberOfShares: String,
-    classOfShares: String,
-    shareType: ShareType
+    classOfShares: String
   )
 
 object ShareEntry {
+  val CompanyName    = "companyName"
+  val ValueOfShares  = "valueOfShares"
+  val NumberOfShares = "numberOfShares"
+  val ClassOfShares  = "classOfShares"
+
   implicit val format: OFormat[ShareEntry] = Json.format[ShareEntry]
-}
-
-sealed trait ShareType {
-
-  override def toString: String = this match {
-    case ShareType.Quoted   => TypeOfAsset.QuotedShares.toString
-    case ShareType.Unquoted => TypeOfAsset.UnquotedShares.toString
-  }
-}
-
-object ShareType {
-  case object Quoted   extends ShareType
-  case object Unquoted extends ShareType
-
-  implicit val reads: Reads[ShareType] = Reads {
-    case JsString(TypeOfAsset.QuotedShares.toString)   => JsSuccess(Quoted)
-    case JsString(TypeOfAsset.UnquotedShares.toString) => JsSuccess(Unquoted)
-  }
-
-  implicit val writes: Writes[ShareType] = Writes {
-    case Quoted   => JsString(TypeOfAsset.QuotedShares.toString)
-    case Unquoted => JsString(TypeOfAsset.UnquotedShares.toString)
-  }
-
-  implicit val format: Format[ShareType] = Format(reads, writes)
 }

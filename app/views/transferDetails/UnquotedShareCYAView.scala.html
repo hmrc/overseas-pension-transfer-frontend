@@ -30,7 +30,7 @@
         qtNumber: QTNumber
 )
 
-@(list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
+@(list: SummaryList, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showPageFooter = true) {
 
@@ -39,9 +39,9 @@
 
     @govukSummaryList(list)
 
-    @formHelper(action = controllers.transferDetails.routes.UnquotedShareCYAController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.transferDetails.routes.UnquotedShareCYAController.onSubmit(index), Symbol("autoComplete") -> "off") {
         @govukButton(
-            ButtonViewModel(messages("site.saveAndContinue"))
+            ButtonViewModel(messages("site.continue"))
         )
     }
 }

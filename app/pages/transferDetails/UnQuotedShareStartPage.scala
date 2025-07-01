@@ -23,6 +23,8 @@ import play.api.mvc.Call
 
 object UnQuotedShareStartPage extends Page {
 
+  private val startIndex = 0
+
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode)
+    routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, startIndex)
 }

@@ -17,9 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import controllers.transferDetails.routes
 import forms.transferDetails.UnquotedSharesConfirmRemovalFormProvider
-import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest

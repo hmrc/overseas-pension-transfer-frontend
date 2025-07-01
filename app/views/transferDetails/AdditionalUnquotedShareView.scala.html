@@ -15,27 +15,17 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
-
-@import viewmodels.govuk.all._
 @import views.ViewUtils.title
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.LegendSize.Large
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-
-
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     hmrcAddToAList : HmrcAddToAList,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
     qtNumber: QTNumber
 )
 

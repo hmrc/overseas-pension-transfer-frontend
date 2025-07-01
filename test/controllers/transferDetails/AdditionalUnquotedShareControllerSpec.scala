@@ -49,25 +49,7 @@ class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase wi
         contentAsString(result) mustEqual view(form, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
-    /*
-    "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(AdditionalUnquotedSharePage, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, additionalUnquotedShareRoute)
-
-        val view = application.injector.instanceOf[AdditionalUnquotedShareView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-     */
     "must redirect to the next page when valid data is submitted" in {
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
@@ -81,26 +63,10 @@ class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, 0).url
       }
     }
-    /*
-    "must redirect to NormalMode if changed from false to true in CheckMode" in {
-      val previousAnswers = emptyUserAnswers.set(AdditionalUnquotedSharePage, false).success.value
-      val application     = applicationBuilder(userAnswers = Some(previousAnswers)).build()
 
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.AdditionalUnquotedShareController.onSubmit(CheckMode).url)
-            .withFormUrlEncodedBody("value" -> "true")
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode).url
-      }
-    }
-     */
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()

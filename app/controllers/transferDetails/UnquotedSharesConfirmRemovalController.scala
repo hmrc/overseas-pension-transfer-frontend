@@ -62,22 +62,4 @@ class UnquotedSharesConfirmRemovalController @Inject() (
       }
     )
   }
-
-  // TODO perhaps take to service method
-  /*private def doRemoval(userAnswers: UserAnswers, index: Int, assetType: TypeOfAsset): Future[Boolean] = {
-    val queryKey = assetType match {
-      case TypeOfAsset.UnquotedShares => UnquotedShares
-      case TypeOfAsset.QuotedShares   => QuotedShares
-      case other                      =>
-        throw new UnsupportedOperationException(s"Asset type not supported: $other")
-    }
-
-    val updatedList       = userAnswers.get(queryKey).getOrElse(Nil).patch(index, Nil, 1)
-    val updatedAnswersTry = userAnswers.set(queryKey, updatedList)
-
-    updatedAnswersTry match {
-      case Success(updatedAnswers) => sessionRepository.set(updatedAnswers)
-      case Failure(_)              => Future.successful(false)
-    }
-  }*/
 }

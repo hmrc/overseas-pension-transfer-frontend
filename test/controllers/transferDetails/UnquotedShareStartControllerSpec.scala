@@ -17,13 +17,8 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import models.{CheckMode, NormalMode}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.transferDetails.OverseasTransferAllowancePage
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.transferDetails.UnquotedShareStartView
@@ -40,7 +35,7 @@ class UnquotedShareStartControllerSpec extends AnyFreeSpec with SpecBase {
         val request  = FakeRequest(GET, routes.UnquotedShareStartController.onPageLoad().url)
         val result   = route(application, request).value
         val view     = application.injector.instanceOf[UnquotedShareStartView]
-        val nextPage = routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode).url
+        val nextPage = routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, 0).url
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString

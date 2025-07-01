@@ -22,6 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
 class UnquotedShareCompanyNamePageSpec extends AnyFreeSpec with Matchers {
+  private val index = 0
 
   ".nextPage" - {
 
@@ -31,7 +32,7 @@ class UnquotedShareCompanyNamePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to next page" in {
 
-        UnquotedShareCompanyNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.UnquotedShareValueController.onPageLoad(NormalMode)
+        UnquotedShareCompanyNamePage(index).nextPage(NormalMode, emptyAnswers) mustEqual routes.UnquotedShareValueController.onPageLoad(NormalMode, index)
       }
     }
 
@@ -39,7 +40,7 @@ class UnquotedShareCompanyNamePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        UnquotedShareCompanyNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.UnquotedShareCYAController.onPageLoad()
+        UnquotedShareCompanyNamePage(index).nextPage(CheckMode, emptyAnswers) mustEqual routes.UnquotedShareCYAController.onPageLoad(index)
       }
     }
   }

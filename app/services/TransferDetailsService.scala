@@ -16,8 +16,7 @@
 
 package services
 
-import models.{ShareEntry, ShareType, TypeOfAsset, UserAnswers}
-import pages.transferDetails._
+import models.{TypeOfAsset, UserAnswers}
 import queries.{QuotedShares, UnquotedShares}
 import repositories.SessionRepository
 
@@ -29,41 +28,22 @@ class TransferDetailsService @Inject() (
     sessionRepository: SessionRepository
   ) {
 
-  def quotedShareBuilder(answers: UserAnswers): Option[ShareEntry] = {
-    for {
-      name   <- answers.get(QuotedShareCompanyNamePage)
-      value  <- answers.get(QuotedShareValuePage)
-      number <- answers.get(NumberOfQuotedSharesPage)
-      sClass <- answers.get(ClassOfQuotedSharesPage)
-    } yield ShareEntry(name, value, number, sClass, ShareType.Quoted)
+  def assetCount(userAnswers: UserAnswers, assetType: TypeOfAsset): Int = {
+    userAnswers.get(getQueryKey(assetType)).getOrElse(Nil).size
   }
 
-  def unquotedShareBuilder(answers: UserAnswers): Option[ShareEntry] = {
-    for {
-      name   <- answers.get(UnquotedShareCompanyNamePage)
-      value  <- answers.get(UnquotedShareValuePage)
-      number <- answers.get(NumberOfUnquotedSharesPage)
-      sClass <- answers.get(UnquotedSharesClassPage)
-    } yield ShareEntry(name, value, number, sClass, ShareType.Unquoted)
-  }
-
-  def clearUnquotedShareFields(userAnswers: UserAnswers): UserAnswers = {
-    userAnswers
-      .remove(UnquotedShareCompanyNamePage)
-      .flatMap(_.remove(UnquotedShareValuePage))
-      .flatMap(_.remove(NumberOfUnquotedSharesPage))
-      .flatMap(_.remove(UnquotedSharesClassPage))
-      .getOrElse(userAnswers)
-  }
-
-  def doAssetRemoval(userAnswers: UserAnswers, index: Int, assetType: TypeOfAsset): Future[Boolean] = {
+  private def getQueryKey(assetType: TypeOfAsset) = {
     val queryKey = assetType match {
       case TypeOfAsset.UnquotedShares => UnquotedShares
       case TypeOfAsset.QuotedShares   => QuotedShares
       case other                      =>
         throw new UnsupportedOperationException(s"Asset type not supported: $other")
     }
+    queryKey
+  }
 
+  def doAssetRemoval(userAnswers: UserAnswers, index: Int, assetType: TypeOfAsset): Future[Boolean] = {
+    val queryKey          = getQueryKey(assetType)
     val updatedList       = userAnswers.get(queryKey).getOrElse(Nil).patch(index, Nil, 1)
     val updatedAnswersTry = userAnswers.set(queryKey, updatedList)
 
