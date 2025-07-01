@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package forms.transferDetails
 
-import models.UserAnswers
-import pages.Page
-import play.api.mvc.Call
+import forms.mappings.{Mappings, Regex}
+import play.api.data.Form
 
-object AddQuotedSharePage extends Page {
+import javax.inject.Inject
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+class UnquotedSharesClassFormProvider @Inject() extends Mappings with Regex {
 
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("unquotedSharesClass.error.required")
+        .verifying(maxLength(160, "unquotedSharesClass.error.length"))
+        .verifying(regexp(classRegex, "unquotedSharesClass.error.pattern"))
+    )
 }

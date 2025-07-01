@@ -19,31 +19,25 @@ package forms.transferDetails
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class AssetValueDescriptionFormProviderSpec extends StringFieldBehaviours {
+class UnquotedSharesClassFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey              = "assetValueDescription.error.required"
-  val lengthKey                = "assetValueDescription.error.length"
-  val patternKey               = "assetValueDescription.error.pattern"
-  val maxLength                = 160
-  val descriptionRegex: String = """^[A-Za-z0-9 \-,.&'/]+$"""
+  val form = new UnquotedSharesClassFormProvider()()
 
-  val form = new AssetValueDescriptionFormProvider()()
+  val classRegex: String = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
-  ".value" - {
+  ".unquotedShareClass" - {
+
+    val requiredKey = "unquotedSharesClass.error.required"
+    val lengthKey   = "unquotedSharesClass.error.length"
+    val patternKey  = "unquotedSharesClass.error.pattern"
+    val maxLength   = 160
 
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsMatchingRegex(descriptionRegex, maybeMaxLength = Some(maxLength))
-        .suchThat(_.trim.nonEmpty)
-    )
-
-    behave like fieldThatRejectsInvalidCharacters(
-      form,
-      fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(descriptionRegex))
+      stringsWithMaxLength(maxLength)
     )
 
     behave like fieldWithMaxLength(
@@ -57,6 +51,13 @@ class AssetValueDescriptionFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError   = FormError(fieldName, patternKey, Seq(classRegex)),
+      maybeMaxLength = Some(maxLength)
     )
   }
 }

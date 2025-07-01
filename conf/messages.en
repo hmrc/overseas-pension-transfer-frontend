@@ -552,6 +552,21 @@ assetValueDescription.error.length = The asset description must be 160 character
 assetValueDescription.error.pattern = The asset description must only include  letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 assetValueDescription.change.hidden = Description of asset and valuation
 
+unquotedSharesClass.title = What class are these unquoted shares?
+unquotedSharesClass.heading = What class are these unquoted shares?
+unquotedSharesClass.checkYourAnswersLabel = Class of unquoted shares
+unquotedSharesClass.error.required = Enter the class of unquoted shares
+unquotedSharesClass.error.length = The class of unquoted shares must be 160 characters or less
+unquotedSharesClass.change.hidden = Class of unquoted shares
+unquotedSharesClass.error.pattern = The class of unquoted shares must only include letters, spaces, apostrophes and hyphens
+
+additionalQuotedShare.title = additionalQuotedShare
+additionalQuotedShare.heading = You have added 1 quoted share
+additionalQuotedShare.checkYourAnswersLabel = additionalQuotedShare
+additionalQuotedShare.error.required = Please select an option
+additionalQuotedShare.change.hidden = AdditionalQuotedShare
+additionalQuotedShare.addMore = Do you need to add another quoted share?
+
 addOtherAssets.title = Add other assets
 addOtherAssets.heading = Add other assets
 addOtherAssets.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.
