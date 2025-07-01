@@ -285,3 +285,8 @@ GET        /transfer-details/unquoted-shares-class                              
 POST       /transfer-details/unquoted-shares-class                                                controllers.transferDetails.UnquotedSharesClassController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-unquoted-shares-class                                         controllers.transferDetails.UnquotedSharesClassController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-unquoted-shares-class                                         controllers.transferDetails.UnquotedSharesClassController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/additional-quoted-share                                              controllers.transferDetails.AdditionalQuotedShareController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/additional-quoted-share                                              controllers.transferDetails.AdditionalQuotedShareController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-additional-quoted-share                                       controllers.transferDetails.AdditionalQuotedShareController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-additional-quoted-share                                       controllers.transferDetails.AdditionalQuotedShareController.onSubmit(mode: Mode = CheckMode)
