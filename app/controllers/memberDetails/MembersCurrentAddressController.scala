@@ -19,6 +19,7 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.Mode
+import models.address.MembersCurrentAddress
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -53,7 +54,7 @@ class MembersCurrentAddressController @Inject() (
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(MembersCurrentAddressPage) match {
         case None          => form
-        case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(models.address.MembersCurrentAddress.fromAddress(address)))
+        case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(MembersCurrentAddress(address.base)))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
       Ok(view(preparedForm, countrySelectViewModel, mode))

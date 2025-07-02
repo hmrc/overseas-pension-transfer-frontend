@@ -16,42 +16,50 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import base.SpecBase
-import models.address.MembersLastUKAddress
+import base.AddressBase
+import models.address.{BaseAddress, Country, MembersLastUKAddress}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MembersLastUKAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class MembersLastUKAddressSummarySpec extends AnyFreeSpec with SpecBase {
+class MembersLastUKAddressSummarySpec extends AnyFreeSpec with AddressBase {
 
   "MembersLastUkAddress Summary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a row with all fields present" in {
-      val address = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
+    "must return a row with all fields present except country" in {
+      val address = MembersLastUKAddress(
+        BaseAddress(
+          line1    = "Line1",
+          line2    = "Line2",
+          line3    = Some("Line3"),
+          line4    = Some("Line4"),
+          country  = Country("GB", "United Kingdom"),
+          postcode = Some("Postcode")
+        )
+      )
 
       val answers = emptyUserAnswers.set(MembersLastUKAddressPage, address).success.value
-
-      val row = MembersLastUKAddressSummary.row(answers)
+      val row     = MembersLastUKAddressSummary.row(answers)
 
       row mustBe defined
       row.get.key.content.asHtml.body must include("membersLastUKAddress.checkYourAnswersLabel")
       row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Line3<br>Line4<br>Postcode")
     }
 
-    "must return a row with only required fields present" in {
+    "must return a row with only required fields present except country" in {
       val address = MembersLastUKAddress(
-        addressLine1 = "Line1",
-        addressLine2 = "Line2",
-        addressLine3 = None,
-        addressLine4 = None,
-        rawPostcode  = "Postcode"
+        BaseAddress(
+          line1    = "Line1",
+          line2    = "Line2",
+          country  = Country("GB", "United Kingdom"),
+          postcode = Some("Postcode")
+        )
       )
 
       val answers = emptyUserAnswers.set(MembersLastUKAddressPage, address).success.value
-
-      val row = MembersLastUKAddressSummary.row(answers)
+      val row     = MembersLastUKAddressSummary.row(answers)
 
       row mustBe defined
       row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Postcode")

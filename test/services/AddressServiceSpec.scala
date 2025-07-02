@@ -47,17 +47,16 @@ class AddressServiceSpec
   private val service = new AddressService(mockCountryService, mockAddressLookupConnector)
 
   ".propertyAddress" - {
-
     "must map the form data (including postcode and PO box)" in {
       when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
 
       val formData = PropertyAddressFormData(
-        addressLine1 = propertyAddress.addressLine1,
-        addressLine2 = propertyAddress.addressLine2,
-        addressLine3 = propertyAddress.addressLine3,
-        addressLine4 = propertyAddress.addressLine4,
-        countryCode  = propertyAddress.countryCode.code,
-        postcode     = propertyAddress.postcode
+        addressLine1 = propertyAddress.base.line1,
+        addressLine2 = propertyAddress.base.line2,
+        addressLine3 = propertyAddress.base.line3,
+        addressLine4 = propertyAddress.base.line4,
+        countryCode  = propertyAddress.base.country.code,
+        postcode     = propertyAddress.base.postcode
       )
 
       service.propertyAddress(formData).value mustBe propertyAddress
@@ -66,20 +65,17 @@ class AddressServiceSpec
 
   ".schemeManagersAddress" - {
     val formData = SchemeManagersAddressFormData(
-      addressLine1 = schemeManagersAddress.addressLine1,
-      addressLine2 = schemeManagersAddress.addressLine2,
-      addressLine3 = schemeManagersAddress.addressLine3,
-      addressLine4 = schemeManagersAddress.addressLine4,
-      addressLine5 = schemeManagersAddress.addressLine5,
-      countryCode  = schemeManagersAddress.countryCode.code
+      addressLine1 = schemeManagersAddress.base.line1,
+      addressLine2 = schemeManagersAddress.base.line2,
+      addressLine3 = schemeManagersAddress.base.line3,
+      addressLine4 = schemeManagersAddress.base.line4,
+      addressLine5 = schemeManagersAddress.base.line5,
+      countryCode  = schemeManagersAddress.base.country.code
     )
 
     "must construct a SchemeManagersAddress when the country exists" in {
       when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
-
-      val result = service.schemeManagersAddress(formData).value
-
-      result mustBe schemeManagersAddress
+      service.schemeManagersAddress(formData).value mustBe schemeManagersAddress
     }
 
     "must return None when the country code is unknown" in {
@@ -91,17 +87,16 @@ class AddressServiceSpec
   }
 
   ".qropsAddress" - {
-
     "must construct a QROPSAddress when the country exists" in {
       when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
 
       val formData = QROPSAddressFormData(
-        addressLine1 = qropsAddress.addressLine1,
-        addressLine2 = qropsAddress.addressLine2,
-        addressLine3 = qropsAddress.addressLine3,
-        addressLine4 = qropsAddress.addressLine4,
-        addressLine5 = qropsAddress.addressLine5,
-        countryCode  = qropsAddress.countryCode.code
+        addressLine1 = qropsAddress.base.line1,
+        addressLine2 = qropsAddress.base.line2,
+        addressLine3 = qropsAddress.base.line3,
+        addressLine4 = qropsAddress.base.line4,
+        addressLine5 = qropsAddress.base.line5,
+        countryCode  = qropsAddress.base.country.code
       )
 
       service.qropsAddress(formData).value mustBe qropsAddress
@@ -109,18 +104,17 @@ class AddressServiceSpec
   }
 
   ".membersCurrentAddress" - {
-
     "must map the form data (including postcode and PO box)" in {
       when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
 
       val formData = MembersCurrentAddressFormData(
-        addressLine1 = membersCurrentAddress.addressLine1,
-        addressLine2 = membersCurrentAddress.addressLine2,
-        addressLine3 = membersCurrentAddress.addressLine3,
-        addressLine4 = membersCurrentAddress.addressLine4,
-        countryCode  = membersCurrentAddress.countryCode.code,
-        postcode     = membersCurrentAddress.postcode,
-        poBox        = membersCurrentAddress.poBox
+        addressLine1 = membersCurrentAddress.base.line1,
+        addressLine2 = membersCurrentAddress.base.line2,
+        addressLine3 = membersCurrentAddress.base.line3,
+        addressLine4 = membersCurrentAddress.base.line4,
+        countryCode  = membersCurrentAddress.base.country.code,
+        postcode     = membersCurrentAddress.base.postcode,
+        poBox        = membersCurrentAddress.base.poBox
       )
 
       service.membersCurrentAddress(formData).value mustBe membersCurrentAddress
@@ -128,7 +122,6 @@ class AddressServiceSpec
   }
 
   ".membersLastUkAddressLookup" - {
-
     "must return Some(FoundAddressSet) when the connector responds successfully" in {
       val successResponse = AddressLookupSuccessResponse(connectorPostcode, recordSet)
 
@@ -151,14 +144,12 @@ class AddressServiceSpec
   }
 
   ".addressIds" - {
-
     "must return the ids from the FoundAddressSet in order" in {
       service.addressIds(foundAddresses) mustBe validIds
     }
   }
 
   ".findAddressById" - {
-
     "must return Some(address) when the id exists" in {
       service.findAddressById(foundAddresses, selectedAddress.id).value mustBe selectedAddress
     }

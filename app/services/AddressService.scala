@@ -29,56 +29,82 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddressService @Inject() (countryService: CountryService, addressLookupConnector: AddressLookupConnector)(implicit ex: ExecutionContext) {
+class AddressService @Inject() (
+    countryService: CountryService,
+    addressLookupConnector: AddressLookupConnector
+  )(implicit ec: ExecutionContext
+  ) {
+
+  private def buildBaseAddress(
+      line1: String,
+      line2: String,
+      line3: Option[String],
+      line4: Option[String],
+      line5: Option[String],
+      countryCode: String,
+      postcode: Option[String],
+      poBox: Option[String]
+    ): Option[BaseAddress] =
+    countryService.find(countryCode).map { country =>
+      BaseAddress(
+        line1    = line1,
+        line2    = line2,
+        line3    = line3,
+        line4    = line4,
+        line5    = line5,
+        country  = country,
+        postcode = postcode,
+        poBox    = poBox
+      )
+    }
 
   def propertyAddress(data: PropertyAddressFormData): Option[PropertyAddress] =
-    countryService.find(data.countryCode).map { country =>
-      PropertyAddress(
-        data.addressLine1,
-        data.addressLine2,
-        data.addressLine3,
-        data.addressLine4,
-        country,
-        data.postcode
-      )
-    }
+    buildBaseAddress(
+      data.addressLine1,
+      data.addressLine2,
+      data.addressLine3,
+      data.addressLine4,
+      None,
+      data.countryCode,
+      data.postcode,
+      None
+    ).map(PropertyAddress(_))
 
   def schemeManagersAddress(data: SchemeManagersAddressFormData): Option[SchemeManagersAddress] =
-    countryService.find(data.countryCode).map { country =>
-      SchemeManagersAddress(
-        data.addressLine1,
-        data.addressLine2,
-        data.addressLine3,
-        data.addressLine4,
-        data.addressLine5,
-        country
-      )
-    }
+    buildBaseAddress(
+      data.addressLine1,
+      data.addressLine2,
+      data.addressLine3,
+      data.addressLine4,
+      data.addressLine5,
+      data.countryCode,
+      None,
+      None
+    ).map(SchemeManagersAddress(_))
 
   def qropsAddress(data: QROPSAddressFormData): Option[QROPSAddress] =
-    countryService.find(data.countryCode).map { country =>
-      QROPSAddress(
-        data.addressLine1,
-        data.addressLine2,
-        data.addressLine3,
-        data.addressLine4,
-        data.addressLine5,
-        country
-      )
-    }
+    buildBaseAddress(
+      data.addressLine1,
+      data.addressLine2,
+      data.addressLine3,
+      data.addressLine4,
+      data.addressLine5,
+      data.countryCode,
+      None,
+      None
+    ).map(QROPSAddress(_))
 
   def membersCurrentAddress(data: MembersCurrentAddressFormData): Option[MembersCurrentAddress] =
-    countryService.find(data.countryCode).map { country =>
-      MembersCurrentAddress(
-        data.addressLine1,
-        data.addressLine2,
-        data.addressLine3,
-        data.addressLine4,
-        country,
-        data.postcode,
-        data.poBox
-      )
-    }
+    buildBaseAddress(
+      data.addressLine1,
+      data.addressLine2,
+      data.addressLine3,
+      data.addressLine4,
+      None,
+      data.countryCode,
+      data.postcode,
+      data.poBox
+    ).map(MembersCurrentAddress(_))
 
   def membersLastUkAddressLookup(postcode: String)(implicit hc: HeaderCarrier): Future[Option[FoundAddressResponse]] =
     addressLookupConnector.lookup(postcode).map {
@@ -88,14 +114,16 @@ class AddressService @Inject() (countryService: CountryService, addressLookupCon
         None
     }
 
-  def addressIds(found: FoundAddressSet): Seq[String] = found.addresses.map(_.id)
+  def addressIds(found: FoundAddressSet): Seq[String] =
+    found.addresses.map(_.id)
 
   def findAddressById(found: FoundAddressSet, selectedId: String): Option[FoundAddress] =
     found.addresses.find(_.id == selectedId)
 
   def clearAddressLookups(answers: UserAnswers): Future[UserAnswers] =
-    Future.fromTry(answers
-      .remove(MembersLastUkAddressLookupPage)
-      .flatMap(_.remove(MembersLastUkAddressSelectPage)))
-
+    Future.fromTry(
+      answers
+        .remove(MembersLastUkAddressLookupPage)
+        .flatMap(_.remove(MembersLastUkAddressSelectPage))
+    )
 }

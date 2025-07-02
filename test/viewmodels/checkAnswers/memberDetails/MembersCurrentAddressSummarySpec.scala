@@ -16,32 +16,33 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import base.SpecBase
+import base.{AddressBase, SpecBase}
 import models.address._
 import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
+class MembersCurrentAddressSummarySpec extends AnyFreeSpec with AddressBase {
 
   "MembersCurrentAddress Summary" - {
     implicit val messages: Messages = stubMessages()
 
     "must return a row with all fields present" in {
       val address = MembersCurrentAddress(
-        addressLine1 = "Line1",
-        addressLine2 = "Line2",
-        addressLine3 = Some("Line3"),
-        addressLine4 = Some("Line4"),
-        postcode     = Some("Postcode"),
-        country      = Country("FI", "Finland"),
-        poBox        = Some("POBox")
+        BaseAddress(
+          line1    = "Line1",
+          line2    = "Line2",
+          line3    = Some("Line3"),
+          line4    = Some("Line4"),
+          country  = Country("FI", "Finland"),
+          postcode = Some("Postcode"),
+          poBox    = Some("POBox")
+        )
       )
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
-
-      val row = MembersCurrentAddressSummary.row(answers)
+      val row     = MembersCurrentAddressSummary.row(answers)
 
       row mustBe defined
       row.get.key.content.asHtml.body must include("membersCurrentAddress.checkYourAnswersLabel")
@@ -49,15 +50,12 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
     }
 
     "must return a row with only required fields present" in {
-
       val address = MembersCurrentAddress(
-        addressLine1 = "Line1",
-        addressLine2 = "Line2",
-        addressLine3 = None,
-        addressLine4 = None,
-        postcode     = None,
-        country      = Country("FI", "Finland"),
-        poBox        = None
+        BaseAddress(
+          line1   = "Line1",
+          line2   = "Line2",
+          country = Country("FI", "Finland")
+        )
       )
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
@@ -67,7 +65,8 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
       row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "null"
     }
-//TODO: This test should be fixed once it is decided how to handle whitespace in optional fields
+
+    // TODO: This test should be fixed once it is decided how to handle whitespace in optional fields
 
 //    "must not include blank or whitespace-only fields" in {
 //

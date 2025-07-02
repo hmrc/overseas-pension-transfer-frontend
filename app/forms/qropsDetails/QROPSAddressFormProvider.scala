@@ -36,12 +36,12 @@ object QROPSAddressFormData {
 
   def fromDomain(address: QROPSAddress): QROPSAddressFormData =
     QROPSAddressFormData(
-      addressLine1 = address.addressLine1,
-      addressLine2 = address.addressLine2,
-      addressLine3 = address.addressLine3,
-      addressLine4 = address.addressLine4,
-      addressLine5 = address.addressLine5,
-      countryCode  = address.country.code
+      addressLine1 = address.base.line1,
+      addressLine2 = address.base.line2,
+      addressLine3 = address.base.line3,
+      addressLine4 = address.base.line4,
+      addressLine5 = address.base.line5,
+      countryCode  = address.base.country.code
     )
 }
 

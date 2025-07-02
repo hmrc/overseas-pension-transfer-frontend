@@ -56,7 +56,7 @@ class QROPSAddressController @Inject() (
     implicit request =>
       val preparedForm = request.userAnswers.get(QROPSAddressPage) match {
         case None          => form()
-        case Some(address) => form().fill(QROPSAddressFormData.fromDomain(QROPSAddress.fromAddress(address)))
+        case Some(address) => form().fill(QROPSAddressFormData.fromDomain(QROPSAddress(address.base)))
       }
 
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)

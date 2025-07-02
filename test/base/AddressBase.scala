@@ -16,6 +16,7 @@
 
 package base
 
+import forms.memberDetails.MembersLastUKAddressFormData
 import models.UserAnswers
 import models.address._
 import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
@@ -37,22 +38,11 @@ trait AddressBase extends SpecBase {
             lines       = List("2 Test Close"),
             town        = "Test Town",
             postcode    = "BB00 1BB",
-            subdivision = Some(Subdivision(
-              code = "GB-ENG",
-              name = "England"
-            )),
-            country     = Country(
-              code = "GB",
-              name = "United Kingdom"
-            )
+            subdivision = Some(Subdivision("GB-ENG", "England")),
+            country     = Country("GB", "United Kingdom")
           ),
           language             = "en",
-          localCustodian       = Some(
-            LocalCustodian(
-              code = 1760,
-              name = "Test Valley"
-            )
-          ),
+          localCustodian       = Some(LocalCustodian(1760, "Test Valley")),
           location             = Some(Seq(BigDecimal(-1.234), BigDecimal(50.678))),
           blpuState            = None,
           logicalState         = None,
@@ -70,22 +60,11 @@ trait AddressBase extends SpecBase {
             lines       = List("4 Test Close"),
             town        = "Test Town",
             postcode    = "BB00 1BB",
-            subdivision = Some(Subdivision(
-              code = "GB-ENG",
-              name = "England"
-            )),
-            country     = Country(
-              code = "GB",
-              name = "United Kingdom"
-            )
+            subdivision = Some(Subdivision("GB-ENG", "England")),
+            country     = Country("GB", "United Kingdom")
           ),
           language             = "en",
-          localCustodian       = Some(
-            LocalCustodian(
-              code = 1760,
-              name = "Test Valley"
-            )
-          ),
+          localCustodian       = Some(LocalCustodian(1760, "Test Valley")),
           location             = Some(Seq(BigDecimal(-1.234), BigDecimal(50.678))),
           blpuState            = None,
           logicalState         = None,
@@ -99,82 +78,105 @@ trait AddressBase extends SpecBase {
   val foundAddresses: FoundAddressSet =
     FoundAddressSet(
       searchedPostcode = "ZZ1 1ZZ",
-      addresses        =
-        Seq(
-          FoundAddress(
-            id      = "GB990091234514",
-            address = MembersLookupLastUkAddress(
+      addresses        = Seq(
+        FoundAddress(
+          id      = "GB990091234514",
+          address = MembersLookupLastUKAddress(
+            BaseAddress(
               line1    = "2 Other Place",
               line2    = "Some District",
               line3    = None,
               line4    = None,
+              line5    = None,
               postcode = Some("ZZ1 1ZZ"),
               country  = Countries.UK,
               poBox    = None
             )
-          ),
-          FoundAddress(
-            id      = "GB990091234515",
-            address = MembersLookupLastUkAddress(
+          )
+        ),
+        FoundAddress(
+          id      = "GB990091234515",
+          address = MembersLookupLastUKAddress(
+            BaseAddress(
               line1    = "3 Other Place",
               line2    = "Some District",
               line3    = None,
               line4    = None,
+              line5    = None,
               postcode = Some("ZZ1 1ZZ"),
               country  = Countries.UK,
               poBox    = None
             )
           )
         )
+      )
     )
 
   val membersCurrentAddress: MembersCurrentAddress = MembersCurrentAddress(
-    addressLine1 = "2 Other Place",
-    addressLine2 = "Some District",
-    addressLine3 = None,
-    addressLine4 = None,
-    postcode     = Some("ZZ1 1ZZ"),
-    country      = Countries.UK,
-    poBox        = None
+    BaseAddress(
+      line1    = "2 Other Place",
+      line2    = "Some District",
+      country  = Countries.UK,
+      postcode = Some("ZZ1 1ZZ")
+    )
   )
 
   val qropsAddress: QROPSAddress = QROPSAddress(
-    addressLine1 = "2 Other Place",
-    addressLine2 = "Some District",
-    addressLine3 = None,
-    addressLine4 = None,
-    addressLine5 = None,
-    country      = Countries.UK
+    BaseAddress(
+      line1   = "2 Other Place",
+      line2   = "Some District",
+      line3   = None,
+      line4   = None,
+      line5   = None,
+      country = Countries.UK
+    )
   )
 
+  val membersLastUKAddress: MembersLastUKAddress = MembersLastUKAddress(
+    BaseAddress(
+      line1    = "Line1",
+      line2    = "Line2",
+      line3    = Some("Line3"),
+      line4    = Some("Line4"),
+      country  = Countries.UK,
+      postcode = Some("Postcode")
+    )
+  )
+
+  val membersLastUKAddressFormData: MembersLastUKAddressFormData = MembersLastUKAddressFormData.fromDomain(membersLastUKAddress)
+
   val schemeManagersAddress: SchemeManagersAddress = SchemeManagersAddress(
-    addressLine1 = "2 Other Place",
-    addressLine2 = "Some District",
-    addressLine3 = None,
-    addressLine4 = None,
-    addressLine5 = None,
-    country      = Countries.UK
+    BaseAddress(
+      line1   = "2 Other Place",
+      line2   = "Some District",
+      line3   = None,
+      line4   = None,
+      line5   = None,
+      country = Countries.UK
+    )
   )
 
   val propertyAddress: PropertyAddress = PropertyAddress(
-    addressLine1 = "2 Other Place",
-    addressLine2 = "Some District",
-    addressLine3 = None,
-    addressLine4 = None,
-    postcode     = Some("ZZ1 1ZZ"),
-    country      = Countries.UK
+    BaseAddress(
+      line1    = "2 Other Place",
+      line2    = "Some District",
+      country  = Countries.UK,
+      postcode = Some("ZZ1 1ZZ")
+    )
   )
 
-  val addressFoundUserAnswers: UserAnswers = userAnswersMemberNameQtNumber.set(MembersLastUkAddressLookupPage, foundAddresses).success.value
+  val addressFoundUserAnswers: UserAnswers =
+    userAnswersMemberNameQtNumber.set(MembersLastUkAddressLookupPage, foundAddresses).success.value
 
   val selectedAddress: FoundAddress = foundAddresses.addresses.head
 
-  val addressSelectedUserAnswers: UserAnswers = addressFoundUserAnswers.set(MembersLastUkAddressSelectPage, selectedAddress).success.value
+  val addressSelectedUserAnswers: UserAnswers =
+    addressFoundUserAnswers.set(MembersLastUkAddressSelectPage, selectedAddress).success.value
 
   val validIds: Seq[String] = foundAddresses.addresses.map(_.id)
 
   val noAddressFound: NoAddressFound = NoAddressFound(searchedPostcode = "ZZ1 1ZZ")
 
-  val noAddressFoundUserAnswers: UserAnswers = userAnswersMemberNameQtNumber.set(MembersLastUkAddressLookupPage, noAddressFound).success.value
-
+  val noAddressFoundUserAnswers: UserAnswers =
+    userAnswersMemberNameQtNumber.set(MembersLastUkAddressLookupPage, noAddressFound).success.value
 }

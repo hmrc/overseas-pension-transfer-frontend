@@ -16,11 +16,10 @@
 
 package controllers.memberDetails
 
-import base.SpecBase
+import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MembersLastUKAddressFormProvider
 import models.NormalMode
-import models.address._
 import models.requests.DisplayRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -36,13 +35,14 @@ import views.html.memberDetails.MembersLastUKAddressView
 
 import scala.concurrent.Future
 
-class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MembersLastUKAddressControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
   private val formProvider = new MembersLastUKAddressFormProvider()
 
   private lazy val membersLastUKAddressRoute = routes.MembersLastUKAddressController.onPageLoad(NormalMode).url
 
-  private val postCode    = "AB1 2CD"
-  private val validAnswer = MembersLastUKAddress("1stLineAdd", "2ndLineAdd", Some("aTown"), Some("aCounty"), postCode)
+  private val postCode            = "AB1 2CD"
+  private val validAnswer         = membersLastUKAddress
+  private val validAnswerFormData = membersLastUKAddressFormData
 
   "MembersLastUKAddress Controller" - {
 
@@ -80,7 +80,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
-          form.fill(validAnswer),
+          form.fill(validAnswerFormData),
           NormalMode
         )(displayRequest, messages(application)).toString
       }

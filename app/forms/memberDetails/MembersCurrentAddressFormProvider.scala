@@ -38,13 +38,13 @@ object MembersCurrentAddressFormData {
 
   def fromDomain(address: MembersCurrentAddress): MembersCurrentAddressFormData =
     MembersCurrentAddressFormData(
-      addressLine1 = address.addressLine1,
-      addressLine2 = address.addressLine2,
-      addressLine3 = address.addressLine3,
-      addressLine4 = address.addressLine4,
-      countryCode  = address.country.code,
-      postcode     = address.postcode,
-      poBox        = address.poBox
+      addressLine1 = address.base.line1,
+      addressLine2 = address.base.line2,
+      addressLine3 = address.base.line3,
+      addressLine4 = address.base.line4,
+      countryCode  = address.base.country.code,
+      postcode     = address.base.postcode,
+      poBox        = address.base.poBox
     )
 }
 

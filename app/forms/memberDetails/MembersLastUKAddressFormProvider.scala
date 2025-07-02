@@ -24,12 +24,46 @@ import play.api.data.{Form, Forms}
 
 import javax.inject.Inject
 
+case class MembersLastUKAddressFormData(
+    addressLine1: String,
+    addressLine2: String,
+    addressLine3: Option[String],
+    addressLine4: Option[String],
+    postcode: String
+  )
+
+object MembersLastUKAddressFormData {
+
+  def toDomain(formData: MembersLastUKAddressFormData): MembersLastUKAddress =
+    MembersLastUKAddress(
+      BaseAddress(
+        line1    = formData.addressLine1,
+        line2    = formData.addressLine2,
+        line3    = formData.addressLine3,
+        line4    = formData.addressLine4,
+        line5    = None,
+        country  = Countries.UK,
+        postcode = Some(formData.postcode),
+        poBox    = None
+      )
+    )
+
+  def fromDomain(address: MembersLastUKAddress): MembersLastUKAddressFormData =
+    MembersLastUKAddressFormData(
+      addressLine1 = address.base.line1,
+      addressLine2 = address.base.line2,
+      addressLine3 = address.base.line3,
+      addressLine4 = address.base.line4,
+      postcode     = address.base.postcode.getOrElse("")
+    )
+}
+
 class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
 
   private val length35 = 35
   private val length16 = 16
 
-  def apply()(implicit request: DisplayRequest[_]): Form[MembersLastUKAddress] = {
+  def apply()(implicit request: DisplayRequest[_]): Form[MembersLastUKAddressFormData] = {
     val memberName = request.memberName
     Form(
       mapping(
@@ -52,7 +86,7 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
         "postcode"     -> text("membersLastUKAddress.error.postcode.required")
           .verifying(maxLength(length16, "membersLastUKAddress.error.postcode.length"))
           .verifying(regexp(postcodeRegex, "membersLastUKAddress.error.postcode.incorrect"))
-      )(MembersLastUKAddress.apply)(MembersLastUKAddress.unapply)
+      )(MembersLastUKAddressFormData.apply)(MembersLastUKAddressFormData.unapply)
     )
   }
 }

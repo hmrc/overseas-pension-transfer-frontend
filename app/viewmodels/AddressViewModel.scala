@@ -38,14 +38,14 @@ object AddressViewModel {
 
   implicit def fromAddress(address: Address): AddressViewModel = {
     AddressViewModel(
-      line1    = address.line1,
-      line2    = address.line2,
-      line3    = address.line3,
-      line4    = address.line4,
-      line5    = address.line5,
-      postcode = address.postcode,
-      country  = address.country.name,
-      poBox    = address.poBox
+      line1    = address.base.line1,
+      line2    = address.base.line2,
+      line3    = address.base.line3,
+      line4    = address.base.line4,
+      line5    = address.base.line5,
+      postcode = address.base.postcode,
+      country  = address.base.country.name,
+      poBox    = address.base.poBox
     )
   }
 

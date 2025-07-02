@@ -16,7 +16,7 @@
 
 package controllers.memberDetails
 
-import base.SpecBase
+import base.{AddressBase, SpecBase}
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberIsResidentUKFormProvider
 import models.address.MembersLastUKAddress
@@ -35,7 +35,7 @@ import views.html.memberDetails.MemberIsResidentUKView
 
 import scala.concurrent.Future
 
-class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MemberIsResidentUKControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
 
   private val formProvider = new MemberIsResidentUKFormProvider()
   private val form         = formProvider()
@@ -117,7 +117,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
     }
 
     "must remove previous data if changed from false to true in CheckMode" in {
-      val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
+      val lastUkAdd       = membersLastUKAddress
       val previousAnswers = emptyUserAnswers
         .set(MemberIsResidentUKPage, false).success.value
         .set(MemberHasEverBeenResidentUKPage, true).success.value

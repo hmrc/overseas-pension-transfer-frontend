@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
-import models.address.{Country, SchemeManagersAddress}
+import models.address.{BaseAddress, Country, SchemeManagersAddress}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.i18n.Messages
@@ -30,17 +30,18 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
     "must return a row with all fields present" in {
       val address = SchemeManagersAddress(
-        addressLine1 = "Line1",
-        addressLine2 = "Line2",
-        addressLine3 = Some("Line3"),
-        addressLine4 = Some("Line4"),
-        addressLine5 = Some("Line5"),
-        country      = Country("FI", "Finland")
+        BaseAddress(
+          line1   = "Line1",
+          line2   = "Line2",
+          line3   = Some("Line3"),
+          line4   = Some("Line4"),
+          line5   = Some("Line5"),
+          country = Country("FI", "Finland")
+        )
       )
 
       val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
-
-      val row = SchemeManagersAddressSummary.row(answers)
+      val row     = SchemeManagersAddressSummary.row(answers)
 
       row mustBe defined
       row.get.key.content.asHtml.body must include("schemeManagersAddress.checkYourAnswersLabel")
@@ -48,14 +49,12 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
     }
 
     "must return a row with only required fields present" in {
-
       val address = SchemeManagersAddress(
-        addressLine1 = "Line1",
-        addressLine2 = "Line2",
-        addressLine3 = None,
-        addressLine4 = None,
-        addressLine5 = None,
-        country      = Country("FI", "Finland")
+        BaseAddress(
+          line1   = "Line1",
+          line2   = "Line2",
+          country = Country("FI", "Finland")
+        )
       )
 
       val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
@@ -67,18 +66,19 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
     }
 
     "must not include blank or whitespace-only fields" in {
-
       val address = SchemeManagersAddress(
-        addressLine1 = "Line1",
-        addressLine2 = "Line2",
-        addressLine3 = Some("    "),
-        addressLine4 = Some(""),
-        addressLine5 = Some("  "),
-        country      = Country("FI", "Finland")
+        BaseAddress(
+          line1   = "Line1",
+          line2   = "Line2",
+          line3   = Some("    "),
+          line4   = Some(""),
+          line5   = Some("  "),
+          country = Country("FI", "Finland")
+        )
       )
-      val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
 
-      val row = SchemeManagersAddressSummary.row(answers)
+      val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
+      val row     = SchemeManagersAddressSummary.row(answers)
 
       row mustBe defined
       row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")

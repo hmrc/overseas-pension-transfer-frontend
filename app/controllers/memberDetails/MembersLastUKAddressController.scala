@@ -17,7 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
-import forms.memberDetails.MembersLastUKAddressFormProvider
+import forms.memberDetails.{MembersLastUKAddressFormData, MembersLastUKAddressFormProvider}
 import models.Mode
 import models.address._
 import pages.memberDetails.MembersLastUKAddressPage
@@ -47,12 +47,12 @@ class MembersLastUKAddressController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      def form(): Form[MembersLastUKAddress] = formProvider()
-      val userAnswers                        = request.userAnswers
-      val preparedForm                       = userAnswers.get(MembersLastUKAddressPage) match {
+      def form(): Form[MembersLastUKAddressFormData] = formProvider()
+      val userAnswers                                = request.userAnswers
+      val preparedForm                               = userAnswers.get(MembersLastUKAddressPage) match {
         case None          => form()
         case Some(address) => form().fill(
-            MembersLastUKAddress.fromAddress(address)
+            MembersLastUKAddressFormData.fromDomain(MembersLastUKAddress(address.base))
           )
       }
       Ok(view(preparedForm, mode))
@@ -60,14 +60,14 @@ class MembersLastUKAddressController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
-      def form(): Form[MembersLastUKAddress] = formProvider()
+      def form(): Form[MembersLastUKAddressFormData] = formProvider()
 
       form().bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, MembersLastUKAddressFormData.toDomain(value)))
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
       )

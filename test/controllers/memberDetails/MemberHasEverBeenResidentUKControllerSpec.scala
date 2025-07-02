@@ -16,7 +16,7 @@
 
 package controllers.memberDetails
 
-import base.SpecBase
+import base.{AddressBase, SpecBase}
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberHasEverBeenResidentUKFormProvider
 import models.address.MembersLastUKAddress
@@ -35,7 +35,7 @@ import views.html.memberDetails.MemberHasEverBeenResidentUKView
 
 import scala.concurrent.Future
 
-class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
 
   private val formProvider = new MemberHasEverBeenResidentUKFormProvider()
   private val form         = formProvider()
@@ -134,7 +134,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must remove MembersLastUKAddressPage if changed from true to false in CheckMode" in {
-      val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
+      val lastUkAdd       = membersLastUKAddress
       val previousAnswers = emptyUserAnswers
         .set(MemberHasEverBeenResidentUKPage, true).success.value
         .set(MembersLastUKAddressPage, lastUkAdd).success.value

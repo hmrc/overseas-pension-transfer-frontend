@@ -53,7 +53,7 @@ class PropertyAddressController @Inject() (
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(PropertyAddressPage) match {
         case None          => form
-        case Some(address) => form.fill(PropertyAddressFormData.fromDomain(models.address.PropertyAddress.fromAddress(address)))
+        case Some(address) => form.fill(PropertyAddressFormData.fromDomain(models.address.PropertyAddress(address.base)))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
       Ok(view(preparedForm, countrySelectViewModel, mode))

@@ -30,6 +30,9 @@ object Subdivision {
   implicit val format: OFormat[Subdivision] = Json.format[Subdivision]
 }
 
+/** Address typically represents a postal address. For UK addresses, 'town' will always be present. For non-UK addresses, 'town' may be absent and there may be
+  * an extra line instead.
+  */
 case class RawAddress(lines: List[String], town: String, postcode: String, subdivision: Option[Subdivision], country: Country)
 
 object RawAddress {
