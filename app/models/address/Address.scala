@@ -46,7 +46,8 @@ object Address {
   }
 
   implicit val writes: OWrites[Address] = OWrites(a =>
-      BaseAddress.writes.writes(a.base).as[JsObject] + ("type" -> Json.toJson(a.addressType)))
+    BaseAddress.writes.writes(a.base).as[JsObject] + ("type" -> Json.toJson(a.addressType))
+  )
 
   implicit val format: OFormat[Address] = OFormat(reads, writes)
 }
