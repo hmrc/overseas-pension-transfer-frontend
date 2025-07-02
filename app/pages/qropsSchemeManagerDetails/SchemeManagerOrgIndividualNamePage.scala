@@ -26,7 +26,7 @@ case object SchemeManagerOrgIndividualNamePage extends QuestionPage[PersonName] 
 
   override def path: JsPath = JsPath \ TaskCategory.SchemeManagerDetails.toString \ toString
 
-  override def toString: String = "orgIndividualName"
+  override def toString: String = "qropsIndividual"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.SchemeManagersAddressController.onPageLoad(NormalMode)

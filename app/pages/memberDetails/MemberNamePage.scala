@@ -26,7 +26,7 @@ case object MemberNamePage extends QuestionPage[PersonName] {
 
   override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
-  override def toString: String = "memberName"
+  override def toString: String = "name"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberNinoController.onPageLoad(NormalMode)
