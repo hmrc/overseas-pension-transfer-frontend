@@ -286,7 +286,12 @@ POST       /transfer-details/unquoted-shares-class                              
 GET        /transfer-details/change-unquoted-shares-class                                         controllers.transferDetails.UnquotedSharesClassController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-unquoted-shares-class                                         controllers.transferDetails.UnquotedSharesClassController.onSubmit(mode: Mode = CheckMode)
 
-GET        /transfer-details/add-additional-other-asset                                           controllers.transferDetails.AddAdditionalOtherAssetController.onPageLoad(mode: Mode = NormalMode)
-POST       /transfer-details/add-additional-other-asset                                           controllers.transferDetails.AddAdditionalOtherAssetController.onSubmit(mode: Mode = NormalMode)
-GET        /transfer-details/change-add-additional-other-asset                                    controllers.transferDetails.AddAdditionalOtherAssetController.onPageLoad(mode: Mode = CheckMode)
-POST       /transfer-details/change-add-additional-other-asset                                    controllers.transferDetails.AddAdditionalOtherAssetController.onSubmit(mode: Mode = CheckMode)
+GET        /transfer-details/additional-other-asset                                               controllers.transferDetails.AddAdditionalOtherAssetController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/additional-other-asset                                               controllers.transferDetails.AddAdditionalOtherAssetController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-additional-other-asset                                        controllers.transferDetails.AddAdditionalOtherAssetController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-additional-other-asset                                        controllers.transferDetails.AddAdditionalOtherAssetController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/additional-quoted-share                                              controllers.transferDetails.AdditionalQuotedShareController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/additional-quoted-share                                              controllers.transferDetails.AdditionalQuotedShareController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-additional-quoted-share                                       controllers.transferDetails.AdditionalQuotedShareController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-additional-quoted-share                                       controllers.transferDetails.AdditionalQuotedShareController.onSubmit(mode: Mode = CheckMode)

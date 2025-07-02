@@ -566,3 +566,10 @@ addAdditionalOtherAsset.question = Do you need to add another asset?
 addAdditionalOtherAsset.checkYourAnswersLabel = Do you need to add another asset?
 addAdditionalOtherAsset.error.required = Please select an option
 addAdditionalOtherAsset.change.hidden = Do you need to add another asset?
+
+additionalQuotedShare.title = additionalQuotedShare
+additionalQuotedShare.heading = You have added 1 quoted share
+additionalQuotedShare.checkYourAnswersLabel = additionalQuotedShare
+additionalQuotedShare.error.required = Please select an option
+additionalQuotedShare.change.hidden = AdditionalQuotedShare
+additionalQuotedShare.addMore = Do you need to add another quoted share?
