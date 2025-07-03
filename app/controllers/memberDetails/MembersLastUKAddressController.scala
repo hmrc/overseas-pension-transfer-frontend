@@ -43,7 +43,7 @@ class MembersLastUKAddressController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUKAddressView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
