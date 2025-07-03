@@ -68,14 +68,14 @@ object AddressViewModel {
   def formatAddressAsStringExcludingCountry(vm: AddressViewModel): String =
     formatAddressAsLines(vm, ukMode = true).mkString(", ")
 
-  def addressRadios(addresses: Seq[FoundAddress]): Seq[RadioItem] =
-    addresses.zipWithIndex.map { case (fa, index) =>
-      val vm               = AddressViewModel.fromAddress(fa.address)
-      val formattedAddress = formatAddressAsStringExcludingCountry(vm)
+  def addressRadios(idsWithAddresses: Seq[(String, Address)]): Seq[RadioItem] =
+    idsWithAddresses.zipWithIndex.map { case ((id, address), index) =>
+      val vm        = AddressViewModel.fromAddress(address)
+      val formatted = formatAddressAsStringExcludingCountry(vm)
 
       RadioItem(
-        content = Text(formattedAddress),
-        value   = Some(fa.id),
+        content = Text(formatted),
+        value   = Some(id),
         id      = Some(s"value_$index")
       )
     }

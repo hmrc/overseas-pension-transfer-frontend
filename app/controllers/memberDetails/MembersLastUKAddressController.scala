@@ -52,7 +52,7 @@ class MembersLastUKAddressController @Inject() (
       val preparedForm                       = userAnswers.get(MembersLastUKAddressPage) match {
         case None          => form()
         case Some(address) => form().fill(
-            MembersLastUKAddress.fromAddress(address)
+            address
           )
       }
       Ok(view(preparedForm, mode))

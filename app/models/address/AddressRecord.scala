@@ -58,15 +58,3 @@ case class AddressRecord(
 object AddressRecord {
   implicit val format: OFormat[AddressRecord] = Json.format
 }
-
-case class RecordSet(addresses: Seq[AddressRecord])
-
-object RecordSet {
-
-  def apply(addressListAsJson: JsValue): RecordSet = {
-    val addresses = addressListAsJson.as[Seq[AddressRecord]]
-    RecordSet(addresses)
-  }
-
-  implicit val format: OFormat[RecordSet] = Json.format
-}
