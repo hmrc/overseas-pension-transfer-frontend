@@ -566,3 +566,9 @@ additionalQuotedShare.checkYourAnswersLabel = additionalQuotedShare
 additionalQuotedShare.error.required = Please select an option
 additionalQuotedShare.change.hidden = AdditionalQuotedShare
 additionalQuotedShare.addMore = Do you need to add another quoted share?
+
+removeQuotedShares.title = Are you sure you want to remove these quoted shares?
+removeQuotedShares.heading = Are you sure you want to remove these quoted shares?
+removeQuotedShares.error.required = Please select an option
+removeQuotedShares.checkYourAnswersLabel = removeQuotedShares
+removeQuotedShares.change.hidden = RemoveQuotedShares
