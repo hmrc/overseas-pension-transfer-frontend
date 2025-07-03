@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 sealed trait AddressLookupResponse
 
 case class AddressLookupSuccessResponse(searchedPostcode: String, records: Seq[AddressRecord]) extends AddressLookupResponse
-case class AddressLookupErrorResponse(cause: Exception)                                   extends AddressLookupResponse
+case class AddressLookupErrorResponse(cause: Exception)                                        extends AddressLookupResponse
 
 class AddressLookupConnector @Inject() (appConfig: FrontendAppConfig, val http: HttpClientV2) extends Logging {
 

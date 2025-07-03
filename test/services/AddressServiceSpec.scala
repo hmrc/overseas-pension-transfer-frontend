@@ -129,14 +129,14 @@ class AddressServiceSpec
 
   ".membersLastUkAddressLookup" - {
 
-    "must return Some(FoundAddressSet) when the connector responds successfully" in {
-      val successResponse = AddressLookupSuccessResponse(connectorPostcode, recordSet)
+    "must return address records with searched postcode when the connector responds successfully" in {
+      val successResponse = AddressLookupSuccessResponse(connectorPostcode, addressRecordList)
 
       when(mockAddressLookupConnector.lookup(connectorPostcode))
         .thenReturn(Future.successful(successResponse))
 
       whenReady(service.membersLastUkAddressLookup(connectorPostcode)) { maybe =>
-        maybe.value mustBe FoundAddressResponse.fromRecordSet(connectorPostcode, recordSet)
+        maybe.value mustBe addressRecords
       }
     }
 
@@ -153,18 +153,18 @@ class AddressServiceSpec
   ".addressIds" - {
 
     "must return the ids from the FoundAddressSet in order" in {
-      service.addressIds(foundAddresses) mustBe validIds
+      service.addressIds(addressRecordList) mustBe validIds
     }
   }
 
   ".findAddressById" - {
 
     "must return Some(address) when the id exists" in {
-      service.findAddressById(foundAddresses, selectedAddress.id).value mustBe selectedAddress
+      service.findAddressById(addressRecordList, selectedRecord.id).value mustBe selectedRecord
     }
 
     "must return None when the id does not exist" in {
-      service.findAddressById(foundAddresses, "missing") mustBe None
+      service.findAddressById(addressRecordList, "missing") mustBe None
     }
   }
 }
