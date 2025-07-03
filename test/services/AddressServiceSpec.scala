@@ -56,7 +56,7 @@ class AddressServiceSpec
         addressLine2 = propertyAddress.addressLine2,
         addressLine3 = propertyAddress.addressLine3,
         addressLine4 = propertyAddress.addressLine4,
-        countryCode  = propertyAddress.countryCode.code,
+        countryCode  = propertyAddress.country.code,
         postcode     = propertyAddress.postcode
       )
 
@@ -71,7 +71,7 @@ class AddressServiceSpec
       addressLine3 = schemeManagersAddress.addressLine3,
       addressLine4 = schemeManagersAddress.addressLine4,
       addressLine5 = schemeManagersAddress.addressLine5,
-      countryCode  = schemeManagersAddress.countryCode.code
+      countryCode  = schemeManagersAddress.country.code
     )
 
     "must construct a SchemeManagersAddress when the country exists" in {
@@ -118,7 +118,7 @@ class AddressServiceSpec
         addressLine2 = membersCurrentAddress.addressLine2,
         addressLine3 = membersCurrentAddress.addressLine3,
         addressLine4 = membersCurrentAddress.addressLine4,
-        countryCode  = membersCurrentAddress.countryCode.code,
+        countryCode  = membersCurrentAddress.country.code,
         postcode     = membersCurrentAddress.postcode,
         poBox        = membersCurrentAddress.poBox
       )

@@ -20,11 +20,11 @@ import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 
 trait Address {
-  val line1: String
-  val line2: String
-  val line3: Option[String]
-  val line4: Option[String]
-  val line5: Option[String]
+  val addressLine1: String
+  val addressLine2: String
+  val addressLine3: Option[String]
+  val addressLine4: Option[String]
+  val addressLine5: Option[String]
   val country: Country
   val postcode: Option[String]
   val poBox: Option[String]

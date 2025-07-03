@@ -27,48 +27,24 @@ trait AddressBase extends SpecBase {
   val addressRecordList: Seq[AddressRecord] =
     Seq(
       AddressRecord(
-        id                   = "GB990091234514",
-        uprn                 = None,
-        parentUprn           = None,
-        usrn                 = None,
-        organisation         = Some("Fake Org Ltd"),
-        address              = RawAddress(
-          lines       = List("2 Other Place", "Some District"),
-          town        = "Faketown",
-          postcode    = "BB00 1BB",
-          subdivision = Some(Subdivision("ENG", "England")),
-          country     = Countries.UK
+        id      = "GB990091234514",
+        address = RawAddress(
+          lines    = List("2 Other Place", "Some District"),
+          town     = "Faketown",
+          postcode = "BB00 1BB",
+          country  = Countries.UK
         ),
-        language             = "en",
-        localCustodian       = Some(LocalCustodian(1234, "Fake Local Authority")),
-        location             = Some(Seq(BigDecimal("51.5074"), BigDecimal("-0.1278"))),
-        blpuState            = Some("1"),
-        logicalState         = Some("1"),
-        streetClassification = Some("RD"),
-        administrativeArea   = Some("Fake County"),
-        poBox                = None
+        poBox   = None
       ),
       AddressRecord(
-        id                   = "GB990091234515",
-        uprn                 = Some(12345678902L),
-        parentUprn           = None,
-        usrn                 = Some(987654322L),
-        organisation         = None,
-        address              = RawAddress(
-          lines       = List("3 Other Place", "Some District"),
-          town        = "Faketown",
-          postcode    = "BB00 1BB",
-          subdivision = Some(Subdivision("ENG", "England")),
-          country     = Countries.UK
+        id      = "GB990091234515",
+        address = RawAddress(
+          lines    = List("3 Other Place", "Some District"),
+          town     = "Faketown",
+          postcode = "BB00 1BB",
+          country  = Countries.UK
         ),
-        language             = "en",
-        localCustodian       = Some(LocalCustodian(1234, "Fake Local Authority")),
-        location             = Some(Seq(BigDecimal("51.5075"), BigDecimal("-0.1277"))),
-        blpuState            = Some("1"),
-        logicalState         = Some("1"),
-        streetClassification = Some("RD"),
-        administrativeArea   = Some("Fake County"),
-        poBox                = None
+        poBox   = None
       )
     )
 
@@ -97,7 +73,7 @@ trait AddressBase extends SpecBase {
     addressLine2 = "Some District",
     addressLine3 = None,
     addressLine4 = None,
-    postcode     = Some("ZZ1 1ZZ"),
+    ukPostCode   = Some("ZZ1 1ZZ"),
     country      = Countries.UK,
     poBox        = None
   )
@@ -125,7 +101,7 @@ trait AddressBase extends SpecBase {
     addressLine2 = "Some District",
     addressLine3 = None,
     addressLine4 = None,
-    postcode     = Some("ZZ1 1ZZ"),
+    ukPostCode   = Some("ZZ1 1ZZ"),
     country      = Countries.UK
   )
 }

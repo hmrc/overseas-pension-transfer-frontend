@@ -23,13 +23,13 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
 import scala.language.implicitConversions
 
 case class AddressViewModel(
-    line1: String,
-    line2: String,
-    line3: Option[String],
-    line4: Option[String],
-    line5: Option[String],
+    addressLine1: String,
+    addressLine2: String,
+    addressLine3: Option[String],
+    addressLine4: Option[String],
+    addressLine5: Option[String],
     country: String,
-    postcode: Option[String],
+    ukPostCode: Option[String],
     poBox: Option[String]
   )
 
@@ -38,26 +38,26 @@ object AddressViewModel {
 
   implicit def fromAddress(address: Address): AddressViewModel = {
     AddressViewModel(
-      line1    = address.line1,
-      line2    = address.line2,
-      line3    = address.line3,
-      line4    = address.line4,
-      line5    = address.line5,
-      postcode = address.postcode,
-      country  = address.country.name,
-      poBox    = address.poBox
+      addressLine1 = address.addressLine1,
+      addressLine2 = address.addressLine2,
+      addressLine3 = address.addressLine3,
+      addressLine4 = address.addressLine4,
+      addressLine5 = address.addressLine5,
+      ukPostCode   = address.postcode,
+      country      = address.country.name,
+      poBox        = address.poBox
     )
   }
 
   def formatAddressAsLines(vm: AddressViewModel, ukMode: Boolean = false): List[String] = {
     List(
-      toOption(vm.line1),
-      toOption(vm.line2),
-      toOption(vm.line3),
-      toOption(vm.line4),
-      toOption(vm.line5),
+      toOption(vm.addressLine1),
+      toOption(vm.addressLine2),
+      toOption(vm.addressLine3),
+      toOption(vm.addressLine4),
+      toOption(vm.addressLine5),
       toOption(vm.country).filterNot(_ => ukMode),
-      toOption(vm.postcode),
+      toOption(vm.ukPostCode),
       toOption(vm.poBox)
     ).flatten.filterNot(_.isBlank)
   }

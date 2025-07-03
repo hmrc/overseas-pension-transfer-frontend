@@ -23,16 +23,12 @@ case class MembersLastUKAddress(
     addressLine2: String,
     addressLine3: Option[String],
     addressLine4: Option[String],
-    rawPostcode: String
+    ukPostCode: String
   ) extends Address {
-  val line1: String            = addressLine1
-  val line2: String            = addressLine2
-  val line3: Option[String]    = Option(addressLine3.getOrElse(""))
-  val line4: Option[String]    = Option(addressLine4.getOrElse(""))
-  val line5: Option[Nothing]   = None
-  val country: Country         = Countries.UK
-  val postcode: Option[String] = Some(rawPostcode)
-  val poBox: Option[String]    = None
+  val addressLine5: Option[Nothing] = None
+  val country: Country              = Countries.UK
+  val postcode: Option[String]      = Some(ukPostCode)
+  val poBox: Option[String]         = None
 }
 
 object MembersLastUKAddress {
@@ -40,25 +36,26 @@ object MembersLastUKAddress {
 
   def fromAddress(address: Address): MembersLastUKAddress = {
     MembersLastUKAddress(
-      addressLine1 = address.line1,
-      addressLine2 = address.line2,
-      addressLine3 = address.line3,
-      addressLine4 = address.line4,
-      rawPostcode  = address.postcode.getOrElse("")
+      addressLine1 = address.addressLine1,
+      addressLine2 = address.addressLine2,
+      addressLine3 = address.addressLine3,
+      addressLine4 = address.addressLine4,
+      ukPostCode   = address.postcode.getOrElse("")
     )
   }
 }
 
 case class MembersLookupLastUkAddress(
-    line1: String,
-    line2: String,
-    line3: Option[String],
-    line4: Option[String],
+    addressLine1: String,
+    addressLine2: String,
+    addressLine3: Option[String],
+    addressLine4: Option[String],
     country: Country,
-    postcode: Option[String],
+    ukPostCode: Option[String],
     poBox: Option[String]
   ) extends Address {
-  val line5: Option[Nothing] = None
+  val addressLine5: Option[String] = None
+  val postcode: Option[String]     = ukPostCode
 }
 
 object MembersLookupLastUkAddress {
@@ -68,13 +65,13 @@ object MembersLookupLastUkAddress {
     val raw = record.address
 
     MembersLookupLastUkAddress(
-      line1    = raw.lines.headOption.getOrElse(""),
-      line2    = raw.lines.lift(1).getOrElse(""),
-      line3    = raw.lines.lift(2),
-      line4    = raw.lines.lift(3),
-      postcode = Some(raw.postcode),
-      country  = raw.country,
-      poBox    = record.poBox
+      addressLine1 = raw.lines.headOption.getOrElse(""),
+      addressLine2 = raw.lines.lift(1).getOrElse(""),
+      addressLine3 = raw.lines.lift(2),
+      addressLine4 = raw.lines.lift(3),
+      ukPostCode   = Some(raw.postcode),
+      country      = raw.country,
+      poBox        = record.poBox
     )
   }
 
@@ -86,16 +83,11 @@ case class MembersCurrentAddress(
     addressLine3: Option[String],
     addressLine4: Option[String],
     country: Country,
-    postcode: Option[String],
+    ukPostCode: Option[String],
     poBox: Option[String]
   ) extends Address {
-  val line1: String            = addressLine1
-  val line2: String            = addressLine2
-  val line3: Option[String]    = addressLine3
-  val line4: Option[String]    = addressLine4
-  val line5: Option[String]    = None
-  val countryCode: Country     = country
-  val postCode: Option[String] = postcode
+  val addressLine5: Option[String] = None
+  val postcode: Option[String]     = ukPostCode
 }
 
 object MembersCurrentAddress {
@@ -110,11 +102,6 @@ case class QROPSAddress(
     addressLine5: Option[String],
     country: Country
   ) extends Address {
-  val line1: String                     = addressLine1
-  val line2: String                     = addressLine2
-  val line3: Option[String]             = addressLine3
-  val line4: Option[String]             = addressLine4
-  val line5: Option[String]             = addressLine5
   val countryCode: Country              = country
   val poBox: Option[String]             = None
   override val postcode: Option[String] = None
@@ -132,12 +119,6 @@ case class SchemeManagersAddress(
     addressLine5: Option[String],
     country: Country
   ) extends Address {
-  val line1: String                     = addressLine1
-  val line2: String                     = addressLine2
-  val line3: Option[String]             = addressLine3
-  val line4: Option[String]             = addressLine4
-  val line5: Option[String]             = addressLine5
-  val countryCode: Country              = country
   val poBox: Option[String]             = None
   override val postcode: Option[String] = None
 }
@@ -153,16 +134,12 @@ case class PropertyAddress(
     addressLine3: Option[String],
     addressLine4: Option[String],
     country: Country,
-    postcode: Option[String]
+    ukPostCode: Option[String]
   ) extends Address {
-  val line1: String                  = addressLine1
-  val line2: String                  = addressLine2
-  val line3: Option[String]          = addressLine3
-  val line4: Option[String]          = addressLine4
-  val line5: Option[Nothing]         = None
-  val countryCode: Country           = country
-  val postCode: Option[String]       = postcode
-  override val poBox: Option[String] = None
+
+  val addressLine5: Option[Nothing] = None
+  val postcode: Option[String]      = ukPostCode
+  val poBox: Option[String]         = None
 }
 
 object PropertyAddress {

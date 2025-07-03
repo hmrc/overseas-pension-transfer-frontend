@@ -70,5 +70,5 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val backendService: String       = s"${baseUrl("overseas-pension-transfer-backend")}/overseas-pension-transfer-backend"
   val addressLookupService: String = baseUrl("address-lookup")
 
-  val localLoggingEnabled = configuration.get[Boolean]("localLoggingEnabled")
+  val localLoggingEnabled: Boolean = configuration.get[Boolean]("localLoggingEnabled")
 }

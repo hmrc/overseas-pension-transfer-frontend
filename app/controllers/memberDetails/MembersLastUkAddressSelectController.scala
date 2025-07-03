@@ -50,9 +50,10 @@ class MembersLastUkAddressSelectController @Inject() (
     (identify andThen getData andThen requireData andThen displayData) { implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, records)) =>
-          val idAddressMap    = records.map(r => r.id -> MembersLookupLastUkAddress.fromAddressRecord(r)).toMap
-          val form            = formProvider(idAddressMap.keySet.toSeq)
-          val addressRadioSet = AddressViewModel.addressRadios(idAddressMap.toSeq)
+          val idAddressPairs  = records.map(r => (r.id, MembersLookupLastUkAddress.fromAddressRecord(r)))
+          val ids             = idAddressPairs.map(_._1)
+          val form            = formProvider(ids)
+          val addressRadioSet = AddressViewModel.addressRadios(idAddressPairs)
 
           Ok(view(form, mode, addressRadioSet, postcode))
 
@@ -68,9 +69,10 @@ class MembersLastUkAddressSelectController @Inject() (
     (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, records)) =>
-          val idAddressMap    = records.map(r => r.id -> MembersLookupLastUkAddress.fromAddressRecord(r)).toMap
-          val form            = formProvider(idAddressMap.keySet.toSeq)
-          val addressRadioSet = AddressViewModel.addressRadios(idAddressMap.toSeq)
+          val idAddressPairs  = records.map(r => (r.id, MembersLookupLastUkAddress.fromAddressRecord(r)))
+          val ids             = idAddressPairs.map(_._1)
+          val form            = formProvider(ids)
+          val addressRadioSet = AddressViewModel.addressRadios(idAddressPairs)
 
           form.bindFromRequest().fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, addressRadioSet, postcode))),

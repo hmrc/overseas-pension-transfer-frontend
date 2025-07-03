@@ -19,8 +19,19 @@ package models.address
 import play.api.libs.json._
 
 sealed trait AddressLookupResult
-case class AddressRecords(postcode: String, records: Seq[AddressRecord]) extends AddressLookupResult
+
 case class NoAddressFound(postcode: String)                              extends AddressLookupResult
+case class AddressRecords(postcode: String, records: Seq[AddressRecord]) extends AddressLookupResult
+
+object AddressRecords {
+
+  implicit object AddressOrdering extends Ordering[AddressRecord] {
+    def compare(a: AddressRecord, b: AddressRecord): Int = a.id compare b.id
+  }
+
+  def apply(postcode: String, records: Seq[AddressRecord]): AddressRecords =
+    new AddressRecords(postcode, records.sorted)
+}
 
 object AddressLookupResult {
 
