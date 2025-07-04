@@ -18,7 +18,7 @@ Please see this [wiki page](https://github.com/hmrc/hmrc-frontend-scaffold.g8/wi
 
    > `sm2 --stop OVERSEAS_PENSION_TRANSFER_FRONTEND`
 
-   > `sbt "run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes"`
+   > `sbt run`
 
 The service runs on port `15600` by default.
 
