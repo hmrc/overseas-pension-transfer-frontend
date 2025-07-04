@@ -20,6 +20,7 @@ import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberConfirmLastUkAddressFormProvider
 import models.NormalMode
+import models.address.MembersLookupLastUkAddress
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -39,6 +40,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
   private val formProvider                         = new MemberConfirmLastUkAddressFormProvider()
   private val form                                 = formProvider()
   private lazy val memberConfirmLastUkAddressRoute = routes.MembersLastUkAddressConfirmController.onPageLoad(NormalMode).url
+  private val address                              = MembersLookupLastUkAddress.fromAddressRecord(selectedRecord)
 
   "MemberConfirmLastUkAddress Controller" - {
 
@@ -53,7 +55,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
         val view = application.injector.instanceOf[MembersLastUkAddressConfirmView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, AddressViewModel.fromAddress(selectedAddress.address))(
+        contentAsString(result) mustEqual view(form, NormalMode, address)(
           fakeDisplayRequest(request, addressSelectedUserAnswers),
           messages(application)
         ).toString
@@ -70,7 +72,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
         val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, AddressViewModel.fromAddress(selectedAddress.address))(
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, address)(
           fakeDisplayRequest(request, addressSelectedUserAnswers),
           messages(application)
         ).toString

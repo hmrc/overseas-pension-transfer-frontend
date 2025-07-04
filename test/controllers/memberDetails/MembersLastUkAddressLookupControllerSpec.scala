@@ -21,7 +21,6 @@ import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLo
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.NormalMode
-import models.address.RecordSet
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -70,7 +69,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
       when(mockAddressLookupConnector.lookup(any())(any(), any()))
         .thenReturn(
           Future.successful(
-            AddressLookupSuccessResponse(connectorPostcode, recordSet)
+            AddressLookupSuccessResponse(connectorPostcode, addressRecordList)
           )
         )
 
@@ -120,11 +119,10 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val noAddresses = RecordSet(Seq.empty)
       when(mockAddressLookupConnector.lookup(any())(any(), any()))
         .thenReturn(
           Future.successful(
-            AddressLookupSuccessResponse("AB1 2CD", noAddresses)
+            AddressLookupSuccessResponse("AB1 2CD", Seq.empty)
           )
         )
 

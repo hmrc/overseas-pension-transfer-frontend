@@ -30,8 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait AddressLookupResponse
 
-case class AddressLookupSuccessResponse(searchedPostcode: String, addressList: RecordSet) extends AddressLookupResponse
-case class AddressLookupErrorResponse(cause: Exception)                                   extends AddressLookupResponse
+case class AddressLookupSuccessResponse(searchedPostcode: String, records: Seq[AddressRecord]) extends AddressLookupResponse
+case class AddressLookupErrorResponse(cause: Exception)                                        extends AddressLookupResponse
 
 class AddressLookupConnector @Inject() (appConfig: FrontendAppConfig, val http: HttpClientV2) extends Logging {
 
@@ -43,7 +43,7 @@ class AddressLookupConnector @Inject() (appConfig: FrontendAppConfig, val http: 
       .setHeader("X-Hmrc-Origin" -> "PODS")
       .execute[JsValue] map {
       addressListJson =>
-        AddressLookupSuccessResponse(postcode, RecordSet(addressListJson))
+        AddressLookupSuccessResponse(postcode, addressListJson.as[Seq[AddressRecord]])
     } recover {
       case e: Exception =>
         logger.warn(s"Error received from address lookup service: $e")

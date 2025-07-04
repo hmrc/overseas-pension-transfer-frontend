@@ -19,7 +19,7 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.Mode
-import models.address.{FoundAddressSet, NoAddressFound}
+import models.address.{AddressLookupResult, AddressRecords, NoAddressFound}
 import pages.memberDetails.MembersLastUkAddressLookupPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -51,12 +51,9 @@ class MembersLastUkAddressLookupController @Inject() (
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen displayData) { implicit request =>
       val preparedForm = request.userAnswers.get(MembersLastUkAddressLookupPage) match {
-        case None        => form
-        case Some(value) =>
-          value match {
-            case FoundAddressSet(pc, _) => form.fill(pc)
-            case NoAddressFound(pc)     => form.fill(pc)
-          }
+        case Some(AddressRecords(postcode, _)) => form.fill(postcode)
+        case Some(NoAddressFound(postcode))    => form.fill(postcode)
+        case _                                 => form
       }
       Ok(view(preparedForm, mode))
     }
@@ -67,24 +64,23 @@ class MembersLastUkAddressLookupController @Inject() (
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         postcode =>
           addressService.membersLastUkAddressLookup(postcode).flatMap {
-            case None         =>
+            case None =>
+              logger.warn(s"Address lookup failed for postcode: $postcode")
               Future.successful(
-                Redirect(MembersLastUkAddressLookupPage.nextPageRecovery(
-                  Some(MembersLastUkAddressLookupPage.recoveryModeReturnUrl)
-                ))
+                Redirect(
+                  MembersLastUkAddressLookupPage.nextPageRecovery(
+                    Some(MembersLastUkAddressLookupPage.recoveryModeReturnUrl)
+                  )
+                )
               )
-            case Some(result) =>
-              result match {
-                case fas: FoundAddressSet =>
-                  for {
-                    userAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, fas))
-                    _           <- sessionRepository.set(userAnswers)
-                  } yield Redirect(MembersLastUkAddressLookupPage.nextPage(mode, userAnswers))
-                case naf: NoAddressFound  =>
-                  for {
-                    userAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, naf))
-                    _           <- sessionRepository.set(userAnswers)
-                  } yield Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
+
+            case Some(result: AddressLookupResult) =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, result))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield result match {
+                case _: AddressRecords => Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
+                case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
               }
           }
       )

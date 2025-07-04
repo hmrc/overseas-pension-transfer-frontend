@@ -20,6 +20,7 @@ import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MembersLastUkAddressSelectFormProvider
 import models.NormalMode
+import models.address.MembersLookupLastUkAddress
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -40,6 +41,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
   private val formProvider = new MembersLastUkAddressSelectFormProvider()
   private val form         = formProvider(validIds)
+  private val idAddressMap = addressRecordList.map(r => r.id -> MembersLookupLastUkAddress.fromAddressRecord(r)).toMap
 
   "MemberSelectLastUkAddress Controller" - {
 
@@ -58,8 +60,8 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
         contentAsString(result) mustEqual view(
           form,
           NormalMode,
-          AddressViewModel.addressRadios(foundAddresses.addresses),
-          foundAddresses.searchedPostcode
+          AddressViewModel.addressRadios(idsWithAddresses = idAddressMap.toSeq),
+          addressRecords.postcode
         )(
           fakeDisplayRequest(request),
           messages(application)
@@ -110,8 +112,8 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
         contentAsString(result) mustEqual view(
           boundForm,
           NormalMode,
-          AddressViewModel.addressRadios(foundAddresses.addresses),
-          foundAddresses.searchedPostcode
+          AddressViewModel.addressRadios(idAddressMap.toSeq),
+          addressRecords.postcode
         )(fakeDisplayRequest(request), messages(application)).toString
       }
     }

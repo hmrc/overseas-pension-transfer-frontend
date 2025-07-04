@@ -57,7 +57,7 @@ class SchemeManagersAddressController @Inject() (
       val userAnswers  = request.userAnswers
       val preparedForm = userAnswers.get(SchemeManagersAddressPage) match {
         case None          => form
-        case Some(address) => form.fill(SchemeManagersAddressFormData.fromDomain(SchemeManagersAddress.fromAddress(address)))
+        case Some(address) => form.fill(SchemeManagersAddressFormData.fromDomain(address))
       }
 
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)

@@ -23,7 +23,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PropertyAddressPage extends QuestionPage[Address] {
+case object PropertyAddressPage extends QuestionPage[PropertyAddress] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 

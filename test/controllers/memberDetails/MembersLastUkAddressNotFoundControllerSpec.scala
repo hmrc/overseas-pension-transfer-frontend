@@ -38,7 +38,7 @@ class MembersLastUkAddressNotFoundControllerSpec extends AnyFreeSpec with SpecBa
         val view = application.injector.instanceOf[MembersLastUkAddressNotFoundView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(noAddressFound.searchedPostcode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(noAddressFound.postcode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
   }
