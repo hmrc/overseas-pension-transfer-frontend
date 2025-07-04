@@ -44,26 +44,26 @@ class UnquotedSharesClassController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(UnquotedSharesClassPage) match {
+      val preparedForm = request.userAnswers.get(UnquotedSharesClassPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, index))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UnquotedSharesClassPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UnquotedSharesClassPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(UnquotedSharesClassPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(UnquotedSharesClassPage(index).nextPage(mode, updatedAnswers))
       )
   }
 }

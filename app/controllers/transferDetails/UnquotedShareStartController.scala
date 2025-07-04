@@ -17,6 +17,8 @@
 package controllers.transferDetails
 
 import controllers.actions._
+import models.NormalMode
+import pages.transferDetails.UnQuotedShareStartPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,6 +38,6 @@ class UnquotedShareStartController @Inject() (
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      Ok(view())
+      Ok(view(UnQuotedShareStartPage.nextPage(mode = NormalMode, request.userAnswers).url))
   }
 }

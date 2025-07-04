@@ -25,7 +25,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
-import views.html.qropsSchemeManagerDetails.SchemeManagerDetailsCYAView
+import views.html.transferDetails.TransferDetailsCYAView
 
 class TransferDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -34,7 +34,7 @@ class TransferDetailsCYAController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     val controllerComponents: MessagesControllerComponents,
-    view: SchemeManagerDetailsCYAView
+    view: TransferDetailsCYAView
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {

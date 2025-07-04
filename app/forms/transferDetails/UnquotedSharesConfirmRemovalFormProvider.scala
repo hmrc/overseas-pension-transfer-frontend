@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package forms.transferDetails
 
-import models.UserAnswers
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case object TransferDetailsSummary {
+import javax.inject.Inject
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedShareRow: Option[SummaryListRow] = Some(AdditionalUnquotedShareSummary.row(userAnswers))
-    Seq(totalUnquotedShareRow).flatten
-  }
+class UnquotedSharesConfirmRemovalFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("unquotedSharesConfirmRemoval.error.required")
+    )
 }

@@ -38,11 +38,11 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("unquotedShareValue.title"))) {
 
-    @formHelper(action = controllers.transferDetails.routes.UnquotedShareValueController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.transferDetails.routes.UnquotedShareValueController.onSubmit(mode, index), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

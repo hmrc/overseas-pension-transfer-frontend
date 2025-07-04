@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package models
 
-import models.UserAnswers
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import play.api.libs.json._
 
-case object TransferDetailsSummary {
+case class ShareEntry(
+    companyName: String,
+    valueOfShares: BigDecimal,
+    numberOfShares: String,
+    classOfShares: String
+  )
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedShareRow: Option[SummaryListRow] = Some(AdditionalUnquotedShareSummary.row(userAnswers))
-    Seq(totalUnquotedShareRow).flatten
-  }
+object ShareEntry {
+  val CompanyName    = "companyName"
+  val ValueOfShares  = "valueOfShares"
+  val NumberOfShares = "numberOfShares"
+  val ClassOfShares  = "classOfShares"
+
+  implicit val format: OFormat[ShareEntry] = Json.format[ShareEntry]
 }

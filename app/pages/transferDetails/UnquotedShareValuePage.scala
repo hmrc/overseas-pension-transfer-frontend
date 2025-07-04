@@ -17,23 +17,23 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, ShareEntry, TaskCategory, TypeOfAsset, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object UnquotedShareValuePage extends QuestionPage[BigDecimal] {
+case class UnquotedShareValuePage(index: Int) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString \ index \ toString
 
-  override def toString: String = "unquotedShareValue"
+  override def toString: String = ShareEntry.ValueOfShares
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    routes.NumberOfUnquotedSharesController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+    routes.UnquotedShareCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.UnquotedShareValueController.onPageLoad(CheckMode)
+    routes.UnquotedShareValueController.onPageLoad(CheckMode, index)
 }

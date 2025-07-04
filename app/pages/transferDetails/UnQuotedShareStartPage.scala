@@ -17,23 +17,14 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, ShareEntry, TaskCategory, TypeOfAsset, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import models.{NormalMode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
 
-case class UnquotedSharesClassPage(index: Int) extends QuestionPage[String] {
+object UnQuotedShareStartPage extends Page {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString \ index \ toString
-
-  override def toString: String = ShareEntry.ClassOfShares
+  private val startIndex = 0
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.UnquotedShareCYAController.onPageLoad(index)
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.UnquotedShareCYAController.onPageLoad(index)
-
-  final def changeLink(answers: UserAnswers): Call =
-    routes.UnquotedSharesClassController.onPageLoad(CheckMode, index)
+    routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, startIndex)
 }

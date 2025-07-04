@@ -17,85 +17,53 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.transferDetails.UnquotedShareCompanyNameFormProvider
+import forms.transferDetails.AdditionalUnquotedShareFormProvider
 import models.NormalMode
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.UnquotedShareCompanyNamePage
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
-import views.html.transferDetails.UnquotedShareCompanyNameView
+import views.html.transferDetails.AdditionalUnquotedShareView
 
-import scala.concurrent.Future
+class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
-
-  private val formProvider = new UnquotedShareCompanyNameFormProvider()
+  private val formProvider = new AdditionalUnquotedShareFormProvider()
   private val form         = formProvider()
-  private val index        = 0
 
-  private lazy val unquotedShareCompanyNameRoute = routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, index).url
+  private lazy val additionalUnquotedShareRoute = routes.AdditionalUnquotedShareController.onPageLoad().url
 
-  "UnquotedShareCompanyName Controller" - {
+  "AdditionalUnquotedShare Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedShareCompanyNameRoute)
+        val request = FakeRequest(GET, additionalUnquotedShareRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[UnquotedShareCompanyNameView]
+        val view = application.injector.instanceOf[AdditionalUnquotedShareView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = userAnswersQtNumber.set(UnquotedShareCompanyNamePage(index), "answer").success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, unquotedShareCompanyNameRoute)
-
-        val view = application.injector.instanceOf[UnquotedShareCompanyNameView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedShareCompanyNameRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, additionalUnquotedShareRoute)
+            .withFormUrlEncodedBody(("add-another", "Yes"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnquotedShareCompanyNamePage(index).nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, 0).url
       }
     }
 
@@ -105,17 +73,17 @@ class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase w
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedShareCompanyNameRoute)
+          FakeRequest(POST, additionalUnquotedShareRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[UnquotedShareCompanyNameView]
+        val view = application.injector.instanceOf[AdditionalUnquotedShareView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -124,7 +92,7 @@ class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase w
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedShareCompanyNameRoute)
+        val request = FakeRequest(GET, additionalUnquotedShareRoute)
 
         val result = route(application, request).value
 
@@ -139,8 +107,8 @@ class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase w
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedShareCompanyNameRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, additionalUnquotedShareRoute)
+            .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
