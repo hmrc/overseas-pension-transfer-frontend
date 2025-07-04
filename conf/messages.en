@@ -577,3 +577,9 @@ additionalQuotedShare.addMore = Do you need to add another quoted share?
 addOtherAssets.title = Add other assets
 addOtherAssets.heading = Add other assets
 addOtherAssets.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.
+
+removePropertyAsset.title = Are you sure you want to remove this property?
+removePropertyAsset.heading = Are you sure you want to remove this property?
+removePropertyAsset.checkYourAnswersLabel = removePropertyAsset
+removePropertyAsset.error.required = Select one option
+removePropertyAsset.change.hidden = RemovePropertyAsset
