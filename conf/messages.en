@@ -572,3 +572,17 @@ additionalUnquotedShare.summary.value = {0} added
 unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.error.required = Select one option
+
+addAdditionalOtherAsset.title = Do you need to add another asset?
+addAdditionalOtherAsset.heading = You have added 1 asset
+addAdditionalOtherAsset.question = Do you need to add another asset?
+addAdditionalOtherAsset.checkYourAnswersLabel = Do you need to add another asset?
+addAdditionalOtherAsset.error.required = Please select an option
+addAdditionalOtherAsset.change.hidden = Do you need to add another asset?
+
+additionalQuotedShare.title = additionalQuotedShare
+additionalQuotedShare.heading = You have added 1 quoted share
+additionalQuotedShare.checkYourAnswersLabel = additionalQuotedShare
+additionalQuotedShare.error.required = Please select an option
+additionalQuotedShare.change.hidden = AdditionalQuotedShare
+additionalQuotedShare.addMore = Do you need to add another quoted share?

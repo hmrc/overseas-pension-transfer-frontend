@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package forms
 
-import models.UserAnswers
-import pages.Page
-import play.api.mvc.Call
+import javax.inject.Inject
 
-object AddQuotedSharePage extends Page {
+import forms.mappings.Mappings
+import play.api.data.Form
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+class AdditionalQuotedShareFormProvider @Inject() extends Mappings {
 
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("additionalQuotedShare.error.required")
+    )
 }

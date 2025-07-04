@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package forms.transferDetails
 
-import models.UserAnswers
-import pages.Page
-import play.api.mvc.Call
+import forms.mappings.Mappings
+import play.api.data.Form
 
-object AddQuotedSharePage extends Page {
+import javax.inject.Inject
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+class AddAdditionalOtherAssetFormProvider @Inject() extends Mappings {
 
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("addAdditionalOtherAsset.error.required")
+    )
 }

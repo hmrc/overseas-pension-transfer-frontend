@@ -16,13 +16,21 @@
 
 package pages.transferDetails
 
-import models.UserAnswers
-import pages.Page
+import controllers.routes
+import models.{TaskCategory, UserAnswers}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-object AddQuotedSharePage extends Page {
+case object AddAdditionalOtherAssetPage extends QuestionPage[Boolean] {
+
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
+
+  override def toString: String = "addAdditionalOtherAsset"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    routes.IndexController.onPageLoad()
 
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
 }
