@@ -26,7 +26,7 @@ case object QuotedShareCompanyNamePage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "quotedShareCompanyName"
+  override def toString: String = "quotedCompany"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.IndexController.onPageLoad()
