@@ -16,8 +16,9 @@
 
 package services
 
-import connectors.{UserAnswersConnector, UserAnswersErrorResponse, UserAnswersSuccessResponse}
+import connectors.UserAnswersConnector
 import models.dtos.UserAnswersDTO
+import models.responses.{UserAnswersErrorResponse, UserAnswersSuccessResponse}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.memberDetails.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
 import uk.gov.hmrc.http.HeaderCarrier

@@ -17,11 +17,12 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import pages.WhatWillBeNeededPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WhatWillBeNeededView
 
@@ -32,14 +33,16 @@ class WhatWillBeNeededController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
     view: WhatWillBeNeededView,
-    sessionRepository: SessionRepository
+    sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
-    val userAnswers = UserAnswers(request.userId)
-
-    sessionRepository.set(userAnswers).map { _ =>
+    for {
+      userAnswers <- userAnswersService.getUserAnswers(request.userId)
+      _           <- sessionRepository.set(userAnswers)
+    } yield {
       Ok(view(WhatWillBeNeededPage.nextPage(mode = NormalMode, userAnswers).url))
     }
   }

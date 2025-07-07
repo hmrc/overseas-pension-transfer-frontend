@@ -17,7 +17,10 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.UserAnswers
 import models.dtos.UserAnswersDTO
+import models.responses.{UserAnswersErrorResponse, UserAnswersResponse, UserAnswersSuccessResponse}
+//import models.dtos.UserAnswersDTO
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -26,11 +29,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import java.net.URL
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-
-sealed trait UserAnswersResponse
-
-case class UserAnswersSuccessResponse(userAnswersDTO: UserAnswersDTO) extends UserAnswersResponse
-case class UserAnswersErrorResponse(cause: Throwable)                 extends UserAnswersResponse
 
 class UserAnswersConnector @Inject() (
     appConfig: FrontendAppConfig,
