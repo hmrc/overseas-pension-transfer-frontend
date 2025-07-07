@@ -31,7 +31,13 @@
 
 @(form: Form[_], shares: Seq[ListItem])(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("additionalUnquotedShare.title"))) {
+@singularTxt = @{messages("additionalUnquotedShare.text.singular")}
+@pluralTxt = @{messages("additionalUnquotedShare.text.plural")}
+@partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
+
+@titleText = @{messages("additionalAsset.common.title", shares.size, partTxt)}
+
+@layout(pageTitle = title(form, titleText)) {
 
     @formHelper(action = controllers.transferDetails.routes.AdditionalUnquotedShareController.onSubmit(), Symbol("autoComplete") -> "on") {
 
@@ -44,8 +50,8 @@
             AddToAList(
                 itemList = shares,
                 itemType = Some(ItemType(
-                    singular = "unquoted share",
-                    plural = "unquoted shares"
+                    singular = singularTxt,
+                    plural = pluralTxt
                 ))
             )
         )

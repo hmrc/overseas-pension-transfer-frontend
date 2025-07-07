@@ -561,13 +561,14 @@ unquotedSharesClass.error.length = The class of unquoted shares must be 160 char
 unquotedSharesClass.change.hidden = Class of unquoted shares
 unquotedSharesClass.error.pattern = The class of unquoted shares must only include letters, spaces, apostrophes and hyphens
 
-additionalUnquotedShare.title = Do you need to add more unquoted shares?
-additionalUnquotedShare.heading1 = You have added unquoted shares in {0} company
-additionalUnquotedShare.heading2 = Do you need to add more unquoted shares?
+additionalAsset.common.title = You have added {0} {1}
+
 additionalUnquotedShare.error.required = Please select an option
 additionalUnquotedShare.checkYourAnswersLabel = Unquoted shares
 additionalUnquotedShare.change.hidden = Unquoted shares
 additionalUnquotedShare.summary.value = {0} added
+additionalUnquotedShare.text.singular = group of unquoted shares
+additionalUnquotedShare.text.plural = groups of unquoted shares
 
 unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
@@ -586,3 +587,4 @@ additionalQuotedShare.checkYourAnswersLabel = additionalQuotedShare
 additionalQuotedShare.error.required = Please select an option
 additionalQuotedShare.change.hidden = AdditionalQuotedShare
 additionalQuotedShare.addMore = Do you need to add another quoted share?
+
