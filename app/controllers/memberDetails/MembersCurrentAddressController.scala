@@ -53,7 +53,7 @@ class MembersCurrentAddressController @Inject() (
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(MembersCurrentAddressPage) match {
         case None          => form
-        case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(models.address.MembersCurrentAddress.fromAddress(address)))
+        case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(address))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
       Ok(view(preparedForm, countrySelectViewModel, mode))
