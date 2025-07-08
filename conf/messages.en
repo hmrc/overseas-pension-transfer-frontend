@@ -117,6 +117,8 @@ common.dateInput.error.invalid.character = The Day/Month/Year Field must only in
 common.dateInput.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 1970
 common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the future
 
+common.additionalAsset.title = You have added {0} {1}
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
@@ -523,8 +525,6 @@ unquotedSharesClass.error.required = Enter the class of unquoted shares
 unquotedSharesClass.error.length = The class of unquoted shares must be 160 characters or less
 unquotedSharesClass.change.hidden = Class of unquoted shares
 unquotedSharesClass.error.pattern = The class of unquoted shares must only include letters, spaces, apostrophes and hyphens
-
-additionalAsset.common.title = You have added {0} {1}
 
 additionalUnquotedShare.error.required = Please select an option
 additionalUnquotedShare.checkYourAnswersLabel = Unquoted shares

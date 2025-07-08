@@ -35,7 +35,7 @@
 @pluralTxt = @{messages("additionalQuotedShares.text.plural")}
 @partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
 
-@titleText = @{messages("additionalAsset.common.title", shares.size, partTxt)}
+@titleText = @{messages("common.additionalAsset.title", shares.size, partTxt)}
 
 @layout(pageTitle = title(form, titleText)) {
 
