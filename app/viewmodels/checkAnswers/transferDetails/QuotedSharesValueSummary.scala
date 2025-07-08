@@ -16,24 +16,26 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import models.UserAnswers
-import pages.transferDetails.NumberOfQuotedSharesPage
+import controllers.transferDetails.routes
+import models.{CheckMode, UserAnswers}
+import pages.transferDetails.QuotedSharesValuePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.CurrencyFormats.currencyFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object NumberOfQuotedSharesSummary {
+object QuotedSharesValueSummary {
 
   def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NumberOfQuotedSharesPage(index)).map {
+    answers.get(QuotedSharesValuePage(index)).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "numberOfQuotedShares.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
+          key     = "quotedSharesValue.checkYourAnswersLabel",
+          value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", NumberOfQuotedSharesPage(index).changeLink(answers).url)
-              .withVisuallyHiddenText(messages("numberOfQuotedShares.change.hidden"))
+            ActionItemViewModel("site.change", QuotedSharesValuePage(index).changeLink(answers).url)
+              .withVisuallyHiddenText(messages("quotedSharesValue.change.hidden"))
           )
         )
     }

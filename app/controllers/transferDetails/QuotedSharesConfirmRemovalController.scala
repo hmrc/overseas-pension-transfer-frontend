@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,49 @@
 
 package controllers.transferDetails
 
-import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import controllers.actions._
+import forms.transferDetails.QuotedSharesConfirmRemovalFormProvider
+import models.TypeOfAsset
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.UnquotedShareSummary
-import viewmodels.govuk.summarylist._
-import views.html.transferDetails.UnquotedShareCYAView
+import views.html.transferDetails.QuotedSharesConfirmRemovalView
 
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class UnquotedShareCYAController @Inject() (
+class QuotedSharesConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    formProvider: QuotedSharesConfirmRemovalFormProvider,
+    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
-    view: UnquotedShareCYAView
+    view: QuotedSharesConfirmRemovalView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport {
 
+  private val form    = formProvider()
   private val actions = (identify andThen getData andThen requireData andThen displayData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(UnquotedShareSummary.rows(request.userAnswers, index))
-
-    Ok(view(list, index))
+    Ok(view(form, index))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(routes.AdditionalUnquotedShareController.onPageLoad())
+  def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
+    form.bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
+      value => {
+        val redirect = Redirect(routes.AdditionalQuotedSharesController.onPageLoad())
+        if (value) {
+          transferDetailsService.doAssetRemoval(request.userAnswers, index, TypeOfAsset.QuotedShares).map(_ => redirect)
+        } else {
+          Future.successful(redirect)
+        }
+      }
+    )
   }
 }

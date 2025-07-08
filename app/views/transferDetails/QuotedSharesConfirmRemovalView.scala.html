@@ -14,46 +14,50 @@
  * limitations under the License.
  *@
 
+@import controllers.transferDetails.routes
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import viewmodels.govuk.all._
 @import views.ViewUtils.title
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.LegendSize.Large
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
+
+
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    hmrcAddToAList : HmrcAddToAList,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton,
     qtNumber: QTNumber
 )
 
-@(form: Form[_], shares: Seq[ListItem])(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
-@singularTxt = @{messages("additionalUnquotedShare.text.singular")}
-@pluralTxt = @{messages("additionalUnquotedShare.text.plural")}
-@partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
+@layout(pageTitle = title(form, messages("quotedSharesConfirmRemoval.title"))) {
 
-@titleText = @{messages("common.additionalAsset.title", shares.size, partTxt)}
-
-@layout(pageTitle = title(form, titleText)) {
-
-    @formHelper(action = controllers.transferDetails.routes.AdditionalUnquotedShareController.onSubmit(), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.QuotedSharesConfirmRemovalController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @qtNumber()
-        @hmrcAddToAList(
-            AddToAList(
-                itemList = shares,
-                itemType = Some(ItemType(
-                    singular = singularTxt,
-                    plural = pluralTxt
-                ))
+        <h1 class="govuk-heading-l">@messages("quotedSharesConfirmRemoval.heading")</h1>
+
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value")
             )
+        )
+
+        @govukButton(
+            ButtonViewModel(Text(messages("site.saveAndContinue")))
         )
     }
 }

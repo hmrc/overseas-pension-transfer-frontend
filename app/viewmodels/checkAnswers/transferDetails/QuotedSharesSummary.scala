@@ -20,12 +20,14 @@ import models.UserAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-case object TransferDetailsSummary {
+case object QuotedSharesSummary {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedShareRow: Option[SummaryListRow] = Some(AdditionalUnquotedShareSummary.row(userAnswers))
-    val totalQuotedShareRow: Option[SummaryListRow]   = Some(AdditionalQuotedSharesSummary.row(userAnswers))
+  def rows(userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val companyNameRow: Option[SummaryListRow]  = QuotedSharesCompanyNameSummary.row(userAnswers, index)
+    val valueRow: Option[SummaryListRow]        = QuotedSharesValueSummary.row(userAnswers, index)
+    val quantityRow: Option[SummaryListRow]     = NumberOfQuotedSharesSummary.row(userAnswers, index)
+    val classOfShareRow: Option[SummaryListRow] = QuotedSharesClassSummary.row(userAnswers, index)
 
-    Seq(totalUnquotedShareRow, totalQuotedShareRow).flatten
+    Seq(companyNameRow, valueRow, quantityRow, classOfShareRow).flatten
   }
 }

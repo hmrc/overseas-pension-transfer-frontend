@@ -17,29 +17,32 @@
 @import viewmodels.InputWidth._
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
+@import controllers.transferDetails.routes
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import viewmodels.govuk.all._
 @import views.ViewUtils.title
+@import viewmodels.govuk.all._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
 @import viewmodels.LabelSize.Large
 
+
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("numberOfQuotedShares.title"))) {
+@layout(pageTitle = title(form, messages("quotedSharesValue.title"))) {
 
-    @formHelper(action = controllers.transferDetails.routes.NumberOfQuotedSharesController.onSubmit(mode, index), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.QuotedSharesValueController.onSubmit(mode, index), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -50,11 +53,12 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("numberOfQuotedShares.heading")))
+                label = LabelViewModel(Text(messages("quotedSharesValue.heading")))
                     .withCssClass("govuk-!-margin-bottom-6")
                     .asPageHeading(size = Large)
             )
-            .asNumeric()
+            .withHint(HintViewModel(messages("quotedSharesValue.hint")))
+            .withPrefix(PrefixOrSuffix(content = "£"))
             .withWidth(Fixed10)
         )
 

@@ -16,13 +16,16 @@
 
 package pages.transferDetails
 
-import models.UserAnswers
+import controllers.transferDetails.routes
+import models.{NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
 object AddQuotedSharePage extends Page {
 
+  private val startIndex = 0
+
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    routes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, startIndex)
 
 }
