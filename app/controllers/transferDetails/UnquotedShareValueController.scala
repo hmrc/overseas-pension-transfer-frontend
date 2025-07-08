@@ -43,26 +43,26 @@ class UnquotedShareValueController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(UnquotedShareValuePage) match {
+      val preparedForm = request.userAnswers.get(UnquotedShareValuePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, index))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UnquotedShareValuePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(UnquotedShareValuePage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(UnquotedShareValuePage.nextPage(mode, updatedAnswers))
+          } yield Redirect(UnquotedShareValuePage(index).nextPage(mode, updatedAnswers))
       )
   }
 }

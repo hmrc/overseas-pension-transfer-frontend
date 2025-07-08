@@ -23,7 +23,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MembersCurrentAddressPage extends QuestionPage[Address] {
+case object MembersCurrentAddressPage extends QuestionPage[MembersCurrentAddress] {
 
   override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
