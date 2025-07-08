@@ -25,25 +25,20 @@ import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.UnquotedShareSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.UnquotedShareCYAView
-import repositories.SessionRepository
-import services.TransferDetailsService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class UnquotedShareCYAController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedShareCYAView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  // private val shareType = ShareType.Unquoted
   private val actions = (identify andThen getData andThen requireData andThen displayData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
@@ -54,28 +49,5 @@ class UnquotedShareCYAController @Inject() (
 
   def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
     Redirect(routes.AdditionalUnquotedShareController.onPageLoad())
-  /*    val path = sharesPathForType(shareType)
-    transferDetailsService.unquotedShareBuilder(request.userAnswers) match {
-      case Some(newUnquotedShare) =>
-        val existingUnquotedShares = request.userAnswers.data
-          .validate(path.read[List[ShareEntry]])
-          .getOrElse(Nil)
-
-        val updatedShares = existingUnquotedShares :+ newUnquotedShare
-
-        val updatedJson = request.userAnswers.data.deepMerge(
-          Json.obj("transferDetails" -> Json.obj(shareType.toString -> Json.toJson(updatedShares)))
-        )
-
-        val updatedAnswers = request.userAnswers.copy(data = updatedJson)
-        val clearedAnswers = transferDetailsService.clearUnquotedShareFields(updatedAnswers)
-
-        for {
-          _ <- sessionRepository.set(clearedAnswers)
-        } yield Redirect(routes.AdditionalUnquotedShareController.onPageLoad())
-
-      case None =>
-        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-    }*/
   }
 }

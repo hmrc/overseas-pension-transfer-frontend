@@ -27,15 +27,6 @@ import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.AdditionalUnquotedShareSummary
 import views.html.transferDetails.AdditionalUnquotedShareView
 
-import uk.gov.hmrc.hmrcfrontend.views.html.components.AddToAList
-
-import views.ViewUtils.title
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import viewmodels.LegendSize.Large
-import models.requests.DisplayRequest
-import views.html.components.QTNumber
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.Short
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
