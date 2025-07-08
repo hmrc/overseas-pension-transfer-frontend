@@ -25,7 +25,7 @@ import play.api.mvc.Call
 
 case object MembersLastUKAddressPage extends QuestionPage[MembersLastUKAddress] {
 
-  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ TaskCategory.MemberResidencyDetails.toString \ toString
+  override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
   override def toString: String = "lastPrincipalAddDetails"
 

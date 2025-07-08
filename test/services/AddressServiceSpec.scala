@@ -120,7 +120,7 @@ class AddressServiceSpec
         addressLine4 = membersCurrentAddress.addressLine4,
         countryCode  = membersCurrentAddress.country.code,
         postcode     = membersCurrentAddress.postcode,
-        poBox        = membersCurrentAddress.poBox
+        poBox        = membersCurrentAddress.poBoxNumber
       )
 
       service.membersCurrentAddress(formData).value mustBe membersCurrentAddress

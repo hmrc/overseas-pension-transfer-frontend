@@ -44,7 +44,7 @@ object MembersCurrentAddressFormData {
       addressLine4 = address.addressLine4,
       countryCode  = address.country.code,
       postcode     = address.postcode,
-      poBox        = address.poBox
+      poBox        = address.poBoxNumber
     )
 }
 

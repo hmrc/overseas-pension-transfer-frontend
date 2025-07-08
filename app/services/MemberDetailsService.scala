@@ -91,4 +91,16 @@ class MemberDetailsService @Inject() (userAnswersConnector: UserAnswersConnector
     } yield updatedAnswers
   }
 
+  // TODO: This should probably return either user answers or an error
+  def postMemberDateOfLeavingUKUserAnswers(id: String, userAnswers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[UserAnswers] = {
+    for {
+      backendResponse <- userAnswersConnector.putAnswers(id, UserAnswersDTO.fromUserAnswers(userAnswers))(hc, ec)
+      updatedAnswers   = backendResponse match {
+                           case UserAnswersSuccessResponse(updatedUserAnswersDTO) =>
+                             UserAnswersDTO.toUserAnswers(updatedUserAnswersDTO)
+                           case UserAnswersErrorResponse(_)                       =>
+                             userAnswers
+                         }
+    } yield updatedAnswers
+  }
 }

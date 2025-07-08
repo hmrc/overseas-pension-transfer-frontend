@@ -23,6 +23,7 @@ import pages.memberDetails.MemberDateOfLeavingUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.MemberDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberDateOfLeavingUKView
 
@@ -36,6 +37,7 @@ class MemberDateOfLeavingUKController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    memberDetailsService: MemberDetailsService,
     formProvider: MemberDateOfLeavingUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDateOfLeavingUKView
@@ -62,7 +64,8 @@ class MemberDateOfLeavingUKController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
+            userAnswers    <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
+            updatedAnswers <- memberDetailsService.postMemberDateOfLeavingUKUserAnswers(userAnswers.id, userAnswers)
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(MemberDateOfLeavingUKPage.nextPage(mode, updatedAnswers))
       )
