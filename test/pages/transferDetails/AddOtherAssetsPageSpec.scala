@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package models.address
+package pages.transferDetails
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
+import models.{NormalMode, UserAnswers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-trait Address {
-  val addressLine1: String
-  val addressLine2: String
-  val addressLine3: Option[String]
-  val addressLine4: Option[String]
-  val addressLine5: Option[String]
-  val country: Country
-  val postcode: Option[String]
-  val poBox: Option[String]
+class AddOtherAssetsPageSpec extends AnyFreeSpec with Matchers {
+
+  ".nextPage" - {
+
+    val emptyAnswers = UserAnswers("id")
+
+    "in Normal Mode" - {
+
+      "must go to the Next page" in {
+        // TODO change when pages are connected
+        AddOtherAssetsPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+      }
+    }
+  }
 }

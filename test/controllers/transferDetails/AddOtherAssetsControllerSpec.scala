@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package controllers.memberDetails
+package controllers.transferDetails
 
-import base.{AddressBase, SpecBase}
+import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.memberDetails.MembersLastUkAddressNotFoundView
+import views.html.transferDetails.AddOtherAssetsView
 
-class MembersLastUkAddressNotFoundControllerSpec extends AnyFreeSpec with SpecBase with AddressBase {
+class AddOtherAssetsControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  "MemberLastUkAddressNotFound Controller" - {
+  private lazy val addPropertyRoute = routes.AddOtherAssetsController.onPageLoad().url
+
+  "AddOtherAssets Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(noAddressFoundUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.MembersLastUkAddressNotFoundController.onPageLoad().url)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[MembersLastUkAddressNotFoundView]
+        val request  = FakeRequest(GET, addPropertyRoute)
+        val result   = route(application, request).value
+        val view     = application.injector.instanceOf[AddOtherAssetsView]
+        val nextPage = controllers.routes.IndexController.onPageLoad().url
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(noAddressFound.postcode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
   }

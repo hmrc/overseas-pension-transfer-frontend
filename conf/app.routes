@@ -306,3 +306,5 @@ GET        /transfer-details/additional-quoted-share                            
 POST       /transfer-details/additional-quoted-share                                              controllers.transferDetails.AdditionalQuotedShareController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-additional-quoted-share                                       controllers.transferDetails.AdditionalQuotedShareController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-additional-quoted-share                                       controllers.transferDetails.AdditionalQuotedShareController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/add-other-assets                                                     controllers.transferDetails.AddOtherAssetsController.onPageLoad()

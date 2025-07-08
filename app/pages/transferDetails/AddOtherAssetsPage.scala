@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package models.address
+package pages.transferDetails
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
+import models.UserAnswers
+import pages.Page
+import play.api.mvc.Call
 
-trait Address {
-  val addressLine1: String
-  val addressLine2: String
-  val addressLine3: Option[String]
-  val addressLine4: Option[String]
-  val addressLine5: Option[String]
-  val country: Country
-  val postcode: Option[String]
-  val poBox: Option[String]
+object AddOtherAssetsPage extends Page {
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
 }

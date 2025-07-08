@@ -34,7 +34,7 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine2 = "Line2",
         addressLine3 = Some("Line3"),
         addressLine4 = Some("Line4"),
-        postcode     = Some("Postcode"),
+        ukPostCode   = Some("Postcode"),
         country      = Country("FI", "Finland"),
         poBox        = Some("POBox")
       )
@@ -55,7 +55,7 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine2 = "Line2",
         addressLine3 = None,
         addressLine4 = None,
-        postcode     = None,
+        ukPostCode   = None,
         country      = Country("FI", "Finland"),
         poBox        = None
       )
