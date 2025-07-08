@@ -17,15 +17,25 @@
 package viewmodels.checkAnswers.transferDetails
 
 import models.UserAnswers
+import pages.transferDetails.QuotedSharesClassPage
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 
-case object TransferDetailsSummary {
+object QuotedSharesClassSummary {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedShareRow: Option[SummaryListRow] = Some(AdditionalUnquotedShareSummary.row(userAnswers))
-    val totalQuotedShareRow: Option[SummaryListRow]   = Some(AdditionalQuotedSharesSummary.row(userAnswers))
-
-    Seq(totalUnquotedShareRow, totalQuotedShareRow).flatten
-  }
+  def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(QuotedSharesClassPage(index)).map {
+      answer =>
+        SummaryListRowViewModel(
+          key     = "quotedSharesClass.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          actions = Seq(
+            ActionItemViewModel("site.change", QuotedSharesClassPage(index).changeLink(answers).url)
+              .withVisuallyHiddenText(messages("quotedSharesClass.change.hidden"))
+          )
+        )
+    }
 }

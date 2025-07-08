@@ -17,43 +17,41 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.transferDetails.NumberOfQuotedSharesFormProvider
+import forms.transferDetails.QuotedSharesClassFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.NumberOfQuotedSharesPage
+import pages.transferDetails.QuotedSharesClassPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.NumberOfQuotedSharesView
+import views.html.transferDetails.QuotedSharesClassView
 
 import scala.concurrent.Future
 
-class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QuotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new NumberOfQuotedSharesFormProvider()
+  private val formProvider = new QuotedSharesClassFormProvider()
   private val form         = formProvider()
+  private val index        = 0
 
-  private val validAnswer = "10"
-  private val index       = 0
+  private lazy val quotedSharesClassRoute = routes.QuotedSharesClassController.onPageLoad(NormalMode, index).url
 
-  lazy val numberOfQuotedSharesRoute = routes.NumberOfQuotedSharesController.onPageLoad(NormalMode, index).url
-
-  "NumberOfQuotedShares Controller" - {
+  "QuotedSharesClass Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, numberOfQuotedSharesRoute)
+        val request = FakeRequest(GET, quotedSharesClassRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[NumberOfQuotedSharesView]
+        val view = application.injector.instanceOf[QuotedSharesClassView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
@@ -62,19 +60,19 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(NumberOfQuotedSharesPage(index), validAnswer).success.value
+      val userAnswers = userAnswersQtNumber.set(QuotedSharesClassPage(index), "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, numberOfQuotedSharesRoute)
+        val request = FakeRequest(GET, quotedSharesClassRoute)
 
-        val view = application.injector.instanceOf[NumberOfQuotedSharesView]
+        val view = application.injector.instanceOf[QuotedSharesClassView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -86,20 +84,18 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, numberOfQuotedSharesRoute)
-            .withFormUrlEncodedBody(("value", validAnswer.toString))
+          FakeRequest(POST, quotedSharesClassRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual NumberOfQuotedSharesPage(index).nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual QuotedSharesClassPage(index).nextPage(NormalMode, userAnswersQtNumber).url
       }
     }
 
@@ -109,12 +105,12 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, numberOfQuotedSharesRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+          FakeRequest(POST, quotedSharesClassRoute)
+            .withFormUrlEncodedBody(("value", ""))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+        val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[NumberOfQuotedSharesView]
+        val view = application.injector.instanceOf[QuotedSharesClassView]
 
         val result = route(application, request).value
 
@@ -128,7 +124,7 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, numberOfQuotedSharesRoute)
+        val request = FakeRequest(GET, quotedSharesClassRoute)
 
         val result = route(application, request).value
 
@@ -143,13 +139,12 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, numberOfQuotedSharesRoute)
-            .withFormUrlEncodedBody(("value", validAnswer.toString))
+          FakeRequest(POST, quotedSharesClassRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }

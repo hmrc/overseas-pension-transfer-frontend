@@ -17,27 +17,28 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.transferDetails.NumberOfQuotedSharesFormProvider
+import forms.transferDetails.QuotedSharesCompanyNameFormProvider
 import models.Mode
-import pages.transferDetails.NumberOfQuotedSharesPage
+import pages.transferDetails.QuotedSharesCompanyNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.NumberOfQuotedSharesView
+import views.html.transferDetails.QuotedSharesCompanyNameView
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NumberOfQuotedSharesController @Inject() (
+class QuotedSharesCompanyNameController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: NumberOfQuotedSharesFormProvider,
+    formProvider: QuotedSharesCompanyNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: NumberOfQuotedSharesView
+    view: QuotedSharesCompanyNameView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -45,7 +46,7 @@ class NumberOfQuotedSharesController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(NumberOfQuotedSharesPage(index)) match {
+      val preparedForm = request.userAnswers.get(QuotedSharesCompanyNamePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,9 +61,9 @@ class NumberOfQuotedSharesController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NumberOfQuotedSharesPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesCompanyNamePage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(NumberOfQuotedSharesPage(index).nextPage(mode, updatedAnswers))
+          } yield Redirect(QuotedSharesCompanyNamePage(index).nextPage(mode, updatedAnswers))
       )
   }
 }

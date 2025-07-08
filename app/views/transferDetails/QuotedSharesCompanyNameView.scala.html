@@ -15,12 +15,13 @@
  *@
 
 @import viewmodels.InputWidth._
+@import controllers.transferDetails.routes
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import viewmodels.govuk.all._
 @import views.ViewUtils.title
+@import viewmodels.govuk.all._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
@@ -37,9 +38,9 @@
 
 @(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("numberOfQuotedShares.title"))) {
+@layout(pageTitle = title(form, messages("quotedSharesCompanyName.title"))) {
 
-    @formHelper(action = controllers.transferDetails.routes.NumberOfQuotedSharesController.onSubmit(mode, index), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.QuotedSharesCompanyNameController.onSubmit(mode, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -50,12 +51,11 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("numberOfQuotedShares.heading")))
+                label = LabelViewModel(Text(messages("quotedSharesCompanyName.heading")))
                     .withCssClass("govuk-!-margin-bottom-6")
                     .asPageHeading(size = Large)
             )
-            .asNumeric()
-            .withWidth(Fixed10)
+            .withWidth(OneHalf)
         )
 
         @govukButton(

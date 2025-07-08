@@ -21,7 +21,7 @@ import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class NumberOfQuotedSharesPageSpec extends AnyFreeSpec with Matchers {
+class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers {
   private val index = 0
 
   ".nextPage" - {
@@ -30,8 +30,9 @@ class NumberOfQuotedSharesPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to the Next page" in {
-        NumberOfQuotedSharesPage(index).nextPage(NormalMode, emptyAnswers) mustEqual routes.QuotedSharesClassController.onPageLoad(NormalMode, index)
+      "must go to Index" in {
+
+        QuotedSharesClassPage(index).nextPage(NormalMode, emptyAnswers) mustEqual routes.QuotedSharesCYAController.onPageLoad(index)
       }
     }
 
@@ -39,7 +40,7 @@ class NumberOfQuotedSharesPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        NumberOfQuotedSharesPage(index).nextPage(CheckMode, emptyAnswers) mustEqual routes.QuotedSharesCYAController.onPageLoad(index)
+        QuotedSharesClassPage(index).nextPage(CheckMode, emptyAnswers) mustEqual routes.QuotedSharesCYAController.onPageLoad(index)
       }
     }
   }

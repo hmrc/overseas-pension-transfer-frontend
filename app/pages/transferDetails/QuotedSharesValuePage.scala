@@ -22,18 +22,18 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class NumberOfQuotedSharesPage(index: Int) extends QuestionPage[String] {
+case class QuotedSharesValuePage(index: Int) extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.toString \ index \ toString
 
-  override def toString: String = ShareEntry.NumberOfShares
+  override def toString: String = ShareEntry.ValueOfShares
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.QuotedSharesClassController.onPageLoad(NormalMode, index)
+    routes.NumberOfQuotedSharesController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.QuotedSharesCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.NumberOfQuotedSharesController.onPageLoad(CheckMode, index)
+    routes.QuotedSharesValueController.onPageLoad(CheckMode, index)
 }

@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package forms.transferDetails
 
-import models.UserAnswers
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import forms.mappings.{Mappings, Regex}
+import play.api.data.Form
 
-case object TransferDetailsSummary {
+import javax.inject.Inject
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedShareRow: Option[SummaryListRow] = Some(AdditionalUnquotedShareSummary.row(userAnswers))
-    val totalQuotedShareRow: Option[SummaryListRow]   = Some(AdditionalQuotedSharesSummary.row(userAnswers))
+class QuotedSharesClassFormProvider @Inject() extends Mappings with Regex {
 
-    Seq(totalUnquotedShareRow, totalQuotedShareRow).flatten
-  }
+  val maxLength = 160
+
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("quotedSharesClass.error.required")
+        .verifying(maxLength(maxLength, "quotedSharesClass.error.length"))
+        .verifying(regexp(nameRegex, "quotedSharesClass.error.pattern"))
+    )
 }
