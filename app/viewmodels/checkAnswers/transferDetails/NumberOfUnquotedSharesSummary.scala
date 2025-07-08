@@ -25,14 +25,14 @@ import viewmodels.implicits._
 
 object NumberOfUnquotedSharesSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NumberOfUnquotedSharesPage).map {
+  def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(NumberOfUnquotedSharesPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "numberOfUnquotedShares.checkYourAnswersLabel",
           value   = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", NumberOfUnquotedSharesPage.changeLink(answers).url)
+            ActionItemViewModel("site.change", NumberOfUnquotedSharesPage(index).changeLink(answers).url)
               .withVisuallyHiddenText(messages("numberOfUnquotedShares.change.hidden"))
           )
         )
