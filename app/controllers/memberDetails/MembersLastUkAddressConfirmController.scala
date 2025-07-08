@@ -18,6 +18,7 @@ package controllers.memberDetails
 
 import controllers.actions._
 import forms.memberDetails.MemberConfirmLastUkAddressFormProvider
+import models.address.MembersLastUKAddress
 import models.{Mode, NormalMode}
 import pages.memberDetails.{MembersLastUKAddressPage, MembersLastUkAddressConfirmPage, MembersLastUkAddressSelectPage}
 import play.api.data.Form
@@ -53,7 +54,7 @@ class MembersLastUkAddressConfirmController @Inject() (
       val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
         case Some(selectedAddress) =>
-          val viewModel = AddressViewModel.fromAddress(selectedAddress.address)
+          val viewModel = AddressViewModel.fromAddress(selectedAddress)
           Ok(view(form, mode, viewModel))
         case _                     =>
           Redirect(
@@ -67,7 +68,8 @@ class MembersLastUkAddressConfirmController @Inject() (
       val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
         case Some(selectedAddress) =>
-          val viewModel = AddressViewModel.fromAddress(selectedAddress.address)
+          val viewModel     = AddressViewModel.fromAddress(selectedAddress)
+          val addressToSave = MembersLastUKAddress.fromAddress(selectedAddress)
           formProvider().bindFromRequest().fold(
             formWithErrors => {
               Future.successful(BadRequest(view(formWithErrors, mode, viewModel)))
@@ -76,7 +78,7 @@ class MembersLastUkAddressConfirmController @Inject() (
               for {
                 clearedLookupUA <- addressService.clearAddressLookups(request.userAnswers)
                 updatedAnswers  <-
-                  Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, selectedAddress.address))
+                  Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, addressToSave))
                 _               <- sessionRepository.set(updatedAnswers)
               } yield Redirect(MembersLastUkAddressConfirmPage.nextPage(mode, updatedAnswers))
           )
