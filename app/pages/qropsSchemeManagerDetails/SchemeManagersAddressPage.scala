@@ -18,12 +18,12 @@ package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
 import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
-import models.address.Address
+import models.address.{Address, SchemeManagersAddress}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SchemeManagersAddressPage extends QuestionPage[Address] {
+case object SchemeManagersAddressPage extends QuestionPage[SchemeManagersAddress] {
 
   override def path: JsPath = JsPath \ TaskCategory.SchemeManagerDetails.toString \ toString
 

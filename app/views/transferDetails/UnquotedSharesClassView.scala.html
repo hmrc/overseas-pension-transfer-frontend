@@ -36,11 +36,11 @@
     qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("unquotedSharesClass.title"))) {
 
-    @formHelper(action = routes.UnquotedSharesClassController.onSubmit(mode)) {
+    @formHelper(action = routes.UnquotedSharesClassController.onSubmit(mode, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

@@ -36,8 +36,9 @@ class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase w
 
   private val formProvider = new UnquotedShareCompanyNameFormProvider()
   private val form         = formProvider()
+  private val index        = 0
 
-  private lazy val unquotedShareCompanyNameRoute = routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode).url
+  private lazy val unquotedShareCompanyNameRoute = routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, index).url
 
   "UnquotedShareCompanyName Controller" - {
 
@@ -53,13 +54,13 @@ class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase w
         val view = application.injector.instanceOf[UnquotedShareCompanyNameView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(UnquotedShareCompanyNamePage, "answer").success.value
+      val userAnswers = userAnswersQtNumber.set(UnquotedShareCompanyNamePage(index), "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +72,7 @@ class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase w
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -94,7 +95,7 @@ class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase w
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnquotedShareCompanyNamePage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual UnquotedShareCompanyNamePage(index).nextPage(NormalMode, userAnswersQtNumber).url
       }
     }
 
@@ -114,7 +115,7 @@ class UnquotedShareCompanyNameControllerSpec extends AnyFreeSpec with SpecBase w
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

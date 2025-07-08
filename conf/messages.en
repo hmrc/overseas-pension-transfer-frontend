@@ -124,6 +124,7 @@ checkYourAnswers.memberDetails.heading = The member''s details
 checkYourAnswers.memberDetails.insetText = Take note of the transfer reference (e.g., QT123456) or National Insurance number as you will be able to identify the form and search by these details later.
 checkYourAnswers.qropsDetails.heading = The QROPS details
 checkYourAnswers.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
+checkYourAnswers.transferDetails.heading = The transfer details
 
 discardTransferConfirm.title = Are you sure you want to discard this transfer?
 discardTransferConfirm.heading = Are you sure you want to discard this transfer?
@@ -477,10 +478,10 @@ unquotedShareStart.paragraph = The following questions are about unquoted shares
 
 unquotedShareCompanyName.title = What is the name of the company these unquoted shares relate to?
 unquotedShareCompanyName.heading = What is the name of the company these unquoted shares relate to?
-unquotedShareCompanyName.checkYourAnswersLabel = Unquoted share company name
+unquotedShareCompanyName.checkYourAnswersLabel = Company name
 unquotedShareCompanyName.error.required = Enter company name
 unquotedShareCompanyName.error.length = The company name must be 160 characters or less
-unquotedShareCompanyName.change.hidden = Unquoted share company name
+unquotedShareCompanyName.change.hidden = Company name
 
 valueOfAsset.title = What is the value of the asset?
 valueOfAsset.heading = What is the value of the asset?
@@ -559,6 +560,19 @@ unquotedSharesClass.error.required = Enter the class of unquoted shares
 unquotedSharesClass.error.length = The class of unquoted shares must be 160 characters or less
 unquotedSharesClass.change.hidden = Class of unquoted shares
 unquotedSharesClass.error.pattern = The class of unquoted shares must only include letters, spaces, apostrophes and hyphens
+
+additionalAsset.common.title = You have added {0} {1}
+
+additionalUnquotedShare.error.required = Please select an option
+additionalUnquotedShare.checkYourAnswersLabel = Unquoted shares
+additionalUnquotedShare.change.hidden = Unquoted shares
+additionalUnquotedShare.summary.value = {0} added
+additionalUnquotedShare.text.singular = group of unquoted shares
+additionalUnquotedShare.text.plural = groups of unquoted shares
+
+unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
+unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
+unquotedSharesConfirmRemoval.error.required = Select one option
 
 addAdditionalOtherAsset.title = Do you need to add another asset?
 addAdditionalOtherAsset.heading = You have added 1 asset
