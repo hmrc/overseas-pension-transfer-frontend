@@ -227,17 +227,17 @@ POST       /transfer-details/property-address                                   
 GET        /transfer-details/change-property-address                                              controllers.transferDetails.PropertyAddressController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-property-address                                              controllers.transferDetails.PropertyAddressController.onSubmit(mode: Mode = CheckMode)
 
-GET        /transfer-details/unquoted-share-start                                                 controllers.transferDetails.UnquotedShareStartController.onPageLoad()
+GET        /transfer-details/unquoted-shares-start                                                controllers.transferDetails.UnquotedShareStartController.onPageLoad()
 
-GET        /transfer-details/unquoted-share-company-name                                          controllers.transferDetails.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /transfer-details/unquoted-share-company-name                                          controllers.transferDetails.UnquotedShareCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int)
-GET        /transfer-details/change-unquoted-share-company-name                                   controllers.transferDetails.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = CheckMode, index: Int)
-POST       /transfer-details/change-unquoted-share-company-name                                   controllers.transferDetails.UnquotedShareCompanyNameController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/unquoted-shares-company-name                                         controllers.transferDetails.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/unquoted-shares-company-name                                         controllers.transferDetails.UnquotedShareCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/change-unquoted-shares-company-name                                  controllers.transferDetails.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/change-unquoted-shares-company-name                                  controllers.transferDetails.UnquotedShareCompanyNameController.onSubmit(mode: Mode = CheckMode, index: Int)
 
-GET        /transfer-details/unquoted-share-value                                                 controllers.transferDetails.UnquotedShareValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /transfer-details/unquoted-share-value                                                 controllers.transferDetails.UnquotedShareValueController.onSubmit(mode: Mode = NormalMode, index: Int)
-GET        /transfer-details/change-unquoted-share-value                                          controllers.transferDetails.UnquotedShareValueController.onPageLoad(mode: Mode = CheckMode, index: Int)
-POST       /transfer-details/change-unquoted-share-value                                          controllers.transferDetails.UnquotedShareValueController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/unquoted-shares-value                                                controllers.transferDetails.UnquotedShareValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/unquoted-shares-value                                                controllers.transferDetails.UnquotedShareValueController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/change-unquoted-shares-value                                         controllers.transferDetails.UnquotedShareValueController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/change-unquoted-shares-value                                         controllers.transferDetails.UnquotedShareValueController.onSubmit(mode: Mode = CheckMode, index: Int)
 
 GET        /transfer-details/number-of-unquoted-shares                                            controllers.transferDetails.NumberOfUnquotedSharesController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/number-of-unquoted-shares                                            controllers.transferDetails.NumberOfUnquotedSharesController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -249,13 +249,13 @@ POST       /transfer-details/unquoted-shares-class                              
 GET        /transfer-details/change-unquoted-shares-class                                         controllers.transferDetails.UnquotedSharesClassController.onPageLoad(mode: Mode = CheckMode, index: Int)
 POST       /transfer-details/change-unquoted-shares-class                                         controllers.transferDetails.UnquotedSharesClassController.onSubmit(mode: Mode = CheckMode, index: Int)
 
-GET        /transfer-details/unquoted-share-check-your-answers                                    controllers.transferDetails.UnquotedShareCYAController.onPageLoad(index: Int)
-POST       /transfer-details/unquoted-share-check-your-answers                                    controllers.transferDetails.UnquotedShareCYAController.onSubmit(index: Int)
+GET        /transfer-details/unquoted-shares-check-your-answers                                   controllers.transferDetails.UnquotedShareCYAController.onPageLoad(index: Int)
+POST       /transfer-details/unquoted-shares-check-your-answers                                   controllers.transferDetails.UnquotedShareCYAController.onSubmit(index: Int)
 
-GET        /transfer-details/additional-unquoted-share                                            controllers.transferDetails.AdditionalUnquotedShareController.onPageLoad()
-POST       /transfer-details/additional-unquoted-share                                            controllers.transferDetails.AdditionalUnquotedShareController.onSubmit()
-GET        /transfer-details/change-additional-unquoted-share                                     controllers.transferDetails.AdditionalUnquotedShareController.onPageLoad()
-POST       /transfer-details/change-additional-unquoted-share                                     controllers.transferDetails.AdditionalUnquotedShareController.onSubmit()
+GET        /transfer-details/additional-unquoted-shares                                           controllers.transferDetails.AdditionalUnquotedShareController.onPageLoad()
+POST       /transfer-details/additional-unquoted-shares                                           controllers.transferDetails.AdditionalUnquotedShareController.onSubmit()
+GET        /transfer-details/change-additional-unquoted-shares                                    controllers.transferDetails.AdditionalUnquotedShareController.onPageLoad()
+POST       /transfer-details/change-additional-unquoted-shares                                    controllers.transferDetails.AdditionalUnquotedShareController.onSubmit()
 
 GET        /transfer-details/unquoted-shares-confirm-removal                                      controllers.transferDetails.UnquotedSharesConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/unquoted-shares-confirm-removal                                      controllers.transferDetails.UnquotedSharesConfirmRemovalController.onSubmit(index: Int)
