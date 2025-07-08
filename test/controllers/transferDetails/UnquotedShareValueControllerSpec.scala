@@ -17,7 +17,6 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import controllers.transferDetails.routes
 import forms.UnquotedShareValueFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -37,10 +36,11 @@ class UnquotedShareValueControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
   val formProvider = new UnquotedShareValueFormProvider()
   val form         = formProvider()
+  val index        = 0
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val unquotedShareValueRoute = routes.UnquotedShareValueController.onPageLoad(NormalMode).url
+  lazy val unquotedShareValueRoute = routes.UnquotedShareValueController.onPageLoad(NormalMode, index).url
 
   "UnquotedShareValue Controller" - {
 
@@ -56,13 +56,13 @@ class UnquotedShareValueControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val view = application.injector.instanceOf[UnquotedShareValueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(UnquotedShareValuePage, validAnswer).success.value
+      val userAnswers = userAnswersQtNumber.set(UnquotedShareValuePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,7 +74,7 @@ class UnquotedShareValueControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -99,7 +99,7 @@ class UnquotedShareValueControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnquotedShareValuePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual UnquotedShareValuePage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -119,7 +119,7 @@ class UnquotedShareValueControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

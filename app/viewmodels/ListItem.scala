@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels
 
-import models.UserAnswers
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-
-case object TransferDetailsSummary {
-
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedShareRow: Option[SummaryListRow] = Some(AdditionalUnquotedShareSummary.row(userAnswers))
-    Seq(totalUnquotedShareRow).flatten
-  }
-}
+case class ListItem(
+    name: String,
+    changeUrl: Option[String],
+    removeUrl: Option[String]
+  )
