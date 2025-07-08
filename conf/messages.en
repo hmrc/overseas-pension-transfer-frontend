@@ -580,6 +580,6 @@ addOtherAssets.text = The following questions are about other assets that are pa
 
 removeQuotedShares.title = Are you sure you want to remove these quoted shares?
 removeQuotedShares.heading = Are you sure you want to remove these quoted shares?
-removeQuotedShares.error.required = Please select an option
+removeQuotedShares.error.required = Select one option
 removeQuotedShares.checkYourAnswersLabel = removeQuotedShares
 removeQuotedShares.change.hidden = RemoveQuotedShares
