@@ -562,8 +562,9 @@ unquotedSharesClass.change.hidden = Class of unquoted shares
 unquotedSharesClass.error.pattern = The class of unquoted shares must only include letters, spaces, apostrophes and hyphens
 
 additionalUnquotedShare.title = Do you need to add more unquoted shares?
-additionalUnquotedShare.heading1 = You have added unquoted shares in {0} company
-additionalUnquotedShare.heading2 = Do you need to add more unquoted shares?
+additionalUnquotedShare.singular = group of unquoted shares
+additionalUnquotedShare.plural = groups of unquoted shares
+additionalUnquotedShare.hint.text = Select yes if the member has more than assets. We'll contact the scheme administrator for information on the rest of the assets
 additionalUnquotedShare.error.required = Please select an option
 additionalUnquotedShare.checkYourAnswersLabel = Unquoted shares
 additionalUnquotedShare.change.hidden = Unquoted shares

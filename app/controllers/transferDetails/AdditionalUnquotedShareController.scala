@@ -26,15 +26,14 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.AdditionalUnquotedShareSummary
 import views.html.transferDetails.AdditionalUnquotedShareView
-
 import uk.gov.hmrc.hmrcfrontend.views.html.components.AddToAList
-
 import views.ViewUtils.title
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import viewmodels.LegendSize.Large
 import models.requests.DisplayRequest
+import play.api.data.Form
 import views.html.components.QTNumber
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.Short
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{ListItem, Short}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,20 +51,22 @@ class AdditionalUnquotedShareController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val shares = AdditionalUnquotedShareSummary.rows(request.userAnswers)
-      Ok(view(form, shares))
+      val shares: Seq[ListItem]    = AdditionalUnquotedShareSummary.rows(request.userAnswers)
+      val hintText: Option[String] = if (shares.size == 5) Some(messagesApi("additionalUnquotedShare.hint.text")(request.lang(messagesApi))) else None
+      Ok(view(form, shares, hintText))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val shares = AdditionalUnquotedShareSummary.rows(request.userAnswers)
-          Future.successful(BadRequest(view(formWithErrors, shares)))
+          val shares: Seq[ListItem]    = AdditionalUnquotedShareSummary.rows(request.userAnswers)
+          val hintText: Option[String] = if (shares.size == 5) Some(messagesApi("additionalUnquotedShare.hint.text")(request.lang(messagesApi))) else None
+          Future.successful(BadRequest(view(formWithErrors, shares, hintText)))
         },
         value => {
           val redirectTarget = if (value) {

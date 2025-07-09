@@ -29,7 +29,7 @@
     qtNumber: QTNumber
 )
 
-@(form: Form[_], shares: Seq[ListItem])(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], shares: Seq[ListItem], viewHintText: Option[String])(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("additionalUnquotedShare.title"))) {
 
@@ -44,9 +44,10 @@
             AddToAList(
                 itemList = shares,
                 itemType = Some(ItemType(
-                    singular = "unquoted share",
-                    plural = "unquoted shares"
-                ))
+                    singular = messages("additionalUnquotedShare.singular"),
+                    plural = messages("additionalUnquotedShare.plural")
+                )),
+                hintText = viewHintText
             )
         )
     }
