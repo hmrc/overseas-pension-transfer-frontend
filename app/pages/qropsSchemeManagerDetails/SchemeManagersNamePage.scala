@@ -17,16 +17,16 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, NormalMode, SchemeManagersName, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, SchemeManagersName, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SchemeManagersNamePage extends QuestionPage[SchemeManagersName] {
+case object SchemeManagersNamePage extends QuestionPage[PersonName] {
 
   override def path: JsPath = JsPath \ TaskCategory.SchemeManagerDetails.toString \ toString
 
-  override def toString: String = "schemeManagersName"
+  override def toString: String = "individualContactName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.SchemeManagersAddressController.onPageLoad(NormalMode)
