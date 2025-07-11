@@ -16,17 +16,12 @@
 
 package services
 
-import connectors.UserAnswersConnector
-import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersSuccessResponse}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.memberDetails.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
-import uk.gov.hmrc.http.HeaderCarrier
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class MemberDetailsService @Inject() (userAnswersConnector: UserAnswersConnector) {
+class MemberDetailsService {
 
   // If going from false → true, remove the answers of next questions
   def updateMemberIsResidentUKAnswers(baseAnswers: UserAnswers, previousValue: Option[Boolean], value: Boolean): Future[UserAnswers] = {
@@ -66,18 +61,4 @@ class MemberDetailsService @Inject() (userAnswersConnector: UserAnswersConnector
       case _                              => mode
     }
   }
-
-  // TODO: This should probably return either user answers or an error
-  def postMemberNinoUserAnswers(id: String, userAnswers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[UserAnswers] = {
-    for {
-      backendResponse <- userAnswersConnector.putAnswers(id, UserAnswersDTO.fromUserAnswers(userAnswers))(hc, ec)
-      updatedAnswers   = backendResponse match {
-                           case UserAnswersSuccessResponse(updatedUserAnswersDTO) =>
-                             UserAnswersDTO.toUserAnswers(updatedUserAnswersDTO)
-                           case UserAnswersErrorResponse(_)                       =>
-                             userAnswers
-                         }
-    } yield updatedAnswers
-  }
-
 }

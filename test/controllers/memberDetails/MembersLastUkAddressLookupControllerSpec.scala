@@ -17,10 +17,11 @@
 package controllers.memberDetails
 
 import base.{AddressBase, SpecBase}
-import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
+import connectors.AddressLookupConnector
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.NormalMode
+import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec

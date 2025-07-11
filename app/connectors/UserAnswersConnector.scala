@@ -17,10 +17,11 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.UserAnswers
+import connectors.parsers.GetUserAnswersParser.GetUserAnswersHttpReads
+import connectors.parsers.SetUserAnswersParser.SetUserAnswersHttpReads
 import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersResponse, UserAnswersSuccessResponse}
-//import models.dtos.UserAnswersDTO
+import models.responses.{GetUserAnswersErrorResponse, GetUserAnswersResponse, SetUserAnswersErrorResponse, SetUserAnswersResponse}
+import uk.gov.hmrc.http.HttpResponse
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -38,35 +39,28 @@ class UserAnswersConnector @Inject() (
   private def userAnswersUrl(id: String): URL =
     url"${appConfig.backendService}/save-for-later/$id"
 
-  def getAnswers(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[UserAnswersResponse] = {
-    http.get(userAnswersUrl(id))
-      .execute[UserAnswersDTO]
-      .map { uad =>
-        UserAnswersSuccessResponse(uad)
-      }
+  def getAnswers(transferId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersResponse] = {
+    http.get(userAnswersUrl(transferId))
+      .execute[GetUserAnswersResponse]
       .recover {
         case e: Exception =>
-          logger.warn(s"Error retrieving user answers for ID '$id': ${e.getMessage}", e)
-          UserAnswersErrorResponse(e)
+          logger.warn(s"Error retrieving user answers for ID '$transferId': ${e.getMessage}", e)
+          GetUserAnswersErrorResponse(e.toString)
       }
   }
 
   def putAnswers(
-      id: String,
       userAnswersDTO: UserAnswersDTO
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[UserAnswersResponse] = {
-    http.post(userAnswersUrl(id))
+    ): Future[SetUserAnswersResponse] = {
+    http.post(userAnswersUrl(userAnswersDTO.referenceId))
       .withBody(Json.toJson(userAnswersDTO))
-      .execute[UserAnswersDTO]
-      .map { updatedDto =>
-        UserAnswersSuccessResponse(updatedDto)
-      }
+      .execute[SetUserAnswersResponse]
       .recover {
         case e: Exception =>
-          logger.warn(s"Error updating user answers for ID '$id': ${e.getMessage}", e)
-          UserAnswersErrorResponse(e)
+          logger.warn(s"Error updating user answers for ID '${userAnswersDTO.referenceId}': ${e.getMessage}", e)
+          SetUserAnswersErrorResponse
       }
   }
 

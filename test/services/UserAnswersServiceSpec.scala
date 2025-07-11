@@ -20,7 +20,8 @@ import base.SpecBase
 import connectors.UserAnswersConnector
 import models.UserAnswers
 import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersSuccessResponse}
+import models.responses.{GetUserAnswersErrorResponse, GetUserAnswersNotFoundResponse, GetUserAnswersSuccessResponse, SetUserAnswersSuccessResponse}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -37,34 +38,59 @@ import scala.concurrent.Future
 class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val instant: Instant         = Instant.now
-  private val id: String               = "id"
   private val mockUserAnswersConnector = mock[UserAnswersConnector]
 
   val service: UserAnswersService = new UserAnswersService(mockUserAnswersConnector)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
+  private val userAnswersDTO: UserAnswersDTO = UserAnswersDTO("id", JsObject(Map("field" -> JsString("value"))), instant)
+  private val userAnswers: UserAnswers       = UserAnswers("id", JsObject(Map("field" -> JsString("value"))), instant)
+
   "getUserAnswers" - {
-    "return prepopulated UserAnswers when UserAnswersSuccessResponse is returned" in {
-      val userAnswersDTO = UserAnswersDTO("id", JsObject(Map("field" -> JsString("value"))), instant)
-      val userAnswers    = UserAnswers("id", JsObject(Map("field" -> JsString("value"))), instant)
+    "return prepopulated Right(UserAnswers) when GetUserAnswersSuccessResponse is returned" in {
 
-      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(id))(any(), any()))
-        .thenReturn(Future.successful(UserAnswersSuccessResponse(userAnswersDTO)))
+      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+        .thenReturn(Future.successful(GetUserAnswersSuccessResponse(userAnswersDTO)))
 
-      val getUserAnswers = service.getUserAnswers(id)
+      val getUserAnswers = service.getUserAnswers(userAnswersId)
 
-      await(getUserAnswers) mustBe userAnswers
+      await(getUserAnswers) mustBe Right(userAnswers)
     }
 
-    "return default UserAnswers with userId when UserAnswersFailureResponse is returned" in {
-      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(id))(any(), any()))
-        .thenReturn(Future.successful(UserAnswersErrorResponse(new Throwable("throwable"))))
+    "return Right(UserAnswers) with default userId when GetUserAnswersNotFoundResponse is returned" in {
+      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+        .thenReturn(Future.successful(GetUserAnswersNotFoundResponse))
 
-      val getUserAnswers = await(service.getUserAnswers(id))
+      val getUserAnswers = await(service.getUserAnswers(userAnswersId))
 
-      getUserAnswers.id mustBe id
-      getUserAnswers.data mustBe JsObject.empty
+      getUserAnswers map {
+        ua =>
+          ua.id mustBe userAnswersId
+          ua.data mustBe JsObject.empty
+      }
+    }
+
+    "return Left(GetUserAnswersErrorResponse) when GetUserErrorResponse is returned from connector" in {
+      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+        .thenReturn(Future.successful(GetUserAnswersErrorResponse("Error message")))
+
+      val getUserAnswers = await(service.getUserAnswers(userAnswersId))
+
+      getUserAnswers.left.map {
+        error => error.error mustBe "Error message"
+      }
+    }
+  }
+
+  "setUserAnswers" - {
+    "return a Done status when Success is received from the connector" in {
+      when(mockUserAnswersConnector.putAnswers(ArgumentMatchers.eq(userAnswersDTO))(any(), any()))
+        .thenReturn(Future.successful(SetUserAnswersSuccessResponse))
+
+      val setUserAnswers = await(service.setUserAnswers(userAnswers))
+
+      setUserAnswers mustBe Done
     }
   }
 }

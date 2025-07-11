@@ -24,6 +24,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberNameView
 
@@ -38,7 +39,8 @@ class MemberNameController @Inject() (
     requireData: DataRequiredAction,
     formProvider: MemberNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MemberNameView
+    view: MemberNameView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -54,6 +56,7 @@ class MemberNameController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
+  // TODO add a submit to save for later as part of the for comprehension also if first use then generate transferId
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
@@ -63,6 +66,7 @@ class MemberNameController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
+            _              <- userAnswersService.setUserAnswers(updatedAnswers)
           } yield Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
       )
   }

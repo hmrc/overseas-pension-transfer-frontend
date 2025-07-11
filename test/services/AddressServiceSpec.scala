@@ -17,12 +17,13 @@
 package services
 
 import base.AddressBase
-import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
+import connectors.AddressLookupConnector
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import forms.transferDetails.PropertyAddressFormData
 import models.address._
+import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures

@@ -19,18 +19,34 @@ package services
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
 import models.UserAnswers
-import models.dtos.UserAnswersDTO.toUserAnswers
-import models.responses.UserAnswersSuccessResponse
+import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
+import models.responses.{GetUserAnswersErrorResponse, GetUserAnswersNotFoundResponse, GetUserAnswersSuccessResponse, SetUserAnswersSuccessResponse}
+import org.apache.pekko.Done
+import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.util.UUID.randomUUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserAnswersService @Inject() (connector: UserAnswersConnector)(implicit ec: ExecutionContext) {
+class UserAnswersService @Inject() (
+    connector: UserAnswersConnector
+  )(implicit ec: ExecutionContext
+  ) {
 
-  def getUserAnswers(id: String)(implicit hc: HeaderCarrier): Future[UserAnswers] = {
-    connector.getAnswers(id) map {
-      case UserAnswersSuccessResponse(userAnswersDTO) => toUserAnswers(userAnswersDTO)
-      case _                                          => UserAnswers(id)
+  def getUserAnswers(transferId: String)(implicit hc: HeaderCarrier): Future[Either[GetUserAnswersErrorResponse, UserAnswers]] = {
+    connector.getAnswers(transferId) map {
+      case GetUserAnswersSuccessResponse(userAnswersDTO) => Right(toUserAnswers(userAnswersDTO))
+      case GetUserAnswersNotFoundResponse                => Right(UserAnswers(transferId))
+      case error @ GetUserAnswersErrorResponse(_)        => Left(error)
     }
+  }
+
+  def setUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Done] = {
+    connector.putAnswers(
+      fromUserAnswers(userAnswers)
+    ) map {
+      _ => Done
+    }
+
   }
 }

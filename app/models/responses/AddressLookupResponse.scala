@@ -16,9 +16,9 @@
 
 package models.responses
 
-import models.dtos.UserAnswersDTO
+import models.address.AddressRecord
 
-sealed trait UserAnswersResponse
+sealed trait AddressLookupResponse
 
-case class UserAnswersSuccessResponse(userAnswersDto: UserAnswersDTO) extends UserAnswersResponse
-case class UserAnswersErrorResponse(cause: Throwable)                 extends UserAnswersResponse
+case class AddressLookupSuccessResponse(searchedPostcode: String, records: Seq[AddressRecord]) extends AddressLookupResponse
+case class AddressLookupErrorResponse(cause: Exception)                                        extends AddressLookupResponse
