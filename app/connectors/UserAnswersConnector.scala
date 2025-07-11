@@ -19,8 +19,9 @@ package connectors
 import config.FrontendAppConfig
 import connectors.parsers.GetUserAnswersParser.GetUserAnswersHttpReads
 import connectors.parsers.SetUserAnswersParser.SetUserAnswersHttpReads
+import connectors.parsers.UserAnswersParser.UserAnswersHttpReads
 import models.dtos.UserAnswersDTO
-import models.responses.{GetUserAnswersErrorResponse, GetUserAnswersResponse, SetUserAnswersErrorResponse, SetUserAnswersResponse}
+import models.responses.{GetUserAnswersErrorResponse, GetUserAnswersResponse, SetUserAnswersErrorResponse, SetUserAnswersResponse, UserAnswersErrorResponse, UserAnswersResponse}
 import uk.gov.hmrc.http.HttpResponse
 import play.api.Logging
 import play.api.libs.json.Json
@@ -39,13 +40,13 @@ class UserAnswersConnector @Inject() (
   private def userAnswersUrl(id: String): URL =
     url"${appConfig.backendService}/save-for-later/$id"
 
-  def getAnswers(transferId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersResponse] = {
+  def getAnswers(transferId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[UserAnswersResponse] = {
     http.get(userAnswersUrl(transferId))
-      .execute[GetUserAnswersResponse]
+      .execute[UserAnswersResponse]
       .recover {
         case e: Exception =>
           logger.warn(s"Error retrieving user answers for ID '$transferId': ${e.getMessage}", e)
-          GetUserAnswersErrorResponse(e.toString)
+          UserAnswersErrorResponse(e.toString, None)
       }
   }
 
@@ -53,14 +54,14 @@ class UserAnswersConnector @Inject() (
       userAnswersDTO: UserAnswersDTO
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[SetUserAnswersResponse] = {
+    ): Future[UserAnswersResponse] = {
     http.post(userAnswersUrl(userAnswersDTO.referenceId))
       .withBody(Json.toJson(userAnswersDTO))
-      .execute[SetUserAnswersResponse]
+      .execute[UserAnswersResponse]
       .recover {
         case e: Exception =>
           logger.warn(s"Error updating user answers for ID '${userAnswersDTO.referenceId}': ${e.getMessage}", e)
-          SetUserAnswersErrorResponse
+          UserAnswersErrorResponse(e.getMessage, None)
       }
   }
 
