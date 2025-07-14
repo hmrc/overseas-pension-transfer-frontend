@@ -47,7 +47,7 @@ object UserAnswersParser {
               value
             case JsError(errors) =>
               logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
-              UserAnswersErrorResponse(s"Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors)))
+              UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors)))
           }
       }
     }
@@ -55,7 +55,6 @@ object UserAnswersParser {
     private val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {
       errors =>
         errors.map(_._1.toString()).mkString(" | ")
-
     }
   }
 }
