@@ -21,10 +21,10 @@ import play.api.libs.json.{Json, Reads}
 
 sealed trait UserAnswersResponse
 
-case class UserAnswersSuccessResponse(userAnswersDto: UserAnswersDTO) extends UserAnswersResponse
-case object UserAnswersSaveSuccessfulResponse extends UserAnswersResponse
-case object UserAnswersNotFoundResponse                               extends UserAnswersResponse
-case class UserAnswersErrorResponse(error: String, details: Option[String])                    extends UserAnswersResponse
+case class UserAnswersSuccessResponse(userAnswersDto: UserAnswersDTO)       extends UserAnswersResponse
+case object UserAnswersSaveSuccessfulResponse                               extends UserAnswersResponse
+case object UserAnswersNotFoundResponse                                     extends UserAnswersResponse
+case class UserAnswersErrorResponse(error: String, details: Option[String]) extends UserAnswersResponse
 
 object UserAnswersErrorResponse {
   implicit def reads: Reads[UserAnswersErrorResponse] = Json.reads[UserAnswersErrorResponse]

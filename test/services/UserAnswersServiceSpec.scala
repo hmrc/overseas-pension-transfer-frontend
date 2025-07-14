@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersConnector
 import models.UserAnswers
 import models.dtos.UserAnswersDTO
-import models.responses.{GetUserAnswersErrorResponse, GetUserAnswersNotFoundResponse, GetUserAnswersSuccessResponse, SetUserAnswersSuccessResponse}
+import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse, UserAnswersSaveSuccessfulResponse, UserAnswersSuccessResponse}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -51,7 +51,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
     "return prepopulated Right(UserAnswers) when GetUserAnswersSuccessResponse is returned" in {
 
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
-        .thenReturn(Future.successful(GetUserAnswersSuccessResponse(userAnswersDTO)))
+        .thenReturn(Future.successful(UserAnswersSuccessResponse(userAnswersDTO)))
 
       val getUserAnswers = service.getUserAnswers(userAnswersId)
 
@@ -60,7 +60,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
     "return Right(UserAnswers) with default userId when GetUserAnswersNotFoundResponse is returned" in {
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
-        .thenReturn(Future.successful(GetUserAnswersNotFoundResponse))
+        .thenReturn(Future.successful(UserAnswersNotFoundResponse))
 
       val getUserAnswers = await(service.getUserAnswers(userAnswersId))
 
@@ -73,7 +73,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
     "return Left(GetUserAnswersErrorResponse) when GetUserErrorResponse is returned from connector" in {
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
-        .thenReturn(Future.successful(GetUserAnswersErrorResponse("Error message")))
+        .thenReturn(Future.successful(UserAnswersErrorResponse("Error message", None)))
 
       val getUserAnswers = await(service.getUserAnswers(userAnswersId))
 
@@ -86,7 +86,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
   "setUserAnswers" - {
     "return a Done status when Success is received from the connector" in {
       when(mockUserAnswersConnector.putAnswers(ArgumentMatchers.eq(userAnswersDTO))(any(), any()))
-        .thenReturn(Future.successful(SetUserAnswersSuccessResponse))
+        .thenReturn(Future.successful(UserAnswersSaveSuccessfulResponse))
 
       val setUserAnswers = await(service.setUserAnswers(userAnswers))
 

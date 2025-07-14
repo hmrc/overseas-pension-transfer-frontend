@@ -1,9 +1,26 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package connectors
 
 import base.BaseISpec
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor}
 import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse, UserAnswersSuccessResponse}
-import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
+import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse, UserAnswersSaveSuccessfulResponse, UserAnswersSuccessResponse}
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting
 
@@ -13,17 +30,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
   private val instant = Instant.now()
+  private val userAnswersDTO = UserAnswersDTO("testId", JsObject(Map("field" -> JsString("value"))), instant)
 
   val connector: UserAnswersConnector = inject[UserAnswersConnector]
 
   "getAnswers" should {
     "return UserAnswersSuccessResponse when 200 returned with UserAnswers payload" in {
-      val userAnswersDTO = UserAnswersDTO("testId", JsObject(Map("field" -> JsString("value"))), instant)
-
       stubGet(
-        "/save-for-later/testId",
-        Json.toJson(userAnswersDTO).toString(),
-        OK
+        "/overseas-pension-transfer-backend/save-for-later/testId",
+        Json.toJson(userAnswersDTO).toString()
       )
 
       val getAnswers = await(connector.getAnswers("testId"))
@@ -33,7 +48,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
     "return UserAnswersNotFoundResponse when 404 is returned" in {
       stubGet(
-        "/save-for-later/testId",
+        "/overseas-pension-transfer-backend/save-for-later/testId",
         """
           |{
           | "error": "NotFoundError"
@@ -50,7 +65,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     "return UserAnswersErrorResponse" when {
       "500 is returned" in {
         stubGet(
-          "/save-for-later/testId",
+          "/overseas-pension-transfer-backend/save-for-later/testId",
           """{"error": "InternalServerError", "details": "Where the extra details come from"}""",
           INTERNAL_SERVER_ERROR
         )
@@ -62,42 +77,66 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       "200 returned with invalid payload" in {
         stubGet(
-          "/save-for-later/testId",
+          "/overseas-pension-transfer-backend/save-for-later/testId",
           """{"field": "value"}""",
           OK
         )
 
         val getAnswers = await(connector.getAnswers("testId"))
 
-        getAnswers shouldBe UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some(""))
+        getAnswers shouldBe UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some("/data | /lastUpdated | /referenceId"))
       }
 
       "500 returned with invalid payload" in {
         stubGet(
-          "/save-for-later/testId",
+          "/overseas-pension-transfer-backend/save-for-later/testId",
           """{"field": "value"}""",
-          OK
+          INTERNAL_SERVER_ERROR
         )
 
         val getAnswers = await(connector.getAnswers("testId"))
 
-        getAnswers shouldBe UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(""))
+        getAnswers shouldBe UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some("/error"))
       }
     }
   }
 
   "setAnswers" should {
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
+      stubFor(post("/overseas-pension-transfer-backend/save-for-later/testId")
+        .willReturn(
+          aResponse()
+            .withStatus(NO_CONTENT)
+        ))
 
+      val putAnswers = await(connector.putAnswers(userAnswersDTO))
+
+      putAnswers shouldBe UserAnswersSaveSuccessfulResponse
     }
 
     "return UserAnswersErrorResponse" when {
       "400 is returned" in {
+        stubPost(
+          "/overseas-pension-transfer-backend/save-for-later/testId",
+          """{"error": "Transformation failed", "details": "Payload received is invalid"}""",
+          BAD_REQUEST
+        )
 
+        val putAnswers = await(connector.putAnswers(userAnswersDTO))
+
+        putAnswers shouldBe UserAnswersErrorResponse("Transformation failed", Some("Payload received is invalid"))
       }
 
       "500 is returned" in {
+        stubPost(
+          "/overseas-pension-transfer-backend/save-for-later/testId",
+          """{"error": "Failed to save answers"}""",
+          INTERNAL_SERVER_ERROR
+        )
 
+        val putAnswers = await(connector.putAnswers(userAnswersDTO))
+
+        putAnswers shouldBe UserAnswersErrorResponse("Failed to save answers", None)
       }
     }
   }

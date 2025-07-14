@@ -17,7 +17,13 @@
 package connectors.parsers
 
 import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse, UserAnswersResponse, UserAnswersSaveSuccessfulResponse, UserAnswersSuccessResponse}
+import models.responses.{
+  UserAnswersErrorResponse,
+  UserAnswersNotFoundResponse,
+  UserAnswersResponse,
+  UserAnswersSaveSuccessfulResponse,
+  UserAnswersSuccessResponse
+}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsError, JsPath, JsSuccess, JsonValidationError}
@@ -45,7 +51,7 @@ object UserAnswersParser {
             case JsSuccess(value, _) =>
               logger.warn(s"[UserAnswersConnector][getAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
               value
-            case JsError(errors) =>
+            case JsError(errors)     =>
               logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
               UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors)))
           }

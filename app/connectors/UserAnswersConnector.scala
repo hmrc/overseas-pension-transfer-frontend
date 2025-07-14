@@ -17,12 +17,9 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.parsers.GetUserAnswersParser.GetUserAnswersHttpReads
-import connectors.parsers.SetUserAnswersParser.SetUserAnswersHttpReads
 import connectors.parsers.UserAnswersParser.UserAnswersHttpReads
 import models.dtos.UserAnswersDTO
-import models.responses.{GetUserAnswersErrorResponse, GetUserAnswersResponse, SetUserAnswersErrorResponse, SetUserAnswersResponse, UserAnswersErrorResponse, UserAnswersResponse}
-import uk.gov.hmrc.http.HttpResponse
+import models.responses.{UserAnswersErrorResponse, UserAnswersResponse}
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
