@@ -23,6 +23,7 @@ import models.NormalMode
 import models.address._
 import models.requests.DisplayRequest
 import models.responses.UserAnswersErrorResponse
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -113,8 +114,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
     }
 
     "must redirect to the member is UK resident when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockCountryService.countries).thenReturn(testCountries)
@@ -122,11 +123,15 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       when(mockCountryService.find("GB"))
         .thenReturn(Some(Country("GB", "United Kingdom")))
 
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[CountryService].toInstance(mockCountryService)
+            bind[CountryService].toInstance(mockCountryService),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 

@@ -21,6 +21,7 @@ import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberNameFormProvider
 import models.responses.UserAnswersErrorResponse
 import models.{NormalMode, PersonName}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -82,15 +83,17 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
     }
 
     "must redirect to the members nino page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
