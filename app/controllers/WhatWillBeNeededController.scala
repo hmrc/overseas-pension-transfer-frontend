@@ -25,7 +25,6 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WhatWillBeNeededView
 
-import java.util.UUID.randomUUID
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
@@ -38,7 +37,7 @@ class WhatWillBeNeededController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
-    val newUserAnswers = UserAnswers(randomUUID().toString)
+    val newUserAnswers = UserAnswers(request.userId)
     sessionRepository.set(newUserAnswers) map {
       _ => Ok(view(WhatWillBeNeededPage.nextPage(mode = NormalMode, newUserAnswers).url))
     }

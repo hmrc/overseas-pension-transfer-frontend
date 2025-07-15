@@ -56,7 +56,6 @@ class MemberNameController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  // TODO add a submit to save for later as part of the for comprehension also if first use then generate transferId
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
