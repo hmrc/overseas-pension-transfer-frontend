@@ -25,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{AddressService, CountryService}
+import services.{AddressService, CountryService, MemberDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.MembersCurrentAddressView
@@ -41,6 +41,8 @@ class MembersCurrentAddressController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: MembersCurrentAddressFormProvider,
+    memberDetailsService: MemberDetailsService,
+    userAnswersService: UserAnswersService,
     countryService: CountryService,
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
@@ -75,9 +77,10 @@ class MembersCurrentAddressController @Inject() (
               )
             case Some(addressToSave) =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
-                _              <- sessionRepository.set(updatedAnswers).map(_ => logger.info(Json.stringify(updatedAnswers.data)))
-              } yield Redirect(MembersCurrentAddressPage.nextPage(mode, updatedAnswers))
+                userAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
+                _           <- sessionRepository.set(userAnswers).map(_ => logger.info(Json.stringify(userAnswers.data)))
+                _           <- userAnswersService.setUserAnswers(userAnswers)
+              } yield Redirect(MembersCurrentAddressPage.nextPage(mode, userAnswers))
           }
       )
   }

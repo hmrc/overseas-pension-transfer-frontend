@@ -27,5 +27,5 @@ trait Address {
   val addressLine5: Option[String]
   val country: Country
   val postcode: Option[String]
-  val poBox: Option[String]
+  val poBoxNumber: Option[String]
 }

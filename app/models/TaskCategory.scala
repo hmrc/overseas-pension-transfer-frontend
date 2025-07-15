@@ -20,14 +20,16 @@ sealed trait TaskCategory
 
 object TaskCategory extends Enumerable.Implicits {
 
-  case object MemberDetails        extends WithName("memberDetails") with TaskCategory
-  case object TransferDetails      extends WithName("transferDetails") with TaskCategory
-  case object QROPSDetails         extends WithName("qropsDetails") with TaskCategory
-  case object SchemeManagerDetails extends WithName("schemeManagerDetails") with TaskCategory
-  case object SubmissionDetails    extends WithName("submissionDetails") with TaskCategory
+  case object MemberDetails          extends WithName("memberDetails") with TaskCategory
+  case object MemberResidencyDetails extends WithName("memberDetails") with TaskCategory
+  case object TransferDetails        extends WithName("transferDetails") with TaskCategory
+  case object QROPSDetails           extends WithName("qropsDetails") with TaskCategory
+  case object SchemeManagerDetails   extends WithName("schemeManagerDetails") with TaskCategory
+  case object SubmissionDetails      extends WithName("submissionDetails") with TaskCategory
 
   val values: Seq[TaskCategory] = Seq(
     MemberDetails,
+    MemberResidencyDetails,
     TransferDetails,
     QROPSDetails,
     SchemeManagerDetails,

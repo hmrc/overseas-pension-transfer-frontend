@@ -26,7 +26,7 @@ case object SchemeManagersContactPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TaskCategory.SchemeManagerDetails.toString \ toString
 
-  override def toString: String = "schemeManagersContact"
+  override def toString: String = "schemeManagerPhone"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.SchemeManagerDetailsCYAController.onPageLoad()

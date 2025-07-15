@@ -18,7 +18,7 @@ package controllers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
-import models.{CheckMode, NormalMode, SchemeManagerType, SchemeManagersName, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, SchemeManagersName, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -122,7 +122,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     }
 
     "must remove previous data if SchemeManagerType changes" in {
-      val mngrName        = SchemeManagersName("FirstNameMngr", "LastNameMngr")
+      val mngrName        = PersonName("FirstNameMngr", "LastNameMngr")
       val previousAnswers = emptyUserAnswers
         .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         .set(SchemeManagersNamePage, mngrName).success.value

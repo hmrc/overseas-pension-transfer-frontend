@@ -30,7 +30,7 @@ object SchemeManagersNameSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeManagersNamePage).map {
       answer =>
-        val value = s"${HtmlFormat.escape(answer.schemeMangersFirstName)} ${HtmlFormat.escape(answer.schemeManagersLastName)}"
+        val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
 
         SummaryListRowViewModel(
           key     = "schemeManagersName.checkYourAnswersLabel",

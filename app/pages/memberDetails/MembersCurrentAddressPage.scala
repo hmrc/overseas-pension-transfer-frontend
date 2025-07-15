@@ -27,7 +27,7 @@ case object MembersCurrentAddressPage extends QuestionPage[MembersCurrentAddress
 
   override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
-  override def toString: String = "membersCurrentAddress"
+  override def toString: String = "principalResAddDetails"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberIsResidentUKController.onPageLoad(NormalMode)

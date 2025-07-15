@@ -18,7 +18,7 @@ package controllers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import forms.qropsSchemeManagerDetails.SchemeManagersNameFormProvider
-import models.{NormalMode, SchemeManagersName}
+import models.{NormalMode, PersonName, SchemeManagersName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -39,7 +39,7 @@ class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
   private lazy val schemeManagersNameRoute = routes.SchemeManagersNameController.onPageLoad(NormalMode).url
 
-  private val validAnswer = SchemeManagersName("value 1", "value 2")
+  private val validAnswer = PersonName("value 1", "value 2")
   private val userAnswers = userAnswersQtNumber.set(SchemeManagersNamePage, validAnswer).success.value
 
   "SchemeManagersName Controller" - {
@@ -72,7 +72,7 @@ class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(SchemeManagersName("value 1", "value 2")), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
