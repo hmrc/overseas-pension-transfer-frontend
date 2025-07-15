@@ -309,7 +309,14 @@ POST       /transfer-details/change-additional-quoted-share                     
 
 GET        /transfer-details/add-other-assets                                                     controllers.transferDetails.AddOtherAssetsController.onPageLoad()
 
+
+GET        /transfer-details/remove-property-asset                                                controllers.transferDetails.RemovePropertyAssetController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/remove-property-asset                                                controllers.transferDetails.RemovePropertyAssetController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-remove-property-asset                                         controllers.transferDetails.RemovePropertyAssetController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-remove-property-asset                                         controllers.transferDetails.RemovePropertyAssetController.onSubmit(mode: Mode = CheckMode)
+
 GET        /transfer-details/remove-quoted-shares                                                 controllers.transferDetails.RemoveQuotedSharesController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/remove-quoted-shares                                                 controllers.transferDetails.RemoveQuotedSharesController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-remove-quoted-shares                                          controllers.transferDetails.RemoveQuotedSharesController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-remove-quoted-shares                                          controllers.transferDetails.RemoveQuotedSharesController.onSubmit(mode: Mode = CheckMode)
+
