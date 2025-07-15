@@ -56,8 +56,7 @@ trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with O
     "microservice.services.auth.host"                              -> WireMockHelper.wireMockHost,
     "microservice.services.auth.port"                              -> WireMockHelper.wireMockPort.toString
   )
-
-  //TODO look at creating a def to pass bindings in so we're not creating new app in spec files everytime we want mock something
+  
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(servicesConfig)
