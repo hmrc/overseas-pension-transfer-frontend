@@ -28,19 +28,18 @@ object UserAnswersParser {
   type GetUserAnswersType = Either[UserAnswersError, UserAnswersDTO]
   type SetUserAnswersType = Either[UserAnswersError, Done]
 
-
   implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
 
     override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType =
       response.status match {
-        case OK =>
+        case OK         =>
           response.json.validate[UserAnswersDTO] match {
             case JsSuccess(value, _) => Right(value)
-            case JsError(errors) =>
+            case JsError(errors)     =>
               logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
               Left(UserAnswersErrorResponse(s"Unable to parse Json as UserAnswersDTO", Some(formatJsonErrors(errors))))
           }
-        case NOT_FOUND =>
+        case NOT_FOUND  =>
           logger.warn("[UserAnswersConnector][getAnswers] No record was found in save for later}")
           Left(UserAnswersNotFoundResponse)
         case statusCode =>
@@ -48,7 +47,7 @@ object UserAnswersParser {
             case JsSuccess(value, _) =>
               logger.warn(s"[UserAnswersConnector][getAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
               Left(value)
-            case JsError(errors) =>
+            case JsError(errors)     =>
               logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
               Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
           }
@@ -65,7 +64,7 @@ object UserAnswersParser {
             case JsSuccess(value, _) =>
               logger.warn(s"[UserAnswersConnector][putAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
               Left(value)
-            case JsError(errors) =>
+            case JsError(errors)     =>
               logger.warn(s"[UserAnswersConnector][putAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
               Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
           }

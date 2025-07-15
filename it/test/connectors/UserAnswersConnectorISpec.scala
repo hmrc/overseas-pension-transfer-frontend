@@ -19,9 +19,9 @@ package connectors
 import base.BaseISpec
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor}
 import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse, UserAnswersSaveSuccessfulResponse, UserAnswersSuccessResponse}
+import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, NO_CONTENT, OK}
+import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting
 

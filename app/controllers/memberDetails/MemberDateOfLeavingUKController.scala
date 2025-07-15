@@ -19,6 +19,7 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MemberDateOfLeavingUKFormProvider
 import models.Mode
+import org.apache.pekko.Done
 import pages.memberDetails.MemberDateOfLeavingUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -64,10 +65,15 @@ class MemberDateOfLeavingUKController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            userAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
-            _           <- sessionRepository.set(userAnswers)
-            _           <- userAnswersService.setUserAnswers(userAnswers)
-          } yield Redirect(MemberDateOfLeavingUKPage.nextPage(mode, userAnswers))
+            userAnswers   <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
+            _             <- sessionRepository.set(userAnswers)
+            savedForLater <- userAnswersService.setUserAnswers(userAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(MemberDateOfLeavingUKPage.nextPage(mode, userAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
       )
   }
 }

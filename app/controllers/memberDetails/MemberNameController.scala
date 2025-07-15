@@ -19,6 +19,7 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MemberNameFormProvider
 import models.Mode
+import org.apache.pekko.Done
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -65,8 +66,14 @@ class MemberNameController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-            _              <- userAnswersService.setUserAnswers(updatedAnswers)
-          } yield Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+
+          }
       )
   }
 }

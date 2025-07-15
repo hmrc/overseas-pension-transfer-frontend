@@ -19,6 +19,7 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.Mode
+import org.apache.pekko.Done
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -77,10 +78,16 @@ class MembersCurrentAddressController @Inject() (
               )
             case Some(addressToSave) =>
               for {
-                userAnswers <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
-                _           <- sessionRepository.set(userAnswers).map(_ => logger.info(Json.stringify(userAnswers.data)))
-                _           <- userAnswersService.setUserAnswers(userAnswers)
-              } yield Redirect(MembersCurrentAddressPage.nextPage(mode, userAnswers))
+                userAnswers   <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
+                _             <- sessionRepository.set(userAnswers).map(_ => logger.info(Json.stringify(userAnswers.data)))
+                savedForLater <- userAnswersService.setUserAnswers(userAnswers)
+              } yield {
+                savedForLater match {
+                  case Right(Done) => Redirect(MembersCurrentAddressPage.nextPage(mode, userAnswers))
+                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                }
+
+              }
           }
       )
   }

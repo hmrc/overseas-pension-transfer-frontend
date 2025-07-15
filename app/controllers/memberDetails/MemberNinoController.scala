@@ -19,6 +19,7 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MemberNinoFormProvider
 import models.Mode
+import org.apache.pekko.Done
 import pages.memberDetails.{MemberDoesNotHaveNinoPage, MemberNinoPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -66,8 +67,14 @@ class MemberNinoController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value).flatMap(_.remove(MemberDoesNotHaveNinoPage)))
             _              <- sessionRepository.set(updatedAnswers)
-            _              <- userAnswersService.setUserAnswers(updatedAnswers)
-          } yield Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+
+          }
       )
   }
 }

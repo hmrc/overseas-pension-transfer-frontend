@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.UserAnswersConnector
 import models.UserAnswers
 import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse, UserAnswersSaveSuccessfulResponse, UserAnswersSuccessResponse}
+import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -48,19 +48,19 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
   private val userAnswers: UserAnswers       = UserAnswers("id", JsObject(Map("field" -> JsString("value"))), instant)
 
   "getUserAnswers" - {
-    "return prepopulated Right(UserAnswers) when GetUserAnswersSuccessResponse is returned" in {
+    "return prepopulated Right(UserAnswers) when Left(GetUserAnswersSuccessResponse) is returned" in {
 
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
-        .thenReturn(Future.successful(UserAnswersSuccessResponse(userAnswersDTO)))
+        .thenReturn(Future.successful(Right(userAnswersDTO)))
 
       val getUserAnswers = service.getUserAnswers(userAnswersId)
 
       await(getUserAnswers) mustBe Right(userAnswers)
     }
 
-    "return Right(UserAnswers) with default userId when GetUserAnswersNotFoundResponse is returned" in {
+    "return Right(UserAnswers) with default userId when Left(GetUserAnswersNotFoundResponse) is returned" in {
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
-        .thenReturn(Future.successful(UserAnswersNotFoundResponse))
+        .thenReturn(Future.successful(Left(UserAnswersNotFoundResponse)))
 
       val getUserAnswers = await(service.getUserAnswers(userAnswersId))
 
@@ -71,26 +71,33 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       }
     }
 
-    "return Left(GetUserAnswersErrorResponse) when GetUserErrorResponse is returned from connector" in {
+    "return Left(GetUserAnswersErrorResponse) when Left(GetUserErrorResponse) is returned from connector" in {
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
-        .thenReturn(Future.successful(UserAnswersErrorResponse("Error message", None)))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error message", None))))
 
       val getUserAnswers = await(service.getUserAnswers(userAnswersId))
 
-      getUserAnswers.left.map {
-        error => error.error mustBe "Error message"
-      }
+      getUserAnswers mustBe Left(UserAnswersErrorResponse("Error message", None))
     }
   }
 
   "setUserAnswers" - {
-    "return a Done status when Success is received from the connector" in {
+    "return a Right(Done) status when Right(Done) is received from the connector" in {
       when(mockUserAnswersConnector.putAnswers(ArgumentMatchers.eq(userAnswersDTO))(any(), any()))
-        .thenReturn(Future.successful(UserAnswersSaveSuccessfulResponse))
+        .thenReturn(Future.successful(Right(Done)))
 
       val setUserAnswers = await(service.setUserAnswers(userAnswers))
 
-      setUserAnswers mustBe Done
+      setUserAnswers mustBe Right(Done)
+    }
+
+    "Return Left(error) when Left(error) is received from the connector" in {
+      when(mockUserAnswersConnector.putAnswers(ArgumentMatchers.eq(userAnswersDTO))(any(), any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error Message", None))))
+
+      val setUserAnswers = await(service.setUserAnswers(userAnswers))
+
+      setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
     }
   }
 }

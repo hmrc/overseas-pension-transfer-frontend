@@ -33,9 +33,9 @@ class UserAnswersService @Inject() (
 
   def getUserAnswers(transferId: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
     connector.getAnswers(transferId) map {
-      case Right(userAnswersDTO)              => Right(toUserAnswers(userAnswersDTO))
-      case Left(UserAnswersNotFoundResponse)  => Right(UserAnswers(transferId))
-      case Left(error)                        => Left(error)
+      case Right(userAnswersDTO)             => Right(toUserAnswers(userAnswersDTO))
+      case Left(UserAnswersNotFoundResponse) => Right(UserAnswers(transferId))
+      case Left(error)                       => Left(error)
     }
   }
 
