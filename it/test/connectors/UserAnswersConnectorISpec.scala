@@ -20,6 +20,7 @@ import base.BaseISpec
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor}
 import models.dtos.UserAnswersDTO
 import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse, UserAnswersSaveSuccessfulResponse, UserAnswersSuccessResponse}
+import org.apache.pekko.Done
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting
@@ -43,7 +44,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       val getAnswers = await(connector.getAnswers("testId"))
 
-      getAnswers shouldBe UserAnswersSuccessResponse(userAnswersDTO)
+      getAnswers shouldBe Right(userAnswersDTO)
     }
 
     "return UserAnswersNotFoundResponse when 404 is returned" in {
@@ -59,7 +60,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       val getAnswers = await(connector.getAnswers("testId"))
 
-      getAnswers shouldBe UserAnswersNotFoundResponse
+      getAnswers shouldBe Left(UserAnswersNotFoundResponse)
     }
 
     "return UserAnswersErrorResponse" when {
@@ -72,7 +73,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val getAnswers = await(connector.getAnswers("testId"))
 
-        getAnswers shouldBe UserAnswersErrorResponse("InternalServerError", Some("Where the extra details come from"))
+        getAnswers shouldBe Left(UserAnswersErrorResponse("InternalServerError", Some("Where the extra details come from")))
       }
 
       "200 returned with invalid payload" in {
@@ -84,7 +85,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val getAnswers = await(connector.getAnswers("testId"))
 
-        getAnswers shouldBe UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some("/data | /lastUpdated | /referenceId"))
+        getAnswers shouldBe Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some("/data | /lastUpdated | /referenceId")))
       }
 
       "500 returned with invalid payload" in {
@@ -96,7 +97,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val getAnswers = await(connector.getAnswers("testId"))
 
-        getAnswers shouldBe UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some("/error"))
+        getAnswers shouldBe Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some("/error")))
       }
     }
   }
@@ -111,7 +112,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       val putAnswers = await(connector.putAnswers(userAnswersDTO))
 
-      putAnswers shouldBe UserAnswersSaveSuccessfulResponse
+      putAnswers shouldBe Right(Done)
     }
 
     "return UserAnswersErrorResponse" when {
@@ -124,7 +125,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val putAnswers = await(connector.putAnswers(userAnswersDTO))
 
-        putAnswers shouldBe UserAnswersErrorResponse("Transformation failed", Some("Payload received is invalid"))
+        putAnswers shouldBe Left(UserAnswersErrorResponse("Transformation failed", Some("Payload received is invalid")))
       }
 
       "500 is returned" in {
@@ -136,7 +137,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val putAnswers = await(connector.putAnswers(userAnswersDTO))
 
-        putAnswers shouldBe UserAnswersErrorResponse("Failed to save answers", None)
+        putAnswers shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
       }
     }
   }

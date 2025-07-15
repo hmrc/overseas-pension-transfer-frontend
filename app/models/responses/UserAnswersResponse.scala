@@ -19,12 +19,10 @@ package models.responses
 import models.dtos.UserAnswersDTO
 import play.api.libs.json.{Json, Reads}
 
-sealed trait UserAnswersResponse
+sealed trait UserAnswersError
 
-case class UserAnswersSuccessResponse(userAnswersDto: UserAnswersDTO)       extends UserAnswersResponse
-case object UserAnswersSaveSuccessfulResponse                               extends UserAnswersResponse
-case object UserAnswersNotFoundResponse                                     extends UserAnswersResponse
-case class UserAnswersErrorResponse(error: String, details: Option[String]) extends UserAnswersResponse
+case object UserAnswersNotFoundResponse                                     extends UserAnswersError
+case class UserAnswersErrorResponse(error: String, details: Option[String]) extends UserAnswersError
 
 object UserAnswersErrorResponse {
   implicit def reads: Reads[UserAnswersErrorResponse] = Json.reads[UserAnswersErrorResponse]

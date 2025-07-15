@@ -17,50 +17,63 @@
 package connectors.parsers
 
 import models.dtos.UserAnswersDTO
-import models.responses.{
-  UserAnswersErrorResponse,
-  UserAnswersNotFoundResponse,
-  UserAnswersResponse,
-  UserAnswersSaveSuccessfulResponse,
-  UserAnswersSuccessResponse
-}
+import models.responses.{UserAnswersError, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import org.apache.pekko.Done
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsError, JsPath, JsSuccess, JsonValidationError}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object UserAnswersParser {
+  type GetUserAnswersType = Either[UserAnswersError, UserAnswersDTO]
+  type SetUserAnswersType = Either[UserAnswersError, Done]
 
-  implicit object UserAnswersHttpReads extends HttpReads[UserAnswersResponse] with Logging {
 
-    override def read(method: String, url: String, response: HttpResponse): UserAnswersResponse = {
+  implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
+
+    override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType =
       response.status match {
-        case OK         =>
+        case OK =>
           response.json.validate[UserAnswersDTO] match {
-            case JsSuccess(value, _) => UserAnswersSuccessResponse(value)
-            case JsError(errors)     =>
+            case JsSuccess(value, _) => Right(value)
+            case JsError(errors) =>
               logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
-              UserAnswersErrorResponse(s"Unable to parse Json as UserAnswersDTO", Some(formatJsonErrors(errors)))
+              Left(UserAnswersErrorResponse(s"Unable to parse Json as UserAnswersDTO", Some(formatJsonErrors(errors))))
           }
-        case NO_CONTENT => UserAnswersSaveSuccessfulResponse
-        case NOT_FOUND  =>
+        case NOT_FOUND =>
           logger.warn("[UserAnswersConnector][getAnswers] No record was found in save for later}")
-          UserAnswersNotFoundResponse
+          Left(UserAnswersNotFoundResponse)
         case statusCode =>
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
               logger.warn(s"[UserAnswersConnector][getAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
-              value
-            case JsError(errors)     =>
+              Left(value)
+            case JsError(errors) =>
               logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
-              UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors)))
+              Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
           }
       }
-    }
+  }
 
-    private val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {
-      errors =>
-        errors.map(_._1.toString()).mkString(" | ")
-    }
+  implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging {
+
+    override def read(method: String, url: String, response: HttpResponse): SetUserAnswersType =
+      response.status match {
+        case NO_CONTENT => Right(Done)
+        case statusCode =>
+          response.json.validate[UserAnswersErrorResponse] match {
+            case JsSuccess(value, _) =>
+              logger.warn(s"[UserAnswersConnector][putAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
+              Left(value)
+            case JsError(errors) =>
+              logger.warn(s"[UserAnswersConnector][putAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
+              Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
+          }
+      }
+  }
+
+  private val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {
+    errors =>
+      errors.map(_._1.toString()).mkString(" | ")
   }
 }

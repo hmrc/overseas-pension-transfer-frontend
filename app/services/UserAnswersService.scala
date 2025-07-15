@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.UserAnswersConnector
 import models.UserAnswers
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
-import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse, UserAnswersSuccessResponse}
+import models.responses.{UserAnswersError, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,20 +31,15 @@ class UserAnswersService @Inject() (
   )(implicit ec: ExecutionContext
   ) {
 
-  def getUserAnswers(transferId: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersErrorResponse, UserAnswers]] = {
+  def getUserAnswers(transferId: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
     connector.getAnswers(transferId) map {
-      case UserAnswersSuccessResponse(userAnswersDTO) => Right(toUserAnswers(userAnswersDTO))
-      case UserAnswersNotFoundResponse                => Right(UserAnswers(transferId))
-      case error @ UserAnswersErrorResponse(_, _)     => Left(error)
+      case Right(userAnswersDTO)              => Right(toUserAnswers(userAnswersDTO))
+      case Left(UserAnswersNotFoundResponse)  => Right(UserAnswers(transferId))
+      case Left(error)                        => Left(error)
     }
   }
 
-  def setUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Done] = {
-    connector.putAnswers(
-      fromUserAnswers(userAnswers)
-    ) map {
-      _ => Done
-    }
-
+  def setUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
+    connector.putAnswers(fromUserAnswers(userAnswers))
   }
 }

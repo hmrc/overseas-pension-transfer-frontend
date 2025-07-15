@@ -17,9 +17,9 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.parsers.UserAnswersParser.UserAnswersHttpReads
+import connectors.parsers.UserAnswersParser.{GetUserAnswersHttpReads, GetUserAnswersType, SetUserAnswersHttpReads, SetUserAnswersType}
 import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersResponse}
+import models.responses.UserAnswersErrorResponse
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -37,13 +37,13 @@ class UserAnswersConnector @Inject() (
   private def userAnswersUrl(id: String): URL =
     url"${appConfig.backendService}/save-for-later/$id"
 
-  def getAnswers(transferId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[UserAnswersResponse] = {
+  def getAnswers(transferId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersType] = {
     http.get(userAnswersUrl(transferId))
-      .execute[UserAnswersResponse]
+      .execute[GetUserAnswersType]
       .recover {
         case e: Exception =>
           logger.warn(s"Error retrieving user answers for ID '$transferId': ${e.getMessage}", e)
-          UserAnswersErrorResponse(e.toString, None)
+          Left(UserAnswersErrorResponse(e.toString, None))
       }
   }
 
@@ -51,14 +51,14 @@ class UserAnswersConnector @Inject() (
       userAnswersDTO: UserAnswersDTO
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[UserAnswersResponse] = {
+    ): Future[SetUserAnswersType] = {
     http.post(userAnswersUrl(userAnswersDTO.referenceId))
       .withBody(Json.toJson(userAnswersDTO))
-      .execute[UserAnswersResponse]
+      .execute[SetUserAnswersType]
       .recover {
         case e: Exception =>
           logger.warn(s"Error updating user answers for ID '${userAnswersDTO.referenceId}': ${e.getMessage}", e)
-          UserAnswersErrorResponse(e.getMessage, None)
+          Left(UserAnswersErrorResponse(e.getMessage, None))
       }
   }
 
