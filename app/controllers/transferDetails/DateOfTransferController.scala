@@ -19,10 +19,13 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.DateOfTransferFormProvider
 import models.Mode
+import org.apache.pekko.Done
+import pages.memberDetails.MemberIsResidentUKPage
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.DateOfTransferView
 
@@ -38,7 +41,8 @@ class DateOfTransferController @Inject() (
     displayData: DisplayAction,
     formProvider: DateOfTransferFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: DateOfTransferView
+    view: DateOfTransferView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -65,7 +69,13 @@ class DateOfTransferController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfTransferPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
       )
   }
 }
