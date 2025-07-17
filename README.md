@@ -27,7 +27,7 @@ The service runs on port `15600` by default.
 
 ### Claim enrolment journey
 
-1. Navigate to [http://localhost:15600/overseas-pension-transfer-frontend](http://localhost:16000/manage-alcohol-duty/start)
+1. Navigate to http://localhost:15600/overseas-pension-transfer-frontend
 
 ## Running tests
 
