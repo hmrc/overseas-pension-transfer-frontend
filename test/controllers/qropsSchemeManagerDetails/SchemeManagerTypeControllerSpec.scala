@@ -18,7 +18,7 @@ package controllers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
-import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, SchemeManagersName, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}

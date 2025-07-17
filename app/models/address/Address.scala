@@ -16,9 +16,6 @@
 
 package models.address
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
-
 trait Address {
   val addressLine1: String
   val addressLine2: String

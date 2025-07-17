@@ -18,7 +18,7 @@ package controllers.qropsSchemeManagerDetails
 
 import base.SpecBase
 import forms.qropsSchemeManagerDetails.SchemeManagersNameFormProvider
-import models.{NormalMode, PersonName, SchemeManagersName}
+import models.{NormalMode, PersonName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec

@@ -17,7 +17,7 @@
 package forms.qropsSchemeManagerDetails
 
 import forms.mappings.{Mappings, Regex}
-import models.{PersonName, SchemeManagersName}
+import models.PersonName
 import play.api.data.Form
 import play.api.data.Forms._
 
