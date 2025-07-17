@@ -25,7 +25,7 @@ The service runs on port `15600` by default.
 
 ## Navigating the service
 
-### Claim enrolment journey
+### Start Journey 
 
 1. Navigate to http://localhost:15600/overseas-pension-transfer-frontend
 
