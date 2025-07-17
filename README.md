@@ -3,10 +3,11 @@
 
 This is the frontend microservice application that is part of the Managing Pensions Schemes service concerned with moving pensions abroad. It is connected to the MPS dashboard.
 
-## Creating pages
-This project uses [hmrc-frontend-scaffold.g8](https://github.com/hmrc/hmrc-frontend-scaffold.g8) to create frontend pages.
-
-Please see this [wiki page](https://github.com/hmrc/hmrc-frontend-scaffold.g8/wiki/Usage) for guidance around how to create new pages.
+## Dependencies
+| Service    | Link |
+| -------- | ------- |
+| overseas-pension-transfer-backend  | https://github.com/hmrc/overseas-pension-transfer-backend    |
+| address-lookup  | https://github.com/hmrc/address-lookup    |
 
 ## Running the service
 
@@ -24,11 +25,17 @@ The service runs on port `15600` by default.
 
 ## Navigating the service
 
-### Claim enrolment journey
+### Start Journey 
 
-1. Navigate to [http://localhost:15600/overseas-pension-transfer-frontend](http://localhost:16000/manage-alcohol-duty/start)
+1. Navigate to http://localhost:15600/overseas-pension-transfer-frontend
 
 ## Running tests
+
+### Tests
+| Repositories    | Link |
+| -------- | ------- |
+| Journey Tests | https://github.com/hmrc/overseas-pension-transfer-ui-tests |
+| Performance Tests | https://github.com/hmrc/overseas-pension-transfer-performance-tests |
 
 ### Unit tests
 
