@@ -20,34 +20,39 @@ import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
+import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.UnquotedShareSummary
+import viewmodels.checkAnswers.transferDetails.QuotedSharesSummary
 import viewmodels.govuk.summarylist._
-import views.html.transferDetails.UnquotedShareCYAView
+import views.html.transferDetails.QuotedSharesCYAView
 
 import scala.concurrent.ExecutionContext
 
-class UnquotedShareCYAController @Inject() (
+class QuotedSharesCYAController @Inject() (
     override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
-    view: UnquotedShareCYAView
+    view: QuotedSharesCYAView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
+  // private val shareType = ShareType.Quoted
   private val actions = (identify andThen getData andThen requireData andThen displayData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(UnquotedShareSummary.rows(request.userAnswers, index))
+    val list = SummaryListViewModel(QuotedSharesSummary.rows(request.userAnswers, index))
 
     Ok(view(list, index))
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(routes.AdditionalUnquotedShareController.onPageLoad())
+    Redirect(routes.AdditionalQuotedSharesController.onPageLoad())
   }
 }

@@ -17,29 +17,29 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.transferDetails.AdditionalUnquotedShareFormProvider
+import forms.transferDetails.AdditionalQuotedSharesFormProvider
 import models.{NormalMode, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.AdditionalUnquotedShareSummary
-import views.html.transferDetails.AdditionalUnquotedShareView
+import viewmodels.checkAnswers.transferDetails.AdditionalQuotedSharesSummary
+import views.html.transferDetails.AdditionalQuotedSharesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalUnquotedShareController @Inject() (
+class AdditionalQuotedSharesController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: AdditionalUnquotedShareFormProvider,
+    formProvider: AdditionalQuotedSharesFormProvider,
     transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
-    view: AdditionalUnquotedShareView
+    view: AdditionalQuotedSharesView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
@@ -47,7 +47,7 @@ class AdditionalUnquotedShareController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val shares = AdditionalUnquotedShareSummary.rows(request.userAnswers)
+      val shares = AdditionalQuotedSharesSummary.rows(request.userAnswers)
       Ok(view(form, shares))
   }
 
@@ -55,13 +55,13 @@ class AdditionalUnquotedShareController @Inject() (
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val shares = AdditionalUnquotedShareSummary.rows(request.userAnswers)
+          val shares = AdditionalQuotedSharesSummary.rows(request.userAnswers)
           Future.successful(BadRequest(view(formWithErrors, shares)))
         },
         value => {
           val redirectTarget = if (value) {
-            val nextIndex = transferDetailsService.assetCount(request.userAnswers, TypeOfAsset.UnquotedShares)
-            routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, nextIndex)
+            val nextIndex = transferDetailsService.assetCount(request.userAnswers, TypeOfAsset.QuotedShares)
+            routes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)
           } else {
             routes.TransferDetailsCYAController.onPageLoad()
           }

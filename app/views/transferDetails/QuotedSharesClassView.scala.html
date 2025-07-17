@@ -14,46 +14,52 @@
  * limitations under the License.
  *@
 
+@import viewmodels.InputWidth._
+@import controllers.transferDetails.routes
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.title
+@import viewmodels.govuk.all._
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
+@import viewmodels.LabelSize.Large
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    hmrcAddToAList : HmrcAddToAList,
+    govukInput: GovukInput,
+    govukButton: GovukButton,
     qtNumber: QTNumber
 )
 
-@(form: Form[_], shares: Seq[ListItem])(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
-@singularTxt = @{messages("additionalUnquotedShare.text.singular")}
-@pluralTxt = @{messages("additionalUnquotedShare.text.plural")}
-@partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
+@layout(pageTitle = title(form, messages("quotedSharesClass.title"))) {
 
-@titleText = @{messages("common.additionalAsset.title", shares.size, partTxt)}
-
-@layout(pageTitle = title(form, titleText)) {
-
-    @formHelper(action = controllers.transferDetails.routes.AdditionalUnquotedShareController.onSubmit(), Symbol("autoComplete") -> "on") {
+    @formHelper(action = routes.QuotedSharesClassController.onSubmit(mode, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @qtNumber()
-        @hmrcAddToAList(
-            AddToAList(
-                itemList = shares,
-                itemType = Some(ItemType(
-                    singular = singularTxt,
-                    plural = pluralTxt
-                ))
+
+        @govukInput(
+            InputViewModel(
+                field = form("value"),
+                label = LabelViewModel(Text(messages("quotedSharesClass.heading")))
+                    .withCssClass("govuk-!-margin-bottom-6")
+                    .asPageHeading(size = Large)
             )
+            .withWidth(OneHalf)
+        )
+
+        @govukButton(
+            ButtonViewModel(Text(messages("site.saveAndContinue")))
         )
     }
 }

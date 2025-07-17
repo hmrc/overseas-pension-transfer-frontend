@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package forms.transferDetails
 
-import models.UserAnswers
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import forms.mappings.Mappings
+import play.api.data.Form
 
-case object TransferDetailsSummary {
+import javax.inject.Inject
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedShareRow: Option[SummaryListRow] = Some(AdditionalUnquotedShareSummary.row(userAnswers))
-    val totalQuotedShareRow: Option[SummaryListRow]   = Some(AdditionalQuotedSharesSummary.row(userAnswers))
+class QuotedSharesValueFormProvider @Inject() extends Mappings {
 
-    Seq(totalUnquotedShareRow, totalQuotedShareRow).flatten
-  }
+  def apply(): Form[BigDecimal] =
+    Form(
+      "value" -> currency(
+        "quotedSharesValue.error.required",
+        "quotedSharesValue.error.nonNumeric"
+      )
+        .verifying(minimumCurrency(0.01, "quotedSharesValue.error.belowMinimum"))
+        .verifying(maximumCurrency(999999999.99, "quotedSharesValue.error.aboveMaximum"))
+    )
 }

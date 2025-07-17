@@ -17,43 +17,43 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.transferDetails.NumberOfQuotedSharesFormProvider
+import forms.transferDetails.QuotedSharesValueFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.NumberOfQuotedSharesPage
+import pages.transferDetails.QuotedSharesValuePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.NumberOfQuotedSharesView
+import views.html.transferDetails.QuotedSharesValueView
 
 import scala.concurrent.Future
 
-class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QuotedShareValueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new NumberOfQuotedSharesFormProvider()
-  private val form         = formProvider()
+  val formProvider = new QuotedSharesValueFormProvider()
+  val form         = formProvider()
+  val index        = 0
 
-  private val validAnswer = "10"
-  private val index       = 0
+  val validAnswer = BigDecimal(0.01)
 
-  lazy val numberOfQuotedSharesRoute = routes.NumberOfQuotedSharesController.onPageLoad(NormalMode, index).url
+  lazy val quotedShareValueRoute = routes.QuotedSharesValueController.onPageLoad(NormalMode, index).url
 
-  "NumberOfQuotedShares Controller" - {
+  "QuotedShareValue Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, numberOfQuotedSharesRoute)
+        val request = FakeRequest(GET, quotedShareValueRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[NumberOfQuotedSharesView]
+        val view = application.injector.instanceOf[QuotedSharesValueView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
@@ -62,14 +62,14 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(NumberOfQuotedSharesPage(index), validAnswer).success.value
+      val userAnswers = userAnswersQtNumber.set(QuotedSharesValuePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, numberOfQuotedSharesRoute)
+        val request = FakeRequest(GET, quotedShareValueRoute)
 
-        val view = application.injector.instanceOf[NumberOfQuotedSharesView]
+        val view = application.injector.instanceOf[QuotedSharesValueView]
 
         val result = route(application, request).value
 
@@ -93,13 +93,13 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, numberOfQuotedSharesRoute)
+          FakeRequest(POST, quotedShareValueRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual NumberOfQuotedSharesPage(index).nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual QuotedSharesValuePage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -109,12 +109,12 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, numberOfQuotedSharesRoute)
+          FakeRequest(POST, quotedShareValueRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[NumberOfQuotedSharesView]
+        val view = application.injector.instanceOf[QuotedSharesValueView]
 
         val result = route(application, request).value
 
@@ -128,7 +128,7 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, numberOfQuotedSharesRoute)
+        val request = FakeRequest(GET, quotedShareValueRoute)
 
         val result = route(application, request).value
 
@@ -143,7 +143,7 @@ class NumberOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, numberOfQuotedSharesRoute)
+          FakeRequest(POST, quotedShareValueRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
