@@ -168,7 +168,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )g
+        )
         .build()
 
       running(application) {
