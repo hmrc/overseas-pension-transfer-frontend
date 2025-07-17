@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
-import models.SchemeManagersName
+import models.PersonName
 import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersNamePage
 import play.api.i18n.Messages
@@ -29,7 +29,7 @@ class SchemeManagersNameSummarySpec extends AnyFreeSpec with SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when SchemeManagersNamePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagersNamePage, SchemeManagersName("FirstName", "LastName")).success.value
+      val answers = emptyUserAnswers.set(SchemeManagersNamePage, PersonName("FirstName", "LastName")).success.value
       val result  = SchemeManagersNameSummary.row(answers)
 
       result mustBe defined

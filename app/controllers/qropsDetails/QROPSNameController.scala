@@ -19,10 +19,13 @@ package controllers.qropsDetails
 import controllers.actions._
 import forms.qropsDetails.QROPSNameFormProvider
 import models.Mode
+import org.apache.pekko.Done
+import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsDetails.QROPSNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.qropsDetails.QROPSNameView
 
@@ -38,7 +41,8 @@ class QROPSNameController @Inject() (
     displayData: DisplayAction,
     formProvider: QROPSNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSNameView
+    view: QROPSNameView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -63,7 +67,13 @@ class QROPSNameController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(QROPSNamePage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(QROPSNamePage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
       )
   }
 }

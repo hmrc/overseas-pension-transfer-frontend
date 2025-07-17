@@ -19,10 +19,13 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.WhyTransferIsTaxableFormProvider
 import models.Mode
+import org.apache.pekko.Done
+import pages.memberDetails.MemberIsResidentUKPage
 import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.WhyTransferIsTaxableView
 
@@ -38,7 +41,8 @@ class WhyTransferIsTaxableController @Inject() (
     displayData: DisplayAction,
     formProvider: WhyTransferIsTaxableFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: WhyTransferIsTaxableView
+    view: WhyTransferIsTaxableView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -63,7 +67,13 @@ class WhyTransferIsTaxableController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhyTransferIsTaxablePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(WhyTransferIsTaxablePage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(WhyTransferIsTaxablePage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
       )
   }
 }

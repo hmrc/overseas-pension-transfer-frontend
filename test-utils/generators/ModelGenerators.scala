@@ -47,14 +47,6 @@ trait ModelGenerators {
       Gen.oneOf(SchemeManagerType.values)
     }
 
-  implicit lazy val arbitrarySchemeManagersName: Arbitrary[SchemeManagersName] =
-    Arbitrary {
-      for {
-        firstName <- arbitrary[String]
-        lastName  <- arbitrary[String]
-      } yield SchemeManagersName(firstName, lastName)
-    }
-
   implicit lazy val arbitraryMemberName: Arbitrary[PersonName] =
     Arbitrary {
       for {

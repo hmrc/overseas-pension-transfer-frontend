@@ -26,7 +26,7 @@ case object IsTransferCashOnlyPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "isTransferCashOnly"
+  override def toString: String = "cashOnlyTransfer"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages

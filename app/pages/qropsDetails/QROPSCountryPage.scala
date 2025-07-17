@@ -27,7 +27,7 @@ case object QROPSCountryPage extends QuestionPage[Country] {
 
   override def path: JsPath = JsPath \ TaskCategory.QROPSDetails.toString \ toString
 
-  override def toString: String = "qropsCountry"
+  override def toString: String = "qropsEstablished"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.QROPSDetailsCYAController.onPageLoad()

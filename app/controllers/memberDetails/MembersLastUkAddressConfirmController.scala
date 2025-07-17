@@ -20,12 +20,13 @@ import controllers.actions._
 import forms.memberDetails.MemberConfirmLastUkAddressFormProvider
 import models.address.MembersLastUKAddress
 import models.{Mode, NormalMode}
-import pages.memberDetails.{MembersLastUKAddressPage, MembersLastUkAddressConfirmPage, MembersLastUkAddressSelectPage}
+import org.apache.pekko.Done
+import pages.memberDetails.{MemberIsResidentUKPage, MembersLastUKAddressPage, MembersLastUkAddressConfirmPage, MembersLastUkAddressSelectPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.AddressService
+import services.{AddressService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.AddressViewModel
 import views.html.memberDetails.MembersLastUkAddressConfirmView
@@ -43,7 +44,8 @@ class MembersLastUkAddressConfirmController @Inject() (
     addressService: AddressService,
     formProvider: MemberConfirmLastUkAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MembersLastUkAddressConfirmView
+    view: MembersLastUkAddressConfirmView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -80,7 +82,13 @@ class MembersLastUkAddressConfirmController @Inject() (
                 updatedAnswers  <-
                   Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, addressToSave))
                 _               <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(MembersLastUkAddressConfirmPage.nextPage(mode, updatedAnswers))
+                savedForLater   <- userAnswersService.setUserAnswers(updatedAnswers)
+              } yield {
+                savedForLater match {
+                  case Right(Done) => Redirect(MembersLastUkAddressConfirmPage.nextPage(mode, updatedAnswers))
+                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                }
+              }
           )
         case _                     =>
           Future.successful(

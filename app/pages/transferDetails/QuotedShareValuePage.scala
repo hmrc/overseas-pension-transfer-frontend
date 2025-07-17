@@ -26,7 +26,7 @@ case object QuotedShareValuePage extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "quotedShareValue"
+  override def toString: String = "quotedValue"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.IndexController.onPageLoad()

@@ -26,7 +26,7 @@ case object QROPSNamePage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TaskCategory.QROPSDetails.toString \ toString
 
-  override def toString: String = "qropsName"
+  override def toString: String = "qropsFullName"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.QROPSReferenceController.onPageLoad(NormalMode)

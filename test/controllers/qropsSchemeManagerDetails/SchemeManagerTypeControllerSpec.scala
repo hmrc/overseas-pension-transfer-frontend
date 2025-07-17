@@ -17,8 +17,11 @@
 package controllers.qropsSchemeManagerDetails
 
 import base.SpecBase
+import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
-import models.{CheckMode, NormalMode, SchemeManagerType, SchemeManagersName, UserAnswers}
+import models.responses.UserAnswersErrorResponse
+import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, UserAnswers}
+import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -29,6 +32,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
 import scala.concurrent.Future
@@ -80,18 +84,22 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      val userAnswers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
 
-      val mockSessionRepository = mock[SessionRepository]
-      val userAnswers           = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -106,8 +114,21 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     }
 
     "must redirect to NormalMode if changed from 'Individual' to 'Organisation' in CheckMode" in {
-      val previousAnswers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-      val application     = applicationBuilder(userAnswers = Some(previousAnswers)).build()
+      val previousAnswers        = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(previousAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -122,16 +143,24 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     }
 
     "must remove previous data if SchemeManagerType changes" in {
-      val mngrName        = SchemeManagersName("FirstNameMngr", "LastNameMngr")
+      val mngrName        = PersonName("FirstNameMngr", "LastNameMngr")
       val previousAnswers = emptyUserAnswers
         .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         .set(SchemeManagersNamePage, mngrName).success.value
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(previousAnswers))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(previousAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
         .build()
 
       running(application) {
@@ -200,6 +229,34 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val req =
+          FakeRequest(POST, schemeManagerTypeRoute)
+            .withFormUrlEncodedBody(("value" -> SchemeManagerType.Organisation.toString))
+
+        val result = route(application, req).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }
   }

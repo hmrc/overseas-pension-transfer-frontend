@@ -75,7 +75,7 @@ trait AddressBase extends SpecBase {
     addressLine4 = None,
     ukPostCode   = Some("ZZ1 1ZZ"),
     country      = Countries.UK,
-    poBox        = None
+    poBoxNumber  = None
   )
 
   val qropsAddress: QROPSAddress = QROPSAddress(

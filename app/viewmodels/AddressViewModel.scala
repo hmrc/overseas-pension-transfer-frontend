@@ -45,7 +45,7 @@ object AddressViewModel {
       addressLine5 = address.addressLine5,
       ukPostCode   = address.postcode,
       country      = address.country.name,
-      poBox        = address.poBox
+      poBox        = address.poBoxNumber
     )
   }
 

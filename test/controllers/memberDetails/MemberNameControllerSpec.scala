@@ -19,7 +19,10 @@ package controllers.memberDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberNameFormProvider
+import models.responses.UserAnswersErrorResponse
 import models.{NormalMode, PersonName}
+import org.apache.pekko.Done
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -28,7 +31,9 @@ import pages.memberDetails.MemberNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.test.Helpers.baseApplicationBuilder.build
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.memberDetails.MemberNameView
 
 import scala.concurrent.Future
@@ -78,15 +83,17 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
     }
 
     "must redirect to the members nino page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
@@ -144,6 +151,34 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
         val request =
           FakeRequest(POST, memberNameRoute)
             .withFormUrlEncodedBody(("memberFirstName", "value 1"), ("memberLastName", "value 2"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+
+      val application = applicationBuilder(Some(userAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, memberNameRoute)
+            .withFormUrlEncodedBody(("memberFirstName", "first name"), ("memberLastName", "last name"))
 
         val result = route(application, request).value
 

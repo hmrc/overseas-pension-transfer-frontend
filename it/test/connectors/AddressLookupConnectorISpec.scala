@@ -18,6 +18,7 @@ package connectors
 
 import base.BaseISpec
 import models.address._
+import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import play.api.http.Status.BAD_REQUEST
 import play.api.test.Injecting
 import stubs.AddressLookupStub

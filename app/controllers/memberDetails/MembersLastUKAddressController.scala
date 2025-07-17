@@ -20,12 +20,13 @@ import controllers.actions._
 import forms.memberDetails.MembersLastUKAddressFormProvider
 import models.Mode
 import models.address._
+import org.apache.pekko.Done
 import pages.memberDetails.MembersLastUKAddressPage
-import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MembersLastUKAddressView
 
@@ -41,7 +42,8 @@ class MembersLastUKAddressController @Inject() (
     displayData: DisplayAction,
     formProvider: MembersLastUKAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MembersLastUKAddressView
+    view: MembersLastUKAddressView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -69,7 +71,14 @@ class MembersLastUKAddressController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+
+          }
       )
   }
 }

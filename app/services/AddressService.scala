@@ -16,13 +16,14 @@
 
 package services
 
-import connectors.{AddressLookupConnector, AddressLookupErrorResponse, AddressLookupSuccessResponse}
+import connectors.AddressLookupConnector
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import forms.transferDetails.PropertyAddressFormData
 import models.UserAnswers
 import models.address._
+import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 import uk.gov.hmrc.http.HeaderCarrier
 

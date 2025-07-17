@@ -19,11 +19,13 @@ package controllers.qropsSchemeManagerDetails
 import controllers.actions._
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.Mode
+import org.apache.pekko.Done
+import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.SchemeManagerService
+import services.{SchemeManagerService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
@@ -40,7 +42,8 @@ class SchemeManagerTypeController @Inject() (
     schemeManagerService: SchemeManagerService,
     formProvider: SchemeManagerTypeFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: SchemeManagerTypeView
+    view: SchemeManagerTypeView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -68,7 +71,13 @@ class SchemeManagerTypeController @Inject() (
             updatedAnswers <- schemeManagerService.updateSchemeManagerTypeAnswers(baseAnswers, previousValue, value)
             redirectMode    = schemeManagerService.getSchemeManagerTypeRedirectMode(mode, previousValue, value)
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(SchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
         }
       )
   }

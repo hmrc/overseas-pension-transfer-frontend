@@ -26,7 +26,7 @@ case object NumberOfQuotedSharesPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "numberOfQuotedShares"
+  override def toString: String = "quotedShareTotal"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages

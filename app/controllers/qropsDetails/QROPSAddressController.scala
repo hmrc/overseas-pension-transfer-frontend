@@ -20,6 +20,8 @@ import controllers.actions._
 import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
 import models.Mode
 import models.address.QROPSAddress
+import org.apache.pekko.Done
+import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsDetails.QROPSAddressPage
 import play.api.Logging
 import play.api.data.Form
@@ -27,7 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{AddressService, CountryService}
+import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.CountrySelectViewModel
@@ -46,7 +48,8 @@ class QROPSAddressController @Inject() (
     countryService: CountryService,
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSAddressView
+    view: QROPSAddressView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
 
@@ -81,7 +84,13 @@ class QROPSAddressController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSAddressPage, address))
                 _              <- sessionRepository.set(updatedAnswers).map(_ => logger.info(Json.stringify(updatedAnswers.data)))
-              } yield Redirect(QROPSAddressPage.nextPage(mode, updatedAnswers))
+                savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+              } yield {
+                savedForLater match {
+                  case Right(Done) => Redirect(QROPSAddressPage.nextPage(mode, updatedAnswers))
+                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                }
+              }
           }
       )
   }

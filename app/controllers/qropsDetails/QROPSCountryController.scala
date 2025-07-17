@@ -20,11 +20,13 @@ import controllers.actions._
 import forms.qropsDetails.QROPSCountryFormProvider
 import models.Mode
 import models.address.Country
+import org.apache.pekko.Done
+import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsDetails.QROPSCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.CountryService
+import services.{CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.qropsDetails.QROPSCountryView
@@ -41,7 +43,8 @@ class QROPSCountryController @Inject() (
     formProvider: QROPSCountryFormProvider,
     countryService: CountryService,
     val controllerComponents: MessagesControllerComponents,
-    view: QROPSCountryView
+    view: QROPSCountryView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -81,7 +84,13 @@ class QROPSCountryController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
+                savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+              } yield {
+                savedForLater match {
+                  case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
+                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                }
+              }
           }
         }
       )

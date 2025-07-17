@@ -26,7 +26,7 @@ case object MemberIsResidentUKPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
-  override def toString: String = "memberIsResidentUK"
+  override def toString: String = "memUkResident"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     answers.get(MemberIsResidentUKPage) match {

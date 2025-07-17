@@ -19,11 +19,12 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MemberIsResidentUKFormProvider
 import models.Mode
+import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.MemberDetailsService
+import services.{MemberDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberIsResidentUKView
 
@@ -40,7 +41,8 @@ class MemberIsResidentUKController @Inject() (
     memberDetailsService: MemberDetailsService,
     formProvider: MemberIsResidentUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MemberIsResidentUKView
+    view: MemberIsResidentUKView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -68,8 +70,14 @@ class MemberIsResidentUKController @Inject() (
             baseAnswers    <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
             updatedAnswers <- memberDetailsService.updateMemberIsResidentUKAnswers(baseAnswers, previousValue, value)
             _              <- sessionRepository.set(updatedAnswers)
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
             redirectMode    = memberDetailsService.getMemberIsResidentUKRedirectMode(mode, previousValue, value)
-          } yield Redirect(MemberIsResidentUKPage.nextPage(redirectMode, updatedAnswers))
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(MemberIsResidentUKPage.nextPage(redirectMode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
         }
       )
   }

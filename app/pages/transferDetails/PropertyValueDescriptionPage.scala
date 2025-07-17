@@ -26,7 +26,7 @@ case object PropertyValueDescriptionPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "propertyValueDescription"
+  override def toString: String = "propDescription"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages

@@ -20,7 +20,9 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberHasEverBeenResidentUKFormProvider
 import models.address.MembersLastUKAddress
+import models.responses.UserAnswersErrorResponse
 import models.{CheckMode, NormalMode, UserAnswers}
+import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -31,6 +33,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.memberDetails.MemberHasEverBeenResidentUKView
 
 import scala.concurrent.Future
@@ -79,16 +82,20 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to the Check Answers page when valid data is submitted in NormalMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val req =
@@ -103,7 +110,20 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to the Address Lookup page when valid data is submitted in NormalMode" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -118,8 +138,21 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to NormalMode if changed from false to true in CheckMode" in {
-      val previousAnswers = emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
-      val application     = applicationBuilder(userAnswers = Some(previousAnswers)).build()
+      val previousAnswers        = emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(previousAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -139,11 +172,19 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
         .set(MemberHasEverBeenResidentUKPage, true).success.value
         .set(MembersLastUKAddressPage, lastUkAdd).success.value
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(previousAnswers))
-        .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(previousAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
         .build()
 
       running(application) {
@@ -203,6 +244,34 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
         val req =
           FakeRequest(POST, memberHasEverBeenResidentUKRoute)
             .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, req).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val req =
+          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+            .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, req).value
 

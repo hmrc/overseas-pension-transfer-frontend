@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package models.address
+package models.responses
 
-trait Address {
-  val addressLine1: String
-  val addressLine2: String
-  val addressLine3: Option[String]
-  val addressLine4: Option[String]
-  val addressLine5: Option[String]
-  val country: Country
-  val postcode: Option[String]
-  val poBoxNumber: Option[String]
-}
+import models.address.AddressRecord
+
+sealed trait AddressLookupResponse
+
+case class AddressLookupSuccessResponse(searchedPostcode: String, records: Seq[AddressRecord]) extends AddressLookupResponse
+case class AddressLookupErrorResponse(cause: Exception)                                        extends AddressLookupResponse

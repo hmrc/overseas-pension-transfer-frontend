@@ -36,7 +36,7 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine4 = Some("Line4"),
         ukPostCode   = Some("Postcode"),
         country      = Country("FI", "Finland"),
-        poBox        = Some("POBox")
+        poBoxNumber  = Some("POBox")
       )
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
@@ -57,7 +57,7 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine4 = None,
         ukPostCode   = None,
         country      = Country("FI", "Finland"),
-        poBox        = None
+        poBoxNumber  = None
       )
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value

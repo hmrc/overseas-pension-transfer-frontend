@@ -20,12 +20,13 @@ import controllers.actions._
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.Mode
 import models.address.{AddressLookupResult, AddressRecords, NoAddressFound}
+import org.apache.pekko.Done
 import pages.memberDetails.MembersLastUkAddressLookupPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.AddressService
+import services.{AddressService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MembersLastUkAddressLookupView
 
@@ -42,7 +43,8 @@ class MembersLastUkAddressLookupController @Inject() (
     formProvider: MembersLastUkAddressLookupFormProvider,
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
-    view: MembersLastUkAddressLookupView
+    view: MembersLastUkAddressLookupView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -78,9 +80,17 @@ class MembersLastUkAddressLookupController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, result))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield result match {
-                case _: AddressRecords => Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
-                case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
+                savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+              } yield {
+                savedForLater match {
+                  case Right(Done) =>
+                    result match {
+                      case _: AddressRecords => Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
+                      case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
+                    }
+                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                }
+
               }
           }
       )

@@ -19,10 +19,13 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.OverseasTransferAllowanceFormProvider
 import models.Mode
+import org.apache.pekko.Done
+import pages.memberDetails.MemberIsResidentUKPage
 import pages.transferDetails.OverseasTransferAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.OverseasTransferAllowanceView
 
@@ -38,7 +41,8 @@ class OverseasTransferAllowanceController @Inject() (
     displayData: DisplayAction,
     formProvider: OverseasTransferAllowanceFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: OverseasTransferAllowanceView
+    view: OverseasTransferAllowanceView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -63,7 +67,14 @@ class OverseasTransferAllowanceController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(OverseasTransferAllowancePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(OverseasTransferAllowancePage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(OverseasTransferAllowancePage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
       )
   }
 }
