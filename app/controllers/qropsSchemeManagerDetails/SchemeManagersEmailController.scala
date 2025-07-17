@@ -19,10 +19,13 @@ package controllers.qropsSchemeManagerDetails
 import controllers.actions._
 import forms.qropsSchemeManagerDetails.SchemeManagersEmailFormProvider
 import models.Mode
+import org.apache.pekko.Done
+import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.qropsSchemeManagerDetails.SchemeManagersEmailView
 
@@ -37,7 +40,8 @@ class SchemeManagersEmailController @Inject() (
     requireData: DataRequiredAction,
     formProvider: SchemeManagersEmailFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: SchemeManagersEmailView
+    view: SchemeManagersEmailView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -62,7 +66,13 @@ class SchemeManagersEmailController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersEmailPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(SchemeManagersEmailPage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(SchemeManagersEmailPage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
       )
   }
 }

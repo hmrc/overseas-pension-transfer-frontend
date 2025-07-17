@@ -17,9 +17,12 @@
 package controllers.qropsSchemeManagerDetails
 
 import base.{AddressBase, SpecBase}
+import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.NormalMode
 import models.address.Country
+import models.responses.UserAnswersErrorResponse
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -29,7 +32,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.CountryService
+import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.qropsSchemeManagerDetails.SchemeManagersAddressView
 
@@ -107,9 +110,13 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -120,7 +127,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[CountryService].toInstance(mockCountryService)
+            bind[CountryService].toInstance(mockCountryService),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
@@ -199,6 +207,44 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+
+      when(mockCountryService.countries).thenReturn(testCountries)
+
+      when(mockCountryService.find("GB"))
+        .thenReturn(Some(Country("GB", "United Kingdom")))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService),
+          bind[CountryService].toInstance(mockCountryService)
+        )
+        .build()
+
+      running(application) {
+        val req =
+          FakeRequest(POST, schemeManagersAddressRoute)
+            .withFormUrlEncodedBody(
+              "addressLine1" -> "value 1",
+              "addressLine2" -> "value 2",
+              "countryCode"  -> "GB"
+            )
+
+        val result = route(application, req).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }
   }
