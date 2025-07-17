@@ -21,7 +21,8 @@ import connectors.AddressLookupConnector
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.NormalMode
-import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
+import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse, UserAnswersErrorResponse}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -31,6 +32,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.memberDetails.MembersLastUkAddressLookupView
 
 import scala.concurrent.Future
@@ -63,10 +65,12 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
     "must redirect to the member select last uk address when valid data is submitted" in {
 
       val mockSessionRepository      = mock[SessionRepository]
+      val mockUserAnswersService     = mock[UserAnswersService]
       val mockAddressLookupConnector = mock[AddressLookupConnector]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
       when(mockAddressLookupConnector.lookup(any())(any(), any()))
         .thenReturn(
           Future.successful(
@@ -78,6 +82,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
           )
           .build()
@@ -116,10 +121,12 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
     "must redirect to nextPageNoResults when the connector returns a success but no addresses found" in {
       val mockSessionRepository      = mock[SessionRepository]
+      val mockUserAnswersService     = mock[UserAnswersService]
       val mockAddressLookupConnector = mock[AddressLookupConnector]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
       when(mockAddressLookupConnector.lookup(any())(any(), any()))
         .thenReturn(
           Future.successful(
@@ -131,6 +138,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
           )
           .build()
@@ -163,9 +171,12 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
     "must redirect to nextPageRecovery when the connector returns an error" in {
       val mockSessionRepository      = mock[SessionRepository]
+      val mockUserAnswersService     = mock[UserAnswersService]
       val mockAddressLookupConnector = mock[AddressLookupConnector]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
       when(mockAddressLookupConnector.lookup(any())(any(), any()))
         .thenReturn(
           Future.successful(
@@ -177,6 +188,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
           )
           .build()
@@ -206,6 +218,43 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
+      val mockUserAnswersService     = mock[UserAnswersService]
+      val mockSessionRepository      = mock[SessionRepository]
+      val mockAddressLookupConnector = mock[AddressLookupConnector]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+
+      when(mockAddressLookupConnector.lookup(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            AddressLookupSuccessResponse(connectorPostcode, addressRecordList)
+          )
+        )
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService),
+          bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+        )
+        .build()
+
+      running(application) {
+        val req =
+          FakeRequest(POST, membersLastUkAddressLookupRoute)
+            .withFormUrlEncodedBody(("value", connectorPostcode))
+
+        val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
