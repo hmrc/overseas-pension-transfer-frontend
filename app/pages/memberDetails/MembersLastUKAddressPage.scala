@@ -27,7 +27,7 @@ case object MembersLastUKAddressPage extends QuestionPage[MembersLastUKAddress] 
 
   override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
-  override def toString: String = "membersLastUKAddress"
+  override def toString: String = "lastPrincipalAddDetails"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)

@@ -19,12 +19,13 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MemberHasEverBeenResidentUKFormProvider
 import models.Mode
+import org.apache.pekko.Done
 import pages.memberDetails.MemberHasEverBeenResidentUKPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.MemberDetailsService
+import services.{MemberDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberHasEverBeenResidentUKView
 
@@ -41,7 +42,8 @@ class MemberHasEverBeenResidentUKController @Inject() (
     memberDetailsService: MemberDetailsService,
     formProvider: MemberHasEverBeenResidentUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: MemberHasEverBeenResidentUKView
+    view: MemberHasEverBeenResidentUKView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -68,8 +70,14 @@ class MemberHasEverBeenResidentUKController @Inject() (
             baseAnswers    <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
             updatedAnswers <- memberDetailsService.updateMemberHasEverBeenResidentUKAnswers(baseAnswers, previousValue, value)
             _              <- sessionRepository.set(updatedAnswers)
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
             redirectMode    = memberDetailsService.getMemberHasEverBeenResidentUKRedirectMode(mode, previousValue, value)
-          } yield Redirect(MemberHasEverBeenResidentUKPage.nextPage(redirectMode, updatedAnswers))
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(MemberHasEverBeenResidentUKPage.nextPage(redirectMode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
         }
       )
   }

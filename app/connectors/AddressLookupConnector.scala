@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import models.address._
+import models.responses.{AddressLookupErrorResponse, AddressLookupResponse, AddressLookupSuccessResponse}
 import play.api.Logging
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits.readJsValue
@@ -27,11 +28,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import java.net.URL
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-
-sealed trait AddressLookupResponse
-
-case class AddressLookupSuccessResponse(searchedPostcode: String, records: Seq[AddressRecord]) extends AddressLookupResponse
-case class AddressLookupErrorResponse(cause: Exception)                                        extends AddressLookupResponse
 
 class AddressLookupConnector @Inject() (appConfig: FrontendAppConfig, val http: HttpClientV2) extends Logging {
 

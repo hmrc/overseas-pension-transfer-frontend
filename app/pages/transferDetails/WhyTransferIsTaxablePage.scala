@@ -26,7 +26,7 @@ case object WhyTransferIsTaxablePage extends QuestionPage[WhyTransferIsTaxable] 
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "whyTransferIsTaxable"
+  override def toString: String = "whyTaxableOT"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()

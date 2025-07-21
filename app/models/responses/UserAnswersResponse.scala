@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package models.responses
 
-import play.api.libs.json._
+import models.dtos.UserAnswersDTO
+import play.api.libs.json.{Json, Reads}
 
-case class SchemeManagersName(schemeMangersFirstName: String, schemeManagersLastName: String)
+sealed trait UserAnswersError
 
-object SchemeManagersName {
+case object UserAnswersNotFoundResponse                                     extends UserAnswersError
+case class UserAnswersErrorResponse(error: String, details: Option[String]) extends UserAnswersError
 
-  implicit val format: OFormat[SchemeManagersName] = Json.format
+object UserAnswersErrorResponse {
+  implicit def reads: Reads[UserAnswersErrorResponse] = Json.reads[UserAnswersErrorResponse]
 }

@@ -22,17 +22,19 @@ import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddress
 import models.NormalMode
 import models.address._
 import models.requests.DisplayRequest
+import models.responses.UserAnswersErrorResponse
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.memberDetails.MembersCurrentAddressPage
+import pages.memberDetails.{MemberNinoPage, MembersCurrentAddressPage}
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.CountryService
+import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.MembersCurrentAddressView
 
@@ -112,8 +114,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
     }
 
     "must redirect to the member is UK resident when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockCountryService.countries).thenReturn(testCountries)
@@ -121,11 +123,15 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       when(mockCountryService.find("GB"))
         .thenReturn(Some(Country("GB", "United Kingdom")))
 
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[CountryService].toInstance(mockCountryService)
+            bind[CountryService].toInstance(mockCountryService),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
@@ -200,6 +206,38 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
           FakeRequest(POST, membersCurrentAddressRoute)
             .withFormUrlEncodedBody(("addressLine1", "value 1"), ("addressLine2", "value 2"))
         val result  = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, membersCurrentAddressRoute)
+            .withFormUrlEncodedBody(
+              "addressLine1" -> "value 1",
+              "addressLine2" -> "value 2",
+              "countryCode"  -> "GB"
+            )
+
+        val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url

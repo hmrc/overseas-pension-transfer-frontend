@@ -17,7 +17,7 @@
 package forms.qropsSchemeManagerDetails
 
 import forms.mappings.{Mappings, Regex}
-import models.SchemeManagersName
+import models.PersonName
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class SchemeManagersNameFormProvider @Inject() extends Mappings with Regex {
 
-  def apply(): Form[SchemeManagersName] = Form(
+  def apply(): Form[PersonName] = Form(
     mapping(
       "schemeManagersFirstName" -> text("schemeManagersName.error.firstName.required")
         .verifying(maxLength(35, "schemeManagersName.error.firstName.length"))
@@ -33,6 +33,6 @@ class SchemeManagersNameFormProvider @Inject() extends Mappings with Regex {
       "schemeManagersLastName"  -> text("schemeManagersName.error.lastName.required")
         .verifying(maxLength(35, "schemeManagersName.error.lastName.length"))
         .verifying(regexp(nameRegex, "schemeManagersName.error.lastName.pattern"))
-    )(SchemeManagersName.apply)(x => Some((x.schemeMangersFirstName, x.schemeManagersLastName)))
+    )(PersonName.apply)(x => Some((x.firstName, x.lastName)))
   )
 }

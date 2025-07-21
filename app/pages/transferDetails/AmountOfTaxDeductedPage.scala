@@ -26,7 +26,7 @@ case object AmountOfTaxDeductedPage extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "amountOfTaxDeducted"
+  override def toString: String = "amountTaxDeducted"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.IndexController.onPageLoad()

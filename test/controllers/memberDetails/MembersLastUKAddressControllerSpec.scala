@@ -22,6 +22,8 @@ import forms.memberDetails.MembersLastUKAddressFormProvider
 import models.NormalMode
 import models.address._
 import models.requests.DisplayRequest
+import models.responses.UserAnswersErrorResponse
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -32,6 +34,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.memberDetails.MembersLastUKAddressView
 
 import scala.concurrent.Future
@@ -87,17 +90,20 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
     }
 
     "must redirect to the member date of leaving UK when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -155,6 +161,34 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
         val request =
           FakeRequest(POST, membersLastUKAddressRoute)
             .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdd"), ("postcode", postCode))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, membersLastUKAddressRoute)
+            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdded"), ("postcode", postCode))
 
         val result = route(application, request).value
 

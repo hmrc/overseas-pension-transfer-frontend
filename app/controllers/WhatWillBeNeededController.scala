@@ -37,10 +37,9 @@ class WhatWillBeNeededController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
-    val userAnswers = UserAnswers(request.userId)
-
-    sessionRepository.set(userAnswers).map { _ =>
-      Ok(view(WhatWillBeNeededPage.nextPage(mode = NormalMode, userAnswers).url))
+    val newUserAnswers = UserAnswers(request.userId)
+    sessionRepository.set(newUserAnswers) map {
+      _ => Ok(view(WhatWillBeNeededPage.nextPage(mode = NormalMode, newUserAnswers).url))
     }
   }
 }

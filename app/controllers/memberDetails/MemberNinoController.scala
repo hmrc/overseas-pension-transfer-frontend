@@ -19,12 +19,13 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MemberNinoFormProvider
 import models.Mode
+import org.apache.pekko.Done
 import pages.memberDetails.{MemberDoesNotHaveNinoPage, MemberNinoPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.MemberDetailsService
+import services.{MemberDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberNinoView
 
@@ -38,7 +39,7 @@ class MemberNinoController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    memberDetailsService: MemberDetailsService,
+    userAnswersService: UserAnswersService,
     formProvider: MemberNinoFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberNinoView
@@ -64,10 +65,16 @@ class MemberNinoController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            userAnswers    <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value).flatMap(_.remove(MemberDoesNotHaveNinoPage)))
-            updatedAnswers <- memberDetailsService.postMemberNinoUserAnswers(userAnswers.id, userAnswers)
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value).flatMap(_.remove(MemberDoesNotHaveNinoPage)))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+
+          }
       )
   }
 }

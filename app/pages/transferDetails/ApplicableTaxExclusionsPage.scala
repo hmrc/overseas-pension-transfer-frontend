@@ -26,7 +26,7 @@ case object ApplicableTaxExclusionsPage extends QuestionPage[Set[ApplicableTaxEx
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "applicableTaxExclusions"
+  override def toString: String = "applicableExclusion"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages

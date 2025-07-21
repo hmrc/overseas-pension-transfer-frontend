@@ -19,10 +19,12 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MemberDateOfLeavingUKFormProvider
 import models.Mode
+import org.apache.pekko.Done
 import pages.memberDetails.MemberDateOfLeavingUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.{MemberDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberDateOfLeavingUKView
 
@@ -36,6 +38,7 @@ class MemberDateOfLeavingUKController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    userAnswersService: UserAnswersService,
     formProvider: MemberDateOfLeavingUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDateOfLeavingUKView
@@ -62,9 +65,15 @@ class MemberDateOfLeavingUKController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(MemberDateOfLeavingUKPage.nextPage(mode, updatedAnswers))
+            userAnswers   <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
+            _             <- sessionRepository.set(userAnswers)
+            savedForLater <- userAnswersService.setUserAnswers(userAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(MemberDateOfLeavingUKPage.nextPage(mode, userAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
       )
   }
 }

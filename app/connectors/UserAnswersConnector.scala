@@ -17,7 +17,9 @@
 package connectors
 
 import config.FrontendAppConfig
+import connectors.parsers.UserAnswersParser.{GetUserAnswersHttpReads, GetUserAnswersType, SetUserAnswersHttpReads, SetUserAnswersType}
 import models.dtos.UserAnswersDTO
+import models.responses.UserAnswersErrorResponse
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -27,11 +29,6 @@ import java.net.URL
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait UserAnswersResponse
-
-case class UserAnswersSuccessResponse(userAnswersDTO: UserAnswersDTO) extends UserAnswersResponse
-case class UserAnswersErrorResponse(cause: Throwable)                 extends UserAnswersResponse
-
 class UserAnswersConnector @Inject() (
     appConfig: FrontendAppConfig,
     http: HttpClientV2
@@ -40,35 +37,28 @@ class UserAnswersConnector @Inject() (
   private def userAnswersUrl(id: String): URL =
     url"${appConfig.backendService}/save-for-later/$id"
 
-  def getAnswers(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[UserAnswersResponse] = {
-    http.get(userAnswersUrl(id))
-      .execute[UserAnswersDTO]
-      .map { uad =>
-        UserAnswersSuccessResponse(uad)
-      }
+  def getAnswers(transferId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersType] = {
+    http.get(userAnswersUrl(transferId))
+      .execute[GetUserAnswersType]
       .recover {
         case e: Exception =>
-          logger.warn(s"Error retrieving user answers for ID '$id': ${e.getMessage}", e)
-          UserAnswersErrorResponse(e)
+          logger.warn(s"Error retrieving user answers for ID '$transferId': ${e.getMessage}", e)
+          Left(UserAnswersErrorResponse(e.toString, None))
       }
   }
 
   def putAnswers(
-      id: String,
       userAnswersDTO: UserAnswersDTO
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[UserAnswersResponse] = {
-    http.post(userAnswersUrl(id))
+    ): Future[SetUserAnswersType] = {
+    http.post(userAnswersUrl(userAnswersDTO.referenceId))
       .withBody(Json.toJson(userAnswersDTO))
-      .execute[UserAnswersDTO]
-      .map { updatedDto =>
-        UserAnswersSuccessResponse(updatedDto)
-      }
+      .execute[SetUserAnswersType]
       .recover {
         case e: Exception =>
-          logger.warn(s"Error updating user answers for ID '$id': ${e.getMessage}", e)
-          UserAnswersErrorResponse(e)
+          logger.warn(s"Error updating user answers for ID '${userAnswersDTO.referenceId}': ${e.getMessage}", e)
+          Left(UserAnswersErrorResponse(e.getMessage, None))
       }
   }
 

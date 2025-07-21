@@ -28,7 +28,7 @@ case class MembersLastUKAddress(
   val addressLine5: Option[Nothing] = None
   val country: Country              = Countries.UK
   val postcode: Option[String]      = Some(ukPostCode)
-  val poBox: Option[String]         = None
+  val poBoxNumber: Option[String]   = None
 }
 
 object MembersLastUKAddress {
@@ -52,7 +52,7 @@ case class MembersLookupLastUkAddress(
     addressLine4: Option[String],
     country: Country,
     ukPostCode: Option[String],
-    poBox: Option[String]
+    poBoxNumber: Option[String]
   ) extends Address {
   val addressLine5: Option[String] = None
   val postcode: Option[String]     = ukPostCode
@@ -71,7 +71,7 @@ object MembersLookupLastUkAddress {
       addressLine4 = raw.lines.lift(3),
       ukPostCode   = Some(raw.postcode),
       country      = raw.country,
-      poBox        = record.poBox
+      poBoxNumber  = record.poBox
     )
   }
 
@@ -84,7 +84,7 @@ case class MembersCurrentAddress(
     addressLine4: Option[String],
     country: Country,
     ukPostCode: Option[String],
-    poBox: Option[String]
+    poBoxNumber: Option[String]
   ) extends Address {
   val addressLine5: Option[String] = None
   val postcode: Option[String]     = ukPostCode
@@ -103,7 +103,7 @@ case class QROPSAddress(
     country: Country
   ) extends Address {
   val countryCode: Country              = country
-  val poBox: Option[String]             = None
+  val poBoxNumber: Option[String]       = None
   override val postcode: Option[String] = None
 }
 
@@ -119,7 +119,7 @@ case class SchemeManagersAddress(
     addressLine5: Option[String],
     country: Country
   ) extends Address {
-  val poBox: Option[String]             = None
+  val poBoxNumber: Option[String]       = None
   override val postcode: Option[String] = None
 }
 
@@ -139,7 +139,7 @@ case class PropertyAddress(
 
   val addressLine5: Option[Nothing] = None
   val postcode: Option[String]      = ukPostCode
-  val poBox: Option[String]         = None
+  val poBoxNumber: Option[String]   = None
 }
 
 object PropertyAddress {

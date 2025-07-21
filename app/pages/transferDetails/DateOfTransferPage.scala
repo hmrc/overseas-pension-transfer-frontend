@@ -28,7 +28,7 @@ case object DateOfTransferPage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "dateOfTransfer"
+  override def toString: String = "dateMemberTransferred"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
