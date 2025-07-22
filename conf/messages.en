@@ -588,6 +588,13 @@ additionalQuotedShare.error.required = Please select an option
 additionalQuotedShare.change.hidden = AdditionalQuotedShare
 additionalQuotedShare.addMore = Do you need to add another quoted share?
 
+addAdditionalProperty.title = addAdditionalProperty
+addAdditionalProperty.heading = You have added 1 Property
+addAdditionalProperty.checkYourAnswersLabel = addAdditionalProperty
+addAdditionalProperty.error.required = Please select an option
+addAdditionalProperty.change.hidden = AddAdditionalProperty
+addAdditionalProperty.addMore = Do you need to add another property?
+
 addOtherAssets.title = Add other assets
 addOtherAssets.heading = Add other assets
 addOtherAssets.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.
