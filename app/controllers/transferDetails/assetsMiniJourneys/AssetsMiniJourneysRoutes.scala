@@ -16,4 +16,54 @@
 
 package controllers.transferDetails.assetsMiniJourneys
 
-object AssetsMiniJourneysRoutes {}
+object AssetsMiniJourneysRoutes {
+
+  // ----- Unquoted Shares -----
+
+  val UnquotedShareStartController =
+    controllers.transferDetails.routes.UnquotedShareStartController
+
+  val UnquotedShareCompanyNameController =
+    controllers.transferDetails.routes.UnquotedShareCompanyNameController
+
+  val UnquotedShareValueController =
+    controllers.transferDetails.routes.UnquotedShareValueController
+
+  val NumberOfUnquotedSharesController =
+    controllers.transferDetails.routes.NumberOfUnquotedSharesController
+
+  val UnquotedSharesClassController =
+    controllers.transferDetails.routes.UnquotedSharesClassController
+
+  val UnquotedShareCYAController =
+    controllers.transferDetails.routes.UnquotedShareCYAController
+
+  val UnquotedSharesAmendContinueController =
+    controllers.transferDetails.routes.UnquotedSharesAmendContinueController
+
+  val UnquotedSharesConfirmRemovalController =
+    controllers.transferDetails.routes.UnquotedSharesConfirmRemovalController
+
+  // ----- Quoted Shares -----
+
+  val AddQuotedShareController =
+    controllers.transferDetails.routes.AddQuotedShareController
+
+  val QuotedShareCompanyNameController =
+    controllers.transferDetails.routes.QuotedShareCompanyNameController
+
+  val QuotedShareValueController =
+    controllers.transferDetails.routes.QuotedShareValueController
+
+  val NumberOfQuotedSharesController =
+    controllers.transferDetails.routes.NumberOfQuotedSharesController
+
+  val ClassOfQuotedSharesController =
+    controllers.transferDetails.routes.ClassOfQuotedSharesController
+
+  val QuotedShareCYAController =
+    controllers.transferDetails.routes.QuotedShareCYAController
+
+  val QuotedSharesAmendContinueController =
+    controllers.transferDetails.routes.QuotedSharesAmendContinueController
+}

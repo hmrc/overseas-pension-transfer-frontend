@@ -26,6 +26,7 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 @import viewmodels.LabelSize.Large
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
 @this(
     layout: templates.Layout,
@@ -36,11 +37,12 @@
     qtNumber: QTNumber
 )
 
+
 @(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("unquotedShareCompanyName.title"))) {
 
-    @formHelper(action = routes.UnquotedShareCompanyNameController.onSubmit(mode, index)) {
+    @formHelper(action = AssetsMiniJourneysRoutes.UnquotedShareCompanyNameController.onSubmit(mode, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

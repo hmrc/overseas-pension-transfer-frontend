@@ -18,6 +18,7 @@ package controllers.transferDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -53,29 +54,29 @@ class QuotedShareCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(routes.QuotedSharesAmendContinueController.onPageLoad())
-  /*    val path = sharesPathForType(shareType)
-    transferDetailsService.unquotedShareBuilder(request.userAnswers) match {
-      case Some(newUnquotedShare) =>
-        val existingUnquotedShares = request.userAnswers.data
-          .validate(path.read[List[ShareEntry]])
-          .getOrElse(Nil)
-
-        val updatedShares = existingUnquotedShares :+ newUnquotedShare
-
-        val updatedJson = request.userAnswers.data.deepMerge(
-          Json.obj("transferDetails" -> Json.obj(shareType.toString -> Json.toJson(updatedShares)))
-        )
-
-        val updatedAnswers = request.userAnswers.copy(data = updatedJson)
-        val clearedAnswers = transferDetailsService.clearUnquotedShareFields(updatedAnswers)
-
-        for {
-          _ <- sessionRepository.set(clearedAnswers)
-        } yield Redirect(routes.UnquotedSharesAmendContinueController.onPageLoad())
-
-      case None =>
-        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-    }*/
+    Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad())
+//    val path = sharesPathForType(shareType)
+//    transferDetailsService.unquotedShareBuilder(request.userAnswers) match {
+//      case Some(newUnquotedShare) =>
+//        val existingUnquotedShares = request.userAnswers.data
+//          .validate(path.read[List[ShareEntry]])
+//          .getOrElse(Nil)
+//
+//        val updatedShares = existingUnquotedShares :+ newUnquotedShare
+//
+//        val updatedJson = request.userAnswers.data.deepMerge(
+//          Json.obj("transferDetails" -> Json.obj(shareType.toString -> Json.toJson(updatedShares)))
+//        )
+//
+//        val updatedAnswers = request.userAnswers.copy(data = updatedJson)
+//        val clearedAnswers = transferDetailsService.clearUnquotedShareFields(updatedAnswers)
+//
+//        for {
+//          _ <- sessionRepository.set(clearedAnswers)
+//        } yield Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad())
+//
+//      case None =>
+//        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+//    }
   }
 }

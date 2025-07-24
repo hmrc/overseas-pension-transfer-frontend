@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.ClassOfQuotedSharesFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -37,7 +38,7 @@ class ClassOfQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with M
   private val formProvider = new ClassOfQuotedSharesFormProvider()
   private val form         = formProvider()
 
-  private lazy val classOfQuotedSharesRoute = routes.ClassOfQuotedSharesController.onPageLoad(NormalMode).url
+  private lazy val classOfQuotedSharesRoute = AssetsMiniJourneysRoutes.ClassOfQuotedSharesController.onPageLoad(NormalMode).url
 
   "ClassOfQuotedShares Controller" - {
 

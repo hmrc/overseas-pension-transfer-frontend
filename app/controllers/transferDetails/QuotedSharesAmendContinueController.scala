@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.QuotedSharesAmendContinueFormProvider
 import models.{NormalMode, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -61,7 +62,7 @@ class QuotedSharesAmendContinueController @Inject() (
         value => {
           val redirectTarget = if (value) {
             val nextIndex = transferDetailsService.assetCount(request.userAnswers, TypeOfAsset.UnquotedShares)
-            routes.QuotedShareCompanyNameController.onPageLoad(NormalMode)
+            AssetsMiniJourneysRoutes.QuotedShareCompanyNameController.onPageLoad(NormalMode)
           } else {
             routes.TransferDetailsCYAController.onPageLoad()
           }

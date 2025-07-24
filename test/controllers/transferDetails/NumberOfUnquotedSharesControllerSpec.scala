@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.NumberOfUnquotedSharesFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -40,7 +41,7 @@ class NumberOfUnquotedSharesControllerSpec extends AnyFreeSpec with SpecBase wit
   private val validAnswer = "10"
   private val index       = 0
 
-  lazy val numberOfUnquotedSharesRoute = routes.NumberOfUnquotedSharesController.onPageLoad(NormalMode, index).url
+  lazy val numberOfUnquotedSharesRoute = AssetsMiniJourneysRoutes.NumberOfUnquotedSharesController.onPageLoad(NormalMode, index).url
 
   "NumberOfUnquotedShares Controller" - {
 

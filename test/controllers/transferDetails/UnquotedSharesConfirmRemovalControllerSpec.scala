@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.UnquotedSharesConfirmRemovalFormProvider
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -29,7 +30,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
   private val formProvider = new UnquotedSharesConfirmRemovalFormProvider()
   private val form         = formProvider()
 
-  val unquotedSharesConfirmRemovalRoute = routes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url
+  val unquotedSharesConfirmRemovalRoute = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url
 
   "UnquotedSharesConfirmRemoval Controller" - {
 
@@ -60,7 +61,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.UnquotedSharesAmendContinueController.onPageLoad().url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad().url
       }
     }
 

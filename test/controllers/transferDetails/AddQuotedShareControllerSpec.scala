@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -24,7 +25,7 @@ import views.html.transferDetails.AddQuotedShareView
 
 class AddQuotedShareControllerSpec extends AnyFreeSpec with SpecBase {
 
-  private lazy val addQuotedShareRoute = routes.AddQuotedShareController.onPageLoad().url
+  private lazy val addQuotedShareRoute = AssetsMiniJourneysRoutes.AddQuotedShareController.onPageLoad().url
 
   "AddQuotedShare Controller" - {
 

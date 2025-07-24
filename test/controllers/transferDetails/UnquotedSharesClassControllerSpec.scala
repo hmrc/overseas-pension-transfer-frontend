@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.UnquotedSharesClassFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -38,7 +39,7 @@ class UnquotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with M
   private val form         = formProvider()
   private val index        = 0
 
-  private lazy val unquotedSharesClassRoute = routes.UnquotedSharesClassController.onPageLoad(NormalMode, index).url
+  private lazy val unquotedSharesClassRoute = AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(NormalMode, index).url
 
   "UnquotedSharesClass Controller" - {
 

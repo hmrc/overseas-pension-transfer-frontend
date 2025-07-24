@@ -27,6 +27,7 @@
 @import views.html.components.QTNumber
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
 @import viewmodels.LabelSize.Large
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
 @this(
         layout: templates.Layout,
@@ -41,7 +42,7 @@
 
 @layout(pageTitle = title(form, messages("quotedShareValue.title"))) {
 
-    @formHelper(action = routes.QuotedShareValueController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = AssetsMiniJourneysRoutes.QuotedShareValueController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

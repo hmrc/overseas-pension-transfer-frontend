@@ -25,8 +25,7 @@
 @import viewmodels.LegendSize.Large
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-
-
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
 @this(
     layout: templates.Layout,
@@ -41,7 +40,7 @@
 
 @layout(pageTitle = title(form, messages("unquotedSharesConfirmRemoval.title"))) {
 
-    @formHelper(action = routes.UnquotedSharesConfirmRemovalController.onSubmit(index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

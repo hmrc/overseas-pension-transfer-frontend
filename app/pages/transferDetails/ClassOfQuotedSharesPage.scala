@@ -16,6 +16,7 @@
 
 package pages.transferDetails
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
@@ -35,5 +36,5 @@ case object ClassOfQuotedSharesPage extends QuestionPage[String] {
     routes.TransferDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.ClassOfQuotedSharesController.onPageLoad(CheckMode)
+    AssetsMiniJourneysRoutes.ClassOfQuotedSharesController.onPageLoad(CheckMode)
 }

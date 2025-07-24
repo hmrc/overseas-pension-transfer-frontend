@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.QuotedSharesAmendContinueFormProvider
 import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,7 +31,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
   private val formProvider = new QuotedSharesAmendContinueFormProvider()
   private val form         = formProvider()
 
-  private lazy val quotedSharesAmendContinueRoute = routes.QuotedSharesAmendContinueController.onPageLoad().url
+  private lazy val quotedSharesAmendContinueRoute = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad().url
 
   "QuotedSharesAmendContinue Controller" - {
 
@@ -63,7 +64,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.QuotedShareCompanyNameController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.QuotedShareCompanyNameController.onPageLoad(NormalMode).url
       }
     }
 

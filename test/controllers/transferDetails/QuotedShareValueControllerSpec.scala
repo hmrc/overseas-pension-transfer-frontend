@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.QuotedShareValueFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -39,7 +40,7 @@ class QuotedShareValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val quotedShareValueRoute = routes.QuotedShareValueController.onPageLoad(NormalMode).url
+  lazy val quotedShareValueRoute = AssetsMiniJourneysRoutes.QuotedShareValueController.onPageLoad(NormalMode).url
 
   "QuotedShareValue Controller" - {
 

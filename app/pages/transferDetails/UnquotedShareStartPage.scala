@@ -16,15 +16,15 @@
 
 package pages.transferDetails
 
-import controllers.transferDetails.routes
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
-object UnQuotedShareStartPage extends Page {
+object UnquotedShareStartPage extends Page {
 
   private val startIndex = 0
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, startIndex)
+    AssetsMiniJourneysRoutes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, startIndex)
 }

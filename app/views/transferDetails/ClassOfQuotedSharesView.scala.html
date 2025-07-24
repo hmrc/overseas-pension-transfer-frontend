@@ -25,6 +25,7 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 @import viewmodels.LabelSize.Large
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
 @this(
     layout: templates.Layout,
@@ -39,7 +40,7 @@
 
 @layout(pageTitle = title(form, messages("classOfQuotedShares.title"))) {
 
-    @formHelper(action = controllers.transferDetails.routes.ClassOfQuotedSharesController.onSubmit(mode)) {
+    @formHelper(action = AssetsMiniJourneysRoutes.ClassOfQuotedSharesController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

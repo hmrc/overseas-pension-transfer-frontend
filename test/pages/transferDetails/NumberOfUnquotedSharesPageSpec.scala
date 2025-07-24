@@ -16,6 +16,7 @@
 
 package pages.transferDetails
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
@@ -31,7 +32,10 @@ class NumberOfUnquotedSharesPageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        NumberOfUnquotedSharesPage(index).nextPage(NormalMode, emptyAnswers) mustEqual routes.UnquotedSharesClassController.onPageLoad(NormalMode, index)
+        NumberOfUnquotedSharesPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(
+          NormalMode,
+          index
+        )
       }
     }
 
@@ -39,7 +43,7 @@ class NumberOfUnquotedSharesPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        NumberOfUnquotedSharesPage(index).nextPage(CheckMode, emptyAnswers) mustEqual routes.UnquotedShareCYAController.onPageLoad(index)
+        NumberOfUnquotedSharesPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedShareCYAController.onPageLoad(index)
       }
     }
   }

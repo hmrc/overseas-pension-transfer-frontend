@@ -16,6 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.UserAnswers
 import play.api.i18n.Messages
@@ -37,7 +38,7 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
       key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
       value   = ValueViewModel(valueText),
       actions = Seq(
-        ActionItemViewModel("site.change", routes.UnquotedSharesAmendContinueController.onPageLoad().url)
+        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad().url)
           .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
       )
     )
@@ -49,8 +50,8 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
       case (entry, index) =>
         ListItem(
           name      = entry.companyName,
-          changeUrl = routes.UnquotedShareCYAController.onPageLoad(index).url,
-          removeUrl = routes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url
+          changeUrl = AssetsMiniJourneysRoutes.UnquotedShareCYAController.onPageLoad(index).url,
+          removeUrl = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url
         )
     }
   }

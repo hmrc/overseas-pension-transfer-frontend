@@ -16,6 +16,7 @@
 
 package pages.transferDetails
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.{CheckMode, NormalMode, ShareEntry, TaskCategory, TypeOfAsset, UserAnswers}
 import pages.QuestionPage
@@ -29,11 +30,11 @@ case class NumberOfUnquotedSharesPage(index: Int) extends QuestionPage[String] {
   override def toString: String = ShareEntry.NumberOfShares
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.UnquotedSharesClassController.onPageLoad(NormalMode, index)
+    AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.UnquotedShareCYAController.onPageLoad(index)
+    AssetsMiniJourneysRoutes.UnquotedShareCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.NumberOfUnquotedSharesController.onPageLoad(CheckMode, index)
+    AssetsMiniJourneysRoutes.NumberOfUnquotedSharesController.onPageLoad(CheckMode, index)
 }

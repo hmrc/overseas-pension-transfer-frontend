@@ -18,6 +18,7 @@ package controllers.transferDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -53,7 +54,7 @@ class UnquotedShareCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(routes.UnquotedSharesAmendContinueController.onPageLoad())
+    Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad())
   /*    val path = sharesPathForType(shareType)
     transferDetailsService.unquotedShareBuilder(request.userAnswers) match {
       case Some(newUnquotedShare) =>
@@ -72,7 +73,7 @@ class UnquotedShareCYAController @Inject() (
 
         for {
           _ <- sessionRepository.set(clearedAnswers)
-        } yield Redirect(routes.UnquotedSharesAmendContinueController.onPageLoad())
+        } yield Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad())
 
       case None =>
         Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))

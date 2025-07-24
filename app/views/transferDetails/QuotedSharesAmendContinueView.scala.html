@@ -27,6 +27,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcAddToAList
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.AddToAList
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.ItemType
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
 @this(
     layout: templates.Layout,
@@ -45,7 +46,7 @@
 
 @layout(pageTitle = title(form, messages("quotedSharesAmendContinue.title"))) {
 
-    @formHelper(action = controllers.transferDetails.routes.QuotedSharesAmendContinueController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

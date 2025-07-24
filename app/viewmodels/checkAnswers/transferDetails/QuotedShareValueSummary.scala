@@ -16,6 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.{CheckMode, UserAnswers}
 import pages.transferDetails.QuotedShareValuePage
@@ -34,7 +35,7 @@ object QuotedShareValueSummary {
           key     = "quotedShareValue.checkYourAnswersLabel",
           value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.QuotedShareValueController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.QuotedShareValueController.onPageLoad(CheckMode).url)
               .withVisuallyHiddenText(messages("quotedShareValue.change.hidden"))
           )
         )
