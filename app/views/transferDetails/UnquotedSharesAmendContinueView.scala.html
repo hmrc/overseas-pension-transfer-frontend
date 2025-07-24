@@ -20,26 +20,27 @@
 @import views.ViewUtils.title
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
+@import viewmodels.govuk.all.ErrorSummaryViewModel
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    hmrcAddToAList : HmrcAddToAList,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        hmrcAddToAList : HmrcAddToAList,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], shares: Seq[ListItem])(implicit request: DisplayRequest[_], messages: Messages)
 
-@singularTxt = @{messages("additionalUnquotedShare.text.singular")}
-@pluralTxt = @{messages("additionalUnquotedShare.text.plural")}
+@singularTxt = @{messages("unquotedSharesAmendContinue.text.singular")}
+@pluralTxt = @{messages("unquotedSharesAmendContinue.text.plural")}
 @partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
 
-@titleText = @{messages("additionalAsset.common.title", shares.size, partTxt)}
+@titleText = @{messages("unquotedSharesAmendContinue.common.title", shares.size, partTxt)}
 
 @layout(pageTitle = title(form, titleText)) {
 
-    @formHelper(action = controllers.transferDetails.routes.AdditionalUnquotedShareController.onSubmit(), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.transferDetails.routes.UnquotedSharesAmendContinueController.onSubmit(), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

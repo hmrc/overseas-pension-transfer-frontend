@@ -21,46 +21,47 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.LegendSize.Large
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-
-
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcAddToAList
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.AddToAList
+@import uk.gov.hmrc.hmrcfrontend.views.Aliases.ItemType
 
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios,
-    govukButton: GovukButton,
+    govukButton: GovukButton, hmrcAddToAList : HmrcAddToAList,
     qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], shares: Seq[ListItem])(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("additionalQuotedShare.title"))) {
+@singularTxt = @{messages("unquotedSharesAmendContinue.text.singular")}
+@pluralTxt = @{messages("unquotedSharesAmendContinue.text.plural")}
+@partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
 
-    @formHelper(action = controllers.transferDetails.routes.AdditionalQuotedShareController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+@layout(pageTitle = title(form, messages("quotedSharesAmendContinue.title"))) {
+
+    @formHelper(action = controllers.transferDetails.routes.QuotedSharesAmendContinueController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("additionalQuotedShare.heading")</h1>
-
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(
-                    messages("additionalQuotedShare.addMore")
-                )
-                .withCssClass("govuk-fieldset__legend--m")
+        @hmrcAddToAList(
+            AddToAList(
+                itemList = shares,
+                itemType = Some(ItemType(
+                    singular = singularTxt,
+                    plural = pluralTxt
+                ))
             )
         )
-
-        @govukButton(
-            ButtonViewModel(Text(messages("site.saveAndContinue")))
+        Text(messages("site.saveAndContinue")))
         )
     }
 }

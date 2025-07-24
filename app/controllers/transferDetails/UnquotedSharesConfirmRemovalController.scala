@@ -53,7 +53,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
     form.bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
       value => {
-        val redirect = Redirect(routes.AdditionalUnquotedShareController.onPageLoad())
+        val redirect = Redirect(routes.UnquotedSharesAmendContinueController.onPageLoad())
         if (value) {
           transferDetailsService.doAssetRemoval(request.userAnswers, index, TypeOfAsset.UnquotedShares).map(_ => redirect)
         } else {

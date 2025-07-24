@@ -20,17 +20,17 @@ import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.UnquotedShareSummary
-import viewmodels.govuk.summarylist._
-import views.html.transferDetails.UnquotedShareCYAView
 import repositories.SessionRepository
 import services.TransferDetailsService
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AppUtils
+import viewmodels.checkAnswers.transferDetails.{QuotedShareSummary, UnquotedShareSummary}
+import viewmodels.govuk.summarylist._
+import views.html.transferDetails.QuotedShareCYAView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class UnquotedShareCYAController @Inject() (
+class QuotedShareCYAController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
@@ -39,7 +39,7 @@ class UnquotedShareCYAController @Inject() (
     displayData: DisplayAction,
     transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
-    view: UnquotedShareCYAView
+    view: QuotedShareCYAView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
@@ -47,13 +47,13 @@ class UnquotedShareCYAController @Inject() (
   private val actions = (identify andThen getData andThen requireData andThen displayData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(UnquotedShareSummary.rows(request.userAnswers, index))
+    val list = SummaryListViewModel(QuotedShareSummary.rows(request.userAnswers, index))
 
     Ok(view(list, index))
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(routes.UnquotedSharesAmendContinueController.onPageLoad())
+    Redirect(routes.QuotedSharesAmendContinueController.onPageLoad())
   /*    val path = sharesPathForType(shareType)
     transferDetailsService.unquotedShareBuilder(request.userAnswers) match {
       case Some(newUnquotedShare) =>

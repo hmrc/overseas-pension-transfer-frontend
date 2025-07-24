@@ -17,33 +17,33 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.transferDetails.AdditionalUnquotedShareFormProvider
+import forms.transferDetails.UnquotedSharesAmendContinueFormProvider
 import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transferDetails.AdditionalUnquotedShareView
+import views.html.transferDetails.UnquotedSharesAmendContinueView
 
-class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new AdditionalUnquotedShareFormProvider()
+  private val formProvider = new UnquotedSharesAmendContinueFormProvider()
   private val form         = formProvider()
 
-  private lazy val additionalUnquotedShareRoute = routes.AdditionalUnquotedShareController.onPageLoad().url
+  private lazy val unquotedSharesAmendContinueRoute = routes.UnquotedSharesAmendContinueController.onPageLoad().url
 
-  "AdditionalUnquotedShare Controller" - {
+  "UnquotedSharesAmendContinue Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, additionalUnquotedShareRoute)
+        val request = FakeRequest(GET, unquotedSharesAmendContinueRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AdditionalUnquotedShareView]
+        val view = application.injector.instanceOf[UnquotedSharesAmendContinueView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
@@ -57,7 +57,7 @@ class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase wi
 
       running(application) {
         val request =
-          FakeRequest(POST, additionalUnquotedShareRoute)
+          FakeRequest(POST, unquotedSharesAmendContinueRoute)
             .withFormUrlEncodedBody(("add-another", "Yes"))
 
         val result = route(application, request).value
@@ -73,12 +73,12 @@ class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase wi
 
       running(application) {
         val request =
-          FakeRequest(POST, additionalUnquotedShareRoute)
+          FakeRequest(POST, unquotedSharesAmendContinueRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[AdditionalUnquotedShareView]
+        val view = application.injector.instanceOf[UnquotedSharesAmendContinueView]
 
         val result = route(application, request).value
 
@@ -92,7 +92,7 @@ class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase wi
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, additionalUnquotedShareRoute)
+        val request = FakeRequest(GET, unquotedSharesAmendContinueRoute)
 
         val result = route(application, request).value
 
@@ -107,7 +107,7 @@ class AdditionalUnquotedShareControllerSpec extends AnyFreeSpec with SpecBase wi
 
       running(application) {
         val request =
-          FakeRequest(POST, additionalUnquotedShareRoute)
+          FakeRequest(POST, unquotedSharesAmendContinueRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

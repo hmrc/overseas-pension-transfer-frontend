@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-package forms.transferDetails
+package controllers.transferDetails.assetsMiniJourneys
 
-import forms.mappings.Mappings
-import play.api.data.Form
-
-import javax.inject.Inject
-
-class AdditionalUnquotedShareFormProvider @Inject() extends Mappings {
-
-  def apply(): Form[Boolean] =
-    Form(
-      "add-another" -> text("additionalUnquotedShare.error.required")
-        .transform[Boolean](_.equals("Yes"), if (_) "Yes" else "No")
-    )
-}
+object AssetsMiniJourneysRoutes {}

@@ -17,50 +17,53 @@
 package controllers.transferDetails
 
 import base.SpecBase
-import forms.transferDetails.UnquotedSharesConfirmRemovalFormProvider
+import forms.transferDetails.QuotedSharesAmendContinueFormProvider
+import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transferDetails.UnquotedSharesConfirmRemovalView
+import views.html.transferDetails.QuotedSharesAmendContinueView
 
-class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new UnquotedSharesConfirmRemovalFormProvider()
+  private val formProvider = new QuotedSharesAmendContinueFormProvider()
   private val form         = formProvider()
 
-  val unquotedSharesConfirmRemovalRoute = routes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url
+  private lazy val quotedSharesAmendContinueRoute = routes.QuotedSharesAmendContinueController.onPageLoad().url
 
-  "UnquotedSharesConfirmRemoval Controller" - {
+  "QuotedSharesAmendContinue Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesConfirmRemovalRoute)
+        val request = FakeRequest(GET, quotedSharesAmendContinueRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[UnquotedSharesConfirmRemovalView]
+        val view = application.injector.instanceOf[QuotedSharesAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, 1)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+          .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesConfirmRemovalRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, quotedSharesAmendContinueRoute)
+            .withFormUrlEncodedBody(("add-another", "Yes"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.UnquotedSharesAmendContinueController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.QuotedShareCompanyNameController.onPageLoad(NormalMode).url
       }
     }
 
@@ -70,17 +73,17 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesConfirmRemovalRoute)
+          FakeRequest(POST, quotedSharesAmendContinueRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[UnquotedSharesConfirmRemovalView]
+        val view = application.injector.instanceOf[QuotedSharesAmendContinueView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -89,7 +92,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesConfirmRemovalRoute)
+        val request = FakeRequest(GET, quotedSharesAmendContinueRoute)
 
         val result = route(application, request).value
 
@@ -104,7 +107,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesConfirmRemovalRoute)
+          FakeRequest(POST, quotedSharesAmendContinueRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

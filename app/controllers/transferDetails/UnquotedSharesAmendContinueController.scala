@@ -17,38 +17,29 @@
 package controllers.transferDetails
 
 import controllers.actions._
-import forms.transferDetails.AdditionalUnquotedShareFormProvider
+import forms.transferDetails.UnquotedSharesAmendContinueFormProvider
 import models.{NormalMode, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.AdditionalUnquotedShareSummary
-import views.html.transferDetails.AdditionalUnquotedShareView
-
-import uk.gov.hmrc.hmrcfrontend.views.html.components.AddToAList
-
-import views.ViewUtils.title
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import viewmodels.LegendSize.Large
-import models.requests.DisplayRequest
-import views.html.components.QTNumber
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.Short
+import viewmodels.checkAnswers.transferDetails.UnquotedSharesAmendContinueSummary
+import views.html.transferDetails.UnquotedSharesAmendContinueView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalUnquotedShareController @Inject() (
+class UnquotedSharesAmendContinueController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: AdditionalUnquotedShareFormProvider,
+    formProvider: UnquotedSharesAmendContinueFormProvider,
     transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
-    view: AdditionalUnquotedShareView
+    view: UnquotedSharesAmendContinueView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
@@ -56,7 +47,7 @@ class AdditionalUnquotedShareController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val shares = AdditionalUnquotedShareSummary.rows(request.userAnswers)
+      val shares = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
       Ok(view(form, shares))
   }
 
@@ -64,7 +55,7 @@ class AdditionalUnquotedShareController @Inject() (
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val shares = AdditionalUnquotedShareSummary.rows(request.userAnswers)
+          val shares = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
           Future.successful(BadRequest(view(formWithErrors, shares)))
         },
         value => {

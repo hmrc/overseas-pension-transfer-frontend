@@ -19,26 +19,26 @@ package viewmodels.checkAnswers.transferDetails
 import controllers.transferDetails.routes
 import models.UserAnswers
 import play.api.i18n.Messages
+import queries.UnquotedShares
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import utils.AppUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
-import utils.AppUtils
-import queries.UnquotedShares
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
-object AdditionalUnquotedShareSummary extends AppUtils {
+object QuotedSharesAmendContinueSummary extends AppUtils {
 
   def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
 
     val count: Int = answers.get(UnquotedShares).getOrElse(Nil).size
-    val valueText  = messages("additionalUnquotedShare.summary.value", count)
+    val valueText  = messages("unquotedSharesAmendContinue.summary.value", count)
 
     SummaryListRowViewModel(
-      key     = "additionalUnquotedShare.checkYourAnswersLabel",
+      key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
       value   = ValueViewModel(valueText),
       actions = Seq(
-        ActionItemViewModel("site.change", routes.AdditionalUnquotedShareController.onPageLoad().url)
-          .withVisuallyHiddenText(messages("additionalUnquotedShare.change.hidden"))
+        ActionItemViewModel("site.change", routes.UnquotedSharesAmendContinueController.onPageLoad().url)
+          .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
       )
     )
   }

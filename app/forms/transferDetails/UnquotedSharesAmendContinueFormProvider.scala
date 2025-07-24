@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms
-
-import javax.inject.Inject
+package forms.transferDetails
 
 import forms.mappings.Mappings
 import play.api.data.Form
 
-class AdditionalQuotedShareFormProvider @Inject() extends Mappings {
+import javax.inject.Inject
+
+class UnquotedSharesAmendContinueFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("additionalQuotedShare.error.required")
+      "add-another" -> text("unquotedSharesAmendContinue.error.required")
+        .transform[Boolean](_.equals("Yes"), if (_) "Yes" else "No")
     )
 }

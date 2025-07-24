@@ -17,16 +17,16 @@
 package pages.transferDetails
 
 import controllers.routes
-import models.{TaskCategory, UserAnswers}
+import models.{NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AdditionalQuotedSharePage extends QuestionPage[Boolean] {
+case object QuotedSharesAmendContinuePage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "additionalQuotedShare"
+  override def toString: String = "quotedSharesAmendContinue"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()

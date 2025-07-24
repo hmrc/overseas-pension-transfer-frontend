@@ -19,11 +19,11 @@ package forms.transferDetails
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AdditionalUnquotedShareFormProviderSpec extends BooleanFieldBehaviours {
+class QuotedSharesAmendContinueFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "additionalUnquotedShare.error.required"
+  val requiredKey = "quotedSharesAmendContinue.error.required"
 
-  val form = new AdditionalUnquotedShareFormProvider()()
+  val form = new QuotedSharesAmendContinueFormProvider()()
 
   ".value" - {
 
