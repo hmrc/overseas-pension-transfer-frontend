@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
 import models.NormalMode
-import pages.transferDetails.AddQuotedSharePage
-import play.api.i18n.I18nSupport
+import pages.transferDetails.UnquotedShareStartPage
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.AddQuotedShareView
+import views.html.transferDetails.UnquotedShareStartView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
-class AddQuotedShareController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
+class UnquotedShareStartController @Inject() (
+    override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    view: AddQuotedShareView
-  )(implicit ec: ExecutionContext
+    val controllerComponents: MessagesControllerComponents,
+    view: UnquotedShareStartView
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      Ok(view(AddQuotedSharePage.nextPage(mode = NormalMode, request.userAnswers).url))
+      Ok(view(UnquotedShareStartPage.nextPage(mode = NormalMode, request.userAnswers).url))
   }
 }

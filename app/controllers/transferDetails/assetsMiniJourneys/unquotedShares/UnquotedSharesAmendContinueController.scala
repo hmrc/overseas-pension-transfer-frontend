@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import controllers.transferDetails.routes
 import forms.transferDetails.UnquotedSharesAmendContinueFormProvider
 import models.{NormalMode, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}

@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
-import forms.UnquotedShareValueFormProvider
+import forms.transferDetails.NumberOfUnquotedSharesFormProvider
 import models.Mode
-import pages.transferDetails.UnquotedShareValuePage
+import pages.transferDetails.NumberOfUnquotedSharesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.UnquotedShareValueView
+import views.html.transferDetails.NumberOfUnquotedSharesView
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnquotedShareValueController @Inject() (
+class NumberOfUnquotedSharesController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: UnquotedShareValueFormProvider,
+    formProvider: NumberOfUnquotedSharesFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: UnquotedShareValueView
+    view: NumberOfUnquotedSharesView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -45,7 +46,7 @@ class UnquotedShareValueController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(UnquotedShareValuePage(index)) match {
+      val preparedForm = request.userAnswers.get(NumberOfUnquotedSharesPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,9 +61,9 @@ class UnquotedShareValueController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UnquotedShareValuePage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NumberOfUnquotedSharesPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(UnquotedShareValuePage(index).nextPage(mode, updatedAnswers))
+          } yield Redirect(NumberOfUnquotedSharesPage(index).nextPage(mode, updatedAnswers))
       )
   }
 }

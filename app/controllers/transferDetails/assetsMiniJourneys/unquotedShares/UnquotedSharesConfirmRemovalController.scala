@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
@@ -26,9 +26,8 @@ import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.UnquotedSharesConfirmRemovalView
 
-import scala.concurrent.Future
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class UnquotedSharesConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,

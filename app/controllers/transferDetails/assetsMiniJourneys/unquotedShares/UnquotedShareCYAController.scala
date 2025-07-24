@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
+import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.UnquotedShareSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.UnquotedShareCYAView
-import repositories.SessionRepository
-import services.TransferDetailsService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class UnquotedShareCYAController @Inject() (
     override val messagesApi: MessagesApi,

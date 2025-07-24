@@ -14,56 +14,56 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.actions._
-import forms.transferDetails.UnquotedShareCompanyNameFormProvider
+import forms.transferDetails.NumberOfQuotedSharesFormProvider
 import models.Mode
-import pages.transferDetails.UnquotedShareCompanyNamePage
+import pages.transferDetails.NumberOfQuotedSharesPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.UnquotedShareCompanyNameView
+import views.html.transferDetails.NumberOfQuotedSharesView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UnquotedShareCompanyNameController @Inject() (
+class NumberOfQuotedSharesController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: UnquotedShareCompanyNameFormProvider,
+    formProvider: NumberOfQuotedSharesFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: UnquotedShareCompanyNameView
+    view: NumberOfQuotedSharesView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(UnquotedShareCompanyNamePage(index)) match {
+      val preparedForm = request.userAnswers.get(NumberOfQuotedSharesPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, index))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UnquotedShareCompanyNamePage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NumberOfQuotedSharesPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(UnquotedShareCompanyNamePage(index).nextPage(mode, updatedAnswers))
+          } yield Redirect(NumberOfQuotedSharesPage.nextPage(mode, updatedAnswers))
       )
   }
 }

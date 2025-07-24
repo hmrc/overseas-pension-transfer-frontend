@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
@@ -25,7 +25,7 @@ import repositories.SessionRepository
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.{QuotedShareSummary, UnquotedShareSummary}
+import viewmodels.checkAnswers.transferDetails.QuotedShareSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.QuotedShareCYAView
 
