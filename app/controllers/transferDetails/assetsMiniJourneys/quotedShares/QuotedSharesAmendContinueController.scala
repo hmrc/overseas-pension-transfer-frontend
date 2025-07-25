@@ -19,15 +19,15 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import forms.transferDetails.QuotedSharesAmendContinueFormProvider
+import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueFormProvider
 import models.{NormalMode, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.QuotedSharesAmendContinueSummary
-import views.html.transferDetails.QuotedSharesAmendContinueView
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueSummary
+import views.html.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

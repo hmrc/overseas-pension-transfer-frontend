@@ -18,11 +18,11 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
 import models.NormalMode
-import pages.transferDetails.UnquotedShareStartPage
+import pages.transferDetails.assetsMiniJourney.unquotedShares.UnquotedShareStartPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.UnquotedShareStartView
+import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedShareStartView
 
 import javax.inject.Inject
 

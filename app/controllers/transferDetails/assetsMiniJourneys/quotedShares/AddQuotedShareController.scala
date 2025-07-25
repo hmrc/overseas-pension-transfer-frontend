@@ -18,11 +18,11 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.actions._
 import models.NormalMode
-import pages.transferDetails.AddQuotedSharePage
+import pages.transferDetails.assetsMiniJourney.quotedShares.AddQuotedSharePage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.AddQuotedShareView
+import views.html.transferDetails.assetsMiniJourney.quotedShares.AddQuotedShareView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

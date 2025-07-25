@@ -25,9 +25,9 @@ import repositories.SessionRepository
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.UnquotedShareSummary
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares.UnquotedShareSummary
 import viewmodels.govuk.summarylist._
-import views.html.transferDetails.UnquotedShareCYAView
+import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedShareCYAView
 
 import scala.concurrent.ExecutionContext
 

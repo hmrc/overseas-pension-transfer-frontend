@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.RemoveQuotedSharesFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
@@ -28,7 +29,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.RemoveQuotedSharesView
+import views.html.transferDetails.assetsMiniJourney.quotedShares.RemoveQuotedSharesView
 
 import scala.concurrent.Future
 
@@ -37,7 +38,7 @@ class RemoveQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private val formProvider = new RemoveQuotedSharesFormProvider()
   private val form         = formProvider()
 
-  private lazy val removeQuotedSharesPageRoute = routes.RemoveQuotedSharesController.onPageLoad(NormalMode).url
+  private lazy val removeQuotedSharesPageRoute = AssetsMiniJourneysRoutes.RemoveQuotedSharesController.onPageLoad(NormalMode).url
 
   "RemoveQuotedSharesPage Controller" - {
 

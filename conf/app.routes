@@ -240,10 +240,10 @@ POST       /transfer-details/remove-property-asset                              
 GET        /transfer-details/change-remove-property-asset                                         controllers.transferDetails.RemovePropertyAssetController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-remove-property-asset                                         controllers.transferDetails.RemovePropertyAssetController.onSubmit(mode: Mode = CheckMode)
 
-GET        /transfer-details/remove-quoted-shares                                                 controllers.transferDetails.RemoveQuotedSharesController.onPageLoad(mode: Mode = NormalMode)
-POST       /transfer-details/remove-quoted-shares                                                 controllers.transferDetails.RemoveQuotedSharesController.onSubmit(mode: Mode = NormalMode)
-GET        /transfer-details/change-remove-quoted-shares                                          controllers.transferDetails.RemoveQuotedSharesController.onPageLoad(mode: Mode = CheckMode)
-POST       /transfer-details/change-remove-quoted-shares                                          controllers.transferDetails.RemoveQuotedSharesController.onSubmit(mode: Mode = CheckMode)
+GET        /transfer-details/remove-quoted-shares                                                 controllers.transferDetails.assetsMiniJourneys.quotedShares.RemoveQuotedSharesController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/remove-quoted-shares                                                 controllers.transferDetails.assetsMiniJourneys.quotedShares.RemoveQuotedSharesController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-remove-quoted-shares                                          controllers.transferDetails.assetsMiniJourneys.quotedShares.RemoveQuotedSharesController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-remove-quoted-shares                                          controllers.transferDetails.assetsMiniJourneys.quotedShares.RemoveQuotedSharesController.onSubmit(mode: Mode = CheckMode)
 
 GET        /transfer-details/addAdditionalProperty                                                controllers.transferDetails.AddAdditionalPropertyController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/addAdditionalProperty                                                controllers.transferDetails.AddAdditionalPropertyController.onSubmit(mode: Mode = NormalMode)

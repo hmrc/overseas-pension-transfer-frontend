@@ -17,14 +17,14 @@
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
-import forms.transferDetails.UnquotedSharesClassFormProvider
+import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesClassFormProvider
 import models.Mode
-import pages.transferDetails.UnquotedSharesClassPage
+import pages.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesClassPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.UnquotedSharesClassView
+import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesClassView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
