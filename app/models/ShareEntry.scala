@@ -18,18 +18,18 @@ package models
 
 import play.api.libs.json._
 
-case class ShareEntry(
+case class SharesEntry(
     companyName: String,
     valueOfShares: BigDecimal,
     numberOfShares: String,
     classOfShares: String
   )
 
-object ShareEntry {
+object SharesEntry {
   val CompanyName    = "companyName"
   val ValueOfShares  = "valueOfShares"
   val NumberOfShares = "numberOfShares"
   val ClassOfShares  = "classOfShares"
 
-  implicit val format: OFormat[ShareEntry] = Json.format[ShareEntry]
+  implicit val format: OFormat[SharesEntry] = Json.format[SharesEntry]
 }

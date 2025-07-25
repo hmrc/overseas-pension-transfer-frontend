@@ -32,7 +32,7 @@ class UnquotedSharesClassPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        UnquotedSharesClassPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedShareCYAController.onPageLoad(index)
+        UnquotedSharesClassPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(index)
       }
     }
 
@@ -40,7 +40,7 @@ class UnquotedSharesClassPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        UnquotedSharesClassPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedShareCYAController.onPageLoad(index)
+        UnquotedSharesClassPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(index)
       }
     }
   }

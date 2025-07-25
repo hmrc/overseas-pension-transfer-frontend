@@ -25,7 +25,7 @@ class UnquotedSharesClassFormProviderSpec extends StringFieldBehaviours {
 
   val classRegex: String = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
-  ".unquotedShareClass" - {
+  ".unquotedSharesClass" - {
 
     val requiredKey = "unquotedSharesClass.error.required"
     val lengthKey   = "unquotedSharesClass.error.length"

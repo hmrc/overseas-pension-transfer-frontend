@@ -21,9 +21,9 @@ import forms.mappings.Regex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class NumberOfUnquotedSharesFormProviderSpec extends StringFieldBehaviours with Regex {
+class UnquotedSharesNumberFormProviderSpec extends StringFieldBehaviours with Regex {
 
-  val form = new NumberOfUnquotedSharesFormProvider()()
+  val form = new UnquotedSharesNumberFormProvider()()
 
   ".value" - {
 
@@ -41,7 +41,7 @@ class NumberOfUnquotedSharesFormProviderSpec extends StringFieldBehaviours with 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "numberOfUnquotedShares.error.required")
+      requiredError = FormError(fieldName, "unquotedSharesNumber.error.required")
     )
 
     behave like fieldThatBindsValidData(
@@ -52,27 +52,27 @@ class NumberOfUnquotedSharesFormProviderSpec extends StringFieldBehaviours with 
 
     "fail to bind non-numeric value" in {
       val result = form.bind(Map(fieldName -> "abc"))
-      result.errors must contain only FormError(fieldName, "numberOfUnquotedShares.error.invalid")
+      result.errors must contain only FormError(fieldName, "unquotedSharesNumber.error.invalid")
     }
 
     "fail to bind negative number" in {
       val result = form.bind(Map(fieldName -> "-50"))
-      result.errors must contain only FormError(fieldName, "numberOfUnquotedShares.error.negative")
+      result.errors must contain only FormError(fieldName, "unquotedSharesNumber.error.negative")
     }
 
     "fail to bind zero" in {
       val result = form.bind(Map(fieldName -> "0"))
-      result.errors must contain only FormError(fieldName, "numberOfUnquotedShares.error.invalid")
+      result.errors must contain only FormError(fieldName, "unquotedSharesNumber.error.invalid")
     }
 
     "fail to bind multiple decimal points" in {
       val result = form.bind(Map(fieldName -> "1.2.3"))
-      result.errors must contain only FormError(fieldName, "numberOfUnquotedShares.error.invalid")
+      result.errors must contain only FormError(fieldName, "unquotedSharesNumber.error.invalid")
     }
 
     "fail to bind number with trailing dot" in {
       val result = form.bind(Map(fieldName -> "10."))
-      result.errors must contain only FormError(fieldName, "numberOfUnquotedShares.error.invalid")
+      result.errors must contain only FormError(fieldName, "unquotedSharesNumber.error.invalid")
     }
   }
 }

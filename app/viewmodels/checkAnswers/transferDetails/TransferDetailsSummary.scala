@@ -24,7 +24,7 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares.
 case object TransferDetailsSummary {
 
   def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedShareRow: Option[SummaryListRow] = Some(UnquotedSharesAmendContinueSummary.row(userAnswers))
-    Seq(totalUnquotedShareRow).flatten
+    val totalUnquotedSharesRow: Option[SummaryListRow] = Some(UnquotedSharesAmendContinueSummary.row(userAnswers))
+    Seq(totalUnquotedSharesRow).flatten
   }
 }

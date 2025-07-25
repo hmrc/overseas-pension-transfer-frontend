@@ -20,23 +20,23 @@ object AssetsMiniJourneysRoutes {
 
   // ----- Unquoted Shares -----
 
-  val UnquotedShareStartController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedShareStartController
+  val UnquotedSharesStartController =
+    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesStartController
 
-  val UnquotedShareCompanyNameController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedShareCompanyNameController
+  val UnquotedSharesCompanyNameController =
+    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesCompanyNameController
 
-  val UnquotedShareValueController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedShareValueController
+  val UnquotedSharesValueController =
+    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesValueController
 
-  val NumberOfUnquotedSharesController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.NumberOfUnquotedSharesController
+  val UnquotedSharesNumberController =
+    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesNumberController
 
   val UnquotedSharesClassController =
     controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesClassController
 
-  val UnquotedShareCYAController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedShareCYAController
+  val UnquotedSharesCYAController =
+    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesCYAController
 
   val UnquotedSharesAmendContinueController =
     controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesAmendContinueController
@@ -46,23 +46,23 @@ object AssetsMiniJourneysRoutes {
 
   // ----- Quoted Shares -----
 
-  val AddQuotedShareController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.AddQuotedShareController
+  val QuotedSharesStartController =
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesStartController
 
-  val QuotedShareCompanyNameController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedShareCompanyNameController
+  val QuotedSharesCompanyNameController =
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCompanyNameController
 
-  val QuotedShareValueController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedShareValueController
+  val QuotedSharesValueController =
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesValueController
 
-  val NumberOfQuotedSharesController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.NumberOfQuotedSharesController
+  val QuotedSharesNumberController =
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesNumberController
 
-  val ClassOfQuotedSharesController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.ClassOfQuotedSharesController
+  val QuotedSharesClassController =
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesClassController
 
-  val QuotedShareCYAController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedShareCYAController
+  val QuotedSharesCYAController =
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController
 
   val QuotedSharesAmendContinueController =
     controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesAmendContinueController

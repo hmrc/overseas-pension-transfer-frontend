@@ -49,7 +49,7 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
       case (entry, index) =>
         ListItem(
           name      = entry.companyName,
-          changeUrl = AssetsMiniJourneysRoutes.UnquotedShareCYAController.onPageLoad(index).url,
+          changeUrl = AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(index).url,
           removeUrl = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url
         )
     }

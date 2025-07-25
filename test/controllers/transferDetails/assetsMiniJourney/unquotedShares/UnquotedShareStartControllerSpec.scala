@@ -22,7 +22,7 @@ import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedShareStartView
+import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesStartView
 
 class UnquotedShareStartControllerSpec extends AnyFreeSpec with SpecBase {
 
@@ -33,10 +33,10 @@ class UnquotedShareStartControllerSpec extends AnyFreeSpec with SpecBase {
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedShareStartController.onPageLoad().url)
+        val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad().url)
         val result   = route(application, request).value
-        val view     = application.injector.instanceOf[UnquotedShareStartView]
-        val nextPage = AssetsMiniJourneysRoutes.UnquotedShareCompanyNameController.onPageLoad(NormalMode, 0).url
+        val view     = application.injector.instanceOf[UnquotedSharesStartView]
+        val nextPage = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, 0).url
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString

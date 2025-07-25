@@ -16,10 +16,10 @@
 
 package queries
 
-import models.{ShareEntry, TaskCategory, TypeOfAsset}
+import models.{SharesEntry, TaskCategory, TypeOfAsset}
 import play.api.libs.json.JsPath
 
-case object UnquotedShares extends Gettable[List[ShareEntry]] with Settable[List[ShareEntry]] {
+case object UnquotedShares extends Gettable[List[SharesEntry]] with Settable[List[SharesEntry]] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString
 }

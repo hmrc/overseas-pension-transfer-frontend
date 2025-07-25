@@ -62,8 +62,8 @@ class QuotedSharesAmendContinueController @Inject() (
         },
         value => {
           val redirectTarget = if (value) {
-            val nextIndex = transferDetailsService.assetCount(request.userAnswers, TypeOfAsset.UnquotedShares)
-            AssetsMiniJourneysRoutes.QuotedShareCompanyNameController.onPageLoad(NormalMode)
+            val nextIndex = transferDetailsService.assetCount(request.userAnswers, TypeOfAsset.QuotedShares)
+            AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)
           } else {
             routes.TransferDetailsCYAController.onPageLoad()
           }

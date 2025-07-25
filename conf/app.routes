@@ -270,30 +270,30 @@ POST       /transfer-details/assets/change-cash-amount-in-transfer              
 
 # UNQUOTED
 
-GET        /transfer-details/assets/unquoted-shares-start                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareStartController.onPageLoad()
+GET        /transfer-details/assets/unquoted-shares-start                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad()
 
-GET        /transfer-details/assets/unquoted-shares-company-name                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /transfer-details/assets/unquoted-shares-company-name                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int)
-GET        /transfer-details/assets/change-unquoted-shares-company-name                           controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareCompanyNameController.onPageLoad(mode: Mode = CheckMode, index: Int)
-POST       /transfer-details/assets/change-unquoted-shares-company-name                           controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareCompanyNameController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/assets/unquoted-shares-company-name                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/unquoted-shares-company-name                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-unquoted-shares-company-name                           controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-unquoted-shares-company-name                           controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onSubmit(mode: Mode = CheckMode, index: Int)
 
-GET        /transfer-details/assets/unquoted-shares-value                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /transfer-details/assets/unquoted-shares-value                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareValueController.onSubmit(mode: Mode = NormalMode, index: Int)
-GET        /transfer-details/assets/change-unquoted-shares-value                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareValueController.onPageLoad(mode: Mode = CheckMode, index: Int)
-POST       /transfer-details/assets/change-unquoted-shares-value                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareValueController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/assets/unquoted-shares-value                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/unquoted-shares-value                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-unquoted-shares-value                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-unquoted-shares-value                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onSubmit(mode: Mode = CheckMode, index: Int)
 
-GET        /transfer-details/assets/unquoted-shares-number                                        controllers.transferDetails.assetsMiniJourneys.unquotedShares.NumberOfUnquotedSharesController.onPageLoad(mode: Mode = NormalMode, index: Int)
-POST       /transfer-details/assets/unquoted-shares-number                                        controllers.transferDetails.assetsMiniJourneys.unquotedShares.NumberOfUnquotedSharesController.onSubmit(mode: Mode = NormalMode, index: Int)
-GET        /transfer-details/assets/change-unquoted-shares-number                                 controllers.transferDetails.assetsMiniJourneys.unquotedShares.NumberOfUnquotedSharesController.onPageLoad(mode: Mode = CheckMode, index: Int)
-POST       /transfer-details/assets/change-unquoted-shares-number                                 controllers.transferDetails.assetsMiniJourneys.unquotedShares.NumberOfUnquotedSharesController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/assets/unquoted-shares-number                                        controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/unquoted-shares-number                                        controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-unquoted-shares-number                                 controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-unquoted-shares-number                                 controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onSubmit(mode: Mode = CheckMode, index: Int)
 
 GET        /transfer-details/assets/unquoted-shares-class                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/unquoted-shares-class                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onSubmit(mode: Mode = NormalMode, index: Int)
 GET        /transfer-details/assets/change-unquoted-shares-class                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onPageLoad(mode: Mode = CheckMode, index: Int)
 POST       /transfer-details/assets/change-unquoted-shares-class                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onSubmit(mode: Mode = CheckMode, index: Int)
 
-GET        /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareCYAController.onPageLoad(index: Int)
-POST       /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShareCYAController.onSubmit(index: Int)
+GET        /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onPageLoad(index: Int)
+POST       /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onSubmit(index: Int)
 
 GET        /transfer-details/assets/unquoted-shares-amend-continue                                controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onPageLoad()
 POST       /transfer-details/assets/unquoted-shares-amend-continue                                controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onSubmit()
@@ -305,30 +305,30 @@ POST       /transfer-details/assets/unquoted-shares-confirm-removal             
 
 # QUOTED
 
-GET        /transfer-details/assets/quoted-shares-start                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.AddQuotedShareController.onPageLoad()
+GET        /transfer-details/assets/quoted-shares-start                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad()
 
-GET        /transfer-details/assets/quoted-shares-company-name                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareCompanyNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /transfer-details/assets/quoted-shares-company-name                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareCompanyNameController.onSubmit(mode: Mode = NormalMode)
-GET        /transfer-details/assets/change-quoted-shares-company-name                             controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareCompanyNameController.onPageLoad(mode: Mode = CheckMode)
-POST       /transfer-details/assets/change-quoted-shares-company-name                             controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareCompanyNameController.onSubmit(mode: Mode = CheckMode)
+GET        /transfer-details/assets/quoted-shares-company-name                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/quoted-shares-company-name                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-quoted-shares-company-name                             controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-quoted-shares-company-name                             controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onSubmit(mode: Mode = CheckMode, index: Int)
 
-GET        /transfer-details/assets/quoted-shares-value                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareValueController.onPageLoad(mode: Mode = NormalMode)
-POST       /transfer-details/assets/quoted-shares-value                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareValueController.onSubmit(mode: Mode = NormalMode)
-GET        /transfer-details/assets/change-quoted-shares-value                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareValueController.onPageLoad(mode: Mode = CheckMode)
-POST       /transfer-details/assets/change-quoted-shares-value                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareValueController.onSubmit(mode: Mode = CheckMode)
+GET        /transfer-details/assets/quoted-shares-value                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/quoted-shares-value                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-quoted-shares-value                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-quoted-shares-value                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onSubmit(mode: Mode = CheckMode, index: Int)
 
-GET        /transfer-details/assets/quoted-shares-number                                          controllers.transferDetails.assetsMiniJourneys.quotedShares.NumberOfQuotedSharesController.onPageLoad(mode: Mode = NormalMode)
-POST       /transfer-details/assets/quoted-shares-number                                          controllers.transferDetails.assetsMiniJourneys.quotedShares.NumberOfQuotedSharesController.onSubmit(mode: Mode = NormalMode)
-GET        /transfer-details/assets/change-quoted-shares-number                                   controllers.transferDetails.assetsMiniJourneys.quotedShares.NumberOfQuotedSharesController.onPageLoad(mode: Mode = CheckMode)
-POST       /transfer-details/assets/change-quoted-shares-number                                   controllers.transferDetails.assetsMiniJourneys.quotedShares.NumberOfQuotedSharesController.onSubmit(mode: Mode = CheckMode)
+GET        /transfer-details/assets/quoted-shares-number                                          controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/quoted-shares-number                                          controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-quoted-shares-number                                   controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-quoted-shares-number                                   controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onSubmit(mode: Mode = CheckMode, index: Int)
 
-GET        /transfer-details/assets/quoted-shares-class                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.ClassOfQuotedSharesController.onPageLoad(mode: Mode = NormalMode)
-POST       /transfer-details/assets/quoted-shares-class                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.ClassOfQuotedSharesController.onSubmit(mode: Mode = NormalMode)
-GET        /transfer-details/assets/change-quoted-shares-class                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.ClassOfQuotedSharesController.onPageLoad(mode: Mode = CheckMode)
-POST       /transfer-details/assets/change-quoted-shares-class                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.ClassOfQuotedSharesController.onSubmit(mode: Mode = CheckMode)
+GET        /transfer-details/assets/quoted-shares-class                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/quoted-shares-class                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-quoted-shares-class                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-quoted-shares-class                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onSubmit(mode: Mode = CheckMode, index: Int)
 
-GET        /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareCYAController.onPageLoad(index: Int)
-POST       /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedShareCYAController.onSubmit(index: Int)
+GET        /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onPageLoad(index: Int)
+POST       /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onSubmit(index: Int)
 
 GET        /transfer-details/assets/quoted-shares-amend-continue                                  controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueController.onPageLoad()
 POST       /transfer-details/assets/quoted-shares-amend-continue                                  controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueController.onSubmit()
