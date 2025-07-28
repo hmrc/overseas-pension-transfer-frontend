@@ -40,8 +40,8 @@
 
 @(form: Form[_], shares: Seq[ListItem])(implicit request: DisplayRequest[_], messages: Messages)
 
-@singularTxt = @{messages("unquotedSharesAmendContinue.text.singular")}
-@pluralTxt = @{messages("unquotedSharesAmendContinue.text.plural")}
+@singularTxt = @{messages("quotedSharesAmendContinue.text.singular")}
+@pluralTxt = @{messages("quotedSharesAmendContinue.text.plural")}
 @partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
 
 @layout(pageTitle = title(form, messages("quotedSharesAmendContinue.title"))) {
@@ -62,7 +62,6 @@
                 ))
             )
         )
-        Text(messages("site.saveAndContinue")))
         )
     }
 }

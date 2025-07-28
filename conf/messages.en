@@ -583,10 +583,13 @@ addAdditionalOtherAsset.change.hidden = Do you need to add another asset?
 
 quotedSharesAmendContinue.title = quotedSharesAmendContinue
 quotedSharesAmendContinue.heading = You have added 1 quoted shares
-quotedSharesAmendContinue.checkYourAnswersLabel = quotedSharesAmendContinue
 quotedSharesAmendContinue.error.required = Please select an option
-quotedSharesAmendContinue.change.hidden = quotedSharesAmendContinue
 quotedSharesAmendContinue.addMore = Do you need to add another quoted shares?
+quotedSharesAmendContinue.checkYourAnswersLabel = Quoted shares
+quotedSharesAmendContinue.change.hidden = Quoted shares
+quotedSharesAmendContinue.summary.value = {0} added
+quotedSharesAmendContinue.text.singular = group of quoted shares
+quotedSharesAmendContinue.text.plural = groups of quoted shares
 
 addAdditionalProperty.title = addAdditionalProperty
 addAdditionalProperty.heading = You have added 1 Property
