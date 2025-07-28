@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourney.quotedShares
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.UserAnswers
 import play.api.i18n.Messages
-import queries.UnquotedShares
+import queries.assets.UnquotedShares
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AppUtils

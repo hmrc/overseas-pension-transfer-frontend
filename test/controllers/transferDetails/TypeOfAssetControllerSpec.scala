@@ -17,8 +17,11 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.TypeOfAssetFormProvider
+import models.TypeOfAsset.UnquotedShares
 import models.{NormalMode, TypeOfAsset}
+import navigators.TypeOfAssetNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -60,7 +63,9 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(TypeOfAssetPage, TypeOfAsset.values.toSet).success.value
+      val values: Set[TypeOfAsset] = TypeOfAsset.values.toSet
+
+      val userAnswers = userAnswersQtNumber.set(TypeOfAssetPage, values).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -79,31 +84,34 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
     "must redirect to the next page when valid data is submitted" in {
 
       val mockSessionRepository = mock[SessionRepository]
+      val mockNavigator         = mock[TypeOfAssetNavigator]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val onwardRoute = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, 0)
+      when(mockNavigator.nextPage(any(), any(), any())) thenReturn onwardRoute
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[TypeOfAssetNavigator].toInstance(mockNavigator)
           )
           .build()
 
       running(application) {
-        val cash    = TypeOfAsset.Cash
-        val another = TypeOfAsset.values.find(_ != cash).get
+        val unquotedShares = TypeOfAsset.values.find(_ == UnquotedShares).get
 
         val request =
           FakeRequest(POST, typeOfAssetRoute)
             .withFormUrlEncodedBody(
-              "value[0]" -> cash.toString,
-              "value[1]" -> another.toString
+              "value[0]" -> unquotedShares.toString
             )
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual TypeOfAssetPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 

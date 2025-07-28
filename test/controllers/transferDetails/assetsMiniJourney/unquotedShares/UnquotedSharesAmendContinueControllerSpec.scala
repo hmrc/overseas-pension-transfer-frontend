@@ -18,6 +18,7 @@ package controllers.transferDetails.assetsMiniJourney.unquotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import controllers.transferDetails.routes
 import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesAmendContinueFormProvider
 import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
@@ -51,7 +52,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to unquoted shares company name when add-another selected" in {
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
           .build()
@@ -65,6 +66,24 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, 0).url
+      }
+    }
+
+    "must redirect to transfer detail cya page when add-another not selected and no more assets to add" in {
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, unquotedSharesAmendContinueRoute)
+            .withFormUrlEncodedBody(("add-another", "No"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.TransferDetailsCYAController.onPageLoad().url
       }
     }
 

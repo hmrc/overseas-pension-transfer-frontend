@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package queries
+package models
 
-import models.{SharesEntry, TaskCategory, TypeOfAsset}
-import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-case object QuotedShares extends Gettable[List[SharesEntry]] with Settable[List[SharesEntry]] {
-
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.toString
+case class AssetMiniJourney(
+    assetType: TypeOfAsset,
+    startPage: () => Call,
+    isCompleted: UserAnswers => Boolean
+  ) {
+  def call: Call = startPage()
 }

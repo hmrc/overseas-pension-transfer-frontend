@@ -19,11 +19,11 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.UserAnswers
 import play.api.i18n.Messages
+import queries.assets.UnquotedShares
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 import utils.AppUtils
-import queries.UnquotedShares
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object UnquotedSharesAmendContinueSummary extends AppUtils {

@@ -19,6 +19,7 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.TypeOfAssetFormProvider
 import models.Mode
+import navigators.TypeOfAssetNavigator
 import pages.transferDetails.TypeOfAssetPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,6 +39,7 @@ class TypeOfAssetController @Inject() (
     displayData: DisplayAction,
     formProvider: TypeOfAssetFormProvider,
     val controllerComponents: MessagesControllerComponents,
+    typeOfAssetNavigator: TypeOfAssetNavigator,
     view: TypeOfAssetView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
@@ -63,7 +65,7 @@ class TypeOfAssetController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(TypeOfAssetPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(typeOfAssetNavigator.nextPage(TypeOfAssetPage, mode, updatedAnswers))
       )
   }
 }

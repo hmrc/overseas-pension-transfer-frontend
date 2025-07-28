@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package pages.transferDetails.assetsMiniJourney.unquotedShares
+package queries.assets
 
-import models.{TaskCategory, UserAnswers}
-import pages.QuestionPage
+import models.{TaskCategory, TypeOfAsset}
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import queries.Gettable
 
-case object UnquotedSharesAmendContinuePage extends QuestionPage[Boolean] {
-
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
-
-  override def toString: String = "unquotedSharesAmendContinue"
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call = ???
+case object SelectedAssetTypes extends Gettable[Set[TypeOfAsset]] {
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ "typeOfAsset"
 }

@@ -16,12 +16,15 @@
 
 package services
 
-import models.{TypeOfAsset, UserAnswers}
-import queries.{QuotedShares, UnquotedShares}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
+import models.{AssetMiniJourney, TypeOfAsset, UserAnswers}
+import pages.transferDetails.TypeOfAssetPage
+import play.api.mvc.Call
+import queries.assets.{AssetCompletionFlag, QuotedShares, SelectedAssetTypes, UnquotedShares}
 import repositories.SessionRepository
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 class TransferDetailsService @Inject() (
@@ -42,14 +45,52 @@ class TransferDetailsService @Inject() (
     queryKey
   }
 
-  def doAssetRemoval(userAnswers: UserAnswers, index: Int, assetType: TypeOfAsset): Future[Boolean] = {
+  def doAssetRemoval(userAnswers: UserAnswers, index: Int, assetType: TypeOfAsset)(implicit ec: ExecutionContext): Future[Boolean] = {
     val queryKey          = getQueryKey(assetType)
     val updatedList       = userAnswers.get(queryKey).getOrElse(Nil).patch(index, Nil, 1)
     val updatedAnswersTry = userAnswers.set(queryKey, updatedList)
 
     updatedAnswersTry match {
-      case Success(updatedAnswers) => sessionRepository.set(updatedAnswers)
+      case Success(updatedAnswers) =>
+        sessionRepository.set(updatedAnswers).map {
+          case true  => true
+          case false => false
+        }
       case Failure(_)              => Future.successful(false)
     }
   }
+
+  private lazy val orderedAssetsJourneys: Seq[AssetMiniJourney] = Seq(
+    AssetMiniJourney(
+      TypeOfAsset.UnquotedShares,
+      () => UnquotedSharesStartController.onPageLoad(),
+      ua => ua.get(AssetCompletionFlag(TypeOfAsset.UnquotedShares)).contains(true)
+    ),
+    AssetMiniJourney(
+      TypeOfAsset.QuotedShares,
+      () => QuotedSharesStartController.onPageLoad(),
+      ua => ua.get(AssetCompletionFlag(TypeOfAsset.QuotedShares)).contains(true)
+    )
+  )
+
+  def getNextAssetRoute(userAnswers: UserAnswers): Option[Call] = {
+    val selectedAssets: Set[TypeOfAsset] =
+      userAnswers.get(SelectedAssetTypes).getOrElse(Set.empty)
+
+    orderedAssetsJourneys
+      .filter(journey => selectedAssets.contains(journey.assetType))
+      .find(journey => !journey.isCompleted(userAnswers))
+      .map(_.call)
+  }
+
+  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset)(implicit ec: ExecutionContext): Future[Option[UserAnswers]] =
+    userAnswers.set(AssetCompletionFlag(assetType), true) match {
+      case Success(updated) =>
+        sessionRepository.set(updated).map {
+          case true  => Some(updated)
+          case false => None
+        }
+      case Failure(_)       =>
+        Future.successful(None)
+    }
 }
