@@ -41,7 +41,7 @@
 
 @layout(pageTitle = title(form, messages("quotedSharesCompanyName.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesValueController.onSubmit(mode, index)) {
+    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onSubmit(mode, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
