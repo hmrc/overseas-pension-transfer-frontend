@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.UserAnswersConnector
-import models.UserAnswers
+import models.{SharesEntry, UserAnswers}
 import models.dtos.UserAnswersDTO
 import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
@@ -27,8 +27,9 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import queries.assets.UnquotedSharesQuery
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.Instant
@@ -100,4 +101,55 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
     }
   }
+
+  "buildMinimalUserAnswers" - {
+    "must return a new UserAnswers object with only the selected query data" in {
+
+      val fullData = Json.obj(
+        "transferDetails" -> Json.obj(
+          "unquotedShares" -> Json.arr(
+            Json.obj(
+              "companyName"    -> "ABC Ltd",
+              "valueOfShares"  -> 1000,
+              "numberOfShares" -> "10",
+              "classOfShares"  -> "Ordinary"
+            )
+          ),
+          "quotedShares"   -> Json.arr(
+            Json.obj(
+              "companyName"    -> "XYZ Plc",
+              "valueOfShares"  -> 2000,
+              "numberOfShares" -> "20",
+              "classOfShares"  -> "Preferred"
+            )
+          )
+        )
+      )
+
+      val original = UserAnswers("id", fullData, instant)
+
+      val result = service.buildMinimalUserAnswers(original, UnquotedSharesQuery)
+
+      result mustBe defined
+      val minimal = result.get
+
+      minimal.id mustBe original.id
+      minimal.lastUpdated mustBe original.lastUpdated
+
+      (minimal.data \ "transferDetails" \ "unquotedShares").asOpt[List[SharesEntry]] mustBe
+        (original.data \ "transferDetails" \ "unquotedShares").asOpt[List[SharesEntry]]
+
+      (minimal.data \ "transferDetails" \ "quotedShares").asOpt[List[SharesEntry]] mustBe empty
+    }
+
+    "must return None if the original UserAnswers does not contain the query value" in {
+      import queries.assets.QuotedSharesQuery
+      val empty = UserAnswers("id", Json.obj(), instant)
+
+      val result = service.buildMinimalUserAnswers(empty, QuotedSharesQuery)
+
+      result mustBe None
+    }
+  }
+
 }

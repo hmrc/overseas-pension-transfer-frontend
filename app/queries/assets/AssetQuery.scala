@@ -24,12 +24,12 @@ sealed trait AssetQuery[A] extends Gettable[A] with Settable[A] {
   def path: JsPath
 }
 
-case object QuotedShares extends AssetQuery[List[SharesEntry]] {
+case object QuotedSharesQuery extends AssetQuery[List[SharesEntry]] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.toString
 }
 
-case object UnquotedShares extends AssetQuery[List[SharesEntry]] {
+case object UnquotedSharesQuery extends AssetQuery[List[SharesEntry]] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString
 }

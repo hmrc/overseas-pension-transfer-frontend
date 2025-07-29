@@ -22,7 +22,7 @@ import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json.{JsArray, JsPath, Reads, Writes}
 import play.api.mvc.Call
 import queries.{Gettable, Settable}
-import queries.assets.{AssetCompletionFlag, AssetQuery, QuotedShares, SelectedAssetTypes, UnquotedShares}
+import queries.assets.{AssetCompletionFlag, AssetQuery, QuotedSharesQuery, SelectedAssetTypes, UnquotedSharesQuery}
 import repositories.SessionRepository
 
 import javax.inject.Inject
@@ -40,8 +40,8 @@ class TransferDetailsService @Inject() (
   // We safely cast here because we know the mapping from TypeOfAsset to AssetQuery is exact.
   private def getQueryKey[A <: AssetEntry](assetType: TypeOfAsset): AssetQuery[List[A]] = {
     assetType match {
-      case TypeOfAsset.UnquotedShares => UnquotedShares.asInstanceOf[AssetQuery[List[A]]]
-      case TypeOfAsset.QuotedShares   => QuotedShares.asInstanceOf[AssetQuery[List[A]]]
+      case TypeOfAsset.UnquotedShares => UnquotedSharesQuery.asInstanceOf[AssetQuery[List[A]]]
+      case TypeOfAsset.QuotedShares   => QuotedSharesQuery.asInstanceOf[AssetQuery[List[A]]]
       case other                      =>
         throw new UnsupportedOperationException(s"Asset type not supported: $other")
     }
@@ -90,10 +90,13 @@ class TransferDetailsService @Inject() (
       .map(_.call)
   }
 
-//  private def getAssetAtIndex(userAnswers: UserAnswers, assetType: TypeOfAsset, index: Int): Option[AssetEntry] = {
-//    userAnswers.get(getQueryKey(assetType))
-//    }
-//  }
+  def getAssetEntryAtIndex[A <: AssetEntry: Reads](userAnswers: UserAnswers, assetType: TypeOfAsset, index: Int): Option[A] = {
+    val assetEntries: Option[List[A]] = userAnswers.get(getQueryKey[A](assetType))
+    assetEntries match {
+      case Some(list) => Some(list(index))
+      case _          => None
+    }
+  }
 
   def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean)(implicit ec: ExecutionContext): Future[Option[UserAnswers]] =
     userAnswers.set(AssetCompletionFlag(assetType), completed) match {

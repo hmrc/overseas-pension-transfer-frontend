@@ -18,10 +18,12 @@ package services
 
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
-import models.{TypeOfAsset, UserAnswers}
+import models.{AssetEntry, TypeOfAsset, UserAnswers}
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
 import models.responses.{UserAnswersError, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
+import play.api.libs.json.{Json, Reads, Writes}
+import queries.{Gettable, Settable}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,5 +45,19 @@ class UserAnswersService @Inject() (
     connector.putAnswers(fromUserAnswers(userAnswers))
   }
 
-  def submitAsset(userAnswers: UserAnswers, typeOfAsset: TypeOfAsset, index: Int)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = ???
+  // Create a new UserAnswers with only the value at the query path
+  def buildMinimalUserAnswers[A](
+      original: UserAnswers,
+      value: Settable[A] with Gettable[A]
+    )(implicit reads: Reads[A],
+      writes: Writes[A]
+    ): Option[UserAnswers] = {
+    original.get(value).flatMap { v =>
+      original
+        .copy(data = Json.obj())
+        .set(value, v)
+        .toOption
+    }
+  }
+
 }

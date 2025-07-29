@@ -19,33 +19,32 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.TypeOfAsset.UnquotedShares
-import models.{NormalMode, TypeOfAsset}
+import models.NormalMode
+import org.apache.pekko.Done
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.{TransferDetailsService, UserAnswersService}
+import queries.assets.UnquotedSharesQuery
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesCYAView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class UnquotedSharesCYAController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    transferDetailsService: TransferDetailsService,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesCYAView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 
   private val actions = (identify andThen getData andThen requireData andThen displayData)
 
@@ -55,8 +54,25 @@ class UnquotedSharesCYAController @Inject() (
     Ok(view(list, index))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    // userAnswersService.submitAsset(request.userAnswers, UnquotedShares, index)
-    Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
+  def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
+    val maybeMinimalAnswers = userAnswersService.buildMinimalUserAnswers(request.userAnswers, UnquotedSharesQuery)
+
+    maybeMinimalAnswers match {
+      case Some(minimalUserAnswers) =>
+        for {
+          saved <- userAnswersService.setUserAnswers(minimalUserAnswers)
+        } yield {
+          saved match {
+            case Right(Done) =>
+              Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
+            case _           =>
+              Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          }
+        }
+
+      case None =>
+        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+    }
   }
+
 }

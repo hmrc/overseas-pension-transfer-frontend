@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
-import queries.assets.UnquotedShares
+import queries.assets.UnquotedSharesQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -30,7 +30,7 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
 
   def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
 
-    val count: Int = answers.get(UnquotedShares).getOrElse(Nil).size
+    val count: Int = answers.get(UnquotedSharesQuery).getOrElse(Nil).size
     val valueText  = messages("unquotedSharesAmendContinue.summary.value", count)
 
     SummaryListRowViewModel(
@@ -44,7 +44,7 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
   }
 
   def rows(answers: UserAnswers): Seq[ListItem] = {
-    val maybeEntries = answers.get(UnquotedShares)
+    val maybeEntries = answers.get(UnquotedSharesQuery)
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(

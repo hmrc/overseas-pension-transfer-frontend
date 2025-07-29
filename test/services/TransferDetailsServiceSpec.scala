@@ -28,7 +28,7 @@ import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json.Format.GenericFormat
 import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import queries.assets.AssetCompletionFlag
+import queries.assets.{AssetCompletionFlag, UnquotedSharesQuery}
 import repositories.SessionRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -44,7 +44,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
     "must return the number of entries for an asset type" in {
       val entries     = List(SharesEntry("Foo", 1, "GBP", "Class A"))
-      val userAnswers = emptyUserAnswers.set(queries.assets.UnquotedShares, entries).success.value
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
 
       val result = service.assetCount[SharesEntry](userAnswers, TypeOfAsset.UnquotedShares)
       result mustBe 1
@@ -62,7 +62,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
     "must remove an entry and persist updated answers" in {
       val entries     = List(SharesEntry("One", 1, "GBP", "A"), SharesEntry("Two", 2, "GBP", "B"))
-      val userAnswers = emptyUserAnswers.set(queries.assets.UnquotedShares, entries).success.value
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
 
       val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(stubSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -74,13 +74,13 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
       verify(stubSessionRepository).set(captor.capture())
       val updatedAnswers = captor.getValue
 
-      val remaining = updatedAnswers.get(queries.assets.UnquotedShares).value
+      val remaining = updatedAnswers.get(UnquotedSharesQuery).value
       remaining mustBe List(SharesEntry("Two", 2, "GBP", "B"))
     }
 
     "must return false if repository set fails" in {
       val entries     = List(SharesEntry("X", 1, "GBP", "A"))
-      val userAnswers = emptyUserAnswers.set(queries.assets.UnquotedShares, entries).success.value
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
 
       when(stubSessionRepository.set(any())) thenReturn Future.successful(false)
 
