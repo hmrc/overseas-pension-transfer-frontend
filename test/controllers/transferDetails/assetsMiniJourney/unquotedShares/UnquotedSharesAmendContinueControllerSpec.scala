@@ -32,7 +32,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
   private val formProvider = new UnquotedSharesAmendContinueFormProvider()
   private val form         = formProvider()
 
-  private lazy val unquotedSharesAmendContinueRoute = AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad().url
+  private lazy val unquotedSharesAmendContinueRoute = AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(NormalMode).url
 
   "UnquotedSharesAmendContinue Controller" - {
 
@@ -48,7 +48,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val view = application.injector.instanceOf[UnquotedSharesAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -103,7 +103,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

@@ -38,7 +38,7 @@
     qtNumber: QTNumber
 )
 
-@(form: Form[_], shares: Seq[ListItem])(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], shares: Seq[ListItem], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @singularTxt = @{messages("quotedSharesAmendContinue.text.singular")}
 @pluralTxt = @{messages("quotedSharesAmendContinue.text.plural")}
@@ -46,7 +46,7 @@
 
 @layout(pageTitle = title(form, messages("quotedSharesAmendContinue.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

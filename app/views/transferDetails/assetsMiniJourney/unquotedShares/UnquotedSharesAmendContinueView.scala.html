@@ -31,7 +31,7 @@
         hmrcAddToAList : HmrcAddToAList,
         qtNumber: QTNumber
 )
-@(form: Form[_], shares: Seq[ListItem])(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], shares: Seq[ListItem], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @singularTxt = @{messages("unquotedSharesAmendContinue.text.singular")}
 @pluralTxt = @{messages("unquotedSharesAmendContinue.text.plural")}
@@ -41,7 +41,7 @@
 
 @layout(pageTitle = title(form, titleText)) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onSubmit(), Symbol("autoComplete") -> "on") {
+    @formHelper(action = AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

@@ -138,10 +138,13 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
       when(stubSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val result = await(service.setAssetCompleted(emptyUserAnswers, asset))
+      val result = await(service.setAssetCompleted(emptyUserAnswers, asset, completed = true))
 
       result mustBe defined
       result.get.get(AssetCompletionFlag(asset)) mustBe Some(true)
+
+      val resultFalse = await(service.setAssetCompleted(emptyUserAnswers, asset, completed = false))
+      resultFalse.get.get(AssetCompletionFlag(asset)) mustBe Some(false)
     }
 
     "must return None if sessionRepository.set returns false" in {
@@ -149,7 +152,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
       when(stubSessionRepository.set(any())) thenReturn Future.successful(false)
 
-      val result = await(service.setAssetCompleted(emptyUserAnswers, asset))
+      val result = await(service.setAssetCompleted(emptyUserAnswers, asset, completed = true))
 
       result mustBe None
     }

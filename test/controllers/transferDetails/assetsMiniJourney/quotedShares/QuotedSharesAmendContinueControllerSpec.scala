@@ -19,19 +19,25 @@ package controllers.transferDetails.assetsMiniJourney.quotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode, TypeOfAsset}
+import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TransferDetailsService
 import views.html.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueView
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new QuotedSharesAmendContinueFormProvider()
   private val form         = formProvider()
 
-  private lazy val quotedSharesAmendContinueRoute = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad().url
+  private lazy val quotedSharesAmendContinueRoute = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(NormalMode).url
 
   "QuotedSharesAmendContinue Controller" - {
 
@@ -47,7 +53,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val view = application.injector.instanceOf[QuotedSharesAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -84,7 +90,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Seq.empty)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

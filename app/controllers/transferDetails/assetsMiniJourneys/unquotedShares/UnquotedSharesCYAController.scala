@@ -19,6 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -44,7 +45,6 @@ class UnquotedSharesCYAController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-//  private val sharesType = SharesType.Unquoted
   private val actions = (identify andThen getData andThen requireData andThen displayData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
@@ -54,29 +54,6 @@ class UnquotedSharesCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad())
-//    val path = sharesPathForType(sharesType)
-//    transferDetailsService.unquotedSharesBuilder(request.userAnswers) match {
-//      case Some(newUnquotedShares) =>
-//        val existingUnquotedShares = request.userAnswers.data
-//          .validate(path.read[List[SharesEntry]])
-//          .getOrElse(Nil)
-//
-//        val updatedShares = existingUnquotedShares :+ newUnquotedShares
-//
-//        val updatedJson = request.userAnswers.data.deepMerge(
-//          Json.obj("transferDetails" -> Json.obj(sharesType.toString -> Json.toJson(updatedShares)))
-//        )
-//
-//        val updatedAnswers = request.userAnswers.copy(data = updatedJson)
-//        val clearedAnswers = transferDetailsService.clearUnquotedSharesFields(updatedAnswers)
-//
-//        for {
-//          _ <- sessionRepository.set(clearedAnswers)
-//        } yield Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad())
-//
-//      case None =>
-//        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-//    }
+    Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
   }
 }

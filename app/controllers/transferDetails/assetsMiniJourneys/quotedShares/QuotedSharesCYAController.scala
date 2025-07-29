@@ -19,6 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -54,7 +55,7 @@ class QuotedSharesCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad())
+    Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
 //    val path = sharesPathForType(sharesType)
 //    transferDetailsService.unquotedShareBuilder(request.userAnswers) match {
 //      case Some(newUnquotedShare) =>

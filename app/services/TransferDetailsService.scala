@@ -83,8 +83,8 @@ class TransferDetailsService @Inject() (
       .map(_.call)
   }
 
-  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset)(implicit ec: ExecutionContext): Future[Option[UserAnswers]] =
-    userAnswers.set(AssetCompletionFlag(assetType), true) match {
+  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean)(implicit ec: ExecutionContext): Future[Option[UserAnswers]] =
+    userAnswers.set(AssetCompletionFlag(assetType), completed) match {
       case Success(updated) =>
         sessionRepository.set(updated).map {
           case true  => Some(updated)

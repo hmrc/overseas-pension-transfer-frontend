@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.UserAnswers
+import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import queries.assets.UnquotedShares
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -37,7 +37,7 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
       key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
       value   = ValueViewModel(valueText),
       actions = Seq(
-        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad().url)
+        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = CheckMode).url)
           .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
       )
     )

@@ -18,17 +18,19 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.transferDetails.TypeOfAssetFormProvider
-import models.Mode
+import models.{Mode, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.transferDetails.TypeOfAssetPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.TypeOfAssetView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class TypeOfAssetController @Inject() (
     override val messagesApi: MessagesApi,
@@ -39,6 +41,7 @@ class TypeOfAssetController @Inject() (
     displayData: DisplayAction,
     formProvider: TypeOfAssetFormProvider,
     val controllerComponents: MessagesControllerComponents,
+    transferDetailsService: TransferDetailsService,
     typeOfAssetNavigator: TypeOfAssetNavigator,
     view: TypeOfAssetView
   )(implicit ec: ExecutionContext
@@ -56,16 +59,40 @@ class TypeOfAssetController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(typeOfAssetNavigator.nextPage(TypeOfAssetPage, mode, updatedAnswers))
+        value => {
+          val initialUpdate = request.userAnswers.set(TypeOfAssetPage, value)
+
+          initialUpdate match {
+            case Success(updatedAnswersWithTypes) =>
+              // For each selected asset type, set it as incomplete in the user answers
+              val markAllIncomplete: Future[Option[UserAnswers]] =
+                value.foldLeft(Future.successful(Some(updatedAnswersWithTypes): Option[UserAnswers])) {
+                  case (maybeAnswersFut, assetType) =>
+                    maybeAnswersFut.flatMap {
+                      case Some(ua) => transferDetailsService.setAssetCompleted(ua, assetType, completed = false)
+                      case None     => Future.successful(None)
+                    }
+                }
+
+              for {
+                maybeFinalAnswers <- markAllIncomplete
+                result            <- maybeFinalAnswers match {
+                                       case Some(finalAnswers) => sessionRepository.set(finalAnswers)
+                                           .map(_ => Redirect(typeOfAssetNavigator.nextPage(TypeOfAssetPage, mode, finalAnswers)))
+                                       case None               =>
+                                         Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+                                     }
+              } yield result
+
+            case Failure(_) =>
+              Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+          }
+        }
       )
-  }
+    }
 }

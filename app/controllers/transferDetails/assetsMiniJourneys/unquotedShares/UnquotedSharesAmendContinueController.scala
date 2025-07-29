@@ -20,9 +20,10 @@ import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesAmendContinueFormProvider
-import models.{NormalMode, TypeOfAsset}
+import models.{CheckMode, Mode, NormalMode, TypeOfAsset, UserAnswers}
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -43,29 +44,46 @@ class UnquotedSharesAmendContinueController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesAmendContinueView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 
   val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
-    implicit request =>
-      val shares = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
-      Ok(view(form, shares))
-  }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
+      def renderView(answers: UserAnswers): Result = {
+        val shares = UnquotedSharesAmendContinueSummary.rows(answers)
+        Ok(view(form, shares, mode))
+      }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+      mode match {
+        case CheckMode =>
+          transferDetailsService
+            .setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = false)
+            .map {
+              case Some(updatedAnswers) => renderView(updatedAnswers)
+              case None                 =>
+                logger.warn("Failed to reset completion flag for QuotedShares in CheckMode")
+                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+
+        case NormalMode =>
+          Future.successful(renderView(request.userAnswers))
+      }
+    }
+
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
           val shares = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
-          Future.successful(BadRequest(view(formWithErrors, shares)))
+          Future.successful(BadRequest(view(formWithErrors, shares, mode)))
         },
         continue => {
           if (continue) {
             val nextIndex = transferDetailsService.assetCount(request.userAnswers, TypeOfAsset.UnquotedShares)
             Future.successful(Redirect(AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)))
           } else {
-            transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares).map {
+            transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true).map {
               case Some(updatedAnswers) =>
                 transferDetailsService.getNextAssetRoute(updatedAnswers) match {
                   case Some(route) => Redirect(route)

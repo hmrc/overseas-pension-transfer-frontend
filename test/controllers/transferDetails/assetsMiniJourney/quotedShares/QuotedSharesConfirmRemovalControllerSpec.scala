@@ -19,6 +19,7 @@ package controllers.transferDetails.assetsMiniJourney.quotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalFormProvider
+import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
@@ -61,7 +62,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad().url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(NormalMode).url
       }
     }
 
