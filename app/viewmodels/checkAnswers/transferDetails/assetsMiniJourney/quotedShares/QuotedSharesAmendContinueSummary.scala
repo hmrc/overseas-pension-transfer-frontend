@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourney.quotedShares
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.UserAnswers
 import play.api.i18n.Messages
-import queries.assets.UnquotedShares
+import queries.assets.QuotedShares
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AppUtils
@@ -30,27 +30,27 @@ object QuotedSharesAmendContinueSummary extends AppUtils {
 
   def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
 
-    val count: Int = answers.get(UnquotedShares).getOrElse(Nil).size
-    val valueText  = messages("unquotedSharesAmendContinue.summary.value", count)
+    val count: Int = answers.get(QuotedShares).getOrElse(Nil).size
+    val valueText  = messages("quotedSharesAmendContinue.summary.value", count)
 
     SummaryListRowViewModel(
-      key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
+      key     = "quotedSharesAmendContinue.checkYourAnswersLabel",
       value   = ValueViewModel(valueText),
       actions = Seq(
-        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad().url)
-          .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
+        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad().url)
+          .withVisuallyHiddenText(messages("quotedSharesAmendContinue.change.hidden"))
       )
     )
   }
 
   def rows(answers: UserAnswers): Seq[ListItem] = {
-    val maybeEntries = answers.get(UnquotedShares)
+    val maybeEntries = answers.get(QuotedShares)
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(
           name      = entry.companyName,
-          changeUrl = AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(index).url,
-          removeUrl = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url
+          changeUrl = AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(index).url,
+          removeUrl = AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(index).url
         )
     }
   }

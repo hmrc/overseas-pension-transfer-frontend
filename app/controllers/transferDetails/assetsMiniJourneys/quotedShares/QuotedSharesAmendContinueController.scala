@@ -60,14 +60,21 @@ class QuotedSharesAmendContinueController @Inject() (
           val shares = QuotedSharesAmendContinueSummary.rows(request.userAnswers)
           Future.successful(BadRequest(view(formWithErrors, shares)))
         },
-        value => {
-          val redirectTarget = if (value) {
+        continue => {
+          if (continue) {
             val nextIndex = transferDetailsService.assetCount(request.userAnswers, TypeOfAsset.QuotedShares)
-            AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)
+            Future.successful(Redirect(AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)))
           } else {
-            routes.TransferDetailsCYAController.onPageLoad()
+            transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares).map {
+              case Some(updatedAnswers) =>
+                transferDetailsService.getNextAssetRoute(updatedAnswers) match {
+                  case Some(route) => Redirect(route)
+                  case None        => Redirect(routes.TransferDetailsCYAController.onPageLoad())
+                }
+              case None                 =>
+                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
           }
-          Future.successful(Redirect(redirectTarget))
         }
       )
   }

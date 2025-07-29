@@ -14,90 +14,54 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourney.quotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import forms.transferDetails.RemoveQuotedSharesFormProvider
-import models.NormalMode
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalFormProvider
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.RemoveQuotedSharesPage
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
-import views.html.transferDetails.assetsMiniJourney.quotedShares.RemoveQuotedSharesView
+import views.html.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalView
 
-import scala.concurrent.Future
+class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-class RemoveQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
-
-  private val formProvider = new RemoveQuotedSharesFormProvider()
+  private val formProvider = new QuotedSharesConfirmRemovalFormProvider()
   private val form         = formProvider()
 
-  private lazy val removeQuotedSharesPageRoute = AssetsMiniJourneysRoutes.RemoveQuotedSharesController.onPageLoad(NormalMode).url
+  private val quotedSharesConfirmRemovalRoute = AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(1).url
 
-  "RemoveQuotedSharesPage Controller" - {
+  "QuotedSharesConfirmRemoval Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, removeQuotedSharesPageRoute)
+        val request = FakeRequest(GET, quotedSharesConfirmRemovalRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[RemoveQuotedSharesView]
+        val view = application.injector.instanceOf[QuotedSharesConfirmRemovalView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = userAnswersQtNumber.set(RemoveQuotedSharesPage, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, removeQuotedSharesPageRoute)
-
-        val view = application.injector.instanceOf[RemoveQuotedSharesView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, 1)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, removeQuotedSharesPageRoute)
+          FakeRequest(POST, quotedSharesConfirmRemovalRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual RemoveQuotedSharesPage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad().url
       }
     }
 
@@ -107,17 +71,17 @@ class RemoveQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, removeQuotedSharesPageRoute)
+          FakeRequest(POST, quotedSharesConfirmRemovalRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[RemoveQuotedSharesView]
+        val view = application.injector.instanceOf[QuotedSharesConfirmRemovalView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -126,7 +90,7 @@ class RemoveQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, removeQuotedSharesPageRoute)
+        val request = FakeRequest(GET, quotedSharesConfirmRemovalRoute)
 
         val result = route(application, request).value
 
@@ -141,7 +105,7 @@ class RemoveQuotedSharesControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, removeQuotedSharesPageRoute)
+          FakeRequest(POST, quotedSharesConfirmRemovalRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

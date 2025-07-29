@@ -574,6 +574,10 @@ unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquo
 unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.error.required = Select one option
 
+quotedSharesConfirmRemoval.title = Are you sure you want to remove these quoted shares?
+quotedSharesConfirmRemoval.heading = Are you sure you want to remove these quoted shares?
+quotedSharesConfirmRemoval.error.required = Select one option
+
 addAdditionalOtherAsset.title = Do you need to add another asset?
 addAdditionalOtherAsset.heading = You have added 1 asset
 addAdditionalOtherAsset.question = Do you need to add another asset?

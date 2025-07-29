@@ -67,6 +67,6 @@ object AssetsMiniJourneysRoutes {
   val QuotedSharesAmendContinueController =
     controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesAmendContinueController
 
-  val RemoveQuotedSharesController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.RemoveQuotedSharesController
+  val QuotedSharesConfirmRemovalController =
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesConfirmRemovalController
 }

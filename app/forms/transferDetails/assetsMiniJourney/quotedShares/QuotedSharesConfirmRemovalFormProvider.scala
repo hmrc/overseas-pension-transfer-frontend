@@ -14,32 +14,17 @@
  * limitations under the License.
  */
 
-package forms.transferDetails
+package forms.transferDetails.assetsMiniJourney.quotedShares
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
+import forms.mappings.Mappings
+import play.api.data.Form
 
-class RemoveQuotedSharesFormProviderSpec extends BooleanFieldBehaviours {
+import javax.inject.Inject
 
-  val requiredKey = "removeQuotedShares.error.required"
-  val invalidKey  = "error.boolean"
+class QuotedSharesConfirmRemovalFormProvider @Inject() extends Mappings {
 
-  val form = new RemoveQuotedSharesFormProvider()()
-
-  ".value" - {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("quotedSharesConfirmRemoval.error.required")
     )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
 }

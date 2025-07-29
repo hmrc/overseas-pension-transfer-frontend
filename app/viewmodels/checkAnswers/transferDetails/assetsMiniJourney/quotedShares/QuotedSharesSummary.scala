@@ -24,12 +24,11 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares.
 case object QuotedSharesSummary {
 
   def rows(userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val companyNameRow: Option[SummaryListRow]   = UnquotedSharesCompanyNameSummary.row(userAnswers, index)
-    val valueRow: Option[SummaryListRow]         = UnquotedSharesValueSummary.row(userAnswers, index)
-    val quantityRow: Option[SummaryListRow]      = UnquotedSharesNumberSummary.row(userAnswers, index)
-    val classOfSharesRow: Option[SummaryListRow] = UnquotedSharesClassSummary.row(userAnswers, index)
+    val companyNameRow: Option[SummaryListRow]   = QuotedSharesCompanyNameSummary.row(userAnswers, index)
+    val valueRow: Option[SummaryListRow]         = QuotedSharesValueSummary.row(userAnswers, index)
+    val quantityRow: Option[SummaryListRow]      = QuotedSharesNumberSummary.row(userAnswers, index)
+    val classOfSharesRow: Option[SummaryListRow] = QuotedSharesClassSummary.row(userAnswers, index)
 
     Seq(companyNameRow, valueRow, quantityRow, classOfSharesRow).flatten
-    // Seq(classOfSharesRow).flatten
   }
 }
