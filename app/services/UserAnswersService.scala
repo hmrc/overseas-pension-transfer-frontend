@@ -18,7 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
-import models.UserAnswers
+import models.{TypeOfAsset, UserAnswers}
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
 import models.responses.{UserAnswersError, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
@@ -42,4 +42,6 @@ class UserAnswersService @Inject() (
   def setUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
     connector.putAnswers(fromUserAnswers(userAnswers))
   }
+
+  def submitAsset(userAnswers: UserAnswers, typeOfAsset: TypeOfAsset, index: Int)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = ???
 }

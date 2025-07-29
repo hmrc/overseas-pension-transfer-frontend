@@ -19,11 +19,12 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.NormalMode
+import models.TypeOfAsset.UnquotedShares
+import models.{NormalMode, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.TransferDetailsService
+import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesSummary
@@ -40,6 +41,7 @@ class UnquotedSharesCYAController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     transferDetailsService: TransferDetailsService,
+    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesCYAView
   )(implicit ec: ExecutionContext
@@ -54,6 +56,7 @@ class UnquotedSharesCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
+    // userAnswersService.submitAsset(request.userAnswers, UnquotedShares, index)
     Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
   }
 }

@@ -17,10 +17,12 @@
 package services
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.{AssetMiniJourney, TypeOfAsset, UserAnswers}
+import models.{AssetEntry, AssetMiniJourney, SharesEntry, TypeOfAsset, UserAnswers}
 import pages.transferDetails.TypeOfAssetPage
+import play.api.libs.json.{JsArray, JsPath, Reads, Writes}
 import play.api.mvc.Call
-import queries.assets.{AssetCompletionFlag, QuotedShares, SelectedAssetTypes, UnquotedShares}
+import queries.{Gettable, Settable}
+import queries.assets.{AssetCompletionFlag, AssetQuery, QuotedShares, SelectedAssetTypes, UnquotedShares}
 import repositories.SessionRepository
 
 import javax.inject.Inject
@@ -31,22 +33,27 @@ class TransferDetailsService @Inject() (
     sessionRepository: SessionRepository
   ) {
 
-  def assetCount(userAnswers: UserAnswers, assetType: TypeOfAsset): Int = {
-    userAnswers.get(getQueryKey(assetType)).getOrElse(Nil).size
+  def assetCount[A <: AssetEntry: Reads](userAnswers: UserAnswers, assetType: TypeOfAsset): Int = {
+    userAnswers.get(getQueryKey[A](assetType)).getOrElse(Nil).size
   }
 
-  private def getQueryKey(assetType: TypeOfAsset) = {
-    val queryKey = assetType match {
-      case TypeOfAsset.UnquotedShares => UnquotedShares
-      case TypeOfAsset.QuotedShares   => QuotedShares
+  // We safely cast here because we know the mapping from TypeOfAsset to AssetQuery is exact.
+  private def getQueryKey[A <: AssetEntry](assetType: TypeOfAsset): AssetQuery[List[A]] = {
+    assetType match {
+      case TypeOfAsset.UnquotedShares => UnquotedShares.asInstanceOf[AssetQuery[List[A]]]
+      case TypeOfAsset.QuotedShares   => QuotedShares.asInstanceOf[AssetQuery[List[A]]]
       case other                      =>
         throw new UnsupportedOperationException(s"Asset type not supported: $other")
     }
-    queryKey
   }
 
-  def doAssetRemoval(userAnswers: UserAnswers, index: Int, assetType: TypeOfAsset)(implicit ec: ExecutionContext): Future[Boolean] = {
-    val queryKey          = getQueryKey(assetType)
+  def doAssetRemoval[A <: AssetEntry: Reads: Writes](
+      userAnswers: UserAnswers,
+      index: Int,
+      assetType: TypeOfAsset
+    )(implicit ec: ExecutionContext
+    ): Future[Boolean] = {
+    val queryKey          = getQueryKey[A](assetType)
     val updatedList       = userAnswers.get(queryKey).getOrElse(Nil).patch(index, Nil, 1)
     val updatedAnswersTry = userAnswers.set(queryKey, updatedList)
 
@@ -82,6 +89,11 @@ class TransferDetailsService @Inject() (
       .find(journey => !journey.isCompleted(userAnswers))
       .map(_.call)
   }
+
+//  private def getAssetAtIndex(userAnswers: UserAnswers, assetType: TypeOfAsset, index: Int): Option[AssetEntry] = {
+//    userAnswers.get(getQueryKey(assetType))
+//    }
+//  }
 
   def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean)(implicit ec: ExecutionContext): Future[Option[UserAnswers]] =
     userAnswers.set(AssetCompletionFlag(assetType), completed) match {

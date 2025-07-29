@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import models.TypeOfAsset.writes
 import models.{SharesEntry, TypeOfAsset, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -24,6 +25,8 @@ import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.transferDetails.TypeOfAssetPage
+import play.api.libs.json.Format.GenericFormat
+import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import queries.assets.AssetCompletionFlag
 import repositories.SessionRepository
@@ -43,14 +46,14 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
       val entries     = List(SharesEntry("Foo", 1, "GBP", "Class A"))
       val userAnswers = emptyUserAnswers.set(queries.assets.UnquotedShares, entries).success.value
 
-      val result = service.assetCount(userAnswers, TypeOfAsset.UnquotedShares)
+      val result = service.assetCount[SharesEntry](userAnswers, TypeOfAsset.UnquotedShares)
       result mustBe 1
     }
 
     "must return 0 if no entries exist" in {
       val userAnswers = emptyUserAnswers
 
-      val result = service.assetCount(userAnswers, TypeOfAsset.QuotedShares)
+      val result = service.assetCount[SharesEntry](userAnswers, TypeOfAsset.QuotedShares)
       result mustBe 0
     }
   }
@@ -64,7 +67,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
       val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
       when(stubSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val result = await(service.doAssetRemoval(userAnswers, 0, TypeOfAsset.UnquotedShares))
+      val result = await(service.doAssetRemoval[SharesEntry](userAnswers, 0, TypeOfAsset.UnquotedShares))
 
       result mustBe true
 
@@ -81,7 +84,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
       when(stubSessionRepository.set(any())) thenReturn Future.successful(false)
 
-      val result = await(service.doAssetRemoval(userAnswers, 0, TypeOfAsset.UnquotedShares))
+      val result = await(service.doAssetRemoval[SharesEntry](userAnswers, 0, TypeOfAsset.UnquotedShares))
 
       result mustBe false
     }

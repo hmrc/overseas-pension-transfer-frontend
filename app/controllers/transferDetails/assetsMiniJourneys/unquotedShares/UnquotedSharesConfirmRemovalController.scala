@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
-import models.{NormalMode, TypeOfAsset}
+import models.{NormalMode, SharesEntry, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TransferDetailsService
@@ -55,7 +55,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
       value => {
         val redirect = Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
         if (value) {
-          transferDetailsService.doAssetRemoval(request.userAnswers, index, TypeOfAsset.UnquotedShares).map(_ => redirect)
+          transferDetailsService.doAssetRemoval[SharesEntry](request.userAnswers, index, TypeOfAsset.UnquotedShares).map(_ => redirect)
         } else {
           Future.successful(redirect)
         }

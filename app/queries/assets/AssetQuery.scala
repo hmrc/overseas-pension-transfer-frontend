@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package models
+package queries.assets
 
-import play.api.libs.json._
+import models.{SharesEntry, TaskCategory, TypeOfAsset}
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-case class SharesEntry(
-    companyName: String,
-    valueOfShares: BigDecimal,
-    numberOfShares: String,
-    classOfShares: String
-  )
+sealed trait AssetQuery[A] extends Gettable[A] with Settable[A] {
+  def path: JsPath
+}
 
-object SharesEntry {
-  val CompanyName    = "companyName"
-  val ValueOfShares  = "valueOfShares"
-  val NumberOfShares = "numberOfShares"
-  val ClassOfShares  = "classOfShares"
+case object QuotedShares extends AssetQuery[List[SharesEntry]] {
 
-  implicit val format: OFormat[SharesEntry] = Json.format[SharesEntry]
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.toString
+}
+
+case object UnquotedShares extends AssetQuery[List[SharesEntry]] {
+
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString
 }
