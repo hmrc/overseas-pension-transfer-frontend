@@ -17,7 +17,7 @@
 package pages.transferDetails.assetsMiniJourney.unquotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, NormalMode, SharesEntry, TaskCategory, TypeOfAsset, UserAnswers}
+import models.{CheckMode, NormalMode, TaskCategory, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -26,7 +26,7 @@ case class UnquotedSharesValuePage(index: Int) extends QuestionPage[BigDecimal] 
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString \ index \ toString
 
-  override def toString: String = SharesEntry.ValueOfShares
+  override def toString: String = UnquotedSharesEntry.ValueOfShares
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index)

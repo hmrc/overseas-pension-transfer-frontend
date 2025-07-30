@@ -20,18 +20,34 @@ import play.api.libs.json._
 
 sealed trait AssetEntry
 
-case class SharesEntry(
+case class QuotedSharesEntry(
     companyName: String,
     valueOfShares: BigDecimal,
     numberOfShares: String,
     classOfShares: String
   ) extends AssetEntry
 
-object SharesEntry {
+object QuotedSharesEntry {
   val CompanyName    = "companyName"
   val ValueOfShares  = "valueOfShares"
   val NumberOfShares = "numberOfShares"
   val ClassOfShares  = "classOfShares"
 
-  implicit val format: OFormat[SharesEntry] = Json.format[SharesEntry]
+  implicit val format: OFormat[QuotedSharesEntry] = Json.format[QuotedSharesEntry]
+}
+
+case class UnquotedSharesEntry(
+    companyName: String,
+    valueOfShares: BigDecimal,
+    numberOfShares: String,
+    classOfShares: String
+  ) extends AssetEntry
+
+object UnquotedSharesEntry {
+  val CompanyName    = "companyName"
+  val ValueOfShares  = "valueOfShares"
+  val NumberOfShares = "numberOfShares"
+  val ClassOfShares  = "classOfShares"
+
+  implicit val format: OFormat[UnquotedSharesEntry] = Json.format[UnquotedSharesEntry]
 }

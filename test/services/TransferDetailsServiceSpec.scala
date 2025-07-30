@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import models.TypeOfAsset.{reads, writes}
-import models.{SharesEntry, TypeOfAsset, UserAnswers}
+import models.{TypeOfAsset, UnquotedSharesEntry, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
@@ -43,17 +43,17 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
   "assetCount" - {
 
     "must return the number of entries for an asset type" in {
-      val entries     = List(SharesEntry("Foo", 1, "GBP", "Class A"))
+      val entries     = List(UnquotedSharesEntry("Foo", 1, "GBP", "Class A"))
       val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
 
-      val result = service.assetCount[SharesEntry](userAnswers, TypeOfAsset.UnquotedShares)
+      val result = service.assetCount[UnquotedSharesEntry](userAnswers)
       result mustBe 1
     }
 
     "must return 0 if no entries exist" in {
       val userAnswers = emptyUserAnswers
 
-      val result = service.assetCount[SharesEntry](userAnswers, TypeOfAsset.QuotedShares)
+      val result = service.assetCount[UnquotedSharesEntry](userAnswers)
       result mustBe 0
     }
   }
@@ -61,23 +61,15 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
   "removeAssetEntry" - {
 
     "must remove the specified entry and return updated answers" in {
-      val entries     = List(SharesEntry("One", 1, "GBP", "A"), SharesEntry("Two", 2, "GBP", "B"))
+      val entries     = List(UnquotedSharesEntry("One", 1, "GBP", "A"), UnquotedSharesEntry("Two", 2, "GBP", "B"))
       val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
 
-      val result = service.removeAssetEntry[SharesEntry](userAnswers, 0, TypeOfAsset.UnquotedShares)
+      val result = service.removeAssetEntry[UnquotedSharesEntry](userAnswers, 0)
 
       result.isSuccess mustBe true
 
       val updated = result.get
-      updated.get(UnquotedSharesQuery).value mustBe List(SharesEntry("Two", 2, "GBP", "B"))
-    }
-
-    "must return Failure if setting updated answers fails" in {
-      val userAnswers = emptyUserAnswers
-
-      val result = service.removeAssetEntry[SharesEntry](userAnswers, 0, TypeOfAsset.UnquotedShares)
-
-      result.isFailure mustBe true
+      updated.get(UnquotedSharesQuery).value mustBe List(UnquotedSharesEntry("Two", 2, "GBP", "B"))
     }
   }
 

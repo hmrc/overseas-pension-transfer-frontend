@@ -20,7 +20,7 @@ import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesAmendContinueFormProvider
-import models.{CheckMode, Mode, NormalMode, SharesEntry, TypeOfAsset, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -80,7 +80,7 @@ class UnquotedSharesAmendContinueController @Inject() (
         },
         continue => {
           if (continue) {
-            val nextIndex = transferDetailsService.assetCount[SharesEntry](request.userAnswers, TypeOfAsset.UnquotedShares)
+            val nextIndex = transferDetailsService.assetCount[UnquotedSharesEntry](request.userAnswers)
             Future.successful(Redirect(AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)))
           } else {
             transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true).map {

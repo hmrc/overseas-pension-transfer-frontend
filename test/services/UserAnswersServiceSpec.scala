@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.UserAnswersConnector
-import models.{SharesEntry, UserAnswers}
+import models.{UnquotedSharesEntry, UserAnswers}
 import models.dtos.UserAnswersDTO
 import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done

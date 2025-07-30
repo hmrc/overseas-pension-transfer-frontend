@@ -17,12 +17,10 @@
 package services
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.{AssetEntry, AssetMiniJourney, SharesEntry, TypeOfAsset, UserAnswers}
-import pages.transferDetails.TypeOfAssetPage
-import play.api.libs.json.{JsArray, JsPath, Reads, Writes}
+import models.{AssetEntry, AssetMiniJourney, HasAssetQuery, TypeOfAsset, UserAnswers}
+import play.api.libs.json._
 import play.api.mvc.Call
-import queries.{Gettable, Settable}
-import queries.assets.{AssetCompletionFlag, AssetQuery, QuotedSharesQuery, SelectedAssetTypes, UnquotedSharesQuery}
+import queries.assets._
 import repositories.SessionRepository
 
 import javax.inject.Inject
@@ -33,26 +31,19 @@ class TransferDetailsService @Inject() (
     sessionRepository: SessionRepository
   ) {
 
-  def assetCount[A <: AssetEntry: Reads](userAnswers: UserAnswers, assetType: TypeOfAsset): Int = {
-    userAnswers.get(getQueryKey[A](assetType)).getOrElse(Nil).size
+  def assetCount[A <: AssetEntry: Reads: HasAssetQuery](userAnswers: UserAnswers): Int = {
+    val queryKey = implicitly[HasAssetQuery[A]].query
+    userAnswers.get(queryKey).getOrElse(Nil).size
   }
 
-  // We safely cast here because we know the mapping from TypeOfAsset to AssetQuery is exact.
-  private def getQueryKey[A <: AssetEntry](assetType: TypeOfAsset): AssetQuery[List[A]] = {
-    assetType match {
-      case TypeOfAsset.UnquotedShares => UnquotedSharesQuery.asInstanceOf[AssetQuery[List[A]]]
-      case TypeOfAsset.QuotedShares   => QuotedSharesQuery.asInstanceOf[AssetQuery[List[A]]]
-      case other                      =>
-        throw new UnsupportedOperationException(s"Asset type not supported: $other")
-    }
-  }
+  private def getQueryKey[A <: AssetEntry: HasAssetQuery]: AssetQuery[List[A]] =
+    implicitly[HasAssetQuery[A]].query
 
-  def removeAssetEntry[A <: AssetEntry: Reads: Writes](
+  def removeAssetEntry[A <: AssetEntry: Format: HasAssetQuery](
       userAnswers: UserAnswers,
-      index: Int,
-      assetType: TypeOfAsset
+      index: Int
     ): Try[UserAnswers] = {
-    val queryKey    = getQueryKey[A](assetType)
+    val queryKey    = implicitly[HasAssetQuery[A]].query
     val currentList = userAnswers.get(queryKey).getOrElse(Nil)
     val updatedList = currentList.patch(index, Nil, 1)
 
@@ -82,8 +73,8 @@ class TransferDetailsService @Inject() (
       .map(_.call)
   }
 
-  def getAssetEntryAtIndex[A <: AssetEntry: Reads](userAnswers: UserAnswers, assetType: TypeOfAsset, index: Int): Option[A] = {
-    val assetEntries: Option[List[A]] = userAnswers.get(getQueryKey[A](assetType))
+  def getAssetEntryAtIndex[A <: AssetEntry: Reads: HasAssetQuery](userAnswers: UserAnswers, index: Int): Option[A] = {
+    val assetEntries: Option[List[A]] = userAnswers.get(getQueryKey[A])
     assetEntries match {
       case Some(list) => Some(list(index))
       case _          => None

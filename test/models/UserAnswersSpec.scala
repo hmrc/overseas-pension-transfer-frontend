@@ -62,10 +62,10 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
       minimal.id mustBe original.id
       minimal.lastUpdated mustBe original.lastUpdated
 
-      (minimal.data \ "transferDetails" \ "unquotedShares").asOpt[List[SharesEntry]] mustBe
-        (original.data \ "transferDetails" \ "unquotedShares").asOpt[List[SharesEntry]]
+      (minimal.data \ "transferDetails" \ "unquotedShares").asOpt[List[UnquotedSharesEntry]] mustBe
+        (original.data \ "transferDetails" \ "unquotedShares").asOpt[List[UnquotedSharesEntry]]
 
-      (minimal.data \ "transferDetails" \ "quotedShares").asOpt[List[SharesEntry]] mustBe empty
+      (minimal.data \ "transferDetails" \ "quotedShares").asOpt[List[UnquotedSharesEntry]] mustBe empty
     }
 
     "must return Failure if the original UserAnswers does not contain the query value" in {
