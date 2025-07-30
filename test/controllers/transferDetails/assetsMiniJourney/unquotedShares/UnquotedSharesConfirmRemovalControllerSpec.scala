@@ -19,19 +19,18 @@ package controllers.transferDetails.assetsMiniJourney.unquotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
-import models.NormalMode
+import models.{NormalMode, UnquotedSharesEntry}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.assets.UnquotedSharesQuery
 import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalView
 
 class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new UnquotedSharesConfirmRemovalFormProvider()
   private val form         = formProvider()
-
-  val unquotedSharesConfirmRemovalRoute = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url
 
   "UnquotedSharesConfirmRemoval Controller" - {
 
@@ -40,7 +39,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesConfirmRemovalRoute)
+        val request = FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url)
 
         val result = route(application, request).value
 
@@ -52,11 +51,14 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val entries     = List(UnquotedSharesEntry("Company", 1000, "20", "Preferred"))
+      val userAnswers = userAnswersQtNumber.set(UnquotedSharesQuery, entries).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesConfirmRemovalRoute)
+          FakeRequest(POST, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(0).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
@@ -72,7 +74,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesConfirmRemovalRoute)
+          FakeRequest(POST, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -91,7 +93,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesConfirmRemovalRoute)
+        val request = FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url)
 
         val result = route(application, request).value
 
@@ -106,7 +108,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesConfirmRemovalRoute)
+          FakeRequest(POST, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

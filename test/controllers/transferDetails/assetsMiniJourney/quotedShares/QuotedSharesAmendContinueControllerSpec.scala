@@ -19,18 +19,12 @@ package controllers.transferDetails.assetsMiniJourney.quotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueFormProvider
-import models.{CheckMode, NormalMode, TypeOfAsset}
-import org.mockito.Mockito.{verify, when}
+import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.TransferDetailsService
 import views.html.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueView
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
 
 class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 

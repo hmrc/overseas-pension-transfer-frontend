@@ -19,19 +19,18 @@ package controllers.transferDetails.assetsMiniJourney.quotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalFormProvider
-import models.NormalMode
+import models.{NormalMode, QuotedSharesEntry}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.assets.QuotedSharesQuery
 import views.html.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalView
 
 class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new QuotedSharesConfirmRemovalFormProvider()
   private val form         = formProvider()
-
-  private val quotedSharesConfirmRemovalRoute = AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(1).url
 
   "QuotedSharesConfirmRemoval Controller" - {
 
@@ -40,7 +39,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, quotedSharesConfirmRemovalRoute)
+        val request = FakeRequest(GET, AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(1).url)
 
         val result = route(application, request).value
 
@@ -52,11 +51,14 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val entries     = List(QuotedSharesEntry("Company", 1000, "20", "Preferred"))
+      val userAnswers = userAnswersQtNumber.set(QuotedSharesQuery, entries).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, quotedSharesConfirmRemovalRoute)
+          FakeRequest(POST, AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(0).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
@@ -72,7 +74,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
 
       running(application) {
         val request =
-          FakeRequest(POST, quotedSharesConfirmRemovalRoute)
+          FakeRequest(POST, AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(1).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -91,7 +93,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, quotedSharesConfirmRemovalRoute)
+        val request = FakeRequest(GET, AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(1).url)
 
         val result = route(application, request).value
 
@@ -106,7 +108,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
 
       running(application) {
         val request =
-          FakeRequest(POST, quotedSharesConfirmRemovalRoute)
+          FakeRequest(POST, AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(1).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
