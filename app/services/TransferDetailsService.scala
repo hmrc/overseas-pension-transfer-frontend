@@ -43,11 +43,19 @@ class TransferDetailsService @Inject() (
       userAnswers: UserAnswers,
       index: Int
     ): Try[UserAnswers] = {
-    val queryKey    = implicitly[HasAssetQuery[A]].query
-    val currentList = userAnswers.get(queryKey).getOrElse(Nil)
-    val updatedList = currentList.patch(index, Nil, 1)
+    val queryKey = implicitly[HasAssetQuery[A]].query
 
-    userAnswers.set(queryKey, updatedList)
+    userAnswers.get(queryKey) match {
+      case Some(currentList) if index >= 0 && index < currentList.size =>
+        val updatedList = currentList.patch(index, Nil, 1)
+        userAnswers.set(queryKey, updatedList)
+
+      case Some(_) =>
+        Failure(new IndexOutOfBoundsException(s"Index $index out of bounds"))
+
+      case None =>
+        Failure(new NoSuchElementException(s"No entry found at query path ${queryKey.path}"))
+    }
   }
 
   private lazy val orderedAssetsJourneys: Seq[AssetMiniJourney] = Seq(

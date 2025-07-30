@@ -71,6 +71,25 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
       val updated = result.get
       updated.get(UnquotedSharesQuery).value mustBe List(UnquotedSharesEntry("Two", 2, "GBP", "B"))
     }
+
+    "must return Failure if the index is out of bounds" in {
+      val entries     = List(UnquotedSharesEntry("Only", 1, "GBP", "X"))
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
+
+      val result = service.removeAssetEntry[UnquotedSharesEntry](userAnswers, 5)
+
+      result.isFailure mustBe true
+      result.failed.get mustBe a[IndexOutOfBoundsException]
+    }
+
+    "must return Failure if no entries exist at the query path" in {
+      val userAnswers = emptyUserAnswers
+
+      val result = service.removeAssetEntry[UnquotedSharesEntry](userAnswers, 0)
+
+      result.isFailure mustBe true
+      result.failed.get mustBe a[NoSuchElementException]
+    }
   }
 
   "getNextAssetRoute" - {
