@@ -19,10 +19,12 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalFormProvider
-import models.{NormalMode, SharesEntry, TypeOfAsset}
+import models.{NormalMode, SharesEntry, TypeOfAsset, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TransferDetailsService
+import queries.assets.QuotedSharesQuery
+import repositories.SessionRepository
+import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalView
 
@@ -33,10 +35,12 @@ class QuotedSharesConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
+    sessionRepository: SessionRepository,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: QuotedSharesConfirmRemovalFormProvider,
     transferDetailsService: TransferDetailsService,
+    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: QuotedSharesConfirmRemovalView
   )(implicit ec: ExecutionContext
@@ -52,14 +56,19 @@ class QuotedSharesConfirmRemovalController @Inject() (
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     form.bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
-      value => {
-        val redirect = Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
-        if (value) {
-          transferDetailsService.doAssetRemoval[SharesEntry](request.userAnswers, index, TypeOfAsset.QuotedShares).map(_ => redirect)
+      confirmRemoval =>
+        if (!confirmRemoval) {
+          Future.successful(Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
         } else {
-          Future.successful(redirect)
+          (for {
+            updatedAnswers     <- Future.fromTry(transferDetailsService.removeAssetEntry[SharesEntry](request.userAnswers, index, TypeOfAsset.QuotedShares))
+            _                  <- sessionRepository.set(updatedAnswers)
+            minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, QuotedSharesQuery))
+            _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+          } yield Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode))).recover {
+            case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          }
         }
-      }
     )
   }
 }

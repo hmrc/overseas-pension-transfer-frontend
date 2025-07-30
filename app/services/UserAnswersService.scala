@@ -41,22 +41,6 @@ class UserAnswersService @Inject() (
   }
 
   def setExternalUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
-    logger.info("Hit me")
-    val dto = fromUserAnswers(userAnswers)
-    logger.info(s"Sent dto: ${dto.toString}")
     connector.putAnswers(fromUserAnswers(userAnswers))
   }
-
-//  // Create a new UserAnswers with only the value at the query path
-//  def buildMinimalUserAnswers[A](
-//      original: UserAnswers,
-//      value: Settable[A] with Gettable[A]
-//    )(implicit reads: Reads[A],
-//      writes: Writes[A]
-//    ): Try[UserAnswers] = {
-//    original.get(value) match {
-//      case Some(v) => original.copy(data = Json.obj()).set(value, v)
-//      case None    => Failure(new NoSuchElementException(s"No value found at path: ${value.path}"))
-//    }
-//  }
 }

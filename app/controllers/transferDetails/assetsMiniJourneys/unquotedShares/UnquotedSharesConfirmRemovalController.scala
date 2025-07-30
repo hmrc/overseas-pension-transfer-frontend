@@ -19,10 +19,14 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
-import models.{NormalMode, SharesEntry, TypeOfAsset}
+import models.{NormalMode, SharesEntry, TypeOfAsset, UserAnswers}
+import org.apache.pekko.Done
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TransferDetailsService
+import queries.assets.UnquotedSharesQuery
+import repositories.SessionRepository
+import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalView
 
@@ -33,14 +37,16 @@ class UnquotedSharesConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
+    sessionRepository: SessionRepository,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: UnquotedSharesConfirmRemovalFormProvider,
     transferDetailsService: TransferDetailsService,
+    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesConfirmRemovalView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   private val form    = formProvider()
   private val actions = (identify andThen getData andThen requireData andThen displayData)
@@ -52,14 +58,19 @@ class UnquotedSharesConfirmRemovalController @Inject() (
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     form.bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
-      value => {
-        val redirect = Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
-        if (value) {
-          transferDetailsService.doAssetRemoval[SharesEntry](request.userAnswers, index, TypeOfAsset.UnquotedShares).map(_ => redirect)
+      confirmRemoval =>
+        if (!confirmRemoval) {
+          Future.successful(Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
         } else {
-          Future.successful(redirect)
+          (for {
+            updatedAnswers     <- Future.fromTry(transferDetailsService.removeAssetEntry[SharesEntry](request.userAnswers, index, TypeOfAsset.UnquotedShares))
+            _                  <- sessionRepository.set(updatedAnswers)
+            minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, UnquotedSharesQuery))
+            _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+          } yield Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))).recover {
+            case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          }
         }
-      }
     )
   }
 }

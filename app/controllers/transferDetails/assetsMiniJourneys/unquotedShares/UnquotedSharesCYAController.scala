@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,6 +33,7 @@ import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesCYAView
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class UnquotedSharesCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -55,24 +56,16 @@ class UnquotedSharesCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
-    val maybeMinimalAnswers = userAnswersService.buildMinimalUserAnswers(request.userAnswers, UnquotedSharesQuery)
-
-    maybeMinimalAnswers match {
-      case Some(minimalUserAnswers) =>
-        for {
-          saved <- userAnswersService.setUserAnswers(minimalUserAnswers)
-        } yield {
-          saved match {
-            case Right(Done) =>
-              Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
-            case _           =>
-              Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-          }
-        }
-
-      case None =>
-        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+    for {
+      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, UnquotedSharesQuery))
+      saved              <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+    } yield {
+      saved match {
+        case Right(Done) =>
+          Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
+        case _           =>
+          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+      }
     }
   }
-
 }

@@ -19,33 +19,32 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
+import org.apache.pekko.Done
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.TransferDetailsService
+import queries.assets.QuotedSharesQuery
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesCYAView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class QuotedSharesCYAController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    transferDetailsService: TransferDetailsService,
+    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: QuotedSharesCYAView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  // private val shareType = SharesType.Unquoted
   private val actions = (identify andThen getData andThen requireData andThen displayData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
@@ -54,30 +53,17 @@ class QuotedSharesCYAController @Inject() (
     Ok(view(list, index))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
-//    val path = sharesPathForType(sharesType)
-//    transferDetailsService.unquotedShareBuilder(request.userAnswers) match {
-//      case Some(newUnquotedShare) =>
-//        val existingUnquotedShares = request.userAnswers.data
-//          .validate(path.read[List[SharesEntry]])
-//          .getOrElse(Nil)
-//
-//        val updatedShares = existingUnquotedShares :+ newUnquotedShare
-//
-//        val updatedJson = request.userAnswers.data.deepMerge(
-//          Json.obj("transferDetails" -> Json.obj(sharesType.toString -> Json.toJson(updatedShares)))
-//        )
-//
-//        val updatedAnswers = request.userAnswers.copy(data = updatedJson)
-//        val clearedAnswers = transferDetailsService.clearUnquotedShareFields(updatedAnswers)
-//
-//        for {
-//          _ <- sessionRepository.set(clearedAnswers)
-//        } yield Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad())
-//
-//      case None =>
-//        Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-//    }
+  def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
+    for {
+      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, QuotedSharesQuery))
+      saved              <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+    } yield {
+      saved match {
+        case Right(Done) =>
+          Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
+        case _           =>
+          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+      }
+    }
   }
 }
