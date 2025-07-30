@@ -67,7 +67,7 @@ class MemberDateOfLeavingUKController @Inject() (
           for {
             userAnswers   <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
             _             <- sessionRepository.set(userAnswers)
-            savedForLater <- userAnswersService.setUserAnswers(userAnswers)
+            savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberDateOfLeavingUKPage.nextPage(mode, userAnswers))

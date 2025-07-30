@@ -54,7 +54,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
         .thenReturn(Future.successful(Right(userAnswersDTO)))
 
-      val getUserAnswers = service.getUserAnswers(userAnswersId)
+      val getUserAnswers = service.getExternalUserAnswers(userAnswersId)
 
       await(getUserAnswers) mustBe Right(userAnswers)
     }
@@ -63,7 +63,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersNotFoundResponse)))
 
-      val getUserAnswers = await(service.getUserAnswers(userAnswersId))
+      val getUserAnswers = await(service.getExternalUserAnswers(userAnswersId))
 
       getUserAnswers map {
         ua =>
@@ -76,7 +76,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error message", None))))
 
-      val getUserAnswers = await(service.getUserAnswers(userAnswersId))
+      val getUserAnswers = await(service.getExternalUserAnswers(userAnswersId))
 
       getUserAnswers mustBe Left(UserAnswersErrorResponse("Error message", None))
     }
@@ -87,7 +87,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.putAnswers(ArgumentMatchers.eq(userAnswersDTO))(any(), any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val setUserAnswers = await(service.setUserAnswers(userAnswers))
+      val setUserAnswers = await(service.setExternalUserAnswers(userAnswers))
 
       setUserAnswers mustBe Right(Done)
     }
@@ -96,7 +96,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.putAnswers(ArgumentMatchers.eq(userAnswersDTO))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error Message", None))))
 
-      val setUserAnswers = await(service.setUserAnswers(userAnswers))
+      val setUserAnswers = await(service.setExternalUserAnswers(userAnswers))
 
       setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
     }

@@ -67,7 +67,7 @@ class SchemeManagerOrganisationNameController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(SchemeManagerOrganisationNamePage.nextPage(mode, updatedAnswers))

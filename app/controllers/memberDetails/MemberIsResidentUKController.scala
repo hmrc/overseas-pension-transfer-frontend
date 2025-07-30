@@ -70,7 +70,7 @@ class MemberIsResidentUKController @Inject() (
             baseAnswers    <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
             updatedAnswers <- memberDetailsService.updateMemberIsResidentUKAnswers(baseAnswers, previousValue, value)
             _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
             redirectMode    = memberDetailsService.getMemberIsResidentUKRedirectMode(mode, previousValue, value)
           } yield {
             savedForLater match {

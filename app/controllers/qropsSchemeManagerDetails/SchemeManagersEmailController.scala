@@ -66,7 +66,7 @@ class SchemeManagersEmailController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersEmailPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(SchemeManagersEmailPage.nextPage(mode, updatedAnswers))

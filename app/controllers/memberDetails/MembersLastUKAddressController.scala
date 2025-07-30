@@ -71,7 +71,7 @@ class MembersLastUKAddressController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))

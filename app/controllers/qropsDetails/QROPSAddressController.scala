@@ -84,7 +84,7 @@ class QROPSAddressController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSAddressPage, address))
                 _              <- sessionRepository.set(updatedAnswers).map(_ => logger.info(Json.stringify(updatedAnswers.data)))
-                savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(QROPSAddressPage.nextPage(mode, updatedAnswers))

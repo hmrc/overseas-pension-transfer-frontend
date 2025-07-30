@@ -98,7 +98,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
@@ -166,7 +166,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))

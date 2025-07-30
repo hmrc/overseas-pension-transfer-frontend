@@ -87,7 +87,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(Some(emptyUserAnswers))
@@ -115,7 +115,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(Some(emptyUserAnswers))
@@ -144,7 +144,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(Some(previousAnswers))
@@ -177,7 +177,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(Some(previousAnswers))
@@ -258,7 +258,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(Some(emptyUserAnswers))

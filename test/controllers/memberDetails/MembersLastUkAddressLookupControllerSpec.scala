@@ -69,7 +69,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
       val mockAddressLookupConnector = mock[AddressLookupConnector]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockAddressLookupConnector.lookup(any())(any(), any()))
         .thenReturn(
@@ -125,7 +125,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
       val mockAddressLookupConnector = mock[AddressLookupConnector]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockAddressLookupConnector.lookup(any())(any(), any()))
         .thenReturn(
@@ -175,7 +175,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
       val mockAddressLookupConnector = mock[AddressLookupConnector]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockAddressLookupConnector.lookup(any())(any(), any()))
         .thenReturn(
@@ -231,7 +231,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       when(mockAddressLookupConnector.lookup(any())(any(), any()))

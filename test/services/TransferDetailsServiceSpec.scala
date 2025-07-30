@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import models.TypeOfAsset.writes
+import models.TypeOfAsset.{reads, writes}
 import models.{SharesEntry, TypeOfAsset, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -58,37 +58,27 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
     }
   }
 
-  "doAssetRemoval" - {
+  "removeAssetEntry" - {
 
-    "must remove an entry and persist updated answers" in {
+    "must remove the specified entry and return updated answers" in {
       val entries     = List(SharesEntry("One", 1, "GBP", "A"), SharesEntry("Two", 2, "GBP", "B"))
       val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
 
-      val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-      when(stubSessionRepository.set(any())) thenReturn Future.successful(true)
+      val result = service.removeAssetEntry[SharesEntry](userAnswers, 0, TypeOfAsset.UnquotedShares)
 
-      val result = await(service.doAssetRemoval[SharesEntry](userAnswers, 0, TypeOfAsset.UnquotedShares))
+      result.isSuccess mustBe true
 
-      result mustBe true
-
-      verify(stubSessionRepository).set(captor.capture())
-      val updatedAnswers = captor.getValue
-
-      val remaining = updatedAnswers.get(UnquotedSharesQuery).value
-      remaining mustBe List(SharesEntry("Two", 2, "GBP", "B"))
+      val updated = result.get
+      updated.get(UnquotedSharesQuery).value mustBe List(SharesEntry("Two", 2, "GBP", "B"))
     }
 
-    "must return false if repository set fails" in {
-      val entries     = List(SharesEntry("X", 1, "GBP", "A"))
-      val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
+    "must return Failure if setting updated answers fails" in {
+      val userAnswers = emptyUserAnswers
 
-      when(stubSessionRepository.set(any())) thenReturn Future.successful(false)
+      val result = service.removeAssetEntry[SharesEntry](userAnswers, 0, TypeOfAsset.UnquotedShares)
 
-      val result = await(service.doAssetRemoval[SharesEntry](userAnswers, 0, TypeOfAsset.UnquotedShares))
-
-      result mustBe false
+      result.isFailure mustBe true
     }
-
   }
 
   "getNextAssetRoute" - {

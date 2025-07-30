@@ -27,7 +27,7 @@ import repositories.SessionRepository
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 class TransferDetailsService @Inject() (
     sessionRepository: SessionRepository
@@ -47,24 +47,16 @@ class TransferDetailsService @Inject() (
     }
   }
 
-  def doAssetRemoval[A <: AssetEntry: Reads: Writes](
+  def removeAssetEntry[A <: AssetEntry: Reads: Writes](
       userAnswers: UserAnswers,
       index: Int,
       assetType: TypeOfAsset
-    )(implicit ec: ExecutionContext
-    ): Future[Boolean] = {
-    val queryKey          = getQueryKey[A](assetType)
-    val updatedList       = userAnswers.get(queryKey).getOrElse(Nil).patch(index, Nil, 1)
-    val updatedAnswersTry = userAnswers.set(queryKey, updatedList)
+    ): Try[UserAnswers] = {
+    val queryKey    = getQueryKey[A](assetType)
+    val currentList = userAnswers.get(queryKey).getOrElse(Nil)
+    val updatedList = currentList.patch(index, Nil, 1)
 
-    updatedAnswersTry match {
-      case Success(updatedAnswers) =>
-        sessionRepository.set(updatedAnswers).map {
-          case true  => true
-          case false => false
-        }
-      case Failure(_)              => Future.successful(false)
-    }
+    userAnswers.set(queryKey, updatedList)
   }
 
   private lazy val orderedAssetsJourneys: Seq[AssetMiniJourney] = Seq(

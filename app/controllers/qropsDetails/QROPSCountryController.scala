@@ -84,7 +84,7 @@ class QROPSCountryController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
                 _              <- sessionRepository.set(updatedAnswers)
-                savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
