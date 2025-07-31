@@ -16,6 +16,7 @@
 
 package models
 
+import models.address.PropertyAddress
 import play.api.libs.json._
 
 sealed trait AssetEntry
@@ -50,4 +51,18 @@ object UnquotedSharesEntry {
   val ClassOfShares  = "classOfShares"
 
   implicit val format: OFormat[UnquotedSharesEntry] = Json.format[UnquotedSharesEntry]
+}
+
+case class PropertyEntry(
+    propertyAddress: PropertyAddress,
+    propDescription: String,
+    propValue: BigDecimal
+  ) extends AssetEntry
+
+object PropertyEntry {
+  val PropertyAddress = "propertyAddress"
+  val PropDescription = "propDescription"
+  val PropValue       = "propValue"
+
+  implicit val format: OFormat[PropertyEntry] = Json.format[PropertyEntry]
 }

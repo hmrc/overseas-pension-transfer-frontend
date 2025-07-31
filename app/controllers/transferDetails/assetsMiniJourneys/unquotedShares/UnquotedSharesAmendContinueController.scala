@@ -20,6 +20,7 @@ import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesAmendContinueFormProvider
+import models.assets.UnquotedSharesMiniJourney
 import models.{CheckMode, Mode, NormalMode, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,6 +43,7 @@ class UnquotedSharesAmendContinueController @Inject() (
     formProvider: UnquotedSharesAmendContinueFormProvider,
     transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
+    miniJourney: UnquotedSharesMiniJourney.type,
     view: UnquotedSharesAmendContinueView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
@@ -80,7 +82,7 @@ class UnquotedSharesAmendContinueController @Inject() (
         },
         continue => {
           if (continue) {
-            val nextIndex = transferDetailsService.assetCount[UnquotedSharesEntry](request.userAnswers)
+            val nextIndex = transferDetailsService.assetCount(miniJourney, request.userAnswers)
             Future.successful(Redirect(AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)))
           } else {
             transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true).map {

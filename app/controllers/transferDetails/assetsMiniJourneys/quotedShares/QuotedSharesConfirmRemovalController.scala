@@ -19,6 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalFormProvider
+import models.assets.QuotedSharesMiniJourney
 import models.{NormalMode, QuotedSharesEntry, TypeOfAsset, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,6 +43,7 @@ class QuotedSharesConfirmRemovalController @Inject() (
     transferDetailsService: TransferDetailsService,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
+    miniJourney: QuotedSharesMiniJourney.type,
     view: QuotedSharesConfirmRemovalView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
@@ -61,7 +63,7 @@ class QuotedSharesConfirmRemovalController @Inject() (
           Future.successful(Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
         } else {
           (for {
-            updatedAnswers     <- Future.fromTry(transferDetailsService.removeAssetEntry[QuotedSharesEntry](request.userAnswers, index))
+            updatedAnswers     <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _                  <- sessionRepository.set(updatedAnswers)
             minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, QuotedSharesQuery))
             _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)

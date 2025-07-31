@@ -19,6 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
+import models.assets.UnquotedSharesMiniJourney
 import models.{NormalMode, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
@@ -43,6 +44,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
     formProvider: UnquotedSharesConfirmRemovalFormProvider,
     transferDetailsService: TransferDetailsService,
     userAnswersService: UserAnswersService,
+    miniJourney: UnquotedSharesMiniJourney.type,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesConfirmRemovalView
   )(implicit ec: ExecutionContext
@@ -64,7 +66,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
         } else {
           (for {
             updatedAnswers     <-
-              Future.fromTry(transferDetailsService.removeAssetEntry[UnquotedSharesEntry](request.userAnswers, index))
+              Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _                  <- sessionRepository.set(updatedAnswers)
             minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, UnquotedSharesQuery))
             _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)

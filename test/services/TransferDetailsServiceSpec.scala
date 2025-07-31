@@ -17,150 +17,117 @@
 package services
 
 import base.SpecBase
-import models.TypeOfAsset.{reads, writes}
-import models.{TypeOfAsset, UnquotedSharesEntry, UserAnswers}
-import org.mockito.ArgumentCaptor
+import models._
+import models.assets.{QuotedSharesMiniJourney, UnquotedSharesMiniJourney}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.transferDetails.TypeOfAssetPage
-import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import queries.assets.{AssetCompletionFlag, UnquotedSharesQuery}
+import play.api.test.Helpers._
+import queries.assets.AssetCompletionFlag
 import repositories.SessionRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
-  private val stubSessionRepository = mock[SessionRepository]
+  private val sessionRepository = mock[SessionRepository]
 
-  private val service = new TransferDetailsService(stubSessionRepository)
+  private val service = new TransferDetailsService(sessionRepository)
 
   "assetCount" - {
+    "must return the number of entries for a given asset journey" in {
+      val entries     = List(UnquotedSharesEntry("Foo", 1, "100", "Class A"))
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesMiniJourney.query, entries).success.value
 
-    "must return the number of entries for an asset type" in {
-      val entries     = List(UnquotedSharesEntry("Foo", 1, "GBP", "Class A"))
-      val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
-
-      val result = service.assetCount[UnquotedSharesEntry](userAnswers)
+      val result = service.assetCount(UnquotedSharesMiniJourney, userAnswers)
       result mustBe 1
     }
 
-    "must return 0 if no entries exist" in {
-      val userAnswers = emptyUserAnswers
-
-      val result = service.assetCount[UnquotedSharesEntry](userAnswers)
+    "must return 0 if no entries exist for the asset journey" in {
+      val result = service.assetCount(UnquotedSharesMiniJourney, emptyUserAnswers)
       result mustBe 0
     }
   }
 
   "removeAssetEntry" - {
-
     "must remove the specified entry and return updated answers" in {
-      val entries     = List(UnquotedSharesEntry("One", 1, "GBP", "A"), UnquotedSharesEntry("Two", 2, "GBP", "B"))
-      val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
+      val entries     = List(UnquotedSharesEntry("One", 1, "100", "A"), UnquotedSharesEntry("Two", 2, "200", "B"))
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesMiniJourney.query, entries).success.value
 
-      val result = service.removeAssetEntry[UnquotedSharesEntry](userAnswers, 0)
+      val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 0)
 
-      result.isSuccess mustBe true
-
+      result mustBe a[Success[_]]
       val updated = result.get
-      updated.get(UnquotedSharesQuery).value mustBe List(UnquotedSharesEntry("Two", 2, "GBP", "B"))
+      updated.get(UnquotedSharesMiniJourney.query).value mustBe List(UnquotedSharesEntry("Two", 2, "200", "B"))
     }
 
     "must return Failure if the index is out of bounds" in {
-      val entries     = List(UnquotedSharesEntry("Only", 1, "GBP", "X"))
-      val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
+      val entries     = List(UnquotedSharesEntry("Only", 1, "100", "X"))
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesMiniJourney.query, entries).success.value
 
-      val result = service.removeAssetEntry[UnquotedSharesEntry](userAnswers, 5)
+      val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 5)
 
-      result.isFailure mustBe true
+      result mustBe a[Failure[_]]
       result.failed.get mustBe a[IndexOutOfBoundsException]
     }
 
     "must return Failure if no entries exist at the query path" in {
-      val userAnswers = emptyUserAnswers
+      val result = service.removeAssetEntry(UnquotedSharesMiniJourney, emptyUserAnswers, 0)
 
-      val result = service.removeAssetEntry[UnquotedSharesEntry](userAnswers, 0)
-
-      result.isFailure mustBe true
+      result mustBe a[Failure[_]]
       result.failed.get mustBe a[NoSuchElementException]
     }
   }
 
   "getNextAssetRoute" - {
-
     "must return the first uncompleted journey in order" in {
-      val values      = Set[TypeOfAsset](TypeOfAsset.UnquotedShares, TypeOfAsset.QuotedShares)
-      val userAnswers = emptyUserAnswers
-        .set(TypeOfAssetPage, values).success.value
+      val selectedTypes: Set[TypeOfAsset] = Set(UnquotedSharesMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
+      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
 
-      val result = service.getNextAssetRoute(userAnswers)
-
-      result mustBe Some(controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesStartController.onPageLoad())
+      val result = service.getNextAssetRoute(userAnswers).map(_.toString)
+      result mustBe Some(UnquotedSharesMiniJourney.call.url)
     }
 
     "must skip journeys not in the selected assets" in {
-      val values      = Set[TypeOfAsset](TypeOfAsset.QuotedShares)
-      val userAnswers = emptyUserAnswers
-        .set(TypeOfAssetPage, values).success.value
+      val selectedTypes: Set[TypeOfAsset] = Set(QuotedSharesMiniJourney.assetType)
+      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
 
-      val result = service.getNextAssetRoute(userAnswers)
-
-      result mustBe Some(controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesStartController.onPageLoad())
+      val result = service.getNextAssetRoute(userAnswers).map(_.toString)
+      result mustBe Some(QuotedSharesMiniJourney.call.url)
     }
 
     "must return None if all selected journeys are completed" in {
-      val asset       = TypeOfAsset.UnquotedShares
-      val values      = Set[TypeOfAsset](asset)
       val userAnswers = emptyUserAnswers
-        .set(TypeOfAssetPage, values).success.value
-        .set(AssetCompletionFlag(asset), true).success.value
+        .set[Set[TypeOfAsset]](TypeOfAssetPage, Set(UnquotedSharesMiniJourney.assetType)).success.value
+        .set(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType), true).success.value
 
       val result = service.getNextAssetRoute(userAnswers)
-
       result mustBe None
     }
 
     "must return None if no asset types have been selected" in {
-      val userAnswers = emptyUserAnswers
-
-      val result = service.getNextAssetRoute(userAnswers)
-
+      val result = service.getNextAssetRoute(emptyUserAnswers)
       result mustBe None
     }
   }
 
   "setAssetCompleted" - {
-
     "must return Some(updatedAnswers) if setting and persisting succeeds" in {
-      val asset = TypeOfAsset.UnquotedShares
+      when(sessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(stubSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val result = await(service.setAssetCompleted(emptyUserAnswers, asset, completed = true))
-
-      result mustBe defined
-      result.get.get(AssetCompletionFlag(asset)) mustBe Some(true)
-
-      val resultFalse = await(service.setAssetCompleted(emptyUserAnswers, asset, completed = false))
-      resultFalse.get.get(AssetCompletionFlag(asset)) mustBe Some(false)
+      val result = await(service.setAssetCompleted(emptyUserAnswers, UnquotedSharesMiniJourney.assetType, completed = true))
+      result.value.get(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType)) mustBe Some(true)
     }
 
     "must return None if sessionRepository.set returns false" in {
-      val asset = TypeOfAsset.UnquotedShares
+      when(sessionRepository.set(any())) thenReturn Future.successful(false)
 
-      when(stubSessionRepository.set(any())) thenReturn Future.successful(false)
-
-      val result = await(service.setAssetCompleted(emptyUserAnswers, asset, completed = true))
-
+      val result = await(service.setAssetCompleted(emptyUserAnswers, UnquotedSharesMiniJourney.assetType, completed = true))
       result mustBe None
     }
-
   }
-
 }

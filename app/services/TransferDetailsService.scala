@@ -16,8 +16,8 @@
 
 package services
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.{AssetEntry, AssetMiniJourney, HasAssetQuery, TypeOfAsset, UserAnswers}
+import models.assets.{AssetsMiniJourney, AssetsMiniJourneyRegistry}
+import models.{AssetEntry, TypeOfAsset, UserAnswers}
 import play.api.libs.json._
 import play.api.mvc.Call
 import queries.assets._
@@ -31,19 +31,19 @@ class TransferDetailsService @Inject() (
     sessionRepository: SessionRepository
   ) {
 
-  def assetCount[A <: AssetEntry: Reads: HasAssetQuery](userAnswers: UserAnswers): Int = {
-    val queryKey = implicitly[HasAssetQuery[A]].query
-    userAnswers.get(queryKey).getOrElse(Nil).size
+  private def assetEntries[A <: AssetEntry: Reads](journey: AssetsMiniJourney[A], userAnswers: UserAnswers): List[A] =
+    userAnswers.get(journey.query).getOrElse(Nil)
+
+  def assetCount[A <: AssetEntry: Reads](journey: AssetsMiniJourney[A], userAnswers: UserAnswers): Int = {
+    assetEntries(journey, userAnswers).size
   }
 
-  private def getQueryKey[A <: AssetEntry: HasAssetQuery]: AssetQuery[List[A]] =
-    implicitly[HasAssetQuery[A]].query
-
-  def removeAssetEntry[A <: AssetEntry: Format: HasAssetQuery](
+  def removeAssetEntry[A <: AssetEntry: Format](
+      journey: AssetsMiniJourney[A],
       userAnswers: UserAnswers,
       index: Int
     ): Try[UserAnswers] = {
-    val queryKey = implicitly[HasAssetQuery[A]].query
+    val queryKey = journey.query
 
     userAnswers.get(queryKey) match {
       case Some(currentList) if index >= 0 && index < currentList.size =>
@@ -58,35 +58,12 @@ class TransferDetailsService @Inject() (
     }
   }
 
-  private lazy val orderedAssetsJourneys: Seq[AssetMiniJourney] = Seq(
-    AssetMiniJourney(
-      TypeOfAsset.UnquotedShares,
-      () => UnquotedSharesStartController.onPageLoad(),
-      ua => ua.get(AssetCompletionFlag(TypeOfAsset.UnquotedShares)).contains(true)
-    ),
-    AssetMiniJourney(
-      TypeOfAsset.QuotedShares,
-      () => QuotedSharesStartController.onPageLoad(),
-      ua => ua.get(AssetCompletionFlag(TypeOfAsset.QuotedShares)).contains(true)
-    )
-  )
-
   def getNextAssetRoute(userAnswers: UserAnswers): Option[Call] = {
-    val selectedAssets: Set[TypeOfAsset] =
-      userAnswers.get(SelectedAssetTypes).getOrElse(Set.empty)
-
-    orderedAssetsJourneys
-      .filter(journey => selectedAssets.contains(journey.assetType))
-      .find(journey => !journey.isCompleted(userAnswers))
-      .map(_.call)
+    AssetsMiniJourneyRegistry.firstIncompleteJourney(userAnswers).map(_.call)
   }
 
-  def getAssetEntryAtIndex[A <: AssetEntry: Reads: HasAssetQuery](userAnswers: UserAnswers, index: Int): Option[A] = {
-    val assetEntries: Option[List[A]] = userAnswers.get(getQueryKey[A])
-    assetEntries match {
-      case Some(list) => Some(list(index))
-      case _          => None
-    }
+  def getAssetEntryAtIndex[A <: AssetEntry: Reads](journey: AssetsMiniJourney[A], userAnswers: UserAnswers, index: Int): Option[A] = {
+    assetEntries(journey, userAnswers).lift(index)
   }
 
   def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean)(implicit ec: ExecutionContext): Future[Option[UserAnswers]] =

@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package config
 
-import queries.assets.{AssetQuery, QuotedSharesQuery, UnquotedSharesQuery}
+import com.google.inject.AbstractModule
+import models.assets._
 
-trait HasAssetQuery[A <: AssetEntry] {
-  def query: AssetQuery[List[A]]
-}
+class AssetsMiniJourneyModule extends AbstractModule {
 
-object HasAssetQuery {
-
-  implicit val unquoted: HasAssetQuery[UnquotedSharesEntry] =
-    new HasAssetQuery[UnquotedSharesEntry] {
-      def query: AssetQuery[List[UnquotedSharesEntry]] = UnquotedSharesQuery
-    }
-
-  implicit val quoted: HasAssetQuery[QuotedSharesEntry] =
-    new HasAssetQuery[QuotedSharesEntry] {
-      def query: AssetQuery[List[QuotedSharesEntry]] = QuotedSharesQuery
-    }
+  override def configure(): Unit = {
+    bind(classOf[UnquotedSharesMiniJourney.type]).toInstance(UnquotedSharesMiniJourney)
+    bind(classOf[QuotedSharesMiniJourney.type]).toInstance(QuotedSharesMiniJourney)
+  }
 }
