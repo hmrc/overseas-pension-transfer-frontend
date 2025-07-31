@@ -17,7 +17,7 @@
 package models.assets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.{AssetEntry, PropertyEntry, QuotedSharesEntry, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
+import models.UserAnswers
 import play.api.libs.json.OFormat
 import play.api.mvc.Call
 import queries.assets._

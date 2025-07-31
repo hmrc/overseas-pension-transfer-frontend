@@ -19,7 +19,8 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
-import models.{NormalMode, UnquotedSharesEntry}
+import models.NormalMode
+import models.assets.UnquotedSharesEntry
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest

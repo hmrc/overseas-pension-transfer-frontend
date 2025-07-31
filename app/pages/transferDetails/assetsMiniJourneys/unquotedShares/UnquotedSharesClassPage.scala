@@ -17,7 +17,8 @@
 package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, TaskCategory, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
+import models.assets.{TypeOfAsset, UnquotedSharesEntry}
+import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

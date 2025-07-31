@@ -16,7 +16,7 @@
 
 package models.assets
 
-import models.{TypeOfAsset, UserAnswers}
+import models.UserAnswers
 import queries.assets.SelectedAssetTypes
 
 object AssetsMiniJourneyRegistry {

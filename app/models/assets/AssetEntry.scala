@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models
+package models.assets
 
 import models.address.PropertyAddress
 import play.api.libs.json._
