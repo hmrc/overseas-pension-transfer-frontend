@@ -18,8 +18,12 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+<<<<<<< HEAD
 import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalFormProvider
 import models.assets.QuotedSharesMiniJourney
+=======
+import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesConfirmRemovalFormProvider
+>>>>>>> 554ae0f (OAOTC-1259 start to refactor property mini journey and conform all assetsMiniJourney packages to assetsMiniJourneys name scheme)
 import models.{NormalMode, QuotedSharesEntry, TypeOfAsset, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,7 +31,7 @@ import queries.assets.QuotedSharesQuery
 import repositories.SessionRepository
 import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesConfirmRemovalView
+import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesConfirmRemovalView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

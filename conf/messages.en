@@ -447,9 +447,9 @@ quotedSharesValue.error.belowMinimum = The value of quoted shares must be {0} or
 quotedSharesValue.change.hidden = Quoted shares value
 quotedSharesValue.hint = For example, £1000 or £1934.50.
 
-addProperty.title = Add property
-addProperty.heading = Add property
-addProperty.text = The following questions are about property that is part of this transfer.
+propertyStart.title = Add property
+propertyStart.heading = Add property
+propertyStart.text = The following questions are about property that is part of this transfer.
 
 quotedSharesStart.title = Add quoted shares
 quotedSharesStart.heading = Add quoted shares

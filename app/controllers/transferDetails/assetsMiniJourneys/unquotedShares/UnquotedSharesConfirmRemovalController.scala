@@ -18,8 +18,12 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+<<<<<<< HEAD
 import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
 import models.assets.UnquotedSharesMiniJourney
+=======
+import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
+>>>>>>> 554ae0f (OAOTC-1259 start to refactor property mini journey and conform all assetsMiniJourney packages to assetsMiniJourneys name scheme)
 import models.{NormalMode, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
@@ -29,7 +33,7 @@ import queries.assets.UnquotedSharesQuery
 import repositories.SessionRepository
 import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalView
+import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

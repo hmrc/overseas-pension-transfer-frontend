@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import models.{CheckMode, UserAnswers}
-import pages.transferDetails.PropertyValueDescriptionPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyValueDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

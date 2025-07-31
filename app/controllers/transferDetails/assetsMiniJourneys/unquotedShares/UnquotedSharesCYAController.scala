@@ -28,9 +28,9 @@ import queries.assets.UnquotedSharesQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesSummary
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesSummary
 import viewmodels.govuk.summarylist._
-import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesCYAView
+import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAView
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}

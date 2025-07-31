@@ -19,8 +19,12 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
+<<<<<<< HEAD
 import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueFormProvider
 import models.assets.QuotedSharesMiniJourney
+=======
+import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueFormProvider
+>>>>>>> 554ae0f (OAOTC-1259 start to refactor property mini journey and conform all assetsMiniJourney packages to assetsMiniJourneys name scheme)
 import models.{CheckMode, Mode, NormalMode, QuotedSharesEntry, TypeOfAsset, UserAnswers}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,8 +33,8 @@ import repositories.SessionRepository
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueSummary
-import views.html.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueView
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueSummary
+import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

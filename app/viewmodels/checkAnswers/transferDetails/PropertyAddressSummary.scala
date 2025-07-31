@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import models.UserAnswers
-import pages.transferDetails.PropertyAddressPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
