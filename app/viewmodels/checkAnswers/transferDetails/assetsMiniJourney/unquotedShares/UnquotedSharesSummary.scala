@@ -29,6 +29,5 @@ case object UnquotedSharesSummary {
     val classOfSharesRow: Option[SummaryListRow] = UnquotedSharesClassSummary.row(userAnswers, index)
 
     Seq(companyNameRow, valueRow, quantityRow, classOfSharesRow).flatten
-    // Seq(classOfSharesRow).flatten
   }
 }

@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package pages.transferDetails.assetsMiniJourney.quotedShares
+package pages.transferDetails.assetsMiniJourney.unquotedShares
 
-import controllers.checkYourAnswers.routes
-import models.{CheckMode, NormalMode, UserAnswers}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.{NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import pages.transferDetails.RemoveQuotedSharesPage
 
-class RemoveQuotedSharesPageSpec extends AnyFreeSpec with Matchers {
+class UnquotedSharesStartPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -30,17 +29,11 @@ class RemoveQuotedSharesPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
-
-        RemoveQuotedSharesPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
-      }
-    }
-
-    "in Check Mode" - {
-
-      "must go to Check Answers" in {
-
-        RemoveQuotedSharesPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+      "must go to the Next page" in {
+        UnquotedSharesStartPage.nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
+          mode  = NormalMode,
+          index = 0
+        )
       }
     }
   }

@@ -46,7 +46,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesConfirmRemovalView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport {
 
   private val form    = formProvider()
   private val actions = (identify andThen getData andThen requireData andThen displayData)
