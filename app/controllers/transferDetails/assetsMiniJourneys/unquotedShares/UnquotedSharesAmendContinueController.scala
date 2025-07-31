@@ -58,7 +58,7 @@ class UnquotedSharesAmendContinueController @Inject() (
       mode match {
         case CheckMode =>
           transferDetailsService
-            .setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = false)
+            .setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = false)
             .map {
               case Some(updatedAnswers) => renderView(updatedAnswers)
               case None                 =>
