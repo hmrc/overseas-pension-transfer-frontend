@@ -90,7 +90,7 @@ trait Generators extends ModelGenerators with Logging {
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
-      .suchThat(_.nonEmpty)
+      .suchThat(_.trim.nonEmpty)
       .suchThat(_ != "true")
       .suchThat(_ != "false")
 
