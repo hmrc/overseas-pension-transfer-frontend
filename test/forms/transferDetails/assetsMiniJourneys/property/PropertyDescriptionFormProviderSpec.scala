@@ -19,18 +19,18 @@ package forms.transferDetails.assetsMiniJourneys.property
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class PropertyValueDescriptionFormProviderSpec extends StringFieldBehaviours {
+class PropertyDescriptionFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey              = "propertyValueDescription.error.required"
-  val lengthKey                = "propertyValueDescription.error.length"
-  val patternKey               = "propertyValueDescription.error.pattern"
+  val requiredKey              = "propertyDescription.error.required"
+  val lengthKey                = "propertyDescription.error.length"
+  val patternKey               = "propertyDescription.error.pattern"
   val maxLength                = 160
   val descriptionRegex: String = """^[A-Za-z0-9 \-,.&'/]+$"""
 
   implicit override val generatorDrivenConfig: PropertyCheckConfiguration =
     PropertyCheckConfiguration(minSuccessful = 1000)
 
-  val form = new PropertyValueDescriptionFormProvider()()
+  val form = new PropertyDescriptionFormProvider()()
 
   ".value" - {
 

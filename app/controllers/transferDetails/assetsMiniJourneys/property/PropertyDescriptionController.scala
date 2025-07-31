@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.property
 
 import controllers.actions._
-import forms.transferDetails.ValueOfThisPropertyFormProvider
+import forms.transferDetails.assetsMiniJourneys.property.PropertyDescriptionFormProvider
 import models.Mode
-import pages.transferDetails.ValueOfThisPropertyPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.ValueOfThisPropertyView
+import views.html.transferDetails.assetsMiniJourneys.property.PropertyDescriptionView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ValueOfThisPropertyController @Inject() (
+class PropertyDescriptionController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: ValueOfThisPropertyFormProvider,
+    formProvider: PropertyDescriptionFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: ValueOfThisPropertyView
+    view: PropertyDescriptionView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -46,7 +46,7 @@ class ValueOfThisPropertyController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(ValueOfThisPropertyPage) match {
+      val preparedForm = request.userAnswers.get(PropertyDescriptionPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -61,9 +61,9 @@ class ValueOfThisPropertyController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ValueOfThisPropertyPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyDescriptionPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(ValueOfThisPropertyPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(PropertyDescriptionPage.nextPage(mode, updatedAnswers))
       )
   }
 }

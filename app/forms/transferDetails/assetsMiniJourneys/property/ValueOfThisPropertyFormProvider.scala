@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.transferDetails
+package forms.transferDetails.assetsMiniJourneys.property
 
 import forms.mappings.Mappings
 import play.api.data.Form

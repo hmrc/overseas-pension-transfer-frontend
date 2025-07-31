@@ -18,29 +18,29 @@ package controllers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import forms.transferDetails.assetsMiniJourneys.property.PropertyValueDescriptionFormProvider
+import forms.transferDetails.assetsMiniJourneys.property.PropertyDescriptionFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.assetsMiniJourneys.property.PropertyValueDescriptionPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.assetsMiniJourneys.property.PropertyValueDescriptionView
+import views.html.transferDetails.assetsMiniJourneys.property.PropertyDescriptionView
 
 import scala.concurrent.Future
 
-class PropertyValueDescriptionControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new PropertyValueDescriptionFormProvider()
+  private val formProvider = new PropertyDescriptionFormProvider()
   private val form         = formProvider()
 
-  private lazy val propertyValueDescriptionRoute = AssetsMiniJourneysRoutes.PropertyValueDescriptionController.onPageLoad(NormalMode).url
+  private lazy val propertyValueDescriptionRoute = AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode).url
 
-  "PropertyValueDescription Controller" - {
+  "propertyDescription Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -51,7 +51,7 @@ class PropertyValueDescriptionControllerSpec extends AnyFreeSpec with SpecBase w
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[PropertyValueDescriptionView]
+        val view = application.injector.instanceOf[PropertyDescriptionView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
@@ -60,14 +60,14 @@ class PropertyValueDescriptionControllerSpec extends AnyFreeSpec with SpecBase w
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(PropertyValueDescriptionPage, "answer").success.value
+      val userAnswers = userAnswersQtNumber.set(PropertyDescriptionPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, propertyValueDescriptionRoute)
 
-        val view = application.injector.instanceOf[PropertyValueDescriptionView]
+        val view = application.injector.instanceOf[PropertyDescriptionView]
 
         val result = route(application, request).value
 
@@ -95,7 +95,7 @@ class PropertyValueDescriptionControllerSpec extends AnyFreeSpec with SpecBase w
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PropertyValueDescriptionPage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual PropertyDescriptionPage.nextPage(NormalMode, userAnswersQtNumber).url
       }
     }
 
@@ -110,7 +110,7 @@ class PropertyValueDescriptionControllerSpec extends AnyFreeSpec with SpecBase w
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[PropertyValueDescriptionView]
+        val view = application.injector.instanceOf[PropertyDescriptionView]
 
         val result = route(application, request).value
 

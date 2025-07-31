@@ -14,20 +14,14 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.title
-@import viewmodels.govuk.all._
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 @import models.requests.DisplayRequest
-@import views.html.components.QTNumber
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
 @import viewmodels.LabelSize.Large
-
+@import viewmodels.govuk.all._
+@import views.ViewUtils.title
+@import views.html.components.QTNumber
 
 @this(
         layout: templates.Layout,
@@ -40,9 +34,9 @@
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("valueOfThisProperty.title"))) {
+@layout(pageTitle = title(form, messages("propertyDescription.title"))) {
 
-    @formHelper(action = controllers.transferDetails.routes.ValueOfThisPropertyController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = AssetsMiniJourneysRoutes.PropertyDescriptionController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -53,13 +47,11 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("valueOfThisProperty.heading")))
+                label = LabelViewModel(Text(messages("propertyDescription.heading")))
                     .withCssClass("govuk-!-margin-bottom-6")
                     .asPageHeading(size = Large)
             )
-            .withHint(HintViewModel(messages("valueOfThisProperty.hint")))
-            .withPrefix(PrefixOrSuffix(content = "£"))
-            .withWidth(Fixed10)
+            .withHint(HintViewModel(messages("propertyDescription.hint")))
         )
 
         @govukButton(

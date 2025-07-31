@@ -21,14 +21,14 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class PropertyValueDescriptionFormProvider @Inject() extends Mappings with Regex {
+class PropertyDescriptionFormProvider @Inject() extends Mappings with Regex {
 
   private val maxLen = 160
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("propertyValueDescription.error.required")
-        .verifying(maxLength(maxLen, "propertyValueDescription.error.length"))
-        .verifying(regexp(descriptionRegex, "propertyValueDescription.error.pattern"))
+      "value" -> text("propertyDescription.error.required")
+        .verifying(maxLength(maxLen, "propertyDescription.error.length"))
+        .verifying(regexp(descriptionRegex, "propertyDescription.error.pattern"))
     )
 }

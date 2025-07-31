@@ -17,24 +17,24 @@
 package viewmodels.checkAnswers.transferDetails
 
 import models.{CheckMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyValueDescriptionPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object PropertyValueDescriptionSummary {
+object PropertyDescriptionSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PropertyValueDescriptionPage).map {
+    answers.get(PropertyDescriptionPage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "propertyValueDescription.checkYourAnswersLabel",
+          key     = "propertyDescription.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", PropertyValueDescriptionPage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("propertyValueDescription.change.hidden"))
+            ActionItemViewModel("site.change", PropertyDescriptionPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("propertyDescription.change.hidden"))
           )
         )
     }

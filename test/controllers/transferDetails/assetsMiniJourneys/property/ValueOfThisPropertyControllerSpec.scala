@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
-import forms.transferDetails.ValueOfThisPropertyFormProvider
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import forms.transferDetails.assetsMiniJourneys.property.ValueOfThisPropertyFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.ValueOfThisPropertyPage
+import pages.transferDetails.assetsMiniJourneys.property.ValueOfThisPropertyPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.ValueOfThisPropertyView
+import views.html.transferDetails.assetsMiniJourneys.property.ValueOfThisPropertyView
 
 import scala.concurrent.Future
 
@@ -39,7 +40,7 @@ class ValueOfThisPropertyControllerSpec extends AnyFreeSpec with SpecBase with M
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val valueOfThisPropertyRoute = routes.ValueOfThisPropertyController.onPageLoad(NormalMode).url
+  lazy val valueOfThisPropertyRoute = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode).url
 
   "ValueOfThisProperty Controller" - {
 

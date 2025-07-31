@@ -78,12 +78,12 @@ object AssetsMiniJourneysRoutes {
   val PropertyAddressController =
     controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyAddressController
 
-  val PropertyValueDescriptionController =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyValueDescriptionController
+  val PropertyDescriptionController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyDescriptionController
 
-//  val PropertyDescriptionController =
-//    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyClassController
-//
+  val PropertyValueController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.ValueOfThisPropertyController
+
 //  val PropertyCYAController =
 //    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController
 //

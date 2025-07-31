@@ -21,7 +21,7 @@ import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class PropertyValueDescriptionPageSpec extends AnyFreeSpec with Matchers {
+class ValueOfThisPropertyPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -31,7 +31,7 @@ class PropertyValueDescriptionPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to the Next page" in {
         // TODO change when pages are connected
-        PropertyValueDescriptionPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        ValueOfThisPropertyPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
       }
     }
 
@@ -39,7 +39,7 @@ class PropertyValueDescriptionPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        PropertyValueDescriptionPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        ValueOfThisPropertyPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
   }

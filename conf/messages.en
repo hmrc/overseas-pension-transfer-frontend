@@ -535,14 +535,14 @@ quotedSharesClass.error.length = The class of quoted shares must be 160 characte
 quotedSharesClass.error.pattern = The class of quoted shares must only include letters, spaces, apostrophes and hyphens
 quotedSharesClass.change.hidden = Class of quoted shares
 
-propertyValueDescription.title = Describe the property and how it was valued
-propertyValueDescription.heading = Describe the property and how it was valued
-propertyValueDescription.hint = For example, ''a commercial property supported by an independent valuation''.
-propertyValueDescription.checkYourAnswersLabel = Description of the property and valuation
-propertyValueDescription.error.required = Enter a description of the property and how it was valued
-propertyValueDescription.error.length = The property description must be 160 characters or less
-propertyValueDescription.error.pattern = The property description must only include  letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-propertyValueDescription.change.hidden = Description of the property and valuation
+propertyDescription.title = Describe the property and how it was valued
+propertyDescription.heading = Describe the property and how it was valued
+propertyDescription.hint = For example, ''a commercial property supported by an independent valuation''.
+propertyDescription.checkYourAnswersLabel = Description of the property and valuation
+propertyDescription.error.required = Enter a description of the property and how it was valued
+propertyDescription.error.length = The property description must be 160 characters or less
+propertyDescription.error.pattern = The property description must only include  letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+propertyDescription.change.hidden = Description of the property and valuation
 
 assetValueDescription.title = Describe the asset and how it was valued
 assetValueDescription.heading = Describe the asset and how it was valued

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package pages.transferDetails.assetsMiniJourneys.property
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
@@ -35,5 +36,5 @@ case object ValueOfThisPropertyPage extends QuestionPage[BigDecimal] {
     routes.TransferDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    routes.ValueOfThisPropertyController.onPageLoad(CheckMode)
+    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode)
 }

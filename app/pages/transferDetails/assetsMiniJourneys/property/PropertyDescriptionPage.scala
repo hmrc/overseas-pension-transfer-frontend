@@ -23,7 +23,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PropertyValueDescriptionPage extends QuestionPage[String] {
+case object PropertyDescriptionPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
@@ -36,5 +36,5 @@ case object PropertyValueDescriptionPage extends QuestionPage[String] {
     routes.TransferDetailsCYAController.onPageLoad()
 
   final def changeLink(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyValueDescriptionController.onPageLoad(CheckMode)
+    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode)
 }
