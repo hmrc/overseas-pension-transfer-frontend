@@ -18,29 +18,29 @@ package controllers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import forms.transferDetails.assetsMiniJourneys.property.ValueOfThisPropertyFormProvider
+import forms.transferDetails.assetsMiniJourneys.property.PropertyValueFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.assetsMiniJourneys.property.ValueOfThisPropertyPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.assetsMiniJourneys.property.ValueOfThisPropertyView
+import views.html.transferDetails.assetsMiniJourneys.property.PropertyValueView
 
 import scala.concurrent.Future
 
-class ValueOfThisPropertyControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  val formProvider = new ValueOfThisPropertyFormProvider()
+  val formProvider = new PropertyValueFormProvider()
   val form         = formProvider()
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val valueOfThisPropertyRoute = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode).url
+  lazy val propertyValueRoute = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode).url
 
   "ValueOfThisProperty Controller" - {
 
@@ -49,11 +49,11 @@ class ValueOfThisPropertyControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, valueOfThisPropertyRoute)
+        val request = FakeRequest(GET, propertyValueRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ValueOfThisPropertyView]
+        val view = application.injector.instanceOf[PropertyValueView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
@@ -62,14 +62,14 @@ class ValueOfThisPropertyControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(ValueOfThisPropertyPage, validAnswer).success.value
+      val userAnswers = userAnswersQtNumber.set(PropertyValuePage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, valueOfThisPropertyRoute)
+        val request = FakeRequest(GET, propertyValueRoute)
 
-        val view = application.injector.instanceOf[ValueOfThisPropertyView]
+        val view = application.injector.instanceOf[PropertyValueView]
 
         val result = route(application, request).value
 
@@ -93,13 +93,13 @@ class ValueOfThisPropertyControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, valueOfThisPropertyRoute)
+          FakeRequest(POST, propertyValueRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ValueOfThisPropertyPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual PropertyValuePage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -109,12 +109,12 @@ class ValueOfThisPropertyControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, valueOfThisPropertyRoute)
+          FakeRequest(POST, propertyValueRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[ValueOfThisPropertyView]
+        val view = application.injector.instanceOf[PropertyValueView]
 
         val result = route(application, request).value
 
@@ -128,7 +128,7 @@ class ValueOfThisPropertyControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, valueOfThisPropertyRoute)
+        val request = FakeRequest(GET, propertyValueRoute)
 
         val result = route(application, request).value
 
@@ -143,7 +143,7 @@ class ValueOfThisPropertyControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, valueOfThisPropertyRoute)
+          FakeRequest(POST, propertyValueRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value

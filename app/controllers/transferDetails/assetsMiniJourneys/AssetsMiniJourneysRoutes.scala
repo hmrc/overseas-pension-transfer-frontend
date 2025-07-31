@@ -82,15 +82,14 @@ object AssetsMiniJourneysRoutes {
     controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyDescriptionController
 
   val PropertyValueController =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.ValueOfThisPropertyController
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyValueController
 
-//  val PropertyCYAController =
-//    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController
-//
-//  val PropertyAmendContinueController =
-//    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyAmendContinueController
-//
-//  val PropertyConfirmRemovalController =
-//    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyConfirmRemovalController
+  val PropertyCYAController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController
 
+  val PropertyAmendContinueController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyAmendContinueController
+
+  val PropertyConfirmRemovalController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyConfirmRemovalController
 }

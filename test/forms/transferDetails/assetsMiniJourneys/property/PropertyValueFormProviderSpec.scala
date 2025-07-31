@@ -23,9 +23,9 @@ import utils.CurrencyFormats.currencyFormat
 
 import scala.math.BigDecimal.RoundingMode
 
-class ValueOfThisPropertyFormProviderSpec extends CurrencyFieldBehaviours {
+class PropertyValueFormProviderSpec extends CurrencyFieldBehaviours {
 
-  val form = new ValueOfThisPropertyFormProvider()()
+  val form = new PropertyValueFormProvider()()
 
   ".value" - {
 
@@ -48,20 +48,20 @@ class ValueOfThisPropertyFormProviderSpec extends CurrencyFieldBehaviours {
     behave like currencyField(
       form,
       fieldName,
-      nonNumericError = FormError(fieldName, "valueOfThisProperty.error.nonNumeric")
+      nonNumericError = FormError(fieldName, "propertyValue.error.nonNumeric")
     )
 
     behave like currencyFieldWithMaximum(
       form,
       fieldName,
       maximum,
-      FormError(fieldName, "valueOfThisProperty.error.aboveMaximum", Seq(currencyFormat(maximum)))
+      FormError(fieldName, "propertyValue.error.aboveMaximum", Seq(currencyFormat(maximum)))
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "valueOfThisProperty.error.required")
+      requiredError = FormError(fieldName, "propertyValue.error.required")
     )
   }
 }

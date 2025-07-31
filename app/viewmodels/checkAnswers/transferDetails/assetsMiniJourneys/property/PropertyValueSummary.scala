@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import models.{CheckMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
+import models.UserAnswers
+import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.CurrencyFormats.currencyFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object PropertyDescriptionSummary {
+object PropertyValueSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PropertyDescriptionPage).map {
+    answers.get(PropertyValuePage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "propertyDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key     = "propertyValue.checkYourAnswersLabel",
+          value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", PropertyDescriptionPage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("propertyDescription.change.hidden"))
+            ActionItemViewModel("site.change", PropertyValuePage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("propertyValue.change.hidden"))
           )
         )
     }

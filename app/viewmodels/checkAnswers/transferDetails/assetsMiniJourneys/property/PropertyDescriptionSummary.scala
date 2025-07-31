@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import models.UserAnswers
-import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.AddressViewModel
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object PropertyAddressSummary {
+object PropertyDescriptionSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PropertyAddressPage).map {
-      address =>
-        val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
-
+    answers.get(PropertyDescriptionPage).map {
+      answer =>
         SummaryListRowViewModel(
-          key     = "propertyAddress.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
+          key     = "propertyDescription.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", PropertyAddressPage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("propertyAddress.change.hidden"))
+            ActionItemViewModel("site.change", PropertyDescriptionPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("propertyDescription.change.hidden"))
           )
         )
     }

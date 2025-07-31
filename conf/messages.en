@@ -517,15 +517,15 @@ quotedSharesNumber.error.negative = The number of quoted shares must be more tha
 quotedSharesNumber.error.invalid = The number of quoted shares must be a number, like 10 or 125
 quotedSharesNumber.change.hidden = Number of quoted shares
 
-valueOfThisProperty.title = What is the value of this property?
-valueOfThisProperty.heading = What is the value of this property?
-valueOfThisProperty.hint = For example, £10000 or £193,540
-valueOfThisProperty.checkYourAnswersLabel = Property value
-valueOfThisProperty.error.nonNumeric = The property value must be an amount of money, like £123 or 123.00
-valueOfThisProperty.error.required = Enter the property value
-valueOfThisProperty.error.aboveMaximum = The property value must be {0} or less
-valueOfThisProperty.error.belowMinimum = The property value must be {0} or more
-valueOfThisProperty.change.hidden = Property value
+propertyValue.title = What is the value of this property?
+propertyValue.heading = What is the value of this property?
+propertyValue.hint = For example, £10000 or £193,540
+propertyValue.checkYourAnswersLabel = Property value
+propertyValue.error.nonNumeric = The property value must be an amount of money, like £123 or 123.00
+propertyValue.error.required = Enter the property value
+propertyValue.error.aboveMaximum = The property value must be {0} or less
+propertyValue.error.belowMinimum = The property value must be {0} or more
+propertyValue.change.hidden = Property value
 
 quotedSharesClass.title = What class are these quoted shares?
 quotedSharesClass.heading = What class are these quoted shares?
@@ -595,12 +595,12 @@ quotedSharesAmendContinue.summary.value = {0} added
 quotedSharesAmendContinue.text.singular = group of quoted shares
 quotedSharesAmendContinue.text.plural = groups of quoted shares
 
-addAdditionalProperty.title = addAdditionalProperty
-addAdditionalProperty.heading = You have added 1 Property
-addAdditionalProperty.checkYourAnswersLabel = addAdditionalProperty
-addAdditionalProperty.error.required = Please select an option
-addAdditionalProperty.change.hidden = AddAdditionalProperty
-addAdditionalProperty.addMore = Do you need to add another property?
+propertyAmendContinue.title = propertyAmendContinue
+propertyAmendContinue.heading = You have added 1 Property
+propertyAmendContinue.checkYourAnswersLabel = propertyAmendContinue
+propertyAmendContinue.error.required = Please select an option
+propertyAmendContinue.change.hidden = AddAdditionalProperty
+propertyAmendContinue.addMore = Do you need to add another property?
 
 addOtherAssets.title = Add other assets
 addOtherAssets.heading = Add other assets

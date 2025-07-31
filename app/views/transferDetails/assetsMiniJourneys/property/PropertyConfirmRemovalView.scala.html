@@ -14,53 +14,44 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.title
 @import viewmodels.govuk.all._
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
+@import views.ViewUtils.title
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.LegendSize.Large
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
-@import viewmodels.LabelSize.Large
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
-
 @this(
-        layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
-        govukButton: GovukButton,
-        qtNumber: QTNumber
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton,
+    qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("valueOfThisProperty.title"))) {
+@layout(pageTitle = title(form, messages("propertyConfirmRemoval.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.PropertyValueController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @qtNumber()
+        <h1 class="govuk-heading-l">@messages("propertyConfirmRemoval.heading")</h1>
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(Text(messages("valueOfThisProperty.heading")))
-                    .withCssClass("govuk-!-margin-bottom-6")
-                    .asPageHeading(size = Large)
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value")
             )
-            .withHint(HintViewModel(messages("valueOfThisProperty.hint")))
-            .withPrefix(PrefixOrSuffix(content = "£"))
-            .withWidth(Fixed10)
         )
 
         @govukButton(

@@ -38,7 +38,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
   private val formProvider = new PropertyDescriptionFormProvider()
   private val form         = formProvider()
 
-  private lazy val propertyValueDescriptionRoute = AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode).url
+  private lazy val propertyDescriptionRoute = AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode).url
 
   "propertyDescription Controller" - {
 
@@ -47,7 +47,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyValueDescriptionRoute)
+        val request = FakeRequest(GET, propertyDescriptionRoute)
 
         val result = route(application, request).value
 
@@ -65,7 +65,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyValueDescriptionRoute)
+        val request = FakeRequest(GET, propertyDescriptionRoute)
 
         val view = application.injector.instanceOf[PropertyDescriptionView]
 
@@ -89,7 +89,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyValueDescriptionRoute)
+          FakeRequest(POST, propertyDescriptionRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -105,7 +105,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyValueDescriptionRoute)
+          FakeRequest(POST, propertyDescriptionRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -124,7 +124,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyValueDescriptionRoute)
+        val request = FakeRequest(GET, propertyDescriptionRoute)
 
         val result = route(application, request).value
 
@@ -139,7 +139,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyValueDescriptionRoute)
+          FakeRequest(POST, propertyDescriptionRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value

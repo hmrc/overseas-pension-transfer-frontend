@@ -16,20 +16,30 @@
 
 package forms.transferDetails.assetsMiniJourneys.property
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-import javax.inject.Inject
+class PropertyAmendContinueFormProviderSpec extends BooleanFieldBehaviours {
 
-class ValueOfThisPropertyFormProvider @Inject() extends Mappings {
+  val requiredKey = "propertyAmendContinue.error.required"
+  val invalidKey  = "error.boolean"
 
-  def apply(): Form[BigDecimal] =
-    Form(
-      "value" -> currency(
-        "valueOfThisProperty.error.required",
-        "valueOfThisProperty.error.nonNumeric"
-      )
-        .verifying(minimumCurrency(0.01, "valueOfThisProperty.error.belowMinimum"))
-        .verifying(maximumCurrency(999999999.99, "valueOfThisProperty.error.aboveMaximum"))
+  val form = new PropertyAmendContinueFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

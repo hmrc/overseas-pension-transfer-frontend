@@ -27,7 +27,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyStartView
 
 class PropertyStartControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val addPropertyRoute = AssetsMiniJourneysRoutes.PropertyStartController.onPageLoad().url
+  private lazy val propertyStartRoute = AssetsMiniJourneysRoutes.PropertyStartController.onPageLoad().url
 
   "AddProperty Controller" - {
 
@@ -36,7 +36,7 @@ class PropertyStartControllerSpec extends AnyFreeSpec with SpecBase with Mockito
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request  = FakeRequest(GET, addPropertyRoute)
+        val request  = FakeRequest(GET, propertyStartRoute)
         val result   = route(application, request).value
         val view     = application.injector.instanceOf[PropertyStartView]
         val nextPage = controllers.routes.IndexController.onPageLoad().url

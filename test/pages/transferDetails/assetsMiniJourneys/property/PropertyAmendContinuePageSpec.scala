@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.routes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class AddAdditionalPropertyPageSpec extends AnyFreeSpec with Matchers {
+class PropertyAmendContinuePageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
@@ -31,7 +31,7 @@ class AddAdditionalPropertyPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        AddAdditionalPropertyPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        PropertyAmendContinuePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
       }
     }
 
@@ -39,7 +39,7 @@ class AddAdditionalPropertyPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        AddAdditionalPropertyPage.nextPage(CheckMode, emptyAnswers) mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+        PropertyAmendContinuePage.nextPage(CheckMode, emptyAnswers) mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
       }
     }
   }

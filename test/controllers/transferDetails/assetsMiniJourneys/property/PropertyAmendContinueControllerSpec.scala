@@ -14,44 +14,45 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.routes
-import forms.transferDetails.AddAdditionalPropertyFormProvider
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.AddAdditionalPropertyPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.AddAdditionalPropertyView
+import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
 
 import scala.concurrent.Future
 
-class AddAdditionalPropertyControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new AddAdditionalPropertyFormProvider()
+  private val formProvider = new PropertyAmendContinueFormProvider()
   private val form         = formProvider()
 
-  private lazy val addAdditionalPropertyRoute = controllers.transferDetails.routes.AddAdditionalPropertyController.onPageLoad(NormalMode).url
+  private lazy val propertyAmendContinueRoute = AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
 
-  "AddAdditionalProperty Controller" - {
+  "PropertyAmendContinue Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, addAdditionalPropertyRoute)
+        val request = FakeRequest(GET, propertyAmendContinueRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AddAdditionalPropertyView]
+        val view = application.injector.instanceOf[PropertyAmendContinueView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
@@ -60,14 +61,14 @@ class AddAdditionalPropertyControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(AddAdditionalPropertyPage, true).success.value
+      val userAnswers = userAnswersQtNumber.set(PropertyAmendContinuePage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, addAdditionalPropertyRoute)
+        val request = FakeRequest(GET, propertyAmendContinueRoute)
 
-        val view = application.injector.instanceOf[AddAdditionalPropertyView]
+        val view = application.injector.instanceOf[PropertyAmendContinueView]
 
         val result = route(application, request).value
 
@@ -91,13 +92,13 @@ class AddAdditionalPropertyControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, addAdditionalPropertyRoute)
+          FakeRequest(POST, propertyAmendContinueRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AddAdditionalPropertyPage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual PropertyAmendContinuePage.nextPage(NormalMode, userAnswersQtNumber).url
       }
     }
 
@@ -107,12 +108,12 @@ class AddAdditionalPropertyControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, addAdditionalPropertyRoute)
+          FakeRequest(POST, propertyAmendContinueRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[AddAdditionalPropertyView]
+        val view = application.injector.instanceOf[PropertyAmendContinueView]
 
         val result = route(application, request).value
 
@@ -126,7 +127,7 @@ class AddAdditionalPropertyControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, addAdditionalPropertyRoute)
+        val request = FakeRequest(GET, propertyAmendContinueRoute)
 
         val result = route(application, request).value
 
@@ -141,7 +142,7 @@ class AddAdditionalPropertyControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, addAdditionalPropertyRoute)
+          FakeRequest(POST, propertyAmendContinueRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

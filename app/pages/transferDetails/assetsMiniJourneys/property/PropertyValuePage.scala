@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package pages.transferDetails.assetsMiniJourneys.property
 
-import controllers.routes
-import models.UserAnswers
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import controllers.transferDetails.routes
+import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAdditionalPropertyPage extends QuestionPage[Boolean] {
+case object PropertyValuePage extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "addAdditionalProperty"
+  override def toString: String = "propValue"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+    routes.TransferDetailsCYAController.onPageLoad()
+
+  final def changeLink(answers: UserAnswers): Call =
+    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode)
 }

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package forms.transferDetails
+package forms.transferDetails.assetsMiniJourneys.property
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
-class AddAdditionalPropertyFormProviderSpec extends BooleanFieldBehaviours {
+class PropertyConfirmRemovalFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addAdditionalProperty.error.required"
+  val requiredKey = "propertyConfirmRemoval.error.required"
   val invalidKey  = "error.boolean"
 
-  val form = new AddAdditionalPropertyFormProvider()()
+  val form = new PropertyConfirmRemovalFormProvider()()
 
   ".value" - {
 

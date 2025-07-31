@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import controllers.transferDetails.routes
-import models.{CheckMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.ValueOfThisPropertyPage
+import models.UserAnswers
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.CurrencyFormats.currencyFormat
+import viewmodels.AddressViewModel
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object ValueOfThisPropertySummary {
+object PropertyAddressSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(ValueOfThisPropertyPage).map {
-      answer =>
+    answers.get(PropertyAddressPage).map {
+      address =>
+        val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
+
         SummaryListRowViewModel(
-          key     = "valueOfThisProperty.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
+          key     = "propertyAddress.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", ValueOfThisPropertyPage.changeLink(answers).url)
-              .withVisuallyHiddenText(messages("valueOfThisProperty.change.hidden"))
+            ActionItemViewModel("site.change", PropertyAddressPage.changeLink(answers).url)
+              .withVisuallyHiddenText(messages("propertyAddress.change.hidden"))
           )
         )
     }

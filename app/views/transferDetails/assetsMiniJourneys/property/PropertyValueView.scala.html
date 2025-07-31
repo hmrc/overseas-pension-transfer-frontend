@@ -14,48 +14,53 @@
  * limitations under the License.
  *@
 
+@import viewmodels.InputWidth._
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import viewmodels.govuk.all._
 @import views.ViewUtils.title
+@import viewmodels.govuk.all._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.LegendSize.Large
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
+@import viewmodels.LabelSize.Large
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
+        govukInput: GovukInput,
         govukButton: GovukButton,
         qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("addAdditionalProperty.title"))) {
+@layout(pageTitle = title(form, messages("propertyValue.title"))) {
 
-    @formHelper(action = controllers.transferDetails.routes.AddAdditionalPropertyController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AssetsMiniJourneysRoutes.PropertyValueController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("addAdditionalProperty.heading")</h1>
 
-        @govukRadios(
-            RadiosViewModel.yesNo(
+        @govukInput(
+            InputViewModel(
                 field = form("value"),
-                legend = LegendViewModel(
-                    messages("addAdditionalProperty.addMore")
-                )
+                label = LabelViewModel(Text(messages("propertyValue.heading")))
+                    .withCssClass("govuk-!-margin-bottom-6")
+                    .asPageHeading(size = Large)
             )
+            .withHint(HintViewModel(messages("propertyValue.hint")))
+            .withPrefix(PrefixOrSuffix(content = "£"))
+            .withWidth(Fixed10)
         )
 
         @govukButton(

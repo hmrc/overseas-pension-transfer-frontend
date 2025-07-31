@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import controllers.routes
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{CheckMode, UserAnswers}
-import pages.transferDetails.AddAdditionalPropertyPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object AddAdditionalPropertySummary {
+object PropertyAmendContinueSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AddAdditionalPropertyPage).map {
+    answers.get(PropertyAmendContinuePage).map {
       answer =>
         val value = if (answer) "site.yes" else "site.no"
 
         SummaryListRowViewModel(
-          key     = "addAdditionalProperty.checkYourAnswersLabel",
+          key     = "propertyAmendContinue.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", controllers.transferDetails.routes.AddAdditionalPropertyController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("addAdditionalProperty.change.hidden"))
+            ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("propertyAmendContinue.change.hidden"))
           )
         )
     }
