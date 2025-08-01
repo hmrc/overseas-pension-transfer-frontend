@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package pages.transferDetails.assetsMiniJourney.quotedShares
+package pages.transferDetails.assetsMiniJourney.otherAssets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, NormalMode, QuotedSharesEntry, TaskCategory, TypeOfAsset, UserAnswers}
+import controllers.transferDetails.routes
+import models.{OtherAssetsEntry, TaskCategory, TypeOfAsset, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class QuotedSharesCompanyNamePage(index: Int) extends QuestionPage[String] {
+case class OtherAssetsValuePage(index: Int) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.toString \ index \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Other.toString \ index \ toString
 
-  override def toString: String = QuotedSharesEntry.CompanyName
+  override def toString: String = OtherAssetsEntry.OtherAssetsValue
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(NormalMode, index)
+    controllers.routes.IndexController.onPageLoad() // need custom cya controller
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(index)
+    routes.TransferDetailsCYAController.onPageLoad() // index pased into correct controller
 
   final def changeLink(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(CheckMode, index)
+    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(index)
 }

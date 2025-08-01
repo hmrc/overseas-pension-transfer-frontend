@@ -66,3 +66,15 @@ object PropertyEntry {
 
   implicit val format: OFormat[PropertyEntry] = Json.format[PropertyEntry]
 }
+
+case class OtherAssetsEntry(
+    otherAssetsValueDescription: String,
+    otherAssetsValue: BigDecimal
+  ) extends AssetEntry
+
+object OtherAssetsEntry {
+  val OtherAssetsValueDescription = "valueDescription"
+  val OtherAssetsValue            = "valueOfAsset"
+
+  implicit val format: OFormat[OtherAssetsEntry] = Json.format[OtherAssetsEntry]
+}

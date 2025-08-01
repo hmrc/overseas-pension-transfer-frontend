@@ -69,4 +69,26 @@ object AssetsMiniJourneysRoutes {
 
   val QuotedSharesConfirmRemovalController =
     controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesConfirmRemovalController
+
+  // ----- Properties -----
+
+  // ----- Other Assets -----
+
+  val OtherAssetsStartController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsStartController
+
+  val OtherAssetsValueDescriptionController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsValueDescriptionController
+
+  val OtherAssetsValueController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsValueController
+
+  val OtherAssetsAmendContinueController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsAmendContinueController
+
+  val OtherAssetsConfirmRemovalController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsConfirmRemovalController
+
 }
+
+//TODO Create other assets cya

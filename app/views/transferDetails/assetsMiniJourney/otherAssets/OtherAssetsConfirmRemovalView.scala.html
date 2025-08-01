@@ -14,48 +14,45 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.title
 @import viewmodels.govuk.all._
+@import views.ViewUtils.title
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.LegendSize.Large
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-@import viewmodels.LabelSize.Large
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
+
 @this(
-        layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
-        govukButton: GovukButton,
-        qtNumber: QTNumber
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton,
+    qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("quotedSharesCompanyName.title"))) {
+@layout(pageTitle = title(form, messages("removeOtherAsset.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onSubmit(mode, index)) {
+    @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @qtNumber()
+        <h1 class="govuk-heading-l">@messages("removeOtherAsset.heading")</h1>
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(Text(messages("quotedSharesCompanyName.heading")))
-                    .withCssClass("govuk-!-margin-bottom-6")
-                    .asPageHeading(size = Large)
+        @govukRadios(
+            RadiosViewModel.yesNo(
+                field = form("value")
             )
-            .withWidth(OneHalf)
         )
 
         @govukButton(

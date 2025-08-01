@@ -19,13 +19,15 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.title
 @import viewmodels.govuk.all._
+@import views.ViewUtils.title
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
 @import viewmodels.LabelSize.Large
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+
 
 @this(
         layout: templates.Layout,
@@ -38,9 +40,9 @@
 
 @(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("quotedSharesCompanyName.title"))) {
+@layout(pageTitle = title(form, messages("valueOfAsset.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onSubmit(mode, index)) {
+    @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsValueController.onSubmit(mode, index), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -51,11 +53,13 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("quotedSharesCompanyName.heading")))
+                label = LabelViewModel(Text(messages("valueOfAsset.heading")))
                     .withCssClass("govuk-!-margin-bottom-6")
                     .asPageHeading(size = Large)
             )
-            .withWidth(OneHalf)
+            .withHint(HintViewModel(messages("valueOfAsset.hint")))
+            .withPrefix(PrefixOrSuffix(content = "£"))
+            .withWidth(Fixed10)
         )
 
         @govukButton(

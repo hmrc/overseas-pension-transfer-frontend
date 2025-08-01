@@ -28,19 +28,19 @@
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
 @this(
-        layout: templates.Layout,
-        formHelper: FormWithCSRF,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
-        govukButton: GovukButton,
-        qtNumber: QTNumber
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukButton: GovukButton,
+    qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("quotedSharesCompanyName.title"))) {
+@layout(pageTitle = title(form, messages("assetValueDescription.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onSubmit(mode, index)) {
+    @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onSubmit(mode, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -51,11 +51,11 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("quotedSharesCompanyName.heading")))
+                label = LabelViewModel(Text(messages("assetValueDescription.heading")))
                     .withCssClass("govuk-!-margin-bottom-6")
                     .asPageHeading(size = Large)
             )
-            .withWidth(OneHalf)
+            .withHint(HintViewModel(messages("assetValueDescription.hint")))
         )
 
         @govukButton(
