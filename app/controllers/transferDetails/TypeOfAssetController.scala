@@ -18,7 +18,7 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.transferDetails.TypeOfAssetFormProvider
-import models.{Mode, UserAnswers}
+import models.Mode
 import navigators.TypeOfAssetNavigator
 import pages.transferDetails.TypeOfAssetPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,7 +30,6 @@ import views.html.transferDetails.TypeOfAssetView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 class TypeOfAssetController @Inject() (
     override val messagesApi: MessagesApi,
@@ -64,34 +63,13 @@ class TypeOfAssetController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value => {
-          val initialUpdate = request.userAnswers.set(TypeOfAssetPage, value)
-
-          initialUpdate match {
-            case Success(updatedAnswersWithTypes) =>
-              // For each selected asset type, set it as incomplete in the user answers
-              val markAllIncomplete: Future[Option[UserAnswers]] =
-                value.foldLeft(Future.successful(Some(updatedAnswersWithTypes): Option[UserAnswers])) {
-                  case (maybeAnswersFut, assetType) =>
-                    maybeAnswersFut.flatMap {
-                      case Some(ua) => transferDetailsService.setAssetCompleted(ua, assetType, completed = false)
-                      case None     => Future.successful(None)
-                    }
-                }
-
-              for {
-                maybeFinalAnswers <- markAllIncomplete
-                result            <- maybeFinalAnswers match {
-                                       case Some(finalAnswers) => sessionRepository.set(finalAnswers)
-                                           .map(_ => Redirect(typeOfAssetNavigator.nextPage(TypeOfAssetPage, mode, finalAnswers)))
-                                       case None               =>
-                                         Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-                                     }
-              } yield result
-
-            case Failure(_) =>
-              Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-          }
+        selectedAssets => {
+          for {
+            setAssetsUA               <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, selectedAssets))
+            removePrevSetAssetFlagsUA <- Future.fromTry(transferDetailsService.clearAllAssetCompletionFlags(setAssetsUA))
+            setAssetsCompletedUA      <- Future.fromTry(transferDetailsService.setSelectedAssetsCompleted(removePrevSetAssetFlagsUA, selectedAssets))
+            _                         <- sessionRepository.set(setAssetsCompletedUA)
+          } yield Redirect(typeOfAssetNavigator.nextPage(TypeOfAssetPage, mode, setAssetsCompletedUA))
         }
       )
     }

@@ -21,15 +21,11 @@ import models.{AssetEntry, TypeOfAsset, UserAnswers}
 import play.api.libs.json._
 import play.api.mvc.Call
 import queries.assets._
-import repositories.SessionRepository
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
-class TransferDetailsService @Inject() (
-    sessionRepository: SessionRepository
-  ) {
+class TransferDetailsService {
 
   private def assetEntries[A <: AssetEntry: Reads](journey: AssetsMiniJourney[A], userAnswers: UserAnswers): List[A] =
     userAnswers.get(journey.query).getOrElse(Nil)
@@ -58,6 +54,18 @@ class TransferDetailsService @Inject() (
     }
   }
 
+  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean)(implicit ec: ExecutionContext): Try[UserAnswers] =
+    userAnswers.set(AssetCompletionFlag(assetType), completed)
+
+  def setSelectedAssetsCompleted(removePrevSetAssetFlagsUA: UserAnswers, selectedAssets: Set[TypeOfAsset])(implicit ex: ExecutionContext): Try[UserAnswers] =
+    selectedAssets.foldLeft(Try(removePrevSetAssetFlagsUA)) {
+      case (Success(ua), assetType) =>
+        setAssetCompleted(ua, assetType, completed = false)
+    }
+
+  def clearAllAssetCompletionFlags(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(AssetCompletionFlags)
+
   def getNextAssetRoute(userAnswers: UserAnswers): Option[Call] = {
     AssetsMiniJourneyRegistry.firstIncompleteJourney(userAnswers).map(_.call)
   }
@@ -65,15 +73,4 @@ class TransferDetailsService @Inject() (
   def getAssetEntryAtIndex[A <: AssetEntry: Reads](journey: AssetsMiniJourney[A], userAnswers: UserAnswers, index: Int): Option[A] = {
     assetEntries(journey, userAnswers).lift(index)
   }
-
-  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean)(implicit ec: ExecutionContext): Future[Option[UserAnswers]] =
-    userAnswers.set(AssetCompletionFlag(assetType), completed) match {
-      case Success(updated) =>
-        sessionRepository.set(updated).map {
-          case true  => Some(updated)
-          case false => None
-        }
-      case Failure(_)       =>
-        Future.successful(None)
-    }
 }

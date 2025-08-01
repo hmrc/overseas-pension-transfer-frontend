@@ -24,6 +24,7 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.transferDetails.TypeOfAssetPage
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import queries.assets.AssetCompletionFlag
 import repositories.SessionRepository
@@ -36,7 +37,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
   private val sessionRepository = mock[SessionRepository]
 
-  private val service = new TransferDetailsService(sessionRepository)
+  private val service = new TransferDetailsService
 
   "assetCount" - {
     "must return the number of entries for a given asset journey" in {
@@ -116,18 +117,41 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
   }
 
   "setAssetCompleted" - {
-    "must return Some(updatedAnswers) if setting and persisting succeeds" in {
-      when(sessionRepository.set(any())) thenReturn Future.successful(true)
+    "must return updated UserAnswers with flag set to true" in {
+      val result = service.setAssetCompleted(emptyUserAnswers, UnquotedSharesMiniJourney.assetType, completed = true)
 
-      val result = await(service.setAssetCompleted(emptyUserAnswers, UnquotedSharesMiniJourney.assetType, completed = true))
-      result.value.get(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType)) mustBe Some(true)
+      result mustBe a[Success[_]]
+      result.get.get(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType)) mustBe Some(true)
     }
 
-    "must return None if sessionRepository.set returns false" in {
-      when(sessionRepository.set(any())) thenReturn Future.successful(false)
+    "must return updated UserAnswers with flag set to false" in {
+      val result = service.setAssetCompleted(emptyUserAnswers, QuotedSharesMiniJourney.assetType, completed = false)
 
-      val result = await(service.setAssetCompleted(emptyUserAnswers, UnquotedSharesMiniJourney.assetType, completed = true))
-      result mustBe None
+      result mustBe a[Success[_]]
+      result.get.get(AssetCompletionFlag(QuotedSharesMiniJourney.assetType)) mustBe Some(false)
     }
   }
+  "clearAllAssetCompletionFlags" - {
+    "must remove all completion flags" in {
+      val userAnswersWithFlags = emptyUserAnswers
+        .set(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType), true).success.value
+        .set(AssetCompletionFlag(QuotedSharesMiniJourney.assetType), true).success.value
+
+      val result = service.clearAllAssetCompletionFlags(userAnswersWithFlags)
+
+      result mustBe a[Success[_]]
+      val updatedAnswers = result.get
+
+      updatedAnswers.get(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType)) mustBe None
+      updatedAnswers.get(AssetCompletionFlag(QuotedSharesMiniJourney.assetType)) mustBe None
+    }
+
+    "must still succeed if there are no flags to remove" in {
+      val result = service.clearAllAssetCompletionFlags(emptyUserAnswers)
+
+      result mustBe a[Success[_]]
+      result.get.data mustBe Json.obj()
+    }
+  }
+
 }
