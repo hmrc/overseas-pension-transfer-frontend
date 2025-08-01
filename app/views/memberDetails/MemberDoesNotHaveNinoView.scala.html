@@ -46,8 +46,10 @@
         @govukTextarea(
             TextareaViewModel(
                 field = form("value"),
+                label = Label(
+                    content = messages("memberDoesNotHaveNino.hint")
+                )
             )
-            .withHint(HintViewModel(messages("memberDoesNotHaveNino.hint")))
         )
 
         @govukButton(

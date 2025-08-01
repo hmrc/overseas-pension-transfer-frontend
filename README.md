@@ -23,11 +23,17 @@ This is the frontend microservice application that is part of the Managing Pensi
 
 The service runs on port `15600` by default.
 
+## Authentication
+| Enrolment Key | Identifier Name | Identifier Value |
+|---------------| ------- |------- |
+|HMRC-PODSPP-ORG|PSPID|<ANY_VALUE>|
+|HMRC-PODS-ORG|PSAID|<ANY_VALUE>|
+
 ## Navigating the service
 
 ### Start Journey 
 
-1. Navigate to http://localhost:15600/overseas-pension-transfer-frontend
+1. Navigate to http://localhost:15600/report-transfer-qualified-recognised-overseas-pension-scheme
 
 ## Running tests
 

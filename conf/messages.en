@@ -32,8 +32,8 @@ footer.link.text.discard.report = Discard transfer report
 footer.link.text.dashboard = Return to overseas pension transfer dashboard
 footer.link.text.tasklist = Return to task list
 
-index.title = overseas-pension-transfer-frontend
-index.heading = overseas-pension-transfer-frontend
+index.title = report-transfer-qualified-recognised-overseas-pension-scheme
+index.heading = report-transfer-qualified-recognised-overseas-pension-scheme
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 requiredInfo.title = What you will need
