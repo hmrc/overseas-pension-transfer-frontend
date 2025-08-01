@@ -610,6 +610,9 @@ propertyAmendContinue.text.singular = property
 propertyAmendContinue.text.plural = properties
 
 
+otherAssetsAmendContinue.text.singular = group of assets
+otherAssetsAmendContinue.text.plural = groups of assets
+
 addOtherAssets.title = Add other assets
 addOtherAssets.heading = Add other assets
 addOtherAssets.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.

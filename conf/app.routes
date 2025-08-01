@@ -205,6 +205,21 @@ POST       /transfer-details/value-of-asset                                     
 GET        /transfer-details/change-value-of-asset                                                controllers.transferDetails.ValueOfAssetController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-value-of-asset                                                controllers.transferDetails.ValueOfAssetController.onSubmit(mode: Mode = CheckMode)
 
+GET        /transfer-details/property-address                                                     controllers.transferDetails.PropertyAddressController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/property-address                                                     controllers.transferDetails.PropertyAddressController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-property-address                                              controllers.transferDetails.PropertyAddressController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-property-address                                              controllers.transferDetails.PropertyAddressController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/value-of-the-property                                                controllers.transferDetails.ValueOfThisPropertyController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/value-of-the-property                                                controllers.transferDetails.ValueOfThisPropertyController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-value-of-the-property                                         controllers.transferDetails.ValueOfThisPropertyController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-value-of-the-property                                         controllers.transferDetails.ValueOfThisPropertyController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/property-value-description                                           controllers.transferDetails.PropertyValueDescriptionController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/property-value-description                                           controllers.transferDetails.PropertyValueDescriptionController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/change-property-value-description                                    controllers.transferDetails.PropertyValueDescriptionController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/change-property-value-description                                    controllers.transferDetails.PropertyValueDescriptionController.onSubmit(mode: Mode = CheckMode)
+
 GET        /transfer-details/asset-value-description                                              controllers.transferDetails.AssetValueDescriptionController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/asset-value-description                                              controllers.transferDetails.AssetValueDescriptionController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-asset-value-description                                       controllers.transferDetails.AssetValueDescriptionController.onPageLoad(mode: Mode = CheckMode)
@@ -224,6 +239,12 @@ GET        /transfer-details/remove-property-asset                              
 POST       /transfer-details/remove-property-asset                                                controllers.transferDetails.RemovePropertyAssetController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/change-remove-property-asset                                         controllers.transferDetails.RemovePropertyAssetController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/change-remove-property-asset                                         controllers.transferDetails.RemovePropertyAssetController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/addAdditionalProperty                                                controllers.transferDetails.AddAdditionalPropertyController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/addAdditionalProperty                                                controllers.transferDetails.AddAdditionalPropertyController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/changeAddAdditionalProperty                                          controllers.transferDetails.AddAdditionalPropertyController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/changeAddAdditionalProperty                                          controllers.transferDetails.AddAdditionalPropertyController.onSubmit(mode: Mode = CheckMode)
+
 
 #---------------------------------- ASSETS MINI JOURNEYS --------------------------------------
 
@@ -345,4 +366,22 @@ POST       /transfer-details/assets/property-confirm-removal                    
 
 # OTHER
 
-GET        /transfer-details/other-assets-start                                                   controllers.transferDetails.AddOtherAssetsController.onPageLoad()
+GET        /transfer-details/assets/other-assets-start                                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad()
+
+GET        /transfer-details/assets/other-assets-value-description                                controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/other-assets-value-description                                controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-other-assets-value-description                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/change-other-assets-value-description                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int)
+
+GET        /transfer-details/assets/other-assets-value                                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/other-assets-value                                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-other-assets-value                                     controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/change-other-assets-value                                     controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onSubmit(mode: Mode = NormalMode, index: Int)
+
+GET        /transfer-details/assets/other-assets-amend-continue                                   controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/assets/other-assets-amend-continue                                   controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-other-assets-amend-continue                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/assets/change-other-assets-amend-continue                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onSubmit(mode: Mode = CheckMode)
+
+GET        /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onPageLoad(index: Int)
+POST       /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onSubmit(index: Int)

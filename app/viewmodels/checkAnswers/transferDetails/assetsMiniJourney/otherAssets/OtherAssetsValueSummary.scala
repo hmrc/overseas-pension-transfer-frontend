@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourney.otherAssets
 
-import models.{CheckMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNamePage
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
 import models.UserAnswers
-import pages.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesCompanyNamePage
+import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsValuePage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import utils.CurrencyFormats.currencyFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object QuotedSharesCompanyNameSummary {
+object OtherAssetsValueSummary {
 
   def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QuotedSharesCompanyNamePage(index)).map {
+    answers.get(OtherAssetsValuePage(index)).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "quotedSharesCompanyName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          key     = "valueOfAsset.checkYourAnswersLabel",
+          value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", QuotedSharesCompanyNamePage(index).changeLink(answers).url)
-              .withVisuallyHiddenText(messages("quotedSharesCompanyName.change.hidden"))
+            ActionItemViewModel("site.change", OtherAssetsValuePage(index).changeLink(answers).url)
+              .withVisuallyHiddenText(messages("valueOfAsset.change.hidden"))
           )
         )
     }

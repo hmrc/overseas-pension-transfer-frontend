@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails.assetsMiniJourneys.quotedShares
+package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueFormProvider
-import models.assets.QuotedSharesMiniJourney
+import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsAmendContinueFormProvider
+import models.assets.OtherAssetsMiniJourney
 import models.{CheckMode, Mode, NormalMode, TypeOfAsset, UserAnswers}
-import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueFormProvider
-import models.assets.{QuotedSharesMiniJourney, TypeOfAsset}
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -32,24 +29,24 @@ import repositories.SessionRepository
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueSummary
-import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueView
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsAmendContinueSummary
+import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsAmendContinueView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class QuotedSharesAmendContinueController @Inject() (
+class OtherAssetsAmendContinueController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: QuotedSharesAmendContinueFormProvider,
+    formProvider: OtherAssetsAmendContinueFormProvider,
     sessionRepository: SessionRepository,
     transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
-    miniJourney: QuotedSharesMiniJourney.type,
-    view: QuotedSharesAmendContinueView
+    miniJourney: OtherAssetsMiniJourney.type,
+    view: OtherAssetsAmendContinueView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 
@@ -58,13 +55,13 @@ class QuotedSharesAmendContinueController @Inject() (
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
       def renderView(answers: UserAnswers): Result = {
-        val shares = QuotedSharesAmendContinueSummary.rows(answers)
+        val shares = OtherAssetsAmendContinueSummary.rows(answers)
         Ok(view(form, shares, mode))
       }
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = false))
+            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = false))
             _              <- sessionRepository.set(updatedAnswers)
           } yield renderView(updatedAnswers)
         case NormalMode =>
@@ -76,16 +73,16 @@ class QuotedSharesAmendContinueController @Inject() (
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val shares = QuotedSharesAmendContinueSummary.rows(request.userAnswers)
+          val shares = OtherAssetsAmendContinueSummary.rows(request.userAnswers)
           Future.successful(BadRequest(view(formWithErrors, shares, mode)))
         },
         continue => {
           if (continue) {
             val nextIndex = transferDetailsService.assetCount(miniJourney, request.userAnswers)
-            Future.successful(Redirect(AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)))
+            Future.successful(Redirect(AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onPageLoad(NormalMode, nextIndex)))
           } else {
             for {
-              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
+              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = false))
               _              <- sessionRepository.set(updatedAnswers)
             } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
               case Some(route) => Redirect(route)
