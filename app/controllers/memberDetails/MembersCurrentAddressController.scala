@@ -80,7 +80,7 @@ class MembersCurrentAddressController @Inject() (
               for {
                 userAnswers   <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
                 _             <- sessionRepository.set(userAnswers).map(_ => logger.info(Json.stringify(userAnswers.data)))
-                savedForLater <- userAnswersService.setUserAnswers(userAnswers)
+                savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers)
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(MembersCurrentAddressPage.nextPage(mode, userAnswers))

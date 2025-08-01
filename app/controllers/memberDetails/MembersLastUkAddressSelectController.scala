@@ -85,7 +85,7 @@ class MembersLastUkAddressSelectController @Inject() (
                   for {
                     updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressSelectPage, addressToSave))
                     _              <- sessionRepository.set(updatedAnswers)
-                    savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+                    savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
                   } yield {
                     savedForLater match {
                       case Right(Done) => Redirect(MembersLastUkAddressSelectPage.nextPage(mode, updatedAnswers))

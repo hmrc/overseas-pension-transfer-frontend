@@ -82,7 +82,7 @@ class MembersLastUkAddressConfirmController @Inject() (
                 updatedAnswers  <-
                   Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, addressToSave))
                 _               <- sessionRepository.set(updatedAnswers)
-                savedForLater   <- userAnswersService.setUserAnswers(updatedAnswers)
+                savedForLater   <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(MembersLastUkAddressConfirmPage.nextPage(mode, updatedAnswers))

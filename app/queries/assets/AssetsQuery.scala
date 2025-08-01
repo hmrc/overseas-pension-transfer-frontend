@@ -1,0 +1,40 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package queries.assets
+
+import models.{PropertyEntry, QuotedSharesEntry, TaskCategory, TypeOfAsset, UnquotedSharesEntry}
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
+
+sealed trait AssetsQuery[A] extends Gettable[A] with Settable[A] {
+  def path: JsPath
+}
+
+case object QuotedSharesQuery extends AssetsQuery[List[QuotedSharesEntry]] {
+
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.toString
+}
+
+case object UnquotedSharesQuery extends AssetsQuery[List[UnquotedSharesEntry]] {
+
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString
+}
+
+case object PropertyQuery extends AssetsQuery[List[PropertyEntry]] {
+
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.toString
+}

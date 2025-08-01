@@ -69,7 +69,7 @@ class DateOfTransferController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfTransferPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers))

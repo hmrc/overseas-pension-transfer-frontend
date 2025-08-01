@@ -19,11 +19,14 @@ package viewmodels.checkAnswers.transferDetails
 import models.UserAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueSummary
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesAmendContinueSummary
 
 case object TransferDetailsSummary {
 
   def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedShareRow: Option[SummaryListRow] = Some(AdditionalUnquotedShareSummary.row(userAnswers))
-    Seq(totalUnquotedShareRow).flatten
+    val totalUnquotedSharesRow: Option[SummaryListRow] = Some(UnquotedSharesAmendContinueSummary.row(userAnswers))
+    val totalQuotedSharesRow: Option[SummaryListRow]   = Some(QuotedSharesAmendContinueSummary.row(userAnswers))
+    Seq(totalUnquotedSharesRow, totalQuotedSharesRow).flatten
   }
 }

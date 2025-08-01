@@ -67,6 +67,17 @@ final case class UserAnswers(
 
 object UserAnswers {
 
+  def buildMinimal[A](
+      original: UserAnswers,
+      page: Settable[A] with Gettable[A]
+    )(implicit reads: Reads[A],
+      writes: Writes[A]
+    ): Try[UserAnswers] =
+    original.get(page) match {
+      case Some(v) => original.copy(data = Json.obj()).set(page, v)
+      case None    => Failure(new NoSuchElementException(s"No value found at path: ${page.path}"))
+    }
+
   val reads: Reads[UserAnswers] = {
 
     import play.api.libs.functional.syntax._

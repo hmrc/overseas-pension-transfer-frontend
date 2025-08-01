@@ -67,7 +67,7 @@ class IsTransferTaxableController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IsTransferTaxablePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(IsTransferTaxablePage.nextPage(mode, updatedAnswers))

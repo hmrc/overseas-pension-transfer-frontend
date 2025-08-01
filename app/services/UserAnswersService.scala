@@ -22,6 +22,7 @@ import models.UserAnswers
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
 import models.responses.{UserAnswersError, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,9 +30,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class UserAnswersService @Inject() (
     connector: UserAnswersConnector
   )(implicit ec: ExecutionContext
-  ) {
+  ) extends Logging {
 
-  def getUserAnswers(transferId: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
+  def getExternalUserAnswers(transferId: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
     connector.getAnswers(transferId) map {
       case Right(userAnswersDTO)             => Right(toUserAnswers(userAnswersDTO))
       case Left(UserAnswersNotFoundResponse) => Right(UserAnswers(transferId))
@@ -39,7 +40,7 @@ class UserAnswersService @Inject() (
     }
   }
 
-  def setUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
+  def setExternalUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
     connector.putAnswers(fromUserAnswers(userAnswers))
   }
 }

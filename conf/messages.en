@@ -437,51 +437,51 @@ netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0
 netTransferAmount.change.hidden = Net amount
 netTransferAmount.hint = For example, £60000 or £19,300.54.
 
-quotedShareValue.title = What is the value of these quoted shares?
-quotedShareValue.heading = What is the value of these quoted shares?
-quotedShareValue.checkYourAnswersLabel = Quoted share value
-quotedShareValue.error.nonNumeric = The value of quoted shares must be an amount of money, like £123 or 123.00
-quotedShareValue.error.required = Enter the value of quoted shares
-quotedShareValue.error.aboveMaximum = The value of quoted shares must be {0} or less
-quotedShareValue.error.belowMinimum = The value of quoted shares must be {0} or more
-quotedShareValue.change.hidden = Quoted share value
-quotedShareValue.hint = For example, £1000 or £1934.50.
+quotedSharesValue.title = What is the value of these quoted shares?
+quotedSharesValue.heading = What is the value of these quoted shares?
+quotedSharesValue.checkYourAnswersLabel = Quoted shares value
+quotedSharesValue.error.nonNumeric = The value of quoted shares must be an amount of money, like £123 or 123.00
+quotedSharesValue.error.required = Enter the value of quoted shares
+quotedSharesValue.error.aboveMaximum = The value of quoted shares must be {0} or less
+quotedSharesValue.error.belowMinimum = The value of quoted shares must be {0} or more
+quotedSharesValue.change.hidden = Quoted shares value
+quotedSharesValue.hint = For example, £1000 or £1934.50.
 
 addProperty.title = Add property
 addProperty.heading = Add property
 addProperty.text = The following questions are about property that is part of this transfer.
 
-addQuotedShare.title = Add quoted shares
-addQuotedShare.heading = Add quoted shares
-addQuotedShare.text = The following questions are about quoted shares that are part of this transfer.
+quotedSharesStart.title = Add quoted shares
+quotedSharesStart.heading = Add quoted shares
+quotedSharesStart.text = The following questions are about quoted shares that are part of this transfer.
 
-unquotedShareValue.title = What is the value of these unquoted shares?
-unquotedShareValue.heading = What is the value of these unquoted shares?
-unquotedShareValue.hint = For example, £1000 or £1934.50.
-unquotedShareValue.checkYourAnswersLabel = Value of unquoted shares
-unquotedShareValue.error.nonNumeric = The value of unquoted shares must be an amount of money, like £123 or 123.00
-unquotedShareValue.error.required = Enter the value of the unquoted shares
-unquotedShareValue.error.aboveMaximum = The value of unquoted shares must be {0} or less
-unquotedShareValue.error.belowMinimum = The value of unquoted shares must be {0} or more
-unquotedShareValue.change.hidden = Value of unquoted shares
+unquotedSharesValue.title = What is the value of these unquoted shares?
+unquotedSharesValue.heading = What is the value of these unquoted shares?
+unquotedSharesValue.hint = For example, £1000 or £1934.50.
+unquotedSharesValue.checkYourAnswersLabel = Value of unquoted shares
+unquotedSharesValue.error.nonNumeric = The value of unquoted shares must be an amount of money, like £123 or 123.00
+unquotedSharesValue.error.required = Enter the value of the unquoted shares
+unquotedSharesValue.error.aboveMaximum = The value of unquoted shares must be {0} or less
+unquotedSharesValue.error.belowMinimum = The value of unquoted shares must be {0} or more
+unquotedSharesValue.change.hidden = Value of unquoted shares
 
-quotedShareCompanyName.title = What is the name of the company these quoted shares relate to?
-quotedShareCompanyName.heading = What is the name of the company these quoted shares relate to?
-quotedShareCompanyName.checkYourAnswersLabel = Quoted shares company name
-quotedShareCompanyName.error.required = Enter the company name
-quotedShareCompanyName.error.length = The company name must be 160 characters or less
-quotedShareCompanyName.change.hidden = Quoted share company name
+quotedSharesCompanyName.title = What is the name of the company these quoted shares relate to?
+quotedSharesCompanyName.heading = What is the name of the company these quoted shares relate to?
+quotedSharesCompanyName.checkYourAnswersLabel = Quoted shares company name
+quotedSharesCompanyName.error.required = Enter the company name
+quotedSharesCompanyName.error.length = The company name must be 160 characters or less
+quotedSharesCompanyName.change.hidden = Quoted shares company name
 
 unquotedShareStart.title = Add unquoted shares
 unquotedShareStart.heading = Add unquoted shares
 unquotedShareStart.paragraph = The following questions are about unquoted shares that are part of this transfer.
 
-unquotedShareCompanyName.title = What is the name of the company these unquoted shares relate to?
-unquotedShareCompanyName.heading = What is the name of the company these unquoted shares relate to?
-unquotedShareCompanyName.checkYourAnswersLabel = Unquoted share company name
-unquotedShareCompanyName.error.required = Enter company name
-unquotedShareCompanyName.error.length = The company name must be 160 characters or less
-unquotedShareCompanyName.change.hidden = Unquoted share company name
+unquotedSharesCompanyName.title = What is the name of the company these unquoted shares relate to?
+unquotedSharesCompanyName.heading = What is the name of the company these unquoted shares relate to?
+unquotedSharesCompanyName.checkYourAnswersLabel = Unquoted shares company name
+unquotedSharesCompanyName.error.required = Enter company name
+unquotedSharesCompanyName.error.length = The company name must be 160 characters or less
+unquotedSharesCompanyName.change.hidden = Unquoted shares company name
 
 valueOfAsset.title = What is the value of the asset?
 valueOfAsset.heading = What is the value of the asset?
@@ -501,21 +501,21 @@ propertyAddress.error.addressLine2.required = Enter the second line of the prope
 propertyAddress.countryCode.change.hidden = Country (optional)
 propertyAddress.change.hidden = Property address
 
-numberOfUnquotedShares.title = How many unquoted shares in this company are part of this transfer?
-numberOfUnquotedShares.heading = How many unquoted shares in this company are part of this transfer?
-numberOfUnquotedShares.checkYourAnswersLabel = Number of unquoted shares
-numberOfUnquotedShares.error.required = Enter the number of unquoted shares
-numberOfUnquotedShares.error.negative = The number of unquoted shares must be more than 0
-numberOfUnquotedShares.error.invalid = The number of unquoted shares must be a number, like 10 or 125
-numberOfUnquotedShares.change.hidden = Number of unquoted shares
+unquotedSharesNumber.title = How many unquoted shares in this company are part of this transfer?
+unquotedSharesNumber.heading = How many unquoted shares in this company are part of this transfer?
+unquotedSharesNumber.checkYourAnswersLabel = Number of unquoted shares
+unquotedSharesNumber.error.required = Enter the number of unquoted shares
+unquotedSharesNumber.error.negative = The number of unquoted shares must be more than 0
+unquotedSharesNumber.error.invalid = The number of unquoted shares must be a number, like 10 or 125
+unquotedSharesNumber.change.hidden = Number of unquoted shares
 
-numberOfQuotedShares.title = How many quoted shares in this company are part of this transfer?
-numberOfQuotedShares.heading = How many quoted shares in this company are part of this transfer?
-numberOfQuotedShares.checkYourAnswersLabel = Number of quoted shares
-numberOfQuotedShares.error.required = Enter the number of quoted shares
-numberOfQuotedShares.error.negative = The number of quoted shares must be more than 0
-numberOfQuotedShares.error.invalid = The number of quoted shares must be a number, like 10 or 125
-numberOfQuotedShares.change.hidden = Number of quoted shares
+quotedSharesNumber.title = How many quoted shares in this company are part of this transfer?
+quotedSharesNumber.heading = How many quoted shares in this company are part of this transfer?
+quotedSharesNumber.checkYourAnswersLabel = Number of quoted shares
+quotedSharesNumber.error.required = Enter the number of quoted shares
+quotedSharesNumber.error.negative = The number of quoted shares must be more than 0
+quotedSharesNumber.error.invalid = The number of quoted shares must be a number, like 10 or 125
+quotedSharesNumber.change.hidden = Number of quoted shares
 
 valueOfThisProperty.title = What is the value of this property?
 valueOfThisProperty.heading = What is the value of this property?
@@ -527,13 +527,13 @@ valueOfThisProperty.error.aboveMaximum = The property value must be {0} or less
 valueOfThisProperty.error.belowMinimum = The property value must be {0} or more
 valueOfThisProperty.change.hidden = Property value
 
-classOfQuotedShares.title = What class are these quoted shares?
-classOfQuotedShares.heading = What class are these quoted shares?
-classOfQuotedShares.checkYourAnswersLabel = Class of quoted shares
-classOfQuotedShares.error.required = Enter the class of quoted shares
-classOfQuotedShares.error.length = The class of quoted shares must be 160 characters or less
-classOfQuotedShares.error.pattern = The class of quoted shares must only include letters, spaces, apostrophes and hyphens
-classOfQuotedShares.change.hidden = Class of quoted shares
+quotedSharesClass.title = What class are these quoted shares?
+quotedSharesClass.heading = What class are these quoted shares?
+quotedSharesClass.checkYourAnswersLabel = Class of quoted shares
+quotedSharesClass.error.required = Enter the class of quoted shares
+quotedSharesClass.error.length = The class of quoted shares must be 160 characters or less
+quotedSharesClass.error.pattern = The class of quoted shares must only include letters, spaces, apostrophes and hyphens
+quotedSharesClass.change.hidden = Class of quoted shares
 
 propertyValueDescription.title = Describe the property and how it was valued
 propertyValueDescription.heading = Describe the property and how it was valued
@@ -563,16 +563,20 @@ unquotedSharesClass.error.pattern = The class of unquoted shares must only inclu
 
 additionalAsset.common.title = You have added {0} {1}
 
-additionalUnquotedShare.error.required = Please select an option
-additionalUnquotedShare.checkYourAnswersLabel = Unquoted shares
-additionalUnquotedShare.change.hidden = Unquoted shares
-additionalUnquotedShare.summary.value = {0} added
-additionalUnquotedShare.text.singular = group of unquoted shares
-additionalUnquotedShare.text.plural = groups of unquoted shares
+unquotedSharesAmendContinue.error.required = Please select an option
+unquotedSharesAmendContinue.checkYourAnswersLabel = Unquoted shares
+unquotedSharesAmendContinue.change.hidden = Unquoted shares
+unquotedSharesAmendContinue.summary.value = {0} added
+unquotedSharesAmendContinue.text.singular = group of unquoted shares
+unquotedSharesAmendContinue.text.plural = groups of unquoted shares
 
 unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.error.required = Select one option
+
+quotedSharesConfirmRemoval.title = Are you sure you want to remove these quoted shares?
+quotedSharesConfirmRemoval.heading = Are you sure you want to remove these quoted shares?
+quotedSharesConfirmRemoval.error.required = Select one option
 
 addAdditionalOtherAsset.title = Do you need to add another asset?
 addAdditionalOtherAsset.heading = You have added 1 asset
@@ -581,12 +585,15 @@ addAdditionalOtherAsset.checkYourAnswersLabel = Do you need to add another asset
 addAdditionalOtherAsset.error.required = Please select an option
 addAdditionalOtherAsset.change.hidden = Do you need to add another asset?
 
-additionalQuotedShare.title = additionalQuotedShare
-additionalQuotedShare.heading = You have added 1 quoted share
-additionalQuotedShare.checkYourAnswersLabel = additionalQuotedShare
-additionalQuotedShare.error.required = Please select an option
-additionalQuotedShare.change.hidden = AdditionalQuotedShare
-additionalQuotedShare.addMore = Do you need to add another quoted share?
+quotedSharesAmendContinue.title = quotedSharesAmendContinue
+quotedSharesAmendContinue.heading = You have added 1 quoted shares
+quotedSharesAmendContinue.error.required = Please select an option
+quotedSharesAmendContinue.addMore = Do you need to add another quoted shares?
+quotedSharesAmendContinue.checkYourAnswersLabel = Quoted shares
+quotedSharesAmendContinue.change.hidden = Quoted shares
+quotedSharesAmendContinue.summary.value = {0} added
+quotedSharesAmendContinue.text.singular = group of quoted shares
+quotedSharesAmendContinue.text.plural = groups of quoted shares
 
 addAdditionalProperty.title = addAdditionalProperty
 addAdditionalProperty.heading = You have added 1 Property

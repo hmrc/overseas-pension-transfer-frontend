@@ -66,7 +66,7 @@ class MemberNameController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
             _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
