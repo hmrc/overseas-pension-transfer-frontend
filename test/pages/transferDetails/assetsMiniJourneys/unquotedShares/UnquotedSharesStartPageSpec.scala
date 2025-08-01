@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-<<<<<<<< HEAD:test/pages/transferDetails/assetsMiniJourneys/unquotedShares/UnquotedSharesStartPageSpec.scala
-package pages.transferDetails.assetsMiniJourney.unquotedShares
-========
-package pages.transferDetails.assetsMiniJourneys.quotedShares
->>>>>>>> 554ae0f (OAOTC-1259 start to refactor property mini journey and conform all assetsMiniJourney packages to assetsMiniJourneys name scheme):test/pages/transferDetails/assetsMiniJourneys/quotedShares/RemoveQuotedSharesPageSpec.scala
+package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{NormalMode, UserAnswers}

@@ -18,23 +18,24 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
+import models.assets.{PropertyEntry, TypeOfAsset}
 import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PropertyDescriptionPage extends QuestionPage[String] {
+case class PropertyDescriptionPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.toString \ index \ toString
 
-  override def toString: String = "propDescription"
+  override def toString: String = PropertyEntry.PropDescription
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode)
+    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode, index)
 }

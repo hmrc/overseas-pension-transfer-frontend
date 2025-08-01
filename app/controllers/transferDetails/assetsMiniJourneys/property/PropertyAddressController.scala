@@ -48,36 +48,36 @@ class PropertyAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val form                   = formProvider()
-      val preparedForm           = request.userAnswers.get(PropertyAddressPage) match {
+      val preparedForm           = request.userAnswers.get(PropertyAddressPage(index)) match {
         case None          => form
         case Some(address) => form.fill(PropertyAddressFormData.fromDomain(address))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-      Ok(view(preparedForm, countrySelectViewModel, mode))
+      Ok(view(preparedForm, countrySelectViewModel, mode, index))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       val form = formProvider()
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, index)))
         },
         formData =>
           addressService.propertyAddress(formData) match {
             case None                =>
               Future.successful(
-                Redirect(PropertyAddressPage.nextPageRecovery(Some(PropertyAddressPage.recoveryModeReturnUrl)))
+                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
               )
             case Some(addressToSave) =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyAddressPage, addressToSave))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyAddressPage(index), addressToSave))
                 _              <- sessionRepository.set(updatedAnswers).map(_ => logger.info(Json.stringify(updatedAnswers.data)))
-              } yield Redirect(PropertyAddressPage.nextPage(mode, updatedAnswers))
+              } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
           }
       )
   }

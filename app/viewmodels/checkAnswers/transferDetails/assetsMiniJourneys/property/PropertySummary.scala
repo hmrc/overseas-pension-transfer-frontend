@@ -24,9 +24,9 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 case object PropertySummary {
 
   def rows(userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val propertyAddress: Option[SummaryListRow]     = PropertyAddressSummary.row(userAnswers)
-    val propertyDescription: Option[SummaryListRow] = PropertyDescriptionSummary.row(userAnswers)
-    val propertyValue: Option[SummaryListRow]       = PropertyValueSummary.row(userAnswers)
+    val propertyAddress: Option[SummaryListRow]     = Some(PropertyAddressSummary.row(userAnswers))
+    val propertyValue: Option[SummaryListRow]       = PropertyValueSummary.row(userAnswers, index)
+    val propertyDescription: Option[SummaryListRow] = PropertyDescriptionSummary.row(userAnswers, index)
 
     Seq(propertyAddress, propertyDescription, propertyValue).flatten
   }

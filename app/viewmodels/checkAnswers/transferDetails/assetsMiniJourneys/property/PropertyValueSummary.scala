@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object PropertyValueSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PropertyValuePage).map {
+  def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(PropertyValuePage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "propertyValue.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
+          value   = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", PropertyValuePage.changeLink(answers).url)
+            ActionItemViewModel("site.change", PropertyValuePage(index).changeLink(answers).url)
               .withVisuallyHiddenText(messages("propertyValue.change.hidden"))
           )
         )

@@ -19,25 +19,24 @@ package pages.transferDetails.assetsMiniJourneys.property
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.address._
+import models.assets.{PropertyEntry, TypeOfAsset}
 import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PropertyAddressPage extends QuestionPage[PropertyAddress] {
+case class PropertyAddressPage(index: Int) extends QuestionPage[PropertyAddress] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.toString \ index \ toString
 
-  override def toString: String = "propertyAddress"
+  override def toString: String = PropertyEntry.PropertyAddress
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
-
-  val recoveryModeReturnUrl: String = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode).url
+    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode)
+    AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(CheckMode, index)
 }

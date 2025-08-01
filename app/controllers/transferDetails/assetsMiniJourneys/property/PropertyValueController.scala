@@ -44,26 +44,26 @@ class PropertyValueController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(PropertyValuePage) match {
+      val preparedForm = request.userAnswers.get(PropertyValuePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, index))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyValuePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyValuePage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(PropertyValuePage.nextPage(mode, updatedAnswers))
+          } yield Redirect(PropertyValuePage(index).nextPage(mode, updatedAnswers))
       )
   }
 }

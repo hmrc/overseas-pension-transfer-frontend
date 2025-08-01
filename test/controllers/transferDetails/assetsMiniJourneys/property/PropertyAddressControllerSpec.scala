@@ -40,11 +40,12 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressVie
 import scala.concurrent.Future
 
 class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
+  private val index = 0
 
   private val formProvider = new PropertyAddressFormProvider()
   private val formData     = PropertyAddressFormData.fromDomain(propertyAddress)
 
-  private lazy val propertyAddressRoute = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode).url
+  private lazy val propertyAddressRoute = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index).url
 
   private val testCountries = Seq(
     Country("GB", "United Kingdom"),
@@ -79,14 +80,15 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          index
         )(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers =
-        userAnswersMemberNameQtNumber.set(PropertyAddressPage, propertyAddress).success.value
+        userAnswersMemberNameQtNumber.set(PropertyAddressPage(index), propertyAddress).success.value
       val application = applicationBuilder(Some(userAnswers))
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
@@ -107,7 +109,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          index
         )(displayRequest, messages(application)).toString
       }
     }
@@ -143,7 +146,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
-          PropertyAddressPage.nextPage(NormalMode, emptyUserAnswers).url
+          PropertyAddressPage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -170,7 +173,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
           displayRequest,
           messages(application)
         ).toString

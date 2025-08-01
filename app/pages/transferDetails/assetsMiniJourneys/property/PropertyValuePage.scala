@@ -18,23 +18,24 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.{CheckMode, TaskCategory, UserAnswers}
+import models.assets.PropertyEntry
+import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PropertyValuePage extends QuestionPage[BigDecimal] {
+case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "propValue"
+  override def toString: String = PropertyEntry.PropValue
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode)
+    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode, index)
 }

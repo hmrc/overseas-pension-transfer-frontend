@@ -30,7 +30,6 @@ class PropertyAmendContinuePageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to Index" in {
-
         PropertyAmendContinuePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
       }
     }

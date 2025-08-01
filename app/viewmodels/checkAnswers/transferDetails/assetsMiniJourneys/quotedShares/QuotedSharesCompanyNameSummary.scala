@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
 import models.{CheckMode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNamePage

@@ -16,12 +16,14 @@
 
 package pages.transferDetails.assetsMiniJourneys.property
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
 class PropertyDescriptionPageSpec extends AnyFreeSpec with Matchers {
+  private val index = 0
 
   ".nextPage" - {
 
@@ -30,8 +32,9 @@ class PropertyDescriptionPageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        // TODO change when pages are connected
-        PropertyDescriptionPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        PropertyDescriptionPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(
+          index
+        )
       }
     }
 
@@ -39,7 +42,7 @@ class PropertyDescriptionPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        PropertyDescriptionPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        PropertyDescriptionPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
       }
     }
   }

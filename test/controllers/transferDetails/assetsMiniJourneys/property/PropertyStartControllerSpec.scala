@@ -19,6 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
+import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
@@ -26,6 +27,7 @@ import play.api.test.Helpers._
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyStartView
 
 class PropertyStartControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+  private val index = 0
 
   private lazy val propertyStartRoute = AssetsMiniJourneysRoutes.PropertyStartController.onPageLoad().url
 
@@ -39,7 +41,7 @@ class PropertyStartControllerSpec extends AnyFreeSpec with SpecBase with Mockito
         val request  = FakeRequest(GET, propertyStartRoute)
         val result   = route(application, request).value
         val view     = application.injector.instanceOf[PropertyStartView]
-        val nextPage = controllers.routes.IndexController.onPageLoad().url
+        val nextPage = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index).url
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString

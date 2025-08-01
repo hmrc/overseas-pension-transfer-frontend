@@ -35,12 +35,13 @@ import scala.concurrent.Future
 
 class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  val formProvider = new PropertyValueFormProvider()
-  val form         = formProvider()
+  val formProvider  = new PropertyValueFormProvider()
+  val form          = formProvider()
+  private val index = 0
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val propertyValueRoute = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode).url
+  lazy val propertyValueRoute = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index).url
 
   "ValueOfThisProperty Controller" - {
 
@@ -56,13 +57,13 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
         val view = application.injector.instanceOf[PropertyValueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(PropertyValuePage, validAnswer).success.value
+      val userAnswers = userAnswersQtNumber.set(PropertyValuePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,7 +75,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -99,7 +100,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PropertyValuePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual PropertyValuePage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
@@ -119,7 +120,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
