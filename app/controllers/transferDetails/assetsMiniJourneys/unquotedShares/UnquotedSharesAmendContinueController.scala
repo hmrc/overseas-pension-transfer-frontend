@@ -25,6 +25,7 @@ import models.{CheckMode, Mode, NormalMode, TypeOfAsset, UnquotedSharesEntry, Us
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import repositories.SessionRepository
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -40,6 +41,7 @@ class UnquotedSharesAmendContinueController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    sessionRepository: SessionRepository,
     formProvider: UnquotedSharesAmendContinueFormProvider,
     transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
@@ -56,18 +58,12 @@ class UnquotedSharesAmendContinueController @Inject() (
         val shares = UnquotedSharesAmendContinueSummary.rows(answers)
         Ok(view(form, shares, mode))
       }
-
       mode match {
-        case CheckMode =>
-          transferDetailsService
-            .setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = false)
-            .map {
-              case Some(updatedAnswers) => renderView(updatedAnswers)
-              case None                 =>
-                logger.warn("Failed to reset completion flag for QuotedShares in CheckMode")
-                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-            }
-
+        case CheckMode  =>
+          for {
+            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = false))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield renderView(updatedAnswers)
         case NormalMode =>
           Future.successful(renderView(request.userAnswers))
       }
@@ -85,14 +81,12 @@ class UnquotedSharesAmendContinueController @Inject() (
             val nextIndex = transferDetailsService.assetCount(miniJourney, request.userAnswers)
             Future.successful(Redirect(AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)))
           } else {
-            transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true).map {
-              case Some(updatedAnswers) =>
-                transferDetailsService.getNextAssetRoute(updatedAnswers) match {
-                  case Some(route) => Redirect(route)
-                  case None        => Redirect(routes.TransferDetailsCYAController.onPageLoad())
-                }
-              case None                 =>
-                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            for {
+              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = false))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
+              case Some(route) => Redirect(route)
+              case None        => Redirect(routes.TransferDetailsCYAController.onPageLoad())
             }
           }
         }
