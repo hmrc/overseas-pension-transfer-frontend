@@ -16,7 +16,8 @@
 
 package queries.assets
 
-import models.{TaskCategory, TypeOfAsset}
+import models.TaskCategory
+import models.assets.TypeOfAsset
 import play.api.libs.json.JsPath
 import queries.Gettable
 

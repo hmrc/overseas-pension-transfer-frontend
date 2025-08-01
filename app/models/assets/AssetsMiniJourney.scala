@@ -17,7 +17,7 @@
 package models.assets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.{AssetEntry, PropertyEntry, QuotedSharesEntry, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
+import models.UserAnswers
 import play.api.libs.json.OFormat
 import play.api.mvc.Call
 import queries.assets._
@@ -47,6 +47,16 @@ object UnquotedSharesMiniJourney extends AssetsMiniJourney[UnquotedSharesEntry] 
   val query     = UnquotedSharesQuery
   val format    = UnquotedSharesEntry.format
   val startPage = () => UnquotedSharesStartController.onPageLoad()
+
+  def isCompleted(ua: UserAnswers): Boolean =
+    ua.get(AssetCompletionFlag(assetType)).contains(true)
+}
+
+object PropertyMiniJourney extends AssetsMiniJourney[PropertyEntry] {
+  val assetType = TypeOfAsset.Property
+  val query     = PropertyQuery
+  val format    = PropertyEntry.format
+  val startPage = () => PropertyStartController.onPageLoad()
 
   def isCompleted(ua: UserAnswers): Boolean =
     ua.get(AssetCompletionFlag(assetType)).contains(true)

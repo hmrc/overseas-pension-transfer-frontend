@@ -24,5 +24,6 @@ class AssetsMiniJourneyModule extends AbstractModule {
   override def configure(): Unit = {
     bind(classOf[UnquotedSharesMiniJourney.type]).toInstance(UnquotedSharesMiniJourney)
     bind(classOf[QuotedSharesMiniJourney.type]).toInstance(QuotedSharesMiniJourney)
+    bind(classOf[PropertyMiniJourney.type]).toInstance(PropertyMiniJourney)
   }
 }

@@ -17,7 +17,8 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, TaskCategory, TypeOfAsset, UserAnswers}
+import models.assets.TypeOfAsset
+import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

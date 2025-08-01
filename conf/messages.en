@@ -390,7 +390,7 @@ typeOfAsset.heading = Type of assets included in the transfer
 typeOfAsset.cash = Cash
 typeOfAsset.unquotedShares = Unquoted shares
 typeOfAsset.quotedShares = Quoted shares
-typeOfAsset.property = Property
+typeOfAsset.propertyAssets = Property
 typeOfAsset.other = Other
 typeOfAsset.hint = Select all that apply.
 typeOfAsset.checkYourAnswersLabel = Type of assets included in the transfer
@@ -447,9 +447,9 @@ quotedSharesValue.error.belowMinimum = The value of quoted shares must be {0} or
 quotedSharesValue.change.hidden = Quoted shares value
 quotedSharesValue.hint = For example, £1000 or £1934.50.
 
-addProperty.title = Add property
-addProperty.heading = Add property
-addProperty.text = The following questions are about property that is part of this transfer.
+propertyStart.title = Add property
+propertyStart.heading = Add property
+propertyStart.text = The following questions are about property that is part of this transfer.
 
 quotedSharesStart.title = Add quoted shares
 quotedSharesStart.heading = Add quoted shares
@@ -517,15 +517,15 @@ quotedSharesNumber.error.negative = The number of quoted shares must be more tha
 quotedSharesNumber.error.invalid = The number of quoted shares must be a number, like 10 or 125
 quotedSharesNumber.change.hidden = Number of quoted shares
 
-valueOfThisProperty.title = What is the value of this property?
-valueOfThisProperty.heading = What is the value of this property?
-valueOfThisProperty.hint = For example, £10000 or £193,540
-valueOfThisProperty.checkYourAnswersLabel = Property value
-valueOfThisProperty.error.nonNumeric = The property value must be an amount of money, like £123 or 123.00
-valueOfThisProperty.error.required = Enter the property value
-valueOfThisProperty.error.aboveMaximum = The property value must be {0} or less
-valueOfThisProperty.error.belowMinimum = The property value must be {0} or more
-valueOfThisProperty.change.hidden = Property value
+propertyValue.title = What is the value of this property?
+propertyValue.heading = What is the value of this property?
+propertyValue.hint = For example, £10000 or £193,540
+propertyValue.checkYourAnswersLabel = Property value
+propertyValue.error.nonNumeric = The property value must be an amount of money, like £123 or 123.00
+propertyValue.error.required = Enter the property value
+propertyValue.error.aboveMaximum = The property value must be {0} or less
+propertyValue.error.belowMinimum = The property value must be {0} or more
+propertyValue.change.hidden = Property value
 
 quotedSharesClass.title = What class are these quoted shares?
 quotedSharesClass.heading = What class are these quoted shares?
@@ -535,14 +535,14 @@ quotedSharesClass.error.length = The class of quoted shares must be 160 characte
 quotedSharesClass.error.pattern = The class of quoted shares must only include letters, spaces, apostrophes and hyphens
 quotedSharesClass.change.hidden = Class of quoted shares
 
-propertyValueDescription.title = Describe the property and how it was valued
-propertyValueDescription.heading = Describe the property and how it was valued
-propertyValueDescription.hint = For example, ''a commercial property supported by an independent valuation''.
-propertyValueDescription.checkYourAnswersLabel = Description of the property and valuation
-propertyValueDescription.error.required = Enter a description of the property and how it was valued
-propertyValueDescription.error.length = The property description must be 160 characters or less
-propertyValueDescription.error.pattern = The property description must only include  letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
-propertyValueDescription.change.hidden = Description of the property and valuation
+propertyDescription.title = Describe the property and how it was valued
+propertyDescription.heading = Describe the property and how it was valued
+propertyDescription.hint = For example, ''a commercial property supported by an independent valuation''.
+propertyDescription.checkYourAnswersLabel = Description of the property and valuation
+propertyDescription.error.required = Enter a description of the property and how it was valued
+propertyDescription.error.length = The property description must be 160 characters or less
+propertyDescription.error.pattern = The property description must only include  letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+propertyDescription.change.hidden = Description of the property and valuation
 
 assetValueDescription.title = Describe the asset and how it was valued
 assetValueDescription.heading = Describe the asset and how it was valued
@@ -578,6 +578,10 @@ quotedSharesConfirmRemoval.title = Are you sure you want to remove these quoted 
 quotedSharesConfirmRemoval.heading = Are you sure you want to remove these quoted shares?
 quotedSharesConfirmRemoval.error.required = Select one option
 
+propertyConfirmRemoval.title = Are you sure you want to remove this property?
+propertyConfirmRemoval.heading = Are you sure you want to remove this property?
+propertyConfirmRemoval.error.required = Select one option
+
 addAdditionalOtherAsset.title = Do you need to add another asset?
 addAdditionalOtherAsset.heading = You have added 1 asset
 addAdditionalOtherAsset.question = Do you need to add another asset?
@@ -595,12 +599,16 @@ quotedSharesAmendContinue.summary.value = {0} added
 quotedSharesAmendContinue.text.singular = group of quoted shares
 quotedSharesAmendContinue.text.plural = groups of quoted shares
 
-addAdditionalProperty.title = addAdditionalProperty
-addAdditionalProperty.heading = You have added 1 Property
-addAdditionalProperty.checkYourAnswersLabel = addAdditionalProperty
-addAdditionalProperty.error.required = Please select an option
-addAdditionalProperty.change.hidden = AddAdditionalProperty
-addAdditionalProperty.addMore = Do you need to add another property?
+propertyAmendContinue.title = propertyAmendContinue
+propertyAmendContinue.heading = You have added 1 Property
+propertyAmendContinue.checkYourAnswersLabel = Property
+propertyAmendContinue.error.required = Please select an option
+propertyAmendContinue.change.hidden = AddAdditionalProperty
+propertyAmendContinue.addMore = Do you need to add another property?
+propertyAmendContinue.summary.value = {0} added
+propertyAmendContinue.text.singular = property
+propertyAmendContinue.text.plural = properties
+
 
 addOtherAssets.title = Add other assets
 addOtherAssets.heading = Add other assets

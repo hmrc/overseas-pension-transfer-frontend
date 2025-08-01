@@ -19,9 +19,9 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesAmendContinueFormProvider
-import models.assets.UnquotedSharesMiniJourney
-import models.{CheckMode, Mode, NormalMode, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
+import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueFormProvider
+import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -29,8 +29,8 @@ import repositories.SessionRepository
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesAmendContinueSummary
-import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesAmendContinueView
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
+import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -82,7 +82,7 @@ class UnquotedSharesAmendContinueController @Inject() (
             Future.successful(Redirect(AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)))
           } else {
             for {
-              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = false))
+              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true))
               _              <- sessionRepository.set(updatedAnswers)
             } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
               case Some(route) => Redirect(route)

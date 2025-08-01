@@ -69,4 +69,27 @@ object AssetsMiniJourneysRoutes {
 
   val QuotedSharesConfirmRemovalController =
     controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesConfirmRemovalController
+
+  // Property
+
+  val PropertyStartController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyStartController
+
+  val PropertyAddressController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyAddressController
+
+  val PropertyDescriptionController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyDescriptionController
+
+  val PropertyValueController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyValueController
+
+  val PropertyCYAController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController
+
+  val PropertyAmendContinueController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyAmendContinueController
+
+  val PropertyConfirmRemovalController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyConfirmRemovalController
 }

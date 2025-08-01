@@ -16,8 +16,8 @@
 
 package services
 
-import models.assets.{AssetsMiniJourney, AssetsMiniJourneyRegistry}
-import models.{AssetEntry, TypeOfAsset, UserAnswers}
+import models.UserAnswers
+import models.assets.{AssetEntry, AssetsMiniJourney, AssetsMiniJourneyRegistry, TypeOfAsset}
 import play.api.libs.json._
 import play.api.mvc.Call
 import queries.assets._
