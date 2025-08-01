@@ -18,15 +18,9 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-<<<<<<< HEAD
-import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
-import models.assets.UnquotedSharesMiniJourney
-=======
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
->>>>>>> 554ae0f (OAOTC-1259 start to refactor property mini journey and conform all assetsMiniJourney packages to assetsMiniJourneys name scheme)
-import models.{NormalMode, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
-import org.apache.pekko.Done
-import play.api.Logging
+import models.assets.UnquotedSharesMiniJourney
+import models.{NormalMode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.UnquotedSharesQuery

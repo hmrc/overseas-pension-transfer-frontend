@@ -51,3 +51,13 @@ object UnquotedSharesMiniJourney extends AssetsMiniJourney[UnquotedSharesEntry] 
   def isCompleted(ua: UserAnswers): Boolean =
     ua.get(AssetCompletionFlag(assetType)).contains(true)
 }
+
+object PropertyMiniJourney extends AssetsMiniJourney[PropertyEntry] {
+  val assetType = TypeOfAsset.Property
+  val query     = PropertyQuery
+  val format    = PropertyEntry.format
+  val startPage = () => PropertyStartController.onPageLoad()
+
+  def isCompleted(ua: UserAnswers): Boolean =
+    ua.get(AssetCompletionFlag(assetType)).contains(true)
+}
