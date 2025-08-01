@@ -19,15 +19,14 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 import models.UserAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares._
 
 case object PropertySummary {
 
   def rows(userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val propertyAddress: Option[SummaryListRow]     = Some(PropertyAddressSummary.row(userAnswers))
+    val propertyAddress: Option[SummaryListRow]     = PropertyAddressSummary.row(userAnswers, index)
     val propertyValue: Option[SummaryListRow]       = PropertyValueSummary.row(userAnswers, index)
     val propertyDescription: Option[SummaryListRow] = PropertyDescriptionSummary.row(userAnswers, index)
 
-    Seq(propertyAddress, propertyDescription, propertyValue).flatten
+    Seq(propertyAddress, propertyValue, propertyDescription).flatten
   }
 }

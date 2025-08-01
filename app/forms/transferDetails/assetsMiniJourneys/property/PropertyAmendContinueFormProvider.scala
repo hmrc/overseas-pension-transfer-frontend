@@ -25,6 +25,7 @@ class PropertyAmendContinueFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("propertyAmendContinue.error.required")
+      "add-another" -> text("propertyAmendContinue.error.required")
+        .transform[Boolean](_.equals("Yes"), if (_) "Yes" else "No")
     )
 }

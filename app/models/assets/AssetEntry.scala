@@ -55,14 +55,14 @@ object UnquotedSharesEntry {
 
 case class PropertyEntry(
     propertyAddress: PropertyAddress,
-    propDescription: String,
-    propValue: BigDecimal
+    propValue: BigDecimal,
+    propDescription: String
   ) extends AssetEntry
 
 object PropertyEntry {
   val PropertyAddress = "propertyAddress"
-  val PropDescription = "propDescription"
   val PropValue       = "propValue"
+  val PropDescription = "propDescription"
 
   implicit val format: OFormat[PropertyEntry] = Json.format[PropertyEntry]
 }

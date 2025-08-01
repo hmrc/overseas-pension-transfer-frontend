@@ -17,16 +17,20 @@
 package controllers.transferDetails.assetsMiniJourneys.property
 
 import controllers.actions._
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
+import models.{NormalMode, UserAnswers}
+import models.assets.PropertyMiniJourney
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.assets.PropertyQuery
 import repositories.SessionRepository
 import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
@@ -37,6 +41,7 @@ class PropertyConfirmRemovalController @Inject() (
     displayData: DisplayAction,
     formProvider: PropertyConfirmRemovalFormProvider,
     transferDetailsService: TransferDetailsService,
+    miniJourney: PropertyMiniJourney.type,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: PropertyConfirmRemovalView
@@ -50,23 +55,22 @@ class PropertyConfirmRemovalController @Inject() (
     Ok(view(form, index))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(controllers.routes.IndexController.onPageLoad())
-//    form.bindFromRequest().fold(
-//      formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
-//      confirmRemoval =>
-//        if (!confirmRemoval) {
-//          Future.successful(Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
-//        } else {
-//          (for {
-//            updatedAnswers     <- Future.fromTry(transferDetailsService.removeAssetEntry[QuotedSharesEntry](request.userAnswers, index))
-//            _                  <- sessionRepository.set(updatedAnswers)
-//            minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, QuotedSharesQuery))
-//            _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
-//          } yield Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode))).recover {
-//            case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-//          }
-//        }
-//    )
+  def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
+    form.bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
+      confirmRemoval =>
+        if (!confirmRemoval) {
+          Future.successful(Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
+        } else {
+          (for {
+            updatedAnswers     <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            _                  <- sessionRepository.set(updatedAnswers)
+            minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, PropertyQuery))
+            _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+          } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode))).recover {
+            case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          }
+        }
+    )
   }
 }

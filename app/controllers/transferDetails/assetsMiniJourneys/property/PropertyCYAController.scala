@@ -18,8 +18,12 @@ package controllers.transferDetails.assetsMiniJourneys.property
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.{NormalMode, UserAnswers}
+import org.apache.pekko.Done
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.assets.PropertyQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -27,7 +31,7 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.Prope
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyCYAView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -49,18 +53,17 @@ class PropertyCYAController @Inject() (
     Ok(view(list, index))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions { implicit request =>
-    Redirect(controllers.routes.IndexController.onPageLoad())
-//    for {
-//      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, QuotedSharesQuery))
-//      saved              <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
-//    } yield {
-//      saved match {
-//        case Right(Done) =>
-//          Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode))
-//        case _           =>
-//          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-//      }
-//    }
+  def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
+    for {
+      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, PropertyQuery))
+      saved              <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+    } yield {
+      saved match {
+        case Right(Done) =>
+          Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode))
+        case _           =>
+          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+      }
+    }
   }
 }

@@ -16,16 +16,19 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import base.SpecBase
+import base.AddressBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
+import models.NormalMode
+import models.assets.PropertyEntry
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.assets.PropertyQuery
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalView
 
-class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
 
   private val formProvider = new PropertyConfirmRemovalFormProvider()
   private val form         = formProvider()
@@ -48,43 +51,44 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase wit
       }
     }
 
-//    "must redirect to the next page when valid data is submitted" in {
-//      val entries     = List(PropertyEntry("Company", 1000, "20", "Preferred"))
-//      val userAnswers = userAnswersQtNumber.set(PropertyQuery, entries).success.value
-//
-//      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onPageLoad(0).url)
-//            .withFormUrlEncodedBody(("value", "true"))
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
-//      }
-//    }
+    "must redirect to the next page when valid data is submitted" in {
 
-//    "must return a Bad Request and errors when invalid data is submitted" in {
-//
-//      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onPageLoad(1).url)
-//            .withFormUrlEncodedBody(("value", ""))
-//
-//        val boundForm = form.bind(Map("value" -> ""))
-//
-//        val view = application.injector.instanceOf[PropertyConfirmRemovalView]
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual BAD_REQUEST
-//        contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
-//      }
-//    }
+      val entries     = List(PropertyEntry(propertyAddress, 1000, "description"))
+      val userAnswers = userAnswersQtNumber.set(PropertyQuery, entries).success.value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onPageLoad(0).url)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
+      }
+    }
+
+    "must return a Bad Request and errors when invalid data is submitted" in {
+
+      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onPageLoad(1).url)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val boundForm = form.bind(Map("value" -> ""))
+
+        val view = application.injector.instanceOf[PropertyConfirmRemovalView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
+      }
+    }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 

@@ -29,7 +29,7 @@ object TypeOfAsset extends Enumerable.Implicits {
   case object Cash           extends WithName("cash") with TypeOfAsset
   case object UnquotedShares extends WithName("unquotedShares") with TypeOfAsset
   case object QuotedShares   extends WithName("quotedShares") with TypeOfAsset
-  case object Property       extends WithName("property") with TypeOfAsset
+  case object Property       extends WithName("propertyAssets") with TypeOfAsset
   case object Other          extends WithName("other") with TypeOfAsset
 
   val values: Seq[TypeOfAsset] = Seq(

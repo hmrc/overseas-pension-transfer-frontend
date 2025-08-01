@@ -18,26 +18,42 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{CheckMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePage
 import play.api.i18n.Messages
+import queries.assets.PropertyQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import viewmodels.AddressViewModel
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object PropertyAmendContinueSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PropertyAmendContinuePage).map {
-      answer =>
-        val value = if (answer) "site.yes" else "site.no"
+  def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
 
-        SummaryListRowViewModel(
-          key     = "propertyAmendContinue.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("propertyAmendContinue.change.hidden"))
-          )
+    val count: Int = answers.get(PropertyQuery).getOrElse(Nil).size
+    val valueText  = messages("propertyAmendContinue.summary.value", count)
+
+    SummaryListRowViewModel(
+      key     = "propertyAmendContinue.checkYourAnswersLabel",
+      value   = ValueViewModel(valueText),
+      actions = Seq(
+        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = CheckMode).url)
+          .withVisuallyHiddenText(messages("propertyAmendContinue.change.hidden"))
+      )
+    )
+  }
+
+  def rows(answers: UserAnswers): Seq[ListItem] = {
+    val maybeEntries = answers.get(PropertyQuery)
+
+    maybeEntries.getOrElse(Nil).zipWithIndex.map {
+      case (entry, index) => {
+        ListItem(
+          name      = AddressViewModel.formatAddressAsString(entry.propertyAddress),
+          changeUrl = AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index).url,
+          removeUrl = AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onPageLoad(index).url
         )
+      }
     }
+  }
 }

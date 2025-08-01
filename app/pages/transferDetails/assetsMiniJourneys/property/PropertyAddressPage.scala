@@ -38,5 +38,5 @@ case class PropertyAddressPage(index: Int) extends QuestionPage[PropertyAddress]
     AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(CheckMode, index)
+    AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, index)
 }

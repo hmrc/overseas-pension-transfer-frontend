@@ -14,17 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+@import models.requests.DisplayRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukRadios}
+@import uk.gov.hmrc.hmrcfrontend.views.Aliases.ItemType
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcAddToAList
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{AddToAList, ListItem}
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.LegendSize.Large
-@import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
 @this(
         layout: templates.Layout,
@@ -32,10 +30,15 @@
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
+        hmrcAddToAList : HmrcAddToAList,
         qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], shares: Seq[ListItem], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+
+@singularTxt = @{messages("propertyAmendContinue.text.singular")}
+@pluralTxt = @{messages("propertyAmendContinue.text.plural")}
+@partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
 
 @layout(pageTitle = title(form, messages("propertyAmendContinue.title"))) {
 
@@ -46,19 +49,14 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("propertyAmendContinue.heading")</h1>
-
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(
-                    messages("propertyAmendContinue.addMore")
-                )
+        @hmrcAddToAList(
+            AddToAList(
+                itemList = shares,
+                itemType = Some(ItemType(
+                    singular = singularTxt,
+                    plural = pluralTxt
+                ))
             )
-        )
-
-        @govukButton(
-            ButtonViewModel(Text(messages("site.saveAndContinue")))
         )
     }
 }

@@ -82,7 +82,7 @@ class UnquotedSharesAmendContinueController @Inject() (
             Future.successful(Redirect(AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)))
           } else {
             for {
-              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = false))
+              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true))
               _              <- sessionRepository.set(updatedAnswers)
             } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
               case Some(route) => Redirect(route)

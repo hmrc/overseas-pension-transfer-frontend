@@ -17,13 +17,17 @@
 package controllers.transferDetails.assetsMiniJourneys.property
 
 import controllers.actions._
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import controllers.transferDetails.routes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
-import models.Mode
-import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePage
+import models.assets.{PropertyMiniJourney, TypeOfAsset}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
 
 import javax.inject.Inject
@@ -37,6 +41,8 @@ class PropertyAmendContinueController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: PropertyAmendContinueFormProvider,
+    transferDetailsService: TransferDetailsService,
+    miniJourney: PropertyMiniJourney.type,
     val controllerComponents: MessagesControllerComponents,
     view: PropertyAmendContinueView
   )(implicit ec: ExecutionContext
@@ -44,26 +50,44 @@ class PropertyAmendContinueController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(PropertyAmendContinuePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
+      def renderView(answers: UserAnswers): Result = {
+        val shares = PropertyAmendContinueSummary.rows(answers)
+        Ok(view(form, shares, mode))
       }
-
-      Ok(view(preparedForm, mode))
-  }
+      mode match {
+        case CheckMode  =>
+          for {
+            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = false))
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield renderView(updatedAnswers)
+        case NormalMode =>
+          Future.successful(renderView(request.userAnswers))
+      }
+    }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyAmendContinuePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(PropertyAmendContinuePage.nextPage(mode, updatedAnswers))
+        formWithErrors => {
+          val shares = PropertyAmendContinueSummary.rows(request.userAnswers)
+          Future.successful(BadRequest(view(formWithErrors, shares, mode)))
+        },
+        continue => {
+          if (continue) {
+            val nextIndex = transferDetailsService.assetCount(miniJourney, request.userAnswers)
+            Future.successful(Redirect(AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, nextIndex)))
+          } else {
+            for {
+              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
+              case Some(route) => Redirect(route)
+              case None        => Redirect(routes.TransferDetailsCYAController.onPageLoad())
+            }
+          }
+        }
       )
   }
 }

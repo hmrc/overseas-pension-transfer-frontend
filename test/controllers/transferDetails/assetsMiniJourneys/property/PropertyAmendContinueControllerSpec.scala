@@ -21,18 +21,12 @@ import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
 import models.NormalMode
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePage
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
-
-import scala.concurrent.Future
 
 class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -55,7 +49,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
         val view = application.injector.instanceOf[PropertyAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -73,32 +67,24 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, propertyAmendContinueRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+            .withFormUrlEncodedBody(("add-another", "Yes"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PropertyAmendContinuePage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, 0).url
       }
     }
 
@@ -118,7 +104,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

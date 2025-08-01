@@ -17,8 +17,7 @@
 package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import controllers.transferDetails.routes
-import models.assets.PropertyEntry
+import models.assets.{PropertyEntry, TypeOfAsset}
 import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
@@ -26,7 +25,7 @@ import play.api.mvc.Call
 
 case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.toString \ index \ toString
 
   override def toString: String = PropertyEntry.PropValue
 
