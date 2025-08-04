@@ -32,10 +32,8 @@ case class OtherAssetsValueDescriptionPage(index: Int) extends QuestionPage[Stri
     AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(index) // index  passed when we have custom CYA
+    AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onPageLoad(CheckMode, index)
 }
-
-//todo cya

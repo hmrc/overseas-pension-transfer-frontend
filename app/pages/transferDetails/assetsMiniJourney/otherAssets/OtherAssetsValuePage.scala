@@ -17,8 +17,7 @@
 package pages.transferDetails.assetsMiniJourney.otherAssets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import controllers.transferDetails.routes
-import models.{OtherAssetsEntry, TaskCategory, TypeOfAsset, UserAnswers}
+import models.{CheckMode, OtherAssetsEntry, TaskCategory, TypeOfAsset, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -30,11 +29,11 @@ case class OtherAssetsValuePage(index: Int) extends QuestionPage[BigDecimal] {
   override def toString: String = OtherAssetsEntry.OtherAssetsValue
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // need custom cya controller
+    AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad() // index pased into correct controller
+    AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(index)
+    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(CheckMode, index)
 }

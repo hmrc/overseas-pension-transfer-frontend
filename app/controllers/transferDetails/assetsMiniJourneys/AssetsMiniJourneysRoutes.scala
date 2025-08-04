@@ -104,6 +104,9 @@ object AssetsMiniJourneysRoutes {
   val OtherAssetsValueController =
     controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsValueController
 
+  val OtherAssetsCYAController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController
+
   val OtherAssetsAmendContinueController =
     controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsAmendContinueController
 

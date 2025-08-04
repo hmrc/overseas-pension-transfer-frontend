@@ -25,5 +25,6 @@ class AssetsMiniJourneyModule extends AbstractModule {
     bind(classOf[UnquotedSharesMiniJourney.type]).toInstance(UnquotedSharesMiniJourney)
     bind(classOf[QuotedSharesMiniJourney.type]).toInstance(QuotedSharesMiniJourney)
     bind(classOf[PropertyMiniJourney.type]).toInstance(PropertyMiniJourney)
+    bind(classOf[OtherAssetsMiniJourney.type]).toInstance(OtherAssetsMiniJourney)
   }
 }
