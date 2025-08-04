@@ -20,17 +20,11 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsAmendContinueFormProvider
 import models.NormalMode
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsAmendContinueView
-
-import scala.concurrent.Future
 
 class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -39,7 +33,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
   private lazy val otherAssetsAmendContinueRoute = AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
 
-  "AddAdditionalOtherAsset Controller" - {
+  "OtherAssetsAmendContinue Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -53,50 +47,24 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val view = application.injector.instanceOf[OtherAssetsAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = userAnswersQtNumber.set(OtherAssetsAmendContinuePage, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, otherAssetsAmendContinueRoute)
-
-        val view = application.injector.instanceOf[OtherAssetsAmendContinueView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
         val request =
           FakeRequest(POST, otherAssetsAmendContinueRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+            .withFormUrlEncodedBody(("add-another", "Yes"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OtherAssetsAmendContinuePage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, 0).url
       }
     }
 
@@ -116,7 +84,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

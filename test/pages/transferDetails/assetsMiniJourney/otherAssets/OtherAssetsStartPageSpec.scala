@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package pages.transferDetails.assetsMiniJourney.otherAssets
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsStartPage
 
 class OtherAssetsStartPageSpec extends AnyFreeSpec with Matchers {
+  private val index = 0
 
   ".nextPage" - {
 
@@ -31,7 +33,7 @@ class OtherAssetsStartPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to the Next page" in {
         // TODO change when pages are connected
-        OtherAssetsStartPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        OtherAssetsStartPage.nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index)
       }
     }
   }

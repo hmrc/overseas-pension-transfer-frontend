@@ -23,7 +23,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transferDetails.assetsMiniJourney.quotedShares.OtherAssetsStartView
+import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsStartView
 
 class OtherAssetsStartControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -37,7 +37,7 @@ class OtherAssetsStartControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.OtherAssetsStartController.onPageLoad().url)
         val result   = route(application, request).value
         val view     = application.injector.instanceOf[OtherAssetsStartView]
-        val nextPage = AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onPageLoad(NormalMode, 0).url
+        val nextPage = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, 0).url
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(fakeDisplayRequest(request), messages(application)).toString

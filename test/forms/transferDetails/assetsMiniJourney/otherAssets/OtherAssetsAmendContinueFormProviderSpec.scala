@@ -21,25 +21,27 @@ import play.api.data.FormError
 
 class OtherAssetsAmendContinueFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "addAdditionalOtherAsset.error.required"
-  val invalidKey  = "error.boolean"
+  val requiredKey = "otherAssetsAmendContinue.error.required"
 
   val form = new OtherAssetsAmendContinueFormProvider()()
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName = "add-another"
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
+    "bind true when the value is 'Yes'" in {
+      val result = form.bind(Map(fieldName -> "Yes"))
+      result.get mustBe true
+    }
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    "bind false when the value is 'No'" in {
+      val result = form.bind(Map(fieldName -> "No"))
+      result.get mustBe false
+    }
+
+    "error when value is missing" in {
+      val result = form.bind(Map.empty[String, String])
+      result.errors must contain(FormError(fieldName, requiredKey))
+    }
   }
 }

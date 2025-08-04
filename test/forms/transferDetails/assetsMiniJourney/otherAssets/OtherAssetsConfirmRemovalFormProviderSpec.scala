@@ -21,7 +21,7 @@ import play.api.data.FormError
 
 class OtherAssetsConfirmRemovalFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "removeOtherAsset.error.required"
+  val requiredKey = "otherAssetsConfirmRemoval.error.required"
   val invalidKey  = "error.boolean"
 
   val form = new OtherAssetsConfirmRemovalFormProvider()()

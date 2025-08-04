@@ -19,7 +19,7 @@ package forms.transferDetails.assetsMiniJourney.otherAssets
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
-class OtherAssetsValueDescriptionFormProviderSpec extends StringFieldBehaviours {
+class OtherAssetsDescriptionFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey              = "assetValueDescription.error.required"
   val lengthKey                = "assetValueDescription.error.length"
@@ -27,7 +27,7 @@ class OtherAssetsValueDescriptionFormProviderSpec extends StringFieldBehaviours 
   val maxLength                = 160
   val descriptionRegex: String = """^[A-Za-z0-9 \-,.&'/]+$"""
 
-  val form = new OtherAssetsValueDescriptionFormProvider()()
+  val form = new OtherAssetsDescriptionFormProvider()()
 
   ".value" - {
 

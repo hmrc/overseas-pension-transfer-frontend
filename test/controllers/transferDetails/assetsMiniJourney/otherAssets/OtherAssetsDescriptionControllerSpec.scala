@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourney.otherAssets
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsValueDescriptionFormProvider
+import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsValueDescriptionPage
+import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionView
 
 import scala.concurrent.Future
 
-class OtherAssetsValueDescriptionControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+  private val index = 0
 
-  private val formProvider = new OtherAssetsValueDescriptionFormProvider()
+  private val formProvider = new OtherAssetsDescriptionFormProvider()
   private val form         = formProvider()
 
-  private lazy val assetValueDescriptionRoute = AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onPageLoad(NormalMode).url
+  private lazy val assetValueDescriptionRoute = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index).url
 
   "AssetValueDescription Controller" - {
 
@@ -50,28 +52,28 @@ class OtherAssetsValueDescriptionControllerSpec extends AnyFreeSpec with SpecBas
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AssetValueDescriptionView]
+        val view = application.injector.instanceOf[OtherAssetsDescriptionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(OtherAssetsValueDescriptionPage, "answer").success.value
+      val userAnswers = userAnswersQtNumber.set(OtherAssetsDescriptionPage(index), "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request = FakeRequest(GET, assetValueDescriptionRoute)
 
-        val view = application.injector.instanceOf[AssetValueDescriptionView]
+        val view = application.injector.instanceOf[OtherAssetsDescriptionView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -94,7 +96,7 @@ class OtherAssetsValueDescriptionControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OtherAssetsValueDescriptionPage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual OtherAssetsDescriptionPage(index).nextPage(NormalMode, userAnswersQtNumber).url
       }
     }
 
@@ -109,12 +111,12 @@ class OtherAssetsValueDescriptionControllerSpec extends AnyFreeSpec with SpecBas
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[AssetValueDescriptionView]
+        val view = application.injector.instanceOf[OtherAssetsDescriptionView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

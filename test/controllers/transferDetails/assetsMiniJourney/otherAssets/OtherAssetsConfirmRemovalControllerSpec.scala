@@ -19,84 +19,52 @@ package controllers.transferDetails.assetsMiniJourney.otherAssets
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsConfirmRemovalFormProvider
-import models.NormalMode
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import models.{NormalMode, OtherAssetsEntry}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
+import queries.assets.OtherAssetsQuery
 import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsConfirmRemovalView
-
-import scala.concurrent.Future
 
 class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new OtherAssetsConfirmRemovalFormProvider()
   private val form         = formProvider()
 
-  private lazy val removeOtherAssetRoute = AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(NormalMode).url
-
-  "RemoveOtherAsset Controller" - {
+  "OtherAssetsConfirmRemoval Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, removeOtherAssetRoute)
+        val request = FakeRequest(GET, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(1).url)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[OtherAssetsConfirmRemovalView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = userAnswersQtNumber.set(OtherAssetsConfirmRemovalPage, true).success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, removeOtherAssetRoute)
-
-        val view = application.injector.instanceOf[OtherAssetsConfirmRemovalView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, 1)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      val entries     = List(OtherAssetsEntry("Other", 1000))
+      val userAnswers = userAnswersQtNumber.set(OtherAssetsQuery, entries).success.value
 
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, removeOtherAssetRoute)
+          FakeRequest(POST, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(0).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OtherAssetsConfirmRemovalPage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
       }
     }
 
@@ -106,7 +74,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, removeOtherAssetRoute)
+          FakeRequest(POST, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(1).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -116,7 +84,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -125,7 +93,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, removeOtherAssetRoute)
+        val request = FakeRequest(GET, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(1).url)
 
         val result = route(application, request).value
 
@@ -140,7 +108,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, removeOtherAssetRoute)
+          FakeRequest(POST, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(1).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

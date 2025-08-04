@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package pages.transferDetails.assetsMiniJourney.otherAssets
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsValueDescriptionPage
+import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionPage
 
-class OtherAssetsValueDescriptionPageSpec extends AnyFreeSpec with Matchers {
+class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers {
+  private val index = 0
 
   ".nextPage" - {
 
@@ -31,8 +33,10 @@ class OtherAssetsValueDescriptionPageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        // TODO change when pages are connected
-        OtherAssetsValueDescriptionPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        OtherAssetsDescriptionPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+          NormalMode,
+          index
+        )
       }
     }
 
@@ -40,7 +44,7 @@ class OtherAssetsValueDescriptionPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        OtherAssetsValueDescriptionPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        OtherAssetsDescriptionPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
       }
     }
   }

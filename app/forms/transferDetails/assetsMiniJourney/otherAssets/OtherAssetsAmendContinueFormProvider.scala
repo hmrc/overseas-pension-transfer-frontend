@@ -25,6 +25,7 @@ class OtherAssetsAmendContinueFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("addAdditionalOtherAsset.error.required")
+      "add-another" -> text("otherAssetsAmendContinue.error.required")
+        .transform[Boolean](_.equals("Yes"), if (_) "Yes" else "No")
     )
 }
