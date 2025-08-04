@@ -14,20 +14,16 @@
  * limitations under the License.
  *@
 
-@import viewmodels.InputWidth._
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.title
-@import viewmodels.govuk.all._
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import models.requests.DisplayRequest
-@import views.html.components.QTNumber
-@import viewmodels.LabelSize.Large
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-@import play.api.i18n.Messages
+@import models.requests.DisplayRequest
 @import play.api.data.Form
+@import play.api.i18n.Messages
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
+@import viewmodels.LabelSize.Large
+@import viewmodels.govuk.all._
+@import views.ViewUtils.title
+@import views.html.components.QTNumber
 
 @this(
         layout: templates.Layout,
