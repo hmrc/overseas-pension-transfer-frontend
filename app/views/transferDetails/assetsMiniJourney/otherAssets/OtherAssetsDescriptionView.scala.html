@@ -26,21 +26,24 @@
 @import views.html.components.QTNumber
 @import viewmodels.LabelSize.Large
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+@import play.api.i18n.Messages
+@import play.api.data.Form
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
+
 
 @(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("assetValueDescription.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onSubmit(mode, index)) {
+    @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onSubmit(mode, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

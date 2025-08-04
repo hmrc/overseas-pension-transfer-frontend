@@ -21,7 +21,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class OtherAssetsValueDescriptionFormProvider @Inject() extends Mappings with Regex {
+class OtherAssetsDescriptionFormProvider @Inject() extends Mappings with Regex {
 
   private val maxLen = 160
 

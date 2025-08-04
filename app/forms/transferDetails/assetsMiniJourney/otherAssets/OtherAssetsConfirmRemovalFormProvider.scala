@@ -25,6 +25,6 @@ class OtherAssetsConfirmRemovalFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("removeOtherAsset.error.required")
+      "value" -> boolean("otherAssetsConfirmRemoval.error.required")
     )
 }

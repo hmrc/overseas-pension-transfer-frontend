@@ -17,28 +17,28 @@
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
-import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsValueDescriptionFormProvider
+import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionFormProvider
 import models.Mode
-import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsValueDescriptionPage
+import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsValueDescriptionView
+import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OtherAssetsValueDescriptionController @Inject() (
+class OtherAssetsDescriptionController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: OtherAssetsValueDescriptionFormProvider,
+    formProvider: OtherAssetsDescriptionFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: OtherAssetsValueDescriptionView
+    view: OtherAssetsDescriptionView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -46,7 +46,7 @@ class OtherAssetsValueDescriptionController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(OtherAssetsValueDescriptionPage(index)) match {
+      val preparedForm = request.userAnswers.get(OtherAssetsDescriptionPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -61,9 +61,9 @@ class OtherAssetsValueDescriptionController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherAssetsValueDescriptionPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherAssetsDescriptionPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(OtherAssetsValueDescriptionPage(index).nextPage(mode, updatedAnswers))
+          } yield Redirect(OtherAssetsDescriptionPage(index).nextPage(mode, updatedAnswers))
       )
   }
 }

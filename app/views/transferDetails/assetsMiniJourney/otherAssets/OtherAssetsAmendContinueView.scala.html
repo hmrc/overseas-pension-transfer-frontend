@@ -28,16 +28,16 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.AddToAList
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.ItemType
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-
-
+@import play.api.data.Form
+@import play.api.i18n.Messages
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton, hmrcAddToAList : HmrcAddToAList,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton, hmrcAddToAList : HmrcAddToAList,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], shares: Seq[ListItem], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)

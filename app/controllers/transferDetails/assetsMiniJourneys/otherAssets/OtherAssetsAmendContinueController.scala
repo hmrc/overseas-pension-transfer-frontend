@@ -79,7 +79,7 @@ class OtherAssetsAmendContinueController @Inject() (
         continue => {
           if (continue) {
             val nextIndex = transferDetailsService.assetCount(miniJourney, request.userAnswers)
-            Future.successful(Redirect(AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onPageLoad(NormalMode, nextIndex)))
+            Future.successful(Redirect(AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, nextIndex)))
           } else {
             for {
               updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = false))

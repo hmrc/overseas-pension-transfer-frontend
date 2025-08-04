@@ -17,6 +17,7 @@
 package models.assets
 
 import models.address.PropertyAddress
+import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json._
 
 sealed trait AssetEntry
@@ -68,13 +69,13 @@ object PropertyEntry {
 }
 
 case class OtherAssetsEntry(
-    otherAssetsValueDescription: String,
-    otherAssetsValue: BigDecimal
+    assetDescription: String,
+    assetValue: BigDecimal
   ) extends AssetEntry
 
 object OtherAssetsEntry {
-  val OtherAssetsValueDescription = "valueDescription"
-  val OtherAssetsValue            = "valueOfAsset"
+  val AssetDescription = "assetDescription"
+  val AssetValue       = "assetValue"
 
   implicit val format: OFormat[OtherAssetsEntry] = Json.format[OtherAssetsEntry]
 }

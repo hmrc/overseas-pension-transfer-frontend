@@ -14,31 +14,29 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukRadios
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+@import models.requests.DisplayRequest
+@import play.api.data.Form
+@import play.api.i18n.Messages
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukRadios}
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.LegendSize.Large
-@import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
+
 
 @(form: Form[_], index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("removeOtherAsset.title"))) {
+@layout(pageTitle = title(form, messages("otherAssetsConfirmRemoval.title"))) {
 
     @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
@@ -47,7 +45,7 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("removeOtherAsset.heading")</h1>
+        <h1 class="govuk-heading-l">@messages("otherAssetsConfirmRemoval.heading")</h1>
 
         @govukRadios(
             RadiosViewModel.yesNo(

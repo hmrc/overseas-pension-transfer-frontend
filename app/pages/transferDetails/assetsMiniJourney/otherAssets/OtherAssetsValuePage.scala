@@ -26,7 +26,7 @@ case class OtherAssetsValuePage(index: Int) extends QuestionPage[BigDecimal] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Other.toString \ index \ toString
 
-  override def toString: String = OtherAssetsEntry.OtherAssetsValue
+  override def toString: String = OtherAssetsEntry.AssetValue
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)

@@ -17,23 +17,23 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourney.otherAssets
 
 import models.UserAnswers
-import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsValueDescriptionPage
+import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object OtherAssetsValueDescriptionSummary {
+object OtherAssetsDescriptionSummary {
 
   def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OtherAssetsValueDescriptionPage(index)).map {
+    answers.get(OtherAssetsDescriptionPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "assetValueDescription.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", OtherAssetsValueDescriptionPage(index).changeLink(answers).url)
+            ActionItemViewModel("site.change", OtherAssetsDescriptionPage(index).changeLink(answers).url)
               .withVisuallyHiddenText(messages("assetValueDescription.change.hidden"))
           )
         )

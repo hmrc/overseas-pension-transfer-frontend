@@ -22,11 +22,11 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class OtherAssetsValueDescriptionPage(index: Int) extends QuestionPage[String] {
+case class OtherAssetsDescriptionPage(index: Int) extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Other.toString \ index \ toString
 
-  override def toString: String = OtherAssetsEntry.OtherAssetsValueDescription
+  override def toString: String = OtherAssetsEntry.AssetDescription
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index)
@@ -35,5 +35,5 @@ case class OtherAssetsValueDescriptionPage(index: Int) extends QuestionPage[Stri
     AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
 
   final def changeLink(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onPageLoad(CheckMode, index)
+    AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(CheckMode, index)
 }

@@ -98,8 +98,8 @@ object AssetsMiniJourneysRoutes {
   val OtherAssetsStartController =
     controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsStartController
 
-  val OtherAssetsValueDescriptionController =
-    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsValueDescriptionController
+  val OtherAssetsDescriptionController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsDescriptionController
 
   val OtherAssetsValueController =
     controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsValueController

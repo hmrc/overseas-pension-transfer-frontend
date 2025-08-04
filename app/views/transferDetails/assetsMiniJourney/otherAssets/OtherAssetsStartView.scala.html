@@ -20,23 +20,25 @@
 @import views.ViewUtils.titleNoForm
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
+@import play.api.i18n.Messages
 
 @this(
-    layout: templates.Layout,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
+
 
 @(nextPage: String)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("addOtherAssets.title"))) {
+@layout(pageTitle = titleNoForm(messages("otherAssetsStart.title"))) {
 
     @qtNumber()
-    <h1 class="govuk-heading-l">@messages("addOtherAssets.heading")</h1>
-    <p class="govuk-body">@messages("addOtherAssets.text")</p>
+    <h1 class="govuk-heading-l">@messages("otherAssetsStart.heading")</h1>
+    <p class="govuk-body">@messages("otherAssetsStart.text")</p>
 
     @govukButton(
-        ButtonViewModel(messages("site.continue"))
+        ButtonViewModel(Text(messages("site.continue")))
         .asLink(nextPage)
     )
 }

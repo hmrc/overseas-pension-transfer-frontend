@@ -48,7 +48,7 @@ object OtherAssetsAmendContinueSummary extends AppUtils {
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(
-          name      = entry.otherAssetsValueDescription,
+          name      = entry.assetDescription,
           changeUrl = AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index).url,
           removeUrl = AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(index).url
         )
