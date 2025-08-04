@@ -623,3 +623,12 @@ removeQuotedShares.heading = Are you sure you want to remove these quoted shares
 removeQuotedShares.error.required = Select one option
 removeQuotedShares.checkYourAnswersLabel = removeQuotedShares
 removeQuotedShares.change.hidden = RemoveQuotedShares
+
+submitToHMRC.title = Do you want to submit this report to HMRC?
+submitToHMRC.heading = Do you want to submit this report to HMRC?
+submitToHMRC.checkYourAnswersLabel = Save and continue
+submitToHMRC.error.required = Select yes if you want to submit the report
+submitToHMRC.change.hidden = SubmitToHMRC
+submitToHMRC.hintYes = You will still be able to update the report after it''s been submitted.
+submitToHMRC.hintNo = Mark as ''in progress'' and return to the overseas pension transfer dashboard.
+

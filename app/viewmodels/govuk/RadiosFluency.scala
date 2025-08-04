@@ -68,7 +68,9 @@ trait RadiosFluency {
 
     def yesNo(
         field: Field,
-        fieldset: Fieldset = FieldsetViewModel()
+        fieldset: Fieldset    = FieldsetViewModel(),
+        hintYes: Option[Hint] = None,
+        hintNo: Option[Hint]  = None
       )(implicit messages: Messages
       ): Radios = {
 
@@ -76,12 +78,14 @@ trait RadiosFluency {
         RadioItem(
           id      = Some(field.id),
           value   = Some("true"),
-          content = Text(messages("site.yes"))
+          content = Text(messages("site.yes")),
+          hint    = hintYes
         ),
         RadioItem(
           id      = Some(s"${field.id}-no"),
           value   = Some("false"),
-          content = Text(messages("site.no"))
+          content = Text(messages("site.no")),
+          hint    = hintNo
         )
       )
 
