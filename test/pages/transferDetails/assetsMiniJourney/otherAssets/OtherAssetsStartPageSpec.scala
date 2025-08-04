@@ -32,8 +32,8 @@ class OtherAssetsStartPageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        // TODO change when pages are connected
-        OtherAssetsStartPage.nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index)
+        OtherAssetsStartPage.nextPage(NormalMode, emptyAnswers) mustEqual
+          AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index)
       }
     }
   }

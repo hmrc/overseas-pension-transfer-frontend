@@ -61,7 +61,7 @@ class OtherAssetsAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = false))
+            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
             _              <- sessionRepository.set(updatedAnswers)
           } yield renderView(updatedAnswers)
         case NormalMode =>
@@ -82,7 +82,7 @@ class OtherAssetsAmendContinueController @Inject() (
             Future.successful(Redirect(AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, nextIndex)))
           } else {
             for {
-              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = false))
+              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
               _              <- sessionRepository.set(updatedAnswers)
             } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
               case Some(route) => Redirect(route)
