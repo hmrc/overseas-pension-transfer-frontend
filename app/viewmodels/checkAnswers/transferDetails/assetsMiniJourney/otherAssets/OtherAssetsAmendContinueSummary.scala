@@ -49,7 +49,7 @@ object OtherAssetsAmendContinueSummary extends AppUtils {
       case (entry, index) =>
         ListItem(
           name      = entry.otherAssetsValueDescription,
-          changeUrl = AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(index).url, // TODO OTHER CYA
+          changeUrl = AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index).url,
           removeUrl = AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(index).url
         )
     }

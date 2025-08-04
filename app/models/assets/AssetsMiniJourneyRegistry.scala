@@ -25,6 +25,8 @@ object AssetsMiniJourneyRegistry {
     UnquotedSharesMiniJourney,
     QuotedSharesMiniJourney,
     PropertyMiniJourney
+    QuotedSharesMiniJourney,
+    OtherAssetsMiniJourney
   )
 
   def forType(assetType: TypeOfAsset): Option[AssetsMiniJourney[_]] =

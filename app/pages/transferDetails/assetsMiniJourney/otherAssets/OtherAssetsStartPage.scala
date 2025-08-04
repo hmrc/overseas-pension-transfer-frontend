@@ -25,5 +25,5 @@ object OtherAssetsStartPage extends Page {
   private val startIndex = 0
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onPageLoad(NormalMode, startIndex) // TODO change while connecting the pages
+    AssetsMiniJourneysRoutes.OtherAssetsValueDescriptionController.onPageLoad(NormalMode, startIndex)
 }
