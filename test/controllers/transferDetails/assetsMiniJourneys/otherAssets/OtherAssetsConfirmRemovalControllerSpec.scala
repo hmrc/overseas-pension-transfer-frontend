@@ -19,13 +19,14 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalFormProvider
-import models.{NormalMode, OtherAssetsEntry}
+import models.NormalMode
+import models.assets.OtherAssetsEntry
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.assets.OtherAssetsQuery
-import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsConfirmRemovalView
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalView
 
 class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 

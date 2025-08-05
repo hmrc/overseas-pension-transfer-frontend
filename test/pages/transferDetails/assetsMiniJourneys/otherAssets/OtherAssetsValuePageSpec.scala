@@ -31,7 +31,6 @@ class OtherAssetsValuePageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        // TODO change when pages are connected
         OtherAssetsValuePage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
       }
     }

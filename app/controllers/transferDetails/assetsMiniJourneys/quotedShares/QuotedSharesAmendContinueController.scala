@@ -19,9 +19,6 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import forms.transferDetails.assetsMiniJourney.quotedShares.QuotedSharesAmendContinueFormProvider
-import models.assets.QuotedSharesMiniJourney
-import models.{CheckMode, Mode, NormalMode, TypeOfAsset, UserAnswers}
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueFormProvider
 import models.assets.{QuotedSharesMiniJourney, TypeOfAsset}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}

@@ -27,7 +27,7 @@ import queries.assets.OtherAssetsQuery
 import repositories.SessionRepository
 import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsConfirmRemovalView
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

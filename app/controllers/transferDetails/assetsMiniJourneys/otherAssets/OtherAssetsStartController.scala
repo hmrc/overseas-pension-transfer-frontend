@@ -22,7 +22,7 @@ import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsStartView
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartView
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

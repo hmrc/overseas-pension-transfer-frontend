@@ -20,8 +20,8 @@ import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueFormProvider
-import models.assets.OtherAssetsMiniJourney
-import models.{CheckMode, Mode, NormalMode, TypeOfAsset, UserAnswers}
+import models.assets.{OtherAssetsMiniJourney, TypeOfAsset}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -30,7 +30,7 @@ import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
-import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsAmendContinueView
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

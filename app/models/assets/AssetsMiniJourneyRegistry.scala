@@ -24,8 +24,7 @@ object AssetsMiniJourneyRegistry {
   val all: Seq[AssetsMiniJourney[_]] = Seq(
     UnquotedSharesMiniJourney,
     QuotedSharesMiniJourney,
-    PropertyMiniJourney
-    QuotedSharesMiniJourney,
+    PropertyMiniJourney,
     OtherAssetsMiniJourney
   )
 

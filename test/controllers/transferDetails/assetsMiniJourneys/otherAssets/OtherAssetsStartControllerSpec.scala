@@ -23,7 +23,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsStartView
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartView
 
 class OtherAssetsStartControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 

@@ -17,7 +17,8 @@
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, OtherAssetsEntry, TaskCategory, TypeOfAsset, UserAnswers}
+import models.assets.{OtherAssetsEntry, TypeOfAsset}
+import models.{CheckMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

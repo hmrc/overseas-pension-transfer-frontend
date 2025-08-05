@@ -29,7 +29,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsValueView
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueView
 
 import scala.concurrent.Future
 
