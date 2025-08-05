@@ -19,7 +19,6 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 import models.UserAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares._
 
 case object QuotedSharesSummary {
 

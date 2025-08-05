@@ -22,6 +22,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueSummary
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 
 case object TransferDetailsSummary {
 
@@ -29,6 +30,7 @@ case object TransferDetailsSummary {
     val totalUnquotedSharesRow: Option[SummaryListRow] = Some(UnquotedSharesAmendContinueSummary.row(userAnswers))
     val totalQuotedSharesRow: Option[SummaryListRow]   = Some(QuotedSharesAmendContinueSummary.row(userAnswers))
     val totalPropertiesRow: Option[SummaryListRow]     = Some(PropertyAmendContinueSummary.row(userAnswers))
-    Seq(totalUnquotedSharesRow, totalQuotedSharesRow, totalPropertiesRow).flatten
+    val totalOtherAssetsRow: Option[SummaryListRow]    = Some(OtherAssetsAmendContinueSummary.row(userAnswers))
+    Seq(totalUnquotedSharesRow, totalQuotedSharesRow, totalPropertiesRow, totalOtherAssetsRow).flatten
   }
 }

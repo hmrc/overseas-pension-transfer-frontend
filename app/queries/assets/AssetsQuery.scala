@@ -39,3 +39,8 @@ case object PropertyQuery extends AssetsQuery[List[PropertyEntry]] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.toString
 }
+
+case object OtherAssetsQuery extends AssetsQuery[List[OtherAssetsEntry]] {
+
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Other.toString
+}

@@ -391,7 +391,7 @@ typeOfAsset.cash = Cash
 typeOfAsset.unquotedShares = Unquoted shares
 typeOfAsset.quotedShares = Quoted shares
 typeOfAsset.propertyAssets = Property
-typeOfAsset.other = Other
+typeOfAsset.otherAssets = Other
 typeOfAsset.hint = Select all that apply.
 typeOfAsset.checkYourAnswersLabel = Type of assets included in the transfer
 typeOfAsset.error.required = Select at least one type of asset
@@ -582,6 +582,10 @@ propertyConfirmRemoval.title = Are you sure you want to remove this property?
 propertyConfirmRemoval.heading = Are you sure you want to remove this property?
 propertyConfirmRemoval.error.required = Select one option
 
+otherAssetsConfirmRemoval.title = Are you sure you want to remove these other assets?
+otherAssetsConfirmRemoval.heading = Are you sure you want to remove these other assets?
+otherAssetsConfirmRemoval.error.required = Select one option
+
 addAdditionalOtherAsset.title = Do you need to add another asset?
 addAdditionalOtherAsset.heading = You have added 1 asset
 addAdditionalOtherAsset.question = Do you need to add another asset?
@@ -610,24 +614,14 @@ propertyAmendContinue.text.singular = property
 propertyAmendContinue.text.plural = properties
 
 
-addOtherAssets.title = Add other assets
-addOtherAssets.heading = Add other assets
-addOtherAssets.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.
+otherAssetsAmendContinue.error.required = Please select an option
+otherAssetsAmendContinue.checkYourAnswersLabel = Other assets
+otherAssetsAmendContinue.change.hidden = Other assets
+otherAssetsAmendContinue.summary.value = {0} added
+otherAssetsAmendContinue.text.singular = group of assets
+otherAssetsAmendContinue.text.plural = groups of assets
 
-removeOtherAsset.title = Are you sure you want to remove this asset?
-removeOtherAsset.heading = Are you sure you want to remove this asset?
-removeOtherAsset.checkYourAnswersLabel = removeOtherAsset
-removeOtherAsset.error.required = Select one option
-removeOtherAsset.change.hidden = RemoveOtherAsset
+otherAssetsStart.title = Add other assets
+otherAssetsStart.heading = Add other assets
+otherAssetsStart.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.
 
-removePropertyAsset.title = Are you sure you want to remove this property?
-removePropertyAsset.heading = Are you sure you want to remove this property?
-removePropertyAsset.checkYourAnswersLabel = removePropertyAsset
-removePropertyAsset.error.required = Select one option
-removePropertyAsset.change.hidden = RemovePropertyAsset
-
-removeQuotedShares.title = Are you sure you want to remove these quoted shares?
-removeQuotedShares.heading = Are you sure you want to remove these quoted shares?
-removeQuotedShares.error.required = Select one option
-removeQuotedShares.checkYourAnswersLabel = removeQuotedShares
-removeQuotedShares.change.hidden = RemoveQuotedShares

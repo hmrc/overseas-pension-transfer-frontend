@@ -25,14 +25,16 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+@import play.api.data.Form
+@import play.api.i18n.Messages
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], index: Int)(implicit request: DisplayRequest[_], messages: Messages)

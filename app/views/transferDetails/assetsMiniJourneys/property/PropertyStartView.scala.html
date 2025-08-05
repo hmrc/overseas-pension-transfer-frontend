@@ -14,18 +14,20 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import models.requests.DisplayRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
-@import models.requests.DisplayRequest
 @import views.html.components.QTNumber
+@import play.api.i18n.Messages
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @this(
-    layout: templates.Layout,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
+
 
 @(nextPage: String)(implicit request: DisplayRequest[_], messages: Messages)
 
@@ -36,7 +38,7 @@
     <p class="govuk-body">@messages("propertyStart.text")</p>
 
     @govukButton(
-        ButtonViewModel(messages("site.continue"))
+        ButtonViewModel(Text(messages("site.continue")))
         .asLink(nextPage)
     )
 }

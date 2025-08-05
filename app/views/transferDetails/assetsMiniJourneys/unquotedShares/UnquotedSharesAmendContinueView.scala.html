@@ -22,7 +22,8 @@
 @import views.html.components.QTNumber
 @import viewmodels.govuk.all.ErrorSummaryViewModel
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-
+@import play.api.data.Form
+@import play.api.i18n.Messages
 
 @this(
         layout: templates.Layout,
@@ -31,6 +32,7 @@
         hmrcAddToAList : HmrcAddToAList,
         qtNumber: QTNumber
 )
+
 @(form: Form[_], shares: Seq[ListItem], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @singularTxt = @{messages("unquotedSharesAmendContinue.text.singular")}

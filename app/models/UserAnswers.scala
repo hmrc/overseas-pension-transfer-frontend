@@ -23,6 +23,8 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
+class DeserialisationException(message: String) extends RuntimeException(message)
+
 final case class UserAnswers(
     id: String,
     data: JsObject       = Json.obj(),
@@ -31,6 +33,33 @@ final case class UserAnswers(
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+
+  import play.api.libs.json._
+
+  def getWithLogging[A](page: Gettable[A])(implicit rds: Reads[A], mf: Manifest[A]): Either[Throwable, A] = {
+    val path     = page.path
+    val rawValue = path.asSingleJson(data).getOrElse(JsNull)
+    val result   = Reads.at(path).reads(data)
+
+    result match {
+      case JsSuccess(value, _) =>
+        Right(value)
+
+      case JsError(errors) =>
+        val errorMsg =
+          s"""
+             |Path     : $path
+             |Expected : ${mf.runtimeClass.getSimpleName}
+             |Actual   : ${Json.prettyPrint(rawValue)}
+             |Errors   : ${errors.map {
+              case (jsPath, validationErrors) =>
+                s"$jsPath -> ${validationErrors.map(_.message).mkString(", ")}"
+            }.mkString("\n           |           ")}
+             |""".stripMargin
+
+        Left(new DeserialisationException(errorMsg))
+    }
+  }
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
@@ -71,11 +100,14 @@ object UserAnswers {
       original: UserAnswers,
       page: Settable[A] with Gettable[A]
     )(implicit reads: Reads[A],
-      writes: Writes[A]
+      writes: Writes[A],
+      mf: Manifest[A]
     ): Try[UserAnswers] =
-    original.get(page) match {
-      case Some(v) => original.copy(data = Json.obj()).set(page, v)
-      case None    => Failure(new NoSuchElementException(s"No value found at path: ${page.path}"))
+    original.getWithLogging(page) match {
+      case Right(value) =>
+        original.copy(data = Json.obj()).set(page, value)
+      case Left(error)  =>
+        Failure(error)
     }
 
   val reads: Reads[UserAnswers] = {

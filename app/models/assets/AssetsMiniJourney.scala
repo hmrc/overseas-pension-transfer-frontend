@@ -61,3 +61,13 @@ object PropertyMiniJourney extends AssetsMiniJourney[PropertyEntry] {
   def isCompleted(ua: UserAnswers): Boolean =
     ua.get(AssetCompletionFlag(assetType)).contains(true)
 }
+
+object OtherAssetsMiniJourney extends AssetsMiniJourney[OtherAssetsEntry] {
+  val assetType = TypeOfAsset.Other
+  val query     = OtherAssetsQuery
+  val format    = OtherAssetsEntry.format
+  val startPage = () => OtherAssetsStartController.onPageLoad()
+
+  def isCompleted(ua: UserAnswers): Boolean =
+    ua.get(AssetCompletionFlag(assetType)).contains(true)
+}

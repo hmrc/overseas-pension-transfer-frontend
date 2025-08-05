@@ -24,7 +24,8 @@ object AssetsMiniJourneyRegistry {
   val all: Seq[AssetsMiniJourney[_]] = Seq(
     UnquotedSharesMiniJourney,
     QuotedSharesMiniJourney,
-    PropertyMiniJourney
+    PropertyMiniJourney,
+    OtherAssetsMiniJourney
   )
 
   def forType(assetType: TypeOfAsset): Option[AssetsMiniJourney[_]] =
