@@ -16,7 +16,8 @@
 
 package queries.assets
 
-import models.{PropertyEntry, QuotedSharesEntry, TaskCategory, TypeOfAsset, UnquotedSharesEntry}
+import models.TaskCategory
+import models.assets._
 import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 

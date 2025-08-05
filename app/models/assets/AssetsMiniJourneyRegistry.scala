@@ -16,14 +16,15 @@
 
 package models.assets
 
-import models.{TypeOfAsset, UserAnswers}
+import models.UserAnswers
 import queries.assets.SelectedAssetTypes
 
 object AssetsMiniJourneyRegistry {
 
   val all: Seq[AssetsMiniJourney[_]] = Seq(
     UnquotedSharesMiniJourney,
-    QuotedSharesMiniJourney
+    QuotedSharesMiniJourney,
+    PropertyMiniJourney
   )
 
   def forType(assetType: TypeOfAsset): Option[AssetsMiniJourney[_]] =

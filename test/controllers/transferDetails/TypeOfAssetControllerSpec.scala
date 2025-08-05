@@ -19,8 +19,9 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.TypeOfAssetFormProvider
-import models.TypeOfAsset.UnquotedShares
-import models.{NormalMode, TypeOfAsset}
+import models.NormalMode
+import models.assets.TypeOfAsset
+import models.assets.TypeOfAsset.UnquotedShares
 import navigators.TypeOfAssetNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

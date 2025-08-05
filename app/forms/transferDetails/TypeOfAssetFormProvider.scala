@@ -17,7 +17,7 @@
 package forms.transferDetails
 
 import forms.mappings.Mappings
-import models.TypeOfAsset
+import models.assets.TypeOfAsset
 import play.api.data.Form
 import play.api.data.Forms.set
 

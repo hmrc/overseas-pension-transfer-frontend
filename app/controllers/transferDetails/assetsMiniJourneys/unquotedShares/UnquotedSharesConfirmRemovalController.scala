@@ -18,18 +18,16 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import forms.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
+import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
 import models.assets.UnquotedSharesMiniJourney
-import models.{NormalMode, TypeOfAsset, UnquotedSharesEntry, UserAnswers}
-import org.apache.pekko.Done
-import play.api.Logging
+import models.{NormalMode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.UnquotedSharesQuery
 import repositories.SessionRepository
 import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.assetsMiniJourney.unquotedShares.UnquotedSharesConfirmRemovalView
+import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
