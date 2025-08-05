@@ -346,3 +346,6 @@ POST       /transfer-details/assets/property-confirm-removal                    
 # OTHER
 
 GET        /transfer-details/other-assets-start                                                   controllers.transferDetails.AddOtherAssetsController.onPageLoad()
+
+GET        /submitToHMRC                        controllers.SubmitToHMRCController.onPageLoad()
+POST       /submitToHMRC                        controllers.SubmitToHMRCController.onSubmit()
