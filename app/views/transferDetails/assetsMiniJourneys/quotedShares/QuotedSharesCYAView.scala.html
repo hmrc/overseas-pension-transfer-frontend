@@ -20,6 +20,9 @@
 @import views.ViewUtils.titleNoForm
 @import views.html.components.{CheckYourAnswersHeading, QTNumber}
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+@import play.api.i18n.Messages
+@import viewmodels.govuk.all.ButtonViewModel
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 @this(
         layout: templates.Layout,
@@ -30,6 +33,7 @@
         heading: CheckYourAnswersHeading,
         qtNumber: QTNumber
 )
+
 
 @(list: SummaryList, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
@@ -42,7 +46,7 @@
 
     @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesCYAController.onSubmit(index), Symbol("autoComplete") -> "off") {
         @govukButton(
-            ButtonViewModel(messages("site.continue"))
+            ButtonViewModel(Text(messages("site.continue")))
         )
     }
 }

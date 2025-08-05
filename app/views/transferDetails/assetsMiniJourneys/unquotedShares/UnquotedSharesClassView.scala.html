@@ -26,14 +26,16 @@
 @import views.html.components.QTNumber
 @import viewmodels.LabelSize.Large
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+@import play.api.data.Form
+@import play.api.i18n.Messages
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukInput: GovukInput,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
