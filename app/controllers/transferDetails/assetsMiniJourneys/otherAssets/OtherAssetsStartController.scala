@@ -18,7 +18,7 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
 import models.NormalMode
-import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsStartPage
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

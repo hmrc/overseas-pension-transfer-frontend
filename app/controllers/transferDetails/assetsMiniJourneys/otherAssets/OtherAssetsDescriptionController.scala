@@ -17,9 +17,9 @@
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
-import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionFormProvider
+import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionFormProvider
 import models.Mode
-import pages.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsDescriptionPage
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

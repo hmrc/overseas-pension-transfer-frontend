@@ -27,7 +27,7 @@ import queries.assets.OtherAssetsQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsSummary
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsCYAView
 

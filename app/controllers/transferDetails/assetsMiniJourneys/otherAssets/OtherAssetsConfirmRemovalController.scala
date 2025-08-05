@@ -18,7 +18,7 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsConfirmRemovalFormProvider
+import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalFormProvider
 import models.assets.OtherAssetsMiniJourney
 import models.{NormalMode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}

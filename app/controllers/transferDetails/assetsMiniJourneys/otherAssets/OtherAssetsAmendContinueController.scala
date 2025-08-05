@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import forms.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsAmendContinueFormProvider
+import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueFormProvider
 import models.assets.OtherAssetsMiniJourney
 import models.{CheckMode, Mode, NormalMode, TypeOfAsset, UserAnswers}
 import play.api.Logging
@@ -29,7 +29,7 @@ import repositories.SessionRepository
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsAmendContinueSummary
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourney.otherAssets.OtherAssetsAmendContinueView
 
 import javax.inject.Inject
