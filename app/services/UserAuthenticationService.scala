@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package models.authentication
+package services
 
-sealed trait AuthenticatedUser {
-  def psaPspId: PsaPspId
-  def internalId: String
-  def userType: UserType
-}
+import com.google.inject.Inject
+import config.FrontendAppConfig
+import play.api.Logging
+import uk.gov.hmrc.auth.core.Enrolments
 
-case class PsaUser(psaPspId: PsaPspId, internalId: String) extends AuthenticatedUser {
-  override val userType: UserType = Psa
-}
-
-case class PspUser(psaPspId: PsaPspId, internalId: String) extends AuthenticatedUser {
-  override val userType: UserType = Psp
-}
+class UserAuthenticationService @Inject() (config: FrontendAppConfig) extends Logging {}

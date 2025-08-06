@@ -17,7 +17,8 @@
 package models.requests
 
 import models.UserAnswers
+import models.authentication.AuthenticatedUser
 import play.api.mvc.{Request, WrappedRequest}
 
-case class DisplayRequest[A](request: Request[A], userId: String, userAnswers: UserAnswers, memberName: String, qtNumber: String)
+case class DisplayRequest[A](request: Request[A], authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, memberName: String, qtNumber: String)
     extends WrappedRequest[A](request)

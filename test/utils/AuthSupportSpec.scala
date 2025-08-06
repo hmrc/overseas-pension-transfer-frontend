@@ -17,6 +17,7 @@
 package utils
 
 import config.FrontendAppConfig
+import models.authentication.{PsaId, PspId}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
@@ -49,19 +50,19 @@ class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with A
   "extractPsaPspId" - {
 
     "should return PSA ID when PSA enrolment is present" in {
-      val psaId      = "A1234567"
-      val enrolment  = Enrolment(psaServiceName, Seq(EnrolmentIdentifier(psaIdKey, psaId)), "Activated")
+      val psaId      = PsaId("A123456")
+      val enrolment  = Enrolment(psaServiceName, Seq(EnrolmentIdentifier(psaIdKey, psaId.value)), "Activated")
       val enrolments = Enrolments(Set(enrolment))
 
-      extractAuthenticatedUser(enrolments, mockAppConfig).id mustBe psaId
+      extractUserTypeAndPsaPspId(enrolments, mockAppConfig)._2 mustBe psaId
     }
 
     "should return PSP ID when PSP enrolment is present" in {
-      val pspId      = "X9999999"
-      val enrolment  = Enrolment(pspServiceName, Seq(EnrolmentIdentifier(pspIdKey, pspId)), "Activated")
+      val pspId      = PspId("X9999999")
+      val enrolment  = Enrolment(pspServiceName, Seq(EnrolmentIdentifier(pspIdKey, pspId.value)), "Activated")
       val enrolments = Enrolments(Set(enrolment))
 
-      extractAuthenticatedUser(enrolments, mockAppConfig).id mustBe pspId
+      extractUserTypeAndPsaPspId(enrolments, mockAppConfig)._2 mustBe pspId
     }
 
     "should throw if no matching enrolment found" in {
@@ -69,7 +70,7 @@ class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with A
       val enrolments = Enrolments(Set(enrolment))
 
       val ex = intercept[IllegalStateException] {
-        extractAuthenticatedUser(enrolments, mockAppConfig)
+        extractUserTypeAndPsaPspId(enrolments, mockAppConfig)
       }
       ex.getMessage must include("Unable to retrieve matching PSA or PSP enrolment")
     }
@@ -79,7 +80,7 @@ class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with A
       val enrolments = Enrolments(Set(enrolment))
 
       val ex = intercept[IllegalStateException] {
-        extractAuthenticatedUser(enrolments, mockAppConfig)
+        extractUserTypeAndPsaPspId(enrolments, mockAppConfig)
       }
       ex.getMessage must include(s"Unable to retrieve identifier from enrolment $psaServiceName")
     }

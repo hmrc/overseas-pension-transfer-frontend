@@ -16,16 +16,9 @@
 
 package models.authentication
 
-sealed trait AuthenticatedUser {
-  def psaPspId: PsaPspId
-  def internalId: String
-  def userType: UserType
+sealed trait PsaPspId {
+  def value: String
 }
 
-case class PsaUser(psaPspId: PsaPspId, internalId: String) extends AuthenticatedUser {
-  override val userType: UserType = Psa
-}
-
-case class PspUser(psaPspId: PsaPspId, internalId: String) extends AuthenticatedUser {
-  override val userType: UserType = Psp
-}
+case class PsaId(value: String) extends PsaPspId
+case class PspId(value: String) extends PsaPspId

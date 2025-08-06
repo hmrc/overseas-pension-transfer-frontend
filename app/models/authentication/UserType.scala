@@ -17,5 +17,5 @@
 package models.authentication
 
 sealed trait UserType
-case object PSA extends UserType
-case object PSP extends UserType
+case object Psa extends UserType
+case object Psp extends UserType
