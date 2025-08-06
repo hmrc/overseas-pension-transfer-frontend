@@ -17,6 +17,7 @@
 package utils
 
 import config.FrontendAppConfig
+import models.authentication._
 import play.api.Logging
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
@@ -30,20 +31,27 @@ trait AuthSupport extends Logging {
         or Enrolment(config.pspEnrolment.serviceName))
   }
 
-  def extractPsaPspId(enrolments: Enrolments, config: FrontendAppConfig): String = {
-    val matchedEnrolmentOpt: Option[(Enrolment, config.EnrolmentConfig)] =
+  def extractAuthenticatedUser(enrolments: Enrolments, config: FrontendAppConfig): AuthenticatedUser = {
+    val matchedOpt: Option[(Enrolment, config.EnrolmentConfig, UserType)] =
       enrolments.enrolments.collectFirst {
-        case psa if psa.key == config.psaEnrolment.serviceName => (psa, config.psaEnrolment)
-        case psp if psp.key == config.pspEnrolment.serviceName => (psp, config.pspEnrolment)
+        case e if e.key == config.psaEnrolment.serviceName => (e, config.psaEnrolment, PSA)
+        case e if e.key == config.pspEnrolment.serviceName => (e, config.pspEnrolment, PSP)
       }
 
-    val (enrolment, enrolmentConfig) = getOrElseFailWithUnauthorised(
-      matchedEnrolmentOpt,
+    val (enrolment, enrolmentConfig, userType) = getOrElseFailWithUnauthorised(
+      matchedOpt,
       "Unable to retrieve matching PSA or PSP enrolment"
     )
 
-    val idOpt = enrolment.getIdentifier(enrolmentConfig.identifierKey).map(_.value)
-    getOrElseFailWithUnauthorised(idOpt, s"Unable to retrieve identifier from enrolment ${enrolment.key}")
+    val id = getOrElseFailWithUnauthorised(
+      enrolment.getIdentifier(enrolmentConfig.identifierKey).map(_.value),
+      s"Unable to retrieve identifier from enrolment ${enrolment.key}"
+    )
+
+    userType match {
+      case PSA => PSAUser(id)
+      case PSP => PSPUser(id)
+    }
   }
 
   def getOrElseFailWithUnauthorised[T](opt: Option[T], message: String): T = {
