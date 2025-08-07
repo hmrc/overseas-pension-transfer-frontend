@@ -16,8 +16,9 @@
 
 package queries
 
+import models.QtNumber
 import play.api.libs.json.JsPath
 
-case object QtNumber extends Gettable[String] with Settable[String] {
+case object QtNumberQuery extends Gettable[QtNumber] with Settable[QtNumber] {
   override def path: JsPath = JsPath \ "qtNumber"
 }
