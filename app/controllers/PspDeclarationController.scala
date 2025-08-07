@@ -18,10 +18,14 @@ package controllers
 
 import controllers.actions._
 import forms.PspDeclarationFormProvider
-import pages.PspDeclarationPage
+import models.QtNumber
+import models.authentication.PsaId
+import models.responses.SubmissionResponse
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.QtNumberQuery
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PspDeclarationView
 
@@ -31,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PspDeclarationController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -45,12 +50,7 @@ class PspDeclarationController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(PspDeclarationPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm))
+      Ok(view(form))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
@@ -58,11 +58,17 @@ class PspDeclarationController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PspDeclarationPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.IndexController.onPageLoad())
+        psaIdString => {
+          val psaId = PsaId(psaIdString)
+          userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, Some(psaId)).flatMap {
+            case Right(SubmissionResponse(qtNumber)) =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(QtNumberQuery, qtNumber))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(routes.IndexController.onPageLoad())
+            case _                                   => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+          }
+        }
       )
   }
 }
