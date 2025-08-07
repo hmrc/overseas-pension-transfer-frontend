@@ -19,8 +19,10 @@ package services
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
 import models.UserAnswers
+import models.authentication.{AuthenticatedUser, PsaId}
+import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
-import models.responses.{UserAnswersError, UserAnswersNotFoundResponse}
+import models.responses.{SubmissionResponse, UserAnswersError, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,5 +44,14 @@ class UserAnswersService @Inject() (
 
   def setExternalUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
     connector.putAnswers(fromUserAnswers(userAnswers))
+  }
+
+  def submitDeclaration(
+      authenticatedUser: AuthenticatedUser,
+      userAnswers: UserAnswers,
+      maybePsaId: Option[PsaId] = None
+    )(implicit hc: HeaderCarrier
+    ): Future[Either[UserAnswersError, SubmissionResponse]] = {
+    connector.postSubmission(SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId))
   }
 }

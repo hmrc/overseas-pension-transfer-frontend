@@ -16,8 +16,9 @@
 
 package connectors.parsers
 
-import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersError, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import connectors.parsers.UserAnswersParser.GetUserAnswersHttpReads.logger
+import models.dtos.{SubmissionDTO, UserAnswersDTO}
+import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersError, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
@@ -27,6 +28,7 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 object UserAnswersParser {
   type GetUserAnswersType = Either[UserAnswersError, UserAnswersDTO]
   type SetUserAnswersType = Either[UserAnswersError, Done]
+  type SubmissionType     = Either[UserAnswersError, SubmissionResponse]
 
   implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
 
@@ -69,6 +71,29 @@ object UserAnswersParser {
               Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
           }
       }
+  }
+
+  implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging {
+
+    override def read(method: String, url: String, response: HttpResponse): SubmissionType =
+      response.status match {
+        case OK         => response.json.validate[SubmissionResponse] match {
+            case JsSuccess(value, _) => Right(value)
+            case JsError(errors)     =>
+              logger.warn(s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionResponse: ${formatJsonErrors(errors)}")
+              Left(SubmissionErrorResponse(s"Unable to parse Json as SubmissionResponse", Some(formatJsonErrors(errors))))
+          }
+        case statusCode =>
+          response.json.validate[SubmissionErrorResponse] match {
+            case JsSuccess(value, _) =>
+              logger.warn(s"[SubmissionConnector][postSubmission] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
+              Left(value)
+            case JsError(errors)     =>
+              logger.warn(s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionResponse: ${formatJsonErrors(errors)}")
+              Left(SubmissionErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
+          }
+      }
+
   }
 
   private val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {

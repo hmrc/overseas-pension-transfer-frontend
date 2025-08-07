@@ -18,16 +18,18 @@ package controllers
 
 import base.SpecBase
 import forms.PspDeclarationFormProvider
-import models.NormalMode
+import models.QtNumber
+import models.responses.{SubmissionResponse, UserAnswersError}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.PspDeclarationPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import org.scalatest.freespec.AnyFreeSpec
+import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PspDeclarationView
 
 import scala.concurrent.Future
@@ -36,6 +38,8 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   private val formProvider = new PspDeclarationFormProvider()
   private val form         = formProvider()
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private lazy val pspDeclarationRoute = routes.PspDeclarationController.onPageLoad().url
 
@@ -57,33 +61,23 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = userAnswersQtNumber.set(PspDeclarationPage, "answer").success.value
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      running(application) {
-        val request = FakeRequest(GET, pspDeclarationRoute)
-
-        val view = application.injector.instanceOf[PspDeclarationView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"))(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.submitDeclaration(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456")))))
+
+      when(mockSessionRepository.set(any()))
+        .thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
           .build()
 
       running(application) {
@@ -94,7 +88,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PspDeclarationPage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual routes.IndexController.onPageLoad().url
       }
     }
 

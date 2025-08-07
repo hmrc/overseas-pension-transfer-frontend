@@ -17,8 +17,15 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.parsers.UserAnswersParser.{GetUserAnswersHttpReads, GetUserAnswersType, SetUserAnswersHttpReads, SetUserAnswersType}
-import models.dtos.UserAnswersDTO
+import connectors.parsers.UserAnswersParser.{
+  GetSubmissionResponseHttpReads,
+  GetUserAnswersHttpReads,
+  GetUserAnswersType,
+  SetUserAnswersHttpReads,
+  SetUserAnswersType,
+  SubmissionType
+}
+import models.dtos.{SubmissionDTO, UserAnswersDTO}
 import models.responses.UserAnswersErrorResponse
 import play.api.Logging
 import play.api.libs.json.Json
@@ -62,4 +69,16 @@ class UserAnswersConnector @Inject() (
       }
   }
 
+  private def submissionUrl(id: String): URL =
+    url"${appConfig.backendService}/submit-declaration/$id"
+
+  def postSubmission(submissionDTO: SubmissionDTO)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionType] =
+    http.post(submissionUrl(submissionDTO.referenceId))
+      .withBody(Json.toJson(submissionDTO))
+      .execute[SubmissionType]
+      .recover {
+        case e: Exception =>
+          logger.warn(s"Error updating user answers for ID '${submissionDTO.referenceId}': ${e.getMessage}", e)
+          Left(UserAnswersErrorResponse(e.getMessage, None))
+      }
 }
