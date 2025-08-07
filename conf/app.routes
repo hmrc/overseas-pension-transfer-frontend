@@ -343,5 +343,9 @@ POST       /transfer-details/assets/change-other-assets-amend-continue          
 GET        /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onSubmit(index: Int)
 
+GET        /psp-declaration                                                                       controllers.PspDeclarationController.onPageLoad()
+POST       /psp-declaration                                                                       controllers.PspDeclarationController.onSubmit()
+
+
 GET        /submitToHMRC                        controllers.SubmitToHMRCController.onPageLoad()
 POST       /submitToHMRC                        controllers.SubmitToHMRCController.onSubmit()

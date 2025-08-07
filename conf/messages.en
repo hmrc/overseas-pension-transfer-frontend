@@ -11,6 +11,7 @@ site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
+site.agreeAndSubmit = Agree and submit
 
 date.day = Day
 date.month = Month
@@ -613,7 +614,6 @@ propertyAmendContinue.summary.value = {0} added
 propertyAmendContinue.text.singular = property
 propertyAmendContinue.text.plural = properties
 
-
 otherAssetsAmendContinue.error.required = Please select an option
 otherAssetsAmendContinue.checkYourAnswersLabel = Other assets
 otherAssetsAmendContinue.change.hidden = Other assets
@@ -624,6 +624,16 @@ otherAssetsAmendContinue.text.plural = groups of assets
 otherAssetsStart.title = Add other assets
 otherAssetsStart.heading = Add other assets
 otherAssetsStart.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.
+
+pspDeclaration.title = Declaration
+pspDeclaration.heading = Declaration
+pspDeclaration.label = What is the authorising scheme administrator''s ID?
+pspDeclaration.bySubmitting = By submitting you declare that:
+pspDeclaration.receivedAndChecked = I''ve received and checked the information and acknowledgement on behalf of the scheme administrator.
+pspDeclaration.correctAndComplete = to the best of my knowledge and belief the information given in this notification is correct and complete and that the content of this report has been approved by the scheme administrator named below has authorised me to submit this report.
+pspDeclaration.error.required = Enter the authorising scheme administrator''s ID
+pspDeclaration.error.pattern = Enter the authorising scheme administrator''s ID in the correct format, like A1234567
+pspDeclaration.change.hidden = Psp Declaration
 
 
 submitToHMRC.title = Do you want to submit this report to HMRC?
