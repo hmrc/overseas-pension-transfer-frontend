@@ -69,4 +69,48 @@ object AssetsMiniJourneysRoutes {
 
   val QuotedSharesConfirmRemovalController =
     controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesConfirmRemovalController
+
+  // ----- Property -----
+
+  val PropertyStartController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyStartController
+
+  val PropertyAddressController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyAddressController
+
+  val PropertyDescriptionController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyDescriptionController
+
+  val PropertyValueController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyValueController
+
+  val PropertyCYAController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController
+
+  val PropertyAmendContinueController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyAmendContinueController
+
+  val PropertyConfirmRemovalController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyConfirmRemovalController
+
+  // ----- Other Assets -----
+
+  val OtherAssetsStartController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsStartController
+
+  val OtherAssetsDescriptionController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsDescriptionController
+
+  val OtherAssetsValueController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsValueController
+
+  val OtherAssetsCYAController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController
+
+  val OtherAssetsAmendContinueController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsAmendContinueController
+
+  val OtherAssetsConfirmRemovalController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsConfirmRemovalController
+
 }

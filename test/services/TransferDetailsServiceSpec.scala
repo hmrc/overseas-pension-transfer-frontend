@@ -17,8 +17,7 @@
 package services
 
 import base.SpecBase
-import models._
-import models.assets.{QuotedSharesMiniJourney, UnquotedSharesMiniJourney}
+import models.assets.{QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesEntry, UnquotedSharesMiniJourney}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec

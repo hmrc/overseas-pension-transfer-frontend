@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.UserAnswersConnector
-import models.{UnquotedSharesEntry, UserAnswers}
+import models.UserAnswers
 import models.dtos.UserAnswersDTO
 import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
@@ -27,9 +27,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import queries.assets.UnquotedSharesQuery
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.Instant

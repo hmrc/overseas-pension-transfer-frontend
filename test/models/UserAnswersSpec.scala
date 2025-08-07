@@ -17,6 +17,7 @@
 package models
 
 import base.SpecBase
+import models.assets.UnquotedSharesEntry
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.libs.json._

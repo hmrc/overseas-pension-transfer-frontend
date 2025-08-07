@@ -8,7 +8,7 @@ lazy val appName: String = "overseas-pension-transfer-frontend"
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := "2.13.16"
 
-lazy val microservice = (project in file("."))
+lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(inConfig(Test)(testSettings) *)

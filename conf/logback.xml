@@ -2,7 +2,7 @@
 <configuration>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logs/overseas-pension-transfer-frontend.log</file>
+        <file>logs/report-transfer-qualified-recognised-overseas-pension-scheme.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%date{ISO8601} level=[%level] logger=[%logger] thread=[%thread] message=[%message] %replace(exception=[%xException]){'^exception=\[\]$',''}%n</pattern>
         </encoder>
@@ -29,7 +29,7 @@
 
     <logger name="connector" level="TRACE"/>
 
-    <logger name="overseas-pension-transfer-frontend" level="INFO"/>
+    <logger name="report-transfer-qualified-recognised-overseas-pension-scheme" level="INFO"/>
 
     <logger name="OutboundRequest" level="DEBUG"/>
 

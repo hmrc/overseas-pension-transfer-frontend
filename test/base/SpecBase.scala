@@ -17,6 +17,7 @@
 package base
 
 import controllers.actions._
+import models.authentication.{PsaId, PsaUser}
 import models.requests.DisplayRequest
 import models.{PersonName, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -37,11 +38,15 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience {
 
-  val userAnswersId: String = "id"
-
   val testMemberName: PersonName = PersonName("User", "McUser")
 
   val testQtNumber: String = "QT123456"
+
+  val userAnswersId: String = "id"
+
+  val psaId: PsaId = PsaId("A123456")
+
+  val authenticatedUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
@@ -64,20 +69,20 @@ trait SpecBase
 
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
     DisplayRequest(
-      request     = fakeRequest,
-      userId      = userAnswersId,
-      userAnswers = userAnswers,
-      memberName  = testMemberName.fullName,
-      qtNumber    = testQtNumber
+      request           = fakeRequest,
+      authenticatedUser = authenticatedUser,
+      userAnswers       = userAnswers,
+      memberName        = testMemberName.fullName,
+      qtNumber          = testQtNumber
     )
 
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
-      request     = FakeRequest(),
-      userId      = userAnswersId,
-      userAnswers = emptyUserAnswers,
-      memberName  = testMemberName.fullName,
-      qtNumber    = testQtNumber
+      request           = FakeRequest(),
+      authenticatedUser = authenticatedUser,
+      userAnswers       = emptyUserAnswers,
+      memberName        = testMemberName.fullName,
+      qtNumber          = testQtNumber
     )
 
 }

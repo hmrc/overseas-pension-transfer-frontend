@@ -16,7 +16,8 @@
 
 package queries.assets
 
-import models.{PropertyEntry, QuotedSharesEntry, TaskCategory, TypeOfAsset, UnquotedSharesEntry}
+import models.TaskCategory
+import models.assets._
 import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 
@@ -37,4 +38,9 @@ case object UnquotedSharesQuery extends AssetsQuery[List[UnquotedSharesEntry]] {
 case object PropertyQuery extends AssetsQuery[List[PropertyEntry]] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.toString
+}
+
+case object OtherAssetsQuery extends AssetsQuery[List[OtherAssetsEntry]] {
+
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Other.toString
 }
