@@ -19,6 +19,7 @@ package controllers.actions
 import controllers.auth.routes
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import models.authentication.{AuthenticatedUser, Psa, PsaUser, Psp, PspUser}
 import models.requests.IdentifierRequest
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
 import play.api.mvc.Results._
@@ -50,9 +51,13 @@ class IdentifierActionImpl @Inject() (
 
     authorised(predicate).retrieve(internalId and allEnrolments) {
       case optInternalId ~ enrolments =>
-        val internalId = getOrElseFailWithUnauthorised(optInternalId, "Unable to retrieve internalId")
-        val psaPspId   = extractPsaPspId(enrolments, config)
-        block(IdentifierRequest(request, internalId, psaPspId))
+        val internalId           = getOrElseFailWithUnauthorised(optInternalId, "Unable to retrieve internalId")
+        val (userType, psaPspId) = extractUserTypeAndPsaPspId(enrolments, config)
+        val authenticatedUser    = userType match {
+          case Psa => PsaUser(psaPspId, internalId)
+          case Psp => PspUser(psaPspId, internalId)
+        }
+        block(IdentifierRequest(request, authenticatedUser))
     } recover handleAuthException
   }
 

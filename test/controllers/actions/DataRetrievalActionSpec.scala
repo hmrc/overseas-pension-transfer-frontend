@@ -44,7 +44,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         when(sessionRepository.get("id")) thenReturn Future(None)
         val action            = new Harness(sessionRepository)
 
-        val result = action.callTransform(IdentifierRequest(FakeRequest(), "id", "pasPspId")).futureValue
+        val result = action.callTransform(IdentifierRequest(FakeRequest(), authenticatedUser)).futureValue
 
         result.userAnswers must not be defined
       }
@@ -58,7 +58,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         when(sessionRepository.get("id")) thenReturn Future(Some(UserAnswers("id")))
         val action            = new Harness(sessionRepository)
 
-        val result = action.callTransform(new IdentifierRequest(FakeRequest(), "id", "pasPspId")).futureValue
+        val result = action.callTransform(IdentifierRequest(FakeRequest(), authenticatedUser)).futureValue
 
         result.userAnswers mustBe defined
       }

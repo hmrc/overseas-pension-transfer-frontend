@@ -38,7 +38,7 @@ class DataRequiredActionImpl @Inject() (implicit val executionContext: Execution
         if (appConfig.localLoggingEnabled) {
           logger.info(Json.stringify(data.data))
         }
-        Future.successful(Right(DataRequest(request.request, request.userId, data)))
+        Future.successful(Right(DataRequest(request.request, request.authenticatedUser, data)))
     }
   }
 }

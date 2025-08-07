@@ -27,7 +27,7 @@ class DisplayActionImpl @Inject() (implicit val executionContext: ExecutionConte
 
   override protected def transform[A](request: DataRequest[A]): Future[DisplayRequest[A]] = {
     Future.successful(
-      DisplayRequest(request.request, request.userId, request.userAnswers, memberFullName(request.userAnswers), qtNumber(request.userAnswers))
+      DisplayRequest(request.request, request.authenticatedUser, request.userAnswers, memberFullName(request.userAnswers), qtNumber(request.userAnswers))
     )
   }
 }

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package models.requests
+package services
 
-import models.UserAnswers
-import models.authentication.AuthenticatedUser
-import play.api.mvc.{Request, WrappedRequest}
+import com.google.inject.Inject
+import config.FrontendAppConfig
+import play.api.Logging
+import uk.gov.hmrc.auth.core.Enrolments
 
-case class DisplayRequest[A](request: Request[A], authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, memberName: String, qtNumber: String)
-    extends WrappedRequest[A](request)
+class UserAuthenticationService @Inject() (config: FrontendAppConfig) extends Logging {}

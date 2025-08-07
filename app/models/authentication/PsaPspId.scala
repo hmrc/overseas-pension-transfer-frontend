@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.authentication
 
-import models.UserAnswers
-import models.authentication.AuthenticatedUser
-import play.api.mvc.{Request, WrappedRequest}
+sealed trait PsaPspId {
+  def value: String
+}
 
-case class DisplayRequest[A](request: Request[A], authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, memberName: String, qtNumber: String)
-    extends WrappedRequest[A](request)
+case class PsaId(value: String) extends PsaPspId
+case class PspId(value: String) extends PsaPspId

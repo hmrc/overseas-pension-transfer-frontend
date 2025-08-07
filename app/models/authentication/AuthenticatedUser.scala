@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.authentication
 
-import models.UserAnswers
-import models.authentication.AuthenticatedUser
-import play.api.mvc.{Request, WrappedRequest}
+sealed trait AuthenticatedUser {
+  def psaPspId: PsaPspId
+  def internalId: String
+  def userType: UserType
+}
 
-case class DisplayRequest[A](request: Request[A], authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, memberName: String, qtNumber: String)
-    extends WrappedRequest[A](request)
+case class PsaUser(psaPspId: PsaPspId, internalId: String) extends AuthenticatedUser {
+  override val userType: UserType = Psa
+}
+
+case class PspUser(psaPspId: PsaPspId, internalId: String) extends AuthenticatedUser {
+  override val userType: UserType = Psp
+}

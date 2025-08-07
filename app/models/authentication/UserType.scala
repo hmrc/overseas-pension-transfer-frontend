@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.authentication
 
-import models.UserAnswers
-import models.authentication.AuthenticatedUser
-import play.api.mvc.{Request, WrappedRequest}
-
-case class DisplayRequest[A](request: Request[A], authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, memberName: String, qtNumber: String)
-    extends WrappedRequest[A](request)
+sealed trait UserType
+case object Psa extends UserType
+case object Psp extends UserType
