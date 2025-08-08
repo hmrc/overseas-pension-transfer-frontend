@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package models.authentication
+package forms
 
-import play.api.libs.json.{Json, OFormat}
+import javax.inject.Inject
+import forms.mappings.{Mappings, Regex}
+import play.api.data.Form
 
-case class PsaId(value: String)
+class PspDeclarationFormProvider @Inject() extends Mappings with Regex {
 
-object PsaId {
-  implicit val format: OFormat[PsaId] = Json.format[PsaId]
-}
-case class PspId(value: String)
-
-object PspId {
-  implicit val format: OFormat[PspId] = Json.format[PspId]
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("pspDeclaration.error.required")
+        .verifying(regexp(psaIdRegex, "pspDeclaration.error.pattern"))
+    )
 }

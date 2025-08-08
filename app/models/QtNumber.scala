@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package models.authentication
+package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PsaId(value: String)
-
-object PsaId {
-  implicit val format: OFormat[PsaId] = Json.format[PsaId]
+case class QtNumber(value: String) {
+  def isEmpty: Boolean  = value.trim.isEmpty
+  def nonEmpty: Boolean = !isEmpty
 }
-case class PspId(value: String)
 
-object PspId {
-  implicit val format: OFormat[PspId] = Json.format[PspId]
+object QtNumber {
+  val empty: QtNumber                    = QtNumber("")
+  implicit val format: OFormat[QtNumber] = Json.format[QtNumber]
 }

@@ -18,8 +18,10 @@ package connectors
 
 import base.BaseISpec
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor}
-import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import models.QtNumber
+import models.authentication.{PsaId, Psp, PspId}
+import models.dtos.{PspSubmissionDTO, SubmissionDTO, UserAnswersDTO}
+import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -30,8 +32,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
-  private val instant = Instant.now()
+  private val instant        = Instant.now()
   private val userAnswersDTO = UserAnswersDTO("testId", JsObject(Map("field" -> JsString("value"))), instant)
+  private val submissionDTO  = PspSubmissionDTO("testId", Psp, PspId("X1234567"), PsaId("a1234567"), instant)
 
   val connector: UserAnswersConnector = inject[UserAnswersConnector]
 
@@ -141,4 +144,49 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
       }
     }
   }
+
+  "postSubmission" should {
+
+    "return SubmissionResponse when 200 is returned" in {
+      stubFor(post("/overseas-pension-transfer-backend/submit-declaration/testId")
+        .willReturn(
+          aResponse()
+            .withStatus(OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody("""{ "qtNumber": { "value": "QT123456" } }""")
+        ))
+
+      val response = await(connector.postSubmission(submissionDTO))
+
+      response shouldBe Right(SubmissionResponse(QtNumber("QT123456")))
+    }
+
+    "return SubmissionErrorResponse" when {
+
+      "400 is returned" in {
+        stubPost(
+          "/overseas-pension-transfer-backend/submit-declaration/testId",
+          """{ "error": "Transformation failed", "details": "Payload received is invalid" }""",
+          BAD_REQUEST
+        )
+
+        val response = await(connector.postSubmission(submissionDTO))
+
+        response shouldBe Left(SubmissionErrorResponse("Transformation failed", Some("Payload received is invalid")))
+      }
+
+      "500 is returned" in {
+        stubPost(
+          "/overseas-pension-transfer-backend/submit-declaration/testId",
+          """{ "error": "Failed to save answers" }""",
+          INTERNAL_SERVER_ERROR
+        )
+
+        val response = await(connector.postSubmission(submissionDTO))
+
+        response shouldBe Left(SubmissionErrorResponse("Failed to save answers", None))
+      }
+    }
+  }
+
 }

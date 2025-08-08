@@ -16,9 +16,9 @@
 
 package utils
 
-import models.UserAnswers
+import models.{QtNumber, UserAnswers}
 import pages.memberDetails.MemberNamePage
-import queries.QtNumber
+import queries.QtNumberQuery
 
 trait AppUtils {
 
@@ -27,8 +27,8 @@ trait AppUtils {
       .getOrElse("Undefined Undefined")
   }
 
-  def qtNumber(userAnswers: UserAnswers): String = {
-    userAnswers.get(QtNumber)
-      .getOrElse("Undefined")
+  def qtNumber(userAnswers: UserAnswers): QtNumber = {
+    userAnswers.get(QtNumberQuery)
+      .getOrElse(QtNumber.empty)
   }
 }

@@ -16,6 +16,23 @@
 
 package models.authentication
 
+import play.api.libs.json._
+
 sealed trait UserType
 case object Psa extends UserType
 case object Psp extends UserType
+
+object UserType {
+
+  implicit val format: Format[UserType] = Format(
+    Reads {
+      case JsString("Psa") => JsSuccess(Psa)
+      case JsString("Psp") => JsSuccess(Psp)
+      case _               => JsError("Unknown UserType")
+    },
+    Writes {
+      case Psa => JsString("Psa")
+      case Psp => JsString("Psp")
+    }
+  )
+}

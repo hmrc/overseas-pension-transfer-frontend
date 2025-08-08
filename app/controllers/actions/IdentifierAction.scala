@@ -51,12 +51,8 @@ class IdentifierActionImpl @Inject() (
 
     authorised(predicate).retrieve(internalId and allEnrolments) {
       case optInternalId ~ enrolments =>
-        val internalId           = getOrElseFailWithUnauthorised(optInternalId, "Unable to retrieve internalId")
-        val (userType, psaPspId) = extractUserTypeAndPsaPspId(enrolments, config)
-        val authenticatedUser    = userType match {
-          case Psa => PsaUser(psaPspId, internalId)
-          case Psp => PspUser(psaPspId, internalId)
-        }
+        val internalId                           = getOrElseFailWithUnauthorised(optInternalId, "Unable to retrieve internalId")
+        val authenticatedUser: AuthenticatedUser = extractUser(enrolments, config, internalId)
         block(IdentifierRequest(request, authenticatedUser))
     } recover handleAuthException
   }

@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package services
+package pages
 
-import com.google.inject.Inject
-import config.FrontendAppConfig
-import play.api.Logging
-import uk.gov.hmrc.auth.core.Enrolments
+import controllers.routes
+import models.UserAnswers
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-class UserAuthenticationService @Inject() (config: FrontendAppConfig) extends Logging {}
+case object PspDeclarationPage extends QuestionPage[String] {
+
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "pspDeclaration"
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
+}
