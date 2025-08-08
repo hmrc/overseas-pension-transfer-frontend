@@ -19,10 +19,13 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.IsTransferCashOnlyFormProvider
 import models.Mode
-import pages.transferDetails.IsTransferCashOnlyPage
+import models.assets.TypeOfAsset
+import pages.transferDetails.{AmountOfTransferPage, CashAmountInTransferPage, IsTransferCashOnlyPage, TypeOfAssetPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Writes._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.IsTransferCashOnlyView
 
@@ -38,7 +41,8 @@ class IsTransferCashOnlyController @Inject() (
     displayData: DisplayAction,
     formProvider: IsTransferCashOnlyFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: IsTransferCashOnlyView
+    view: IsTransferCashOnlyView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -60,7 +64,17 @@ class IsTransferCashOnlyController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsTransferCashOnlyPage, value))
+            updatedAnswers <- if (value) {
+                                val netAmount  = request.userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
+                                val updatedTry = for {
+                                  ua1 <- request.userAnswers.set(CashAmountInTransferPage, netAmount)
+                                  ua2 <- ua1.set(TypeOfAssetPage, Set[TypeOfAsset](TypeOfAsset.Cash))
+                                  ua3 <- ua2.set(IsTransferCashOnlyPage, value)
+                                } yield ua3
+                                Future.fromTry(updatedTry)
+                              } else {
+                                Future.fromTry(request.userAnswers.set(IsTransferCashOnlyPage, value))
+                              }
             _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(IsTransferCashOnlyPage.nextPage(mode, updatedAnswers))
       )
