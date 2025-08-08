@@ -19,18 +19,32 @@ package viewmodels.checkAnswers.transferDetails
 import models.UserAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueSummary
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 
 case object TransferDetailsSummary {
 
   def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val totalUnquotedSharesRow: Option[SummaryListRow] = Some(UnquotedSharesAmendContinueSummary.row(userAnswers))
-    val totalQuotedSharesRow: Option[SummaryListRow]   = Some(QuotedSharesAmendContinueSummary.row(userAnswers))
-    val totalPropertiesRow: Option[SummaryListRow]     = Some(PropertyAmendContinueSummary.row(userAnswers))
-    val totalOtherAssetsRow: Option[SummaryListRow]    = Some(OtherAssetsAmendContinueSummary.row(userAnswers))
-    Seq(totalUnquotedSharesRow, totalQuotedSharesRow, totalPropertiesRow, totalOtherAssetsRow).flatten
+    val overseasTransferAllowance: Option[SummaryListRow] = OverseasTransferAllowanceSummary.row(userAnswers)
+    val amountOfTransfer: Option[SummaryListRow]          = AmountOfTransferSummary.row(userAnswers)
+    val isTransferTaxable: Option[SummaryListRow]         = IsTransferTaxableSummary.row(userAnswers)
+    val whyTransferIsTaxable: Option[SummaryListRow]      = WhyTransferIsTaxableSummary.row(userAnswers)
+    val applicableTaxExclusions: Option[SummaryListRow]   = ApplicableTaxExclusionsSummary.row(userAnswers)
+    val amountOfTaxDeducted: Option[SummaryListRow]       = AmountOfTaxDeductedSummary.row(userAnswers)
+    val netTransferAmount: Option[SummaryListRow]         = NetTransferAmountSummary.row(userAnswers)
+    val dateOfTransfer: Option[SummaryListRow]            = DateOfTransferSummary.row(userAnswers)
+    val isTransferCashOnly: Option[SummaryListRow]        = IsTransferCashOnlySummary.row(userAnswers)
+    val cashAmountInTransfer: Option[SummaryListRow]      = CashAmountInTransferSummary.row(userAnswers)
+
+    Seq(
+      overseasTransferAllowance,
+      amountOfTransfer,
+      isTransferTaxable,
+      whyTransferIsTaxable,
+      applicableTaxExclusions,
+      amountOfTaxDeducted,
+      netTransferAmount,
+      dateOfTransfer,
+      isTransferCashOnly,
+      cashAmountInTransfer
+    ).flatten
   }
 }

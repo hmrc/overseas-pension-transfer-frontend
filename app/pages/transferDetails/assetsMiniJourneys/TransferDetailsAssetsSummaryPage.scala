@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package pages.transferDetails.assetsMiniJourneys.property
+package pages.transferDetails.assetsMiniJourneys
 
 import controllers.routes
-import models.UserAnswers
+import models.{PersonName, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PropertyAmendContinuePage extends QuestionPage[Boolean] {
+case object TransferDetailsAssetsSummaryPage extends QuestionPage[PersonName] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "propertyAmendContinue"
+  override def toString: String = "transferDetailsAssetsSummary"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    controllers.transferDetails.assetsMiniJourneys.routes.TransferDetailsMiniJourneysCYAController.onPageLoad()
+    routes.IndexController.onPageLoad() // TODO This will have to be changed to 'overseas transfer report' main page when exists
 }

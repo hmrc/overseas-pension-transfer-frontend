@@ -17,6 +17,7 @@
 package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.routes
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -38,7 +39,10 @@ class PropertyAmendContinuePageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
 
-        PropertyAmendContinuePage.nextPage(CheckMode, emptyAnswers) mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+        PropertyAmendContinuePage.nextPage(
+          CheckMode,
+          emptyAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.TransferDetailsMiniJourneysCYAController.onPageLoad()
       }
     }
   }

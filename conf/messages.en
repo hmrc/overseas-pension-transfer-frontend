@@ -625,3 +625,4 @@ otherAssetsStart.title = Add other assets
 otherAssetsStart.heading = Add other assets
 otherAssetsStart.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.
 
+cashAmountInTransfer.checkYourAnswersLabel = Amount of cash
