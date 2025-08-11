@@ -27,9 +27,9 @@ GET        /account/signed-out                                                  
 GET        /unauthorised                                                                          controllers.auth.UnauthorisedController.onPageLoad()
 
 GET        /member-details/member-name                                                            controllers.memberDetails.MemberNameController.onPageLoad(mode: Mode = NormalMode)
-POST       /member-details/member-name                                                            controllers.memberDetails.MemberNameController.onSubmit(mode: Mode = NormalMode)
+POST       /member-details/member-name                                                            controllers.memberDetails.MemberNameController.onSubmit(mode: Mode = NormalMode, fromFinalCYA: Boolean)
 GET        /member-details/change-member-name                                                     controllers.memberDetails.MemberNameController.onPageLoad(mode: Mode = CheckMode)
-POST       /member-details/change-member-name                                                     controllers.memberDetails.MemberNameController.onSubmit(mode: Mode = CheckMode)
+POST       /member-details/change-member-name                                                     controllers.memberDetails.MemberNameController.onSubmit(mode: Mode = CheckMode, fromFinalCYA: Boolean)
 
 GET        /member-details/member-nino                                                            controllers.memberDetails.MemberNinoController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/member-nino                                                            controllers.memberDetails.MemberNinoController.onSubmit(mode: Mode = NormalMode)

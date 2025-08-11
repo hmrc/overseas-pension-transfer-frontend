@@ -26,6 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.UserAnswersService
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberNameView
 
@@ -49,19 +50,22 @@ class MemberNameController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      val fromFinalCYA = request.request.headers.get("Referer").getOrElse("/")
+        .endsWith("/report-transfer-qualified-recognised-overseas-pension-scheme/check-your-answers")
+
       val preparedForm = request.userAnswers.get(MemberNamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, fromFinalCYA))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
@@ -69,7 +73,7 @@ class MemberNameController @Inject() (
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
+              case Right(Done) => Redirect(MemberNamePage.nextPage(mode, updatedAnswers, fromFinalCYA))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
 

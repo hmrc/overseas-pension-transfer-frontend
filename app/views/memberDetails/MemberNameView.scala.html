@@ -28,11 +28,11 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, fromFinalCYA: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("memberName.title"))) {
 
-    @formHelper(action = controllers.memberDetails.routes.MemberNameController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.memberDetails.routes.MemberNameController.onSubmit(mode, fromFinalCYA), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

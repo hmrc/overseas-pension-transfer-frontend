@@ -75,7 +75,7 @@ trait SpecBase
     )
   )
 
-  val qropsDetailsJson: JsObject         = Json.obj(
+  val qropsDetailsJson: JsObject = Json.obj(
     "qropsDetails" -> Json.obj(
       "qropsFullName"         -> "Test Scheme",
       "qropsRef"              -> "AB123",
