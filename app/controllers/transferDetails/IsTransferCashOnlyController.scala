@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.transferDetails.IsTransferCashOnlyFormProvider
 import models.Mode
 import models.assets.TypeOfAsset
+import org.apache.pekko.Done
 import pages.transferDetails.{AmountOfTransferPage, CashAmountInTransferPage, IsTransferCashOnlyPage, TypeOfAssetPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Writes._
@@ -76,7 +77,13 @@ class IsTransferCashOnlyController @Inject() (
                                 Future.fromTry(request.userAnswers.set(IsTransferCashOnlyPage, value))
                               }
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(IsTransferCashOnlyPage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, updatedAnswers))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
       )
   }
 }
