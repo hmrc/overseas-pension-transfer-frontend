@@ -158,6 +158,7 @@ memberDoesNotHaveNino.error.required = Enter the reason the member does not have
 memberDoesNotHaveNino.error.length = The reason for not having a National Insurance number and reference in its place must be must be 160 characters or less
 memberDoesNotHaveNino.change.hidden = Why no National Insurance number
 memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
+memberDoesNotHaveNino.memberNino.link.text = The member has a National Insurance number.
 
 memberDateOfBirth.title = What is {0}’s date of birth?
 memberDateOfBirth.heading = What is {0}’s date of birth?

@@ -20,6 +20,7 @@
 @import viewmodels.govuk.all.{TextareaViewModel, _}
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
+@import views.html.components.Link
 
 @this(
         layout: templates.Layout,
@@ -27,11 +28,13 @@
         govukErrorSummary: GovukErrorSummary,
         govukButton: GovukButton,
         govukTextarea: GovukTextarea,
-        qtNumber: QTNumber
+        qtNumber: QTNumber,
+        link: Link
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 @memberName = @{request.memberName}
+@memberNinoPage = @{controllers.memberDetails.routes.MemberNinoController.onPageLoad(mode).url}
 @layout(pageTitle = title(form, messages("memberDoesNotHaveNino.title"))) {
 
     @formHelper(action = controllers.memberDetails.routes.MemberDoesNotHaveNinoController.onSubmit(mode), Symbol("autoComplete") -> "off") {
@@ -51,6 +54,9 @@
                 )
             )
         )
+
+        @link("memberNinoPageLink", memberNinoPage, messages("memberDoesNotHaveNino.memberNino.link.text"), extraClasses = "govuk-body")
+        <hr class="govuk-section-break govuk-section-break govuk-!-margin-bottom-6">
 
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
