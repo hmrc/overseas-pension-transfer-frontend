@@ -83,7 +83,7 @@ class PropertyAmendContinueController @Inject() (
               _              <- sessionRepository.set(updatedAnswers)
             } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
               case Some(route) => Redirect(route)
-              case None        => Redirect(AssetsMiniJourneysRoutes.TransferDetailsCYAController.onPageLoad())
+              case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
             }
           }
         }

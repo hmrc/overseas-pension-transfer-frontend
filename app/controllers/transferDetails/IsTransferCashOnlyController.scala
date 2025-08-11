@@ -65,7 +65,6 @@ class IsTransferCashOnlyController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            baseAnswers    <- Future.fromTry(request.userAnswers.set(IsTransferCashOnlyPage, value)) // set cash only to true
             updatedAnswers <- if (value) {
                                 val netAmount  = request.userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
                                 val updatedTry = for {

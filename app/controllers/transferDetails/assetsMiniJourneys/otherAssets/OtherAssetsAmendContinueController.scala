@@ -18,7 +18,6 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import controllers.transferDetails.routes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueFormProvider
 import models.assets.{OtherAssetsMiniJourney, TypeOfAsset}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
@@ -86,7 +85,7 @@ class OtherAssetsAmendContinueController @Inject() (
               _              <- sessionRepository.set(updatedAnswers)
             } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
               case Some(route) => Redirect(route)
-              case None        => Redirect(AssetsMiniJourneysRoutes.TransferDetailsCYAController.onPageLoad())
+              case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
             }
           }
         }

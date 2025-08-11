@@ -42,7 +42,7 @@ class PropertyAmendContinuePageSpec extends AnyFreeSpec with Matchers {
         PropertyAmendContinuePage.nextPage(
           CheckMode,
           emptyAnswers
-        ) mustEqual AssetsMiniJourneysRoutes.TransferDetailsCYAController.onPageLoad()
+        ) mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
       }
     }
   }
