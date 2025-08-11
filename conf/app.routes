@@ -342,6 +342,3 @@ POST       /transfer-details/assets/change-other-assets-amend-continue          
 
 GET        /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onSubmit(index: Int)
-
-GET        /transfer-details/assets/check-your-answers                                            controllers.transferDetails.assetsMiniJourneys.TransferDetailsMiniJourneysCYAController.onPageLoad()
-POST       /transfer-details/assets/check-your-answers                                            controllers.transferDetails.assetsMiniJourneys.TransferDetailsMiniJourneysCYAController.onSubmit()

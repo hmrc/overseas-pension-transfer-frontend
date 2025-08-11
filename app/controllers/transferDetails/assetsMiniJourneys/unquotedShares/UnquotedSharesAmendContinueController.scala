@@ -85,7 +85,7 @@ class UnquotedSharesAmendContinueController @Inject() (
               _              <- sessionRepository.set(updatedAnswers)
             } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
               case Some(route) => Redirect(route)
-              case None        => Redirect(AssetsMiniJourneysRoutes.TransferDetailsMiniJourneysCYAController.onPageLoad())
+              case None        => Redirect(AssetsMiniJourneysRoutes.TransferDetailsCYAController.onPageLoad())
             }
           }
         }

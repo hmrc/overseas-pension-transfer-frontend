@@ -82,7 +82,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.TransferDetailsMiniJourneysCYAController.onPageLoad().url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.TransferDetailsCYAController.onPageLoad().url
       }
     }
 

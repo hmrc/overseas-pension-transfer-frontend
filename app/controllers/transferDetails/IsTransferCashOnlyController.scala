@@ -65,6 +65,7 @@ class IsTransferCashOnlyController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
+            baseAnswers    <- Future.fromTry(request.userAnswers.set(IsTransferCashOnlyPage, value)) // set cash only to true
             updatedAnswers <- if (value) {
                                 val netAmount  = request.userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
                                 val updatedTry = for {
@@ -74,7 +75,12 @@ class IsTransferCashOnlyController @Inject() (
                                 } yield ua3
                                 Future.fromTry(updatedTry)
                               } else {
-                                Future.fromTry(request.userAnswers.set(IsTransferCashOnlyPage, value))
+                                val updatedTry = for {
+                                  ua1 <- request.userAnswers.remove(CashAmountInTransferPage)
+                                  ua2 <- ua1.remove(TypeOfAssetPage)
+                                  ua3 <- ua2.set(IsTransferCashOnlyPage, value)
+                                } yield ua3
+                                Future.fromTry(updatedTry)
                               }
             _              <- sessionRepository.set(updatedAnswers)
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)

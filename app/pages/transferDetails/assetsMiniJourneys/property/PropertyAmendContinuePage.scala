@@ -32,5 +32,5 @@ case object PropertyAmendContinuePage extends QuestionPage[Boolean] {
     routes.IndexController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    controllers.transferDetails.assetsMiniJourneys.routes.TransferDetailsMiniJourneysCYAController.onPageLoad()
+    controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
 }

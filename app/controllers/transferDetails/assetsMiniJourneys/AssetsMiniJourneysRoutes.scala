@@ -20,8 +20,8 @@ object AssetsMiniJourneysRoutes {
 
   // ----- Check your answers -----
 
-  val TransferDetailsMiniJourneysCYAController =
-    controllers.transferDetails.assetsMiniJourneys.routes.TransferDetailsMiniJourneysCYAController
+  val TransferDetailsCYAController =
+    controllers.transferDetails.routes.TransferDetailsCYAController
 
   // ----- Unquoted Shares -----
 
