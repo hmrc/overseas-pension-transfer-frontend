@@ -27,6 +27,7 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.Ot
 case object TransferDetailsSummary {
 
   def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val availableTransferAllowanceRow: Option[SummaryListRow] = Some()
     val totalUnquotedSharesRow: Option[SummaryListRow] = Some(UnquotedSharesAmendContinueSummary.row(userAnswers))
     val totalQuotedSharesRow: Option[SummaryListRow]   = Some(QuotedSharesAmendContinueSummary.row(userAnswers))
     val totalPropertiesRow: Option[SummaryListRow]     = Some(PropertyAmendContinueSummary.row(userAnswers))
