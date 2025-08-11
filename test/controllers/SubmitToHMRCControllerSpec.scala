@@ -17,15 +17,28 @@
 package controllers
 
 import base.SpecBase
+import controllers.actions.{
+  DataRequiredAction,
+  DataRequiredActionImpl,
+  DataRetrievalAction,
+  DisplayAction,
+  FakeDataRetrievalAction,
+  FakeDisplayAction,
+  FakeIdentifierActionWithUserType,
+  IdentifierAction
+}
 import forms.SubmitToHMRCFormProvider
 import models.NormalMode
+import models.authentication.{PsaId, PsaUser, PspId, PspUser}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.SubmitToHMRCPage
 import play.api.inject.bind
-import play.api.test.FakeRequest
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.AnyContentAsFormUrlEncoded
+import play.api.test.{FakeRequest, Helpers}
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import views.html.SubmitToHMRCView
@@ -147,6 +160,99 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to PSA declaration screen for PSA when value is true" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val psaUser = PsaUser(PsaId("A123456"), "userInternalId")
+
+      val cc = stubControllerComponents()
+
+      val fakeIdentifierAction = new FakeIdentifierActionWithUserType(psaUser, cc.parsers.defaultBodyParser)(cc.executionContext)
+
+      val application = new GuiceApplicationBuilder()
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[IdentifierAction].toInstance(fakeIdentifierAction),
+          bind[DataRequiredAction].to[DataRequiredActionImpl],
+          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswersQtNumber))),
+          bind[DisplayAction].to[FakeDisplayAction]
+        )
+        .build()
+
+      running(application) {
+        val request: FakeRequest[AnyContentAsFormUrlEncoded] =
+          FakeRequest(Helpers.POST, submitToHMRCRoute).withFormUrlEncodedBody("value" -> "true")
+
+        val result = route(application, request).value
+
+        Helpers.status(result) mustEqual Helpers.SEE_OTHER
+        Helpers.redirectLocation(result).value mustEqual routes.IndexController.onPageLoad().url
+      }
+    }
+
+    "must redirect to PSP declaration screen for PSP when value is true" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val pspUser = PspUser(PspId("A123456"), "userInternalId")
+
+      val cc = stubControllerComponents()
+
+      val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
+
+      val application = new GuiceApplicationBuilder()
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[IdentifierAction].toInstance(fakeIdentifierAction),
+          bind[DataRequiredAction].to[DataRequiredActionImpl],
+          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswersQtNumber))),
+          bind[DisplayAction].to[FakeDisplayAction]
+        )
+        .build()
+
+      running(application) {
+        val request: FakeRequest[AnyContentAsFormUrlEncoded] =
+          FakeRequest(Helpers.POST, submitToHMRCRoute).withFormUrlEncodedBody("value" -> "true")
+
+        val result = route(application, request).value
+
+        Helpers.status(result) mustEqual Helpers.SEE_OTHER
+        Helpers.redirectLocation(result).value mustEqual routes.PspDeclarationController.onPageLoad().url
+      }
+    }
+
+    "must redirect to dashboard screen when value is false, regardless of user type" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val pspUser = PspUser(PspId("A123456"), "userInternalId")
+
+      val cc = stubControllerComponents()
+
+      val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
+
+      val application = new GuiceApplicationBuilder()
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[IdentifierAction].toInstance(fakeIdentifierAction),
+          bind[DataRequiredAction].to[DataRequiredActionImpl],
+          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswersQtNumber))),
+          bind[DisplayAction].to[FakeDisplayAction]
+        )
+        .build()
+
+      running(application) {
+        val request: FakeRequest[AnyContentAsFormUrlEncoded] =
+          FakeRequest(Helpers.POST, submitToHMRCRoute).withFormUrlEncodedBody("value" -> "false")
+
+        val result = route(application, request).value
+
+        Helpers.status(result) mustEqual Helpers.SEE_OTHER
+        Helpers.redirectLocation(result).value mustEqual routes.IndexController.onPageLoad().url
       }
     }
   }

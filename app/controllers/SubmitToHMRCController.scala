@@ -18,9 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.SubmitToHMRCFormProvider
-
-import javax.inject.Inject
-import models.Mode
+import models.authentication.{Psa, Psp}
 import pages.SubmitToHMRCPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +27,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SubmitToHMRCView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmitToHMRCController @Inject() (
@@ -65,7 +64,17 @@ class SubmitToHMRCController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SubmitToHMRCPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(routes.IndexController.onPageLoad())
+          } yield {
+            if (!value) {
+              Redirect(routes.IndexController.onPageLoad())
+            } else {
+              request.authenticatedUser.userType match {
+                case Psa => Redirect(routes.IndexController.onPageLoad()) // PSA redirect
+                case Psp => Redirect(routes.PspDeclarationController.onPageLoad()) // PSP redirect
+                case _   => Redirect(routes.JourneyRecoveryController.onPageLoad()) // fallback
+              }
+            }
+          }
       )
   }
 }
