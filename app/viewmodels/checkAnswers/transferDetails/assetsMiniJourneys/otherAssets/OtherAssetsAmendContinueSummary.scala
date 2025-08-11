@@ -28,19 +28,25 @@ import viewmodels.implicits._
 
 object OtherAssetsAmendContinueSummary extends AppUtils {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
+  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val count: Int = answers.get(OtherAssetsQuery).getOrElse(Nil).size
-    val valueText  = messages("otherAssetsAmendContinue.summary.value", count)
+    val answers   = userAnswers.get(OtherAssetsQuery)
+    val valueText = messages("otherAssetsAmendContinue.summary.value", answers.size)
 
-    SummaryListRowViewModel(
-      key     = "otherAssetsAmendContinue.checkYourAnswersLabel",
-      value   = ValueViewModel(valueText),
-      actions = Seq(
-        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode = CheckMode).url)
-          .withVisuallyHiddenText(messages("otherAssetsAmendContinue.change.hidden"))
-      )
-    )
+    answers match {
+      case Some(entries) if entries.nonEmpty =>
+        Some(
+          SummaryListRowViewModel(
+            key     = "otherAssetsAmendContinue.checkYourAnswersLabel",
+            value   = ValueViewModel(valueText),
+            actions = Seq(
+              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode = CheckMode).url)
+                .withVisuallyHiddenText(messages("otherAssetsAmendContinue.change.hidden"))
+            )
+          )
+        )
+      case _                                 => None
+    }
   }
 
   def rows(answers: UserAnswers): Seq[ListItem] = {

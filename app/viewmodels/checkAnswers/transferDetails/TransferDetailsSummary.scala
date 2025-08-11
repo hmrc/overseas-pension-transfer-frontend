@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import models.UserAnswers
+import pages.transferDetails.IsTransferCashOnlyPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
@@ -36,16 +37,15 @@ case object TransferDetailsSummary {
     val netTransferAmount: Option[SummaryListRow]         = NetTransferAmountSummary.row(userAnswers)
     val dateOfTransfer: Option[SummaryListRow]            = DateOfTransferSummary.row(userAnswers)
     val isTransferCashOnly: Option[SummaryListRow]        = IsTransferCashOnlySummary.row(userAnswers)
-    val cashAmountInTransfer: Option[SummaryListRow]      = CashAmountInTransferSummary.row(userAnswers)
 
-//    val showCashAmount       = userAnswers.get(IsTransferCashOnlyPage).contains(false)
-//    val cashAmountInTransfer =
-//      if (showCashAmount) CashAmountInTransferSummary.row(userAnswers) else None
+    val showCashAmount       = userAnswers.get(IsTransferCashOnlyPage).contains(false)
+    val cashAmountInTransfer =
+      if (showCashAmount) CashAmountInTransferSummary.row(userAnswers) else None
 
-    val totalUnquotedSharesRow: Option[SummaryListRow] = Some(UnquotedSharesAmendContinueSummary.row(userAnswers))
-    val totalQuotedSharesRow: Option[SummaryListRow]   = Some(QuotedSharesAmendContinueSummary.row(userAnswers))
-    val totalPropertiesRow: Option[SummaryListRow]     = Some(PropertyAmendContinueSummary.row(userAnswers))
-    val totalOtherAssetsRow: Option[SummaryListRow]    = Some(OtherAssetsAmendContinueSummary.row(userAnswers))
+    val totalUnquotedSharesRow: Option[SummaryListRow] = UnquotedSharesAmendContinueSummary.row(userAnswers)
+    val totalQuotedSharesRow: Option[SummaryListRow]   = QuotedSharesAmendContinueSummary.row(userAnswers)
+    val totalPropertiesRow: Option[SummaryListRow]     = PropertyAmendContinueSummary.row(userAnswers)
+    val totalOtherAssetsRow: Option[SummaryListRow]    = OtherAssetsAmendContinueSummary.row(userAnswers)
 
     Seq(
       overseasTransferAllowance,
