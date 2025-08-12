@@ -22,7 +22,7 @@ import models.UserAnswers
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
-import models.responses.{SubmissionResponse, UserAnswersError, UserAnswersNotFoundResponse}
+import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersError, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -51,7 +51,7 @@ class UserAnswersService @Inject() (
       userAnswers: UserAnswers,
       maybePsaId: Option[PsaId] = None
     )(implicit hc: HeaderCarrier
-    ): Future[Either[UserAnswersError, SubmissionResponse]] = {
+    ): Future[Either[SubmissionErrorResponse, SubmissionResponse]] = {
     connector.postSubmission(SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId))
   }
 }

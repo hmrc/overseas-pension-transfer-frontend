@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 object UserAnswersParser {
   type GetUserAnswersType = Either[UserAnswersError, UserAnswersDTO]
   type SetUserAnswersType = Either[UserAnswersError, Done]
-  type SubmissionType     = Either[UserAnswersError, SubmissionResponse]
+  type SubmissionType     = Either[SubmissionErrorResponse, SubmissionResponse]
 
   implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
 
@@ -99,10 +99,9 @@ object UserAnswersParser {
                 s"Response code: ${response.status} - [SubmissionConnector][postSubmission]" +
                   s" Unable to parse Json as SubmissionResponse: ${formatJsonErrors(errors)}"
               )
-              Left(SubmissionErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
+              Left(SubmissionErrorResponse("Unable to parse Json as SubmissionErrorResponse", Some(formatJsonErrors(errors))))
           }
       }
-
   }
 
   private val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {
