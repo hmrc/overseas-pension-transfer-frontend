@@ -32,6 +32,7 @@ import views.html.transferDetails.IsTransferCashOnlyView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class IsTransferCashOnlyController @Inject() (
     override val messagesApi: MessagesApi,
@@ -65,22 +66,7 @@ class IsTransferCashOnlyController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- if (value) {
-                                val netAmount  = request.userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
-                                val updatedTry = for {
-                                  ua1 <- request.userAnswers.set(CashAmountInTransferPage, netAmount)
-                                  ua2 <- ua1.set(TypeOfAssetPage, Set[TypeOfAsset](TypeOfAsset.Cash))
-                                  ua3 <- ua2.set(IsTransferCashOnlyPage, value)
-                                } yield ua3
-                                Future.fromTry(updatedTry)
-                              } else {
-                                val updatedTry = for {
-                                  ua1 <- request.userAnswers.remove(CashAmountInTransferPage)
-                                  ua2 <- ua1.remove(TypeOfAssetPage)
-                                  ua3 <- ua2.set(IsTransferCashOnlyPage, value)
-                                } yield ua3
-                                Future.fromTry(updatedTry)
-                              }
+            updatedAnswers <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value))
             _              <- sessionRepository.set(updatedAnswers)
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
@@ -90,5 +76,22 @@ class IsTransferCashOnlyController @Inject() (
             }
           }
       )
+  }
+
+  private def updateCashOnlyAnswers(userAnswers: models.UserAnswers, isCashOnly: Boolean): Try[models.UserAnswers] = {
+    if (isCashOnly) {
+      val netAmount = userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
+      for {
+        ua1 <- userAnswers.set(CashAmountInTransferPage, netAmount)
+        ua2 <- ua1.set(TypeOfAssetPage, Set[TypeOfAsset](TypeOfAsset.Cash))
+        ua3 <- ua2.set(IsTransferCashOnlyPage, isCashOnly)
+      } yield ua3
+    } else {
+      for {
+        ua1 <- userAnswers.remove(CashAmountInTransferPage)
+        ua2 <- ua1.remove(TypeOfAssetPage)
+        ua3 <- ua2.set(IsTransferCashOnlyPage, isCashOnly)
+      } yield ua3
+    }
   }
 }
