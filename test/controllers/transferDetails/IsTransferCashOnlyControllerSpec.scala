@@ -79,12 +79,10 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       val mockSessionRepository = mock[SessionRepository]
 
-      val userAnswers = userAnswersQtNumber.set(IsTransferCashOnlyPage, true).success.value
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -98,7 +96,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual IsTransferCashOnlyPage.nextPage(NormalMode, userAnswers).url
+        redirectLocation(result).value mustEqual IsTransferCashOnlyPage.nextPage(NormalMode, userAnswersQtNumber).url
       }
     }
 
