@@ -79,7 +79,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
