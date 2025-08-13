@@ -17,7 +17,7 @@
 package models
 
 import base.SpecBase
-import models.assets.UnquotedSharesEntry
+import models.assets.{QuotedSharesEntry, UnquotedSharesEntry}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.libs.json._
@@ -36,18 +36,18 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
         "transferDetails" -> Json.obj(
           "unquotedShares" -> Json.arr(
             Json.obj(
-              "companyName"    -> "ABC Ltd",
-              "valueOfShares"  -> 1000,
-              "numberOfShares" -> "10",
-              "classOfShares"  -> "Ordinary"
+              UnquotedSharesEntry.CompanyName    -> "ABC Ltd",
+              UnquotedSharesEntry.ValueOfShares  -> 1000,
+              UnquotedSharesEntry.NumberOfShares -> "10",
+              UnquotedSharesEntry.ClassOfShares  -> "Ordinary"
             )
           ),
           "quotedShares"   -> Json.arr(
             Json.obj(
-              "companyName"    -> "XYZ Plc",
-              "valueOfShares"  -> 2000,
-              "numberOfShares" -> "20",
-              "classOfShares"  -> "Preferred"
+              QuotedSharesEntry.CompanyName    -> "XYZ Plc",
+              QuotedSharesEntry.ValueOfShares  -> 2000,
+              QuotedSharesEntry.NumberOfShares -> "20",
+              QuotedSharesEntry.ClassOfShares  -> "Preferred"
             )
           )
         )
