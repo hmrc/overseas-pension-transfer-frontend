@@ -21,12 +21,13 @@ import models.{NormalMode, UserAnswers}
 import pages.WhatWillBeNeededPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.NewSubmissionQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WhatWillBeNeededView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatWillBeNeededController @Inject() (
     val controllerComponents: MessagesControllerComponents,
@@ -38,8 +39,10 @@ class WhatWillBeNeededController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
     val newUserAnswers = UserAnswers(request.authenticatedUser.internalId)
-    sessionRepository.set(newUserAnswers) map {
-      _ => Ok(view(WhatWillBeNeededPage.nextPage(mode = NormalMode, newUserAnswers).url))
-    }
+    for {
+      updatedAnswers <- Future.fromTry(newUserAnswers.set(NewSubmissionQuery, true))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield Ok(view(WhatWillBeNeededPage.nextPage(mode = NormalMode, newUserAnswers).url))
+
   }
 }

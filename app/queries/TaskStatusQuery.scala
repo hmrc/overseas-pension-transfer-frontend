@@ -23,4 +23,3 @@ import play.api.libs.json.JsPath
 final case class TaskStatusQuery(category: TaskCategory) extends Gettable[TaskStatus] with Settable[TaskStatus] {
   val path: JsPath = JsPath \ category.toString \ "status"
 }
-
