@@ -347,5 +347,5 @@ GET        /psp-declaration                                                     
 POST       /psp-declaration                                                                       controllers.PspDeclarationController.onSubmit()
 
 
-GET        /submitToHMRC                        controllers.SubmitToHMRCController.onPageLoad()
-POST       /submitToHMRC                        controllers.SubmitToHMRCController.onSubmit()
+GET        /submit-to-hmrc                                                                          controllers.SubmitToHMRCController.onPageLoad()
+POST       /submit-to-hmrc                                                                          controllers.SubmitToHMRCController.onSubmit()
