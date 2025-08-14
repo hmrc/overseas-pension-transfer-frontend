@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukTaskList
-@import uk.gov.hmrc.govukfrontend.views.Aliases.TaskListItem
-@import uk.gov.hmrc.govukfrontend.views.Aliases.TaskList
+package models
 
-@this(
-        layout: templates.Layout,
-        govukTaskList: GovukTaskList
-)
+import models.taskList.TaskStatus
+import play.api.mvc.Call
 
-
-@(taskItems: Seq[TaskListItem])(implicit request: Request[_], messages: Messages)
-
-@layout(pageTitle = messages("taskList.title"), showPageFooter = false) {
-  @govukTaskList(TaskList(taskItems))
-}
+case class TaskViewModel(
+    id: String,
+    heading: String,
+    linkText: String,
+    link: Call,
+    status: TaskStatus,
+    hint: Option[String] = None
+  )

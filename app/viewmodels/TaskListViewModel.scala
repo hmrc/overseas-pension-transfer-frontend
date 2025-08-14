@@ -16,16 +16,15 @@
 
 package viewmodels
 
-import models.TaskStatus.CannotStart
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import models.{Task, TaskStatus}
+import models.TaskViewModel
+import models.taskList.TaskStatus
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.all.HintViewModel
 
 object TaskListViewModel {
 
-  def toTaskListItem(task: Task)(implicit messages: Messages): TaskListItem = {
+  def toTaskListItem(task: TaskViewModel)(implicit messages: Messages): TaskListItem = {
     val statusText = task.status match {
       case TaskStatus.CannotStart =>
         TaskListItemStatus(tag =
@@ -45,7 +44,7 @@ object TaskListViewModel {
 
     TaskListItem(
       title  = TaskListItemTitle(Text(task.linkText)),
-      href   = if (task.status != CannotStart) Some(task.link.url) else None,
+      href   = if (task.status != TaskStatus.CannotStart) Some(task.link.url) else None,
       hint   = task.hint.map(h => HintViewModel(content = Text(h))),
       status = statusText
     )

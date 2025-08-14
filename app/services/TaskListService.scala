@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package models
+package services
 
-import play.api.mvc.Call
+import com.google.inject.{Inject, Singleton}
+import models.taskList.TaskStatus
+import models.{TaskCategory, UserAnswers}
+import queries.TaskStatusQuery
 
-sealed trait TaskStatus
+import scala.util.Try
 
-object TaskStatus {
-  case object CannotStart extends TaskStatus
-  case object NotStarted  extends TaskStatus
-  case object InProgress  extends TaskStatus
-  case object Completed   extends TaskStatus
+@Singleton
+class TaskListService @Inject() {
+
+  def getTaskStatus(task: TaskCategory, userAnswers: UserAnswers): Option[TaskStatus] =
+    userAnswers.get(TaskStatusQuery(task))
+
+  def setTaskStatus(task: TaskCategory, userAnswers: UserAnswers, taskStatus: TaskStatus): Try[UserAnswers] =
+    userAnswers.set(TaskStatusQuery(task), taskStatus)
 }
-
-case class Task(
-    id: String,
-    heading: String,
-    linkText: String,
-    link: Call,
-    status: TaskStatus,
-    hint: Option[String] = None
-  )
