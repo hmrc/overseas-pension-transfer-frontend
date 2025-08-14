@@ -31,26 +31,21 @@ trait AuthSupport extends Logging {
         or Enrolment(config.pspEnrolment.serviceName))
   }
 
-  def extractUserTypeAndPsaPspId(enrolments: Enrolments, config: FrontendAppConfig): (UserType, PsaPspId) = {
-    val matchedOpt: Option[(Enrolment, config.EnrolmentConfig, UserType)] =
-      enrolments.enrolments.collectFirst {
-        case e if e.key == config.psaEnrolment.serviceName => (e, config.psaEnrolment, Psa)
-        case e if e.key == config.pspEnrolment.serviceName => (e, config.pspEnrolment, Psp)
-      }
+  def extractUser(enrolments: Enrolments, config: FrontendAppConfig, internalId: String): AuthenticatedUser = {
+    val matched = enrolments.enrolments.collectFirst {
+      case e if e.key == config.psaEnrolment.serviceName => (e, config.psaEnrolment, Psa)
+      case e if e.key == config.pspEnrolment.serviceName => (e, config.pspEnrolment, Psp)
+    }.getOrElse(throw new RuntimeException("Unable to retrieve matching PSA or PSP enrolment"))
 
-    val (enrolment, enrolmentConfig, userType) = getOrElseFailWithUnauthorised(
-      matchedOpt,
-      "Unable to retrieve matching PSA or PSP enrolment"
-    )
+    val (enrolment, enrolmentConfig, userType) = matched
 
-    val id = getOrElseFailWithUnauthorised(
-      enrolment.getIdentifier(enrolmentConfig.identifierKey).map(_.value),
-      s"Unable to retrieve identifier from enrolment ${enrolment.key}"
-    )
+    val id = enrolment.getIdentifier(enrolmentConfig.identifierKey)
+      .map(_.value)
+      .getOrElse(throw new RuntimeException(s"Missing identifier for ${enrolment.key}"))
 
     userType match {
-      case Psa => (Psa, PsaId(id))
-      case Psp => (Psp, PspId(id))
+      case Psa => PsaUser(PsaId(id), internalId)
+      case Psp => PspUser(PspId(id), internalId)
     }
   }
 

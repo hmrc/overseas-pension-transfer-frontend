@@ -38,4 +38,6 @@ trait Regex {
 
   val classRegex: String = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
+  val psaIdRegex: String = "^[A-Za-z][0-9]{7}$"
+
 }
