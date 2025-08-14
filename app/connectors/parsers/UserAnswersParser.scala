@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 object UserAnswersParser {
   type GetUserAnswersType = Either[UserAnswersError, UserAnswersDTO]
   type SetUserAnswersType = Either[UserAnswersError, Done]
-  type SubmissionType     = Either[UserAnswersError, SubmissionResponse]
+  type SubmissionType     = Either[SubmissionErrorResponse, SubmissionResponse]
 
   implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
 
@@ -80,20 +80,28 @@ object UserAnswersParser {
         case OK         => response.json.validate[SubmissionResponse] match {
             case JsSuccess(value, _) => Right(value)
             case JsError(errors)     =>
-              logger.warn(s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionResponse: ${formatJsonErrors(errors)}")
+              logger.warn(
+                s"Response code: ${response.status} - [SubmissionConnector][postSubmission]" +
+                  s" Unable to parse Json as SubmissionResponse: ${formatJsonErrors(errors)}"
+              )
               Left(SubmissionErrorResponse(s"Unable to parse Json as SubmissionResponse", Some(formatJsonErrors(errors))))
           }
         case statusCode =>
           response.json.validate[SubmissionErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[SubmissionConnector][postSubmission] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
+              logger.warn(
+                s"Response code: ${response.status} - [SubmissionConnector][postSubmission]" +
+                  s" Error returned: downstreamStatus: $statusCode, error: ${value.error}"
+              )
               Left(value)
             case JsError(errors)     =>
-              logger.warn(s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionResponse: ${formatJsonErrors(errors)}")
-              Left(SubmissionErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
+              logger.warn(
+                s"Response code: ${response.status} - [SubmissionConnector][postSubmission]" +
+                  s" Unable to parse Json as SubmissionResponse: ${formatJsonErrors(errors)}"
+              )
+              Left(SubmissionErrorResponse("Unable to parse Json as SubmissionErrorResponse", Some(formatJsonErrors(errors))))
           }
       }
-
   }
 
   private val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {

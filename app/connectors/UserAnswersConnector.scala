@@ -26,7 +26,7 @@ import connectors.parsers.UserAnswersParser.{
   SubmissionType
 }
 import models.dtos.{SubmissionDTO, UserAnswersDTO}
-import models.responses.UserAnswersErrorResponse
+import models.responses.{SubmissionErrorResponse, UserAnswersErrorResponse}
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -79,6 +79,6 @@ class UserAnswersConnector @Inject() (
       .recover {
         case e: Exception =>
           logger.warn(s"Error updating user answers for ID '${submissionDTO.referenceId}': ${e.getMessage}", e)
-          Left(UserAnswersErrorResponse(e.getMessage, None))
+          Left(SubmissionErrorResponse(e.getMessage, None))
       }
 }
