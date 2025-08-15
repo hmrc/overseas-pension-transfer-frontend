@@ -19,6 +19,7 @@ package controllers.transferDetails
 import base.SpecBase
 import forms.transferDetails.IsTransferCashOnlyFormProvider
 import models.NormalMode
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -28,6 +29,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.transferDetails.IsTransferCashOnlyView
 
 import scala.concurrent.Future
@@ -76,15 +78,19 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 

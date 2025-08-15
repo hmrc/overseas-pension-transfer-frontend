@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
-import queries.assets.QuotedSharesQuery
+import queries.assets.{QuotedSharesQuery, UnquotedSharesQuery}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AppUtils
@@ -28,19 +28,25 @@ import viewmodels.implicits._
 
 object QuotedSharesAmendContinueSummary extends AppUtils {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
+  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val count: Int = answers.get(QuotedSharesQuery).getOrElse(Nil).size
-    val valueText  = messages("quotedSharesAmendContinue.summary.value", count)
+    val answers   = userAnswers.get(UnquotedSharesQuery)
+    val valueText = messages("quotedSharesAmendContinue.summary.value", answers.size)
 
-    SummaryListRowViewModel(
-      key     = "quotedSharesAmendContinue.checkYourAnswersLabel",
-      value   = ValueViewModel(valueText),
-      actions = Seq(
-        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = CheckMode).url)
-          .withVisuallyHiddenText(messages("quotedSharesAmendContinue.change.hidden"))
-      )
-    )
+    answers match {
+      case Some(entries) if entries.nonEmpty =>
+        Some(
+          SummaryListRowViewModel(
+            key     = "quotedSharesAmendContinue.checkYourAnswersLabel",
+            value   = ValueViewModel(valueText),
+            actions = Seq(
+              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = CheckMode).url)
+                .withVisuallyHiddenText(messages("quotedSharesAmendContinue.change.hidden"))
+            )
+          )
+        )
+      case _                                 => None
+    }
   }
 
   def rows(answers: UserAnswers): Seq[ListItem] = {
