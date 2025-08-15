@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,33 +17,87 @@
 package controllers
 
 import base.SpecBase
-import models.NormalMode
+import models.UserAnswers
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{never, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import views.html.WhatWillBeNeededView
 
-class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase {
+import scala.concurrent.Future
 
-  "WhatWillBeNeeded Controller" - {
+class WhatWillBeNeededControllerSpec
+    extends AnyFreeSpec
+    with SpecBase
+    with MockitoSugar {
 
-    "must return OK and the correct view for a GET" in {
+  "WhatWillBeNeededController.onPageLoad" - {
 
-      val application = applicationBuilder(userAnswers = None).build()
+    "must return OK and the correct view when UserAnswers already exist (no write)" in {
+      val mockRepo = mock[SessionRepository]
+      when(mockRepo.get(any[String])).thenReturn(Future.successful(Some(emptyUserAnswers)))
+
+      val application =
+        applicationBuilder()
+          .overrides(bind[SessionRepository].toInstance(mockRepo))
+          .build()
+
+      running(application) {
+        val request  = FakeRequest(GET, routes.WhatWillBeNeededController.onPageLoad().url)
+        val result   = route(application, request).value
+        val view     = application.injector.instanceOf[WhatWillBeNeededView]
+        val nextPage = controllers.routes.TaskListController.onPageLoad().url
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(nextPage)(request, messages(application)).toString
+
+        verify(mockRepo, never()).set(any[UserAnswers])
+      }
+    }
+
+    "must initialise UserAnswers, persist once, and render the view when none exist" in {
+      val mockRepo = mock[SessionRepository]
+      when(mockRepo.get(any[String])).thenReturn(Future.successful(None))
+      when(mockRepo.set(any[UserAnswers])).thenReturn(Future.successful(true))
+
+      val application =
+        applicationBuilder()
+          .overrides(bind[SessionRepository].toInstance(mockRepo))
+          .build()
+
+      running(application) {
+        val request  = FakeRequest(GET, routes.WhatWillBeNeededController.onPageLoad().url)
+        val result   = route(application, request).value
+        val view     = application.injector.instanceOf[WhatWillBeNeededView]
+        val nextPage = controllers.routes.TaskListController.onPageLoad().url
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(nextPage)(request, messages(application)).toString
+
+        verify(mockRepo).set(any[UserAnswers])
+      }
+    }
+
+    "must redirect to JourneyRecovery when persistence returns false" in {
+      val mockRepo = mock[SessionRepository]
+      when(mockRepo.get(any[String])).thenReturn(Future.successful(None))
+      when(mockRepo.set(any[UserAnswers])).thenReturn(Future.successful(false))
+
+      val application =
+        applicationBuilder()
+          .overrides(bind[SessionRepository].toInstance(mockRepo))
+          .build()
 
       running(application) {
         val request = FakeRequest(GET, routes.WhatWillBeNeededController.onPageLoad().url)
+        val result  = route(application, request).value
 
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[WhatWillBeNeededView]
-
-        // TODO this will change to TaskListController once implemented
-        val nextPage = controllers.memberDetails.routes.MemberNameController.onPageLoad(mode = NormalMode).url
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual view(nextPage)(request, messages(application)).toString
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
