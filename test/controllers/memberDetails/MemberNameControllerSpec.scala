@@ -20,18 +20,18 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberNameFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{NormalMode, PersonName}
+import models.taskList.TaskStatus
+import models.{NormalMode, PersonName, TaskCategory, UserAnswers}
 import org.apache.pekko.Done
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.test.Helpers.baseApplicationBuilder.build
+import queries.TaskStatusQuery
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.memberDetails.MemberNameView
@@ -79,6 +79,62 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
+      }
+    }
+
+    "must set MemberDetails to InProgress on GET (NormalMode) and persist (session + external)" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, memberNameRoute)
+        val result  = route(application, request).value
+
+        status(result) mustEqual OK
+
+        verify(mockSessionRepository).set(org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
+          ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.InProgress)
+        })
+        verify(mockUserAnswersService).setExternalUserAnswers(org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
+          ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.InProgress)
+        })(any())
+      }
+    }
+
+    "must redirect to Journey Recovery on GET if persistence fails" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
+        .thenReturn(Future.successful(Left(models.responses.UserAnswersErrorResponse("boom", None))))
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, memberNameRoute)
+        val result  = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 

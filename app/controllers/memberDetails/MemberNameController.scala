@@ -18,12 +18,15 @@ package controllers.memberDetails
 
 import controllers.actions._
 import forms.memberDetails.MemberNameFormProvider
-import models.Mode
+import models.{CheckMode, Mode, NormalMode}
+import models.TaskCategory.MemberDetails
+import models.taskList.TaskStatus.InProgress
 import org.apache.pekko.Done
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TaskStatusQuery
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -47,14 +50,26 @@ class MemberNameController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.get(MemberNamePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode))
+      mode match {
+        case NormalMode =>
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(MemberDetails), InProgress))
+            _              <- sessionRepository.set(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Ok(view(preparedForm, mode))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
+        case CheckMode  => Future.successful(Ok(view(preparedForm, mode)))
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
