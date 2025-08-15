@@ -17,7 +17,10 @@
 package models
 
 import models.taskList.TaskStatus
+import play.api.i18n.Messages
 import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Tag, TaskListItem, TaskListItemStatus, TaskListItemTitle, Text}
+import viewmodels.govuk.all.HintViewModel
 
 case class TaskViewModel(
     id: String,
@@ -26,4 +29,56 @@ case class TaskViewModel(
     link: Call,
     status: TaskStatus,
     hint: Option[String] = None
-  )
+  ) {
+
+  def toTaskListItem(implicit messages: Messages): TaskListItem = {
+    val statusText = this.status match {
+      case TaskStatus.CannotStart =>
+        TaskListItemStatus(tag =
+          Some(
+            Tag(
+              content    = Text(messages("taskList.taskStatus.cannotStart")),
+              classes    = "govuk-tag--grey",
+              attributes = Map("id" -> s"${this.id}-status")
+            )
+          )
+        )
+      case TaskStatus.NotStarted  =>
+        TaskListItemStatus(tag =
+          Some(
+            Tag(
+              content    = Text(messages("taskList.taskStatus.notStarted")),
+              classes    = "govuk-tag--blue",
+              attributes = Map("id" -> s"${this.id}-status")
+            )
+          )
+        )
+      case TaskStatus.InProgress  =>
+        TaskListItemStatus(tag =
+          Some(
+            Tag(
+              content    = Text(messages("taskList.taskStatus.inProgress")),
+              classes    = "govuk-tag--blue",
+              attributes = Map("id" -> s"${this.id}-status")
+            )
+          )
+        )
+      case TaskStatus.Completed   =>
+        TaskListItemStatus(tag =
+          Some(
+            Tag(
+              content    = Text(messages("taskList.taskStatus.completed")),
+              attributes = Map("id" -> s"${this.id}-status")
+            )
+          )
+        )
+    }
+
+    TaskListItem(
+      title  = TaskListItemTitle(Text(this.linkText)),
+      href   = if (this.status != TaskStatus.CannotStart) Some(this.link.url) else None,
+      hint   = this.hint.map(h => HintViewModel(content = Text(h))),
+      status = statusText
+    )
+  }
+}

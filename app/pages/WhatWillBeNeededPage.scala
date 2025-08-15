@@ -24,5 +24,5 @@ object WhatWillBeNeededPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     // TODO this will change to TaskListController once implemented
-    routes.TaskListController.showTaskList()
+    routes.TaskListController.onPageLoad()
 }

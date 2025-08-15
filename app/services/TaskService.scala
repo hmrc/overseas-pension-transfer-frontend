@@ -24,7 +24,7 @@ import queries.TaskStatusQuery
 import scala.util.Try
 
 @Singleton
-class TaskListService @Inject() {
+class TaskService @Inject() {
 
   def getTaskStatus(task: TaskCategory, userAnswers: UserAnswers): Option[TaskStatus] =
     userAnswers.get(TaskStatusQuery(task))

@@ -16,37 +16,52 @@
 
 package viewmodels
 
-import models.TaskViewModel
-import models.taskList.TaskStatus
+import controllers.routes
+import models.TaskCategory.{MemberDetails, QROPSDetails, SchemeManagerDetails, SubmissionDetails, TransferDetails}
+import models.taskList.TaskStatus.CannotStart
+import models.{TaskViewModel, UserAnswers}
 import play.api.i18n.Messages
+import queries.TaskStatusQuery
 import uk.gov.hmrc.govukfrontend.views.Aliases._
-import viewmodels.govuk.all.HintViewModel
 
 object TaskListViewModel {
 
-  def toTaskListItem(task: TaskViewModel)(implicit messages: Messages): TaskListItem = {
-    val statusText = task.status match {
-      case TaskStatus.CannotStart =>
-        TaskListItemStatus(tag =
-          Some(Tag(content = Text(messages("taskList.taskStatus.cannotStart")), classes = "govuk-tag--grey", attributes = Map("id" -> s"${task.id}-status")))
-        )
-      case TaskStatus.NotStarted  =>
-        TaskListItemStatus(tag =
-          Some(Tag(content = Text(messages("taskList.taskStatus.notStarted")), classes = "govuk-tag--blue", attributes = Map("id" -> s"${task.id}-status")))
-        )
-      case TaskStatus.InProgress  =>
-        TaskListItemStatus(tag =
-          Some(Tag(content = Text(messages("taskList.taskStatus.inProgress")), classes = "govuk-tag--blue", attributes = Map("id" -> s"${task.id}-status")))
-        )
-      case TaskStatus.Completed   =>
-        TaskListItemStatus(tag = Some(Tag(content = Text(messages("taskList.taskStatus.completed")), attributes = Map("id" -> s"${task.id}-status"))))
-    }
-
-    TaskListItem(
-      title  = TaskListItemTitle(Text(task.linkText)),
-      href   = if (task.status != TaskStatus.CannotStart) Some(task.link.url) else None,
-      hint   = task.hint.map(h => HintViewModel(content = Text(h))),
-      status = statusText
+  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[TaskListItem] =
+    Seq(
+      TaskViewModel(
+        "member-details",
+        "The member details",
+        "Tell us about the member you made the transfer for",
+        routes.IndexController.onPageLoad(),
+        userAnswers.get(TaskStatusQuery(MemberDetails)).getOrElse(CannotStart)
+      ).toTaskListItem,
+      TaskViewModel(
+        "transfer-details",
+        "The transfer details",
+        "Tell us more information about the overseas transfer",
+        routes.IndexController.onPageLoad(),
+        userAnswers.get(TaskStatusQuery(TransferDetails)).getOrElse(CannotStart)
+      ).toTaskListItem,
+      TaskViewModel(
+        "qrops-details",
+        "The QROPS details",
+        "Tell us more information about the QROPS",
+        routes.IndexController.onPageLoad(),
+        userAnswers.get(TaskStatusQuery(QROPSDetails)).getOrElse(CannotStart)
+      ).toTaskListItem,
+      TaskViewModel(
+        "scheme-manager-details",
+        "The QROPS scheme manager details",
+        "Tell us more about the QROPS scheme manager",
+        routes.IndexController.onPageLoad(),
+        userAnswers.get(TaskStatusQuery(SchemeManagerDetails)).getOrElse(CannotStart)
+      ).toTaskListItem,
+      TaskViewModel(
+        "submit",
+        "Submit your form",
+        "Check all your answers and submit the form",
+        routes.IndexController.onPageLoad(),
+        userAnswers.get(TaskStatusQuery(SubmissionDetails)).getOrElse(CannotStart)
+      ).toTaskListItem
     )
-  }
 }

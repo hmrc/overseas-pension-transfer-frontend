@@ -346,7 +346,7 @@ POST       /transfer-details/assets/other-assets-confirm-removal                
 GET        /psp-declaration                                                                       controllers.PspDeclarationController.onPageLoad()
 POST       /psp-declaration                                                                       controllers.PspDeclarationController.onSubmit()
 
-GET        /task-list                                                                             controllers.TaskListController.showTaskList()
+GET        /task-list                                                                             controllers.TaskListController.onPageLoad()
 
 GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad()
 POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit()

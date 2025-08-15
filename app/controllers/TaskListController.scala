@@ -16,57 +16,27 @@
 
 package controllers
 
-import models.TaskViewModel
-import models.taskList.TaskStatus
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.govukfrontend.views.Aliases.TaskListItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.TaskListViewModel
 import views.html.TaskListView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class TaskListController @Inject() (
     val controllerComponents: MessagesControllerComponents,
+    identify: IdentifierAction,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    displayData: DisplayAction,
     view: TaskListView
+  )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def showTaskList(): Action[AnyContent] = Action { implicit request =>
-    val tasks: Seq[TaskViewModel] = Seq(
-      TaskViewModel(
-        "member-details",
-        "The member details",
-        "Tell us about the member you made the transfer for",
-        routes.IndexController.onPageLoad(),
-        TaskStatus.NotStarted
-      ),
-      TaskViewModel(
-        "transfer-details",
-        "The transfer details",
-        "Tell us more information about the overseas transfer",
-        routes.IndexController.onPageLoad(),
-        TaskStatus.CannotStart
-      ),
-      TaskViewModel(
-        "qrops-details",
-        "The QROPS details",
-        "Tell us more information about the QROPS",
-        routes.IndexController.onPageLoad(),
-        TaskStatus.CannotStart
-      ),
-      TaskViewModel(
-        "scheme-manager-details",
-        "The QROPS scheme manager details",
-        "Tell us more about the QROPS scheme manager",
-        routes.IndexController.onPageLoad(),
-        TaskStatus.CannotStart
-      ),
-      TaskViewModel("submit", "Submit your form", "Check all your answers and submit the form", routes.IndexController.onPageLoad(), TaskStatus.CannotStart)
-    )
-
-    val taskListItems: Seq[TaskListItem] = tasks.map(TaskListViewModel.toTaskListItem)
-
-    Ok(view(taskListItems))
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) { implicit request =>
+    Ok(view(TaskListViewModel.rows(request.userAnswers)))
   }
 }
