@@ -16,52 +16,22 @@
 
 package viewmodels
 
-import controllers.routes
-import models.TaskCategory.{MemberDetails, QROPSDetails, SchemeManagerDetails, SubmissionDetails, TransferDetails}
-import models.taskList.TaskStatus.CannotStart
-import models.{TaskViewModel, UserAnswers}
+import models.UserAnswers
+import models.taskList.TaskJourneys
 import play.api.i18n.Messages
-import queries.TaskStatusQuery
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 
 object TaskListViewModel {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[TaskListItem] =
-    Seq(
-      TaskViewModel(
-        "member-details",
-        "The member details",
-        "Tell us about the member you made the transfer for",
-        routes.IndexController.onPageLoad(),
-        userAnswers.get(TaskStatusQuery(MemberDetails)).getOrElse(CannotStart)
-      ).toTaskListItem,
-      TaskViewModel(
-        "transfer-details",
-        "The transfer details",
-        "Tell us more information about the overseas transfer",
-        routes.IndexController.onPageLoad(),
-        userAnswers.get(TaskStatusQuery(TransferDetails)).getOrElse(CannotStart)
-      ).toTaskListItem,
-      TaskViewModel(
-        "qrops-details",
-        "The QROPS details",
-        "Tell us more information about the QROPS",
-        routes.IndexController.onPageLoad(),
-        userAnswers.get(TaskStatusQuery(QROPSDetails)).getOrElse(CannotStart)
-      ).toTaskListItem,
-      TaskViewModel(
-        "scheme-manager-details",
-        "The QROPS scheme manager details",
-        "Tell us more about the QROPS scheme manager",
-        routes.IndexController.onPageLoad(),
-        userAnswers.get(TaskStatusQuery(SchemeManagerDetails)).getOrElse(CannotStart)
-      ).toTaskListItem,
-      TaskViewModel(
-        "submit",
-        "Submit your form",
-        "Check all your answers and submit the form",
-        routes.IndexController.onPageLoad(),
-        userAnswers.get(TaskStatusQuery(SubmissionDetails)).getOrElse(CannotStart)
+  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[TaskListItem] = {
+    TaskJourneys.all.map { journey =>
+      val status = journey.status(userAnswers)
+      TaskTileViewModel(
+        id       = journey.id,
+        linkText = messages(journey.linkTextKey),
+        link     = journey.entry(userAnswers),
+        status   = status
       ).toTaskListItem
-    )
+    }
+  }
 }

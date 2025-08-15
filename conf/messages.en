@@ -118,6 +118,12 @@ common.dateInput.error.invalid.character = The Day/Month/Year Field must only in
 common.dateInput.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 1970
 common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the future
 
+taskList.title = Task list
+taskList.memberDetails.linkText = Add details about the member
+taskList.transferDetails.linkText = Add information about the transfer
+taskList.qropsDetails.linkText = Add information about the QROPS
+taskList.schemeManagerDetails.linkText = Add QROPS scheme manager''s details
+taskList.submit.linkText = Check your answers and submit the report
 taskList.taskStatus.cannotStart = Cannot start yet
 taskList.taskStatus.notStarted = Not started yet
 taskList.taskStatus.inProgress = In progress
