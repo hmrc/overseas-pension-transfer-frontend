@@ -43,7 +43,8 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
   private val formProvider = new MemberNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberNameRoute = routes.MemberNameController.onPageLoad(NormalMode).url
+  private lazy val memberNameRoute     = routes.MemberNameController.onPageLoad(NormalMode).url
+  private lazy val memberNamePostRoute = routes.MemberNameController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val validAnswer = PersonName("value 1", "value 2")
   private val userAnswers = emptyUserAnswers.set(MemberNamePage, validAnswer).success.value
@@ -62,7 +63,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, fromFinalCYA = false)(request, messages(application)).toString
       }
     }
 
@@ -78,7 +79,10 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode, fromFinalCYA = false)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -99,7 +103,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNameRoute)
+          FakeRequest(POST, memberNamePostRoute)
             .withFormUrlEncodedBody(("memberFirstName", "first name"), ("memberLastName", "last name"))
 
         val result = route(application, request).value
@@ -115,7 +119,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNameRoute)
+          FakeRequest(POST, memberNamePostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -125,7 +129,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, fromFinalCYA = false)(request, messages(application)).toString
       }
     }
 
@@ -134,7 +138,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberNameRoute)
+        val request = FakeRequest(GET, memberNameRoute).withHeaders(("Referer", "/last-url"))
 
         val result = route(application, request).value
 
@@ -149,7 +153,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNameRoute)
+          FakeRequest(POST, memberNamePostRoute)
             .withFormUrlEncodedBody(("memberFirstName", "value 1"), ("memberLastName", "value 2"))
 
         val result = route(application, request).value
@@ -177,7 +181,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNameRoute)
+          FakeRequest(POST, memberNamePostRoute)
             .withFormUrlEncodedBody(("memberFirstName", "first name"), ("memberLastName", "last name"))
 
         val result = route(application, request).value

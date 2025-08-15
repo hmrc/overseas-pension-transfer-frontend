@@ -25,10 +25,12 @@ import scala.language.implicitConversions
 
 trait Page {
 
-  final def nextPage(mode: Mode, answers: UserAnswers): Call =
+  final def nextPage(mode: Mode, answers: UserAnswers, fromFinalCYA: Boolean = false): Call =
     mode match {
       case NormalMode => nextPageNormalMode(answers)
-      case CheckMode  => nextPageCheckMode(answers)
+      case CheckMode  =>
+        if (fromFinalCYA) routes.CheckYourAnswersController.onPageLoad()
+        else nextPageCheckMode(answers)
     }
 
   protected def nextPageNormalMode(answers: UserAnswers): Call
