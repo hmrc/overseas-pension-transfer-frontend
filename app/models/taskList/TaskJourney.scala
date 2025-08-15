@@ -85,11 +85,14 @@ object TaskJourneys {
     def cya(): Call          = controllers.routes.IndexController.onPageLoad()
   }
 
-  val all: Seq[TaskJourney] = Seq(
+  val values: Seq[TaskJourney] = Seq(
     MemberDetailsJourney,
     TransferDetailsJourney,
     QropsDetailsJourney,
     SchemeManagerDetailsJourney,
     SubmissionDetailsJourney
   )
+
+  val valuesWithoutSubmissionJourney: Seq[TaskJourney] =
+    values.filterNot(_ == SubmissionDetailsJourney)
 }

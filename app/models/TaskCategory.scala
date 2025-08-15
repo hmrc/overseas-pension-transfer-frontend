@@ -34,6 +34,9 @@ object TaskCategory extends Enumerable.Implicits {
     SubmissionDetails
   )
 
+  val valuesWithoutSubmission: Seq[TaskCategory] =
+    values.filterNot(_ == SubmissionDetails)
+
   implicit val enumerable: Enumerable[TaskCategory] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

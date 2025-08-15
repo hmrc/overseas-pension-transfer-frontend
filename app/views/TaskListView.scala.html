@@ -24,8 +24,9 @@
 )
 
 
-@(taskItems: Seq[TaskListItem])(implicit request: Request[_], messages: Messages)
+@(taskItems: Seq[TaskListItem], submissionItem: TaskListItem)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("taskList.title"), showPageFooter = false) {
-  @govukTaskList(TaskList(taskItems))
+    @govukTaskList(TaskList(taskItems))
+    @govukTaskList(TaskList(Seq(submissionItem)))
 }

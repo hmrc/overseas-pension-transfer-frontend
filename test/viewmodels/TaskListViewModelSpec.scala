@@ -102,7 +102,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
         val rows        = TaskListViewModel.rows(emptyUserAnswers)
         val renderedIds = rows.map(_.status.tag.value.attributes("id").stripSuffix("-status"))
-        val expectedIds = TaskJourneys.all.map(_.id)
+        val expectedIds = TaskJourneys.values.map(_.id)
 
         renderedIds mustEqual expectedIds
       }

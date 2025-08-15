@@ -37,6 +37,6 @@ class TaskListController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) { implicit request =>
-    Ok(view(TaskListViewModel.rows(request.userAnswers)))
+    Ok(view(TaskListViewModel.rows(request.userAnswers), TaskListViewModel.submissionRow(request.userAnswers)))
   }
 }
