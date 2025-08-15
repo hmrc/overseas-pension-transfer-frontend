@@ -17,8 +17,9 @@
 package base
 
 import controllers.actions._
+import models.authentication.{PsaId, PsaUser}
 import models.requests.DisplayRequest
-import models.{PersonName, UserAnswers}
+import models.{PersonName, QtNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -28,7 +29,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import queries.QtNumber
+import queries.QtNumberQuery
 
 trait SpecBase
     extends Matchers
@@ -37,19 +38,23 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience {
 
-  val userAnswersId: String = "id"
-
   val testMemberName: PersonName = PersonName("User", "McUser")
 
-  val testQtNumber: String = "QT123456"
+  val testQtNumber: QtNumber = QtNumber("QT123456")
+
+  val userAnswersId: String = "id"
+
+  val psaId: PsaId = PsaId("A123456")
+
+  val authenticatedUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
 
-  def userAnswersQtNumber: UserAnswers = emptyUserAnswers.set(QtNumber, testQtNumber).success.value
+  def userAnswersQtNumber: UserAnswers = emptyUserAnswers.set(QtNumberQuery, testQtNumber).success.value
 
-  def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumber, testQtNumber).success.value
+  def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -64,20 +69,20 @@ trait SpecBase
 
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
     DisplayRequest(
-      request     = fakeRequest,
-      userId      = userAnswersId,
-      userAnswers = userAnswers,
-      memberName  = testMemberName.fullName,
-      qtNumber    = testQtNumber
+      request           = fakeRequest,
+      authenticatedUser = authenticatedUser,
+      userAnswers       = userAnswers,
+      memberName        = testMemberName.fullName,
+      qtNumber          = testQtNumber
     )
 
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
-      request     = FakeRequest(),
-      userId      = userAnswersId,
-      userAnswers = emptyUserAnswers,
-      memberName  = testMemberName.fullName,
-      qtNumber    = testQtNumber
+      request           = FakeRequest(),
+      authenticatedUser = authenticatedUser,
+      userAnswers       = emptyUserAnswers,
+      memberName        = testMemberName.fullName,
+      qtNumber          = testQtNumber
     )
 
 }

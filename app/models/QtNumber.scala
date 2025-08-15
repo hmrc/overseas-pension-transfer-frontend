@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.requests.DisplayRequest
-@this()
+package models
 
-@()(implicit request: DisplayRequest[_])
+import play.api.libs.json.{Json, OFormat}
 
-<span class="govuk-caption-l">@request.qtNumber.value</span>
+case class QtNumber(value: String) {
+  def isEmpty: Boolean  = value.trim.isEmpty
+  def nonEmpty: Boolean = !isEmpty
+}
+
+object QtNumber {
+  val empty: QtNumber                    = QtNumber("")
+  implicit val format: OFormat[QtNumber] = Json.format[QtNumber]
+}

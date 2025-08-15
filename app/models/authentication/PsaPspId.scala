@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package queries
+package models.authentication
 
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Json, OFormat}
 
-case object QtNumber extends Gettable[String] with Settable[String] {
-  override def path: JsPath = JsPath \ "qtNumber"
+case class PsaId(value: String)
+
+object PsaId {
+  implicit val format: OFormat[PsaId] = Json.format[PsaId]
+}
+case class PspId(value: String)
+
+object PspId {
+  implicit val format: OFormat[PspId] = Json.format[PspId]
 }

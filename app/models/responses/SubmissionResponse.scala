@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.requests.DisplayRequest
-@this()
+package models.responses
 
-@()(implicit request: DisplayRequest[_])
+import models.QtNumber
+import play.api.libs.json.{Json, OFormat}
 
-<span class="govuk-caption-l">@request.qtNumber.value</span>
+case class SubmissionResponse(qtNumber: QtNumber)
+
+object SubmissionResponse {
+  implicit val format: OFormat[SubmissionResponse] = Json.format[SubmissionResponse]
+}

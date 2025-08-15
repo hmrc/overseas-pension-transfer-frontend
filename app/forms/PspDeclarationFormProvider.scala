@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.requests.DisplayRequest
-@this()
+package forms
 
-@()(implicit request: DisplayRequest[_])
+import javax.inject.Inject
+import forms.mappings.{Mappings, Regex}
+import play.api.data.Form
 
-<span class="govuk-caption-l">@request.qtNumber.value</span>
+class PspDeclarationFormProvider @Inject() extends Mappings with Regex {
+
+  def apply(): Form[String] =
+    Form(
+      "value" -> text("pspDeclaration.error.required")
+        .verifying(regexp(psaIdRegex, "pspDeclaration.error.pattern"))
+    )
+}

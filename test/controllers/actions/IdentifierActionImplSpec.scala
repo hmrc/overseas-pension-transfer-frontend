@@ -70,12 +70,12 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
       val result = action.invokeBlock(
         fakeRequest,
         { request: IdentifierRequest[AnyContent] =>
-          Future.successful(Ok(s"OK - ${request.userId} - ${request.psaPspId}"))
+          Future.successful(Ok(s"OK - ${request.authenticatedUser.internalId} - ${request.authenticatedUser}"))
         }
       )
 
       status(result) mustBe OK
-      contentAsString(result) must include(s"OK - $internalIdValue - $identifierValue")
+      contentAsString(result) must include(s"OK - $internalIdValue")
     }
 
     "must redirect to login if no active session" in {

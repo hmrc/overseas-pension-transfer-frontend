@@ -35,7 +35,7 @@ class IndexController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = identify { implicit request =>
-    val userAnswers = UserAnswers(request.userId)
+    val userAnswers = UserAnswers(request.authenticatedUser.internalId)
     Ok(view(IndexPage.nextPage(mode = NormalMode, userAnswers).url))
   }
 }

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.requests.DisplayRequest
-@this()
+package models.authentication
 
-@()(implicit request: DisplayRequest[_])
+import play.api.libs.json._
 
-<span class="govuk-caption-l">@request.qtNumber.value</span>
+sealed trait UserType
+case object Psa extends UserType
+case object Psp extends UserType
+
+object UserType {
+
+  implicit val format: Format[UserType] = Format(
+    Reads {
+      case JsString("Psa") => JsSuccess(Psa)
+      case JsString("Psp") => JsSuccess(Psp)
+      case _               => JsError("Unknown UserType")
+    },
+    Writes {
+      case Psa => JsString("Psa")
+      case Psp => JsString("Psp")
+    }
+  )
+}

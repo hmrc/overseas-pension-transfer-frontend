@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import models.requests.DisplayRequest
-@this()
+package pages
 
-@()(implicit request: DisplayRequest[_])
+import controllers.routes
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-<span class="govuk-caption-l">@request.qtNumber.value</span>
+class PspDeclarationPageSpec extends AnyFreeSpec with Matchers {
+
+  ".nextPage" - {
+
+    val emptyAnswers = UserAnswers("id")
+
+    "in Normal Mode" - {
+
+      "must go to Index" in {
+
+        PspDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+      }
+    }
+  }
+}
