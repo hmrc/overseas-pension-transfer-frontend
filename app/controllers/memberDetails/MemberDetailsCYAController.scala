@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TaskStatusQuery
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.govuk.summarylist._
@@ -42,6 +42,7 @@ class MemberDetailsCYAController @Inject() (
     requireData: DataRequiredAction,
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
+    taskService: TaskService,
     displayData: DisplayAction,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDetailsCYAView
@@ -58,12 +59,13 @@ class MemberDetailsCYAController @Inject() (
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(MemberDetails), Completed))
-        _              <- sessionRepository.set(updatedAnswers)
-        savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+        ua1           <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(MemberDetails), Completed))
+        ua2           <- Future.fromTry(taskService.unblockTasksOnMemberDetailsCompletion(ua1))
+        _             <- sessionRepository.set(ua2)
+        savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
       } yield {
         savedForLater match {
-          case Right(Done) => Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, updatedAnswers))
+          case Right(Done) => Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, ua2))
           case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
         }
       }

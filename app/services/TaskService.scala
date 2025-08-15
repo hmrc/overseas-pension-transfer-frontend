@@ -17,7 +17,9 @@
 package services
 
 import com.google.inject.{Inject, Singleton}
+import models.TaskCategory.{MemberDetails, TransferDetails}
 import models.taskList.TaskStatus
+import models.taskList.TaskStatus.{CannotStart, Completed, NotStarted}
 import models.{TaskCategory, UserAnswers}
 import queries.TaskStatusQuery
 
@@ -26,9 +28,22 @@ import scala.util.Try
 @Singleton
 class TaskService @Inject() {
 
-  def getTaskStatus(task: TaskCategory, userAnswers: UserAnswers): Option[TaskStatus] =
-    userAnswers.get(TaskStatusQuery(task))
+  def unblockTasksOnMemberDetailsCompletion(userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers
+      .get(TaskStatusQuery(TaskCategory.MemberDetails))
+      .filter(_ == Completed)
+      .map { _ =>
+        TaskCategory.valuesWithoutSubmission.foldLeft(Try(userAnswers)) { (uaTry, category) =>
+          uaTry.flatMap(ua =>
+            if (ua.get(TaskStatusQuery(category)).contains(CannotStart)) {
+              ua.set(TaskStatusQuery(category), NotStarted)
+            } else {
+              Try(ua)
+            }
+          )
+        }
+      }
+      .getOrElse(Try(userAnswers))
+  }
 
-  def setTaskStatus(task: TaskCategory, userAnswers: UserAnswers, taskStatus: TaskStatus): Try[UserAnswers] =
-    userAnswers.set(TaskStatusQuery(task), taskStatus)
 }

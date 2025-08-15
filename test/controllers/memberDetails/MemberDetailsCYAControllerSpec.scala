@@ -18,6 +18,7 @@ package controllers.memberDetails
 
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
+import models.TaskCategory._
 import models.{TaskCategory, UserAnswers}
 import models.taskList.TaskStatus
 import org.apache.pekko.Done
@@ -100,6 +101,47 @@ class MemberDetailsCYAControllerSpec
         verify(mockUserAnswersService).setExternalUserAnswers(
           org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
             ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.Completed)
+          }
+        )(any())
+      }
+    }
+
+    "must unblock dependent tasks (CannotStart -> NotStarted) on POST when MemberDetails is completed" in {
+
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val initialUA =
+        emptyUserAnswers
+          .set(TaskStatusQuery(TransferDetails), TaskStatus.CannotStart).success.value
+          .set(TaskStatusQuery(QROPSDetails), TaskStatus.CannotStart).success.value
+          .set(TaskStatusQuery(SchemeManagerDetails), TaskStatus.CannotStart).success.value
+          .set(TaskStatusQuery(SubmissionDetails), TaskStatus.CannotStart).success.value
+
+      val app =
+        applicationBuilder(userAnswers = Some(initialUA))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+      running(app) {
+        val req = FakeRequest(POST, routes.MemberDetailsCYAController.onSubmit().url)
+        val res = route(app, req).value
+
+        status(res) mustEqual SEE_OTHER
+
+        verify(mockUserAnswersService).setExternalUserAnswers(
+          org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
+            ua.get(TaskStatusQuery(TransferDetails)).contains(TaskStatus.NotStarted) &&
+            ua.get(TaskStatusQuery(QROPSDetails)).contains(TaskStatus.NotStarted) &&
+            ua.get(TaskStatusQuery(SchemeManagerDetails)).contains(TaskStatus.NotStarted) &&
+            ua.get(TaskStatusQuery(SubmissionDetails)).contains(TaskStatus.CannotStart)
           }
         )(any())
       }
