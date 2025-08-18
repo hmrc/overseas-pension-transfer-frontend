@@ -42,7 +42,8 @@ import scala.concurrent.Future
 class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
   private val formProvider = new MembersLastUKAddressFormProvider()
 
-  private lazy val membersLastUKAddressRoute = routes.MembersLastUKAddressController.onPageLoad(NormalMode).url
+  private lazy val membersLastUKAddressGetRoute  = routes.MembersLastUKAddressController.onPageLoad(NormalMode).url
+  private lazy val membersLastUKAddressPostRoute = routes.MembersLastUKAddressController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val postCode    = "AB1 2CD"
   private val validAnswer = MembersLastUKAddress("1stLineAdd", "2ndLineAdd", Some("aTown"), Some("aCounty"), postCode)
@@ -54,7 +55,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val request                                                         = FakeRequest(GET, membersLastUKAddressRoute)
+        val request                                                         = FakeRequest(GET, membersLastUKAddressGetRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form = formProvider()
@@ -73,7 +74,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request                                                         = FakeRequest(GET, membersLastUKAddressRoute)
+        val request                                                         = FakeRequest(GET, membersLastUKAddressGetRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form = formProvider()
@@ -108,7 +109,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersLastUKAddressRoute)
+          FakeRequest(POST, membersLastUKAddressPostRoute)
             .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdded"), ("postcode", postCode))
 
         val result = route(application, request).value
@@ -124,7 +125,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request                                                             =
-          FakeRequest(POST, membersLastUKAddressRoute)
+          FakeRequest(POST, membersLastUKAddressPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
         implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
 
@@ -145,7 +146,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, membersLastUKAddressRoute)
+        val request = FakeRequest(GET, membersLastUKAddressGetRoute)
 
         val result = route(application, request).value
 
@@ -160,7 +161,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersLastUKAddressRoute)
+          FakeRequest(POST, membersLastUKAddressPostRoute)
             .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdd"), ("postcode", postCode))
 
         val result = route(application, request).value
@@ -188,7 +189,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersLastUKAddressRoute)
+          FakeRequest(POST, membersLastUKAddressPostRoute)
             .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdded"), ("postcode", postCode))
 
         val result = route(application, request).value

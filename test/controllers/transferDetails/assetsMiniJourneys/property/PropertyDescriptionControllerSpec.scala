@@ -39,7 +39,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
   private val form         = formProvider()
   private val index        = 0
 
-  private lazy val propertyDescriptionGetRoute = AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index).url
+  private lazy val propertyDescriptionGetRoute   = AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index).url
   private lazy val propertyDescriptionGPostRoute = AssetsMiniJourneysRoutes.PropertyDescriptionController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "propertyDescription Controller" - {

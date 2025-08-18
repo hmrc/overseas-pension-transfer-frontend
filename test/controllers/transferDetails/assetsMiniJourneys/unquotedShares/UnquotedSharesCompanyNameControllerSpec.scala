@@ -39,8 +39,10 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
   private val form         = formProvider()
   private val index        = 0
 
-  private lazy val unquotedSharesCompanyNameGetRoute = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, index).url
-  private lazy val unquotedSharesCompanyNamePostRoute = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onSubmit(NormalMode, index, fromFinalCYA = false).url
+  private lazy val unquotedSharesCompanyNameGetRoute  = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, index).url
+
+  private lazy val unquotedSharesCompanyNamePostRoute =
+    AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "UnquotedSharesCompanyName Controller" - {
 

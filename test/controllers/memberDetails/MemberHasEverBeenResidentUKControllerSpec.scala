@@ -43,7 +43,8 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
   private val formProvider = new MemberHasEverBeenResidentUKFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberHasEverBeenResidentUKRoute = routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode).url
+  private lazy val memberHasEverBeenResidentUKGetRoute  = routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode).url
+  private lazy val memberHasEverBeenResidentUKPostRoute = routes.MemberHasEverBeenResidentUKController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "memberHasEverBeenResidentUK Controller" - {
 
@@ -51,7 +52,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
+        val req    = FakeRequest(GET, memberHasEverBeenResidentUKGetRoute)
         val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
@@ -69,7 +70,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
+        val req    = FakeRequest(GET, memberHasEverBeenResidentUKGetRoute)
         val view   = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
         val result = route(application, req).value
 
@@ -99,7 +100,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val req =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, req).value
@@ -127,7 +128,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val request =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody("value" -> "true")
 
         val result = route(application, request).value
@@ -210,7 +211,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val req =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -229,7 +230,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
+        val req    = FakeRequest(GET, memberHasEverBeenResidentUKGetRoute)
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
@@ -242,7 +243,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val req =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, req).value
@@ -270,7 +271,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val req =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, req).value

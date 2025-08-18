@@ -41,7 +41,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
   private val formProvider = new SchemeManagersEmailFormProvider()
   private val form         = formProvider()
 
-  private lazy val schemeManagerEmailGetRoute = routes.SchemeManagersEmailController.onPageLoad(NormalMode).url
+  private lazy val schemeManagerEmailGetRoute  = routes.SchemeManagersEmailController.onPageLoad(NormalMode).url
   private lazy val schemeManagerEmailPostRoute = routes.SchemeManagersEmailController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "SchemeManagerEmail Controller" - {

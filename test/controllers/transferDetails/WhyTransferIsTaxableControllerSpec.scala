@@ -38,7 +38,7 @@ import scala.concurrent.Future
 
 class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val whyTransferIsTaxableGetRoute = routes.WhyTransferIsTaxableController.onPageLoad(NormalMode).url
+  private lazy val whyTransferIsTaxableGetRoute  = routes.WhyTransferIsTaxableController.onPageLoad(NormalMode).url
   private lazy val whyTransferIsTaxablePostRoute = routes.WhyTransferIsTaxableController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val formProvider = new WhyTransferIsTaxableFormProvider()

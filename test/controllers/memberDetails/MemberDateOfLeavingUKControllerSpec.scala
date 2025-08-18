@@ -46,14 +46,15 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
   private val formProvider = new MemberDateOfLeavingUKFormProvider()
   private def form         = formProvider()
 
-  private val validAnswer                     = LocalDate.now(ZoneOffset.UTC)
-  private lazy val memberDateOfLeavingUKRoute = routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode).url
+  private val validAnswer                         = LocalDate.now(ZoneOffset.UTC)
+  private lazy val memberDateOfLeavingUKGetRoute  = routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode).url
+  private lazy val memberDateOfLeavingUKPostRoute = routes.MemberDateOfLeavingUKController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, memberDateOfLeavingUKRoute)
+    FakeRequest(GET, memberDateOfLeavingUKGetRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest(POST, memberDateOfLeavingUKRoute)
+    FakeRequest(POST, memberDateOfLeavingUKPostRoute)
       .withFormUrlEncodedBody(
         "value.day"   -> validAnswer.getDayOfMonth.toString,
         "value.month" -> validAnswer.getMonthValue.toString,
@@ -123,7 +124,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
-      val request = FakeRequest(POST, memberDateOfLeavingUKRoute)
+      val request = FakeRequest(POST, memberDateOfLeavingUKPostRoute)
         .withFormUrlEncodedBody(("value", "invalid value"))
 
       running(application) {
@@ -181,7 +182,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, memberDateOfLeavingUKRoute)
+          FakeRequest(POST, memberDateOfLeavingUKPostRoute)
             .withFormUrlEncodedBody(("value", "AB123456A"))
 
         val result = route(application, postRequest()).value

@@ -41,7 +41,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val propertyValueGetRoute = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index).url
+  lazy val propertyValueGetRoute  = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index).url
   lazy val propertyValuePostRoute = AssetsMiniJourneysRoutes.PropertyValueController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "ValueOfThisProperty Controller" - {

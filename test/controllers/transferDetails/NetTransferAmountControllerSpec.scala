@@ -39,7 +39,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val amountOfTransferAfterTaxGetRoute = routes.NetTransferAmountController.onPageLoad(NormalMode).url
+  lazy val amountOfTransferAfterTaxGetRoute  = routes.NetTransferAmountController.onPageLoad(NormalMode).url
   lazy val amountOfTransferAfterTaxPostRoute = routes.NetTransferAmountController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "AmountOfTransferAfterTax Controller" - {

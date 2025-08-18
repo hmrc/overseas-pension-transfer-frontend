@@ -39,7 +39,7 @@ import scala.concurrent.Future
 
 class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val schemeManagerTypeGetRoute = routes.SchemeManagerTypeController.onPageLoad(NormalMode).url
+  private lazy val schemeManagerTypeGetRoute  = routes.SchemeManagerTypeController.onPageLoad(NormalMode).url
   private lazy val schemeManagerTypePostRoute = routes.SchemeManagerTypeController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val formProvider = new SchemeManagerTypeFormProvider()

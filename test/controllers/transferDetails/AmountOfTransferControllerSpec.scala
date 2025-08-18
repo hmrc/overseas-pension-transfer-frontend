@@ -43,7 +43,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val amountOfTransferGetRoute = routes.AmountOfTransferController.onPageLoad(NormalMode).url
+  lazy val amountOfTransferGetRoute  = routes.AmountOfTransferController.onPageLoad(NormalMode).url
   lazy val amountOfTransferPostRoute = routes.AmountOfTransferController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "AmountOfTransfer Controller" - {

@@ -41,7 +41,8 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
   private val formProvider = new MemberNinoFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberNinoRoute = routes.MemberNinoController.onPageLoad(NormalMode).url
+  private lazy val memberNinoGetRoute  = routes.MemberNinoController.onPageLoad(NormalMode).url
+  private lazy val memberNinoPostRoute = routes.MemberNinoController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "MemberNino Controller" - {
 
@@ -49,7 +50,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberNinoRoute)
+        val request = FakeRequest(GET, memberNinoGetRoute)
         val result  = route(application, request).value
 
         val view = application.injector.instanceOf[MemberNinoView]
@@ -68,7 +69,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberNinoRoute)
+        val request = FakeRequest(GET, memberNinoGetRoute)
         val view    = application.injector.instanceOf[MemberNinoView]
         val result  = route(application, request).value
 
@@ -97,7 +98,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNinoRoute)
+          FakeRequest(POST, memberNinoPostRoute)
             .withFormUrlEncodedBody(("value", "AB123456A"))
 
         val result = route(application, request).value
@@ -112,7 +113,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNinoRoute)
+          FakeRequest(POST, memberNinoPostRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -131,7 +132,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberNinoRoute)
+        val request = FakeRequest(GET, memberNinoGetRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -144,7 +145,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNinoRoute)
+          FakeRequest(POST, memberNinoPostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
         val result  = route(application, request).value
 
@@ -172,7 +173,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNinoRoute)
+          FakeRequest(POST, memberNinoPostRoute)
             .withFormUrlEncodedBody(("value", "AB123456A"))
 
         val result = route(application, request).value

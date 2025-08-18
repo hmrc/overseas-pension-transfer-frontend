@@ -45,7 +45,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
   private val formProvider = new PropertyAddressFormProvider()
   private val formData     = PropertyAddressFormData.fromDomain(propertyAddress)
 
-  private lazy val propertyAddressGetRoute = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index).url
+  private lazy val propertyAddressGetRoute  = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index).url
   private lazy val propertyAddressPostRoute = AssetsMiniJourneysRoutes.PropertyAddressController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   private val testCountries = Seq(

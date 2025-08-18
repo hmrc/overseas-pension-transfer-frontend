@@ -41,7 +41,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
   private val validAnswer = "10"
   private val index       = 0
 
-  lazy val unquotedSharesNumberGetRoute = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index).url
+  lazy val unquotedSharesNumberGetRoute  = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index).url
   lazy val unquotedSharesNumberPostRoute = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "UnquotedSharesNumber Controller" - {
@@ -145,7 +145,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesNumberGetRoute)
+          FakeRequest(POST, unquotedSharesNumberPostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value

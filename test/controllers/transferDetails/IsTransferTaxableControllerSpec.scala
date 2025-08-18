@@ -41,7 +41,7 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
   private val formProvider = new IsTransferTaxableFormProvider()
   private val form         = formProvider()
 
-  private lazy val isTransferTaxableGetRoute = routes.IsTransferTaxableController.onPageLoad(NormalMode).url
+  private lazy val isTransferTaxableGetRoute  = routes.IsTransferTaxableController.onPageLoad(NormalMode).url
   private lazy val isTransferTaxablePostRoute = routes.IsTransferTaxableController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "IsTransferTaxable Controller" - {

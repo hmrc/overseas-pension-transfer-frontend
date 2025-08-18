@@ -41,7 +41,8 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
   private val formProvider = new SchemeManagerOrgIndividualNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val orgIndNameRoute = routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode).url
+  private lazy val orgIndNameGetRoute  = routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode).url
+  private lazy val orgIndNamePostRoute = routes.SchemeManagerOrgIndividualNameController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val validAnswer = PersonName("value 1", "value 2")
   private val userAnswers = userAnswersQtNumber.set(SchemeManagerOrgIndividualNamePage, validAnswer).success.value
@@ -53,7 +54,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, orgIndNameRoute)
+        val request = FakeRequest(GET, orgIndNameGetRoute)
 
         val view = application.injector.instanceOf[SchemeManagerOrgIndividualNameView]
 
@@ -69,7 +70,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, orgIndNameRoute)
+        val request = FakeRequest(GET, orgIndNameGetRoute)
 
         val view = application.injector.instanceOf[SchemeManagerOrgIndividualNameView]
 
@@ -101,7 +102,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
       running(application) {
         val request =
-          FakeRequest(POST, orgIndNameRoute)
+          FakeRequest(POST, orgIndNamePostRoute)
             .withFormUrlEncodedBody(("orgIndFirstName", "first name"), ("orgIndLastName", "last name"))
 
         val result = route(application, request).value
@@ -117,7 +118,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
       running(application) {
         val request =
-          FakeRequest(POST, orgIndNameRoute)
+          FakeRequest(POST, orgIndNamePostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -136,7 +137,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, orgIndNameRoute)
+        val request = FakeRequest(GET, orgIndNameGetRoute)
 
         val result = route(application, request).value
 
@@ -151,7 +152,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
       running(application) {
         val request =
-          FakeRequest(POST, orgIndNameRoute)
+          FakeRequest(POST, orgIndNamePostRoute)
             .withFormUrlEncodedBody(("orgIndFirstName", "value 1"), ("orgIndLastName", "value 2"))
 
         val result = route(application, request).value
@@ -179,7 +180,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
       running(application) {
         val req =
-          FakeRequest(POST, orgIndNameRoute)
+          FakeRequest(POST, orgIndNamePostRoute)
             .withFormUrlEncodedBody(("orgIndFirstName", "first name"), ("orgIndLastName", "last name"))
 
         val result = route(application, req).value

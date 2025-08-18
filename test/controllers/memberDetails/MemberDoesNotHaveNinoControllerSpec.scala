@@ -41,7 +41,8 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
   private val formProvider = new MemberDoesNotHaveNinoFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberDoesNotHaveNinoRoute = routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode).url
+  private lazy val memberDoesNotHaveNinoGetRoute  = routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode).url
+  private lazy val memberDoesNotHaveNinoPostRoute = routes.MemberDoesNotHaveNinoController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "MemberDoesNotHaveNino Controller" - {
 
@@ -50,7 +51,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberDoesNotHaveNinoRoute)
+        val req    = FakeRequest(GET, memberDoesNotHaveNinoGetRoute)
         val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
@@ -71,7 +72,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberDoesNotHaveNinoRoute)
+        val req    = FakeRequest(GET, memberDoesNotHaveNinoGetRoute)
         val view   = application.injector.instanceOf[MemberDoesNotHaveNinoView]
         val result = route(application, req).value
 
@@ -101,7 +102,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, memberDoesNotHaveNinoRoute)
+          FakeRequest(POST, memberDoesNotHaveNinoPostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, req).value
@@ -117,7 +118,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, memberDoesNotHaveNinoRoute)
+          FakeRequest(POST, memberDoesNotHaveNinoPostRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -137,7 +138,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberDoesNotHaveNinoRoute)
+        val req    = FakeRequest(GET, memberDoesNotHaveNinoGetRoute)
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
@@ -151,7 +152,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, memberDoesNotHaveNinoRoute)
+          FakeRequest(POST, memberDoesNotHaveNinoPostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, req).value
@@ -179,7 +180,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, memberDoesNotHaveNinoRoute)
+          FakeRequest(POST, memberDoesNotHaveNinoPostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, req).value

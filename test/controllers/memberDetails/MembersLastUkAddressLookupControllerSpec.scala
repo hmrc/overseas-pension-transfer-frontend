@@ -42,7 +42,8 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
   private val formProvider = new MembersLastUkAddressLookupFormProvider()
   private val form         = formProvider()
 
-  private lazy val membersLastUkAddressLookupRoute = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+  private lazy val membersLastUkAddressLookupGetRoute  = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+  private lazy val membersLastUkAddressLookupPostRoute = routes.MembersLastUkAddressLookupController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "MembersLastUkAddressLookup Controller" - {
 
@@ -51,7 +52,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, membersLastUkAddressLookupRoute)
+        val request = FakeRequest(GET, membersLastUkAddressLookupGetRoute)
 
         val result = route(application, request).value
 
@@ -89,7 +90,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
       running(application) {
         val request =
-          FakeRequest(POST, membersLastUkAddressLookupRoute)
+          FakeRequest(POST, membersLastUkAddressLookupPostRoute)
             .withFormUrlEncodedBody(("value", connectorPostcode))
 
         val result = route(application, request).value
@@ -105,7 +106,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
       running(application) {
         val request =
-          FakeRequest(POST, membersLastUkAddressLookupRoute)
+          FakeRequest(POST, membersLastUkAddressLookupPostRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -145,7 +146,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
       running(application) {
         val request =
-          FakeRequest(POST, membersLastUkAddressLookupRoute)
+          FakeRequest(POST, membersLastUkAddressLookupPostRoute)
             .withFormUrlEncodedBody(("value", "ZZ1 1ZZ"))
 
         val result = route(application, request).value
@@ -160,7 +161,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, membersLastUkAddressLookupRoute)
+        val request = FakeRequest(GET, membersLastUkAddressLookupGetRoute)
 
         val result = route(application, request).value
 
@@ -195,7 +196,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
       running(application) {
         val request =
-          FakeRequest(POST, membersLastUkAddressLookupRoute)
+          FakeRequest(POST, membersLastUkAddressLookupPostRoute)
             .withFormUrlEncodedBody(("value", "AB1 2CD"))
 
         val result = route(application, request).value
@@ -214,7 +215,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
       running(application) {
         val request =
-          FakeRequest(POST, membersLastUkAddressLookupRoute)
+          FakeRequest(POST, membersLastUkAddressLookupPostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -251,7 +252,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
       running(application) {
         val req =
-          FakeRequest(POST, membersLastUkAddressLookupRoute)
+          FakeRequest(POST, membersLastUkAddressLookupPostRoute)
             .withFormUrlEncodedBody(("value", connectorPostcode))
 
         val result = route(application, req).value

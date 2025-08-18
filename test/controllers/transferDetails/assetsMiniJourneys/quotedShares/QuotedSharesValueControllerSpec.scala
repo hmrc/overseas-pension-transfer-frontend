@@ -41,7 +41,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val quotedSharesValueGetRoute = AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(NormalMode, index).url
+  lazy val quotedSharesValueGetRoute  = AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(NormalMode, index).url
   lazy val quotedSharesValuePostRoute = AssetsMiniJourneysRoutes.QuotedSharesValueController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "QuotedSharesValue Controller" - {

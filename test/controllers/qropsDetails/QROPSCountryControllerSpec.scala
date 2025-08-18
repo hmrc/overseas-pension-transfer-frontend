@@ -52,7 +52,8 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
   private val userAnswers = emptyUserAnswers.set(QROPSCountryPage, testCountries.head).success.value
 
-  private lazy val qropsCountryRoute = routes.QROPSCountryController.onPageLoad(NormalMode).url
+  private lazy val qropsCountryGetRoute  = routes.QROPSCountryController.onPageLoad(NormalMode).url
+  private lazy val qropsCountryPostRoute = routes.QROPSCountryController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "QROPSCountry Controller" - {
     when(mockCountryService.countries).thenReturn(testCountries)
@@ -65,7 +66,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         ).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsCountryRoute)
+        val request = FakeRequest(GET, qropsCountryGetRoute)
 
         val result = route(application, request).value
 
@@ -87,7 +88,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsCountryRoute)
+        val request = FakeRequest(GET, qropsCountryGetRoute)
 
         val view = application.injector.instanceOf[QROPSCountryView]
 
@@ -119,7 +120,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsCountryRoute)
+          FakeRequest(POST, qropsCountryPostRoute)
             .withFormUrlEncodedBody(("countryCode", "GB"))
 
         val result = route(application, request).value
@@ -137,7 +138,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsCountryRoute)
+          FakeRequest(POST, qropsCountryPostRoute)
             .withFormUrlEncodedBody(("countryCode", ""))
 
         val boundForm = form.bind(Map("countryCode" -> ""))
@@ -156,7 +157,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsCountryRoute)
+        val request = FakeRequest(GET, qropsCountryGetRoute)
 
         val result = route(application, request).value
 
@@ -171,7 +172,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsCountryRoute)
+          FakeRequest(POST, qropsCountryPostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -199,7 +200,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       running(application) {
         val req =
-          FakeRequest(POST, qropsCountryRoute)
+          FakeRequest(POST, qropsCountryPostRoute)
             .withFormUrlEncodedBody(("countryCode", "GB"))
 
         val result = route(application, req).value

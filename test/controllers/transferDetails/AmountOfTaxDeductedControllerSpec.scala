@@ -39,7 +39,7 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
 
   val validAnswer = BigDecimal(.01)
 
-  lazy val amountOfTaxDeductedGetRoute = routes.AmountOfTaxDeductedController.onPageLoad(NormalMode).url
+  lazy val amountOfTaxDeductedGetRoute  = routes.AmountOfTaxDeductedController.onPageLoad(NormalMode).url
   lazy val amountOfTaxDeductedPostRoute = routes.AmountOfTaxDeductedController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "AmountOfTaxDeducted Controller" - {

@@ -41,7 +41,7 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private val validAnswer = "10"
   private val index       = 0
 
-  lazy val quotedSharesNumberGetRoute = AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(NormalMode, index).url
+  lazy val quotedSharesNumberGetRoute  = AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(NormalMode, index).url
   lazy val quotedSharesNumberPostRoute = AssetsMiniJourneysRoutes.QuotedSharesNumberController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "NumberOfQuotedShares Controller" - {

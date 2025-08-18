@@ -41,7 +41,7 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val otherAssetsValueGetRoute = AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index).url
+  lazy val otherAssetsValueGetRoute  = AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index).url
   lazy val otherAssetsValuePostRoute = AssetsMiniJourneysRoutes.OtherAssetsValueController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "OtherAssetsValue Controller" - {

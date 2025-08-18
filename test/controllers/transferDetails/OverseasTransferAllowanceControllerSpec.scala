@@ -43,7 +43,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
   val validAnswer = BigDecimal(0.01)
 
-  private lazy val overseasTransferAllowanceGetRoute = routes.OverseasTransferAllowanceController.onPageLoad(NormalMode).url
+  private lazy val overseasTransferAllowanceGetRoute  = routes.OverseasTransferAllowanceController.onPageLoad(NormalMode).url
   private lazy val overseasTransferAllowancePostRoute = routes.OverseasTransferAllowanceController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "OverseasTransferAllowance Controller" - {

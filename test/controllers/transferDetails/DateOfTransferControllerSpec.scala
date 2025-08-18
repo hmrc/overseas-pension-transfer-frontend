@@ -46,8 +46,8 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   private val formProvider = new DateOfTransferFormProvider()
   private def form         = formProvider()
 
-  private val validAnswer              = LocalDate.now(ZoneOffset.UTC)
-  private lazy val dateOfTransferGetRoute = routes.DateOfTransferController.onPageLoad(NormalMode).url
+  private val validAnswer                  = LocalDate.now(ZoneOffset.UTC)
+  private lazy val dateOfTransferGetRoute  = routes.DateOfTransferController.onPageLoad(NormalMode).url
   private lazy val dateOfTransferPostRoute = routes.DateOfTransferController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =

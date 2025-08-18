@@ -44,7 +44,8 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
   private val form         = formProvider()
   private val formData     = QROPSAddressFormData.fromDomain(qropsAddress)
 
-  private lazy val qropsAddressRoute = routes.QROPSAddressController.onPageLoad(NormalMode).url
+  private lazy val qropsAddressGetRoute  = routes.QROPSAddressController.onPageLoad(NormalMode).url
+  private lazy val qropsAddressPostRoute = routes.QROPSAddressController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val userAnswers = emptyUserAnswers.set(QROPSAddressPage, qropsAddress).success.value
 
@@ -70,7 +71,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsAddressRoute)
+        val request = FakeRequest(GET, qropsAddressGetRoute)
         val view    = application.injector.instanceOf[QROPSAddressView]
 
         val result = route(application, request).value
@@ -96,7 +97,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsAddressRoute)
+        val request = FakeRequest(GET, qropsAddressGetRoute)
         val view    = application.injector.instanceOf[QROPSAddressView]
 
         val result = route(application, request).value
@@ -135,7 +136,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsAddressRoute)
+          FakeRequest(POST, qropsAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -162,7 +163,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsAddressRoute)
+          FakeRequest(POST, qropsAddressPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -185,7 +186,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsAddressRoute)
+        val request = FakeRequest(GET, qropsAddressGetRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -200,7 +201,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsAddressRoute)
+          FakeRequest(POST, qropsAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2"
@@ -238,7 +239,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsAddressRoute)
+          FakeRequest(POST, qropsAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",

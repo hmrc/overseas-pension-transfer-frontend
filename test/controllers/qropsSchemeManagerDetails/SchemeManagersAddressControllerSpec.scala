@@ -44,7 +44,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
   private val form         = formProvider()
   private val formData     = SchemeManagersAddressFormData.fromDomain(schemeManagersAddress)
 
-  private lazy val schemeManagersAddressRoute = routes.SchemeManagersAddressController.onPageLoad(NormalMode).url
+  private lazy val schemeManagersAddressGetRoute  = routes.SchemeManagersAddressController.onPageLoad(NormalMode).url
+  private lazy val schemeManagersAddressPostRoute = routes.SchemeManagersAddressController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val userAnswers = emptyUserAnswers.set(SchemeManagersAddressPage, schemeManagersAddress).success.value
 
@@ -70,7 +71,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val request = FakeRequest(GET, schemeManagersAddressGetRoute)
         val view    = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
@@ -96,7 +97,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val request = FakeRequest(GET, schemeManagersAddressGetRoute)
         val view    = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
@@ -136,7 +137,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagersAddressRoute)
+          FakeRequest(POST, schemeManagersAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -162,7 +163,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagersAddressRoute)
+          FakeRequest(POST, schemeManagersAddressPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -185,7 +186,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val request = FakeRequest(GET, schemeManagersAddressGetRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -200,7 +201,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagersAddressRoute)
+          FakeRequest(POST, schemeManagersAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2"
@@ -237,7 +238,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, schemeManagersAddressRoute)
+          FakeRequest(POST, schemeManagersAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",

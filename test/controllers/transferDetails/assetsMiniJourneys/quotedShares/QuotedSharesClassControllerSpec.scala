@@ -39,7 +39,7 @@ class QuotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with Moc
   private val form         = formProvider()
   private val index        = 0
 
-  private lazy val quotedSharesClassGetRoute = AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(NormalMode, index).url
+  private lazy val quotedSharesClassGetRoute  = AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(NormalMode, index).url
   private lazy val quotedSharesClassPostRoute = AssetsMiniJourneysRoutes.QuotedSharesClassController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "QuotedSharesClass Controller" - {

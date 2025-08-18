@@ -37,7 +37,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private val formProvider = new IsTransferCashOnlyFormProvider()
   private val form         = formProvider()
 
-  private lazy val isTransferCashOnlyGetRoute = routes.IsTransferCashOnlyController.onPageLoad(NormalMode).url
+  private lazy val isTransferCashOnlyGetRoute  = routes.IsTransferCashOnlyController.onPageLoad(NormalMode).url
   private lazy val isTransferCashOnlyPostRoute = routes.IsTransferCashOnlyController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "IsTransferCashOnly Controller" - {

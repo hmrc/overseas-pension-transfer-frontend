@@ -46,14 +46,15 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
   private val formProvider = new MemberDateOfBirthFormProvider()
   private def form         = formProvider()
 
-  private val validAnswer                 = LocalDate.now(ZoneOffset.UTC)
-  private lazy val memberDateOfBirthRoute = routes.MemberDateOfBirthController.onPageLoad(NormalMode).url
+  private val validAnswer                     = LocalDate.now(ZoneOffset.UTC)
+  private lazy val memberDateOfBirthGetRoute  = routes.MemberDateOfBirthController.onPageLoad(NormalMode).url
+  private lazy val memberDateOfBirthPostRoute = routes.MemberDateOfBirthController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, memberDateOfBirthRoute)
+    FakeRequest(GET, memberDateOfBirthGetRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest(POST, memberDateOfBirthRoute)
+    FakeRequest(POST, memberDateOfBirthPostRoute)
       .withFormUrlEncodedBody(
         "value.day"   -> validAnswer.getDayOfMonth.toString,
         "value.month" -> validAnswer.getMonthValue.toString,
@@ -127,7 +128,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
-      val request = FakeRequest(POST, memberDateOfBirthRoute)
+      val request = FakeRequest(POST, memberDateOfBirthPostRoute)
         .withFormUrlEncodedBody(("value", "invalid value"))
 
       running(application) {

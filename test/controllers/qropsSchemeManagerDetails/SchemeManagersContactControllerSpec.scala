@@ -41,7 +41,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
   private val formProvider = new SchemeManagersContactFormProvider()
   private val form         = formProvider()
 
-  private lazy val schemeManagersContactGetRoute = routes.SchemeManagersContactController.onPageLoad(NormalMode).url
+  private lazy val schemeManagersContactGetRoute  = routes.SchemeManagersContactController.onPageLoad(NormalMode).url
   private lazy val schemeManagersContactPostRoute = routes.SchemeManagersContactController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "SchemeManagersContact Controller" - {

@@ -40,10 +40,11 @@ import scala.concurrent.Future
 
 class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
 
-  private val formProvider                         = new MemberConfirmLastUkAddressFormProvider()
-  private val form                                 = formProvider()
-  private lazy val memberConfirmLastUkAddressRoute = routes.MembersLastUkAddressConfirmController.onPageLoad(NormalMode).url
-  private val address                              = MembersLookupLastUkAddress.fromAddressRecord(selectedRecord)
+  private val formProvider                             = new MemberConfirmLastUkAddressFormProvider()
+  private val form                                     = formProvider()
+  private lazy val memberConfirmLastUkAddressGetRoute  = routes.MembersLastUkAddressConfirmController.onPageLoad(NormalMode).url
+  private lazy val memberConfirmLastUkAddressPostRoute = routes.MembersLastUkAddressConfirmController.onSubmit(NormalMode, fromFinalCYA = false).url
+  private val address                                  = MembersLookupLastUkAddress.fromAddressRecord(selectedRecord)
 
   "MemberConfirmLastUkAddress Controller" - {
 
@@ -52,7 +53,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       val application = applicationBuilder(userAnswers = Some(addressSelectedUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
+        val request = FakeRequest(GET, memberConfirmLastUkAddressGetRoute)
         val result  = route(application, request).value
 
         val view = application.injector.instanceOf[MembersLastUkAddressConfirmView]
@@ -70,7 +71,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       val application = applicationBuilder(userAnswers = Some(addressSelectedUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
+        val request = FakeRequest(GET, memberConfirmLastUkAddressGetRoute)
         val view    = application.injector.instanceOf[MembersLastUkAddressConfirmView]
         val result  = route(application, request).value
 
@@ -99,7 +100,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, memberConfirmLastUkAddressRoute)
+        val request = FakeRequest(POST, memberConfirmLastUkAddressPostRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -112,7 +113,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
+        val request = FakeRequest(GET, memberConfirmLastUkAddressGetRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -126,7 +127,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
       running(application) {
         val request =
-          FakeRequest(POST, memberConfirmLastUkAddressRoute)
+          FakeRequest(POST, memberConfirmLastUkAddressPostRoute)
             .withFormUrlEncodedBody(("value", "true"))
         val result  = route(application, request).value
 
@@ -153,7 +154,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
       running(application) {
         val req =
-          FakeRequest(POST, memberConfirmLastUkAddressRoute)
+          FakeRequest(POST, memberConfirmLastUkAddressPostRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, req).value

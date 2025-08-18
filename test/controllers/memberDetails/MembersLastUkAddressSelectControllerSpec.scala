@@ -40,7 +40,8 @@ import scala.concurrent.Future
 
 class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
 
-  private lazy val memberSelectLastUkAddressRoute = routes.MembersLastUkAddressSelectController.onPageLoad(NormalMode).url
+  private lazy val memberSelectLastUkAddressGetRoute  = routes.MembersLastUkAddressSelectController.onPageLoad(NormalMode).url
+  private lazy val memberSelectLastUkAddressPostRoute = routes.MembersLastUkAddressSelectController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val formProvider = new MembersLastUkAddressSelectFormProvider()
   private val form         = formProvider(validIds)
@@ -53,7 +54,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
       val application = applicationBuilder(userAnswers = Some(addressFoundUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberSelectLastUkAddressRoute)
+        val request = FakeRequest(GET, memberSelectLastUkAddressGetRoute)
 
         val result = route(application, request).value
 
@@ -92,7 +93,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
       running(application) {
         val request =
-          FakeRequest(POST, memberSelectLastUkAddressRoute)
+          FakeRequest(POST, memberSelectLastUkAddressPostRoute)
             .withFormUrlEncodedBody(("value", validIds.head))
 
         val result = route(application, request).value
@@ -108,7 +109,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
       running(application) {
         val request =
-          FakeRequest(POST, memberSelectLastUkAddressRoute)
+          FakeRequest(POST, memberSelectLastUkAddressPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -132,7 +133,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberSelectLastUkAddressRoute)
+        val request = FakeRequest(GET, memberSelectLastUkAddressGetRoute)
 
         val result = route(application, request).value
 
@@ -147,7 +148,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
       running(application) {
         val request =
-          FakeRequest(POST, memberSelectLastUkAddressRoute)
+          FakeRequest(POST, memberSelectLastUkAddressPostRoute)
             .withFormUrlEncodedBody(("value", validIds.head))
 
         val result = route(application, request).value
@@ -175,7 +176,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
       running(application) {
         val request =
-          FakeRequest(POST, memberSelectLastUkAddressRoute)
+          FakeRequest(POST, memberSelectLastUkAddressPostRoute)
             .withFormUrlEncodedBody(("value", validIds.head))
 
         val result = route(application, request).value

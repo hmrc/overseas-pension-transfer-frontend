@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val applicableTaxExclusionsGetRoute = routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode).url
+  private lazy val applicableTaxExclusionsGetRoute  = routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode).url
   private lazy val applicableTaxExclusionsPostRoute = routes.ApplicableTaxExclusionsController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val formProvider = new ApplicableTaxExclusionsFormProvider()

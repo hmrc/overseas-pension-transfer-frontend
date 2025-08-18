@@ -41,7 +41,8 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   private val formProvider = new QROPSReferenceFormProvider()
   private val form         = formProvider()
 
-  private lazy val qropsReferenceRoute = routes.QROPSReferenceController.onPageLoad(NormalMode).url
+  private lazy val qropsReferenceGetRoute  = routes.QROPSReferenceController.onPageLoad(NormalMode).url
+  private lazy val qropsReferencePostRoute = routes.QROPSReferenceController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "QROPSReference Controller" - {
 
@@ -50,7 +51,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsReferenceRoute)
+        val request = FakeRequest(GET, qropsReferenceGetRoute)
 
         val result = route(application, request).value
 
@@ -68,7 +69,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsReferenceRoute)
+        val request = FakeRequest(GET, qropsReferenceGetRoute)
 
         val view = application.injector.instanceOf[QROPSReferenceView]
 
@@ -97,7 +98,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsReferenceRoute)
+          FakeRequest(POST, qropsReferencePostRoute)
             .withFormUrlEncodedBody(("qropsRef", "QROPS123456"))
 
         val result = route(application, request).value
@@ -113,7 +114,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsReferenceRoute)
+          FakeRequest(POST, qropsReferencePostRoute)
             .withFormUrlEncodedBody(("qropsRef", ""))
 
         val boundForm = form.bind(Map("qropsRef" -> ""))
@@ -132,7 +133,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsReferenceRoute)
+        val request = FakeRequest(GET, qropsReferenceGetRoute)
 
         val result = route(application, request).value
 
@@ -147,7 +148,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsReferenceRoute)
+          FakeRequest(POST, qropsReferencePostRoute)
             .withFormUrlEncodedBody(("qropsRef", "QROPS123456"))
 
         val result = route(application, request).value
@@ -175,7 +176,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       running(application) {
         val req =
-          FakeRequest(POST, qropsReferenceRoute)
+          FakeRequest(POST, qropsReferencePostRoute)
             .withFormUrlEncodedBody(("qropsRef", "QROPS123456"))
 
         val result = route(application, req).value

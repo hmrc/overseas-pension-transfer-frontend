@@ -39,8 +39,10 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
   private val formProvider = new OtherAssetsDescriptionFormProvider()
   private val form         = formProvider()
 
-  private lazy val assetValueDescriptionGetRoute = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index).url
-  private lazy val assetValueDescriptionPostRoute = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onSubmit(NormalMode, index, fromFinalCYA = false).url
+  private lazy val assetValueDescriptionGetRoute  = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index).url
+
+  private lazy val assetValueDescriptionPostRoute =
+    AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "AssetValueDescription Controller" - {
 

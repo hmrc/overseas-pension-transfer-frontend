@@ -45,7 +45,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
   private val formProvider = new MembersCurrentAddressFormProvider()
   private val formData     = MembersCurrentAddressFormData.fromDomain(membersCurrentAddress)
 
-  private lazy val membersCurrentAddressRoute = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
+  private lazy val membersCurrentAddressGetRoute  = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
+  private lazy val membersCurrentAddressPostRoute = routes.MembersCurrentAddressController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val testCountries = Seq(
     Country("GB", "United Kingdom"),
@@ -67,7 +68,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
-        val request                                                         = FakeRequest(GET, membersCurrentAddressRoute)
+        val request                                                         = FakeRequest(GET, membersCurrentAddressGetRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form = formProvider()
@@ -98,7 +99,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
-        val request                                                         = FakeRequest(GET, membersCurrentAddressRoute)
+        val request                                                         = FakeRequest(GET, membersCurrentAddressGetRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form   = formProvider()
@@ -139,7 +140,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersCurrentAddressRoute)
+          FakeRequest(POST, membersCurrentAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -166,7 +167,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersCurrentAddressRoute)
+          FakeRequest(POST, membersCurrentAddressPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
@@ -189,7 +190,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, membersCurrentAddressRoute)
+        val request = FakeRequest(GET, membersCurrentAddressGetRoute)
 
         val result = route(application, request).value
 
@@ -205,7 +206,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersCurrentAddressRoute)
+          FakeRequest(POST, membersCurrentAddressPostRoute)
             .withFormUrlEncodedBody(("addressLine1", "value 1"), ("addressLine2", "value 2"))
         val result  = route(application, request).value
 
@@ -232,7 +233,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersCurrentAddressRoute)
+          FakeRequest(POST, membersCurrentAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",

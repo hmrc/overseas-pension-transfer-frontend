@@ -41,7 +41,8 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
   private val formProvider = new SchemeManagerOrganisationNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val organisationNameRoute = routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
+  private lazy val organisationNameGetRoute  = routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
+  private lazy val organisationNamePostRoute = routes.SchemeManagerOrganisationNameController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "OrganisationName Controller" - {
 
@@ -50,7 +51,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, organisationNameRoute)
+        val request = FakeRequest(GET, organisationNameGetRoute)
 
         val result = route(application, request).value
 
@@ -68,7 +69,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, organisationNameRoute)
+        val request = FakeRequest(GET, organisationNameGetRoute)
 
         val view = application.injector.instanceOf[SchemeManagerOrganisationNameView]
 
@@ -97,7 +98,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
 
       running(application) {
         val request =
-          FakeRequest(POST, organisationNameRoute)
+          FakeRequest(POST, organisationNamePostRoute)
             .withFormUrlEncodedBody(("organisationName", "answer"))
 
         val result = route(application, request).value
@@ -113,7 +114,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
 
       running(application) {
         val request =
-          FakeRequest(POST, organisationNameRoute)
+          FakeRequest(POST, organisationNamePostRoute)
             .withFormUrlEncodedBody(("organisationName", ""))
 
         val boundForm = form.bind(Map("organisationName" -> ""))
@@ -132,7 +133,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, organisationNameRoute)
+        val request = FakeRequest(GET, organisationNameGetRoute)
 
         val result = route(application, request).value
 
@@ -147,7 +148,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
 
       running(application) {
         val request =
-          FakeRequest(POST, organisationNameRoute)
+          FakeRequest(POST, organisationNamePostRoute)
             .withFormUrlEncodedBody(("organisationName", "answer"))
 
         val result = route(application, request).value
@@ -175,7 +176,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
 
       running(application) {
         val req =
-          FakeRequest(POST, organisationNameRoute)
+          FakeRequest(POST, organisationNamePostRoute)
             .withFormUrlEncodedBody(("organisationName", "answer"))
 
         val result = route(application, req).value

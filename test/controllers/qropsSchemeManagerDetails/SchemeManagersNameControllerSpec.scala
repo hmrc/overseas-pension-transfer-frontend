@@ -41,7 +41,7 @@ class SchemeManagersNameControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private val formProvider = new SchemeManagersNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val schemeManagersNameGetRoute = routes.SchemeManagersNameController.onPageLoad(NormalMode).url
+  private lazy val schemeManagersNameGetRoute  = routes.SchemeManagersNameController.onPageLoad(NormalMode).url
   private lazy val schemeManagersNamePostRoute = routes.SchemeManagersNameController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val validAnswer = PersonName("value 1", "value 2")

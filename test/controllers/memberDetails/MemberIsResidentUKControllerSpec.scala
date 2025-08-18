@@ -43,7 +43,8 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private val formProvider = new MemberIsResidentUKFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberIsResidentUKRoute = routes.MemberIsResidentUKController.onPageLoad(NormalMode).url
+  private lazy val memberIsResidentUKGetRoute  = routes.MemberIsResidentUKController.onPageLoad(NormalMode).url
+  private lazy val memberIsResidentUKPostRoute = routes.MemberIsResidentUKController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "MemberIsResidentUK Controller" - {
 
@@ -51,7 +52,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberIsResidentUKRoute)
+        val request = FakeRequest(GET, memberIsResidentUKGetRoute)
         val result  = route(application, request).value
 
         val view = application.injector.instanceOf[MemberIsResidentUKView]
@@ -71,7 +72,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberIsResidentUKRoute)
+        val request = FakeRequest(GET, memberIsResidentUKGetRoute)
         val view    = application.injector.instanceOf[MemberIsResidentUKView]
         val result  = route(application, request).value
 
@@ -100,7 +101,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, memberIsResidentUKRoute)
+        val request = FakeRequest(POST, memberIsResidentUKPostRoute)
           .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
@@ -184,7 +185,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(POST, memberIsResidentUKRoute)
+        val request = FakeRequest(POST, memberIsResidentUKPostRoute)
           .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -203,7 +204,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberIsResidentUKRoute)
+        val request = FakeRequest(GET, memberIsResidentUKGetRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -215,7 +216,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(POST, memberIsResidentUKRoute)
+        val request = FakeRequest(POST, memberIsResidentUKPostRoute)
           .withFormUrlEncodedBody(("value", "true"))
         val result  = route(application, request).value
 
@@ -241,7 +242,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, memberIsResidentUKRoute)
+        val request = FakeRequest(POST, memberIsResidentUKPostRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
