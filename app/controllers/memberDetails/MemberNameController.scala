@@ -16,6 +16,7 @@
 
 package controllers.memberDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.memberDetails.MemberNameFormProvider
 import models.Mode
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MemberNameController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -49,8 +51,8 @@ class MemberNameController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val fromFinalCYA = request.request.headers.get("Referer").getOrElse("/")
-        .endsWith("/report-transfer-qualified-recognised-overseas-pension-scheme/check-your-answers")
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
+        .endsWith(appConfig.finalCheckAnswersUrl)
 
       val preparedForm = request.userAnswers.get(MemberNamePage) match {
         case None        => form

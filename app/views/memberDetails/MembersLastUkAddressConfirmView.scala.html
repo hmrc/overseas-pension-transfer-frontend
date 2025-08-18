@@ -32,14 +32,14 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode, address: AddressViewModel)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, address: AddressViewModel, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
 @memberName = @{request.memberName}
 @searchAgain = @{controllers.memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
 @manualEntry = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
 
 @layout(pageTitle = title(form, messages("memberConfirmLastUkAddress.title", memberName))) {
 
-    @formHelper(action = controllers.memberDetails.routes.MembersLastUkAddressConfirmController.onSubmit(mode)) {
+    @formHelper(action = controllers.memberDetails.routes.MembersLastUkAddressConfirmController.onSubmit(mode, fromFinalCYA)) {
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
