@@ -31,11 +31,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode, fromFinalCYA: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("schemeManagersAddress.title"))) {
 
-    @formHelper(action = controllers.qropsSchemeManagerDetails.routes.SchemeManagersAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.qropsSchemeManagerDetails.routes.SchemeManagersAddressController.onSubmit(mode, fromFinalCYA), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

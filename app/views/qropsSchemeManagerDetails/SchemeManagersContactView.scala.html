@@ -29,11 +29,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, fromFinalCYA: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("schemeManagersContact.title"))) {
 
-    @formHelper(action = controllers.qropsSchemeManagerDetails.routes.SchemeManagersContactController.onSubmit(mode)) {
+    @formHelper(action = controllers.qropsSchemeManagerDetails.routes.SchemeManagersContactController.onSubmit(mode, fromFinalCYA)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
