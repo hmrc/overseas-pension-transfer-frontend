@@ -17,13 +17,13 @@
 package services
 
 import com.google.inject.{Inject, Singleton}
-import models.TaskCategory.{MemberDetails, TransferDetails}
+import models.TaskCategory.{MemberDetails, SubmissionDetails, TransferDetails}
 import models.taskList.TaskStatus
 import models.taskList.TaskStatus.{CannotStart, Completed, NotStarted}
 import models.{TaskCategory, UserAnswers}
 import queries.TaskStatusQuery
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 @Singleton
 class TaskService @Inject() {
@@ -46,4 +46,21 @@ class TaskService @Inject() {
       .getOrElse(Try(userAnswers))
   }
 
+  def unblockSubmissionOnAllTasksCompletion(userAnswers: UserAnswers): Try[UserAnswers] = {
+    val allPrereqsDone =
+      TaskCategory.valuesWithoutSubmission.forall { cat =>
+        userAnswers.get(TaskStatusQuery(cat)).contains(Completed)
+      }
+
+    if (allPrereqsDone) {
+      userAnswers.get(TaskStatusQuery(SubmissionDetails)) match {
+        case Some(CannotStart) | None =>
+          userAnswers.set(TaskStatusQuery(SubmissionDetails), NotStarted)
+        case _                        =>
+          Success(userAnswers)
+      }
+    } else {
+      Success(userAnswers)
+    }
+  }
 }
