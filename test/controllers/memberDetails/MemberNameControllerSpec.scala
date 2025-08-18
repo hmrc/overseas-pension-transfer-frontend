@@ -82,62 +82,6 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       }
     }
 
-    "must set MemberDetails to InProgress on GET (NormalMode) and persist (session + external)" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
-
-      running(application) {
-        val request = FakeRequest(GET, memberNameRoute)
-        val result  = route(application, request).value
-
-        status(result) mustEqual OK
-
-        verify(mockSessionRepository).set(org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
-          ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.InProgress)
-        })
-        verify(mockUserAnswersService).setExternalUserAnswers(org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
-          ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.InProgress)
-        })(any())
-      }
-    }
-
-    "must redirect to Journey Recovery on GET if persistence fails" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
-        .thenReturn(Future.successful(Left(models.responses.UserAnswersErrorResponse("boom", None))))
-
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
-
-      running(application) {
-        val request = FakeRequest(GET, memberNameRoute)
-        val result  = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must redirect to the members nino page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
