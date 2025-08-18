@@ -41,7 +41,8 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
   private val formProvider = new SchemeManagersEmailFormProvider()
   private val form         = formProvider()
 
-  private lazy val schemeManagerEmailRoute = routes.SchemeManagersEmailController.onPageLoad(NormalMode).url
+  private lazy val schemeManagerEmailGetRoute = routes.SchemeManagersEmailController.onPageLoad(NormalMode).url
+  private lazy val schemeManagerEmailPostRoute = routes.SchemeManagersEmailController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "SchemeManagerEmail Controller" - {
 
@@ -50,14 +51,14 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagerEmailRoute)
+        val request = FakeRequest(GET, schemeManagerEmailGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[SchemeManagersEmailView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(request, messages(application)).toString
       }
     }
 
@@ -68,14 +69,14 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagerEmailRoute)
+        val request = FakeRequest(GET, schemeManagerEmailGetRoute)
 
         val view = application.injector.instanceOf[SchemeManagersEmailView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, false)(request, messages(application)).toString
       }
     }
 
@@ -97,7 +98,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagerEmailRoute)
+          FakeRequest(POST, schemeManagerEmailPostRoute)
             .withFormUrlEncodedBody(("emailAddress", "name@example.com"))
 
         val result = route(application, request).value
@@ -113,7 +114,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagerEmailRoute)
+          FakeRequest(POST, schemeManagerEmailPostRoute)
             .withFormUrlEncodedBody(("emailAddress", ""))
 
         val boundForm = form.bind(Map("emailAddress" -> ""))
@@ -123,7 +124,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(request, messages(application)).toString
       }
     }
 
@@ -132,7 +133,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagerEmailRoute)
+        val request = FakeRequest(GET, schemeManagerEmailGetRoute)
 
         val result = route(application, request).value
 
@@ -147,7 +148,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagerEmailRoute)
+          FakeRequest(POST, schemeManagerEmailPostRoute)
             .withFormUrlEncodedBody(("emailAddress", "answer"))
 
         val result = route(application, request).value
@@ -175,7 +176,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val req =
-          FakeRequest(POST, schemeManagerEmailRoute)
+          FakeRequest(POST, schemeManagerEmailPostRoute)
             .withFormUrlEncodedBody(("emailAddress", "name@example.com"))
 
         val result = route(application, req).value

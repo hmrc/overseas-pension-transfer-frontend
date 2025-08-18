@@ -52,8 +52,7 @@ class QROPSNameController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
-        .endsWith(appConfig.finalCheckAnswersUrl)
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
 
       val preparedForm = request.userAnswers.get(QROPSNamePage) match {
         case None        => form
@@ -67,7 +66,7 @@ class QROPSNameController @Inject() (
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSNamePage, value))

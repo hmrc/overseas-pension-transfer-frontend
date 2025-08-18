@@ -52,8 +52,7 @@ class PropertyAddressController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
-        .endsWith(appConfig.finalCheckAnswersUrl)
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
 
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(PropertyAddressPage(index)) match {
@@ -70,7 +69,7 @@ class PropertyAddressController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, index)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, index, fromFinalCYA)))
         },
         formData =>
           addressService.propertyAddress(formData) match {

@@ -51,8 +51,7 @@ class SchemeManagersEmailController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
-        .endsWith(appConfig.finalCheckAnswersUrl)
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
 
       val preparedForm = request.userAnswers.get(SchemeManagersEmailPage) match {
         case None        => form
@@ -66,7 +65,7 @@ class SchemeManagersEmailController @Inject() (
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersEmailPage, value))

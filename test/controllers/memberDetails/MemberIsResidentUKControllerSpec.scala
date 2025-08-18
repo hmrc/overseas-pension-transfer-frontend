@@ -57,7 +57,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val view = application.injector.instanceOf[MemberIsResidentUKView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(
+        contentAsString(result) mustEqual view(form, NormalMode, false)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -76,7 +76,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, false)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -129,7 +129,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, routes.MemberIsResidentUKController.onSubmit(CheckMode).url)
+          FakeRequest(POST, routes.MemberIsResidentUKController.onSubmit(CheckMode, false).url)
             .withFormUrlEncodedBody("value" -> "false")
 
         val result = route(application, request).value
@@ -163,7 +163,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, routes.MemberIsResidentUKController.onSubmit(CheckMode).url)
+          FakeRequest(POST, routes.MemberIsResidentUKController.onSubmit(CheckMode, false).url)
             .withFormUrlEncodedBody("value" -> "true")
 
         val result = route(application, request).value
@@ -192,7 +192,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString

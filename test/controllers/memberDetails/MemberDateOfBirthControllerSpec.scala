@@ -73,7 +73,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val view = application.injector.instanceOf[MemberDateOfBirthView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(
+        contentAsString(result) mustEqual view(form, NormalMode, false)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -92,7 +92,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, false)(
           fakeDisplayRequest(request, userAnswers),
           messages(application)
         ).toString
@@ -136,7 +136,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString

@@ -48,8 +48,7 @@ class QuotedSharesValueController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
-        .endsWith(appConfig.finalCheckAnswersUrl)
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
 
       val preparedForm = request.userAnswers.get(QuotedSharesValuePage(index)) match {
         case None        => form
@@ -63,7 +62,7 @@ class QuotedSharesValueController @Inject() (
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode, index, fromFinalCYA))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesValuePage(index), value))

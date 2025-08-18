@@ -60,7 +60,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -76,7 +76,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode, false)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -127,7 +127,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

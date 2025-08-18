@@ -43,7 +43,8 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val amountOfTransferRoute = routes.AmountOfTransferController.onPageLoad(NormalMode).url
+  lazy val amountOfTransferGetRoute = routes.AmountOfTransferController.onPageLoad(NormalMode).url
+  lazy val amountOfTransferPostRoute = routes.AmountOfTransferController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "AmountOfTransfer Controller" - {
 
@@ -52,14 +53,14 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, amountOfTransferRoute)
+        val request = FakeRequest(GET, amountOfTransferGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[AmountOfTransferView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -70,14 +71,14 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, amountOfTransferRoute)
+        val request = FakeRequest(GET, amountOfTransferGetRoute)
 
         val view = application.injector.instanceOf[AmountOfTransferView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -99,7 +100,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val request =
-          FakeRequest(POST, amountOfTransferRoute)
+          FakeRequest(POST, amountOfTransferPostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -115,7 +116,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val request =
-          FakeRequest(POST, amountOfTransferRoute)
+          FakeRequest(POST, amountOfTransferPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -125,7 +126,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -134,7 +135,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, amountOfTransferRoute)
+        val request = FakeRequest(GET, amountOfTransferGetRoute)
 
         val result = route(application, request).value
 
@@ -149,7 +150,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val request =
-          FakeRequest(POST, amountOfTransferRoute)
+          FakeRequest(POST, amountOfTransferPostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -178,7 +179,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val req =
-          FakeRequest(POST, amountOfTransferRoute)
+          FakeRequest(POST, amountOfTransferPostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString()))
 
         val result = route(application, req).value

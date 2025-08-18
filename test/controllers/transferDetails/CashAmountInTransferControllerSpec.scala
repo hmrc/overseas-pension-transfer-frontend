@@ -39,7 +39,8 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val cashAmountInTransferRoute = routes.CashAmountInTransferController.onPageLoad(NormalMode).url
+  lazy val cashAmountInTransferGetRoute = routes.CashAmountInTransferController.onPageLoad(NormalMode).url
+  lazy val cashAmountInTransferPostRoute = routes.CashAmountInTransferController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "CashAmountInTransfer Controller" - {
 
@@ -48,14 +49,14 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, cashAmountInTransferRoute)
+        val request = FakeRequest(GET, cashAmountInTransferGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[CashAmountInTransferView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -66,14 +67,14 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, cashAmountInTransferRoute)
+        val request = FakeRequest(GET, cashAmountInTransferGetRoute)
 
         val view = application.injector.instanceOf[CashAmountInTransferView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -92,7 +93,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, cashAmountInTransferRoute)
+          FakeRequest(POST, cashAmountInTransferPostRoute)
             .withFormUrlEncodedBody(("cashInTransfer", validAnswer.toString))
 
         val result = route(application, request).value
@@ -108,7 +109,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, cashAmountInTransferRoute)
+          FakeRequest(POST, cashAmountInTransferPostRoute)
             .withFormUrlEncodedBody(("cashInTransfer", "invalid value"))
 
         val boundForm = form.bind(Map("cashInTransfer" -> "invalid value"))
@@ -118,7 +119,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -127,7 +128,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, cashAmountInTransferRoute)
+        val request = FakeRequest(GET, cashAmountInTransferGetRoute)
 
         val result = route(application, request).value
 
@@ -142,7 +143,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, cashAmountInTransferRoute)
+          FakeRequest(POST, cashAmountInTransferPostRoute)
             .withFormUrlEncodedBody(("cashInTransfer", validAnswer.toString))
 
         val result = route(application, request).value

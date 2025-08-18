@@ -64,7 +64,8 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
           form,
           NormalMode,
           AddressViewModel.addressRadios(idsWithAddresses = idAddressMap.toSeq),
-          addressRecords.postcode
+          addressRecords.postcode,
+          false
         )(
           fakeDisplayRequest(request),
           messages(application)
@@ -120,7 +121,8 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
           boundForm,
           NormalMode,
           AddressViewModel.addressRadios(idAddressMap.toSeq),
-          addressRecords.postcode
+          addressRecords.postcode,
+          false
         )(fakeDisplayRequest(request), messages(application)).toString
       }
     }

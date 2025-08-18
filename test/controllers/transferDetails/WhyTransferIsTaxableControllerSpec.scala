@@ -38,7 +38,8 @@ import scala.concurrent.Future
 
 class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val whyTransferIsTaxableRoute = routes.WhyTransferIsTaxableController.onPageLoad(NormalMode).url
+  private lazy val whyTransferIsTaxableGetRoute = routes.WhyTransferIsTaxableController.onPageLoad(NormalMode).url
+  private lazy val whyTransferIsTaxablePostRoute = routes.WhyTransferIsTaxableController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val formProvider = new WhyTransferIsTaxableFormProvider()
   private val form         = formProvider()
@@ -50,14 +51,14 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, whyTransferIsTaxableRoute)
+        val request = FakeRequest(GET, whyTransferIsTaxableGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[WhyTransferIsTaxableView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -68,14 +69,14 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, whyTransferIsTaxableRoute)
+        val request = FakeRequest(GET, whyTransferIsTaxableGetRoute)
 
         val view = application.injector.instanceOf[WhyTransferIsTaxableView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(WhyTransferIsTaxable.values.head), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(WhyTransferIsTaxable.values.head), NormalMode, false)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -100,7 +101,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, whyTransferIsTaxableRoute)
+          FakeRequest(POST, whyTransferIsTaxablePostRoute)
             .withFormUrlEncodedBody(("value", WhyTransferIsTaxable.values.head.toString))
 
         val result = route(application, request).value
@@ -116,7 +117,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, whyTransferIsTaxableRoute)
+          FakeRequest(POST, whyTransferIsTaxablePostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -126,7 +127,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -135,7 +136,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, whyTransferIsTaxableRoute)
+        val request = FakeRequest(GET, whyTransferIsTaxableGetRoute)
 
         val result = route(application, request).value
 
@@ -150,7 +151,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, whyTransferIsTaxableRoute)
+          FakeRequest(POST, whyTransferIsTaxablePostRoute)
             .withFormUrlEncodedBody(("value", WhyTransferIsTaxable.values.head.toString))
 
         val result = route(application, request).value
@@ -179,7 +180,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val req =
-          FakeRequest(POST, whyTransferIsTaxableRoute)
+          FakeRequest(POST, whyTransferIsTaxablePostRoute)
             .withFormUrlEncodedBody(("value", WhyTransferIsTaxable.values.head.toString))
 
         val result = route(application, req).value

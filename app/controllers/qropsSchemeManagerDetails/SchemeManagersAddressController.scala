@@ -59,8 +59,7 @@ class SchemeManagersAddressController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
-        .endsWith(appConfig.finalCheckAnswersUrl)
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
 
       val userAnswers  = request.userAnswers
       val preparedForm = userAnswers.get(SchemeManagersAddressPage) match {
@@ -78,7 +77,7 @@ class SchemeManagersAddressController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, fromFinalCYA)))
         },
         formData => {
           addressService.schemeManagersAddress(formData) match {

@@ -58,7 +58,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         val view = application.injector.instanceOf[MembersLastUkAddressLookupView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -115,7 +115,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

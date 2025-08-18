@@ -39,7 +39,8 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
   private val formProvider = new OtherAssetsDescriptionFormProvider()
   private val form         = formProvider()
 
-  private lazy val assetValueDescriptionRoute = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index).url
+  private lazy val assetValueDescriptionGetRoute = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index).url
+  private lazy val assetValueDescriptionPostRoute = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "AssetValueDescription Controller" - {
 
@@ -48,14 +49,14 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, assetValueDescriptionRoute)
+        val request = FakeRequest(GET, assetValueDescriptionGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[OtherAssetsDescriptionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -66,14 +67,14 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, assetValueDescriptionRoute)
+        val request = FakeRequest(GET, assetValueDescriptionGetRoute)
 
         val view = application.injector.instanceOf[OtherAssetsDescriptionView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -90,7 +91,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, assetValueDescriptionRoute)
+          FakeRequest(POST, assetValueDescriptionPostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -106,7 +107,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, assetValueDescriptionRoute)
+          FakeRequest(POST, assetValueDescriptionPostRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -116,7 +117,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -125,7 +126,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, assetValueDescriptionRoute)
+        val request = FakeRequest(GET, assetValueDescriptionGetRoute)
 
         val result = route(application, request).value
 
@@ -140,7 +141,7 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, assetValueDescriptionRoute)
+          FakeRequest(POST, assetValueDescriptionPostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value

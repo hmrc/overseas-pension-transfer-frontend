@@ -54,8 +54,7 @@ class MembersLastUkAddressLookupController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen displayData) { implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
-        .endsWith(appConfig.finalCheckAnswersUrl)
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
 
       val preparedForm = request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, _)) => form.fill(postcode)
@@ -68,7 +67,7 @@ class MembersLastUkAddressLookupController @Inject() (
   def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
         postcode =>
           addressService.membersLastUkAddressLookup(postcode).flatMap {
             case None =>

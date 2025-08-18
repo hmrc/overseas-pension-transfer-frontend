@@ -54,8 +54,7 @@ class QROPSCountryController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
-        .endsWith(appConfig.finalCheckAnswersUrl)
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
 
       val preparedForm = request.userAnswers.get(QROPSCountryPage) match {
         case None          => form
@@ -71,7 +70,7 @@ class QROPSCountryController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, fromFinalCYA)))
         },
         countryCode => {
           val maybeCountry: Option[Country] =

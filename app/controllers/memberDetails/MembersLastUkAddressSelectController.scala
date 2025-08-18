@@ -52,8 +52,7 @@ class MembersLastUkAddressSelectController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen displayData) { implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
-        .endsWith(appConfig.finalCheckAnswersUrl)
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
 
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, records)) =>
@@ -82,7 +81,7 @@ class MembersLastUkAddressSelectController @Inject() (
           val addressRadioSet = AddressViewModel.addressRadios(idAddressPairs)
 
           form.bindFromRequest().fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, addressRadioSet, postcode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, addressRadioSet, postcode, fromFinalCYA))),
             selectedId =>
               records.find(_.id == selectedId) match {
                 case Some(record) =>

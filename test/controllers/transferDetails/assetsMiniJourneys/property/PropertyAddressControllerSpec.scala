@@ -45,7 +45,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
   private val formProvider = new PropertyAddressFormProvider()
   private val formData     = PropertyAddressFormData.fromDomain(propertyAddress)
 
-  private lazy val propertyAddressRoute = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index).url
+  private lazy val propertyAddressGetRoute = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index).url
+  private lazy val propertyAddressPostRoute = AssetsMiniJourneysRoutes.PropertyAddressController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   private val testCountries = Seq(
     Country("GB", "United Kingdom"),
@@ -67,7 +68,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
-        val request                                                         = FakeRequest(GET, propertyAddressRoute)
+        val request                                                         = FakeRequest(GET, propertyAddressGetRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form = formProvider()
@@ -81,7 +82,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           form,
           countrySelectViewModel,
           NormalMode,
-          index
+          index,
+          false
         )(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -98,7 +100,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
-        val request                                                         = FakeRequest(GET, propertyAddressRoute)
+        val request                                                         = FakeRequest(GET, propertyAddressGetRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form   = formProvider()
@@ -110,7 +112,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           form.fill(formData),
           countrySelectViewModel,
           NormalMode,
-          index
+          index,
+          false
         )(displayRequest, messages(application)).toString
       }
     }
@@ -135,7 +138,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyAddressRoute)
+          FakeRequest(POST, propertyAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -162,7 +165,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyAddressRoute)
+          FakeRequest(POST, propertyAddressPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
@@ -173,7 +176,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index, false)(
           displayRequest,
           messages(application)
         ).toString
@@ -185,7 +188,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyAddressRoute)
+        val request = FakeRequest(GET, propertyAddressGetRoute)
 
         val result = route(application, request).value
 
@@ -201,7 +204,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyAddressRoute)
+          FakeRequest(POST, propertyAddressPostRoute)
             .withFormUrlEncodedBody(("addressLine1", "value 1"), ("addressLine2", "value 2"))
         val result  = route(application, request).value
 

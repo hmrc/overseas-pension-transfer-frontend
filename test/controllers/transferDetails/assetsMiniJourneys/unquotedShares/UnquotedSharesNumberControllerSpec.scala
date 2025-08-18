@@ -41,7 +41,8 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
   private val validAnswer = "10"
   private val index       = 0
 
-  lazy val unquotedSharesNumberRoute = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index).url
+  lazy val unquotedSharesNumberGetRoute = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index).url
+  lazy val unquotedSharesNumberPostRoute = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "UnquotedSharesNumber Controller" - {
 
@@ -50,14 +51,14 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesNumberRoute)
+        val request = FakeRequest(GET, unquotedSharesNumberGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[UnquotedSharesNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -68,14 +69,14 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesNumberRoute)
+        val request = FakeRequest(GET, unquotedSharesNumberGetRoute)
 
         val view = application.injector.instanceOf[UnquotedSharesNumberView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -94,7 +95,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesNumberRoute)
+          FakeRequest(POST, unquotedSharesNumberPostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -110,7 +111,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesNumberRoute)
+          FakeRequest(POST, unquotedSharesNumberPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -120,7 +121,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -129,7 +130,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesNumberRoute)
+        val request = FakeRequest(GET, unquotedSharesNumberGetRoute)
 
         val result = route(application, request).value
 
@@ -144,7 +145,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesNumberRoute)
+          FakeRequest(POST, unquotedSharesNumberGetRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value

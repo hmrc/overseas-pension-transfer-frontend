@@ -56,7 +56,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
         val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(
+        contentAsString(result) mustEqual view(form, NormalMode, false)(
           fakeDisplayRequest(req),
           messages(application)
         ).toString
@@ -76,7 +76,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
         val result = route(application, req).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, false)(
           fakeDisplayRequest(req, userAnswers),
           messages(application)
         ).toString
@@ -125,7 +125,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
         val result    = route(application, req).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(
           fakeDisplayRequest(req),
           messages(application)
         ).toString

@@ -72,7 +72,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         val view = application.injector.instanceOf[QROPSCountryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, countrySelectViewModel, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, countrySelectViewModel, NormalMode, false)(request, messages(application)).toString
       }
     }
 
@@ -94,7 +94,10 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(testCountries.head.code), countrySelectViewModel, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(testCountries.head.code), countrySelectViewModel, NormalMode, false)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -144,7 +147,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, false)(request, messages(application)).toString
       }
     }
 

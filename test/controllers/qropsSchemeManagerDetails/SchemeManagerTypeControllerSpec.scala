@@ -39,7 +39,8 @@ import scala.concurrent.Future
 
 class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val schemeManagerTypeRoute = routes.SchemeManagerTypeController.onPageLoad(NormalMode).url
+  private lazy val schemeManagerTypeGetRoute = routes.SchemeManagerTypeController.onPageLoad(NormalMode).url
+  private lazy val schemeManagerTypePostRoute = routes.SchemeManagerTypeController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val formProvider = new SchemeManagerTypeFormProvider()
   private val form         = formProvider()
@@ -51,14 +52,14 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagerTypeRoute)
+        val request = FakeRequest(GET, schemeManagerTypeGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[SchemeManagerTypeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -69,14 +70,14 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagerTypeRoute)
+        val request = FakeRequest(GET, schemeManagerTypeGetRoute)
 
         val view = application.injector.instanceOf[SchemeManagerTypeView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(SchemeManagerType.values.head), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(SchemeManagerType.values.head), NormalMode, false)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -103,7 +104,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagerTypeRoute)
+          FakeRequest(POST, schemeManagerTypePostRoute)
             .withFormUrlEncodedBody(("value", SchemeManagerType.values.head.toString))
 
         val result = route(application, request).value
@@ -132,7 +133,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, routes.SchemeManagerTypeController.onSubmit(CheckMode).url)
+          FakeRequest(POST, routes.SchemeManagerTypeController.onSubmit(CheckMode, false).url)
             .withFormUrlEncodedBody("value" -> SchemeManagerType.Organisation.toString)
 
         val result = route(application, request).value
@@ -165,7 +166,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, routes.SchemeManagerTypeController.onSubmit(NormalMode).url)
+          FakeRequest(POST, routes.SchemeManagerTypeController.onSubmit(NormalMode, false).url)
             .withFormUrlEncodedBody("value" -> SchemeManagerType.Organisation.toString)
 
         val result = route(application, request).value
@@ -187,7 +188,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagerTypeRoute)
+          FakeRequest(POST, schemeManagerTypePostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -197,7 +198,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -206,7 +207,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagerTypeRoute)
+        val request = FakeRequest(GET, schemeManagerTypeGetRoute)
 
         val result = route(application, request).value
 
@@ -221,7 +222,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagerTypeRoute)
+          FakeRequest(POST, schemeManagerTypePostRoute)
             .withFormUrlEncodedBody(("value", SchemeManagerType.values.head.toString))
 
         val result = route(application, request).value
@@ -250,7 +251,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val req =
-          FakeRequest(POST, schemeManagerTypeRoute)
+          FakeRequest(POST, schemeManagerTypePostRoute)
             .withFormUrlEncodedBody(("value" -> SchemeManagerType.Organisation.toString))
 
         val result = route(application, req).value

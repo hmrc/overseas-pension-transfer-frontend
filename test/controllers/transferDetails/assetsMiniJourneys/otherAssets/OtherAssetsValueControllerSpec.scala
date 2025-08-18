@@ -41,7 +41,8 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val otherAssetsValueRoute = AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index).url
+  lazy val otherAssetsValueGetRoute = AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index).url
+  lazy val otherAssetsValuePostRoute = AssetsMiniJourneysRoutes.OtherAssetsValueController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "OtherAssetsValue Controller" - {
 
@@ -50,14 +51,14 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, otherAssetsValueRoute)
+        val request = FakeRequest(GET, otherAssetsValueGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[OtherAssetsValueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -68,14 +69,14 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, otherAssetsValueRoute)
+        val request = FakeRequest(GET, otherAssetsValueGetRoute)
 
         val view = application.injector.instanceOf[OtherAssetsValueView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -94,7 +95,7 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val request =
-          FakeRequest(POST, otherAssetsValueRoute)
+          FakeRequest(POST, otherAssetsValuePostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -110,7 +111,7 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val request =
-          FakeRequest(POST, otherAssetsValueRoute)
+          FakeRequest(POST, otherAssetsValuePostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -120,7 +121,7 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -129,7 +130,7 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, otherAssetsValueRoute)
+        val request = FakeRequest(GET, otherAssetsValueGetRoute)
 
         val result = route(application, request).value
 
@@ -144,7 +145,7 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val request =
-          FakeRequest(POST, otherAssetsValueRoute)
+          FakeRequest(POST, otherAssetsValuePostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value

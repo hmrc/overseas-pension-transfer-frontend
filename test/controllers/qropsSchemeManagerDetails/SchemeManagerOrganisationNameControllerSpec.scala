@@ -57,7 +57,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
         val view = application.injector.instanceOf[SchemeManagerOrganisationNameView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -75,7 +75,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -123,7 +123,7 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

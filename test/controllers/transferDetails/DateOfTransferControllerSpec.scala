@@ -47,13 +47,14 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   private def form         = formProvider()
 
   private val validAnswer              = LocalDate.now(ZoneOffset.UTC)
-  private lazy val dateOfTransferRoute = routes.DateOfTransferController.onPageLoad(NormalMode).url
+  private lazy val dateOfTransferGetRoute = routes.DateOfTransferController.onPageLoad(NormalMode).url
+  private lazy val dateOfTransferPostRoute = routes.DateOfTransferController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, dateOfTransferRoute)
+    FakeRequest(GET, dateOfTransferGetRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest(POST, dateOfTransferRoute)
+    FakeRequest(POST, dateOfTransferPostRoute)
       .withFormUrlEncodedBody(
         "value.day"   -> validAnswer.getDayOfMonth.toString,
         "value.month" -> validAnswer.getMonthValue.toString,
@@ -72,7 +73,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val view    = application.injector.instanceOf[DateOfTransferView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -88,7 +89,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result  = route(application, getRequest()).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -121,7 +122,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       val request =
-        FakeRequest(POST, dateOfTransferRoute)
+        FakeRequest(POST, dateOfTransferPostRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       running(application) {
@@ -132,7 +133,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

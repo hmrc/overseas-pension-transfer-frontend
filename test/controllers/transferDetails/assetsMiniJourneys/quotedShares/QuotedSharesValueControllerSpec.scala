@@ -41,7 +41,8 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val quotedSharesValueRoute = AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(NormalMode, index).url
+  lazy val quotedSharesValueGetRoute = AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(NormalMode, index).url
+  lazy val quotedSharesValuePostRoute = AssetsMiniJourneysRoutes.QuotedSharesValueController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "QuotedSharesValue Controller" - {
 
@@ -50,14 +51,14 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, quotedSharesValueRoute)
+        val request = FakeRequest(GET, quotedSharesValueGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[QuotedSharesValueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -68,14 +69,14 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, quotedSharesValueRoute)
+        val request = FakeRequest(GET, quotedSharesValueGetRoute)
 
         val view = application.injector.instanceOf[QuotedSharesValueView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -94,7 +95,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, quotedSharesValueRoute)
+          FakeRequest(POST, quotedSharesValuePostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -110,7 +111,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, quotedSharesValueRoute)
+          FakeRequest(POST, quotedSharesValuePostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -120,7 +121,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -129,7 +130,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, quotedSharesValueRoute)
+        val request = FakeRequest(GET, quotedSharesValueGetRoute)
 
         val result = route(application, request).value
 
@@ -144,7 +145,7 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, quotedSharesValueRoute)
+          FakeRequest(POST, quotedSharesValuePostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value

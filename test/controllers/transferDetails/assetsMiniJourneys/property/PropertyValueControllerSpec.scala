@@ -41,7 +41,8 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val propertyValueRoute = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index).url
+  lazy val propertyValueGetRoute = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index).url
+  lazy val propertyValuePostRoute = AssetsMiniJourneysRoutes.PropertyValueController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "ValueOfThisProperty Controller" - {
 
@@ -50,14 +51,14 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyValueRoute)
+        val request = FakeRequest(GET, propertyValueGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[PropertyValueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -68,14 +69,14 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyValueRoute)
+        val request = FakeRequest(GET, propertyValueGetRoute)
 
         val view = application.injector.instanceOf[PropertyValueView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -94,7 +95,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyValueRoute)
+          FakeRequest(POST, propertyValuePostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -110,7 +111,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyValueRoute)
+          FakeRequest(POST, propertyValuePostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -120,7 +121,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -129,7 +130,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyValueRoute)
+        val request = FakeRequest(GET, propertyValueGetRoute)
 
         val result = route(application, request).value
 
@@ -144,7 +145,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyValueRoute)
+          FakeRequest(POST, propertyValuePostRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value

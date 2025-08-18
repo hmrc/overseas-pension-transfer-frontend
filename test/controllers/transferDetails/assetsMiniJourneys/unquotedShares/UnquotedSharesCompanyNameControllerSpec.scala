@@ -39,7 +39,8 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
   private val form         = formProvider()
   private val index        = 0
 
-  private lazy val unquotedSharesCompanyNameRoute = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, index).url
+  private lazy val unquotedSharesCompanyNameGetRoute = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, index).url
+  private lazy val unquotedSharesCompanyNamePostRoute = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   "UnquotedSharesCompanyName Controller" - {
 
@@ -48,14 +49,14 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesCompanyNameRoute)
+        val request = FakeRequest(GET, unquotedSharesCompanyNameGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[UnquotedSharesCompanyNameView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -66,14 +67,14 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesCompanyNameRoute)
+        val request = FakeRequest(GET, unquotedSharesCompanyNameGetRoute)
 
         val view = application.injector.instanceOf[UnquotedSharesCompanyNameView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -90,7 +91,7 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesCompanyNameRoute)
+          FakeRequest(POST, unquotedSharesCompanyNamePostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -106,7 +107,7 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesCompanyNameRoute)
+          FakeRequest(POST, unquotedSharesCompanyNamePostRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -116,7 +117,7 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -125,7 +126,7 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesCompanyNameRoute)
+        val request = FakeRequest(GET, unquotedSharesCompanyNameGetRoute)
 
         val result = route(application, request).value
 
@@ -140,7 +141,7 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesCompanyNameRoute)
+          FakeRequest(POST, unquotedSharesCompanyNamePostRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value

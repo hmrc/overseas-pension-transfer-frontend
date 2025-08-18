@@ -57,7 +57,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val view = application.injector.instanceOf[QROPSReferenceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -75,7 +75,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("QROPS123456"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("QROPS123456"), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -123,7 +123,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

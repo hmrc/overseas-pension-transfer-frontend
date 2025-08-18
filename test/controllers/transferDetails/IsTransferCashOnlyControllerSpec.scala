@@ -37,7 +37,8 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private val formProvider = new IsTransferCashOnlyFormProvider()
   private val form         = formProvider()
 
-  private lazy val isTransferCashOnlyRoute = routes.IsTransferCashOnlyController.onPageLoad(NormalMode).url
+  private lazy val isTransferCashOnlyGetRoute = routes.IsTransferCashOnlyController.onPageLoad(NormalMode).url
+  private lazy val isTransferCashOnlyPostRoute = routes.IsTransferCashOnlyController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "IsTransferCashOnly Controller" - {
 
@@ -46,14 +47,14 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, isTransferCashOnlyRoute)
+        val request = FakeRequest(GET, isTransferCashOnlyGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[IsTransferCashOnlyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -64,14 +65,14 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, isTransferCashOnlyRoute)
+        val request = FakeRequest(GET, isTransferCashOnlyGetRoute)
 
         val view = application.injector.instanceOf[IsTransferCashOnlyView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -90,7 +91,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, isTransferCashOnlyRoute)
+          FakeRequest(POST, isTransferCashOnlyPostRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
@@ -106,7 +107,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, isTransferCashOnlyRoute)
+          FakeRequest(POST, isTransferCashOnlyPostRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -116,7 +117,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -125,7 +126,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, isTransferCashOnlyRoute)
+        val request = FakeRequest(GET, isTransferCashOnlyGetRoute)
 
         val result = route(application, request).value
 
@@ -140,7 +141,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, isTransferCashOnlyRoute)
+          FakeRequest(POST, isTransferCashOnlyPostRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

@@ -63,7 +63,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(displayRequest, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(displayRequest, messages(application)).toString
       }
     }
 
@@ -84,7 +84,8 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
           form.fill(validAnswer),
-          NormalMode
+          NormalMode,
+          false
         )(displayRequest, messages(application)).toString
       }
     }
@@ -135,7 +136,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(displayRequest, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(displayRequest, messages(application)).toString
       }
     }
 

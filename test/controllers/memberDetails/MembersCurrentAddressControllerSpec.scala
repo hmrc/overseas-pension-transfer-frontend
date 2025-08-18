@@ -80,7 +80,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          false
         )(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -108,7 +109,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          false
         )(displayRequest, messages(application)).toString
       }
     }
@@ -175,7 +177,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, false)(
           displayRequest,
           messages(application)
         ).toString

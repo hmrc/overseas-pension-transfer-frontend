@@ -79,7 +79,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          false
         )(request, messages(application)).toString
       }
     }
@@ -104,7 +105,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          false
         )(request, messages(application)).toString
       }
     }
@@ -172,7 +174,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         contentAsString(result) mustEqual view(
           boundForm,
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          false
         )(request, messages(application)).toString
       }
     }

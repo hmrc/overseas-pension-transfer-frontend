@@ -58,7 +58,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
         val view = application.injector.instanceOf[MembersLastUkAddressConfirmView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, address)(
+        contentAsString(result) mustEqual view(form, NormalMode, address, false)(
           fakeDisplayRequest(request, addressSelectedUserAnswers),
           messages(application)
         ).toString
@@ -75,7 +75,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
         val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, address)(
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, address, false)(
           fakeDisplayRequest(request, addressSelectedUserAnswers),
           messages(application)
         ).toString

@@ -55,8 +55,7 @@ class MembersLastUkAddressConfirmController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
-        .endsWith(appConfig.finalCheckAnswersUrl)
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
 
       val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
@@ -79,7 +78,7 @@ class MembersLastUkAddressConfirmController @Inject() (
           val addressToSave = MembersLastUKAddress.fromAddress(selectedAddress)
           formProvider().bindFromRequest().fold(
             formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, mode, viewModel)))
+              Future.successful(BadRequest(view(formWithErrors, mode, viewModel, fromFinalCYA)))
             },
             _ =>
               for {
