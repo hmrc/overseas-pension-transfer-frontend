@@ -74,7 +74,7 @@ class MemberNinoController @Inject() (
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
+              case Right(Done) => Redirect(MemberNinoPage.nextPage(mode, updatedAnswers, fromFinalCYA))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
 

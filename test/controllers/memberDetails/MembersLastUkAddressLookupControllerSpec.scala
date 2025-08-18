@@ -20,7 +20,7 @@ import base.{AddressBase, SpecBase}
 import connectors.AddressLookupConnector
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse, UserAnswersErrorResponse}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -259,6 +259,43 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockSessionRepository      = mock[SessionRepository]
+      val mockUserAnswersService     = mock[UserAnswersService]
+      val mockAddressLookupConnector = mock[AddressLookupConnector]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+      when(mockAddressLookupConnector.lookup(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            AddressLookupSuccessResponse(connectorPostcode, addressRecordList)
+          )
+        )
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
+            bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.MembersLastUkAddressLookupController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(("value", connectorPostcode))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

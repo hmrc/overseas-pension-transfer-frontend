@@ -19,7 +19,7 @@ package controllers.memberDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberDateOfLeavingUKFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -183,12 +183,49 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
       running(application) {
         val request =
           FakeRequest(POST, memberDateOfLeavingUKPostRoute)
-            .withFormUrlEncodedBody(("value", "AB123456A"))
+            .withFormUrlEncodedBody(
+              "value.day"   -> validAnswer.getDayOfMonth.toString,
+              "value.month" -> validAnswer.getMonthValue.toString,
+              "value.year"  -> validAnswer.getYear.toString
+            )
 
         val result = route(application, postRequest()).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.MemberDateOfLeavingUKController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(
+              "value.day"   -> validAnswer.getDayOfMonth.toString,
+              "value.month" -> validAnswer.getMonthValue.toString,
+              "value.year"  -> validAnswer.getYear.toString
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

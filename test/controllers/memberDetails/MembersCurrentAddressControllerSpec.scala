@@ -19,7 +19,7 @@ package controllers.memberDetails
 import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.address._
 import models.requests.DisplayRequest
 import models.responses.UserAnswersErrorResponse
@@ -244,6 +244,39 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.MembersCurrentAddressController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(
+              "addressLine1" -> "value 1",
+              "addressLine2" -> "value 2",
+              "countryCode"  -> "GB"
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

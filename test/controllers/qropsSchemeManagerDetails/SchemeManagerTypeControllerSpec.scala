@@ -260,5 +260,39 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mngrName        = PersonName("FirstNameMngr", "LastNameMngr")
+      val previousAnswers = emptyUserAnswers
+        .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+        .set(SchemeManagersNamePage, mngrName).success.value
+
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(previousAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.SchemeManagerTypeController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(("value", SchemeManagerType.values.head.toString))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
+      }
+    }
   }
 }

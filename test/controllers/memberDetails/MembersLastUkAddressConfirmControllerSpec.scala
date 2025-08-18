@@ -19,7 +19,7 @@ package controllers.memberDetails
 import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberConfirmLastUkAddressFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import models.address.MembersLookupLastUkAddress
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
@@ -161,6 +161,34 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(addressSelectedUserAnswers))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.MembersLastUkAddressConfirmController.onSubmit(CheckMode, fromFinalCYA = true).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }
