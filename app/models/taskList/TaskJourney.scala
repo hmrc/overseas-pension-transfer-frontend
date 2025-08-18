@@ -73,7 +73,7 @@ object TaskJourneys {
     val category             = TaskCategory.SchemeManagerDetails
     val id                   = "scheme-manager-details"
     val linkTextKey          = "taskList.schemeManagerDetails.linkText"
-    def start(m: Mode): Call = controllers.qropsSchemeManagerDetails.routes.SchemeManagersNameController.onPageLoad(m)
+    def start(m: Mode): Call = controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(m)
     def cya(): Call          = controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
   }
 
