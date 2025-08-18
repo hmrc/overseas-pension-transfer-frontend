@@ -16,6 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameFormProvider
 import models.Mode
@@ -31,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnquotedSharesCompanyNameController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -46,15 +48,18 @@ class UnquotedSharesCompanyNameController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
+        .endsWith(appConfig.finalCheckAnswersUrl)
+
       val preparedForm = request.userAnswers.get(UnquotedSharesCompanyNamePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, index))
+      Ok(view(preparedForm, mode, index, fromFinalCYA))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -63,7 +68,7 @@ class UnquotedSharesCompanyNameController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UnquotedSharesCompanyNamePage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(UnquotedSharesCompanyNamePage(index).nextPage(mode, updatedAnswers))
+          } yield Redirect(UnquotedSharesCompanyNamePage(index).nextPage(mode, updatedAnswers, fromFinalCYA))
       )
   }
 }

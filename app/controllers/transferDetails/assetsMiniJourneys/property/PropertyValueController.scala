@@ -16,6 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.property.PropertyValueFormProvider
 import models.Mode
@@ -31,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyValueController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -46,15 +48,18 @@ class PropertyValueController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
+        .endsWith(appConfig.finalCheckAnswersUrl)
+
       val preparedForm = request.userAnswers.get(PropertyValuePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, index))
+      Ok(view(preparedForm, mode, index, fromFinalCYA))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -63,7 +68,7 @@ class PropertyValueController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyValuePage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(PropertyValuePage(index).nextPage(mode, updatedAnswers))
+          } yield Redirect(PropertyValuePage(index).nextPage(mode, updatedAnswers, fromFinalCYA))
       )
   }
 }
