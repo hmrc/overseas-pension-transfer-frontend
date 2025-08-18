@@ -41,7 +41,9 @@ class MarkInProgressOnEntryActionImpl @Inject() (
   )(implicit ec: ExecutionContext
   ) extends MarkInProgressOnEntryAction {
 
-  /** Sets a task as in progress for a category and mode. */
+  /** ActionRefiner that marks the given task category as InProgress when entering a journey in NormalMode. Persists the updated UserAnswers to session and
+    * middleware. Falls back to JourneyRecovery if persistence fails.
+    */
   override def forCategoryAndMode(category: TaskCategory, mode: Mode): ActionRefiner[DataRequest, DataRequest] =
     new ActionRefiner[DataRequest, DataRequest] {
       override protected def executionContext: ExecutionContext = ec

@@ -98,6 +98,12 @@ class MemberDetailsCYAControllerSpec
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
 
+        verify(mockSessionRepository).set(
+          org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
+            ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.Completed)
+          }
+        )
+
         verify(mockUserAnswersService).setExternalUserAnswers(
           org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
             ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.Completed)
