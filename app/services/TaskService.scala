@@ -17,10 +17,9 @@
 package services
 
 import com.google.inject.{Inject, Singleton}
-import models.TaskCategory.{MemberDetails, SubmissionDetails, TransferDetails}
-import models.taskList.TaskStatus
-import models.taskList.TaskStatus.{CannotStart, Completed, NotStarted}
-import models.{TaskCategory, UserAnswers}
+import models.TaskCategory.{MemberDetails, SubmissionDetails}
+import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
+import models.{CheckMode, Mode, TaskCategory, UserAnswers}
 import queries.TaskStatusQuery
 
 import scala.util.{Success, Try}
@@ -63,4 +62,12 @@ class TaskService @Inject() {
       Success(userAnswers)
     }
   }
+
+  def setInProgressInCheckMode(mode: Mode, userAnswers: UserAnswers): Try[UserAnswers] =
+    mode match {
+      case CheckMode =>
+        userAnswers.set(TaskStatusQuery(MemberDetails), InProgress)
+      case _         =>
+        Success(userAnswers)
+    }
 }
