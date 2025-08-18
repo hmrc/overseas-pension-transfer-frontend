@@ -16,6 +16,7 @@
 
 package controllers.transferDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.CashAmountInTransferFormProvider
 import models.Mode
@@ -31,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CashAmountInTransferController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -46,15 +48,18 @@ class CashAmountInTransferController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
+        .endsWith(appConfig.finalCheckAnswersUrl)
+
       val preparedForm = request.userAnswers.get(CashAmountInTransferPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, fromFinalCYA))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -63,7 +68,7 @@ class CashAmountInTransferController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(CashAmountInTransferPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(CashAmountInTransferPage.nextPage(mode, updatedAnswers, fromFinalCYA))
       )
   }
 }

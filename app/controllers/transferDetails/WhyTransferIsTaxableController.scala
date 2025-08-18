@@ -16,6 +16,7 @@
 
 package controllers.transferDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.WhyTransferIsTaxableFormProvider
 import models.Mode
@@ -34,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class WhyTransferIsTaxableController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -50,15 +52,18 @@ class WhyTransferIsTaxableController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
+        .endsWith(appConfig.finalCheckAnswersUrl)
+
       val preparedForm = request.userAnswers.get(WhyTransferIsTaxablePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, fromFinalCYA))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -70,7 +75,7 @@ class WhyTransferIsTaxableController @Inject() (
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(WhyTransferIsTaxablePage.nextPage(mode, updatedAnswers))
+              case Right(Done) => Redirect(WhyTransferIsTaxablePage.nextPage(mode, updatedAnswers, fromFinalCYA))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }

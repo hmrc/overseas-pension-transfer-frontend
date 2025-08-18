@@ -16,6 +16,7 @@
 
 package controllers.transferDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.ApplicableTaxExclusionsFormProvider
 import models.Mode
@@ -31,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ApplicableTaxExclusionsController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -46,15 +48,18 @@ class ApplicableTaxExclusionsController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/")
+        .endsWith(appConfig.finalCheckAnswersUrl)
+
       val preparedForm = request.userAnswers.get(ApplicableTaxExclusionsPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, fromFinalCYA))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -63,7 +68,7 @@ class ApplicableTaxExclusionsController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ApplicableTaxExclusionsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(ApplicableTaxExclusionsPage.nextPage(mode, updatedAnswers))
+          } yield Redirect(ApplicableTaxExclusionsPage.nextPage(mode, updatedAnswers, fromFinalCYA))
       )
   }
 }
