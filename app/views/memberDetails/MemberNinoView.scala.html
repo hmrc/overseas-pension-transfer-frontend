@@ -36,7 +36,7 @@
 @(form: Form[_], mode: Mode, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
 
 @memberName = @{request.memberName}
-@noNinoPage = @{controllers.memberDetails.routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode).url}
+@noNinoPage = @{controllers.memberDetails.routes.MemberDoesNotHaveNinoController.onPageLoad(mode).url}
 
 @layout(pageTitle = title(form, messages("memberNino.title"))) {
 

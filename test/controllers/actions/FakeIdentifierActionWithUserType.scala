@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package models.requests
+package controllers.actions
 
-import models.{QtNumber, UserAnswers}
 import models.authentication.AuthenticatedUser
-import play.api.mvc.{Request, WrappedRequest}
+import models.requests.IdentifierRequest
+import play.api.mvc._
 
-case class DisplayRequest[A](request: Request[A], authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, memberName: String, qtNumber: QtNumber)
-    extends WrappedRequest[A](request)
+import scala.concurrent.{ExecutionContext, Future}
+
+class FakeIdentifierActionWithUserType(
+    user: AuthenticatedUser,
+    val parser: BodyParser[AnyContent]
+  )(implicit val executionContext: ExecutionContext
+  ) extends IdentifierAction {
+
+  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+    block(IdentifierRequest(request, user))
+  }
+}

@@ -14,17 +14,32 @@
  * limitations under the License.
  */
 
-package models.authentication
+package forms
 
-import play.api.libs.json.{Json, OFormat}
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-case class PsaId(value: String)
+class SubmitToHMRCFormProviderSpec extends BooleanFieldBehaviours {
 
-object PsaId {
-  implicit val format: OFormat[PsaId] = Json.format[PsaId]
-}
-case class PspId(value: String)
+  val requiredKey = "submitToHMRC.error.required"
+  val invalidKey  = "error.boolean"
 
-object PspId {
-  implicit val format: OFormat[PspId] = Json.format[PspId]
+  val form = new SubmitToHMRCFormProvider()()
+
+  ".value" - {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package models.authentication
+package pages
 
-import play.api.libs.json.{Json, OFormat}
+import controllers.routes
+import models.{NormalMode, UserAnswers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
-case class PsaId(value: String)
+class SubmitToHMRCPageSpec extends AnyFreeSpec with Matchers {
 
-object PsaId {
-  implicit val format: OFormat[PsaId] = Json.format[PsaId]
-}
-case class PspId(value: String)
+  ".nextPage" - {
 
-object PspId {
-  implicit val format: OFormat[PspId] = Json.format[PspId]
+    val emptyAnswers = UserAnswers("id")
+
+    "in Normal Mode" - {
+
+      "must go to Index" in {
+
+        SubmitToHMRCPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+      }
+    }
+  }
 }

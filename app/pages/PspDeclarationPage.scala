@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package models.authentication
+package pages
 
-import play.api.libs.json.{Json, OFormat}
+import controllers.routes
+import models.UserAnswers
+import play.api.libs.json.JsPath
+import play.api.mvc.Call
 
-case class PsaId(value: String)
+case object PspDeclarationPage extends QuestionPage[String] {
 
-object PsaId {
-  implicit val format: OFormat[PsaId] = Json.format[PsaId]
-}
-case class PspId(value: String)
+  override def path: JsPath = JsPath \ toString
 
-object PspId {
-  implicit val format: OFormat[PspId] = Json.format[PspId]
+  override def toString: String = "pspDeclaration"
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.IndexController.onPageLoad()
 }

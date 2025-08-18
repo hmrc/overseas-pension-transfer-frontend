@@ -11,6 +11,7 @@ site.start = Start now
 site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
+site.agreeAndSubmit = Agree and submit
 
 date.day = Day
 date.month = Month
@@ -158,6 +159,7 @@ memberDoesNotHaveNino.error.required = Enter the reason the member does not have
 memberDoesNotHaveNino.error.length = The reason for not having a National Insurance number and reference in its place must be must be 160 characters or less
 memberDoesNotHaveNino.change.hidden = Why no National Insurance number
 memberDoesNotHaveNino.hint = If the member has another HMRC reference number that relates to them as an individual, please give that number.
+memberDoesNotHaveNino.memberNino.link.text = The member has a National Insurance number.
 
 memberDateOfBirth.title = What is {0}’s date of birth?
 memberDateOfBirth.heading = What is {0}’s date of birth?
@@ -613,7 +615,6 @@ propertyAmendContinue.summary.value = {0} added
 propertyAmendContinue.text.singular = property
 propertyAmendContinue.text.plural = properties
 
-
 otherAssetsAmendContinue.error.required = Please select an option
 otherAssetsAmendContinue.checkYourAnswersLabel = Other assets
 otherAssetsAmendContinue.change.hidden = Other assets
@@ -624,4 +625,25 @@ otherAssetsAmendContinue.text.plural = groups of assets
 otherAssetsStart.title = Add other assets
 otherAssetsStart.heading = Add other assets
 otherAssetsStart.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.
+
+cashAmountInTransfer.checkYourAnswersLabel = Amount of cash
+
+pspDeclaration.title = Declaration
+pspDeclaration.heading = Declaration
+pspDeclaration.label = What is the authorising scheme administrator''s ID?
+pspDeclaration.bySubmitting = By submitting you declare that:
+pspDeclaration.receivedAndChecked = I''ve received and checked the information and acknowledgement on behalf of the scheme administrator.
+pspDeclaration.correctAndComplete = to the best of my knowledge and belief the information given in this notification is correct and complete and that the content of this report has been approved by the scheme administrator named below has authorised me to submit this report.
+pspDeclaration.error.required = Enter the authorising scheme administrator''s ID
+pspDeclaration.error.pattern = Enter the authorising scheme administrator''s ID in the correct format, like A1234567
+pspDeclaration.change.hidden = Psp Declaration
+
+
+submitToHMRC.title = Do you want to submit this report to HMRC?
+submitToHMRC.heading = Do you want to submit this report to HMRC?
+submitToHMRC.checkYourAnswersLabel = Save and continue
+submitToHMRC.error.required = Select yes if you want to submit the report
+submitToHMRC.change.hidden = SubmitToHMRC
+submitToHMRC.hintYes = You will still be able to update the report after it''s been submitted.
+submitToHMRC.hintNo = Mark as ''in progress'' and return to the overseas pension transfer dashboard.
 

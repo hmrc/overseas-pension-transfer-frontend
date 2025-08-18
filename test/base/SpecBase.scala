@@ -19,7 +19,7 @@ package base
 import controllers.actions._
 import models.authentication.{PsaId, PsaUser}
 import models.requests.DisplayRequest
-import models.{PersonName, UserAnswers}
+import models.{PersonName, QtNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
-import queries.QtNumber
+import queries.QtNumberQuery
 
 trait SpecBase
     extends Matchers
@@ -177,7 +177,7 @@ trait SpecBase
 
   val testMemberName: PersonName = PersonName("User", "McUser")
 
-  val testQtNumber: String = "QT123456"
+  val testQtNumber: QtNumber = QtNumber("QT123456")
 
   val userAnswersId: String = "id"
 
@@ -189,9 +189,9 @@ trait SpecBase
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
 
-  def userAnswersQtNumber: UserAnswers = emptyUserAnswers.set(QtNumber, testQtNumber).success.value
+  def userAnswersQtNumber: UserAnswers = emptyUserAnswers.set(QtNumberQuery, testQtNumber).success.value
 
-  def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumber, testQtNumber).success.value
+  def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 

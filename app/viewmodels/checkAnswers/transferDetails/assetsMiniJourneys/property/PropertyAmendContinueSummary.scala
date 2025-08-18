@@ -28,19 +28,25 @@ import viewmodels.implicits._
 
 object PropertyAmendContinueSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
+  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val count: Int = answers.get(PropertyQuery).getOrElse(Nil).size
-    val valueText  = messages("propertyAmendContinue.summary.value", count)
+    val answers   = userAnswers.get(PropertyQuery)
+    val valueText = messages("propertyAmendContinue.summary.value", answers.size)
 
-    SummaryListRowViewModel(
-      key     = "propertyAmendContinue.checkYourAnswersLabel",
-      value   = ValueViewModel(valueText),
-      actions = Seq(
-        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = CheckMode).url)
-          .withVisuallyHiddenText(messages("propertyAmendContinue.change.hidden"))
-      )
-    )
+    answers match {
+      case Some(entries) if entries.nonEmpty =>
+        Some(
+          SummaryListRowViewModel(
+            key     = "propertyAmendContinue.checkYourAnswersLabel",
+            value   = ValueViewModel(valueText),
+            actions = Seq(
+              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = CheckMode).url)
+                .withVisuallyHiddenText(messages("propertyAmendContinue.change.hidden"))
+            )
+          )
+        )
+      case _                                 => None
+    }
   }
 
   def rows(answers: UserAnswers): Seq[ListItem] = {
