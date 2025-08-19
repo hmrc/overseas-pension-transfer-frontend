@@ -22,6 +22,7 @@ import controllers.transferDetails.routes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
 import models.assets.{PropertyMiniJourney, TypeOfAsset}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import navigators.TypeOfAssetNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
@@ -82,7 +83,7 @@ class PropertyAmendContinueController @Inject() (
             for {
               updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
+            } yield TypeOfAssetNavigator.getNextAssetRoute(updatedAnswers) match {
               case Some(route) => Redirect(route)
               case None        => Redirect(routes.TransferDetailsCYAController.onPageLoad())
             }

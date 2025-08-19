@@ -41,7 +41,6 @@ class TypeOfAssetController @Inject() (
     formProvider: TypeOfAssetFormProvider,
     val controllerComponents: MessagesControllerComponents,
     transferDetailsService: TransferDetailsService,
-    typeOfAssetNavigator: TypeOfAssetNavigator,
     view: TypeOfAssetView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
@@ -69,7 +68,10 @@ class TypeOfAssetController @Inject() (
             removePrevSetAssetFlagsUA <- Future.fromTry(transferDetailsService.clearAllAssetCompletionFlags(setAssetsUA))
             setAssetsCompletedUA      <- Future.fromTry(transferDetailsService.setSelectedAssetsCompleted(removePrevSetAssetFlagsUA, selectedAssets))
             _                         <- sessionRepository.set(setAssetsCompletedUA)
-          } yield Redirect(typeOfAssetNavigator.nextPage(TypeOfAssetPage, mode, setAssetsCompletedUA))
+          } yield TypeOfAssetNavigator.getNextAssetRoute(setAssetsCompletedUA) match {
+            case Some(route) => Redirect(route)
+            case None        => Redirect(routes.TransferDetailsCYAController.onPageLoad())
+          }
         }
       )
     }
