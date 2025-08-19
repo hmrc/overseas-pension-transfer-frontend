@@ -16,6 +16,7 @@
 
 package controllers.memberDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.memberDetails.MembersLastUkAddressSelectFormProvider
 import models.address.{AddressLookupResult, AddressRecords, MembersLookupLastUkAddress, NoAddressFound}
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MembersLastUkAddressSelectController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -50,6 +52,8 @@ class MembersLastUkAddressSelectController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen displayData) { implicit request =>
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
+
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, records)) =>
           val idAddressPairs  = records.map(r => (r.id, MembersLookupLastUkAddress.fromAddressRecord(r)))
@@ -57,7 +61,7 @@ class MembersLastUkAddressSelectController @Inject() (
           val form            = formProvider(ids)
           val addressRadioSet = AddressViewModel.addressRadios(idAddressPairs)
 
-          Ok(view(form, mode, addressRadioSet, postcode))
+          Ok(view(form, mode, addressRadioSet, postcode, fromFinalCYA))
 
         case Some(_: NoAddressFound) =>
           Redirect(MembersLastUkAddressSelectPage.nextPageRecovery(Some(MembersLastUkAddressSelectPage.recoveryModeReturnUrl)))
@@ -67,7 +71,7 @@ class MembersLastUkAddressSelectController @Inject() (
       }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] =
+  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, records)) =>
@@ -77,7 +81,7 @@ class MembersLastUkAddressSelectController @Inject() (
           val addressRadioSet = AddressViewModel.addressRadios(idAddressPairs)
 
           form.bindFromRequest().fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, addressRadioSet, postcode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, addressRadioSet, postcode, fromFinalCYA))),
             selectedId =>
               records.find(_.id == selectedId) match {
                 case Some(record) =>
@@ -88,7 +92,7 @@ class MembersLastUkAddressSelectController @Inject() (
                     savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
                   } yield {
                     savedForLater match {
-                      case Right(Done) => Redirect(MembersLastUkAddressSelectPage.nextPage(mode, updatedAnswers))
+                      case Right(Done) => Redirect(MembersLastUkAddressSelectPage.nextPage(mode, updatedAnswers, fromFinalCYA))
                       case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
                     }
                   }

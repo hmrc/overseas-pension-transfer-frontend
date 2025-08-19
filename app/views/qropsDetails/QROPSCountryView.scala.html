@@ -30,11 +30,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode, fromFinalCYA: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("qropsCountry.title"))) {
 
-    @formHelper(action = controllers.qropsDetails.routes.QROPSCountryController.onSubmit(mode)) {
+    @formHelper(action = controllers.qropsDetails.routes.QROPSCountryController.onSubmit(mode, fromFinalCYA)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

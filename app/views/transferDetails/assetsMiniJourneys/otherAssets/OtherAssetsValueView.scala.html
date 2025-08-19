@@ -40,11 +40,11 @@
 )
 
 
-@(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, index: Int, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("valueOfAsset.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsValueController.onSubmit(mode, index), Symbol("autoComplete") -> "on") {
+    @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsValueController.onSubmit(mode, index, fromFinalCYA), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

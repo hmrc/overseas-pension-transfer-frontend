@@ -16,6 +16,7 @@
 
 package controllers.transferDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.IsTransferCashOnlyFormProvider
 import models.Mode
@@ -36,6 +37,7 @@ import scala.util.Try
 
 class IsTransferCashOnlyController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -52,18 +54,20 @@ class IsTransferCashOnlyController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
+
       val preparedForm = request.userAnswers.get(IsTransferCashOnlyPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, fromFinalCYA))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value))
@@ -71,7 +75,7 @@ class IsTransferCashOnlyController @Inject() (
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, updatedAnswers))
+              case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, updatedAnswers, fromFinalCYA))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }

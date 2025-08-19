@@ -18,7 +18,8 @@ package controllers.transferDetails
 
 import base.SpecBase
 import forms.transferDetails.NetTransferAmountFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode, WhyTransferIsTaxable}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -28,6 +29,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.transferDetails.NetTransferAmountView
 
 import scala.concurrent.Future
@@ -39,7 +41,8 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val amountOfTransferAfterTaxRoute = routes.NetTransferAmountController.onPageLoad(NormalMode).url
+  lazy val amountOfTransferAfterTaxGetRoute  = routes.NetTransferAmountController.onPageLoad(NormalMode).url
+  lazy val amountOfTransferAfterTaxPostRoute = routes.NetTransferAmountController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "AmountOfTransferAfterTax Controller" - {
 
@@ -48,14 +51,14 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, amountOfTransferAfterTaxRoute)
+        val request = FakeRequest(GET, amountOfTransferAfterTaxGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[NetTransferAmountView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -66,14 +69,14 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, amountOfTransferAfterTaxRoute)
+        val request = FakeRequest(GET, amountOfTransferAfterTaxGetRoute)
 
         val view = application.injector.instanceOf[NetTransferAmountView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -92,7 +95,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, amountOfTransferAfterTaxRoute)
+          FakeRequest(POST, amountOfTransferAfterTaxPostRoute)
             .withFormUrlEncodedBody(("netAmount", validAnswer.toString))
 
         val result = route(application, request).value
@@ -108,7 +111,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, amountOfTransferAfterTaxRoute)
+          FakeRequest(POST, amountOfTransferAfterTaxPostRoute)
             .withFormUrlEncodedBody(("netAmount", "invalid value"))
 
         val boundForm = form.bind(Map("netAmount" -> "invalid value"))
@@ -118,7 +121,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -127,7 +130,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, amountOfTransferAfterTaxRoute)
+        val request = FakeRequest(GET, amountOfTransferAfterTaxGetRoute)
 
         val result = route(application, request).value
 
@@ -142,7 +145,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, amountOfTransferAfterTaxRoute)
+          FakeRequest(POST, amountOfTransferAfterTaxPostRoute)
             .withFormUrlEncodedBody(("netAmount", validAnswer.toString))
 
         val result = route(application, request).value
@@ -150,6 +153,35 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.NetTransferAmountController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(("netAmount", validAnswer.toString))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

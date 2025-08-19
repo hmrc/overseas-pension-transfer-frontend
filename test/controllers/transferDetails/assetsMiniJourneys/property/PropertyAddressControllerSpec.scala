@@ -20,9 +20,10 @@ import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormProvider}
-import models.NormalMode
+import models.{CheckMode, NormalMode, WhyTransferIsTaxable}
 import models.address._
 import models.requests.DisplayRequest
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -33,7 +34,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.CountryService
+import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
 
@@ -45,7 +46,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
   private val formProvider = new PropertyAddressFormProvider()
   private val formData     = PropertyAddressFormData.fromDomain(propertyAddress)
 
-  private lazy val propertyAddressRoute = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index).url
+  private lazy val propertyAddressGetRoute  = AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index).url
+  private lazy val propertyAddressPostRoute = AssetsMiniJourneysRoutes.PropertyAddressController.onSubmit(NormalMode, index, fromFinalCYA = false).url
 
   private val testCountries = Seq(
     Country("GB", "United Kingdom"),
@@ -67,7 +69,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
-        val request                                                         = FakeRequest(GET, propertyAddressRoute)
+        val request                                                         = FakeRequest(GET, propertyAddressGetRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form = formProvider()
@@ -81,7 +83,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           form,
           countrySelectViewModel,
           NormalMode,
-          index
+          index,
+          false
         )(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -98,7 +101,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
-        val request                                                         = FakeRequest(GET, propertyAddressRoute)
+        val request                                                         = FakeRequest(GET, propertyAddressGetRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form   = formProvider()
@@ -110,7 +113,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           form.fill(formData),
           countrySelectViewModel,
           NormalMode,
-          index
+          index,
+          false
         )(displayRequest, messages(application)).toString
       }
     }
@@ -135,7 +139,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyAddressRoute)
+          FakeRequest(POST, propertyAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -162,7 +166,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyAddressRoute)
+          FakeRequest(POST, propertyAddressPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
@@ -173,7 +177,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index, false)(
           displayRequest,
           messages(application)
         ).toString
@@ -185,7 +189,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyAddressRoute)
+        val request = FakeRequest(GET, propertyAddressGetRoute)
 
         val result = route(application, request).value
 
@@ -201,12 +205,51 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyAddressRoute)
+          FakeRequest(POST, propertyAddressPostRoute)
             .withFormUrlEncodedBody(("addressLine1", "value 1"), ("addressLine2", "value 2"))
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      when(mockCountryService.countries).thenReturn(testCountries)
+
+      when(mockCountryService.find("GB"))
+        .thenReturn(Some(Country("GB", "United Kingdom")))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[CountryService].toInstance(mockCountryService),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyAddressController.onSubmit(CheckMode, 0, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(
+              "addressLine1" -> "value 1",
+              "addressLine2" -> "value 2",
+              "countryCode"  -> "GB"
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

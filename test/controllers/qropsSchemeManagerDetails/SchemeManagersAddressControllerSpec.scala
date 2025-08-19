@@ -19,9 +19,9 @@ package controllers.qropsSchemeManagerDetails
 import base.{AddressBase, SpecBase}
 import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
-import models.NormalMode
 import models.address.Country
 import models.responses.UserAnswersErrorResponse
+import models.{CheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -44,7 +44,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
   private val form         = formProvider()
   private val formData     = SchemeManagersAddressFormData.fromDomain(schemeManagersAddress)
 
-  private lazy val schemeManagersAddressRoute = routes.SchemeManagersAddressController.onPageLoad(NormalMode).url
+  private lazy val schemeManagersAddressGetRoute  = routes.SchemeManagersAddressController.onPageLoad(NormalMode).url
+  private lazy val schemeManagersAddressPostRoute = routes.SchemeManagersAddressController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val userAnswers = emptyUserAnswers.set(SchemeManagersAddressPage, schemeManagersAddress).success.value
 
@@ -70,7 +71,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val request = FakeRequest(GET, schemeManagersAddressGetRoute)
         val view    = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
@@ -79,7 +80,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          false
         )(request, messages(application)).toString
       }
     }
@@ -95,7 +97,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val request = FakeRequest(GET, schemeManagersAddressGetRoute)
         val view    = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
@@ -104,7 +106,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          false
         )(request, messages(application)).toString
       }
     }
@@ -134,7 +137,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagersAddressRoute)
+          FakeRequest(POST, schemeManagersAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -160,7 +163,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagersAddressRoute)
+          FakeRequest(POST, schemeManagersAddressPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -172,7 +175,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         contentAsString(result) mustEqual view(
           boundForm,
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          false
         )(request, messages(application)).toString
       }
     }
@@ -182,7 +186,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val request = FakeRequest(GET, schemeManagersAddressGetRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -197,7 +201,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagersAddressRoute)
+          FakeRequest(POST, schemeManagersAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2"
@@ -234,7 +238,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, schemeManagersAddressRoute)
+          FakeRequest(POST, schemeManagersAddressPostRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -245,6 +249,39 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.SchemeManagersAddressController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(
+              "addressLine1" -> "value 1",
+              "addressLine2" -> "value 2",
+              "countryCode"  -> "GB"
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

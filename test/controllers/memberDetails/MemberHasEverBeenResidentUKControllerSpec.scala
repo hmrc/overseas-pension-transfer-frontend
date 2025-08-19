@@ -43,7 +43,8 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
   private val formProvider = new MemberHasEverBeenResidentUKFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberHasEverBeenResidentUKRoute = routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode).url
+  private lazy val memberHasEverBeenResidentUKGetRoute  = routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode).url
+  private lazy val memberHasEverBeenResidentUKPostRoute = routes.MemberHasEverBeenResidentUKController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "memberHasEverBeenResidentUK Controller" - {
 
@@ -51,13 +52,13 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
+        val req    = FakeRequest(GET, memberHasEverBeenResidentUKGetRoute)
         val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(
+        contentAsString(result) mustEqual view(form, NormalMode, false)(
           fakeDisplayRequest(req),
           messages(application)
         ).toString
@@ -69,12 +70,12 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
+        val req    = FakeRequest(GET, memberHasEverBeenResidentUKGetRoute)
         val view   = application.injector.instanceOf[MemberHasEverBeenResidentUKView]
         val result = route(application, req).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, false)(
           fakeDisplayRequest(req),
           messages(application)
         ).toString
@@ -99,7 +100,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val req =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, req).value
@@ -127,7 +128,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val request =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody("value" -> "true")
 
         val result = route(application, request).value
@@ -156,7 +157,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val request =
-          FakeRequest(POST, routes.MemberHasEverBeenResidentUKController.onSubmit(CheckMode).url)
+          FakeRequest(POST, routes.MemberHasEverBeenResidentUKController.onSubmit(CheckMode, false).url)
             .withFormUrlEncodedBody("value" -> "true")
 
         val result = route(application, request).value
@@ -189,7 +190,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val request =
-          FakeRequest(POST, routes.MemberHasEverBeenResidentUKController.onSubmit(CheckMode).url)
+          FakeRequest(POST, routes.MemberHasEverBeenResidentUKController.onSubmit(CheckMode, false).url)
             .withFormUrlEncodedBody("value" -> "false")
 
         val result = route(application, request).value
@@ -210,7 +211,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val req =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -218,7 +219,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
         val result    = route(application, req).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(
           fakeDisplayRequest(req),
           messages(application)
         ).toString
@@ -229,7 +230,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
+        val req    = FakeRequest(GET, memberHasEverBeenResidentUKGetRoute)
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
@@ -242,7 +243,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val req =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, req).value
@@ -270,13 +271,42 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val req =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
+          FakeRequest(POST, memberHasEverBeenResidentUKPostRoute)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.MemberHasEverBeenResidentUKController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }
