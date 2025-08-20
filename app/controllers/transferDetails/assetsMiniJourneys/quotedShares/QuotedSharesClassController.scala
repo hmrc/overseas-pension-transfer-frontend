@@ -16,7 +16,6 @@
 
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassFormProvider
 import models.Mode
@@ -32,7 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class QuotedSharesClassController @Inject() (
     override val messagesApi: MessagesApi,
-    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -48,26 +46,24 @@ class QuotedSharesClassController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
-
       val preparedForm = request.userAnswers.get(QuotedSharesClassPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, index, fromFinalCYA))
+      Ok(view(preparedForm, mode, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index, fromFinalCYA))),
+          Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesClassPage(index), value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(QuotedSharesClassPage(index).nextPage(mode, updatedAnswers, fromFinalCYA))
+          } yield Redirect(QuotedSharesClassPage(index).nextPage(mode, updatedAnswers))
       )
   }
 }

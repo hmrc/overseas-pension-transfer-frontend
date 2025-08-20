@@ -18,10 +18,8 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import controllers.transferDetails.routes
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberFormProvider
-import models.{CheckMode, NormalMode, WhyTransferIsTaxable}
-import org.apache.pekko.Done
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -31,7 +29,6 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.UserAnswersService
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberView
 
 import scala.concurrent.Future
@@ -44,8 +41,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
   private val validAnswer = "10"
   private val index       = 0
 
-  lazy val unquotedSharesNumberGetRoute  = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index).url
-  lazy val unquotedSharesNumberPostRoute = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onSubmit(NormalMode, index, fromFinalCYA = false).url
+  lazy val unquotedSharesNumberRoute = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index).url
 
   "UnquotedSharesNumber Controller" - {
 
@@ -54,14 +50,14 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesNumberGetRoute)
+        val request = FakeRequest(GET, unquotedSharesNumberRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[UnquotedSharesNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -72,14 +68,14 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesNumberGetRoute)
+        val request = FakeRequest(GET, unquotedSharesNumberRoute)
 
         val view = application.injector.instanceOf[UnquotedSharesNumberView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -98,7 +94,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesNumberPostRoute)
+          FakeRequest(POST, unquotedSharesNumberRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -114,7 +110,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesNumberPostRoute)
+          FakeRequest(POST, unquotedSharesNumberRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -124,7 +120,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -133,7 +129,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, unquotedSharesNumberGetRoute)
+        val request = FakeRequest(GET, unquotedSharesNumberRoute)
 
         val result = route(application, request).value
 
@@ -148,7 +144,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, unquotedSharesNumberPostRoute)
+          FakeRequest(POST, unquotedSharesNumberRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -156,35 +152,6 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onSubmit(CheckMode, 0, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

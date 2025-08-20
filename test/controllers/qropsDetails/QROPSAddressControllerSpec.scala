@@ -19,7 +19,7 @@ package controllers.qropsDetails
 import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import models.address.Country
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
@@ -44,8 +44,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
   private val form         = formProvider()
   private val formData     = QROPSAddressFormData.fromDomain(qropsAddress)
 
-  private lazy val qropsAddressGetRoute  = routes.QROPSAddressController.onPageLoad(NormalMode).url
-  private lazy val qropsAddressPostRoute = routes.QROPSAddressController.onSubmit(NormalMode, fromFinalCYA = false).url
+  private lazy val qropsAddressRoute = routes.QROPSAddressController.onPageLoad(NormalMode).url
 
   private val userAnswers = emptyUserAnswers.set(QROPSAddressPage, qropsAddress).success.value
 
@@ -71,7 +70,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsAddressGetRoute)
+        val request = FakeRequest(GET, qropsAddressRoute)
         val view    = application.injector.instanceOf[QROPSAddressView]
 
         val result = route(application, request).value
@@ -80,8 +79,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
-          NormalMode,
-          false
+          NormalMode
         )(request, messages(application)).toString
       }
     }
@@ -97,7 +95,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsAddressGetRoute)
+        val request = FakeRequest(GET, qropsAddressRoute)
         val view    = application.injector.instanceOf[QROPSAddressView]
 
         val result = route(application, request).value
@@ -106,8 +104,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
-          NormalMode,
-          false
+          NormalMode
         )(request, messages(application)).toString
       }
     }
@@ -136,7 +133,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsAddressPostRoute)
+          FakeRequest(POST, qropsAddressRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -163,7 +160,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsAddressPostRoute)
+          FakeRequest(POST, qropsAddressRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -175,8 +172,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         contentAsString(result) mustEqual view(
           boundForm,
           countrySelectViewModel,
-          NormalMode,
-          false
+          NormalMode
         )(request, messages(application)).toString
       }
     }
@@ -186,7 +182,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsAddressGetRoute)
+        val request = FakeRequest(GET, qropsAddressRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -201,7 +197,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsAddressPostRoute)
+          FakeRequest(POST, qropsAddressRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2"
@@ -239,7 +235,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsAddressPostRoute)
+          FakeRequest(POST, qropsAddressRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -250,39 +246,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.QROPSAddressController.onSubmit(CheckMode, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(
-              "addressLine1" -> "value 1",
-              "addressLine2" -> "value 2",
-              "countryCode"  -> "GB"
-            )
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

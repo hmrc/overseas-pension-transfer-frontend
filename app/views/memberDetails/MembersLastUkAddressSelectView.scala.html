@@ -32,7 +32,7 @@
 )
 
 
-@(form: Form[_], mode: Mode, addressRadios: Seq[RadioItem], postcode: String, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, addressRadios: Seq[RadioItem], postcode: String)(implicit request: DisplayRequest[_], messages: Messages)
 @memberName = @{request.memberName}
 
 @searchAgain = @{controllers.memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
@@ -43,7 +43,7 @@
 
 @layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title", memberName))) {
 
-    @formHelper(action = controllers.memberDetails.routes.MembersLastUkAddressSelectController.onSubmit(mode, fromFinalCYA), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.memberDetails.routes.MembersLastUkAddressSelectController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

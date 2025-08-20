@@ -16,7 +16,6 @@
 
 package controllers.transferDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.DateOfTransferFormProvider
 import models.Mode
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfTransferController @Inject() (
     override val messagesApi: MessagesApi,
-    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -50,8 +48,6 @@ class DateOfTransferController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
-
       val form = formProvider()
 
       val preparedForm = request.userAnswers.get(DateOfTransferPage) match {
@@ -59,16 +55,16 @@ class DateOfTransferController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, fromFinalCYA))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       val form = formProvider()
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfTransferPage, value))
@@ -76,7 +72,7 @@ class DateOfTransferController @Inject() (
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers, fromFinalCYA))
+              case Right(Done) => Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }

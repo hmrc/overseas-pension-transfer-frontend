@@ -19,7 +19,7 @@ package controllers.qropsDetails
 import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsDetails.QROPSCountryFormProvider
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import models.address.Country
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
@@ -52,8 +52,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
   private val userAnswers = emptyUserAnswers.set(QROPSCountryPage, testCountries.head).success.value
 
-  private lazy val qropsCountryGetRoute  = routes.QROPSCountryController.onPageLoad(NormalMode).url
-  private lazy val qropsCountryPostRoute = routes.QROPSCountryController.onSubmit(NormalMode, fromFinalCYA = false).url
+  private lazy val qropsCountryRoute = routes.QROPSCountryController.onPageLoad(NormalMode).url
 
   "QROPSCountry Controller" - {
     when(mockCountryService.countries).thenReturn(testCountries)
@@ -66,14 +65,14 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         ).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsCountryGetRoute)
+        val request = FakeRequest(GET, qropsCountryRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[QROPSCountryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, countrySelectViewModel, NormalMode, false)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, countrySelectViewModel, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -88,17 +87,14 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsCountryGetRoute)
+        val request = FakeRequest(GET, qropsCountryRoute)
 
         val view = application.injector.instanceOf[QROPSCountryView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(testCountries.head.code), countrySelectViewModel, NormalMode, false)(
-          request,
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(form.fill(testCountries.head.code), countrySelectViewModel, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -120,7 +116,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsCountryPostRoute)
+          FakeRequest(POST, qropsCountryRoute)
             .withFormUrlEncodedBody(("countryCode", "GB"))
 
         val result = route(application, request).value
@@ -138,7 +134,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsCountryPostRoute)
+          FakeRequest(POST, qropsCountryRoute)
             .withFormUrlEncodedBody(("countryCode", ""))
 
         val boundForm = form.bind(Map("countryCode" -> ""))
@@ -148,7 +144,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, false)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -157,7 +153,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsCountryGetRoute)
+        val request = FakeRequest(GET, qropsCountryRoute)
 
         val result = route(application, request).value
 
@@ -172,7 +168,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsCountryPostRoute)
+          FakeRequest(POST, qropsCountryRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -200,42 +196,13 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       running(application) {
         val req =
-          FakeRequest(POST, qropsCountryPostRoute)
+          FakeRequest(POST, qropsCountryRoute)
             .withFormUrlEncodedBody(("countryCode", "GB"))
 
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.QROPSCountryController.onSubmit(CheckMode, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(("countryCode", "GB"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

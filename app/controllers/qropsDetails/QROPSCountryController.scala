@@ -16,7 +16,6 @@
 
 package controllers.qropsDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.qropsDetails.QROPSCountryFormProvider
 import models.Mode
@@ -37,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class QROPSCountryController @Inject() (
     override val messagesApi: MessagesApi,
-    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -54,23 +52,21 @@ class QROPSCountryController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
-
       val preparedForm = request.userAnswers.get(QROPSCountryPage) match {
         case None          => form
         case Some(country) => form.fill(country.code)
       }
 
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-      Ok(view(preparedForm, countrySelectViewModel, mode, fromFinalCYA))
+      Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, fromFinalCYA)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
         },
         countryCode => {
           val maybeCountry: Option[Country] =
@@ -91,7 +87,7 @@ class QROPSCountryController @Inject() (
                 savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
-                  case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers, fromFinalCYA))
+                  case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
                   case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
                 }
               }

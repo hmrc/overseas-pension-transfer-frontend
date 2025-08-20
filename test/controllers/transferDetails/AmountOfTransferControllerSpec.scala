@@ -19,7 +19,7 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.AmountOfTransferFormProvider
-import models.{CheckMode, NormalMode, WhyTransferIsTaxable}
+import models.NormalMode
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -43,8 +43,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val amountOfTransferGetRoute  = routes.AmountOfTransferController.onPageLoad(NormalMode).url
-  lazy val amountOfTransferPostRoute = routes.AmountOfTransferController.onSubmit(NormalMode, fromFinalCYA = false).url
+  lazy val amountOfTransferRoute = routes.AmountOfTransferController.onPageLoad(NormalMode).url
 
   "AmountOfTransfer Controller" - {
 
@@ -53,14 +52,14 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, amountOfTransferGetRoute)
+        val request = FakeRequest(GET, amountOfTransferRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[AmountOfTransferView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -71,14 +70,14 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, amountOfTransferGetRoute)
+        val request = FakeRequest(GET, amountOfTransferRoute)
 
         val view = application.injector.instanceOf[AmountOfTransferView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -100,7 +99,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val request =
-          FakeRequest(POST, amountOfTransferPostRoute)
+          FakeRequest(POST, amountOfTransferRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -116,7 +115,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val request =
-          FakeRequest(POST, amountOfTransferPostRoute)
+          FakeRequest(POST, amountOfTransferRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -126,7 +125,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -135,7 +134,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, amountOfTransferGetRoute)
+        val request = FakeRequest(GET, amountOfTransferRoute)
 
         val result = route(application, request).value
 
@@ -150,7 +149,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val request =
-          FakeRequest(POST, amountOfTransferPostRoute)
+          FakeRequest(POST, amountOfTransferRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
@@ -179,42 +178,13 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       running(application) {
         val req =
-          FakeRequest(POST, amountOfTransferPostRoute)
+          FakeRequest(POST, amountOfTransferRoute)
             .withFormUrlEncodedBody(("value", validAnswer.toString()))
 
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.AmountOfTransferController.onSubmit(CheckMode, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(("value", validAnswer.toString()))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }
