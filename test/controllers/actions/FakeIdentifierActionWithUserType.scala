@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-@import views.ViewUtils.titleNoForm
+package controllers.actions
 
-@this(
-layout: templates.Layout,
-govukSummaryList: GovukSummaryList
-)
+import models.authentication.AuthenticatedUser
+import models.requests.IdentifierRequest
+import play.api.mvc._
 
-@(list: SummaryList)(implicit request: Request[_], messages: Messages)
+import scala.concurrent.{ExecutionContext, Future}
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
+class FakeIdentifierActionWithUserType(
+    user: AuthenticatedUser,
+    val parser: BodyParser[AnyContent]
+  )(implicit val executionContext: ExecutionContext
+  ) extends IdentifierAction {
 
-<h1 class="govuk-heading-l">@messages("checkYourAnswers.heading")</h1>
-
-@govukSummaryList(list)
+  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+    block(IdentifierRequest(request, user))
+  }
 }

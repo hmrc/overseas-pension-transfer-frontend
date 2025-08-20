@@ -30,12 +30,12 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
 @memberName = @{request.memberName}
 
 @layout(pageTitle = title(form, messages("memberDateOfBirth.title", memberName))) {
 
-    @formHelper(action = controllers.memberDetails.routes.MemberDateOfBirthController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.memberDetails.routes.MemberDateOfBirthController.onSubmit(mode, fromFinalCYA), Symbol("autoComplete") -> "on") {
 
         @qtNumber()
         <h1 class="govuk-heading-l">@messages("memberDateOfBirth.heading", memberName)</h1>

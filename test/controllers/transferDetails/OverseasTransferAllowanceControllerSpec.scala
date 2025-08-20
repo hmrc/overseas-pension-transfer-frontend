@@ -19,7 +19,7 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.OverseasTransferAllowanceFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode, WhyTransferIsTaxable}
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -43,7 +43,8 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
   val validAnswer = BigDecimal(0.01)
 
-  private lazy val overseasTransferAllowanceRoute = routes.OverseasTransferAllowanceController.onPageLoad(NormalMode).url
+  private lazy val overseasTransferAllowanceGetRoute  = routes.OverseasTransferAllowanceController.onPageLoad(NormalMode).url
+  private lazy val overseasTransferAllowancePostRoute = routes.OverseasTransferAllowanceController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "OverseasTransferAllowance Controller" - {
 
@@ -52,14 +53,14 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, overseasTransferAllowanceRoute)
+        val request = FakeRequest(GET, overseasTransferAllowanceGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[OverseasTransferAllowanceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -70,14 +71,14 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, overseasTransferAllowanceRoute)
+        val request = FakeRequest(GET, overseasTransferAllowanceGetRoute)
 
         val view = application.injector.instanceOf[OverseasTransferAllowanceView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -99,7 +100,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, overseasTransferAllowanceRoute)
+          FakeRequest(POST, overseasTransferAllowancePostRoute)
             .withFormUrlEncodedBody(("otAllowance", validAnswer.toString))
 
         val result = route(application, request).value
@@ -115,7 +116,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, overseasTransferAllowanceRoute)
+          FakeRequest(POST, overseasTransferAllowancePostRoute)
             .withFormUrlEncodedBody(("otAllowance", "invalid value"))
 
         val boundForm = form.bind(Map("otAllowance" -> "invalid value"))
@@ -125,7 +126,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -134,7 +135,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, overseasTransferAllowanceRoute)
+        val request = FakeRequest(GET, overseasTransferAllowanceGetRoute)
 
         val result = route(application, request).value
 
@@ -149,7 +150,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val request =
-          FakeRequest(POST, overseasTransferAllowanceRoute)
+          FakeRequest(POST, overseasTransferAllowancePostRoute)
             .withFormUrlEncodedBody(("otAllowance", validAnswer.toString))
 
         val result = route(application, request).value
@@ -178,13 +179,42 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       running(application) {
         val req =
-          FakeRequest(POST, overseasTransferAllowanceRoute)
+          FakeRequest(POST, overseasTransferAllowancePostRoute)
             .withFormUrlEncodedBody(("otAllowance", validAnswer.toString))
 
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.OverseasTransferAllowanceController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(("otAllowance", validAnswer.toString))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

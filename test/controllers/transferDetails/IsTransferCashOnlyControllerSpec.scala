@@ -18,7 +18,8 @@ package controllers.transferDetails
 
 import base.SpecBase
 import forms.transferDetails.IsTransferCashOnlyFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode, WhyTransferIsTaxable}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -28,6 +29,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.transferDetails.IsTransferCashOnlyView
 
 import scala.concurrent.Future
@@ -37,7 +39,8 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private val formProvider = new IsTransferCashOnlyFormProvider()
   private val form         = formProvider()
 
-  private lazy val isTransferCashOnlyRoute = routes.IsTransferCashOnlyController.onPageLoad(NormalMode).url
+  private lazy val isTransferCashOnlyGetRoute  = routes.IsTransferCashOnlyController.onPageLoad(NormalMode).url
+  private lazy val isTransferCashOnlyPostRoute = routes.IsTransferCashOnlyController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   "IsTransferCashOnly Controller" - {
 
@@ -46,14 +49,14 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, isTransferCashOnlyRoute)
+        val request = FakeRequest(GET, isTransferCashOnlyGetRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[IsTransferCashOnlyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -64,33 +67,37 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, isTransferCashOnlyRoute)
+        val request = FakeRequest(GET, isTransferCashOnlyGetRoute)
 
         val view = application.injector.instanceOf[IsTransferCashOnlyView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, isTransferCashOnlyRoute)
+          FakeRequest(POST, isTransferCashOnlyPostRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
@@ -106,7 +113,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, isTransferCashOnlyRoute)
+          FakeRequest(POST, isTransferCashOnlyPostRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -116,7 +123,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -125,7 +132,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, isTransferCashOnlyRoute)
+        val request = FakeRequest(GET, isTransferCashOnlyGetRoute)
 
         val result = route(application, request).value
 
@@ -140,13 +147,42 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       running(application) {
         val request =
-          FakeRequest(POST, isTransferCashOnlyRoute)
+          FakeRequest(POST, isTransferCashOnlyPostRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.IsTransferCashOnlyController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

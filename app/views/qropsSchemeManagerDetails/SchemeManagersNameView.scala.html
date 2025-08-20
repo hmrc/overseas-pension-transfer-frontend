@@ -32,11 +32,11 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("schemeManagersName.title"))) {
 
-    @formHelper(action = controllers.qropsSchemeManagerDetails.routes.SchemeManagersNameController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.qropsSchemeManagerDetails.routes.SchemeManagersNameController.onSubmit(mode, fromFinalCYA), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

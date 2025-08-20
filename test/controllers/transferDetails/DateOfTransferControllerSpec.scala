@@ -19,7 +19,7 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.DateOfTransferFormProvider
-import models.NormalMode
+import models.{CheckMode, NormalMode, WhyTransferIsTaxable}
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -46,14 +46,15 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   private val formProvider = new DateOfTransferFormProvider()
   private def form         = formProvider()
 
-  private val validAnswer              = LocalDate.now(ZoneOffset.UTC)
-  private lazy val dateOfTransferRoute = routes.DateOfTransferController.onPageLoad(NormalMode).url
+  private val validAnswer                  = LocalDate.now(ZoneOffset.UTC)
+  private lazy val dateOfTransferGetRoute  = routes.DateOfTransferController.onPageLoad(NormalMode).url
+  private lazy val dateOfTransferPostRoute = routes.DateOfTransferController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, dateOfTransferRoute)
+    FakeRequest(GET, dateOfTransferGetRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest(POST, dateOfTransferRoute)
+    FakeRequest(POST, dateOfTransferPostRoute)
       .withFormUrlEncodedBody(
         "value.day"   -> validAnswer.getDayOfMonth.toString,
         "value.month" -> validAnswer.getMonthValue.toString,
@@ -72,7 +73,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val view    = application.injector.instanceOf[DateOfTransferView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -88,7 +89,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result  = route(application, getRequest()).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -121,7 +122,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       val request =
-        FakeRequest(POST, dateOfTransferRoute)
+        FakeRequest(POST, dateOfTransferPostRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       running(application) {
@@ -132,7 +133,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -181,6 +182,39 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.DateOfTransferController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(
+              "value.day"   -> validAnswer.getDayOfMonth.toString,
+              "value.month" -> validAnswer.getMonthValue.toString,
+              "value.year"  -> validAnswer.getYear.toString
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

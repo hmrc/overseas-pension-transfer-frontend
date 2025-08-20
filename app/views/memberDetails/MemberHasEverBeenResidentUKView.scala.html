@@ -31,12 +31,12 @@
 )
 
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
 @memberName = @{request.memberName}
 
 @layout(pageTitle = title(form, messages("memberHasEverBeenResidentUK.title"))) {
 
-    @formHelper(action = controllers.memberDetails.routes.MemberHasEverBeenResidentUKController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = controllers.memberDetails.routes.MemberHasEverBeenResidentUKController.onSubmit(mode, fromFinalCYA), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

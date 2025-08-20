@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNameFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{NormalMode, PersonName}
+import models.{CheckMode, NormalMode, PersonName}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -41,7 +41,8 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
   private val formProvider = new SchemeManagerOrgIndividualNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val orgIndNameRoute = routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode).url
+  private lazy val orgIndNameGetRoute  = routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode).url
+  private lazy val orgIndNamePostRoute = routes.SchemeManagerOrgIndividualNameController.onSubmit(NormalMode, fromFinalCYA = false).url
 
   private val validAnswer = PersonName("value 1", "value 2")
   private val userAnswers = userAnswersQtNumber.set(SchemeManagerOrgIndividualNamePage, validAnswer).success.value
@@ -53,14 +54,14 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, orgIndNameRoute)
+        val request = FakeRequest(GET, orgIndNameGetRoute)
 
         val view = application.injector.instanceOf[SchemeManagerOrgIndividualNameView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -69,14 +70,14 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, orgIndNameRoute)
+        val request = FakeRequest(GET, orgIndNameGetRoute)
 
         val view = application.injector.instanceOf[SchemeManagerOrgIndividualNameView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode, false)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -101,7 +102,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
       running(application) {
         val request =
-          FakeRequest(POST, orgIndNameRoute)
+          FakeRequest(POST, orgIndNamePostRoute)
             .withFormUrlEncodedBody(("orgIndFirstName", "first name"), ("orgIndLastName", "last name"))
 
         val result = route(application, request).value
@@ -117,7 +118,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
       running(application) {
         val request =
-          FakeRequest(POST, orgIndNameRoute)
+          FakeRequest(POST, orgIndNamePostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -127,7 +128,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -136,7 +137,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, orgIndNameRoute)
+        val request = FakeRequest(GET, orgIndNameGetRoute)
 
         val result = route(application, request).value
 
@@ -151,7 +152,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
       running(application) {
         val request =
-          FakeRequest(POST, orgIndNameRoute)
+          FakeRequest(POST, orgIndNamePostRoute)
             .withFormUrlEncodedBody(("orgIndFirstName", "value 1"), ("orgIndLastName", "value 2"))
 
         val result = route(application, request).value
@@ -179,13 +180,42 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
       running(application) {
         val req =
-          FakeRequest(POST, orgIndNameRoute)
+          FakeRequest(POST, orgIndNamePostRoute)
             .withFormUrlEncodedBody(("orgIndFirstName", "first name"), ("orgIndLastName", "last name"))
 
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.SchemeManagerOrgIndividualNameController.onSubmit(CheckMode, fromFinalCYA = true).url)
+            .withFormUrlEncodedBody(("orgIndFirstName", "first name"), ("orgIndLastName", "last name"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

@@ -16,21 +16,28 @@
 
 package controllers.transferDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.IsTransferCashOnlyFormProvider
 import models.Mode
-import pages.transferDetails.IsTransferCashOnlyPage
+import models.assets.TypeOfAsset
+import org.apache.pekko.Done
+import pages.transferDetails.{AmountOfTransferPage, CashAmountInTransferPage, IsTransferCashOnlyPage, TypeOfAssetPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Writes._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.IsTransferCashOnlyView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class IsTransferCashOnlyController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -38,7 +45,8 @@ class IsTransferCashOnlyController @Inject() (
     displayData: DisplayAction,
     formProvider: IsTransferCashOnlyFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: IsTransferCashOnlyView
+    view: IsTransferCashOnlyView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -46,23 +54,48 @@ class IsTransferCashOnlyController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
+
       val preparedForm = request.userAnswers.get(IsTransferCashOnlyPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, fromFinalCYA))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsTransferCashOnlyPage, value))
+            updatedAnswers <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(IsTransferCashOnlyPage.nextPage(mode, updatedAnswers))
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+          } yield {
+            savedForLater match {
+              case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, updatedAnswers, fromFinalCYA))
+              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
       )
+  }
+
+  private def updateCashOnlyAnswers(userAnswers: models.UserAnswers, isCashOnly: Boolean): Try[models.UserAnswers] = {
+    if (isCashOnly) {
+      val netAmount = userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
+      for {
+        ua1 <- userAnswers.set(CashAmountInTransferPage, netAmount)
+        ua2 <- ua1.set(TypeOfAssetPage, Set[TypeOfAsset](TypeOfAsset.Cash))
+        ua3 <- ua2.set(IsTransferCashOnlyPage, isCashOnly)
+      } yield ua3
+    } else {
+      for {
+        ua1 <- userAnswers.remove(CashAmountInTransferPage)
+        ua2 <- ua1.remove(TypeOfAssetPage)
+        ua3 <- ua2.set(IsTransferCashOnlyPage, isCashOnly)
+      } yield ua3
+    }
   }
 }

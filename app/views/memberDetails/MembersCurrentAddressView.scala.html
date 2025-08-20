@@ -34,13 +34,13 @@
 )
 
 
-@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
 
 @memberName = @{request.memberName}
 
 @layout(pageTitle = title(form, messages("membersCurrentAddress.title"))) {
 
-    @formHelper(action = controllers.memberDetails.routes.MembersCurrentAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.memberDetails.routes.MembersCurrentAddressController.onSubmit(mode, fromFinalCYA), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

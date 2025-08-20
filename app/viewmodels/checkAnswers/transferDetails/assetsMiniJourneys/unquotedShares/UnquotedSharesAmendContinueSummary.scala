@@ -28,19 +28,25 @@ import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object UnquotedSharesAmendContinueSummary extends AppUtils {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): SummaryListRow = {
+  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val count: Int = answers.get(UnquotedSharesQuery).getOrElse(Nil).size
-    val valueText  = messages("unquotedSharesAmendContinue.summary.value", count)
+    val answers   = userAnswers.get(UnquotedSharesQuery)
+    val valueText = messages("unquotedSharesAmendContinue.summary.value", answers.size)
 
-    SummaryListRowViewModel(
-      key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
-      value   = ValueViewModel(valueText),
-      actions = Seq(
-        ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = CheckMode).url)
-          .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
-      )
-    )
+    answers match {
+      case Some(entries) if entries.nonEmpty =>
+        Some(
+          SummaryListRowViewModel(
+            key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
+            value   = ValueViewModel(valueText),
+            actions = Seq(
+              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = CheckMode).url)
+                .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
+            )
+          )
+        )
+      case _                                 => None
+    }
   }
 
   def rows(answers: UserAnswers): Seq[ListItem] = {

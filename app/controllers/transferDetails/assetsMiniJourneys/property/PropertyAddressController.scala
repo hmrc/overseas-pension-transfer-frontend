@@ -16,6 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormProvider}
 import models.Mode
@@ -35,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyAddressController @Inject() (
     override val messagesApi: MessagesApi,
+    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -50,22 +52,24 @@ class PropertyAddressController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
+      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
+
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(PropertyAddressPage(index)) match {
         case None          => form
         case Some(address) => form.fill(PropertyAddressFormData.fromDomain(address))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-      Ok(view(preparedForm, countrySelectViewModel, mode, index))
+      Ok(view(preparedForm, countrySelectViewModel, mode, index, fromFinalCYA))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       val form = formProvider()
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, index)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, index, fromFinalCYA)))
         },
         formData =>
           addressService.propertyAddress(formData) match {
@@ -77,7 +81,7 @@ class PropertyAddressController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyAddressPage(index), addressToSave))
                 _              <- sessionRepository.set(updatedAnswers).map(_ => logger.info(Json.stringify(updatedAnswers.data)))
-              } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
+              } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers, fromFinalCYA))
           }
       )
   }
