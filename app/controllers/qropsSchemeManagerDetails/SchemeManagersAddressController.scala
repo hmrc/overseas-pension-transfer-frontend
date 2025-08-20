@@ -16,7 +16,6 @@
 
 package controllers.qropsSchemeManagerDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.Mode
@@ -41,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeManagersAddressController @Inject() (
     override val messagesApi: MessagesApi,
-    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -59,8 +57,6 @@ class SchemeManagersAddressController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
-
       val userAnswers  = request.userAnswers
       val preparedForm = userAnswers.get(SchemeManagersAddressPage) match {
         case None          => form
@@ -69,15 +65,15 @@ class SchemeManagersAddressController @Inject() (
 
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
 
-      Ok(view(preparedForm, countrySelectViewModel, mode, fromFinalCYA))
+      Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, fromFinalCYA)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
         },
         formData => {
           addressService.schemeManagersAddress(formData) match {
@@ -96,7 +92,7 @@ class SchemeManagersAddressController @Inject() (
                 savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
-                  case Right(Done) => Redirect(SchemeManagersAddressPage.nextPage(mode, updatedAnswers, fromFinalCYA))
+                  case Right(Done) => Redirect(SchemeManagersAddressPage.nextPage(mode, updatedAnswers))
                   case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
                 }
               }

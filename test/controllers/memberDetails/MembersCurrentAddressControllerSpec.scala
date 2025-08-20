@@ -19,7 +19,7 @@ package controllers.memberDetails
 import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import models.address._
 import models.requests.DisplayRequest
 import models.responses.UserAnswersErrorResponse
@@ -45,8 +45,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
   private val formProvider = new MembersCurrentAddressFormProvider()
   private val formData     = MembersCurrentAddressFormData.fromDomain(membersCurrentAddress)
 
-  private lazy val membersCurrentAddressGetRoute  = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
-  private lazy val membersCurrentAddressPostRoute = routes.MembersCurrentAddressController.onSubmit(NormalMode, fromFinalCYA = false).url
+  private lazy val membersCurrentAddressRoute = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
 
   private val testCountries = Seq(
     Country("GB", "United Kingdom"),
@@ -68,7 +67,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
-        val request                                                         = FakeRequest(GET, membersCurrentAddressGetRoute)
+        val request                                                         = FakeRequest(GET, membersCurrentAddressRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form = formProvider()
@@ -81,8 +80,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
-          NormalMode,
-          false
+          NormalMode
         )(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -99,7 +97,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       when(mockCountryService.countries).thenReturn(testCountries)
 
       running(application) {
-        val request                                                         = FakeRequest(GET, membersCurrentAddressGetRoute)
+        val request                                                         = FakeRequest(GET, membersCurrentAddressRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
         val form   = formProvider()
@@ -110,8 +108,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
-          NormalMode,
-          false
+          NormalMode
         )(displayRequest, messages(application)).toString
       }
     }
@@ -140,7 +137,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersCurrentAddressPostRoute)
+          FakeRequest(POST, membersCurrentAddressRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -167,7 +164,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersCurrentAddressPostRoute)
+          FakeRequest(POST, membersCurrentAddressRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
@@ -178,7 +175,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, false)(
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
           displayRequest,
           messages(application)
         ).toString
@@ -190,7 +187,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, membersCurrentAddressGetRoute)
+        val request = FakeRequest(GET, membersCurrentAddressRoute)
 
         val result = route(application, request).value
 
@@ -206,7 +203,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersCurrentAddressPostRoute)
+          FakeRequest(POST, membersCurrentAddressRoute)
             .withFormUrlEncodedBody(("addressLine1", "value 1"), ("addressLine2", "value 2"))
         val result  = route(application, request).value
 
@@ -233,7 +230,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       running(application) {
         val request =
-          FakeRequest(POST, membersCurrentAddressPostRoute)
+          FakeRequest(POST, membersCurrentAddressRoute)
             .withFormUrlEncodedBody(
               "addressLine1" -> "value 1",
               "addressLine2" -> "value 2",
@@ -244,39 +241,6 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.MembersCurrentAddressController.onSubmit(CheckMode, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(
-              "addressLine1" -> "value 1",
-              "addressLine2" -> "value 2",
-              "countryCode"  -> "GB"
-            )
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

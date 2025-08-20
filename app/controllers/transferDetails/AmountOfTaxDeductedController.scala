@@ -16,7 +16,6 @@
 
 package controllers.transferDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.transferDetails.AmountOfTaxDeductedFormProvider
 import models.Mode
@@ -32,7 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AmountOfTaxDeductedController @Inject() (
     override val messagesApi: MessagesApi,
-    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -48,26 +46,24 @@ class AmountOfTaxDeductedController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
-
       val preparedForm = request.userAnswers.get(AmountOfTaxDeductedPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, fromFinalCYA))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountOfTaxDeductedPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(AmountOfTaxDeductedPage.nextPage(mode, updatedAnswers, fromFinalCYA))
+          } yield Redirect(AmountOfTaxDeductedPage.nextPage(mode, updatedAnswers))
       )
   }
 }

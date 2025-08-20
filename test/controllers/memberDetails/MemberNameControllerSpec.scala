@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberNameFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{CheckMode, NormalMode, PersonName}
+import models.{NormalMode, PersonName}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -43,8 +43,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
   private val formProvider = new MemberNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberNameRoute     = routes.MemberNameController.onPageLoad(NormalMode).url
-  private lazy val memberNamePostRoute = routes.MemberNameController.onSubmit(NormalMode, fromFinalCYA = false).url
+  private lazy val memberNameRoute = routes.MemberNameController.onPageLoad(NormalMode).url
 
   private val validAnswer = PersonName("value 1", "value 2")
   private val userAnswers = emptyUserAnswers.set(MemberNamePage, validAnswer).success.value
@@ -63,7 +62,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, fromFinalCYA = false)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -79,10 +78,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode, fromFinalCYA = false)(
-          request,
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -103,7 +99,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNamePostRoute)
+          FakeRequest(POST, memberNameRoute)
             .withFormUrlEncodedBody(("memberFirstName", "first name"), ("memberLastName", "last name"))
 
         val result = route(application, request).value
@@ -119,7 +115,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNamePostRoute)
+          FakeRequest(POST, memberNameRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -129,7 +125,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, fromFinalCYA = false)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(request, messages(application)).toString
       }
     }
 
@@ -138,7 +134,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberNameRoute).withHeaders(("Referer", "/last-url"))
+        val request = FakeRequest(GET, memberNameRoute)
 
         val result = route(application, request).value
 
@@ -153,7 +149,7 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNamePostRoute)
+          FakeRequest(POST, memberNameRoute)
             .withFormUrlEncodedBody(("memberFirstName", "value 1"), ("memberLastName", "value 2"))
 
         val result = route(application, request).value
@@ -181,42 +177,13 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       running(application) {
         val request =
-          FakeRequest(POST, memberNamePostRoute)
+          FakeRequest(POST, memberNameRoute)
             .withFormUrlEncodedBody(("memberFirstName", "first name"), ("memberLastName", "last name"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.MemberNameController.onSubmit(CheckMode, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(("memberFirstName", "first name"), ("memberLastName", "last name"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }
