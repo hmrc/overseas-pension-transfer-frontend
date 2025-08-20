@@ -19,7 +19,7 @@ package controllers.qropsDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsDetails.QROPSNameFormProvider
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -41,8 +41,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
   private val formProvider = new QROPSNameFormProvider()
   private val form         = formProvider()
 
-  private lazy val qropsNameGetRoute  = routes.QROPSNameController.onPageLoad(NormalMode).url
-  private lazy val qropsNamePostRoute = routes.QROPSNameController.onSubmit(NormalMode, fromFinalCYA = false).url
+  private lazy val qropsNameRoute = routes.QROPSNameController.onPageLoad(NormalMode).url
 
   "QropsName Controller" - {
 
@@ -51,14 +50,14 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsNameGetRoute)
+        val request = FakeRequest(GET, qropsNameRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[QROPSNameView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -69,14 +68,14 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsNameGetRoute)
+        val request = FakeRequest(GET, qropsNameRoute)
 
         val view = application.injector.instanceOf[QROPSNameView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -98,7 +97,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsNamePostRoute)
+          FakeRequest(POST, qropsNameRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -114,7 +113,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsNamePostRoute)
+          FakeRequest(POST, qropsNameRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -124,7 +123,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -133,7 +132,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsNameGetRoute)
+        val request = FakeRequest(GET, qropsNameRoute)
 
         val result = route(application, request).value
 
@@ -148,7 +147,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       running(application) {
         val request =
-          FakeRequest(POST, qropsNamePostRoute)
+          FakeRequest(POST, qropsNameRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -176,42 +175,13 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       running(application) {
         val req =
-          FakeRequest(POST, qropsNamePostRoute)
+          FakeRequest(POST, qropsNameRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.QROPSNameController.onSubmit(CheckMode, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

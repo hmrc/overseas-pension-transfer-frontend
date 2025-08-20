@@ -16,7 +16,6 @@
 
 package controllers.memberDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.memberDetails.MemberDateOfLeavingUKFormProvider
 import models.Mode
@@ -34,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDateOfLeavingUKController @Inject() (
     override val messagesApi: MessagesApi,
-    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -49,8 +47,6 @@ class MemberDateOfLeavingUKController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
-
       val form = formProvider()
 
       val preparedForm = request.userAnswers.get(MemberDateOfLeavingUKPage) match {
@@ -58,15 +54,15 @@ class MemberDateOfLeavingUKController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, fromFinalCYA))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       val form = formProvider()
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             userAnswers   <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
@@ -74,7 +70,7 @@ class MemberDateOfLeavingUKController @Inject() (
             savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(MemberDateOfLeavingUKPage.nextPage(mode, userAnswers, fromFinalCYA))
+              case Right(Done) => Redirect(MemberDateOfLeavingUKPage.nextPage(mode, userAnswers))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }

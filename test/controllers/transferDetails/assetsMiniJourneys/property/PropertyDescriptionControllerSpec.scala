@@ -19,8 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyDescriptionFormProvider
-import models.{CheckMode, NormalMode, WhyTransferIsTaxable}
-import org.apache.pekko.Done
+import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,7 +29,6 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.UserAnswersService
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyDescriptionView
 
 import scala.concurrent.Future
@@ -41,8 +39,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
   private val form         = formProvider()
   private val index        = 0
 
-  private lazy val propertyDescriptionGetRoute   = AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index).url
-  private lazy val propertyDescriptionGPostRoute = AssetsMiniJourneysRoutes.PropertyDescriptionController.onSubmit(NormalMode, index, fromFinalCYA = false).url
+  private lazy val propertyDescriptionRoute = AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index).url
 
   "propertyDescription Controller" - {
 
@@ -51,14 +48,14 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyDescriptionGetRoute)
+        val request = FakeRequest(GET, propertyDescriptionRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[PropertyDescriptionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -69,14 +66,14 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyDescriptionGetRoute)
+        val request = FakeRequest(GET, propertyDescriptionRoute)
 
         val view = application.injector.instanceOf[PropertyDescriptionView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -93,7 +90,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyDescriptionGPostRoute)
+          FakeRequest(POST, propertyDescriptionRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -109,7 +106,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyDescriptionGPostRoute)
+          FakeRequest(POST, propertyDescriptionRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -119,7 +116,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -128,7 +125,7 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyDescriptionGetRoute)
+        val request = FakeRequest(GET, propertyDescriptionRoute)
 
         val result = route(application, request).value
 
@@ -143,42 +140,13 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, propertyDescriptionGPostRoute)
+          FakeRequest(POST, propertyDescriptionRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyDescriptionController.onSubmit(CheckMode, 0, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

@@ -32,11 +32,11 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("qropsName.title"))) {
 
-    @formHelper(action = controllers.qropsDetails.routes.QROPSNameController.onSubmit(mode, fromFinalCYA)) {
+    @formHelper(action = controllers.qropsDetails.routes.QROPSNameController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

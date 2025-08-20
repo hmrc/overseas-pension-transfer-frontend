@@ -19,8 +19,8 @@ package controllers.qropsSchemeManagerDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.SchemeManagersContactFormProvider
+import models.NormalMode
 import models.responses.UserAnswersErrorResponse
-import models.{CheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -41,8 +41,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
   private val formProvider = new SchemeManagersContactFormProvider()
   private val form         = formProvider()
 
-  private lazy val schemeManagersContactGetRoute  = routes.SchemeManagersContactController.onPageLoad(NormalMode).url
-  private lazy val schemeManagersContactPostRoute = routes.SchemeManagersContactController.onSubmit(NormalMode, fromFinalCYA = false).url
+  private lazy val schemeManagersContactRoute = routes.SchemeManagersContactController.onPageLoad(NormalMode).url
 
   "SchemeManagersContact Controller" - {
 
@@ -51,14 +50,14 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersContactGetRoute)
+        val request = FakeRequest(GET, schemeManagersContactRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[SchemeManagersContactView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -69,14 +68,14 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersContactGetRoute)
+        val request = FakeRequest(GET, schemeManagersContactRoute)
 
         val view = application.injector.instanceOf[SchemeManagersContactView]
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -98,7 +97,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagersContactPostRoute)
+          FakeRequest(POST, schemeManagersContactRoute)
             .withFormUrlEncodedBody(("contactNumber", "+447399002250"))
 
         val result = route(application, request).value
@@ -114,7 +113,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagersContactPostRoute)
+          FakeRequest(POST, schemeManagersContactRoute)
             .withFormUrlEncodedBody(("contactNumber", ""))
 
         val boundForm = form.bind(Map("contactNumber" -> ""))
@@ -124,7 +123,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -133,7 +132,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersContactGetRoute)
+        val request = FakeRequest(GET, schemeManagersContactRoute)
 
         val result = route(application, request).value
 
@@ -148,7 +147,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, schemeManagersContactPostRoute)
+          FakeRequest(POST, schemeManagersContactRoute)
             .withFormUrlEncodedBody(("contactNumber", "answer"))
 
         val result = route(application, request).value
@@ -176,42 +175,13 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, schemeManagersContactPostRoute)
+          FakeRequest(POST, schemeManagersContactRoute)
             .withFormUrlEncodedBody(("contactNumber", "+447399002250"))
 
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.SchemeManagersContactController.onSubmit(CheckMode, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(("contactNumber", "+447399002250"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

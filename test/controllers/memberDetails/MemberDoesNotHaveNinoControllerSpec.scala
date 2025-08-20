@@ -19,7 +19,7 @@ package controllers.memberDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberDoesNotHaveNinoFormProvider
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -41,8 +41,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
   private val formProvider = new MemberDoesNotHaveNinoFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberDoesNotHaveNinoGetRoute  = routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode).url
-  private lazy val memberDoesNotHaveNinoPostRoute = routes.MemberDoesNotHaveNinoController.onSubmit(NormalMode, fromFinalCYA = false).url
+  private lazy val memberDoesNotHaveNinoRoute = routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode).url
 
   "MemberDoesNotHaveNino Controller" - {
 
@@ -51,13 +50,13 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberDoesNotHaveNinoGetRoute)
+        val req    = FakeRequest(GET, memberDoesNotHaveNinoRoute)
         val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberDoesNotHaveNinoView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, false)(
+        contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
         ).toString
@@ -72,12 +71,12 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberDoesNotHaveNinoGetRoute)
+        val req    = FakeRequest(GET, memberDoesNotHaveNinoRoute)
         val view   = application.injector.instanceOf[MemberDoesNotHaveNinoView]
         val result = route(application, req).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, false)(
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
           fakeDisplayRequest(req, userAnswers),
           messages(application)
         ).toString
@@ -102,7 +101,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, memberDoesNotHaveNinoPostRoute)
+          FakeRequest(POST, memberDoesNotHaveNinoRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, req).value
@@ -118,7 +117,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, memberDoesNotHaveNinoPostRoute)
+          FakeRequest(POST, memberDoesNotHaveNinoRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -126,7 +125,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
         val result    = route(application, req).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
         ).toString
@@ -138,7 +137,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val req    = FakeRequest(GET, memberDoesNotHaveNinoGetRoute)
+        val req    = FakeRequest(GET, memberDoesNotHaveNinoRoute)
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
@@ -152,7 +151,7 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, memberDoesNotHaveNinoPostRoute)
+          FakeRequest(POST, memberDoesNotHaveNinoRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, req).value
@@ -180,42 +179,13 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val req =
-          FakeRequest(POST, memberDoesNotHaveNinoPostRoute)
+          FakeRequest(POST, memberDoesNotHaveNinoRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.MemberDoesNotHaveNinoController.onSubmit(CheckMode, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

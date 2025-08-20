@@ -16,7 +16,6 @@
 
 package controllers.memberDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.memberDetails.MemberIsResidentUKFormProvider
 import models.Mode
@@ -34,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MemberIsResidentUKController @Inject() (
     override val messagesApi: MessagesApi,
-    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -52,21 +50,19 @@ class MemberIsResidentUKController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
-
       val preparedForm = request.userAnswers.get(MemberIsResidentUKPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, fromFinalCYA))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, fromFinalCYA))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           val previousValue = request.userAnswers.get(MemberIsResidentUKPage)
 
@@ -78,7 +74,7 @@ class MemberIsResidentUKController @Inject() (
             redirectMode    = memberDetailsService.getMemberIsResidentUKRedirectMode(mode, previousValue, value)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(MemberIsResidentUKPage.nextPage(redirectMode, updatedAnswers, fromFinalCYA))
+              case Right(Done) => Redirect(MemberIsResidentUKPage.nextPage(redirectMode, updatedAnswers))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }

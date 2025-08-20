@@ -41,11 +41,11 @@
 )
 
 
-@(form: Form[_], mode: Mode, index: Int, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("unquotedSharesValue.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.UnquotedSharesValueController.onSubmit(mode, index, fromFinalCYA), Symbol("autoComplete") -> "on") {
+    @formHelper(action = AssetsMiniJourneysRoutes.UnquotedSharesValueController.onSubmit(mode, index), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

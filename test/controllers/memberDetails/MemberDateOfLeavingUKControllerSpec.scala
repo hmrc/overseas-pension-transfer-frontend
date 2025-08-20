@@ -19,7 +19,7 @@ package controllers.memberDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberDateOfLeavingUKFormProvider
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -46,15 +46,14 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
   private val formProvider = new MemberDateOfLeavingUKFormProvider()
   private def form         = formProvider()
 
-  private val validAnswer                         = LocalDate.now(ZoneOffset.UTC)
-  private lazy val memberDateOfLeavingUKGetRoute  = routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode).url
-  private lazy val memberDateOfLeavingUKPostRoute = routes.MemberDateOfLeavingUKController.onSubmit(NormalMode, fromFinalCYA = false).url
+  private val validAnswer                     = LocalDate.now(ZoneOffset.UTC)
+  private lazy val memberDateOfLeavingUKRoute = routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, memberDateOfLeavingUKGetRoute)
+    FakeRequest(GET, memberDateOfLeavingUKRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest(POST, memberDateOfLeavingUKPostRoute)
+    FakeRequest(POST, memberDateOfLeavingUKRoute)
       .withFormUrlEncodedBody(
         "value.day"   -> validAnswer.getDayOfMonth.toString,
         "value.month" -> validAnswer.getMonthValue.toString,
@@ -73,7 +72,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
         val view = application.injector.instanceOf[MemberDateOfLeavingUKView]
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, false)(
+        contentAsString(result) mustEqual view(form, NormalMode)(
           fakeDisplayRequest(req),
           messages(application)
         ).toString
@@ -90,7 +89,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
         val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, false)(
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -124,7 +123,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
       val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
 
-      val request = FakeRequest(POST, memberDateOfLeavingUKPostRoute)
+      val request = FakeRequest(POST, memberDateOfLeavingUKRoute)
         .withFormUrlEncodedBody(("value", "invalid value"))
 
       running(application) {
@@ -133,7 +132,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, false)(
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
@@ -182,50 +181,13 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
       running(application) {
         val request =
-          FakeRequest(POST, memberDateOfLeavingUKPostRoute)
-            .withFormUrlEncodedBody(
-              "value.day"   -> validAnswer.getDayOfMonth.toString,
-              "value.month" -> validAnswer.getMonthValue.toString,
-              "value.year"  -> validAnswer.getYear.toString
-            )
+          FakeRequest(POST, memberDateOfLeavingUKRoute)
+            .withFormUrlEncodedBody(("value", "AB123456A"))
 
         val result = route(application, postRequest()).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.MemberDateOfLeavingUKController.onSubmit(CheckMode, fromFinalCYA = true).url)
-            .withFormUrlEncodedBody(
-              "value.day"   -> validAnswer.getDayOfMonth.toString,
-              "value.month" -> validAnswer.getMonthValue.toString,
-              "value.year"  -> validAnswer.getYear.toString
-            )
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }

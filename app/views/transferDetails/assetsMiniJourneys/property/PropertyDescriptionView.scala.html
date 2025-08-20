@@ -34,11 +34,11 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode, index: Int, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("propertyDescription.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.PropertyDescriptionController.onSubmit(mode, index, fromFinalCYA)) {
+    @formHelper(action = AssetsMiniJourneysRoutes.PropertyDescriptionController.onSubmit(mode, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

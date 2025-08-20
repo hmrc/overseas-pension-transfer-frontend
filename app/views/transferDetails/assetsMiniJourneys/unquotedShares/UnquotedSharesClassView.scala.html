@@ -38,11 +38,11 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode, index: Int, fromFinalCYA: Boolean)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("unquotedSharesClass.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.UnquotedSharesClassController.onSubmit(mode, index, fromFinalCYA)) {
+    @formHelper(action = AssetsMiniJourneysRoutes.UnquotedSharesClassController.onSubmit(mode, index)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

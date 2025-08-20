@@ -16,7 +16,6 @@
 
 package controllers.memberDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.memberDetails.MemberConfirmLastUkAddressFormProvider
 import models.address.MembersLastUKAddress
@@ -37,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MembersLastUkAddressConfirmController @Inject() (
     override val messagesApi: MessagesApi,
-    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -55,13 +53,11 @@ class MembersLastUkAddressConfirmController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
-
       val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
         case Some(selectedAddress) =>
           val viewModel = AddressViewModel.fromAddress(selectedAddress)
-          Ok(view(form, mode, viewModel, fromFinalCYA))
+          Ok(view(form, mode, viewModel))
         case _                     =>
           Redirect(
             routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
@@ -69,7 +65,7 @@ class MembersLastUkAddressConfirmController @Inject() (
       }
   }
 
-  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
@@ -78,7 +74,7 @@ class MembersLastUkAddressConfirmController @Inject() (
           val addressToSave = MembersLastUKAddress.fromAddress(selectedAddress)
           formProvider().bindFromRequest().fold(
             formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, mode, viewModel, fromFinalCYA)))
+              Future.successful(BadRequest(view(formWithErrors, mode, viewModel)))
             },
             _ =>
               for {
@@ -89,7 +85,7 @@ class MembersLastUkAddressConfirmController @Inject() (
                 savedForLater   <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
-                  case Right(Done) => Redirect(MembersLastUkAddressConfirmPage.nextPage(mode, updatedAnswers, fromFinalCYA))
+                  case Right(Done) => Redirect(MembersLastUkAddressConfirmPage.nextPage(mode, updatedAnswers))
                   case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
                 }
               }

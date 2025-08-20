@@ -71,6 +71,4 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val addressLookupService: String = baseUrl("address-lookup")
 
   val localLoggingEnabled: Boolean = configuration.get[Boolean]("localLoggingEnabled")
-
-  val finalCheckAnswersUrl: String = configuration.get[String]("urls.finalCheckAnswers")
 }

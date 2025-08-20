@@ -16,7 +16,6 @@
 
 package controllers.memberDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.Mode
@@ -37,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MembersCurrentAddressController @Inject() (
     override val messagesApi: MessagesApi,
-    appConfig: FrontendAppConfig,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -55,24 +53,22 @@ class MembersCurrentAddressController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val fromFinalCYA: Boolean = request.request.headers.get(REFERER).getOrElse("/") == appConfig.finalCheckAnswersUrl
-
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(MembersCurrentAddressPage) match {
         case None          => form
         case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(address))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-      Ok(view(preparedForm, countrySelectViewModel, mode, fromFinalCYA))
+      Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode, fromFinalCYA: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       val form = formProvider()
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, fromFinalCYA)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
         },
         formData =>
           addressService.membersCurrentAddress(formData) match {
@@ -87,7 +83,7 @@ class MembersCurrentAddressController @Inject() (
                 savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers)
               } yield {
                 savedForLater match {
-                  case Right(Done) => Redirect(MembersCurrentAddressPage.nextPage(mode, userAnswers, fromFinalCYA))
+                  case Right(Done) => Redirect(MembersCurrentAddressPage.nextPage(mode, userAnswers))
                   case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
                 }
 

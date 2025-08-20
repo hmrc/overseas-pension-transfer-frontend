@@ -19,7 +19,7 @@ package controllers.memberDetails
 import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberConfirmLastUkAddressFormProvider
-import models.{CheckMode, NormalMode}
+import models.NormalMode
 import models.address.MembersLookupLastUkAddress
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
@@ -40,11 +40,10 @@ import scala.concurrent.Future
 
 class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
 
-  private val formProvider                             = new MemberConfirmLastUkAddressFormProvider()
-  private val form                                     = formProvider()
-  private lazy val memberConfirmLastUkAddressGetRoute  = routes.MembersLastUkAddressConfirmController.onPageLoad(NormalMode).url
-  private lazy val memberConfirmLastUkAddressPostRoute = routes.MembersLastUkAddressConfirmController.onSubmit(NormalMode, fromFinalCYA = false).url
-  private val address                                  = MembersLookupLastUkAddress.fromAddressRecord(selectedRecord)
+  private val formProvider                         = new MemberConfirmLastUkAddressFormProvider()
+  private val form                                 = formProvider()
+  private lazy val memberConfirmLastUkAddressRoute = routes.MembersLastUkAddressConfirmController.onPageLoad(NormalMode).url
+  private val address                              = MembersLookupLastUkAddress.fromAddressRecord(selectedRecord)
 
   "MemberConfirmLastUkAddress Controller" - {
 
@@ -53,13 +52,13 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       val application = applicationBuilder(userAnswers = Some(addressSelectedUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberConfirmLastUkAddressGetRoute)
+        val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
         val result  = route(application, request).value
 
         val view = application.injector.instanceOf[MembersLastUkAddressConfirmView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, address, false)(
+        contentAsString(result) mustEqual view(form, NormalMode, address)(
           fakeDisplayRequest(request, addressSelectedUserAnswers),
           messages(application)
         ).toString
@@ -71,12 +70,12 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       val application = applicationBuilder(userAnswers = Some(addressSelectedUserAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberConfirmLastUkAddressGetRoute)
+        val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
         val view    = application.injector.instanceOf[MembersLastUkAddressConfirmView]
         val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode, address, false)(
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode, address)(
           fakeDisplayRequest(request, addressSelectedUserAnswers),
           messages(application)
         ).toString
@@ -100,7 +99,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, memberConfirmLastUkAddressPostRoute)
+        val request = FakeRequest(POST, memberConfirmLastUkAddressRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -113,7 +112,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, memberConfirmLastUkAddressGetRoute)
+        val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
@@ -127,7 +126,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
       running(application) {
         val request =
-          FakeRequest(POST, memberConfirmLastUkAddressPostRoute)
+          FakeRequest(POST, memberConfirmLastUkAddressRoute)
             .withFormUrlEncodedBody(("value", "true"))
         val result  = route(application, request).value
 
@@ -154,41 +153,13 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
       running(application) {
         val req =
-          FakeRequest(POST, memberConfirmLastUkAddressPostRoute)
+          FakeRequest(POST, memberConfirmLastUkAddressRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to final Check Your Answers page for a POST fromFinalCYA = true and Mode = CheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(Some(addressSelectedUserAnswers))
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.MembersLastUkAddressConfirmController.onSubmit(CheckMode, fromFinalCYA = true).url)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
   }
