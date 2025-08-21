@@ -27,25 +27,32 @@ import scala.util.{Success, Try}
 @Singleton
 class TaskService @Inject() {
 
-  def unblockTasksOnMemberDetailsCompletion(userAnswers: UserAnswers): Try[UserAnswers] = {
-    userAnswers
-      .get(TaskStatusQuery(TaskCategory.MemberDetails))
-      .filter(_ == Completed)
-      .map { _ =>
-        TaskCategory.valuesWithoutSubmission.foldLeft(Try(userAnswers)) { (uaTry, category) =>
-          uaTry.flatMap(ua =>
-            if (ua.get(TaskStatusQuery(category)).contains(CannotStart)) {
-              ua.set(TaskStatusQuery(category), NotStarted)
+  def updateTaskStatusesOnMemberDetailsComplete(userAnswers: UserAnswers): Try[UserAnswers] = {
+    val others =
+      TaskCategory.valuesWithoutSubmission.filterNot(_ == TaskCategory.MemberDetails)
+
+    userAnswers.get(TaskStatusQuery(TaskCategory.MemberDetails)) match {
+      case Some(Completed) =>
+        // Unblock: only lift those that are currently CannotStart -> NotStarted
+        others.foldLeft(Try(userAnswers)) { (uaT, cat) =>
+          uaT.flatMap { ua =>
+            if (ua.get(TaskStatusQuery(cat)).contains(CannotStart)) {
+              ua.set(TaskStatusQuery(cat), NotStarted)
             } else {
-              Try(ua)
+              Success(ua)
             }
-          )
+          }
         }
-      }
-      .getOrElse(Try(userAnswers))
+
+      case _ =>
+        // Block: force others to CannotStart if MemberDetails in progress
+        others.foldLeft(Try(userAnswers)) { (uaT, cat) =>
+          uaT.flatMap(_.set(TaskStatusQuery(cat), CannotStart))
+        }
+    }
   }
 
-  def unblockSubmissionOnAllTasksCompletion(userAnswers: UserAnswers): Try[UserAnswers] = {
+  def updateSubmissionTaskStatus(userAnswers: UserAnswers): Try[UserAnswers] = {
     val allPrereqsDone =
       TaskCategory.valuesWithoutSubmission.forall { cat =>
         userAnswers.get(TaskStatusQuery(cat)).contains(Completed)
@@ -59,7 +66,8 @@ class TaskService @Inject() {
           Success(userAnswers)
       }
     } else {
-      Success(userAnswers)
+      // At least one prerequisite isn’t Completed → (re)block submission
+      userAnswers.set(TaskStatusQuery(SubmissionDetails), CannotStart)
     }
   }
 

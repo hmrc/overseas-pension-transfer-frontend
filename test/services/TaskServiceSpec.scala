@@ -27,7 +27,7 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
 
   private val service = new TaskService
 
-  "unblockTasksOnMemberDetailsCompletion" - {
+  "updateTaskStatusesOnMemberDetailsComplete" - {
 
     "must set non-submission tasks from CannotStart -> NotStarted when MemberDetails is Completed " +
       "and leave other statuses and SubmissionDetails unchanged" in {
@@ -38,7 +38,7 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
             .set(TaskStatusQuery(TaskCategory.QROPSDetails), InProgress).success.value
             .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), CannotStart).success.value
             .set(TaskStatusQuery(TaskCategory.SubmissionDetails), CannotStart).success.value
-        val result           = service.unblockTasksOnMemberDetailsCompletion(ua0)
+        val result           = service.updateTaskStatusesOnMemberDetailsComplete(ua0)
 
         result.isSuccess mustBe true
         val ua = result.get
@@ -50,20 +50,66 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
         ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)) mustBe Some(CannotStart)
       }
 
-    "must leave UserAnswers unchanged when MemberDetails is not Completed" in {
+    "must set non-submission tasks to CannotStart when MemberDetails is not Completed " in {
       val ua0: UserAnswers =
         emptyUserAnswers
-          .set(TaskStatusQuery(TaskCategory.MemberDetails), NotStarted).success.value
-          .set(TaskStatusQuery(TaskCategory.TransferDetails), CannotStart).success.value
+          .set(TaskStatusQuery(TaskCategory.MemberDetails), InProgress).success.value
+          .set(TaskStatusQuery(TaskCategory.TransferDetails), InProgress).success.value
+          .set(TaskStatusQuery(TaskCategory.QROPSDetails), NotStarted).success.value
+          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), InProgress).success.value
           .set(TaskStatusQuery(TaskCategory.SubmissionDetails), CannotStart).success.value
-
-      val result = service.unblockTasksOnMemberDetailsCompletion(ua0)
+      val result           = service.updateTaskStatusesOnMemberDetailsComplete(ua0)
 
       result.isSuccess mustBe true
       val ua = result.get
 
-      ua.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(NotStarted)
+      ua.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(InProgress)
       ua.get(TaskStatusQuery(TaskCategory.TransferDetails)) mustBe Some(CannotStart)
+      ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)) mustBe Some(CannotStart)
+      ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)) mustBe Some(CannotStart)
+      ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)) mustBe Some(CannotStart)
+    }
+  }
+
+  "updateSubmissionTaskStatus" - {
+
+    "must set submission task from CannotStart -> NotStarted when all journeys Completed " in {
+      val ua0: UserAnswers =
+        emptyUserAnswers
+          .set(TaskStatusQuery(TaskCategory.MemberDetails), Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.TransferDetails), Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.QROPSDetails), Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.SubmissionDetails), CannotStart).success.value
+      val result           = service.updateSubmissionTaskStatus(ua0)
+
+      result.isSuccess mustBe true
+      val ua = result.get
+
+      ua.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.TransferDetails)) mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)) mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)) mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)) mustBe Some(NotStarted)
+    }
+
+    "must set submission task to CannotStart when other task is not Completed " in {
+      val ua0: UserAnswers =
+        emptyUserAnswers
+          .set(TaskStatusQuery(TaskCategory.MemberDetails), Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.TransferDetails), Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.QROPSDetails), Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), InProgress).success.value
+          .set(TaskStatusQuery(TaskCategory.SubmissionDetails), NotStarted).success.value
+      val result           = service.updateSubmissionTaskStatus(ua0)
+
+      result.isSuccess mustBe true
+      val ua = result.get
+
+      ua.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.TransferDetails)) mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)) mustBe Some(Completed)
+      ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)) mustBe Some(InProgress)
       ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)) mustBe Some(CannotStart)
     }
   }
