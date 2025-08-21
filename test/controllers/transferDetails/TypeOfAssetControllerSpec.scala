@@ -22,7 +22,6 @@ import forms.transferDetails.TypeOfAssetFormProvider
 import models.NormalMode
 import models.assets.TypeOfAsset
 import models.assets.TypeOfAsset.UnquotedShares
-import navigators.TypeOfAssetNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -78,36 +77,28 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(TypeOfAsset.values.toSet), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(values), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
-
+    "must redirect to the next asset mini-journey page when valid data is submitted" in {
       val mockSessionRepository = mock[SessionRepository]
-      val mockNavigator         = mock[TypeOfAssetNavigator]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      val onwardRoute = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, 0)
-      when(mockNavigator.nextPage(any(), any(), any())) thenReturn onwardRoute
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[TypeOfAssetNavigator].toInstance(mockNavigator)
+            bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
       running(application) {
-        val unquotedShares = TypeOfAsset.values.find(_ == UnquotedShares).get
+        val onwardRoute = AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad()
+        val unquoted    = UnquotedShares
 
         val request =
           FakeRequest(POST, typeOfAssetRoute)
-            .withFormUrlEncodedBody(
-              "value[0]" -> unquotedShares.toString
-            )
+            .withFormUrlEncodedBody("value[0]" -> unquoted.toString)
 
         val result = route(application, request).value
 

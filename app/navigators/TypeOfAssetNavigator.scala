@@ -16,23 +16,13 @@
 
 package navigators
 
-import models.{Mode, UserAnswers}
-import pages.Page
-import pages.transferDetails.TypeOfAssetPage
+import models.UserAnswers
+import models.assets.AssetsMiniJourneyRegistry
 import play.api.mvc.Call
-import services.TransferDetailsService
-import javax.inject.Inject
 
-class TypeOfAssetNavigator @Inject() (
-    transferDetailsService: TransferDetailsService
-  ) {
+object TypeOfAssetNavigator {
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = page match {
-    case TypeOfAssetPage =>
-      transferDetailsService.getNextAssetRoute(userAnswers)
-        .getOrElse(controllers.routes.IndexController.onPageLoad())
-
-    case _ =>
-      controllers.routes.JourneyRecoveryController.onPageLoad()
+  def getNextAssetRoute(userAnswers: UserAnswers): Option[Call] = {
+    AssetsMiniJourneyRegistry.firstIncompleteJourney(userAnswers).map(_.call)
   }
 }
