@@ -53,7 +53,7 @@ class TaskJourneySpec extends AnyFreeSpec with SpecBase with Matchers {
         "SchemeManagerDetails",
         TaskJourneys.SchemeManagerDetailsJourney,
         TaskCategory.SchemeManagerDetails,
-        (m: Mode) => controllers.qropsSchemeManagerDetails.routes.SchemeManagersNameController.onPageLoad(m),
+        (m: Mode) => controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(m),
         () => controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
       ),
       (

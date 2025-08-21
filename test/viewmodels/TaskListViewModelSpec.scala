@@ -96,13 +96,13 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       }
     }
 
-    "preserves the order defined by TaskJourneys.all" in {
+    "preserves the order defined by TaskJourneys.valuesWithoutSubmissionJourney" in {
       val application = applicationBuilder().build()
       running(application) {
 
         val rows        = TaskListViewModel.rows(emptyUserAnswers)
         val renderedIds = rows.map(_.status.tag.value.attributes("id").stripSuffix("-status"))
-        val expectedIds = TaskJourneys.values.map(_.id)
+        val expectedIds = TaskJourneys.valuesWithoutSubmissionJourney.map(_.id)
 
         renderedIds mustEqual expectedIds
       }

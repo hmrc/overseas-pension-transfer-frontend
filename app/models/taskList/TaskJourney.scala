@@ -81,8 +81,8 @@ object TaskJourneys {
     val category             = TaskCategory.SubmissionDetails
     val id                   = "submit"
     val linkTextKey          = "taskList.submit.linkText"
-    def start(m: Mode): Call = controllers.routes.TaskListController.onPageLoad()
-    def cya(): Call          = controllers.routes.TaskListController.onPageLoad()
+    def start(m: Mode): Call = controllers.routes.IndexController.onPageLoad()
+    def cya(): Call          = controllers.routes.IndexController.onPageLoad()
   }
 
   val values: Seq[TaskJourney] = Seq(
