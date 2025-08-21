@@ -29,4 +29,7 @@ case object SubmitToHMRCPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.JourneyRecoveryController.onPageLoad()
 }

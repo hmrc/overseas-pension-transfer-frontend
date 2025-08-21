@@ -30,4 +30,7 @@ case object SchemeManagerDetailsSummaryPage extends QuestionPage[PersonName] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad() // TODO This will have to be changed to 'overseas transfer report' main page when exists
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.JourneyRecoveryController.onPageLoad()
 }

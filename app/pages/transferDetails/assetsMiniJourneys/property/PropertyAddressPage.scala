@@ -20,7 +20,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.address._
 import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -37,6 +37,6 @@ case class PropertyAddressPage(index: Int) extends QuestionPage[PropertyAddress]
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
 
-  final def changeLink(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, index)
+  final def changeLink(mode: Mode): Call =
+    AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(mode, index)
 }

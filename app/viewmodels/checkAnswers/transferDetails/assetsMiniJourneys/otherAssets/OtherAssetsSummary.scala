@@ -16,15 +16,15 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object OtherAssetsSummary {
 
-  def rows(userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val valueDescriptionRow: Option[SummaryListRow] = OtherAssetsDescriptionSummary.row(userAnswers, index)
-    val valueRow: Option[SummaryListRow]            = OtherAssetsValueSummary.row(userAnswers, index)
+  def rows(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val valueDescriptionRow: Option[SummaryListRow] = OtherAssetsDescriptionSummary.row(mode, userAnswers, index)
+    val valueRow: Option[SummaryListRow]            = OtherAssetsValueSummary.row(mode, userAnswers, index)
 
     Seq(valueDescriptionRow, valueRow).flatten
   }

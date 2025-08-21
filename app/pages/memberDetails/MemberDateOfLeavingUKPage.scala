@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -36,6 +36,6 @@ case object MemberDateOfLeavingUKPage extends QuestionPage[LocalDate] {
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.MemberDetailsCYAController.onPageLoad()
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode)
+  final def changeLink(mode: Mode): Call =
+    routes.MemberDateOfLeavingUKController.onPageLoad(mode)
 }

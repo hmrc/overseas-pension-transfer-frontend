@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.AmountOfTransferPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,14 +27,14 @@ import viewmodels.implicits._
 
 object AmountOfTransferSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmountOfTransferPage).map {
       answer =>
         SummaryListRowViewModel(
           key     = "amountOfTransfer.checkYourAnswersLabel",
           value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.AmountOfTransferController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.AmountOfTransferController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("amountOfTransfer.change.hidden"))
           )
         )

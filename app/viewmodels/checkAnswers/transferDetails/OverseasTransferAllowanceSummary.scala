@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.transferDetails.OverseasTransferAllowancePage
 import utils.CurrencyFormats.currencyFormat
 import play.api.i18n.Messages
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object OverseasTransferAllowanceSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OverseasTransferAllowancePage).map {
       answer =>
         SummaryListRowViewModel(
           key     = "overseasTransferAllowance.checkYourAnswersLabel",
           value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", OverseasTransferAllowancePage.changeLink(answers).url)
+            ActionItemViewModel("site.change", OverseasTransferAllowancePage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("overseasTransferAllowance.change.hidden"))
           )
         )

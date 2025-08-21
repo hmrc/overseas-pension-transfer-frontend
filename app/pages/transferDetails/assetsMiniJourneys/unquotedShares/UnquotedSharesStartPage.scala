@@ -16,6 +16,7 @@
 
 package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
+import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{NormalMode, UserAnswers}
 import pages.Page
@@ -27,4 +28,7 @@ object UnquotedSharesStartPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, startIndex)
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.JourneyRecoveryController.onPageLoad()
 }

@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,14 +27,14 @@ import viewmodels.implicits._
 
 object AmountOfTaxDeductedSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmountOfTaxDeductedPage).map {
       answer =>
         SummaryListRowViewModel(
           key     = "amountOfTaxDeducted.checkYourAnswersLabel",
           value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.AmountOfTaxDeductedController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.AmountOfTaxDeductedController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("amountOfTaxDeducted.change.hidden"))
           )
         )

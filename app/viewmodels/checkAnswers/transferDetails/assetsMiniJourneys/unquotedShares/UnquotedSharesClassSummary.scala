@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object UnquotedSharesClassSummary {
 
-  def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(UnquotedSharesClassPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "unquotedSharesClass.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", UnquotedSharesClassPage(index).changeLink(answers).url)
+            ActionItemViewModel("site.change", UnquotedSharesClassPage(index).changeLink(mode).url)
               .withVisuallyHiddenText(messages("unquotedSharesClass.change.hidden"))
           )
         )

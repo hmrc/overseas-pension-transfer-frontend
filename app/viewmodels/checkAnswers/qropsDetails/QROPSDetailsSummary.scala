@@ -16,17 +16,17 @@
 
 package viewmodels.checkAnswers.qropsDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case object QROPSDetailsSummary {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val nameRow: Option[SummaryListRow]      = QROPSNameSummary.row(userAnswers)
-    val referenceRow: Option[SummaryListRow] = QROPSReferenceSummary.row(userAnswers)
-    val addressRow: Option[SummaryListRow]   = QROPSAddressSummary.row(userAnswers)
-    val countryRow: Option[SummaryListRow]   = QROPSCountrySummary.row(userAnswers)
+  def rows(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val nameRow: Option[SummaryListRow]      = QROPSNameSummary.row(mode, userAnswers)
+    val referenceRow: Option[SummaryListRow] = QROPSReferenceSummary.row(mode, userAnswers)
+    val addressRow: Option[SummaryListRow]   = QROPSAddressSummary.row(mode, userAnswers)
+    val countryRow: Option[SummaryListRow]   = QROPSCountrySummary.row(mode, userAnswers)
 
     Seq(
       nameRow,

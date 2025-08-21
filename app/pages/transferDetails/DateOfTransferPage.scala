@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.mvc.Call
 import play.api.libs.json.JsPath
@@ -36,6 +36,6 @@ case object DateOfTransferPage extends QuestionPage[LocalDate] {
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.DateOfTransferController.onPageLoad(CheckMode)
+  final def changeLink(mode: Mode): Call =
+    routes.DateOfTransferController.onPageLoad(mode)
 }

@@ -24,4 +24,7 @@ object IndexPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.WhatWillBeNeededController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.JourneyRecoveryController.onPageLoad()
 }

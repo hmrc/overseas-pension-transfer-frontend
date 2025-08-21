@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.qropsDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.qropsDetails.QROPSReferencePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object QROPSReferenceSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(QROPSReferencePage).map {
       answer =>
         SummaryListRowViewModel(
           key     = "qropsReference.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", QROPSReferencePage.changeLink(answers).url)
+            ActionItemViewModel("site.change", QROPSReferencePage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("qropsReference.change.hidden"))
           )
         )

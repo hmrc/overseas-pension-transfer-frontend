@@ -11,7 +11,7 @@ import viewmodels.implicits._
 
 object $className$Summary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get($className$Page).map {
       answer =>
 
