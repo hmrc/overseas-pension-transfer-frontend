@@ -16,12 +16,13 @@
 
 import base.SpecBase
 import models.TaskCategory.{MemberDetails, QROPSDetails, SchemeManagerDetails, SubmissionDetails, TransferDetails}
+import models.responses.UserAnswersErrorResponse
 import models.{TaskCategory, UserAnswers}
 import models.taskList.TaskStatus
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
@@ -42,6 +43,121 @@ class TaskListControllerSpec
     with MockitoSugar {
 
   "TaskListController" - {
+
+    "must return OK and NOT persist when no task statuses change" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      val initialUA =
+        emptyUserAnswers
+          .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), TaskStatus.Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.SubmissionDetails), TaskStatus.NotStarted).success.value
+
+      val app =
+        applicationBuilder(userAnswers = Some(initialUA))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+      running(app) {
+        val req = FakeRequest(GET, controllers.routes.TaskListController.onPageLoad().url)
+        val res = route(app, req).value
+
+        status(res) mustEqual OK
+
+        verify(mockSessionRepository, never()).set(any[UserAnswers])
+        verify(mockUserAnswersService, never()).setExternalUserAnswers(any[UserAnswers])(any())
+      }
+    }
+
+    "must redirect to Journey Recovery when persistence changes are needed but external save fails" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
+
+      val initialUA =
+        emptyUserAnswers
+          .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), TaskStatus.Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.SubmissionDetails), TaskStatus.CannotStart).success.value
+
+      val app =
+        applicationBuilder(userAnswers = Some(initialUA))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+      running(app) {
+        val req = FakeRequest(GET, controllers.routes.TaskListController.onPageLoad().url)
+        val res = route(app, req).value
+
+        status(res) mustEqual SEE_OTHER
+        redirectLocation(res).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+
+        verify(mockSessionRepository, times(1)).set(any[UserAnswers])
+        verify(mockUserAnswersService, times(1)).setExternalUserAnswers(any[UserAnswers])(any())
+      }
+    }
+
+    "must (re)block dependent tasks and Submission when MemberDetails is not Completed" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val initialUA =
+        emptyUserAnswers
+          .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.NotStarted).success.value
+          .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.NotStarted).success.value
+          .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
+          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), TaskStatus.NotStarted).success.value
+          .set(TaskStatusQuery(TaskCategory.SubmissionDetails), TaskStatus.NotStarted).success.value
+
+      val app =
+        applicationBuilder(userAnswers = Some(initialUA))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+      running(app) {
+        val req = FakeRequest(GET, controllers.routes.TaskListController.onPageLoad().url)
+        val res = route(app, req).value
+
+        status(res) mustEqual OK
+
+        verify(mockSessionRepository).set(ArgumentMatchers.argThat[UserAnswers] { ua =>
+          ua.get(TaskStatusQuery(TaskCategory.TransferDetails)).contains(TaskStatus.CannotStart) &&
+          ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)).contains(TaskStatus.CannotStart) &&
+          ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)).contains(TaskStatus.CannotStart) &&
+          ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)).contains(TaskStatus.CannotStart)
+        })
+
+        verify(mockUserAnswersService).setExternalUserAnswers(
+          ArgumentMatchers.argThat[UserAnswers] { ua =>
+            ua.get(TaskStatusQuery(TaskCategory.TransferDetails)).contains(TaskStatus.CannotStart) &&
+            ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)).contains(TaskStatus.CannotStart) &&
+            ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)).contains(TaskStatus.CannotStart) &&
+            ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)).contains(TaskStatus.CannotStart)
+          }
+        )(any())
+      }
+    }
 
     "must unblock dependent tasks (CannotStart -> NotStarted) on load when MemberDetails is completed" in {
 
@@ -133,6 +249,5 @@ class TaskListControllerSpec
         )(any())
       }
     }
-
   }
 }
