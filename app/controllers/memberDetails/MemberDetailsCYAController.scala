@@ -60,12 +60,11 @@ class MemberDetailsCYAController @Inject() (
     implicit request =>
       for {
         ua1           <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(MemberDetails), Completed))
-        ua2           <- Future.fromTry(taskService.unblockTasksOnMemberDetailsCompletion(ua1))
-        _             <- sessionRepository.set(ua2)
-        savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
+        _             <- sessionRepository.set(ua1)
+        savedForLater <- userAnswersService.setExternalUserAnswers(ua1)
       } yield {
         savedForLater match {
-          case Right(Done) => Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, ua2))
+          case Right(Done) => Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, ua1))
           case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
         }
       }

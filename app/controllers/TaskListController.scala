@@ -49,16 +49,17 @@ class TaskListController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
     for {
-      ua            <- Future.fromTry(taskService.unblockSubmissionOnAllTasksCompletion(request.userAnswers))
+      ua1           <- Future.fromTry(taskService.updateTaskStatusesOnMemberDetailsComplete(request.userAnswers))
+      ua2           <- Future.fromTry(taskService.updateSubmissionTaskStatus(ua1))
       savedForLater <-
-        if (ua == request.userAnswers) {
+        if (ua2 == request.userAnswers) {
           Future.successful(Right(Done))
         } else {
-          sessionRepository.set(ua).flatMap(_ => userAnswersService.setExternalUserAnswers(ua))
+          sessionRepository.set(ua2).flatMap(_ => userAnswersService.setExternalUserAnswers(ua2))
         }
     } yield {
       savedForLater match {
-        case Right(Done) => Ok(view(TaskListViewModel.rows(ua), TaskListViewModel.submissionRow(ua)))
+        case Right(Done) => Ok(view(TaskListViewModel.rows(ua2), TaskListViewModel.submissionRow(ua2)))
         case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }
     }
