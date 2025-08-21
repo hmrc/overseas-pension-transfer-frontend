@@ -119,6 +119,9 @@ common.dateInput.error.invalid = Enter the day, month, year in the correct forma
 common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the future
 
 taskList.title = Task list
+taskList.heading = Complete your overseas transfer report
+taskList.transferDetails.heading = Transfer details
+taskList.checkAndSubmit.heading = Check and submit
 taskList.memberDetails.linkText = Add details about the member
 taskList.transferDetails.linkText = Add information about the transfer
 taskList.qropsDetails.linkText = Add information about the QROPS
