@@ -58,7 +58,7 @@ class TaskListController @Inject() (
         }
     } yield {
       savedForLater match {
-        case Right(Done) => Ok(view(TaskListViewModel.rows(request.userAnswers), TaskListViewModel.submissionRow(ua)))
+        case Right(Done) => Ok(view(TaskListViewModel.rows(ua), TaskListViewModel.submissionRow(ua)))
         case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }
     }
