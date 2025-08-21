@@ -19,8 +19,9 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.IsTransferCashOnlyFormProvider
 import models.Mode
+import models.assets.TypeOfAsset
 import org.apache.pekko.Done
-import pages.transferDetails.IsTransferCashOnlyPage
+import pages.transferDetails._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -65,10 +66,10 @@ class IsTransferCashOnlyController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            ua1            <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value))
-            ua2            <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1))
-            _              <- sessionRepository.set(ua2)
-            savedForLater  <- userAnswersService.setExternalUserAnswers(ua2)
+            ua1           <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value))
+            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1))
+            _             <- sessionRepository.set(ua2)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, ua2))
