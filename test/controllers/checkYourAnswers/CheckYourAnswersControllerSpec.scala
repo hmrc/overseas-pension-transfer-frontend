@@ -17,6 +17,7 @@
 package controllers.checkYourAnswers
 
 import base.SpecBase
+import models.FinalCheckMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
@@ -34,7 +35,7 @@ class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with Mock
   private lazy val checkYourAnswersRoute = routes.CheckYourAnswersController.onPageLoad().url
 
   val memberDetailsSummaryList        = SummaryListViewModel(Seq.empty)
-  val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(userAnswersQtNumber)(messages(application)))
+  val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, userAnswersQtNumber)(messages(application)))
   val qropsDetailsSummaryList         = SummaryListViewModel(Seq.empty)
   val schemeManagerDetailsSummaryList = SummaryListViewModel(Seq.empty)
 

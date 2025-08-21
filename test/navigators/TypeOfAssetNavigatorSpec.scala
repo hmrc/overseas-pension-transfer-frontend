@@ -63,4 +63,6 @@ object FakePage extends pages.Page {
   override def toString: String = "fakePage"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call = controllers.routes.IndexController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = controllers.routes.JourneyRecoveryController.onPageLoad()
 }
