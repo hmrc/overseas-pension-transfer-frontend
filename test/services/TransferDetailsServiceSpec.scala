@@ -40,7 +40,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
   "assetCount" - {
     "must return the number of entries for a given asset journey" in {
-      val entries     = List(UnquotedSharesEntry("Foo", 1, "100", "Class A"))
+      val entries     = List(UnquotedSharesEntry("Foo", 1, 100, "Class A"))
       val userAnswers = emptyUserAnswers.set(UnquotedSharesMiniJourney.query, entries).success.value
 
       val result = service.assetCount(UnquotedSharesMiniJourney, userAnswers)
@@ -55,18 +55,18 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
   "removeAssetEntry" - {
     "must remove the specified entry and return updated answers" in {
-      val entries     = List(UnquotedSharesEntry("One", 1, "100", "A"), UnquotedSharesEntry("Two", 2, "200", "B"))
+      val entries     = List(UnquotedSharesEntry("One", 1, 100, "A"), UnquotedSharesEntry("Two", 2, 200, "B"))
       val userAnswers = emptyUserAnswers.set(UnquotedSharesMiniJourney.query, entries).success.value
 
       val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 0)
 
       result mustBe a[Success[_]]
       val updated = result.get
-      updated.get(UnquotedSharesMiniJourney.query).value mustBe List(UnquotedSharesEntry("Two", 2, "200", "B"))
+      updated.get(UnquotedSharesMiniJourney.query).value mustBe List(UnquotedSharesEntry("Two", 2, 200, "B"))
     }
 
     "must return Failure if the index is out of bounds" in {
-      val entries     = List(UnquotedSharesEntry("Only", 1, "100", "X"))
+      val entries     = List(UnquotedSharesEntry("Only", 1, 100, "X"))
       val userAnswers = emptyUserAnswers.set(UnquotedSharesMiniJourney.query, entries).success.value
 
       val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 5)

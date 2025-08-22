@@ -25,7 +25,7 @@ sealed trait AssetEntry
 case class QuotedSharesEntry(
     companyName: String,
     valueOfShares: BigDecimal,
-    numberOfShares: String,
+    numberOfShares: Int,
     classOfShares: String
   ) extends AssetEntry
 
@@ -38,14 +38,14 @@ object QuotedSharesEntry {
   val reads: Reads[QuotedSharesEntry] = (
     (__ \ CompanyName).read[String] and
       (__ \ ValueOfShares).read[BigDecimal] and
-      (__ \ NumberOfShares).read[String] and
+      (__ \ NumberOfShares).read[Int] and
       (__ \ ClassOfShares).read[String]
   )(QuotedSharesEntry.apply _)
 
   val writes: OWrites[QuotedSharesEntry] = (
     (__ \ CompanyName).write[String] and
       (__ \ ValueOfShares).write[BigDecimal] and
-      (__ \ NumberOfShares).write[String] and
+      (__ \ NumberOfShares).write[Int] and
       (__ \ ClassOfShares).write[String]
   )(unlift(QuotedSharesEntry.unapply))
 
@@ -55,7 +55,7 @@ object QuotedSharesEntry {
 case class UnquotedSharesEntry(
     companyName: String,
     valueOfShares: BigDecimal,
-    numberOfShares: String,
+    numberOfShares: Int,
     classOfShares: String
   ) extends AssetEntry
 
@@ -68,14 +68,14 @@ object UnquotedSharesEntry {
   val reads: Reads[UnquotedSharesEntry] = (
     (__ \ CompanyName).read[String] and
       (__ \ ValueOfShares).read[BigDecimal] and
-      (__ \ NumberOfShares).read[String] and
+      (__ \ NumberOfShares).read[Int] and
       (__ \ ClassOfShares).read[String]
   )(UnquotedSharesEntry.apply _)
 
   val writes: OWrites[UnquotedSharesEntry] = (
     (__ \ CompanyName).write[String] and
       (__ \ ValueOfShares).write[BigDecimal] and
-      (__ \ NumberOfShares).write[String] and
+      (__ \ NumberOfShares).write[Int] and
       (__ \ ClassOfShares).write[String]
   )(unlift(UnquotedSharesEntry.unapply))
 

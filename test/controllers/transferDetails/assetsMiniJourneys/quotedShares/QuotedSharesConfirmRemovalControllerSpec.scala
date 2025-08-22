@@ -52,7 +52,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val entries     = List(QuotedSharesEntry("Company", 1000, "20", "Preferred"))
+      val entries     = List(QuotedSharesEntry("Company", 1000, 20, "Preferred"))
       val userAnswers = userAnswersQtNumber.set(QuotedSharesQuery, entries).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
