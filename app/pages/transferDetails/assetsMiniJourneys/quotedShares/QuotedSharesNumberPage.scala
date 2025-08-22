@@ -23,7 +23,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class QuotedSharesNumberPage(index: Int) extends QuestionPage[String] {
+case class QuotedSharesNumberPage(index: Int) extends QuestionPage[Int] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.toString \ index \ toString
 

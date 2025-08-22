@@ -507,8 +507,8 @@ unquotedSharesNumber.title = How many unquoted shares in this company are part o
 unquotedSharesNumber.heading = How many unquoted shares in this company are part of this transfer?
 unquotedSharesNumber.checkYourAnswersLabel = Number of unquoted shares
 unquotedSharesNumber.error.required = Enter the number of unquoted shares
-unquotedSharesNumber.error.wholeNumber = The number of quoted shares must be a whole number, like 1500
-unquotedSharesNumber.error.nonNumeric = The number of quoted shares must be a number, like 10 or 125
+unquotedSharesNumber.error.wholeNumber = The number of unquoted shares must be a whole number, like 1500
+unquotedSharesNumber.error.nonNumeric = The number of unquoted shares must be a number, like 10 or 125
 unquotedSharesNumber.error.outOfRange = The number of unquoted shares must be between 0 and 99999
 unquotedSharesNumber.change.hidden = Number of unquoted shares
 
@@ -516,8 +516,9 @@ quotedSharesNumber.title = How many quoted shares in this company are part of th
 quotedSharesNumber.heading = How many quoted shares in this company are part of this transfer?
 quotedSharesNumber.checkYourAnswersLabel = Number of quoted shares
 quotedSharesNumber.error.required = Enter the number of quoted shares
-quotedSharesNumber.error.negative = The number of quoted shares must be more than 0
-quotedSharesNumber.error.invalid = The number of quoted shares must be a number, like 10 or 125
+quotedSharesNumber.error.wholeNumber = The number of quoted shares must be a whole number, like 1500
+quotedSharesNumber.error.nonNumeric = The number of quoted shares must be a number, like 10 or 125
+quotedSharesNumber.error.outOfRange = The number of quoted shares must be between 0 and 99999
 quotedSharesNumber.change.hidden = Number of quoted shares
 
 propertyValue.title = What is the value of this property?

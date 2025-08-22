@@ -16,63 +16,48 @@
 
 package forms.transferDetails.assetsMiniJourneys.quotedShares
 
-import forms.behaviours.StringFieldBehaviours
+import forms.behaviours.{IntFieldBehaviours, StringFieldBehaviours}
 import forms.mappings.Regex
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class QuotedSharesNumberFormProviderSpec extends StringFieldBehaviours with Regex {
+class QuotedSharesNumberFormProviderSpec extends IntFieldBehaviours with Regex {
 
   val form = new QuotedSharesNumberFormProvider()()
 
   ".value" - {
 
     val fieldName = "value"
+    val minimum   = 0
+    val maximum   = 99999
 
-    val validNumberOfShares: Gen[String] =
-      for {
-        wholePart  <- Gen.choose(1, 999999)
-        decimalOpt <- Gen.option(Gen.choose(1, 99))
-      } yield decimalOpt match {
-        case Some(decimal) => s"$wholePart.${decimal.toString}"
-        case None          => wholePart.toString
-      }
+    val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
+
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      validDataGenerator
+    )
+
+    behave like intField(
+      form,
+      fieldName,
+      nonNumericError  = FormError(fieldName, "quotedSharesNumber.error.nonNumeric"),
+      wholeNumberError = FormError(fieldName, "quotedSharesNumber.error.wholeNumber")
+    )
+
+    behave like intFieldWithRange(
+      form,
+      fieldName,
+      minimum       = minimum,
+      maximum       = maximum,
+      expectedError = FormError(fieldName, "quotedSharesNumber.error.outOfRange", Seq(minimum, maximum))
+    )
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, "quotedSharesNumber.error.required")
     )
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      validNumberOfShares
-    )
-
-    "fail to bind non-numeric value" in {
-      val result = form.bind(Map(fieldName -> "abc"))
-      result.errors must contain only FormError(fieldName, "quotedSharesNumber.error.invalid")
-    }
-
-    "fail to bind negative number" in {
-      val result = form.bind(Map(fieldName -> "-50"))
-      result.errors must contain only FormError(fieldName, "quotedSharesNumber.error.negative")
-    }
-
-    "fail to bind zero" in {
-      val result = form.bind(Map(fieldName -> "0"))
-      result.errors must contain only FormError(fieldName, "quotedSharesNumber.error.invalid")
-    }
-
-    "fail to bind multiple decimal points" in {
-      val result = form.bind(Map(fieldName -> "1.2.3"))
-      result.errors must contain only FormError(fieldName, "quotedSharesNumber.error.invalid")
-    }
-
-    "fail to bind number with trailing dot" in {
-      val result = form.bind(Map(fieldName -> "10."))
-      result.errors must contain only FormError(fieldName, "quotedSharesNumber.error.invalid")
-    }
   }
 }

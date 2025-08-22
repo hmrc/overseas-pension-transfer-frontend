@@ -38,7 +38,7 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private val formProvider = new QuotedSharesNumberFormProvider()
   private val form         = formProvider()
 
-  private val validAnswer = "10"
+  private val validAnswer = 10
   private val index       = 0
 
   lazy val quotedSharesNumberRoute = AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(NormalMode, index).url
