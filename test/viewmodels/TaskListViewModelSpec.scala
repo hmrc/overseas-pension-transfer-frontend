@@ -17,8 +17,8 @@
 package viewmodels
 
 import base.SpecBase
+import models.taskList.TaskStatus
 import models.{TaskCategory, UserAnswers}
-import models.taskList.{TaskJourneys, TaskStatus}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
@@ -58,7 +58,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
 
         val rows      = TaskListViewModel.rows(ua)
-        val memberRow = findRowById(rows, TaskJourneys.MemberDetailsJourney.id)
+        val memberRow = findRowById(rows, TaskJourneyViewModels.MemberDetailsJourneyViewModel.id)
 
         memberRow.href.value mustEqual controllers.memberDetails.routes.MemberDetailsCYAController.onPageLoad().url
         memberRow.status.tag.value.classes must not include ("govuk-tag--grey")
@@ -74,7 +74,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.NotStarted).success.value
 
         val rows      = TaskListViewModel.rows(ua)
-        val memberRow = findRowById(rows, TaskJourneys.MemberDetailsJourney.id)
+        val memberRow = findRowById(rows, TaskJourneyViewModels.MemberDetailsJourneyViewModel.id)
 
         memberRow.href.value mustEqual controllers.memberDetails.routes.MemberNameController.onPageLoad(models.NormalMode).url
         memberRow.status.tag.value.classes must include("govuk-tag--blue")
@@ -89,20 +89,20 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
           .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.InProgress).success.value
 
         val rows     = TaskListViewModel.rows(ua)
-        val transfer = findRowById(rows, TaskJourneys.TransferDetailsJourney.id)
+        val transfer = findRowById(rows, TaskJourneyViewModels.TransferDetailsJourneyViewModel.id)
 
         transfer.href.value mustEqual controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(models.NormalMode).url
         transfer.status.tag.value.classes must include("govuk-tag--blue")
       }
     }
 
-    "preserves the order defined by TaskJourneys.valuesWithoutSubmissionJourney" in {
+    "preserves the order defined by TaskJourneyViewModels.valuesWithoutSubmissionJourney" in {
       val application = applicationBuilder().build()
       running(application) {
 
         val rows        = TaskListViewModel.rows(emptyUserAnswers)
         val renderedIds = rows.map(_.status.tag.value.attributes("id").stripSuffix("-status"))
-        val expectedIds = TaskJourneys.valuesWithoutSubmissionJourney.map(_.id)
+        val expectedIds = TaskJourneyViewModels.valuesWithoutSubmissionJourney.map(_.id)
 
         renderedIds mustEqual expectedIds
       }

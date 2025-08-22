@@ -100,5 +100,23 @@ class WhatWillBeNeededControllerSpec
         redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
       }
     }
+
+    "must redirect to JourneyRecovery when repository.get fails" in {
+      val mockRepo = mock[SessionRepository]
+      when(mockRepo.get(any[String])).thenReturn(Future.failed(new Exception("boom")))
+
+      val application =
+        applicationBuilder()
+          .overrides(bind[SessionRepository].toInstance(mockRepo))
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.WhatWillBeNeededController.onPageLoad().url)
+        val result  = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
   }
 }

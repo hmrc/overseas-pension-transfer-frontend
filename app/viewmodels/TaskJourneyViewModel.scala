@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package models.taskList
+package viewmodels
 
+import models.taskList.TaskStatus
 import models.taskList.TaskStatus.CannotStart
 import models.{Mode, NormalMode, TaskCategory, UserAnswers}
 import play.api.mvc.Call
 import queries.TaskStatusQuery
 
-trait TaskJourney {
+trait TaskJourneyViewModel {
   def category: TaskCategory
   def id: String
   def linkTextKey: String
@@ -40,9 +41,9 @@ trait TaskJourney {
     }
 }
 
-object TaskJourneys {
+object TaskJourneyViewModels {
 
-  case object MemberDetailsJourney extends TaskJourney {
+  case object MemberDetailsJourneyViewModel extends TaskJourneyViewModel {
     val category    = TaskCategory.MemberDetails
     val id          = "member-details"
     val linkTextKey = "taskList.memberDetails.linkText"
@@ -51,7 +52,7 @@ object TaskJourneys {
     def cya(): Call          = controllers.memberDetails.routes.MemberDetailsCYAController.onPageLoad()
   }
 
-  case object TransferDetailsJourney extends TaskJourney {
+  case object TransferDetailsJourneyViewModel extends TaskJourneyViewModel {
     val category    = TaskCategory.TransferDetails
     val id          = "transfer-details"
     val linkTextKey = "taskList.transferDetails.linkText"
@@ -60,7 +61,7 @@ object TaskJourneys {
     def cya(): Call          = controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
   }
 
-  case object QropsDetailsJourney extends TaskJourney {
+  case object QropsDetailsJourneyViewModel extends TaskJourneyViewModel {
     val category    = TaskCategory.QROPSDetails
     val id          = "qrops-details"
     val linkTextKey = "taskList.qropsDetails.linkText"
@@ -69,7 +70,7 @@ object TaskJourneys {
     def cya(): Call          = controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
   }
 
-  case object SchemeManagerDetailsJourney extends TaskJourney {
+  case object SchemeManagerDetailsJourneyViewModel extends TaskJourneyViewModel {
     val category             = TaskCategory.SchemeManagerDetails
     val id                   = "scheme-manager-details"
     val linkTextKey          = "taskList.schemeManagerDetails.linkText"
@@ -77,7 +78,7 @@ object TaskJourneys {
     def cya(): Call          = controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
   }
 
-  case object SubmissionDetailsJourney extends TaskJourney {
+  case object SubmissionDetailsJourneyViewModel extends TaskJourneyViewModel {
     val category             = TaskCategory.SubmissionDetails
     val id                   = "submit"
     val linkTextKey          = "taskList.submit.linkText"
@@ -86,14 +87,14 @@ object TaskJourneys {
     def cya(): Call          = controllers.routes.IndexController.onPageLoad()
   }
 
-  val values: Seq[TaskJourney] = Seq(
-    MemberDetailsJourney,
-    TransferDetailsJourney,
-    QropsDetailsJourney,
-    SchemeManagerDetailsJourney,
-    SubmissionDetailsJourney
+  val values: Seq[TaskJourneyViewModel] = Seq(
+    MemberDetailsJourneyViewModel,
+    TransferDetailsJourneyViewModel,
+    QropsDetailsJourneyViewModel,
+    SchemeManagerDetailsJourneyViewModel,
+    SubmissionDetailsJourneyViewModel
   )
 
-  val valuesWithoutSubmissionJourney: Seq[TaskJourney] =
-    values.filterNot(_ == SubmissionDetailsJourney)
+  val valuesWithoutSubmissionJourney: Seq[TaskJourneyViewModel] =
+    values.filterNot(_ == SubmissionDetailsJourneyViewModel)
 }

@@ -17,14 +17,13 @@
 package viewmodels
 
 import models.UserAnswers
-import models.taskList.TaskJourneys
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 
 object TaskListViewModel {
 
   def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[TaskListItem] = {
-    TaskJourneys.valuesWithoutSubmissionJourney.map { journey =>
+    TaskJourneyViewModels.valuesWithoutSubmissionJourney.map { journey =>
       TaskTileViewModel(
         id       = journey.id,
         linkText = messages(journey.linkTextKey),
@@ -35,7 +34,7 @@ object TaskListViewModel {
   }
 
   def submissionRow(userAnswers: UserAnswers)(implicit messages: Messages): TaskListItem = {
-    val journey = TaskJourneys.SubmissionDetailsJourney
+    val journey = TaskJourneyViewModels.SubmissionDetailsJourneyViewModel
     TaskTileViewModel(
       id       = journey.id,
       linkText = messages(journey.linkTextKey),

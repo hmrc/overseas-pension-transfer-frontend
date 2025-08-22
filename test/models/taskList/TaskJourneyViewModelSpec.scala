@@ -22,43 +22,44 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import queries.TaskStatusQuery
+import viewmodels.TaskJourneyViewModels
 
-class TaskJourneySpec extends AnyFreeSpec with SpecBase with Matchers {
+class TaskJourneyViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
   private val journeys =
     Table(
       ("name", "journey", "category", "expectedStart", "expectedCya"),
       (
         "MemberDetails",
-        TaskJourneys.MemberDetailsJourney,
+        TaskJourneyViewModels.MemberDetailsJourneyViewModel,
         TaskCategory.MemberDetails,
         (m: Mode) => controllers.memberDetails.routes.MemberNameController.onPageLoad(m),
         () => controllers.memberDetails.routes.MemberDetailsCYAController.onPageLoad()
       ),
       (
         "TransferDetails",
-        TaskJourneys.TransferDetailsJourney,
+        TaskJourneyViewModels.TransferDetailsJourneyViewModel,
         TaskCategory.TransferDetails,
         (m: Mode) => controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(m),
         () => controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
       ),
       (
         "QROPSDetails",
-        TaskJourneys.QropsDetailsJourney,
+        TaskJourneyViewModels.QropsDetailsJourneyViewModel,
         TaskCategory.QROPSDetails,
         (m: Mode) => controllers.qropsDetails.routes.QROPSNameController.onPageLoad(m),
         () => controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
       ),
       (
         "SchemeManagerDetails",
-        TaskJourneys.SchemeManagerDetailsJourney,
+        TaskJourneyViewModels.SchemeManagerDetailsJourneyViewModel,
         TaskCategory.SchemeManagerDetails,
         (m: Mode) => controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(m),
         () => controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
       ),
       (
         "SubmissionDetails",
-        TaskJourneys.SubmissionDetailsJourney,
+        TaskJourneyViewModels.SubmissionDetailsJourneyViewModel,
         TaskCategory.SubmissionDetails,
         (_: Mode) => controllers.routes.IndexController.onPageLoad(),
         () => controllers.routes.IndexController.onPageLoad()
