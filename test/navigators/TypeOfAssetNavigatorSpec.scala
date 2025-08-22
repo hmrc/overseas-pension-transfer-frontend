@@ -17,44 +17,45 @@
 package navigators
 
 import base.SpecBase
-import models.{NormalMode, UserAnswers}
-import org.mockito.Mockito._
-import org.mockito.ArgumentMatchers.any
+import models.UserAnswers
+import models.assets.{QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.TypeOfAssetPage
 import play.api.mvc.Call
-import services.TransferDetailsService
+import queries.assets.AssetCompletionFlag
 
 class TypeOfAssetNavigatorSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val mockTransferDetailsService = mock[TransferDetailsService]
-  private val navigator                  = new TypeOfAssetNavigator(mockTransferDetailsService)
+  "getNextAssetRoute" - {
+    "must return the first uncompleted journey in order" in {
+      val selectedTypes: Set[TypeOfAsset] = Set(UnquotedSharesMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
+      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
 
-  private val onwardRoute = Call("GET", "/next-page")
-
-  "nextPage" - {
-
-    "must return the next asset route from TransferDetailsService when available" in {
-      when(mockTransferDetailsService.getNextAssetRoute(any())) thenReturn Some(onwardRoute)
-
-      val result = navigator.nextPage(TypeOfAssetPage, NormalMode, emptyUserAnswers)
-
-      result mustBe onwardRoute
+      val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers).map(_.toString)
+      result mustBe Some(UnquotedSharesMiniJourney.call.url)
     }
 
-    "must return IndexController.onPageLoad if TransferDetailsService returns None" in {
-      when(mockTransferDetailsService.getNextAssetRoute(any())) thenReturn None
+    "must skip journeys not in the selected assets" in {
+      val selectedTypes: Set[TypeOfAsset] = Set(QuotedSharesMiniJourney.assetType)
+      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
 
-      val result = navigator.nextPage(TypeOfAssetPage, NormalMode, emptyUserAnswers)
-
-      result mustBe controllers.routes.IndexController.onPageLoad()
+      val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers).map(_.toString)
+      result mustBe Some(QuotedSharesMiniJourney.call.url)
     }
 
-    "must redirect to JourneyRecoveryController for unknown pages" in {
-      val result = navigator.nextPage(FakePage, NormalMode, emptyUserAnswers)
+    "must return None if all selected journeys are completed" in {
+      val userAnswers = emptyUserAnswers
+        .set[Set[TypeOfAsset]](TypeOfAssetPage, Set(UnquotedSharesMiniJourney.assetType)).success.value
+        .set(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType), true).success.value
 
-      result mustBe controllers.routes.JourneyRecoveryController.onPageLoad()
+      val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers)
+      result mustBe None
+    }
+
+    "must return None if no asset types have been selected" in {
+      val result = TypeOfAssetNavigator.getNextAssetRoute(emptyUserAnswers)
+      result mustBe None
     }
   }
 }
