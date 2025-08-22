@@ -642,6 +642,13 @@ pspDeclaration.error.required = Enter the authorising scheme administrator''s ID
 pspDeclaration.error.pattern = Enter the authorising scheme administrator''s ID in the correct format, like A1234567
 pspDeclaration.change.hidden = Psp Declaration
 
+psaDeclaration.title = Declaration
+psaDeclaration.heading = Declaration
+psaDeclaration.bySubmitting = By submitting you declare that:
+psaDeclaration.receivedAndChecked = I''ve received and checked the information and acknowledgement provided by the transferring member.
+psaDeclaration.correctAndComplete = to the best of my knowledge and belief the information given in this notification is correct and complete.
+psaDeclaration.change.hidden = Psa Declaration
+
 
 submitToHMRC.title = Do you want to submit this report to HMRC?
 submitToHMRC.heading = Do you want to submit this report to HMRC?
