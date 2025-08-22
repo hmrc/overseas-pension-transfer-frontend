@@ -19,13 +19,11 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
-import models.{NormalMode, UserAnswers}
-import models.assets.PropertyMiniJourney
+import models.NormalMode
+import models.assets.{PropertyMiniJourney, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.PropertyQuery
-import repositories.SessionRepository
-import services.{TransferDetailsService, UserAnswersService}
+import services.{MoreAssetCompletionService, TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalView
 
@@ -36,7 +34,6 @@ class PropertyConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    sessionRepository: SessionRepository,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: PropertyConfirmRemovalFormProvider,
@@ -44,7 +41,8 @@ class PropertyConfirmRemovalController @Inject() (
     miniJourney: PropertyMiniJourney.type,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
-    view: PropertyConfirmRemovalView
+    view: PropertyConfirmRemovalView,
+    moreAssetCompletionService: MoreAssetCompletionService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -63,10 +61,8 @@ class PropertyConfirmRemovalController @Inject() (
           Future.successful(Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
         } else {
           (for {
-            updatedAnswers     <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _                  <- sessionRepository.set(updatedAnswers)
-            minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, PropertyQuery))
-            _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+            updatedAnswers <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.Property, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode))).recover {
             case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
           }

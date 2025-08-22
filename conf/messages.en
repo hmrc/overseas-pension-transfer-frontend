@@ -615,6 +615,11 @@ propertyAmendContinue.summary.value = {0} added
 propertyAmendContinue.text.singular = property
 propertyAmendContinue.text.plural = properties
 
+morePropertyDeclaration.title = morePropertyDeclaration
+morePropertyDeclaration.moreProperty = Does the member have more than 5 assets?
+morePropertyDeclaration.moreProperty.hint = Select yes if the member has more than 5 assets. We'll contact the scheme administrator for information on the rest of the assets.
+morePropertyDeclaration.error.required = Please select an option
+
 otherAssetsAmendContinue.error.required = Please select an option
 otherAssetsAmendContinue.checkYourAnswersLabel = Other assets
 otherAssetsAmendContinue.change.hidden = Other assets

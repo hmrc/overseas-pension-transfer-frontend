@@ -314,6 +314,11 @@ POST       /transfer-details/assets/property-amend-continue                     
 GET        /transfer-details/assets/change-property-amend-continue                                controllers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/assets/change-property-amend-continue                                controllers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueController.onSubmit(mode: Mode = CheckMode)
 
+GET        /transfer-details/assets/more-property-declaration                                     controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/assets/more-property-declaration                                     controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-more-property-declaration                              controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/assets/change-more-property-declaration                              controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = CheckMode)
+
 GET        /transfer-details/assets/property-confirm-removal                                      controllers.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/property-confirm-removal                                      controllers.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalController.onSubmit(index: Int)
 

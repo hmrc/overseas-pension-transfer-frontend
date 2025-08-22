@@ -93,6 +93,9 @@ object AssetsMiniJourneysRoutes {
   val PropertyConfirmRemovalController =
     controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyConfirmRemovalController
 
+  val MorePropertyDeclarationController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
+
   // ----- Other Assets -----
 
   val OtherAssetsStartController =
