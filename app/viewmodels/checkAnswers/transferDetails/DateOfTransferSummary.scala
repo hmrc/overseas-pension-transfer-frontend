@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -27,7 +27,7 @@ import viewmodels.implicits._
 
 object DateOfTransferSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DateOfTransferPage).map {
       answer =>
         implicit val lang: Lang = messages.lang
@@ -36,7 +36,7 @@ object DateOfTransferSummary {
           key     = "dateOfTransfer.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", DateOfTransferPage.changeLink(answers).url)
+            ActionItemViewModel("site.change", DateOfTransferPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("dateOfTransfer.change.hidden"))
           )
         )

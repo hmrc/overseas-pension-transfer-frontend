@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -50,7 +50,7 @@ class UnquotedSharesCYAController @Inject() (
   private val actions = (identify andThen getData andThen requireData andThen displayData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(UnquotedSharesSummary.rows(request.userAnswers, index))
+    val list = SummaryListViewModel(UnquotedSharesSummary.rows(CheckMode, request.userAnswers, index))
 
     Ok(view(list, index))
   }

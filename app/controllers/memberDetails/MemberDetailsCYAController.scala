@@ -18,7 +18,7 @@ package controllers.memberDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import pages.memberDetails.MemberDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +39,7 @@ class MemberDetailsCYAController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val list = SummaryListViewModel(MemberDetailsSummary.rows(request.userAnswers))
+      val list = SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, request.userAnswers))
 
       Ok(view(list))
   }

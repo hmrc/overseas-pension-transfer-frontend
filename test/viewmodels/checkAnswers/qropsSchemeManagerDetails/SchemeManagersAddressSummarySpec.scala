@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
+import models.CheckMode
 import models.address.{Country, SchemeManagersAddress}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
@@ -40,7 +41,7 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
       val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
 
-      val row = SchemeManagersAddressSummary.row(answers)
+      val row = SchemeManagersAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
       row.get.key.content.asHtml.body must include("schemeManagersAddress.checkYourAnswersLabel")
@@ -59,7 +60,7 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
       )
 
       val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
-      val row     = SchemeManagersAddressSummary.row(answers)
+      val row     = SchemeManagersAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
       row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
@@ -78,7 +79,7 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
       )
       val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
 
-      val row = SchemeManagersAddressSummary.row(answers)
+      val row = SchemeManagersAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
       row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
@@ -86,7 +87,7 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
     }
 
     "return None when address is not present" in {
-      val row = SchemeManagersAddressSummary.row(emptyUserAnswers)
+      val row = SchemeManagersAddressSummary.row(CheckMode, emptyUserAnswers)
       row mustBe None
     }
   }

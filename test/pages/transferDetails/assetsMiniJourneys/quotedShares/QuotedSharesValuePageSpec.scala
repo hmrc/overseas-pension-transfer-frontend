@@ -17,7 +17,7 @@
 package pages.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -43,6 +43,13 @@ class QuotedSharesValuePageSpec extends AnyFreeSpec with Matchers {
       "must go to Check Answers" in {
 
         QuotedSharesValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(index)
+      }
+    }
+
+    "in FinalCheckMode" - {
+      "must go to Final Check Answers page" in {
+        QuotedSharesValuePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual
+          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

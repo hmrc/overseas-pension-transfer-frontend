@@ -18,7 +18,7 @@ package pages.qropsDetails
 
 import controllers.qropsDetails.routes
 import models.address.{Address, QROPSAddress}
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -35,8 +35,8 @@ case object QROPSAddressPage extends QuestionPage[QROPSAddress] {
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.QROPSDetailsCYAController.onPageLoad()
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.QROPSAddressController.onPageLoad(CheckMode)
+  final def changeLink(mode: Mode): Call =
+    routes.QROPSAddressController.onPageLoad(mode)
 
   val recoveryModeReturnUrl: String = routes.QROPSAddressController.onPageLoad(NormalMode).url
 }

@@ -17,7 +17,7 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -34,6 +34,6 @@ case object SchemeManagerOrganisationNamePage extends QuestionPage[String] {
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.SchemeManagerDetailsCYAController.onPageLoad()
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode)
+  final def changeLink(mode: Mode): Call =
+    routes.SchemeManagerOrganisationNameController.onPageLoad(mode)
 }

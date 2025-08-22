@@ -18,9 +18,10 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
 
 class PropertyAddressPageSpec extends AnyFreeSpec with Matchers {
   private val index = 0
@@ -40,6 +41,13 @@ class PropertyAddressPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Check Answers" in {
         PropertyAddressPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
+      }
+    }
+
+    "in FinalCheckMode" - {
+      "must go to Final Check Answers page" in {
+        PropertyAddressPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual
+          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

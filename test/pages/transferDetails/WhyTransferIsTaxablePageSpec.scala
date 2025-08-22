@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.checkYourAnswers.routes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -38,8 +38,14 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers {
     "in Check Mode" - {
 
       "must go to Check Answers" in {
+        WhyTransferIsTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+      }
+    }
 
-        WhyTransferIsTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.CheckYourAnswersController.onPageLoad()
+    "in FinalCheckMode" - {
+      "must go to Final Check Answers page" in {
+        WhyTransferIsTaxablePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

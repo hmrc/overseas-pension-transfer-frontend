@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,7 +27,7 @@ import viewmodels.implicits._
 
 object PropertyAddressSummary {
 
-  def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] = {
     answers.get(PropertyAddressPage(index)).map {
       address =>
         {
@@ -36,7 +36,7 @@ object PropertyAddressSummary {
             key     = "propertyAddress.checkYourAnswersLabel",
             value   = ValueViewModel(HtmlContent(addressVM)),
             actions = Seq(
-              ActionItemViewModel("site.change", PropertyAddressPage(index).changeLink(answers).url)
+              ActionItemViewModel("site.change", PropertyAddressPage(index).changeLink(mode).url)
                 .withVisuallyHiddenText(messages("propertyAddress.change.hidden"))
             )
           )

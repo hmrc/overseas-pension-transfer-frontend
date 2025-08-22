@@ -18,7 +18,7 @@ package controllers.qropsSchemeManagerDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import pages.qropsSchemeManagerDetails.SchemeManagerDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -39,7 +39,7 @@ class SchemeManagerDetailsCYAController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val list = SummaryListViewModel(SchemeManagerDetailsSummary.rows(request.userAnswers))
+      val list = SummaryListViewModel(SchemeManagerDetailsSummary.rows(CheckMode, request.userAnswers))
 
       Ok(view(list))
   }

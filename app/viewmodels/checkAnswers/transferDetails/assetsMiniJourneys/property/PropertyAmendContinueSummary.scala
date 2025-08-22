@@ -18,8 +18,8 @@ package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
-import models.{CheckMode, UserAnswers}
 import models.assets.TypeOfAsset
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import queries.assets.PropertyQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -33,7 +33,7 @@ object PropertyAmendContinueSummary {
   private val thresholdHandler = new AssetThresholdHandler()
   private val threshold        = 5
 
-  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
     val maybeEntries = userAnswers.get(PropertyQuery)
     val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.Property)
@@ -43,10 +43,10 @@ object PropertyAmendContinueSummary {
       case Some(entries) if entries.nonEmpty =>
         val changeUrl =
           if (count < threshold) {
-            AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = CheckMode).url
+            AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode).url
           } else {
             controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
-              .onPageLoad(CheckMode)
+              .onPageLoad(mode)
               .url
           }
 

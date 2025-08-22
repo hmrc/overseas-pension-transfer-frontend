@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -28,7 +28,7 @@ import viewmodels.implicits._
 
 object SchemeManagersAddressSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeManagersAddressPage).map {
       address =>
         val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
@@ -37,7 +37,7 @@ object SchemeManagersAddressSummary {
           key     = "schemeManagersAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.SchemeManagersAddressController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", SchemeManagersAddressPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("schemeManagersAddress.change.hidden"))
           )
         )

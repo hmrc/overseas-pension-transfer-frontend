@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.{memberDetails, routes}
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -38,6 +38,6 @@ case object MemberHasEverBeenResidentUKPage extends QuestionPage[Boolean] {
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     memberDetails.routes.MemberDetailsCYAController.onPageLoad()
 
-  final def changeLink(answers: UserAnswers): Call =
-    memberDetails.routes.MemberHasEverBeenResidentUKController.onPageLoad(CheckMode)
+  final def changeLink(mode: Mode): Call =
+    memberDetails.routes.MemberHasEverBeenResidentUKController.onPageLoad(mode)
 }

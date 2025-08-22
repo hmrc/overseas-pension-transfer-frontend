@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.memberDetails.MemberDoesNotHaveNinoPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object MemberDoesNotHaveNinoSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberDoesNotHaveNinoPage).map {
       answer =>
         SummaryListRowViewModel(
           key     = "memberDoesNotHaveNino.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", MemberDoesNotHaveNinoPage.changeLink(answers).url)
+            ActionItemViewModel("site.change", MemberDoesNotHaveNinoPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("memberDoesNotHaveNino.change.hidden"))
           )
         )

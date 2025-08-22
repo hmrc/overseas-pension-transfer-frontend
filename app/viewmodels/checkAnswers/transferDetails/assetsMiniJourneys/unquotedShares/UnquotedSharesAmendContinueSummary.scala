@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import play.api.i18n.Messages
 import queries.assets.UnquotedSharesQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,7 +28,7 @@ import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object UnquotedSharesAmendContinueSummary extends AppUtils {
 
-  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
     val answers   = userAnswers.get(UnquotedSharesQuery)
     val valueText = messages("unquotedSharesAmendContinue.summary.value", answers.size)
@@ -40,7 +40,7 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
             key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
             value   = ValueViewModel(valueText),
             actions = Seq(
-              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = CheckMode).url)
+              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode).url)
                 .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
             )
           )

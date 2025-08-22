@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{TaskCategory, UserAnswers}
+import models.{Mode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -33,4 +33,7 @@ case object AmountOfTransferPage extends QuestionPage[BigDecimal] {
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
+
+  final def changeLink(mode: Mode): Call =
+    routes.AmountOfTransferController.onPageLoad(mode)
 }

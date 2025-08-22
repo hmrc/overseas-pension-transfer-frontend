@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.qropsDetails
 
 import base.SpecBase
+import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsDetails.QROPSNamePage
 import play.api.i18n.Messages
@@ -29,7 +30,7 @@ class QROPSNameSummarySpec extends AnyFreeSpec with SpecBase {
 
     "must return a SummaryListRow when QROPSNamePage has a value" in {
       val answers = emptyUserAnswers.set(QROPSNamePage, "QROPS Sample Name").success.value
-      val result  = QROPSNameSummary.row(answers)
+      val result  = QROPSNameSummary.row(CheckMode, answers)
 
       result mustBe defined
       result.get.key.content.asHtml.body must include("qropsName.checkYourAnswersLabel")

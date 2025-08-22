@@ -16,17 +16,17 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case object QuotedSharesSummary {
 
-  def rows(userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val companyNameRow: Option[SummaryListRow]   = QuotedSharesCompanyNameSummary.row(userAnswers, index)
-    val valueRow: Option[SummaryListRow]         = QuotedSharesValueSummary.row(userAnswers, index)
-    val quantityRow: Option[SummaryListRow]      = QuotedSharesNumberSummary.row(userAnswers, index)
-    val classOfSharesRow: Option[SummaryListRow] = QuotedSharesClassSummary.row(userAnswers, index)
+  def rows(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val companyNameRow: Option[SummaryListRow]   = QuotedSharesCompanyNameSummary.row(mode, userAnswers, index)
+    val valueRow: Option[SummaryListRow]         = QuotedSharesValueSummary.row(mode, userAnswers, index)
+    val quantityRow: Option[SummaryListRow]      = QuotedSharesNumberSummary.row(mode, userAnswers, index)
+    val classOfSharesRow: Option[SummaryListRow] = QuotedSharesClassSummary.row(mode, userAnswers, index)
 
     Seq(companyNameRow, valueRow, quantityRow, classOfSharesRow).flatten
   }

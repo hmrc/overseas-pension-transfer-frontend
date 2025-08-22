@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object PropertyValueSummary {
 
-  def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(PropertyValuePage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "propertyValue.checkYourAnswersLabel",
           value   = ValueViewModel(answer.toString),
           actions = Seq(
-            ActionItemViewModel("site.change", PropertyValuePage(index).changeLink(answers).url)
+            ActionItemViewModel("site.change", PropertyValuePage(index).changeLink(mode).url)
               .withVisuallyHiddenText(messages("propertyValue.change.hidden"))
           )
         )

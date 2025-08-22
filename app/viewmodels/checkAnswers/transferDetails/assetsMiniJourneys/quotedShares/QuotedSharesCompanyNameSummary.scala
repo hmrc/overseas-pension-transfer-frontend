@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object QuotedSharesCompanyNameSummary {
 
-  def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(QuotedSharesCompanyNamePage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "quotedSharesCompanyName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", QuotedSharesCompanyNamePage(index).changeLink(answers).url)
+            ActionItemViewModel("site.change", QuotedSharesCompanyNamePage(index).changeLink(mode).url)
               .withVisuallyHiddenText(messages("quotedSharesCompanyName.change.hidden"))
           )
         )

@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.WhyTransferIsNotTaxablePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,7 +28,7 @@ import viewmodels.implicits._
 
 object WhyTransferIsNotTaxableSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(WhyTransferIsNotTaxablePage).map {
       answers =>
         val value = ValueViewModel(
@@ -44,7 +44,7 @@ object WhyTransferIsNotTaxableSummary {
           key     = "whyTransferIsNotTaxable.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.WhyTransferIsNotTaxableController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.WhyTransferIsNotTaxableController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("whyTransferIsNotTaxable.change.hidden"))
           )
         )
