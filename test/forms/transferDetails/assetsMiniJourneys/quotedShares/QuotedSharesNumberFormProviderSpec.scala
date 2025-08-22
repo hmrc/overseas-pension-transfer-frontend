@@ -16,9 +16,8 @@
 
 package forms.transferDetails.assetsMiniJourneys.quotedShares
 
-import forms.behaviours.{IntFieldBehaviours, StringFieldBehaviours}
+import forms.behaviours.IntFieldBehaviours
 import forms.mappings.Regex
-import org.scalacheck.Gen
 import play.api.data.FormError
 
 class QuotedSharesNumberFormProviderSpec extends IntFieldBehaviours with Regex {
@@ -29,7 +28,7 @@ class QuotedSharesNumberFormProviderSpec extends IntFieldBehaviours with Regex {
 
     val fieldName = "value"
     val minimum   = 0
-    val maximum   = 99999
+    val maximum   = 9999999
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 

@@ -29,6 +29,6 @@ class QuotedSharesNumberFormProvider @Inject() extends Mappings {
         "quotedSharesNumber.error.required",
         "quotedSharesNumber.error.wholeNumber",
         "quotedSharesNumber.error.nonNumeric"
-      ).verifying(inRange(0, 99999, "quotedSharesNumber.error.outOfRange"))
+      ).verifying(inRange(0, 9999999, "quotedSharesNumber.error.outOfRange"))
     )
 }

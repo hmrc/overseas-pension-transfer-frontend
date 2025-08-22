@@ -28,7 +28,7 @@ class UnquotedSharesNumberFormProviderSpec extends IntFieldBehaviours with Regex
 
     val fieldName = "value"
     val minimum   = 0
-    val maximum   = 99999
+    val maximum   = 9999999
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 
