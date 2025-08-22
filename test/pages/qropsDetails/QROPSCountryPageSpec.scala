@@ -17,7 +17,7 @@
 package pages.qropsDetails
 
 import controllers.qropsDetails.routes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -40,6 +40,13 @@ class QROPSCountryPageSpec extends AnyFreeSpec with Matchers {
       "must go to Check Answers" in {
 
         QROPSCountryPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
+      }
+    }
+
+    "in FinalCheckMode" - {
+      "must got to Final Check Ansers page" in {
+        QROPSCountryPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

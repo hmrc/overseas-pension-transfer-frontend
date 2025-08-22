@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import models.address._
 import pages.QuestionPage
 import play.api.libs.json.JsPath
@@ -37,6 +37,6 @@ case object MembersCurrentAddressPage extends QuestionPage[MembersCurrentAddress
 
   val recoveryModeReturnUrl: String = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.MembersCurrentAddressController.onPageLoad(CheckMode)
+  final def changeLink(mode: Mode): Call =
+    routes.MembersCurrentAddressController.onPageLoad(mode)
 }

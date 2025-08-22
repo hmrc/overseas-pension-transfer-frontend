@@ -16,23 +16,23 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case object SchemeManagerDetailsSummary {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val managersType: Option[SummaryListRow] = SchemeManagerTypeSummary.row(userAnswers)
+  def rows(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val managersType: Option[SummaryListRow] = SchemeManagerTypeSummary.row(mode, userAnswers)
 
-    val managersName: Option[SummaryListRow] = SchemeManagersNameSummary.row(userAnswers)
+    val managersName: Option[SummaryListRow] = SchemeManagersNameSummary.row(mode, userAnswers)
 
-    val orgName: Option[SummaryListRow]       = SchemeManagerOrganisationNameSummary.row(userAnswers)
-    val orgIndividual: Option[SummaryListRow] = SchemeManagerOrgIndividualNameSummary.row(userAnswers)
+    val orgName: Option[SummaryListRow]       = SchemeManagerOrganisationNameSummary.row(mode, userAnswers)
+    val orgIndividual: Option[SummaryListRow] = SchemeManagerOrgIndividualNameSummary.row(mode, userAnswers)
 
-    val managerAddress: Option[SummaryListRow]  = SchemeManagersAddressSummary.row(userAnswers)
-    val managersEmail: Option[SummaryListRow]   = SchemeManagersEmailSummary.row(userAnswers)
-    val managersContact: Option[SummaryListRow] = SchemeManagersContactSummary.row(userAnswers)
+    val managerAddress: Option[SummaryListRow]  = SchemeManagersAddressSummary.row(mode, userAnswers)
+    val managersEmail: Option[SummaryListRow]   = SchemeManagersEmailSummary.row(mode, userAnswers)
+    val managersContact: Option[SummaryListRow] = SchemeManagersContactSummary.row(mode, userAnswers)
 
     Seq(
       managersType,

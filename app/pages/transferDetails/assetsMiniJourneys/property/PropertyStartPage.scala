@@ -16,6 +16,7 @@
 
 package pages.transferDetails.assetsMiniJourneys.property
 
+import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{NormalMode, UserAnswers}
 import pages.Page
@@ -26,4 +27,7 @@ object PropertyStartPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, startIndex)
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.JourneyRecoveryController.onPageLoad()
 }

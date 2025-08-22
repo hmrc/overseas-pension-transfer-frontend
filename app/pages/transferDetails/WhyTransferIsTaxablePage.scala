@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.routes
-import models.{TaskCategory, UserAnswers, WhyTransferIsTaxable}
+import models.{Mode, TaskCategory, UserAnswers, WhyTransferIsTaxable}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -30,4 +30,10 @@ case object WhyTransferIsTaxablePage extends QuestionPage[WhyTransferIsTaxable] 
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.IndexController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+
+  final def changeLink(mode: Mode): Call =
+    controllers.transferDetails.routes.WhyTransferIsTaxableController.onPageLoad(mode)
 }

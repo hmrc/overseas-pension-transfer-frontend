@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -44,6 +44,13 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers {
       "must go to Check Answers" in {
 
         OtherAssetsDescriptionPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
+      }
+    }
+
+    "in FinalCheckMode" - {
+      "must go to Final Check Answers page" in {
+        OtherAssetsDescriptionPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual
+          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

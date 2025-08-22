@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.memberDetails.MemberHasEverBeenResidentUKPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -25,7 +25,7 @@ import viewmodels.implicits._
 
 object MemberHasEverBeenResidentUKSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberHasEverBeenResidentUKPage).map {
       answer =>
         val value = if (answer) "site.yes" else "site.no"
@@ -34,7 +34,7 @@ object MemberHasEverBeenResidentUKSummary {
           key     = "memberHasEverBeenResidentUK.checkYourAnswersLabel",
           value   = ValueViewModel(value),
           actions = Seq(
-            ActionItemViewModel("site.change", MemberHasEverBeenResidentUKPage.changeLink(answers).url)
+            ActionItemViewModel("site.change", MemberHasEverBeenResidentUKPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("memberHasEverBeenResidentUK.change.hidden"))
           )
         )

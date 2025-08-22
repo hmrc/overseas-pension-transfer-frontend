@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object OtherAssetsValueSummary {
 
-  def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OtherAssetsValuePage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "valueOfAsset.checkYourAnswersLabel",
           value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", OtherAssetsValuePage(index).changeLink(answers).url)
+            ActionItemViewModel("site.change", OtherAssetsValuePage(index).changeLink(mode).url)
               .withVisuallyHiddenText(messages("valueOfAsset.change.hidden"))
           )
         )

@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,7 +27,7 @@ import viewmodels.implicits._
 
 object MembersCurrentAddressSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MembersCurrentAddressPage).map {
       address =>
         val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
@@ -36,7 +36,7 @@ object MembersCurrentAddressSummary {
           key     = "membersCurrentAddress.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", MembersCurrentAddressPage.changeLink(answers).url)
+            ActionItemViewModel("site.change", MembersCurrentAddressPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("membersCurrentAddress.change.hidden"))
           )
         )

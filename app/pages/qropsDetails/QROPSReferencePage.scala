@@ -17,7 +17,7 @@
 package pages.qropsDetails
 
 import controllers.qropsDetails.routes
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -34,6 +34,6 @@ case object QROPSReferencePage extends QuestionPage[String] {
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.QROPSDetailsCYAController.onPageLoad()
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.QROPSReferenceController.onPageLoad(CheckMode)
+  final def changeLink(mode: Mode): Call =
+    routes.QROPSReferenceController.onPageLoad(mode)
 }

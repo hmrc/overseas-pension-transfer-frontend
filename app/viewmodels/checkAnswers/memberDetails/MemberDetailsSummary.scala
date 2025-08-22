@@ -16,22 +16,22 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case object MemberDetailsSummary {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val nameRow: Option[SummaryListRow]         = MemberNameSummary.row(userAnswers)
-    val ninoRow: Option[SummaryListRow]         = MemberNinoSummary.row(userAnswers)
-    val noNinoRow: Option[SummaryListRow]       = MemberDoesNotHaveNinoSummary.row(userAnswers)
-    val dobRow: Option[SummaryListRow]          = MemberDateOfBirthSummary.row(userAnswers)
-    val currentAddRow: Option[SummaryListRow]   = MembersCurrentAddressSummary.row(userAnswers)
-    val isResidentRow: Option[SummaryListRow]   = MemberIsResidentUKSummary.row(userAnswers)
-    val everResidentRow: Option[SummaryListRow] = MemberHasEverBeenResidentUKSummary.row(userAnswers)
-    val lastAddRow: Option[SummaryListRow]      = MembersLastUKAddressSummary.row(userAnswers)
-    val dolRow: Option[SummaryListRow]          = MemberDateOfLeavingUKSummary.row(userAnswers)
+  def rows(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val nameRow: Option[SummaryListRow]         = MemberNameSummary.row(mode, userAnswers)
+    val ninoRow: Option[SummaryListRow]         = MemberNinoSummary.row(mode, userAnswers)
+    val noNinoRow: Option[SummaryListRow]       = MemberDoesNotHaveNinoSummary.row(mode, userAnswers)
+    val dobRow: Option[SummaryListRow]          = MemberDateOfBirthSummary.row(mode, userAnswers)
+    val currentAddRow: Option[SummaryListRow]   = MembersCurrentAddressSummary.row(mode, userAnswers)
+    val isResidentRow: Option[SummaryListRow]   = MemberIsResidentUKSummary.row(mode, userAnswers)
+    val everResidentRow: Option[SummaryListRow] = MemberHasEverBeenResidentUKSummary.row(mode, userAnswers)
+    val lastAddRow: Option[SummaryListRow]      = MembersLastUKAddressSummary.row(mode, userAnswers)
+    val dolRow: Option[SummaryListRow]          = MemberDateOfLeavingUKSummary.row(mode, userAnswers)
 
     Seq(
       nameRow,
