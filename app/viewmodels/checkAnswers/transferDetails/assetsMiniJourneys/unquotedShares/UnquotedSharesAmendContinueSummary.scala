@@ -17,20 +17,20 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
-import queries.assets.UnquotedSharesQuery
+import queries.assets.QuotedSharesQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+import utils.AppUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
-import utils.AppUtils
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object UnquotedSharesAmendContinueSummary extends AppUtils {
 
   def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val answers   = userAnswers.get(UnquotedSharesQuery)
+    val answers   = userAnswers.get(QuotedSharesQuery)
     val valueText = messages("unquotedSharesAmendContinue.summary.value", answers.size)
 
     answers match {
@@ -50,7 +50,7 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
   }
 
   def rows(answers: UserAnswers): Seq[ListItem] = {
-    val maybeEntries = answers.get(UnquotedSharesQuery)
+    val maybeEntries = answers.get(QuotedSharesQuery)
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(
