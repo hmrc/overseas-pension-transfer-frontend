@@ -17,9 +17,9 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
-import queries.assets.{QuotedSharesQuery, UnquotedSharesQuery}
+import queries.assets.QuotedSharesQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AppUtils
@@ -30,7 +30,7 @@ object QuotedSharesAmendContinueSummary extends AppUtils {
 
   def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val answers   = userAnswers.get(UnquotedSharesQuery)
+    val answers   = userAnswers.get(QuotedSharesQuery)
     val valueText = messages("quotedSharesAmendContinue.summary.value", answers.size)
 
     answers match {
