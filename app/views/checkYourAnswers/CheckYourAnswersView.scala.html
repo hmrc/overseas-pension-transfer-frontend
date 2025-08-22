@@ -30,15 +30,13 @@
  govukSummaryList: GovukSummaryList,
  govukButton: GovukButton,
  govukInsetText : GovukInsetText,
- heading: CheckYourAnswersHeading,
- qtNumber: QTNumber
+ heading: CheckYourAnswersHeading
 )
 
 @(memberDetails: SummaryList, transferDetails: SummaryList, qropsDetails: SummaryList, schemeManagerDetails: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true) {
 
- @qtNumber()
  @heading(messages("checkYourAnswers.heading"), Some(messages("checkYourAnswers.memberDetails.heading")))
 
  @govukSummaryList(memberDetails)

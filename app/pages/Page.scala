@@ -32,9 +32,11 @@ trait Page {
       case FinalCheckMode => nextPageFinalCheckMode
     }
 
-  protected def nextPageNormalMode(answers: UserAnswers): Call
+  protected def nextPageNormalMode(answers: UserAnswers): Call =
+    throw new NotImplementedError("nextPageNormalMode is not implemented on this page")
 
-  protected def nextPageCheckMode(answers: UserAnswers): Call
+  protected def nextPageCheckMode(answers: UserAnswers): Call =
+    throw new NotImplementedError("nextPageCheckMode is not implemented on this page")
 
   private def nextPageFinalCheckMode: Call =
     routes.CheckYourAnswersController.onPageLoad()
