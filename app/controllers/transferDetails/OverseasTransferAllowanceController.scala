@@ -18,12 +18,15 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.transferDetails.OverseasTransferAllowanceFormProvider
-import models.Mode
+import models.TaskCategory.{MemberDetails, TransferDetails}
+import models.taskList.TaskStatus.InProgress
+import models.{CheckMode, Mode, NormalMode}
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import pages.transferDetails.OverseasTransferAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TaskStatusQuery
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -39,6 +42,7 @@ class OverseasTransferAllowanceController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    markInProgress: MarkInProgressOnEntryAction,
     formProvider: OverseasTransferAllowanceFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: OverseasTransferAllowanceView,
@@ -48,15 +52,16 @@ class OverseasTransferAllowanceController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(OverseasTransferAllowancePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen markInProgress.forCategoryAndMode(TransferDetails, mode) andThen displayData) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(OverseasTransferAllowancePage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+        Ok(view(preparedForm, mode))
 
-      Ok(view(preparedForm, mode))
-  }
+    }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>

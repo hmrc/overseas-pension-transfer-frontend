@@ -29,5 +29,5 @@ case object MemberDetailsSummaryPage extends QuestionPage[PersonName] {
   override def toString: String = "memberDetailsSummary"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad() // TODO This will have to be changed to 'overseas transfer report' main page when exists
+    controllers.routes.TaskListController.onPageLoad()
 }

@@ -17,10 +17,13 @@
 package models
 
 import base.SpecBase
+import models.TaskCategory._
 import models.assets.{QuotedSharesEntry, UnquotedSharesEntry}
+import models.taskList.TaskStatus
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.libs.json._
+import queries.TaskStatusQuery
 import queries.assets.{QuotedSharesQuery, UnquotedSharesQuery}
 
 import java.time.Instant
@@ -75,6 +78,18 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
       val result = UserAnswers.buildMinimal(empty, QuotedSharesQuery)
 
       result.isFailure mustBe true
+    }
+  }
+
+  "initialise" - {
+    "should set expected default statuses" in {
+      val ua = UserAnswers.initialise("u1").get
+
+      ua.get(TaskStatusQuery(MemberDetails)) mustBe Some(TaskStatus.NotStarted)
+      ua.get(TaskStatusQuery(QROPSDetails)) mustBe Some(TaskStatus.CannotStart)
+      ua.get(TaskStatusQuery(SchemeManagerDetails)) mustBe Some(TaskStatus.CannotStart)
+      ua.get(TaskStatusQuery(TransferDetails)) mustBe Some(TaskStatus.CannotStart)
+      ua.get(TaskStatusQuery(SubmissionDetails)) mustBe Some(TaskStatus.CannotStart)
     }
   }
 }

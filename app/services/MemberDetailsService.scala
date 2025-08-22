@@ -20,19 +20,20 @@ import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.memberDetails.{MemberDateOfLeavingUKPage, MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
 
 import scala.concurrent.Future
+import scala.util.{Success, Try}
 
 class MemberDetailsService {
 
   // If going from false → true, remove the answers of next questions
-  def updateMemberIsResidentUKAnswers(baseAnswers: UserAnswers, previousValue: Option[Boolean], value: Boolean): Future[UserAnswers] = {
+  def updateMemberIsResidentUKAnswers(baseAnswers: UserAnswers, previousValue: Option[Boolean], value: Boolean): Try[UserAnswers] = {
     (previousValue, value) match {
       case (Some(false), true) =>
-        Future.fromTry(baseAnswers
+        baseAnswers
           .remove(MemberHasEverBeenResidentUKPage)
           .flatMap(_.remove(MembersLastUKAddressPage))
-          .flatMap(_.remove(MemberDateOfLeavingUKPage)))
+          .flatMap(_.remove(MemberDateOfLeavingUKPage))
       case _                   =>
-        Future.successful(baseAnswers)
+        Success(baseAnswers)
     }
   }
 
@@ -45,12 +46,12 @@ class MemberDetailsService {
   }
 
   // If going from false → true, remove the answers of next questions
-  def updateMemberHasEverBeenResidentUKAnswers(baseAnswers: UserAnswers, previousValue: Option[Boolean], value: Boolean): Future[UserAnswers] = {
+  def updateMemberHasEverBeenResidentUKAnswers(baseAnswers: UserAnswers, previousValue: Option[Boolean], value: Boolean): Try[UserAnswers] = {
     (previousValue, value) match {
-      case (Some(true), false) => Future.fromTry(baseAnswers
+      case (Some(true), false) => baseAnswers
           .remove(MembersLastUKAddressPage)
-          .flatMap(_.remove(MemberDateOfLeavingUKPage)))
-      case _                   => Future.successful(baseAnswers)
+          .flatMap(_.remove(MemberDateOfLeavingUKPage))
+      case _                   => Success(baseAnswers)
     }
   }
 

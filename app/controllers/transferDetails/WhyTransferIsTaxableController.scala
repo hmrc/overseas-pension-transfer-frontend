@@ -18,14 +18,17 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.transferDetails.WhyTransferIsTaxableFormProvider
-import models.Mode
+import models.{CheckMode, Mode}
+import models.TaskCategory.{MemberDetails, TransferDetails}
+import models.taskList.TaskStatus.InProgress
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TaskStatusQuery
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.WhyTransferIsTaxableView
 
@@ -39,6 +42,7 @@ class WhyTransferIsTaxableController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    taskService: TaskService,
     formProvider: WhyTransferIsTaxableFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: WhyTransferIsTaxableView,
@@ -65,12 +69,13 @@ class WhyTransferIsTaxableController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhyTransferIsTaxablePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            ua1           <- Future.fromTry(request.userAnswers.set(WhyTransferIsTaxablePage, value))
+            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1))
+            _             <- sessionRepository.set(ua2)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(WhyTransferIsTaxablePage.nextPage(mode, updatedAnswers))
+              case Right(Done) => Redirect(WhyTransferIsTaxablePage.nextPage(mode, ua2))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }
