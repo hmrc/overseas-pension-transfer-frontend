@@ -38,7 +38,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
   private val formProvider = new UnquotedSharesNumberFormProvider()
   private val form         = formProvider()
 
-  private val validAnswer = "10"
+  private val validAnswer = 10
   private val index       = 0
 
   lazy val unquotedSharesNumberRoute = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index).url

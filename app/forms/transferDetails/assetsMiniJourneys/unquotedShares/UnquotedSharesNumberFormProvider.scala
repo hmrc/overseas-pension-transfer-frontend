@@ -23,12 +23,12 @@ import javax.inject.Inject
 
 class UnquotedSharesNumberFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def apply(): Form[Int] =
     Form(
-      "value" -> numberOfShares(
+      "value" -> int(
         "unquotedSharesNumber.error.required",
-        "unquotedSharesNumber.error.invalid",
-        "unquotedSharesNumber.error.negative"
-      )
+        "unquotedSharesNumber.error.wholeNumber",
+        "unquotedSharesNumber.error.nonNumeric"
+      ).verifying(inRange(0, 99999, "unquotedSharesNumber.error.outOfRange"))
     )
 }
