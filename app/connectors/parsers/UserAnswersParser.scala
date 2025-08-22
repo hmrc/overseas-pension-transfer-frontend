@@ -97,7 +97,7 @@ object UserAnswersParser {
             case JsError(errors)     =>
               logger.warn(
                 s"Response code: ${response.status} - [SubmissionConnector][postSubmission]" +
-                  s" Unable to parse Json as SubmissionResponse: ${formatJsonErrors(errors)}"
+                  s" Unable to parse Json as SubmissionErrorResponse: ${formatJsonErrors(errors)}"
               )
               Left(SubmissionErrorResponse("Unable to parse Json as SubmissionErrorResponse", Some(formatJsonErrors(errors))))
           }
