@@ -20,9 +20,11 @@ import controllers.actions._
 import forms.transferDetails.CashAmountInTransferFormProvider
 import models.Mode
 import pages.transferDetails.CashAmountInTransferPage
+import models.assets.TypeOfAsset
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.CashAmountInTransferView
 
@@ -36,6 +38,7 @@ class CashAmountInTransferController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    transferDetailsService: TransferDetailsService,
     formProvider: CashAmountInTransferFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: CashAmountInTransferView
@@ -61,9 +64,12 @@ class CashAmountInTransferController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
+            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Cash, completed = true))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(CashAmountInTransferPage.nextPage(mode, updatedAnswers))
+          } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
+            case Some(route) => Redirect(route)
+            case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
+          }
       )
   }
 }

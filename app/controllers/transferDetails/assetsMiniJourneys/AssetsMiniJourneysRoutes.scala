@@ -20,6 +20,11 @@ object AssetsMiniJourneysRoutes {
 
   // ----- Unquoted Shares -----
 
+  val CashAmountInTransferController =
+    controllers.transferDetails.routes.CashAmountInTransferController
+
+  // ----- Unquoted Shares -----
+
   val UnquotedSharesStartController =
     controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesStartController
 
