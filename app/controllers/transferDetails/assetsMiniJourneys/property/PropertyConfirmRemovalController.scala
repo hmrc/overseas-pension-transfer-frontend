@@ -19,6 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
+import handlers.AssetThresholdHandler
 import models.NormalMode
 import models.assets.{PropertyMiniJourney, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -40,6 +41,7 @@ class PropertyConfirmRemovalController @Inject() (
     transferDetailsService: TransferDetailsService,
     miniJourney: PropertyMiniJourney.type,
     userAnswersService: UserAnswersService,
+    assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
     view: PropertyConfirmRemovalView,
     moreAssetCompletionService: MoreAssetCompletionService
@@ -58,14 +60,24 @@ class PropertyConfirmRemovalController @Inject() (
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
       confirmRemoval =>
         if (!confirmRemoval) {
-          Future.successful(Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
+          val propertyCount  = assetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.Property)
+          val redirectTarget =
+            if (propertyCount >= 5) {
+
+              controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController.onPageLoad(mode = NormalMode)
+            } else {
+              AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)
+            }
+
+          Future.successful(Redirect(redirectTarget))
         } else {
           (for {
             updatedAnswers <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.Property, completed = false)
-          } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode))).recover {
-            case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-          }
+          } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
+            .recover {
+              case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
         }
     )
   }
