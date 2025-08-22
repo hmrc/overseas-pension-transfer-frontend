@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package forms.transferDetails.assetsMiniJourneys.property
+package pages.transferDetails.assetsMiniJourneys.property
 
+import controllers.transferDetails.routes
 import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
-import controllers.transferDetails.routes
 
 case object MorePropertyDeclarationPage extends QuestionPage[Boolean] {
 

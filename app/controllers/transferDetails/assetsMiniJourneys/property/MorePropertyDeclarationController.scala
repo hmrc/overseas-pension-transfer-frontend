@@ -17,9 +17,10 @@
 package controllers.transferDetails.assetsMiniJourneys.property
 
 import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.property.{MorePropertyDeclarationFormProvider, MorePropertyDeclarationPage}
+import forms.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationFormProvider
 import models.assets.TypeOfAsset
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
