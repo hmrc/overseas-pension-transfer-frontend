@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import base.SpecBase
 import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
@@ -46,7 +46,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
         val view                    = application.injector.instanceOf[PropertyCYAView]
         implicit val msgs: Messages = messages(application)
 
-        val list = PropertySummary.rows(userAnswersWithProperty(5), 0)
+        val list = PropertySummary.rows(CheckMode, userAnswersWithProperty(5), 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
