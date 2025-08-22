@@ -19,12 +19,13 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.CashAmountInTransferFormProvider
 import models.Mode
-import pages.transferDetails.CashAmountInTransferPage
 import models.assets.TypeOfAsset
+import navigators.TypeOfAssetNavigator
+import pages.transferDetails.{CashAmountInTransferPage, TypeOfAssetPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.TransferDetailsService
+import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.CashAmountInTransferView
 
@@ -41,7 +42,8 @@ class CashAmountInTransferController @Inject() (
     transferDetailsService: TransferDetailsService,
     formProvider: CashAmountInTransferFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: CashAmountInTransferView
+    view: CashAmountInTransferView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -64,9 +66,14 @@ class CashAmountInTransferController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Cash, completed = true))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield transferDetailsService.getNextAssetRoute(updatedAnswers) match {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
+            ua1            <- Future.fromTry(updatedAnswers.set(TypeOfAssetPage, Set[TypeOfAsset](TypeOfAsset.Cash)))
+            ua2            <- Future.fromTry(
+                                transferDetailsService.setAssetCompleted(ua1, TypeOfAsset.Cash, completed = true)
+                              )
+            _              <- sessionRepository.set(ua2)
+            _              <- userAnswersService.setExternalUserAnswers(ua2)
+          } yield TypeOfAssetNavigator.getNextAssetRoute(ua2) match {
             case Some(route) => Redirect(route)
             case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
           }
