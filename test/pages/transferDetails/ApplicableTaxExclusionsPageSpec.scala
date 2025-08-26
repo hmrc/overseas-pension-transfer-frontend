@@ -31,7 +31,7 @@ class ApplicableTaxExclusionsPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        ApplicableTaxExclusionsPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        ApplicableTaxExclusionsPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(NormalMode)
       }
     }
 
