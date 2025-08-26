@@ -19,6 +19,8 @@ package controllers.qropsDetails
 import base.SpecBase
 import forms.qropsDetails.QROPSOtherCountryFormProvider
 import models.NormalMode
+import models.responses.UserAnswersErrorResponse
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -28,6 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.qropsDetails.QROPSOtherCountryView
 
 import scala.concurrent.Future
@@ -37,7 +40,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
   private val formProvider = new QROPSOtherCountryFormProvider()
   private val form         = formProvider()
 
-  private lazy val qROPSOtherCountryRoute = routes.QROPSOtherCountryController.onPageLoad(NormalMode).url
+  private lazy val qropsOtherCountryRoute = routes.QROPSOtherCountryController.onPageLoad(NormalMode).url
 
   "QROPSOtherCountry Controller" - {
 
@@ -46,7 +49,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qROPSOtherCountryRoute)
+        val request = FakeRequest(GET, qropsOtherCountryRoute)
 
         val result = route(application, request).value
 
@@ -64,7 +67,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, qROPSOtherCountryRoute)
+        val request = FakeRequest(GET, qropsOtherCountryRoute)
 
         val view = application.injector.instanceOf[QROPSOtherCountryView]
 
@@ -77,18 +80,23 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, qROPSOtherCountryRoute)
+          FakeRequest(POST, qropsOtherCountryRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
@@ -104,7 +112,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, qROPSOtherCountryRoute)
+          FakeRequest(POST, qropsOtherCountryRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
@@ -123,7 +131,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, qROPSOtherCountryRoute)
+        val request = FakeRequest(GET, qropsOtherCountryRoute)
 
         val result = route(application, request).value
 
@@ -138,13 +146,40 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       running(application) {
         val request =
-          FakeRequest(POST, qROPSOtherCountryRoute)
+          FakeRequest(POST, qropsOtherCountryRoute)
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must return InternalServerError for an error from the backend" in {
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any())) thenReturn
+        Future.successful(Left(UserAnswersErrorResponse("error", None)))
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, qropsOtherCountryRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
       }
     }
   }
