@@ -447,11 +447,15 @@ POST       /transfer-details/assets/final-change-other-assets-amend-continue    
 GET        /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onSubmit(index: Int)
 
-GET        /psp-declaration                                                                       controllers.PspDeclarationController.onPageLoad()
-POST       /psp-declaration                                                                       controllers.PspDeclarationController.onSubmit()
+GET        /psp-declaration                                                                       controllers.PspDeclarationController.onPageLoad(mode: Mode = NormalMode)
+POST       /psp-declaration                                                                       controllers.PspDeclarationController.onSubmit(mode: Mode = NormalMode)
+GET        /change-psp-declaration                                                                controllers.PspDeclarationController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-psp-declaration                                                                controllers.PspDeclarationController.onSubmit(mode: Mode = CheckMode)
 
-GET        /psa-declaration                                                                       controllers.PsaDeclarationController.onPageLoad()
-POST       /psa-declaration                                                                       controllers.PsaDeclarationController.onSubmit()
+GET        /psa-declaration                                                                       controllers.PsaDeclarationController.onPageLoad(mode: Mode = NormalMode)
+POST       /psa-declaration                                                                       controllers.PsaDeclarationController.onSubmit(mode: Mode = NormalMode)
+GET        /change-psa-declaration                                                                controllers.PsaDeclarationController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-psa-declaration                                                                controllers.PsaDeclarationController.onSubmit(mode: Mode = CheckMode)
 
 GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad()
 POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit()
