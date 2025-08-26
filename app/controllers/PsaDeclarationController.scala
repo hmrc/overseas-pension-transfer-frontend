@@ -17,10 +17,11 @@
 package controllers
 
 import controllers.actions._
+import models.Mode
 import models.responses.SubmissionResponse
+import pages.PsaDeclarationPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.QtNumberQuery
 import repositories.SessionRepository
@@ -44,22 +45,19 @@ class PsaDeclarationController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       Ok(view())
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers).flatMap {
         case Right(SubmissionResponse(qtNumber)) =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QtNumberQuery, qtNumber))
-            _              <- {
-              logger.info(Json.prettyPrint(Json.toJson(updatedAnswers)))
-              sessionRepository.set(updatedAnswers)
-            }
-          } yield Redirect(routes.IndexController.onPageLoad())
+            _              <- sessionRepository.set(updatedAnswers)
+          } yield Redirect(PsaDeclarationPage.nextPage(mode, updatedAnswers))
         case _                                   => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
       }
   }

@@ -18,9 +18,10 @@ package controllers
 
 import controllers.actions._
 import forms.PspDeclarationFormProvider
-import models.QtNumber
+import models.Mode
 import models.authentication.PsaId
 import models.responses.SubmissionResponse
+import pages.PspDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.QtNumberQuery
@@ -48,12 +49,12 @@ class PspDeclarationController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       Ok(view(form))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -65,7 +66,7 @@ class PspDeclarationController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QtNumberQuery, qtNumber))
                 _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(routes.IndexController.onPageLoad())
+              } yield Redirect(PspDeclarationPage.nextPage(mode, updatedAnswers))
             case _                                   => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
           }
         }
