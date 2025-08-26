@@ -21,7 +21,7 @@ import forms.transferDetails.CashAmountInTransferFormProvider
 import models.Mode
 import models.assets.TypeOfAsset
 import navigators.TypeOfAssetNavigator
-import pages.transferDetails.{CashAmountInTransferPage, TypeOfAssetPage}
+import pages.transferDetails.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -67,13 +67,12 @@ class CashAmountInTransferController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
-            ua1            <- Future.fromTry(updatedAnswers.set(TypeOfAssetPage, Set[TypeOfAsset](TypeOfAsset.Cash)))
-            ua2            <- Future.fromTry(
-                                transferDetailsService.setAssetCompleted(ua1, TypeOfAsset.Cash, completed = true)
+            ua1            <- Future.fromTry(
+                                transferDetailsService.setAssetCompleted(updatedAnswers, TypeOfAsset.Cash, completed = true)
                               )
-            _              <- sessionRepository.set(ua2)
-            _              <- userAnswersService.setExternalUserAnswers(ua2)
-          } yield TypeOfAssetNavigator.getNextAssetRoute(ua2) match {
+            _              <- sessionRepository.set(ua1)
+            _              <- userAnswersService.setExternalUserAnswers(ua1)
+          } yield TypeOfAssetNavigator.getNextAssetRoute(ua1) match {
             case Some(route) => Redirect(route)
             case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
           }

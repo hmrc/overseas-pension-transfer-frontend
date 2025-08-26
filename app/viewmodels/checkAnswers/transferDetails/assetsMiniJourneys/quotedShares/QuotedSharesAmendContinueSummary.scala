@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import queries.assets.{QuotedSharesQuery, UnquotedSharesQuery}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

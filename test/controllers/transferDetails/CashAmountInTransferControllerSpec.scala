@@ -39,7 +39,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val cashAmountInTransferRoute = routes.TransferDetailsCYAController.onPageLoad().url
+  lazy val cashAmountInTransferRoute = routes.CashAmountInTransferController.onPageLoad(NormalMode).url
 
   "CashAmountInTransfer Controller" - {
 
