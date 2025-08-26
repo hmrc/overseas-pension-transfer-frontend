@@ -51,14 +51,14 @@ class PspDeclarationController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      Ok(view(form))
+      Ok(view(mode, form))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(mode, formWithErrors))),
         psaIdString => {
           val psaId = PsaId(psaIdString)
           userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, Some(psaId)).flatMap {

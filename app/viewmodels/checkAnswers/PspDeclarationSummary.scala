@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.UserAnswers
+import models.{CheckMode, UserAnswers}
 import pages.PspDeclarationPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -34,7 +34,7 @@ object PspDeclarationSummary {
           key     = "pspDeclaration.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.PspDeclarationController.onPageLoad().url)
+            ActionItemViewModel("site.change", routes.PspDeclarationController.onPageLoad(CheckMode).url)
               .withVisuallyHiddenText(messages("pspDeclaration.change.hidden"))
           )
         )

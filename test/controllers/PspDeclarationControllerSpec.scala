@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.PspDeclarationFormProvider
-import models.QtNumber
+import models.{NormalMode, QtNumber}
 import models.responses.{SubmissionResponse, UserAnswersError}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -41,7 +41,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val pspDeclarationRoute = routes.PspDeclarationController.onPageLoad().url
+  private lazy val pspDeclarationRoute = routes.PspDeclarationController.onPageLoad(NormalMode).url
 
   "PspDeclaration Controller" - {
 
@@ -57,7 +57,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val view = application.injector.instanceOf[PspDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(NormalMode, form)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -108,7 +108,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(NormalMode, boundForm)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

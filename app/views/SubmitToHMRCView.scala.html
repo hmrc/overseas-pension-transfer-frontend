@@ -25,22 +25,20 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 
-
-
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
-@(form: Form[_])(implicit request: DisplayRequest[_], messages: Messages)
+@(mode: Mode, form: Form[_])(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("submitToHMRC.title"))) {
 
-    @formHelper(action = routes.SubmitToHMRCController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.SubmitToHMRCController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
