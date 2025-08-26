@@ -57,7 +57,7 @@ class TransferDetailsService {
   def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean)(implicit ec: ExecutionContext): Try[UserAnswers] =
     userAnswers.set(AssetCompletionFlag(assetType), completed)
 
-  def setSelectedAssetsCompleted(removePrevSetAssetFlagsUA: UserAnswers, selectedAssets: Set[TypeOfAsset])(implicit ex: ExecutionContext): Try[UserAnswers] =
+  def setSelectedAssetsIncomplete(removePrevSetAssetFlagsUA: UserAnswers, selectedAssets: Set[TypeOfAsset])(implicit ex: ExecutionContext): Try[UserAnswers] =
     selectedAssets.foldLeft(Try(removePrevSetAssetFlagsUA)) {
       case (Success(ua), assetType) =>
         setAssetCompleted(ua, assetType, completed = false)
