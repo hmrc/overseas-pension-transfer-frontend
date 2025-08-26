@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, Mode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -28,8 +28,13 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
 
   override def toString: String = "paymentTaxableOverseas"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+  override protected def nextPageNormalMode(answers: UserAnswers): Call = {
+    answers.get(IsTransferTaxablePage) match {
+      case Some(true)  => routes.WhyTransferIsTaxableController.onPageLoad(NormalMode)
+      case Some(false) => routes.WhyTransferIsNotTaxableController.onPageLoad(NormalMode)
+      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()

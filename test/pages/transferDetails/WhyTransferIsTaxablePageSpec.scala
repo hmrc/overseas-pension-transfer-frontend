@@ -16,8 +16,10 @@
 
 package pages.transferDetails
 
-import controllers.checkYourAnswers.routes
+import controllers.transferDetails.routes
+import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
 import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -29,16 +31,21 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
+        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+        WhyTransferIsTaxablePage.nextPage(NormalMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode)
+      }
 
-        WhyTransferIsTaxablePage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+      "must go to amount of tax deducted page if NoExclusion selected" in {
+        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
+        WhyTransferIsTaxablePage.nextPage(NormalMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
 
       "must go to Check Answers" in {
-        WhyTransferIsTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+        WhyTransferIsTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
 
