@@ -66,7 +66,7 @@ class TypeOfAssetController @Inject() (
           for {
             setAssetsUA               <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, selectedAssets))
             removePrevSetAssetFlagsUA <- Future.fromTry(transferDetailsService.clearAllAssetCompletionFlags(setAssetsUA))
-            setAssetsCompletedUA      <- Future.fromTry(transferDetailsService.setSelectedAssetsCompleted(removePrevSetAssetFlagsUA, selectedAssets))
+            setAssetsCompletedUA      <- Future.fromTry(transferDetailsService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsUA, selectedAssets))
             _                         <- sessionRepository.set(setAssetsCompletedUA)
           } yield TypeOfAssetNavigator.getNextAssetRoute(setAssetsCompletedUA) match {
             case Some(route) => Redirect(route)
