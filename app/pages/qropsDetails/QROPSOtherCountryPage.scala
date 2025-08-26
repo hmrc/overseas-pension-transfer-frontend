@@ -17,31 +17,20 @@
 package pages.qropsDetails
 
 import controllers.qropsDetails.routes
-import models.address.Country
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QROPSCountryPage extends QuestionPage[Country] {
+case object QROPSOtherCountryPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TaskCategory.QROPSDetails.toString \ toString
 
-  override def toString: String = "qropsEstablished"
+  override def toString: String = "qropsEstablishedOther"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call = {
-    answers.get(QROPSCountryPage) match {
-      case Some(Country("ZZ", "Other")) => routes.QROPSOtherCountryController.onPageLoad(NormalMode)
-      case Some(Country(_, _))          => routes.QROPSDetailsCYAController.onPageLoad()
-      case _                            => controllers.routes.JourneyRecoveryController.onPageLoad()
-    }
-  }
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    routes.QROPSDetailsCYAController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     nextPageNormalMode(answers)
-
-  final def changeLink(mode: Mode): Call =
-    routes.QROPSCountryController.onPageLoad(mode)
-
-  val recoveryModeReturnUrl: String = routes.QROPSCountryController.onPageLoad(NormalMode).url
 }

@@ -18,11 +18,12 @@ package controllers.qropsDetails
 
 import controllers.actions._
 import forms.qropsDetails.QROPSCountryFormProvider
-import models.Mode
+import models.{Mode, UserAnswers}
 import models.address.Country
+import models.requests.DataRequest
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
-import pages.qropsDetails.QROPSCountryPage
+import pages.qropsDetails.{QROPSCountryPage, QROPSOtherCountryPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -33,6 +34,7 @@ import views.html.qropsDetails.QROPSCountryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 class QROPSCountryController @Inject() (
     override val messagesApi: MessagesApi,
@@ -82,7 +84,7 @@ class QROPSCountryController @Inject() (
               )
             case Some(country) =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
+                updatedAnswers <- Future.fromTry(removeQropsOtherCountry(country).set(QROPSCountryPage, country))
                 _              <- sessionRepository.set(updatedAnswers)
                 savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
@@ -96,4 +98,13 @@ class QROPSCountryController @Inject() (
       )
   }
 
+  private def removeQropsOtherCountry(country: Country)(implicit request: DataRequest[AnyContent]): UserAnswers =
+    if (country.name != "Other") {
+      request.userAnswers.remove(QROPSOtherCountryPage) match {
+        case Success(userAnswers) => userAnswers
+        case Failure(_)           => request.userAnswers
+      }
+    } else {
+      request.userAnswers
+    }
 }

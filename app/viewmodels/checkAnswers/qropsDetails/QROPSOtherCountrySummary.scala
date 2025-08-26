@@ -16,25 +16,27 @@
 
 package viewmodels.checkAnswers.qropsDetails
 
+import controllers.qropsDetails.routes
 import models.{Mode, UserAnswers}
+import pages.qropsDetails.QROPSOtherCountryPage
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 
-case object QROPSDetailsSummary {
+object QROPSOtherCountrySummary {
 
-  def rows(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val nameRow: Option[SummaryListRow]         = QROPSNameSummary.row(mode, userAnswers)
-    val referenceRow: Option[SummaryListRow]    = QROPSReferenceSummary.row(mode, userAnswers)
-    val addressRow: Option[SummaryListRow]      = QROPSAddressSummary.row(mode, userAnswers)
-    val countryRow: Option[SummaryListRow]      = QROPSCountrySummary.row(mode, userAnswers)
-    val otherCountryRow: Option[SummaryListRow] = QROPSOtherCountrySummary.row(mode, userAnswers)
-
-    Seq(
-      nameRow,
-      referenceRow,
-      addressRow,
-      countryRow,
-      otherCountryRow
-    ).flatten
-  }
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(QROPSOtherCountryPage).map {
+      answer =>
+        SummaryListRowViewModel(
+          key     = "qROPSOtherCountry.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          actions = Seq(
+            ActionItemViewModel("site.change", routes.QROPSOtherCountryController.onPageLoad(mode).url)
+              .withVisuallyHiddenText(messages("qROPSOtherCountry.change.hidden"))
+          )
+        )
+    }
 }

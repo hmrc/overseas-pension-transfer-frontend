@@ -260,6 +260,13 @@ qropsCountry.error.required = Enter a country or territory
 qropsCountry.error.length = QROPSCountry must be 100 characters or less
 qropsCountry.change.hidden = QROPS country
 
+qropsOtherCountry.title = In which other country or territory was the QROPS established?
+qropsOtherCountry.heading = In which other country or territory was the QROPS established?
+qropsOtherCountry.checkYourAnswersLabel = qROPSOtherCountry
+qropsOtherCountry.error.required = Enter qROPSOtherCountry
+qropsOtherCountry.error.length = QROPSOtherCountry must be 35 characters or less
+qropsOtherCountry.change.hidden = QROPSOtherCountry
+
 schemeManagerType.title = Is the scheme manager an individual or organisation?
 schemeManagerType.heading = Is the scheme manager an individual or organisation?
 schemeManagerType.individual = Individual
