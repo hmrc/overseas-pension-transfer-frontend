@@ -83,8 +83,10 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "initialise" - {
     "should set expected default statuses" in {
-      val ua = UserAnswers.initialise("u1").get
+      val id = "id"
+      val ua = UserAnswers.initialise(id).get
 
+      ua.id mustBe id
       ua.get(TaskStatusQuery(MemberDetails)) mustBe Some(TaskStatus.NotStarted)
       ua.get(TaskStatusQuery(QROPSDetails)) mustBe Some(TaskStatus.CannotStart)
       ua.get(TaskStatusQuery(SchemeManagerDetails)) mustBe Some(TaskStatus.CannotStart)
