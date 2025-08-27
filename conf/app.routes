@@ -280,12 +280,15 @@ POST       /transfer-details/assets/change-type-of-asset                        
 GET        /transfer-details/assets/final-change-type-of-asset                                    controllers.transferDetails.TypeOfAssetController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-type-of-asset                                    controllers.transferDetails.TypeOfAssetController.onSubmit(mode: Mode = FinalCheckMode)
 
-GET        /transfer-details/assets/cash-amount-in-transfer                                       controllers.transferDetails.CashAmountInTransferController.onPageLoad(mode: Mode = NormalMode)
-POST       /transfer-details/assets/cash-amount-in-transfer                                       controllers.transferDetails.CashAmountInTransferController.onSubmit(mode: Mode = NormalMode)
-GET        /transfer-details/assets/change-cash-amount-in-transfer                                controllers.transferDetails.CashAmountInTransferController.onPageLoad(mode: Mode = CheckMode)
-POST       /transfer-details/assets/change-cash-amount-in-transfer                                controllers.transferDetails.CashAmountInTransferController.onSubmit(mode: Mode = CheckMode)
-GET        /transfer-details/assets/final-change-cash-amount-in-transfer                          controllers.transferDetails.CashAmountInTransferController.onPageLoad(mode: Mode = FinalCheckMode)
-POST       /transfer-details/assets/final-change-cash-amount-in-transfer                          controllers.transferDetails.CashAmountInTransferController.onSubmit(mode: Mode = FinalCheckMode)
+# ----- CASH -----
+
+
+GET        /transfer-details/assets/cash-amount-in-transfer                                       controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/assets/cash-amount-in-transfer                                       controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-cash-amount-in-transfer                                controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/assets/change-cash-amount-in-transfer                                controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onSubmit(mode: Mode = CheckMode)
+GET        /transfer-details/assets/final-change-cash-amount-in-transfer                          controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onPageLoad(mode: Mode = FinalCheckMode)
+POST       /transfer-details/assets/final-change-cash-amount-in-transfer                          controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onSubmit(mode: Mode = FinalCheckMode)
 
 # ----- UNQUOTED -----
 

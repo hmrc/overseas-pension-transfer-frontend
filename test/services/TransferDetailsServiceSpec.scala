@@ -83,38 +83,6 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
     }
   }
 
-  "getNextAssetRoute" - {
-    "must return the first uncompleted journey in order" in {
-      val selectedTypes: Set[TypeOfAsset] = Set(UnquotedSharesMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
-
-      val result = service.getNextAssetRoute(userAnswers).map(_.toString)
-      result mustBe Some(UnquotedSharesMiniJourney.call.url)
-    }
-
-    "must skip journeys not in the selected assets" in {
-      val selectedTypes: Set[TypeOfAsset] = Set(QuotedSharesMiniJourney.assetType)
-      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
-
-      val result = service.getNextAssetRoute(userAnswers).map(_.toString)
-      result mustBe Some(QuotedSharesMiniJourney.call.url)
-    }
-
-    "must return None if all selected journeys are completed" in {
-      val userAnswers = emptyUserAnswers
-        .set[Set[TypeOfAsset]](TypeOfAssetPage, Set(UnquotedSharesMiniJourney.assetType)).success.value
-        .set(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType), true).success.value
-
-      val result = service.getNextAssetRoute(userAnswers)
-      result mustBe None
-    }
-
-    "must return None if no asset types have been selected" in {
-      val result = service.getNextAssetRoute(emptyUserAnswers)
-      result mustBe None
-    }
-  }
-
   "setAssetCompleted" - {
     "must return updated UserAnswers with flag set to true" in {
       val result = service.setAssetCompleted(emptyUserAnswers, UnquotedSharesMiniJourney.assetType, completed = true)
