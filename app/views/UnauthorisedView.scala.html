@@ -24,10 +24,20 @@
 
 @layout(
  pageTitle = titleNoForm(messages("unauthorised.title")),
- timeout = false
+ timeout = false,
+ showPageFooter = false
 ) {
-
     <h1 class="govuk-heading-xl">@messages("unauthorised.heading")</h1>
 
-    <p class="govuk-body">@messages("unauthorised.guidance")</p>
+    <p class="govuk-body">@messages("unauthorised.guidance.p1")</p>
+
+    <p class="govuk-body">@messages("unauthorised.guidance.p2")</p>
+
+    <p class="govuk-body govuk-!-font-weight-bold">@messages("unauthorised.guidance.p3")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li><a class="govuk-link" href="@{routes.IndexController.onPageLoad().url}">@messages("unauthorised.guidance.li1")</a></li>
+        <li><a class="govuk-link" href="https://www.gov.uk">@messages("unauthorised.guidance.li2")</a></li>
+    </ul>
+
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 }

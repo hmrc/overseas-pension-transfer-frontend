@@ -75,8 +75,13 @@ signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
 
-unauthorised.title = You can''t access this service with this account
-unauthorised.heading = You can''t access this service with this account
+unauthorised.title = You can''t access this tool
+unauthorised.heading = You can''t access this tool
+unauthorised.guidance.p1 = You need to be signed in with an authorised Government Gateway account as a Pension Scheme Practitioner Services Provider or Pension Scheme Administrator to use this service.
+unauthorised.guidance.p2 = If you believe you should have access, please make sure you''re signed in with the correct credentials.
+unauthorised.guidance.p3 = You can:
+unauthorised.guidance.li1 = Sign in with authorised credentials
+unauthorised.guidance.li2 = Return to GOV.UK
 
 radios.hint = Select one.
 
