@@ -22,12 +22,13 @@ import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import play.api.libs.json.Json
 
 class QROPSCountryPageSpec extends AnyFreeSpec with Matchers {
 
-  ".nextPage" - {
+  private val emptyAnswers = UserAnswers("id")
 
-    val emptyAnswers = UserAnswers("id")
+  ".nextPage" - {
 
     "in Normal Mode" - {
 
@@ -74,6 +75,22 @@ class QROPSCountryPageSpec extends AnyFreeSpec with Matchers {
         QROPSCountryPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
+    }
+  }
+
+  "cleanup" - {
+    "must remove qropsOtherCountry when Country is not Other" in {
+      val otherCountry = emptyAnswers.set(QROPSOtherCountryPage, "OtherCountryLand").success.value
+
+      QROPSCountryPage.cleanup(Some(Country("DE", "Germany")), otherCountry).success.value mustEqual
+        UserAnswers("id", Json.obj("qropsDetails" -> Json.obj()), emptyAnswers.lastUpdated)
+    }
+
+    "must not remove values when value is Other" in {
+      val otherCountry = emptyAnswers.set(QROPSOtherCountryPage, "OtherCountryLand").success.value
+
+      QROPSCountryPage.cleanup(Some(Country("ZZ", "Other")), otherCountry).success.value mustEqual
+        otherCountry
     }
   }
 }
