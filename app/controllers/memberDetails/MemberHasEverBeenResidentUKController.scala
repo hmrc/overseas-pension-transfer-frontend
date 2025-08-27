@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{MemberDetailsService, UserAnswersService}
+import services.{MemberDetailsService, TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberHasEverBeenResidentUKView
 
@@ -40,6 +40,7 @@ class MemberHasEverBeenResidentUKController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     memberDetailsService: MemberDetailsService,
+    taskService: TaskService,
     formProvider: MemberHasEverBeenResidentUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberHasEverBeenResidentUKView,
@@ -67,14 +68,15 @@ class MemberHasEverBeenResidentUKController @Inject() (
         value => {
           val previousValue = request.userAnswers.get(MemberHasEverBeenResidentUKPage)
           for {
-            baseAnswers    <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
-            updatedAnswers <- memberDetailsService.updateMemberHasEverBeenResidentUKAnswers(baseAnswers, previousValue, value)
-            _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
-            redirectMode    = memberDetailsService.getMemberHasEverBeenResidentUKRedirectMode(mode, previousValue, value)
+            baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
+            ua1           <- Future.fromTry(memberDetailsService.updateMemberHasEverBeenResidentUKAnswers(baseAnswers, previousValue, value))
+            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1))
+            _             <- sessionRepository.set(ua2)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
+            redirectMode   = memberDetailsService.getMemberHasEverBeenResidentUKRedirectMode(mode, previousValue, value)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(MemberHasEverBeenResidentUKPage.nextPage(redirectMode, updatedAnswers))
+              case Right(Done) => Redirect(MemberHasEverBeenResidentUKPage.nextPage(redirectMode, ua2))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }

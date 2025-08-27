@@ -18,23 +18,35 @@ package controllers.memberDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import models.TaskCategory.MemberDetails
+import models.taskList.TaskStatus.{Completed, InProgress}
+import org.apache.pekko.Done
 import models.{CheckMode, NormalMode}
 import pages.memberDetails.MemberDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TaskStatusQuery
+import repositories.SessionRepository
+import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.memberDetails.MemberDetailsCYAView
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
+    sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService,
+    taskService: TaskService,
     displayData: DisplayAction,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDetailsCYAView
+  )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
@@ -44,10 +56,17 @@ class MemberDetailsCYAController @Inject() (
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
-      {
-        Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+      for {
+        ua1           <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(MemberDetails), Completed))
+        _             <- sessionRepository.set(ua1)
+        savedForLater <- userAnswersService.setExternalUserAnswers(ua1)
+      } yield {
+        savedForLater match {
+          case Right(Done) => Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, ua1))
+          case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+        }
       }
   }
 }

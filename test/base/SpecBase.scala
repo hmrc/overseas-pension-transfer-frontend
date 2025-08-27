@@ -68,6 +68,7 @@ trait SpecBase
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[MarkInProgressOnEntryAction].to[FakeMarkInProgressAction],
         bind[DisplayAction].to[FakeDisplayAction]
       )
 
