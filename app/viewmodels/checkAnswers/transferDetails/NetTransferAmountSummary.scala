@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.transferDetails.NetTransferAmountPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object NetTransferAmountSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(NetTransferAmountPage).map {
       answer =>
         SummaryListRowViewModel(
           key     = "netTransferAmount.checkYourAnswersLabel",
           value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", NetTransferAmountPage.changeLink(answers).url)
+            ActionItemViewModel("site.change", NetTransferAmountPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("netTransferAmount.change.hidden"))
           )
         )

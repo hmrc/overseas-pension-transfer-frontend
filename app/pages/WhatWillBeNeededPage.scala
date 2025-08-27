@@ -24,4 +24,7 @@ object WhatWillBeNeededPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.TaskListController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    controllers.routes.JourneyRecoveryController.onPageLoad()
 }

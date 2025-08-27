@@ -41,7 +41,7 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
             Json.obj(
               UnquotedSharesEntry.CompanyName    -> "ABC Ltd",
               UnquotedSharesEntry.ValueOfShares  -> 1000,
-              UnquotedSharesEntry.NumberOfShares -> "10",
+              UnquotedSharesEntry.NumberOfShares -> 10,
               UnquotedSharesEntry.ClassOfShares  -> "Ordinary"
             )
           ),
@@ -49,7 +49,7 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
             Json.obj(
               QuotedSharesEntry.CompanyName    -> "XYZ Plc",
               QuotedSharesEntry.ValueOfShares  -> 2000,
-              QuotedSharesEntry.NumberOfShares -> "20",
+              QuotedSharesEntry.NumberOfShares -> 20,
               QuotedSharesEntry.ClassOfShares  -> "Preferred"
             )
           )

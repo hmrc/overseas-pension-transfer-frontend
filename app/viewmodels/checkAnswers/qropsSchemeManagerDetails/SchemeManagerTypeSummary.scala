@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,7 +27,7 @@ import viewmodels.implicits._
 
 object SchemeManagerTypeSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeManagerTypePage).map {
       answer =>
         val value = ValueViewModel(
@@ -40,7 +40,7 @@ object SchemeManagerTypeSummary {
           key     = "schemeManagerType.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", SchemeManagerTypePage.changeLink(answers).url)
+            ActionItemViewModel("site.change", SchemeManagerTypePage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("schemeManagerType.change.hidden"))
           )
         )

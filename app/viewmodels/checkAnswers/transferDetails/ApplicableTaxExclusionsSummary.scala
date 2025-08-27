@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -28,7 +28,7 @@ import viewmodels.implicits._
 
 object ApplicableTaxExclusionsSummary {
 
-  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     userAnswers.get(ApplicableTaxExclusionsPage).map {
       answers =>
         val value = ValueViewModel(
@@ -44,7 +44,7 @@ object ApplicableTaxExclusionsSummary {
           key     = "applicableTaxExclusions.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", ApplicableTaxExclusionsPage.changeLink(userAnswers).url)
+            ActionItemViewModel("site.change", ApplicableTaxExclusionsPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("applicableTaxExclusions.change.hidden"))
           )
         )

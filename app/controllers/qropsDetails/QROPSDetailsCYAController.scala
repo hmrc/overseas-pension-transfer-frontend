@@ -18,10 +18,10 @@ package controllers.qropsDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
-import models.NormalMode
 import models.TaskCategory.QROPSDetails
 import models.taskList.TaskStatus.Completed
 import org.apache.pekko.Done
+import models.{CheckMode, NormalMode}
 import pages.qropsDetails.QROPSDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +50,7 @@ class QROPSDetailsCYAController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val list = SummaryListViewModel(QROPSDetailsSummary.rows(request.userAnswers))
+      val list = SummaryListViewModel(QROPSDetailsSummary.rows(CheckMode, request.userAnswers))
 
       Ok(view(list))
   }

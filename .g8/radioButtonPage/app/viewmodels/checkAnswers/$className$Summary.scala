@@ -1,7 +1,7 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import models.{CheckMode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.$className$Page
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -12,7 +12,7 @@ import viewmodels.implicits._
 
 object $className$Summary  {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get($className$Page).map {
       answer =>
 
@@ -26,7 +26,7 @@ object $className$Summary  {
           key     = "$className;format="decap"$.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
-            ActionItemViewModel("site.change", routes.$className$Controller.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", routes.$className$Controller.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("$className;format="decap"$.change.hidden"))
           )
         )

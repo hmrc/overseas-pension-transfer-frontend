@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import play.api.i18n.Messages
 import queries.assets.PropertyQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,7 +28,7 @@ import viewmodels.implicits._
 
 object PropertyAmendContinueSummary {
 
-  def row(userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
     val answers   = userAnswers.get(PropertyQuery)
     val valueText = messages("propertyAmendContinue.summary.value", answers.size)
@@ -40,7 +40,7 @@ object PropertyAmendContinueSummary {
             key     = "propertyAmendContinue.checkYourAnswersLabel",
             value   = ValueViewModel(valueText),
             actions = Seq(
-              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = CheckMode).url)
+              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode).url)
                 .withVisuallyHiddenText(messages("propertyAmendContinue.change.hidden"))
             )
           )

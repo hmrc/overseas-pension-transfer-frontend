@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.memberDetails.MemberDateOfBirthPage
 import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,7 +26,7 @@ import viewmodels.implicits._
 
 object MemberDateOfBirthSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberDateOfBirthPage).map {
       answer =>
         implicit val lang: Lang = messages.lang
@@ -35,7 +35,7 @@ object MemberDateOfBirthSummary {
           key     = "memberDateOfBirth.checkYourAnswersLabel",
           value   = ValueViewModel(answer.format(dateTimeFormat())),
           actions = Seq(
-            ActionItemViewModel("site.change", MemberDateOfBirthPage.changeLink(answers).url)
+            ActionItemViewModel("site.change", MemberDateOfBirthPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("memberDateOfBirth.change.hidden"))
           )
         )

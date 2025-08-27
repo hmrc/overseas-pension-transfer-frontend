@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object OtherAssetsDescriptionSummary {
 
-  def row(answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(OtherAssetsDescriptionPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "assetValueDescription.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", OtherAssetsDescriptionPage(index).changeLink(answers).url)
+            ActionItemViewModel("site.change", OtherAssetsDescriptionPage(index).changeLink(mode).url)
               .withVisuallyHiddenText(messages("assetValueDescription.change.hidden"))
           )
         )

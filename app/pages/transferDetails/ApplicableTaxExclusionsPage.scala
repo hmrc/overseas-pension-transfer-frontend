@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{ApplicableTaxExclusions, CheckMode, TaskCategory, UserAnswers}
+import models.{ApplicableTaxExclusions, CheckMode, Mode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -34,6 +34,6 @@ case object ApplicableTaxExclusionsPage extends QuestionPage[Set[ApplicableTaxEx
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
 
-  final def changeLink(answers: UserAnswers): Call =
-    routes.ApplicableTaxExclusionsController.onPageLoad(CheckMode)
+  final def changeLink(mode: Mode): Call =
+    routes.ApplicableTaxExclusionsController.onPageLoad(mode)
 }

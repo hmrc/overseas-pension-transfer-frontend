@@ -18,7 +18,7 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.memberDetails.routes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -54,6 +54,13 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
       "must go to Check Answers" in {
 
         MemberHasEverBeenResidentUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+      }
+    }
+
+    "in FinalCheckMode" - {
+      "must go to Final Check Answers page" in {
+        MemberHasEverBeenResidentUKPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
+          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
   }

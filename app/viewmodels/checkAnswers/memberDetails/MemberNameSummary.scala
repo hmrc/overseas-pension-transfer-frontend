@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,7 +27,7 @@ import viewmodels.implicits._
 
 object MemberNameSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberNamePage).map {
       answer =>
         val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
@@ -36,7 +36,7 @@ object MemberNameSummary {
           key     = "memberName.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlContent(value)),
           actions = Seq(
-            ActionItemViewModel("site.change", MemberNamePage.changeLink(answers).url)
+            ActionItemViewModel("site.change", MemberNamePage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("memberName.change.hidden"))
           )
         )

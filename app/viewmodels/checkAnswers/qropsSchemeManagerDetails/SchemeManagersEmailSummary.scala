@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, UserAnswers}
+import models.{CheckMode, Mode, UserAnswers}
 import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,14 +27,14 @@ import viewmodels.implicits._
 
 object SchemeManagersEmailSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeManagersEmailPage).map {
       answer =>
         SummaryListRowViewModel(
           key     = "schemeManagersEmail.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.SchemeManagersEmailController.onPageLoad(CheckMode).url)
+            ActionItemViewModel("site.change", SchemeManagersEmailPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("schemeManagersEmail.change.hidden"))
           )
         )

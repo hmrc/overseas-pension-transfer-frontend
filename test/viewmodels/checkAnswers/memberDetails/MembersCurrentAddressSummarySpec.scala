@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.memberDetails
 
 import base.SpecBase
+import models.CheckMode
 import models.address._
 import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MembersCurrentAddressPage
@@ -41,7 +42,7 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
 
-      val row = MembersCurrentAddressSummary.row(answers)
+      val row = MembersCurrentAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
       row.get.key.content.asHtml.body must include("membersCurrentAddress.checkYourAnswersLabel")
@@ -61,7 +62,7 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
       )
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
-      val row     = MembersCurrentAddressSummary.row(answers)
+      val row     = MembersCurrentAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
       row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
@@ -69,28 +70,28 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
     }
 //TODO: This test should be fixed once it is decided how to handle whitespace in optional fields
 
-//    "must not include blank or whitespace-only fields" in {
-//
-//      val address = MembersCurrentAddress(
-//        addressLine1 = "Line1",
-//        addressLine2 = "Line2",
-//        addressLine3 = Some("    "),
-//        addressLine4 = Some(""),
-//        postcode     = Some("  "),
-//        country      = Country("FI", "Finland"),
-//        poBox        = None
-//      )
-//      val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
-//
-//      val row = MembersCurrentAddressSummary.row(answers)
-//
-//      row mustBe defined
-//      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
-//      row.get.value.content.asHtml.body must not include "<br><br>"
-//    }
+    "must not include blank or whitespace-only fields" in {
+
+      val address = MembersCurrentAddress(
+        addressLine1 = "Line1",
+        addressLine2 = "Line2",
+        addressLine3 = Some("    "),
+        addressLine4 = Some(""),
+        ukPostCode   = Some("  "),
+        country      = Country("FI", "Finland"),
+        poBoxNumber  = None
+      )
+      val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
+
+      val row = MembersCurrentAddressSummary.row(CheckMode, answers)
+
+      row mustBe defined
+      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
+      row.get.value.content.asHtml.body must not include "<br><br>"
+    }
 
     "return None when address is not present" in {
-      val row = MembersCurrentAddressSummary.row(emptyUserAnswers)
+      val row = MembersCurrentAddressSummary.row(CheckMode, emptyUserAnswers)
       row mustBe None
     }
   }

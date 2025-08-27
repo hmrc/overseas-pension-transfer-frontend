@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.qropsDetails
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import pages.qropsDetails.QROPSCountryPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,14 +26,14 @@ import viewmodels.implicits._
 
 object QROPSCountrySummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(QROPSCountryPage).map {
       country =>
         SummaryListRowViewModel(
           key     = "qropsCountry.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(country.name).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", QROPSCountryPage.changeLink(answers).url)
+            ActionItemViewModel("site.change", QROPSCountryPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("qropsCountry.change.hidden"))
           )
         )
