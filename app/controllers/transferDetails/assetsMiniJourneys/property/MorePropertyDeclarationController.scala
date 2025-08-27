@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationFormProvider
 import models.assets.TypeOfAsset
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import navigators.TypeOfAssetNavigator
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -88,9 +89,12 @@ class MorePropertyDeclarationController @Inject() (
         },
         continue => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MorePropertyDeclarationPage, continue))
-            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.Property, completed = true, Some(continue))
-          } yield Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
+            userAnswers                <- Future.fromTry(request.userAnswers.set(MorePropertyDeclarationPage, continue))
+            userAnswersAfterCompletion <- moreAssetCompletionService.completeAsset(userAnswers, TypeOfAsset.Property, completed = true, Some(continue))
+          } yield TypeOfAssetNavigator.getNextAssetRoute(userAnswersAfterCompletion) match {
+            case Some(route) => Redirect(route)
+            case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
+          }
         }
       )
     }
