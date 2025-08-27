@@ -22,6 +22,8 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object IsTransferTaxablePage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
@@ -41,4 +43,17 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
 
   final def changeLink(mode: Mode): Call =
     routes.IsTransferTaxableController.onPageLoad(mode)
+
+  override def cleanup(maybeTransferIsTaxable: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    maybeTransferIsTaxable match {
+      case Some(false) =>
+        for {
+          ua1 <- userAnswers.remove(WhyTransferIsTaxablePage)
+          ua2 <- ua1.remove(ApplicableTaxExclusionsPage)
+        } yield ua2
+      case Some(true)  =>
+        userAnswers.remove(WhyTransferIsNotTaxablePage)
+      case _           => super.cleanup(maybeTransferIsTaxable, userAnswers)
+    }
+  }
 }
