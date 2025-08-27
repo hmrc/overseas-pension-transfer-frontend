@@ -22,6 +22,7 @@ import queries.assets.SelectedAssetTypes
 object AssetsMiniJourneyRegistry {
 
   val all: Seq[AssetsMiniJourney[_]] = Seq(
+    CashMiniJourney,
     UnquotedSharesMiniJourney,
     QuotedSharesMiniJourney,
     PropertyMiniJourney,
