@@ -25,6 +25,7 @@ import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.CashAmountInTransferView
 
