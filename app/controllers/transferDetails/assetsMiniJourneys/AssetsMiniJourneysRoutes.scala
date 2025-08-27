@@ -18,7 +18,7 @@ package controllers.transferDetails.assetsMiniJourneys
 
 object AssetsMiniJourneysRoutes {
 
-  // ----- Unquoted Shares -----
+  // ----- Cash -----
 
   val CashAmountInTransferController =
     controllers.transferDetails.routes.CashAmountInTransferController
