@@ -23,6 +23,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import pages.PsaDeclarationPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -80,7 +81,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.IndexController.onPageLoad().url
+        redirectLocation(result).value mustEqual PsaDeclarationPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 

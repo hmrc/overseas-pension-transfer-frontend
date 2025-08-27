@@ -29,13 +29,18 @@ case object SubmitToHMRCPage
   override def path: JsPath     = JsPath \ toString
   override def toString: String = "submitToHMRC"
 
-  override protected def nextPageWith(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call =
-    authenticatedUser.userType match {
-      case Psa => routes.PsaDeclarationController.onPageLoad(NormalMode)
-      case Psp => routes.PspDeclarationController.onPageLoad(NormalMode)
-      case _   => routes.JourneyRecoveryController.onPageLoad()
+  override protected def nextPageWith(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call = {
+    answers.get(SubmitToHMRCPage) match {
+      case Some(true)  =>
+        authenticatedUser.userType match {
+          case Psa => routes.PsaDeclarationController.onPageLoad()
+          case Psp => routes.PspDeclarationController.onPageLoad()
+          case _   => routes.JourneyRecoveryController.onPageLoad()
+        }
+      case Some(false) =>
+        // TODO: This should redirect to the task list when implemented
+        routes.IndexController.onPageLoad()
+      case _           => routes.JourneyRecoveryController.onPageLoad()
     }
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.JourneyRecoveryController.onPageLoad()
+  }
 }
