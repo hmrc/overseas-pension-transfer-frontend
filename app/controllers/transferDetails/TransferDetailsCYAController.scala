@@ -18,14 +18,22 @@ package controllers.transferDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import models.TaskCategory.TransferDetails
+import models.taskList.TaskStatus.Completed
+import org.apache.pekko.Done
 import models.{CheckMode, NormalMode}
 import pages.transferDetails.TransferDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TaskStatusQuery
+import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.TransferDetailsCYAView
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class TransferDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -33,8 +41,11 @@ class TransferDetailsCYAController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: TransferDetailsCYAView
+  )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
@@ -44,10 +55,17 @@ class TransferDetailsCYAController @Inject() (
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
-      {
-        Redirect(TransferDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+      for {
+        ua            <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(TransferDetails), Completed))
+        _             <- sessionRepository.set(ua)
+        savedForLater <- userAnswersService.setExternalUserAnswers(ua)
+      } yield {
+        savedForLater match {
+          case Right(Done) => Redirect(TransferDetailsSummaryPage.nextPage(NormalMode, ua))
+          case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+        }
       }
   }
 }

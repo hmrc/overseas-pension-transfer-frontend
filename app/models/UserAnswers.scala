@@ -16,8 +16,10 @@
 
 package models
 
+import models.TaskCategory._
+import models.taskList.TaskStatus._
 import play.api.libs.json._
-import queries.{Gettable, Settable}
+import queries.{Gettable, Settable, TaskStatusQuery}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
@@ -109,6 +111,15 @@ object UserAnswers {
       case Left(error)  =>
         Failure(error)
     }
+
+  def initialise(id: String): Try[UserAnswers] =
+    for {
+      ua1 <- UserAnswers(id).set(TaskStatusQuery(MemberDetails), NotStarted)
+      ua2 <- ua1.set(TaskStatusQuery(QROPSDetails), CannotStart)
+      ua3 <- ua2.set(TaskStatusQuery(SchemeManagerDetails), CannotStart)
+      ua4 <- ua3.set(TaskStatusQuery(TransferDetails), CannotStart)
+      ua5 <- ua4.set(TaskStatusQuery(SubmissionDetails), CannotStart)
+    } yield ua5
 
   val reads: Reads[UserAnswers] = {
 
