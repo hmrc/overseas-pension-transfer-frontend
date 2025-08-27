@@ -17,7 +17,7 @@
 package base
 
 import controllers.actions._
-import models.authentication.{PsaId, PsaUser}
+import models.authentication.{PsaId, PsaUser, PspId, PspUser}
 import models.requests.DisplayRequest
 import models.{PersonName, QtNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -46,7 +46,11 @@ trait SpecBase
 
   val psaId: PsaId = PsaId("A123456")
 
-  val authenticatedUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
+  val psaUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
+
+  val pspId = PspId("X7654321")
+
+  val pspUser: PspUser = PspUser(pspId, internalId = userAnswersId)
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
@@ -71,7 +75,7 @@ trait SpecBase
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
     DisplayRequest(
       request           = fakeRequest,
-      authenticatedUser = authenticatedUser,
+      authenticatedUser = psaUser,
       userAnswers       = userAnswers,
       memberName        = testMemberName.fullName,
       qtNumber          = testQtNumber
@@ -80,7 +84,7 @@ trait SpecBase
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
       request           = FakeRequest(),
-      authenticatedUser = authenticatedUser,
+      authenticatedUser = psaUser,
       userAnswers       = emptyUserAnswers,
       memberName        = testMemberName.fullName,
       qtNumber          = testQtNumber

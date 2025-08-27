@@ -16,20 +16,11 @@
 
 package pages
 
-import controllers.routes
 import models.UserAnswers
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PspDeclarationPage extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "pspDeclaration"
+object PsaDeclarationPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    answers.get(PspDeclarationPage) match {
-      case Some(_) => routes.IndexController.onPageLoad()
-      case None    => routes.JourneyRecoveryController.onPageLoad()
-    }
+    controllers.routes.IndexController.onPageLoad()
 }

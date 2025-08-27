@@ -17,54 +17,48 @@
 package controllers
 
 import controllers.actions._
-import forms.SubmitToHMRCFormProvider
 import models.Mode
-import pages.SubmitToHMRCPage
-import play.api.data.Form
+import models.responses.SubmissionResponse
+import pages.PsaDeclarationPage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.QtNumberQuery
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.SubmitToHMRCView
+import views.html.PsaDeclarationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmitToHMRCController @Inject() (
+class PsaDeclarationController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    formProvider: SubmitToHMRCFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: SubmitToHMRCView
+    view: PsaDeclarationView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
-
-  val form: Form[Boolean] = formProvider()
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(SubmitToHMRCPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm))
+      Ok(view())
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
-        value =>
+      userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers).flatMap {
+        case Right(SubmissionResponse(qtNumber)) =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SubmitToHMRCPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QtNumberQuery, qtNumber))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(SubmitToHMRCPage.nextPageWith(mode, updatedAnswers, request.authenticatedUser))
-      )
+          } yield Redirect(PsaDeclarationPage.nextPage(mode, updatedAnswers))
+        case _                                   => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+      }
   }
 }

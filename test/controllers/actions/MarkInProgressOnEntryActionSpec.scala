@@ -45,7 +45,7 @@ class MarkInProgressOnEntryActionSpec
   private def mkDataRequest[A](ua: UserAnswers) =
     DataRequest(
       request           = FakeRequest(),
-      authenticatedUser = authenticatedUser,
+      authenticatedUser = psaUser,
       userAnswers       = ua
     )
 
