@@ -449,15 +449,9 @@ POST       /transfer-details/assets/other-assets-confirm-removal                
 
 GET        /psp-declaration                                                                       controllers.PspDeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /psp-declaration                                                                       controllers.PspDeclarationController.onSubmit(mode: Mode = NormalMode)
-GET        /change-psp-declaration                                                                controllers.PspDeclarationController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-psp-declaration                                                                controllers.PspDeclarationController.onSubmit(mode: Mode = CheckMode)
 
 GET        /psa-declaration                                                                       controllers.PsaDeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /psa-declaration                                                                       controllers.PsaDeclarationController.onSubmit(mode: Mode = NormalMode)
-GET        /change-psa-declaration                                                                controllers.PsaDeclarationController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-psa-declaration                                                                controllers.PsaDeclarationController.onSubmit(mode: Mode = CheckMode)
 
 GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad(mode: Mode = NormalMode)
 POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit(mode: Mode = NormalMode)
-GET        /change-submit-to-hmrc                                                                 controllers.SubmitToHMRCController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-submit-to-hmrc                                                                 controllers.SubmitToHMRCController.onSubmit(mode: Mode = CheckMode)

@@ -34,11 +34,11 @@
         qtNumber: QTNumber
 )
 
-@(mode: Mode, form: Form[_])(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_])(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("submitToHMRC.title"))) {
 
-    @formHelper(action = routes.SubmitToHMRCController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.SubmitToHMRCController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

@@ -52,14 +52,14 @@ class SubmitToHMRCController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(mode, preparedForm))
+      Ok(view(preparedForm))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(mode, formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SubmitToHMRCPage, value))

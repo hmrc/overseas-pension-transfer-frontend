@@ -35,11 +35,11 @@
         qtNumber: QTNumber
 )
 
-@(mode: Mode, form: Form[_])(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_])(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("pspDeclaration.title"))) {
 
-    @formHelper(action = routes.PspDeclarationController.onSubmit(mode)) {
+    @formHelper(action = routes.PspDeclarationController.onSubmit()) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

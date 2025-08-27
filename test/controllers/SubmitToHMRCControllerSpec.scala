@@ -50,7 +50,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
   private val formProvider = new SubmitToHMRCFormProvider()
   private val form         = formProvider()
 
-  private lazy val submitToHMRCRoute = routes.SubmitToHMRCController.onPageLoad(NormalMode).url
+  private lazy val submitToHMRCRoute = routes.SubmitToHMRCController.onPageLoad().url
 
   "SubmitToHMRC Controller" - {
 
@@ -66,7 +66,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         val view = application.injector.instanceOf[SubmitToHMRCView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(NormalMode, form)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -84,7 +84,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(NormalMode, form.fill(true))(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true))(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -129,7 +129,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(NormalMode, boundForm)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
