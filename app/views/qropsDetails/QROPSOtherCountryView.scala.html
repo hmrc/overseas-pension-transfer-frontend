@@ -32,8 +32,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+    govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
@@ -45,8 +44,6 @@
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
-
-        @qtNumber()
 
         @govukInput(
             InputViewModel(

@@ -31,11 +31,11 @@ object QROPSOtherCountrySummary {
     answers.get(QROPSOtherCountryPage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "qROPSOtherCountry.checkYourAnswersLabel",
+          key     = "qropsOtherCountry.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
             ActionItemViewModel("site.change", routes.QROPSOtherCountryController.onPageLoad(mode).url)
-              .withVisuallyHiddenText(messages("qROPSOtherCountry.change.hidden"))
+              .withVisuallyHiddenText(messages("qropsOtherCountry.change.hidden"))
           )
         )
     }

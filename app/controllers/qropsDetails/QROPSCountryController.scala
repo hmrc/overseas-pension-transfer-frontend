@@ -84,9 +84,10 @@ class QROPSCountryController @Inject() (
               )
             case Some(country) =>
               for {
-                updatedAnswers <- Future.fromTry(removeQropsOtherCountry(country).set(QROPSCountryPage, country))
-                _              <- sessionRepository.set(updatedAnswers)
-                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+                removeQropsOtherCountry <- Future.fromTry(QROPSCountryPage.cleanup(Some(country), request.userAnswers))
+                updatedAnswers          <- Future.fromTry(removeQropsOtherCountry.set(QROPSCountryPage, country))
+                _                       <- sessionRepository.set(updatedAnswers)
+                savedForLater           <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
@@ -97,14 +98,4 @@ class QROPSCountryController @Inject() (
         }
       )
   }
-
-  private def removeQropsOtherCountry(country: Country)(implicit request: DataRequest[AnyContent]): UserAnswers =
-    if (country.name != "Other") {
-      request.userAnswers.remove(QROPSOtherCountryPage) match {
-        case Success(userAnswers) => userAnswers
-        case Failure(_)           => request.userAnswers
-      }
-    } else {
-      request.userAnswers
-    }
 }

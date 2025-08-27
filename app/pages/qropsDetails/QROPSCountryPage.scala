@@ -18,10 +18,12 @@ package pages.qropsDetails
 
 import controllers.qropsDetails.routes
 import models.address.Country
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object QROPSCountryPage extends QuestionPage[Country] {
 
@@ -42,6 +44,13 @@ case object QROPSCountryPage extends QuestionPage[Country] {
 
   final def changeLink(mode: Mode): Call =
     routes.QROPSCountryController.onPageLoad(mode)
+
+  override def cleanup(value: Option[Country], userAnswers: UserAnswers): Try[UserAnswers] = {
+    value match {
+      case Some(Country("ZZ", "Other")) => super.cleanup(value, userAnswers)
+      case _                            => userAnswers.remove(QROPSOtherCountryPage)
+    }
+  }
 
   val recoveryModeReturnUrl: String = routes.QROPSCountryController.onPageLoad(NormalMode).url
 }
