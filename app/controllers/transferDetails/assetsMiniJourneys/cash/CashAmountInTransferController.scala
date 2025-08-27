@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.cash
 
 import controllers.actions._
 import forms.transferDetails.CashAmountInTransferFormProvider
 import models.Mode
 import models.assets.TypeOfAsset
 import navigators.TypeOfAssetNavigator
-import pages.transferDetails.CashAmountInTransferPage
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{TransferDetailsService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.CashAmountInTransferView
 
@@ -39,8 +38,8 @@ class CashAmountInTransferController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    transferDetailsService: TransferDetailsService,
     formProvider: CashAmountInTransferFormProvider,
+    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     view: CashAmountInTransferView,
     userAnswersService: UserAnswersService

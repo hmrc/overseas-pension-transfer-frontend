@@ -21,8 +21,10 @@ import forms.transferDetails.IsTransferCashOnlyFormProvider
 import models.Mode
 import models.assets.TypeOfAsset
 import org.apache.pekko.Done
-import pages.transferDetails._
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage, TypeOfAssetPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Writes._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}

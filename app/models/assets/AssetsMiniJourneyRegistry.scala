@@ -21,7 +21,7 @@ import queries.assets.SelectedAssetTypes
 
 object AssetsMiniJourneyRegistry {
 
-  val all: Seq[AssetsMiniJourney[_]] = Seq(
+  val all: Seq[AssetsMiniJourneyBase] = Seq(
     CashMiniJourney,
     UnquotedSharesMiniJourney,
     QuotedSharesMiniJourney,
@@ -29,12 +29,15 @@ object AssetsMiniJourneyRegistry {
     OtherAssetsMiniJourney
   )
 
-  def forType(assetType: TypeOfAsset): Option[AssetsMiniJourney[_]] =
+  def repeating: Seq[RepeatingAssetsMiniJourney[_]] =
+    all.collect { case r: RepeatingAssetsMiniJourney[_] => r }
+
+  def forType(assetType: TypeOfAsset): Option[AssetsMiniJourneyBase] =
     all.find(_.assetType == assetType)
 
-  def selectedJourneys(userAnswers: UserAnswers): Seq[AssetsMiniJourney[_]] =
+  def selectedJourneys(userAnswers: UserAnswers): Seq[AssetsMiniJourneyBase] =
     userAnswers.get(SelectedAssetTypes).toSeq.flatten.flatMap(forType)
 
-  def firstIncompleteJourney(userAnswers: UserAnswers): Option[AssetsMiniJourney[_]] =
+  def firstIncompleteJourney(userAnswers: UserAnswers): Option[AssetsMiniJourneyBase] =
     selectedJourneys(userAnswers).find(!_.isCompleted(userAnswers))
 }

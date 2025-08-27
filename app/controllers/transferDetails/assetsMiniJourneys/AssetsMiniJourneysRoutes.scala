@@ -21,101 +21,101 @@ object AssetsMiniJourneysRoutes {
   // ----- Cash -----
 
   val CashAmountInTransferController =
-    controllers.transferDetails.routes.CashAmountInTransferController
+    cash.routes.CashAmountInTransferController
 
   // ----- Unquoted Shares -----
 
   val UnquotedSharesStartController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesStartController
+    unquotedShares.routes.UnquotedSharesStartController
 
   val UnquotedSharesCompanyNameController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesCompanyNameController
+    unquotedShares.routes.UnquotedSharesCompanyNameController
 
   val UnquotedSharesValueController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesValueController
+    unquotedShares.routes.UnquotedSharesValueController
 
   val UnquotedSharesNumberController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesNumberController
+    unquotedShares.routes.UnquotedSharesNumberController
 
   val UnquotedSharesClassController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesClassController
+    unquotedShares.routes.UnquotedSharesClassController
 
   val UnquotedSharesCYAController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesCYAController
+    unquotedShares.routes.UnquotedSharesCYAController
 
   val UnquotedSharesAmendContinueController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesAmendContinueController
+    unquotedShares.routes.UnquotedSharesAmendContinueController
 
   val UnquotedSharesConfirmRemovalController =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesConfirmRemovalController
+    unquotedShares.routes.UnquotedSharesConfirmRemovalController
 
   // ----- Quoted Shares -----
 
   val QuotedSharesStartController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesStartController
+    quotedShares.routes.QuotedSharesStartController
 
   val QuotedSharesCompanyNameController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCompanyNameController
+    quotedShares.routes.QuotedSharesCompanyNameController
 
   val QuotedSharesValueController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesValueController
+    quotedShares.routes.QuotedSharesValueController
 
   val QuotedSharesNumberController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesNumberController
+    quotedShares.routes.QuotedSharesNumberController
 
   val QuotedSharesClassController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesClassController
+    quotedShares.routes.QuotedSharesClassController
 
   val QuotedSharesCYAController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController
+    quotedShares.routes.QuotedSharesCYAController
 
   val QuotedSharesAmendContinueController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesAmendContinueController
+    quotedShares.routes.QuotedSharesAmendContinueController
 
   val QuotedSharesConfirmRemovalController =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesConfirmRemovalController
+    quotedShares.routes.QuotedSharesConfirmRemovalController
 
   // ----- Property -----
 
   val PropertyStartController =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyStartController
+    property.routes.PropertyStartController
 
   val PropertyAddressController =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyAddressController
+    property.routes.PropertyAddressController
 
   val PropertyDescriptionController =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyDescriptionController
+    property.routes.PropertyDescriptionController
 
   val PropertyValueController =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyValueController
+    property.routes.PropertyValueController
 
   val PropertyCYAController =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController
+    property.routes.PropertyCYAController
 
   val PropertyAmendContinueController =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyAmendContinueController
+    property.routes.PropertyAmendContinueController
 
   val PropertyConfirmRemovalController =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyConfirmRemovalController
+    property.routes.PropertyConfirmRemovalController
 
   // ----- Other Assets -----
 
   val OtherAssetsStartController =
-    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsStartController
+    otherAssets.routes.OtherAssetsStartController
 
   val OtherAssetsDescriptionController =
-    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsDescriptionController
+    otherAssets.routes.OtherAssetsDescriptionController
 
   val OtherAssetsValueController =
-    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsValueController
+    otherAssets.routes.OtherAssetsValueController
 
   val OtherAssetsCYAController =
-    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController
+    otherAssets.routes.OtherAssetsCYAController
 
   val OtherAssetsAmendContinueController =
-    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsAmendContinueController
+    otherAssets.routes.OtherAssetsAmendContinueController
 
   val OtherAssetsConfirmRemovalController =
-    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsConfirmRemovalController
+    otherAssets.routes.OtherAssetsConfirmRemovalController
 
 }

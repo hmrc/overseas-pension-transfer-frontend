@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package pages.transferDetails.assetsMiniJourneys.cash
 
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.{Mode, TaskCategory, UserAnswers}
 import pages.QuestionPage
@@ -35,5 +36,5 @@ case object CashAmountInTransferPage extends QuestionPage[BigDecimal] {
     routes.TransferDetailsCYAController.onPageLoad()
 
   final def changeLink(mode: Mode): Call =
-    routes.CashAmountInTransferController.onPageLoad(mode)
+    AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(mode)
 }

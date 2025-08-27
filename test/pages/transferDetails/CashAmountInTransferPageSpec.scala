@@ -20,6 +20,7 @@ import controllers.transferDetails.routes
 import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 
 class CashAmountInTransferPageSpec extends AnyFreeSpec with Matchers {
 

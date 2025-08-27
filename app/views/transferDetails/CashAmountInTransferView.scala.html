@@ -27,7 +27,7 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
-
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 
 @this(
         layout: templates.Layout,
@@ -38,11 +38,12 @@
         qtNumber: QTNumber
 )
 
+
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("cashAmountInTransfer.title"))) {
 
-    @formHelper(action = controllers.transferDetails.routes.CashAmountInTransferController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = AssetsMiniJourneysRoutes.CashAmountInTransferController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
