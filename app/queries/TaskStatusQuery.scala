@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package queries
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import play.api.mvc.Call
+import models.TaskCategory
+import models.taskList._
+import play.api.libs.json.JsPath
 
-object WhatWillBeNeededPage extends Page {
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.TaskListController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    controllers.routes.JourneyRecoveryController.onPageLoad()
+final case class TaskStatusQuery(category: TaskCategory) extends Gettable[TaskStatus] with Settable[TaskStatus] {
+  val path: JsPath = JsPath \ category.toString \ "status"
 }
