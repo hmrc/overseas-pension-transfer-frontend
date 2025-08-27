@@ -453,3 +453,5 @@ POST       /psp-declaration                                                     
 
 GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad()
 POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit()
+
+GET        /transferSubmitted                                                                     controllers.TransferSubmittedController.onPageLoad()

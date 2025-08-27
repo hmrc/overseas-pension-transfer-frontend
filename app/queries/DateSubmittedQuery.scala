@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package queries
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.JsPath
 
-case class QtNumber(value: String) {
-  override def toString: String = value
+import java.time.LocalDate
 
-  def isEmpty: Boolean  = value.trim.isEmpty
-  def nonEmpty: Boolean = !isEmpty
-}
-
-object QtNumber {
-  val empty: QtNumber                    = QtNumber("")
-  implicit val format: OFormat[QtNumber] = Json.format[QtNumber]
+case object DateSubmittedQuery extends Gettable[LocalDate] with Settable[LocalDate] {
+  override def path: JsPath = JsPath \ "receiptDate"
 }

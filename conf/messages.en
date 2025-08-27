@@ -651,3 +651,12 @@ submitToHMRC.change.hidden = SubmitToHMRC
 submitToHMRC.hintYes = You will still be able to update the report after it''s been submitted.
 submitToHMRC.hintNo = Mark as ''in progress'' and return to the overseas pension transfer dashboard.
 
+
+transferSubmitted.title = Transfer submitted
+transferSubmitted.heading = Transfer submitted
+transferSubmitted.referenceNumber.text = Your reference number
+transferSubmitted.dashboardLink.text = Return to overseas pension dashboard
+transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
+transferSubmitted.memberName.key = Member name
+transferSubmitted.pensionScheme.key = Scheme
+transferSubmitted.dateSubmitted.key = Date submitted
