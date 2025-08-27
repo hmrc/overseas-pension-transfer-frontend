@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails.assetsMiniJourneys.property
+package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
 import controllers.routes
@@ -26,27 +26,27 @@ import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertySummary
-import views.html.transferDetails.assetsMiniJourneys.property.PropertyCYAView
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsSummary
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAView
 
-class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val propertyCyaRoute =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController.onPageLoad(0).url
+  private lazy val otherAssetsCyaRoute =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController.onPageLoad(0).url
 
-  "PropertyCYA Controller" - {
+  "OtherAssetsCYA Controller" - {
 
     "must return OK and the correct view for a GET" in {
       val application = applicationBuilder(userAnswers = Some(userAnswersWithAssets(assetsCount = 5))).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyCyaRoute)
+        val request = FakeRequest(GET, otherAssetsCyaRoute)
 
         val result                  = route(application, request).value
-        val view                    = application.injector.instanceOf[PropertyCYAView]
+        val view                    = application.injector.instanceOf[OtherAssetsCYAView]
         implicit val msgs: Messages = messages(application)
 
-        val list = PropertySummary.rows(CheckMode, userAnswersWithAssets(assetsCount = 5), 0)
+        val list = OtherAssetsSummary.rows(CheckMode, userAnswersWithAssets(assetsCount = 5), 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
@@ -54,33 +54,33 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
       }
     }
 
-    "must redirect to MorePropertyDeclarationController when threshold (5 properties) is reached" in {
+    "must redirect to MoreOtherAssetsDeclarationController when threshold (5 assets) is reached" in {
       val application = applicationBuilder(userAnswers = Some(userAnswersWithAssets(assetsCount = 5))).build()
 
       running(application) {
-        val request = FakeRequest(POST, propertyCyaRoute)
+        val request = FakeRequest(POST, otherAssetsCyaRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
-          controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
+          controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController
             .onPageLoad(NormalMode)
             .url
       }
     }
 
-    "must redirect to PropertyAmendContinueController when property count is below threshold" in {
+    "must redirect to OtherAssetsAmendContinueController when OtherAssets count is below threshold" in {
       val application = applicationBuilder(userAnswers = Some(userAnswersWithAssets(assetsCount = 4))).build()
 
       running(application) {
-        val request = FakeRequest(POST, propertyCyaRoute)
+        val request = FakeRequest(POST, otherAssetsCyaRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
-          AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
+          AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
       }
     }
 
@@ -88,7 +88,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, propertyCyaRoute)
+        val request = FakeRequest(GET, otherAssetsCyaRoute)
 
         val result = route(application, request).value
 
@@ -101,7 +101,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(POST, propertyCyaRoute)
+        val request = FakeRequest(POST, otherAssetsCyaRoute)
 
         val result = route(application, request).value
 

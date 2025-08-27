@@ -35,7 +35,7 @@ class AssetThresholdHandlerSpec extends AnyFreeSpec with Matchers with SpecBase 
       }
 
       "must return correct count for given asset type" in {
-        val userAnswers = userAnswersWithProperty(2)
+        val userAnswers = userAnswersWithAssets(assetsCount = 2)
         handler.getAssetCount(userAnswers, TypeOfAsset.Property) mustEqual 2
       }
 
@@ -48,13 +48,13 @@ class AssetThresholdHandlerSpec extends AnyFreeSpec with Matchers with SpecBase 
     "handle" - {
 
       "must set flag false if asset count < threshold" in {
-        val userAnswers = userAnswersWithProperty(3)
+        val userAnswers = userAnswersWithAssets(assetsCount = 3)
         val updated     = handler.handle(userAnswers, TypeOfAsset.Property)
         (updated.data \ "transferDetails" \ "moreProp").as[Boolean] mustBe false
       }
 
       "must set flag to userSelection if asset count == threshold" in {
-        val userAnswers = userAnswersWithProperty(5)
+        val userAnswers = userAnswersWithAssets(assetsCount = 5)
         val updatedTrue = handler.handle(userAnswers, TypeOfAsset.Property, Some(true))
         (updatedTrue.data \ "transferDetails" \ "moreProp").as[Boolean] mustBe true
 
@@ -63,7 +63,7 @@ class AssetThresholdHandlerSpec extends AnyFreeSpec with Matchers with SpecBase 
       }
 
       "must set flag false if asset count > threshold" in {
-        val userAnswers = userAnswersWithProperty(6)
+        val userAnswers = userAnswersWithAssets(assetsCount = 6)
         val updated     = handler.handle(userAnswers, TypeOfAsset.Property)
         (updated.data \ "transferDetails" \ "moreProp").as[Boolean] mustBe false
       }

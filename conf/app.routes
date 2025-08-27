@@ -449,6 +449,11 @@ POST       /transfer-details/assets/change-other-assets-amend-continue          
 GET        /transfer-details/assets/final-change-other-assets-amend-continue                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-other-assets-amend-continue                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onSubmit(mode: Mode = FinalCheckMode)
 
+GET        /transfer-details/assets/more-other-assets-declaration                                 controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/assets/more-other-assets-declaration                                 controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-more-other-assets-declaration                          controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/assets/change-more-other-assets-declaration                          controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onSubmit(mode: Mode = CheckMode)
+
 GET        /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onSubmit(index: Int)
 

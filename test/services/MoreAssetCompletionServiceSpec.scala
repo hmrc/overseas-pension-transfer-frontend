@@ -52,9 +52,9 @@ class MoreAssetCompletionServiceSpec extends AsyncFreeSpec with Matchers with Mo
     "completeAsset" - {
 
       "should mark asset completed, enrich, persist, and return updated UserAnswers" in {
-        val ua      = userAnswersWithProperty(5)
-        val asset   = TypeOfAsset.Property
-        val updated = ua.copy()
+        val userAnswers = userAnswersWithAssets(assetsCount = 5)
+        val asset       = TypeOfAsset.Property
+        val updated     = userAnswers.copy()
 
         when(mockTransferDetailsService.setAssetCompleted(any(), any(), any())(any()))
           .thenReturn(Success(updated))
@@ -68,10 +68,10 @@ class MoreAssetCompletionServiceSpec extends AsyncFreeSpec with Matchers with Mo
         when(mockSessionRepository.set(any()))
           .thenReturn(Future.successful(true))
 
-        service.completeAsset(ua, asset, completed = true, userSelection = Some(true)).map { result =>
+        service.completeAsset(userAnswers, asset, completed = true, userSelection = Some(true)).map { result =>
           result mustBe updated
 
-          verify(mockTransferDetailsService).setAssetCompleted(ua, asset, true)(implicitly)
+          verify(mockTransferDetailsService).setAssetCompleted(userAnswers, asset, true)(implicitly)
           verify(mockAssetThresholdHandler).handle(updated, asset, Some(true))
           verify(mockUserAnswersService).setExternalUserAnswers(updated)
           verify(mockSessionRepository).set(updated)
@@ -81,9 +81,9 @@ class MoreAssetCompletionServiceSpec extends AsyncFreeSpec with Matchers with Mo
       }
 
       "should handle case when userSelection is None" in {
-        val ua      = userAnswersWithProperty(1)
-        val asset   = TypeOfAsset.Property
-        val updated = ua.copy()
+        val userAnswers = userAnswersWithAssets()
+        val asset       = TypeOfAsset.Property
+        val updated     = userAnswers.copy()
 
         when(mockTransferDetailsService.setAssetCompleted(any(), any(), any())(any()))
           .thenReturn(Success(updated))
@@ -97,7 +97,7 @@ class MoreAssetCompletionServiceSpec extends AsyncFreeSpec with Matchers with Mo
         when(mockSessionRepository.set(any()))
           .thenReturn(Future.successful(true))
 
-        service.completeAsset(ua, asset, completed = true).map { result =>
+        service.completeAsset(userAnswers, asset, completed = true).map { result =>
           result mustBe updated
 
           verify(mockAssetThresholdHandler).handle(updated, asset, None)
@@ -107,28 +107,28 @@ class MoreAssetCompletionServiceSpec extends AsyncFreeSpec with Matchers with Mo
       }
 
       "should fail if TransferDetailsService returns Failure" in {
-        val ua    = emptyUserAnswers
-        val asset = TypeOfAsset.Property
+        val userAnswers = emptyUserAnswers
+        val asset       = TypeOfAsset.Property
 
         when(mockTransferDetailsService.setAssetCompleted(any(), any(), any())(any()))
           .thenReturn(Failure(new RuntimeException("fail")))
 
         recoverToExceptionIf[RuntimeException] {
-          service.completeAsset(ua, asset, completed = true)
+          service.completeAsset(userAnswers, asset, completed = true)
         } map { ex =>
           ex.getMessage mustBe "fail"
         }
       }
 
       "should throw IllegalArgumentException for unsupported asset type Cash" in {
-        val ua    = emptyUserAnswers
-        val asset = TypeOfAsset.Cash
+        val userAnswers = emptyUserAnswers
+        val asset       = TypeOfAsset.Cash
 
         when(mockTransferDetailsService.setAssetCompleted(any(), any(), any())(any()))
-          .thenReturn(Success(ua))
+          .thenReturn(Success(userAnswers))
 
         recoverToExceptionIf[IllegalArgumentException] {
-          service.completeAsset(ua, asset, completed = true)
+          service.completeAsset(userAnswers, asset, completed = true)
         } map { ex =>
           ex.getMessage mustBe "Cash assets not supported for threshold handling"
         }

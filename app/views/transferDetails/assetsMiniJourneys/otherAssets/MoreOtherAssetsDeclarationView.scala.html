@@ -1,0 +1,92 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+@import models.requests.DisplayRequest
+@import play.api.data.Form
+@import play.api.i18n.Messages
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Text, Button}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukRadios}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.listwithactions.{ListWithActions, ListWithActionsItem, ListWithActionsAction}
+@import viewmodels.govuk.all._
+@import views.ViewUtils.title
+@import views.html.components.QTNumber
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcListWithActions
+
+@this(
+  layout: templates.Layout,
+  formHelper: FormWithCSRF,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios: GovukRadios,
+  govukButton: GovukButton,
+  qtNumber: QTNumber,
+  hmrcListWithActions: HmrcListWithActions
+)
+
+@(form: Form[Boolean], assets: Seq[ListItem], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+
+@layout(pageTitle = title(form, messages("moreOtherAssetsDeclaration.title"))) {
+
+  @formHelper(action = AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+
+    @if(form.hasErrors) {
+      @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
+    @qtNumber()
+
+    <h1 class="govuk-heading-xl">
+        @Messages("additionalAsset.common.title", assets.length, messages("otherAssetsAmendContinue.text.plural"))
+    </h1>
+
+    @defining(assets.map { item =>
+      ListWithActionsItem(
+        name = Text(item.name),
+        actions = Seq(
+          ListWithActionsAction(
+            content = Text(messages("site.change")),
+            visuallyHiddenText = Some(s"${messages("site.change")} ${item.name}"),
+            href = item.changeUrl
+          ),
+          ListWithActionsAction(
+            content = Text(messages("site.remove")),
+            visuallyHiddenText = Some(s"${messages("site.remove")} ${item.name}"),
+            href = item.removeUrl
+          )
+        )
+      )
+    }) { listItems =>
+      @hmrcListWithActions(
+        ListWithActions(items = listItems, classes = "hmrc-list-with-actions--short")
+      )
+    }
+
+    @govukRadios(
+      RadiosViewModel.yesNo(
+        field = form("value"),
+        legend = LegendViewModel(messages("moreOtherAssetsDeclaration.moreOtherAssets"))
+          .withCssClass("govuk-fieldset__legend--m")
+      ).withHint(
+        HintViewModel(Text(messages("moreOtherAssetsDeclaration.moreOtherAssets.hint")))
+      )
+    )
+
+    @govukButton(
+      ButtonViewModel(Text(messages("site.saveAndContinue")))
+    )
+  }
+}

@@ -14,39 +14,39 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails.assetsMiniJourneys.property
+package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
 import controllers.routes
-import forms.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationFormProvider
+import forms.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationFormProvider
 import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
+import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
-import views.html.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationView
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationView
 
-class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val formProvider = new MorePropertyDeclarationFormProvider()
+  private val formProvider = new MoreOtherAssetsDeclarationFormProvider()
   private val form         = formProvider()
 
-  private lazy val morePropertyDeclarationRoute =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController.onPageLoad(NormalMode).url
+  private lazy val moreOtherAssetsDeclarationRoute =
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(NormalMode).url
 
-  "MorePropertyDeclaration Controller" - {
+  "MoreOtherAssetsDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
       val application = applicationBuilder(userAnswers = Some(userAnswersWithAssets(assetsCount = 5))).build()
       running(application) {
-        val request = FakeRequest(GET, morePropertyDeclarationRoute)
+        val request = FakeRequest(GET, moreOtherAssetsDeclarationRoute)
 
         val result = route(application, request).value
-        val view   = application.injector.instanceOf[MorePropertyDeclarationView]
+        val view   = application.injector.instanceOf[MoreOtherAssetsDeclarationView]
 
-        val rows = PropertyAmendContinueSummary.rows(userAnswersWithAssets(assetsCount = 5))
+        val rows = OtherAssetsAmendContinueSummary.rows(userAnswersWithAssets(assetsCount = 5))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
@@ -55,14 +55,14 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = userAnswersQtNumber.set(MorePropertyDeclarationPage, true).success.value
+      val userAnswers = userAnswersQtNumber.set(MoreOtherAssetsDeclarationPage, true).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
       running(application) {
-        val request = FakeRequest(GET, morePropertyDeclarationRoute)
+        val request = FakeRequest(GET, moreOtherAssetsDeclarationRoute)
 
         val result = route(application, request).value
-        val view   = application.injector.instanceOf[MorePropertyDeclarationView]
+        val view   = application.injector.instanceOf[MoreOtherAssetsDeclarationView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
@@ -74,7 +74,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
       running(application) {
         val request =
-          FakeRequest(POST, morePropertyDeclarationRoute)
+          FakeRequest(POST, moreOtherAssetsDeclarationRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
@@ -89,12 +89,12 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
       running(application) {
         val request =
-          FakeRequest(POST, morePropertyDeclarationRoute)
+          FakeRequest(POST, moreOtherAssetsDeclarationRoute)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[MorePropertyDeclarationView]
+        val view = application.injector.instanceOf[MoreOtherAssetsDeclarationView]
 
         val result = route(application, request).value
 
@@ -107,7 +107,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, morePropertyDeclarationRoute)
+        val request = FakeRequest(GET, moreOtherAssetsDeclarationRoute)
 
         val result = route(application, request).value
 
@@ -121,7 +121,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
       running(application) {
         val request =
-          FakeRequest(POST, morePropertyDeclarationRoute)
+          FakeRequest(POST, moreOtherAssetsDeclarationRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

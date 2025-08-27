@@ -631,6 +631,11 @@ otherAssetsAmendContinue.summary.value = {0} added
 otherAssetsAmendContinue.text.singular = group of assets
 otherAssetsAmendContinue.text.plural = groups of assets
 
+moreOtherAssetsDeclaration.title = moreOtherAssetsDeclaration
+moreOtherAssetsDeclaration.moreOtherAssets = Does the member have more than 5 assets?
+moreOtherAssetsDeclaration.moreOtherAssets.hint = Select yes if the member has more than 5 assets. We'll contact the scheme administrator for information on the rest of the assets.
+moreOtherAssetsDeclaration.error.required = Please select an option
+
 otherAssetsStart.title = Add other assets
 otherAssetsStart.heading = Add other assets
 otherAssetsStart.text = The following questions are about other assets that are part of this transfer. Add each identifiable asset one at a time.
