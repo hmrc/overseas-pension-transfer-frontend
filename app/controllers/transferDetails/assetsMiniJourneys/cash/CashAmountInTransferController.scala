@@ -72,10 +72,7 @@ class CashAmountInTransferController @Inject() (
                               )
             _              <- sessionRepository.set(ua1)
             _              <- userAnswersService.setExternalUserAnswers(ua1)
-          } yield TypeOfAssetNavigator.getNextAssetRoute(ua1) match {
-            case Some(route) => Redirect(route)
-            case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
-          }
+          } yield Redirect(CashAmountInTransferPage.nextPage(mode, ua1))
       )
   }
 }
