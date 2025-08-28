@@ -16,22 +16,35 @@
 
 package pages.transferDetails.assetsMiniJourneys.property
 
-import controllers.routes
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import base.SpecBase
+import controllers.transferDetails.routes
+import models.assets.TypeOfAsset.Property
+import models.assets.{PropertyMiniJourney, QuotedSharesMiniJourney, TypeOfAsset}
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import pages.transferDetails.TypeOfAssetPage
+import queries.assets.AssetCompletionFlag
 
-class PropertyAmendContinuePageSpec extends AnyFreeSpec with Matchers {
+class PropertyAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
 
   ".nextPage" - {
 
     val emptyAnswers = UserAnswers("id")
 
     "in Normal Mode" - {
+      "must go to the cya page if no more assets" in {
+        PropertyAmendContinuePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+      }
 
-      "must go to Index" in {
-        PropertyAmendContinuePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+      "must go to the next asset page if more assets" in {
+        val selectedTypes: Set[TypeOfAsset] = Set(PropertyMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
+        val userAnswers                     = for {
+          ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
+          ua2 <- ua1.set(AssetCompletionFlag(Property), true)
+        } yield ua2
+
+        val result = PropertyAmendContinuePage.nextPage(NormalMode, userAnswers.success.value)
+        result mustBe QuotedSharesMiniJourney.call
       }
     }
 

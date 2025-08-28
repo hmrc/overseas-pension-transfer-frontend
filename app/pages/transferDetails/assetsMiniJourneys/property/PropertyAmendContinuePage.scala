@@ -18,6 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.routes
 import models.UserAnswers
+import navigators.TypeOfAssetNavigator
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -29,7 +30,10 @@ case object PropertyAmendContinuePage extends QuestionPage[Boolean] {
   override def toString: String = "propertyAmendContinue"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    TypeOfAssetNavigator.getNextAssetRoute(answers) match {
+      case Some(route) => route
+      case None        => controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+    }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
