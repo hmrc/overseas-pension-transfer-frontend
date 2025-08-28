@@ -49,7 +49,7 @@ object FooterLink {
     } else if (showPageFooter) {
       links += FooterLink(
         id   = "returnTaskListLink",
-        href = "", // TODO routes.TaskListController.onPageLoad().url once implemented
+        href = routes.TaskListController.onPageLoad().url,
         text = messages("footer.link.text.tasklist")
       )
     }

@@ -56,7 +56,7 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
-        verify(mockSessionRepository, times(1)).clear(eqTo("internalId"))
+        verify(mockSessionRepository, times(1)).clear(eqTo("id"))
       }
     }
   }
@@ -85,7 +85,7 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expectedRedirectUrl
-        verify(mockSessionRepository, times(1)).clear(eqTo("internalId"))
+        verify(mockSessionRepository, times(1)).clear(eqTo("id"))
       }
     }
   }
