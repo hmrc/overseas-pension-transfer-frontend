@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatestplus.mockito.MockitoSugar
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,7 +32,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
-class MoreAssetCompletionServiceSpec extends AsyncFreeSpec with Matchers with MockitoSugar with SpecBase {
+class MoreAssetCompletionServiceSpec
+    extends AsyncFreeSpec
+    with Matchers
+    with MockitoSugar
+    with SpecBase {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -47,62 +52,63 @@ class MoreAssetCompletionServiceSpec extends AsyncFreeSpec with Matchers with Mo
     mockUserAnswersService
   )
 
+  private val supportedAssets =
+    Table("assetType", TypeOfAsset.Property, TypeOfAsset.Other, TypeOfAsset.QuotedShares, TypeOfAsset.UnquotedShares)
+
   "MoreAssetCompletionService" - {
 
     "completeAsset" - {
 
-      "should mark asset completed, enrich, persist, and return updated UserAnswers" in {
-        val userAnswers = userAnswersWithAssets(assetsCount = 5)
-        val asset       = TypeOfAsset.Property
-        val updated     = userAnswers.copy()
+      forAll(supportedAssets) { assetType =>
+        s"should mark $assetType completed, enrich, persist, and return updated UserAnswers" in {
+          val userAnswers = userAnswersWithAssets(assetsCount = 5)
+          val updated     = userAnswers.copy()
 
-        when(mockTransferDetailsService.setAssetCompleted(any(), any(), any())(any()))
-          .thenReturn(Success(updated))
+          when(mockTransferDetailsService.setAssetCompleted(any(), any(), any())(any()))
+            .thenReturn(Success(updated))
 
-        when(mockAssetThresholdHandler.handle(any(), any(), any()))
-          .thenReturn(updated)
+          when(mockAssetThresholdHandler.handle(any(), any(), any()))
+            .thenReturn(updated)
 
-        when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
-          .thenReturn(Future.successful(Right(Done)))
+          when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
+            .thenReturn(Future.successful(Right(Done)))
 
-        when(mockSessionRepository.set(any()))
-          .thenReturn(Future.successful(true))
+          when(mockSessionRepository.set(any()))
+            .thenReturn(Future.successful(true))
 
-        service.completeAsset(userAnswers, asset, completed = true, userSelection = Some(true)).map { result =>
-          result mustBe updated
+          service.completeAsset(userAnswers, assetType, completed = true, userSelection = Some(true)).map { result =>
+            result mustBe updated
 
-          verify(mockTransferDetailsService).setAssetCompleted(userAnswers, asset, true)(implicitly)
-          verify(mockAssetThresholdHandler).handle(updated, asset, Some(true))
-          verify(mockUserAnswersService).setExternalUserAnswers(updated)
-          verify(mockSessionRepository).set(updated)
+            verify(mockTransferDetailsService).setAssetCompleted(userAnswers, assetType, true)(implicitly)
+            verify(mockAssetThresholdHandler).handle(updated, assetType, Some(true))
+            verify(mockUserAnswersService).setExternalUserAnswers(updated)
+            verify(mockSessionRepository).set(updated)
 
-          succeed
+            succeed
+          }
         }
-      }
 
-      "should handle case when userSelection is None" in {
-        val userAnswers = userAnswersWithAssets()
-        val asset       = TypeOfAsset.Property
-        val updated     = userAnswers.copy()
+        s"should handle case when userSelection is None for $assetType" in {
+          val userAnswers = userAnswersWithAssets()
+          val updated     = userAnswers.copy()
 
-        when(mockTransferDetailsService.setAssetCompleted(any(), any(), any())(any()))
-          .thenReturn(Success(updated))
+          when(mockTransferDetailsService.setAssetCompleted(any(), any(), any())(any()))
+            .thenReturn(Success(updated))
 
-        when(mockAssetThresholdHandler.handle(any(), any(), any()))
-          .thenReturn(updated)
+          when(mockAssetThresholdHandler.handle(any(), any(), any()))
+            .thenReturn(updated)
 
-        when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
-          .thenReturn(Future.successful(Right(Done)))
+          when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
+            .thenReturn(Future.successful(Right(Done)))
 
-        when(mockSessionRepository.set(any()))
-          .thenReturn(Future.successful(true))
+          when(mockSessionRepository.set(any()))
+            .thenReturn(Future.successful(true))
 
-        service.completeAsset(userAnswers, asset, completed = true).map { result =>
-          result mustBe updated
-
-          verify(mockAssetThresholdHandler).handle(updated, asset, None)
-
-          succeed
+          service.completeAsset(userAnswers, assetType, completed = true).map { result =>
+            result mustBe updated
+            verify(mockAssetThresholdHandler).handle(updated, assetType, None)
+            succeed
+          }
         }
       }
 
