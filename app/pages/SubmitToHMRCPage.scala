@@ -17,19 +17,30 @@
 package pages
 
 import controllers.routes
-import models.UserAnswers
+import models.authentication.{AuthenticatedUser, Psa, Psp}
+import models.{NormalMode, UserAnswers}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SubmitToHMRCPage extends QuestionPage[Boolean] {
+case object SubmitToHMRCPage
+    extends QuestionPage[Boolean]
+    with NextPageWith[AuthenticatedUser] {
 
-  override def path: JsPath = JsPath \ toString
-
+  override def path: JsPath     = JsPath \ toString
   override def toString: String = "submitToHMRC"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.JourneyRecoveryController.onPageLoad()
+  override protected def nextPageWith(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call = {
+    answers.get(SubmitToHMRCPage) match {
+      case Some(true)  =>
+        authenticatedUser.userType match {
+          case Psa => routes.PsaDeclarationController.onPageLoad()
+          case Psp => routes.PspDeclarationController.onPageLoad()
+          case _   => routes.JourneyRecoveryController.onPageLoad()
+        }
+      case Some(false) =>
+        // TODO: This should redirect to the task list when implemented
+        routes.IndexController.onPageLoad()
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }

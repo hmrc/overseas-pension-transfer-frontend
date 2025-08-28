@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,47 @@ package controllers
 import controllers.actions.IdentifierAction
 import models.{NormalMode, UserAnswers}
 import pages.WhatWillBeNeededPage
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WhatWillBeNeededView
 
-import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class WhatWillBeNeededController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
     view: WhatWillBeNeededView,
     sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
-    val newUserAnswers = UserAnswers(request.authenticatedUser.internalId)
-    sessionRepository.set(newUserAnswers) map {
-      _ => Ok(view(WhatWillBeNeededPage.nextPage(mode = NormalMode, newUserAnswers).url))
+    val id = request.authenticatedUser.internalId
+
+    sessionRepository.get(id).flatMap {
+      case Some(existing) =>
+        Future.successful(Ok(view(WhatWillBeNeededPage.nextPage(NormalMode, existing).url)))
+
+      case None =>
+        for {
+          newUa     <- Future.fromTry(UserAnswers.initialise(id))
+          persisted <- sessionRepository.set(newUa)
+        } yield {
+          if (persisted) {
+            Ok(view(WhatWillBeNeededPage.nextPage(NormalMode, newUa).url))
+          } else {
+            logger.warn("SessionRepository.set returned false during UA initialisation")
+            Redirect(routes.JourneyRecoveryController.onPageLoad())
+          }
+        }
+    } recover { case e =>
+      logger.warn("Failed to initialise UA with defaults", e)
+      Redirect(routes.JourneyRecoveryController.onPageLoad())
     }
   }
 }

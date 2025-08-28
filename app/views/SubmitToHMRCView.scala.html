@@ -25,15 +25,13 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 
-
-
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_])(implicit request: DisplayRequest[_], messages: Messages)

@@ -19,6 +19,7 @@ package controllers.qropsDetails
 import controllers.actions._
 import forms.qropsDetails.QROPSNameFormProvider
 import models.Mode
+import models.TaskCategory.QROPSDetails
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsDetails.QROPSNamePage
@@ -39,6 +40,7 @@ class QROPSNameController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    markInProgress: MarkInProgressOnEntryAction,
     formProvider: QROPSNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: QROPSNameView,
@@ -48,15 +50,16 @@ class QROPSNameController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSNamePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen markInProgress.forCategoryAndMode(QROPSDetails, mode) andThen displayData) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(QROPSNamePage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, mode))
-  }
+        Ok(view(preparedForm, mode))
+    }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>

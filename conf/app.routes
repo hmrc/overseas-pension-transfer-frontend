@@ -143,6 +143,13 @@ POST       /qrops-details/change-qrops-country                                  
 GET        /qrops-details/final-change-qrops-country                                              controllers.qropsDetails.QROPSCountryController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-details/final-change-qrops-country                                              controllers.qropsDetails.QROPSCountryController.onSubmit(mode: Mode = FinalCheckMode)
 
+GET        /qrops-details/qrops-other-country                                                     controllers.qropsDetails.QROPSOtherCountryController.onPageLoad(mode: Mode = NormalMode)
+POST       /qrops-details/qrops-other-country                                                     controllers.qropsDetails.QROPSOtherCountryController.onSubmit(mode: Mode = NormalMode)
+GET        /qrops-details/change-qrops-other-country                                              controllers.qropsDetails.QROPSOtherCountryController.onPageLoad(mode: Mode = CheckMode)
+POST       /qrops-details/change-qrops-other-country                                              controllers.qropsDetails.QROPSOtherCountryController.onSubmit(mode: Mode = CheckMode)
+GET        /qrops-details/final-change-qrops-other-country                                        controllers.qropsDetails.QROPSOtherCountryController.onPageLoad(mode: Mode = FinalCheckMode)
+POST       /qrops-details/final-change-qrops-other-country                                        controllers.qropsDetails.QROPSOtherCountryController.onSubmit(mode: Mode = FinalCheckMode)
+
 GET        /qrops-details/check-your-answers                                                      controllers.qropsDetails.QROPSDetailsCYAController.onPageLoad()
 POST       /qrops-details/check-your-answers                                                      controllers.qropsDetails.QROPSDetailsCYAController.onSubmit()
 
@@ -447,11 +454,15 @@ POST       /transfer-details/assets/final-change-other-assets-amend-continue    
 GET        /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onSubmit(index: Int)
 
-GET        /psp-declaration                                                                       controllers.PspDeclarationController.onPageLoad()
-POST       /psp-declaration                                                                       controllers.PspDeclarationController.onSubmit()
+GET        /psp-declaration                                                                       controllers.PspDeclarationController.onPageLoad(mode: Mode = NormalMode)
+POST       /psp-declaration                                                                       controllers.PspDeclarationController.onSubmit(mode: Mode = NormalMode)
 
+GET        /psa-declaration                                                                       controllers.PsaDeclarationController.onPageLoad(mode: Mode = NormalMode)
+POST       /psa-declaration                                                                       controllers.PsaDeclarationController.onSubmit(mode: Mode = NormalMode)
 
-GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad()
-POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit()
+GET        /task-list                                                                             controllers.TaskListController.onPageLoad()
+
+GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad(mode: Mode = NormalMode)
+POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit(mode: Mode = NormalMode)
 
 GET        /transferSubmitted                                                                     controllers.TransferSubmittedController.onPageLoad()

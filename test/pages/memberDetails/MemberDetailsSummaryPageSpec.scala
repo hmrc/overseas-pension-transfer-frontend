@@ -29,8 +29,7 @@ class MemberDetailsSummaryPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
       "must go to Task List page" in {
-        // TODO The destination will have to be changed when 'overseas transfer report' main page exists
-        MemberDetailsSummaryPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        MemberDetailsSummaryPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TaskListController.onPageLoad()
       }
     }
   }

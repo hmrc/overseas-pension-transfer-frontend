@@ -19,7 +19,7 @@ object $className$Summary  {
           key     = "$className;format="decap"$.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.$className$Controller.onPageLoad(modeg).url)
+            ActionItemViewModel("site.change", routes.$className$Controller.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("$className;format="decap"$.change.hidden"))
           )
         )

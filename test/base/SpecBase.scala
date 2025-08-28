@@ -17,7 +17,7 @@
 package base
 
 import controllers.actions._
-import models.authentication.{PsaId, PsaUser}
+import models.authentication.{PsaId, PsaUser, PspId, PspUser}
 import models.requests.DisplayRequest
 import models.{PersonName, QtNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -49,7 +49,11 @@ trait SpecBase
 
   val psaId: PsaId = PsaId("A123456")
 
-  val authenticatedUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
+  val psaUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
+
+  val pspId = PspId("X7654321")
+
+  val pspUser: PspUser = PspUser(pspId, internalId = userAnswersId)
 
   val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
   val formattedTestDateTransferSubmitted: String = testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
@@ -73,6 +77,7 @@ trait SpecBase
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[MarkInProgressOnEntryAction].to[FakeMarkInProgressAction],
         bind[DisplayAction].to[FakeDisplayAction]
       )
 

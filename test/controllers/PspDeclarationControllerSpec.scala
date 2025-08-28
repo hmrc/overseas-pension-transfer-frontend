@@ -17,14 +17,17 @@
 package controllers
 
 import base.SpecBase
+import controllers.actions._
 import forms.PspDeclarationFormProvider
-import models.QtNumber
-import models.responses.{SubmissionResponse, UserAnswersError}
+import models.responses.SubmissionResponse
+import models.{NormalMode, QtNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import pages.PspDeclarationPage
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -42,6 +45,18 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private lazy val pspDeclarationRoute = routes.PspDeclarationController.onPageLoad().url
+
+  val cc = stubControllerComponents()
+
+  val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
+
+  def applicationBuilderPsp(userAnswers: Option[UserAnswers] = None) = new GuiceApplicationBuilder()
+    .overrides(
+      bind[IdentifierAction].toInstance(fakeIdentifierAction),
+      bind[DataRequiredAction].to[DataRequiredActionImpl],
+      bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+      bind[DisplayAction].to[FakeDisplayAction]
+    )
 
   "PspDeclaration Controller" - {
 
@@ -72,13 +87,14 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
-          .overrides(
-            bind[UserAnswersService].toInstance(mockUserAnswersService),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      val ua = emptyUserAnswers.set(PspDeclarationPage, "A1234567").success.value
+
+      val application = applicationBuilderPsp(userAnswers = Some(ua))
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -88,13 +104,13 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.IndexController.onPageLoad().url
+        redirectLocation(result).value mustEqual PspDeclarationPage.nextPage(NormalMode, ua).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilderPsp(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
@@ -114,7 +130,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilderPsp(userAnswers = None).build()
 
       running(application) {
         val request = FakeRequest(GET, pspDeclarationRoute)
@@ -122,13 +138,13 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual PspDeclarationPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilderPsp(userAnswers = None).build()
 
       running(application) {
         val request =
@@ -138,7 +154,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual PspDeclarationPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
   }

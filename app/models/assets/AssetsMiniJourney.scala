@@ -17,7 +17,7 @@
 package models.assets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import play.api.libs.json.OFormat
 import play.api.mvc.Call
 import queries.assets._
@@ -30,6 +30,16 @@ sealed trait AssetsMiniJourney[A <: AssetEntry] {
   def isCompleted(answers: UserAnswers): Boolean
 
   def call: Call = startPage()
+}
+
+object CashMiniJourney extends AssetsMiniJourney[CashEntry] {
+  val assetType = TypeOfAsset.Cash
+  val query     = CashQuery
+  val format    = CashEntry.format
+  val startPage = () => CashAmountInTransferController.onPageLoad(NormalMode)
+
+  def isCompleted(ua: UserAnswers): Boolean =
+    ua.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
 object QuotedSharesMiniJourney extends AssetsMiniJourney[QuotedSharesEntry] {
