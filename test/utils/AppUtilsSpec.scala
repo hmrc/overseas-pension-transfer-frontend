@@ -1,0 +1,55 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package utils
+
+import base.SpecBase
+import models.QtNumber
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+
+class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils {
+
+  "memberFullName" - {
+    "must return full name when one is present in user answers" in {
+      memberFullName(userAnswersMemberName) mustBe "User McUser"
+    }
+
+    "must return Undefined Undefined when name not present in user answers" in {
+      memberFullName(emptyUserAnswers) mustBe "Undefined Undefined"
+    }
+  }
+
+  "qtNumber" - {
+    "must return QtNumber when one is present in user answers" in {
+      qtNumber(userAnswersQtNumber) mustBe QtNumber("QT123456")
+    }
+
+    "must return QtNumber.empty when one is not present" in {
+      qtNumber(emptyUserAnswers) mustBe QtNumber.empty
+    }
+  }
+
+  "dateTransferSubmitted" - {
+    "must return date in String format when date is present" in {
+      dateTransferSubmitted(userAnswersMemberNameQtNumberTransferSubmitted) mustBe testDateTransferSubmitted
+    }
+
+    "must return \'Transfer not submitted\' when date is not present" in {
+      dateTransferSubmitted(emptyUserAnswers) mustBe "Transfer not submitted"
+    }
+  }
+}

@@ -28,7 +28,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
   "TransferSubmitted Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application  = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application  = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumberTransferSubmitted)).build()
       val testMessages = messages(application)
 
       running(application) {
@@ -38,7 +38,11 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
         val view = application.injector.instanceOf[TransferSubmittedView]
 
-        val summaryList = TransferSubmittedSummary.rows(fakeDisplayRequest(request, userAnswersQtNumber), testMessages)
+        val summaryList =
+          TransferSubmittedSummary.rows(
+            fakeDisplayRequest(request, userAnswersMemberNameQtNumberTransferSubmitted),
+            testMessages
+          )
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view("QT123456", summaryList)(fakeDisplayRequest(request), testMessages).toString
