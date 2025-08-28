@@ -21,7 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueFormProvider
 import models.assets.{QuotedSharesMiniJourney, TypeOfAsset}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import navigators.TypeOfAssetNavigator
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinuePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -84,10 +84,7 @@ class QuotedSharesAmendContinueController @Inject() (
             for {
               updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield TypeOfAssetNavigator.getNextAssetRoute(updatedAnswers) match {
-              case Some(route) => Redirect(route)
-              case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
-            }
+            } yield Redirect(QuotedSharesAmendContinuePage.nextPage(mode, updatedAnswers))
           }
         }
       )

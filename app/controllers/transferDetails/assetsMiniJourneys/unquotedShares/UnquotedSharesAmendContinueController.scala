@@ -22,6 +22,7 @@ import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAme
 import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import navigators.TypeOfAssetNavigator
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinuePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -84,10 +85,7 @@ class UnquotedSharesAmendContinueController @Inject() (
             for {
               updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true))
               _              <- sessionRepository.set(updatedAnswers)
-            } yield TypeOfAssetNavigator.getNextAssetRoute(updatedAnswers) match {
-              case Some(route) => Redirect(route)
-              case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
-            }
+            } yield Redirect(UnquotedSharesAmendContinuePage.nextPage(mode, updatedAnswers))
           }
         }
       )
