@@ -18,6 +18,7 @@ package pages
 
 import controllers.routes
 import models.{CheckMode, NormalMode, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -29,9 +30,14 @@ class PspDeclarationPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to submission screen on successful submission" in {
+        val ua = emptyAnswers.set(PspDeclarationPage, "A1234567").success.value
+        // TODO: Change to submission screen once implemented
+        PspDeclarationPage.nextPage(NormalMode, ua) mustEqual routes.IndexController.onPageLoad()
+      }
 
-        PspDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+      "must go to journey on unsuccessful submission" in {
+        PspDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.JourneyRecoveryController.onPageLoad()
       }
     }
   }

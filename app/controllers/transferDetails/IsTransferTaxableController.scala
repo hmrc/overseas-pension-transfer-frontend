@@ -20,12 +20,11 @@ import controllers.actions._
 import forms.transferDetails.IsTransferTaxableFormProvider
 import models.Mode
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
 import pages.transferDetails.IsTransferTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.IsTransferTaxableView
 
@@ -39,6 +38,7 @@ class IsTransferTaxableController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    taskService: TaskService,
     formProvider: IsTransferTaxableFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: IsTransferTaxableView,
@@ -65,12 +65,13 @@ class IsTransferTaxableController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsTransferTaxablePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            ua1           <- Future.fromTry(request.userAnswers.set(IsTransferTaxablePage, value))
+            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1))
+            _             <- sessionRepository.set(ua2)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(IsTransferTaxablePage.nextPage(mode, updatedAnswers))
+              case Right(Done) => Redirect(IsTransferTaxablePage.nextPage(mode, ua2))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }

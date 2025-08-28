@@ -22,6 +22,22 @@ import play.api.libs.json._
 
 sealed trait AssetEntry
 
+case class CashEntry(
+    cashValue: BigDecimal
+  ) extends AssetEntry
+
+object CashEntry {
+  val CashValue = "cashValue"
+
+  val reads: Reads[CashEntry] =
+    (__ \ CashValue).read[BigDecimal].map(CashEntry.apply)
+
+  val writes: OWrites[CashEntry] =
+    (__ \ CashValue).write[BigDecimal].contramap(_.cashValue)
+
+  implicit val format: OFormat[CashEntry] = OFormat(reads, writes)
+}
+
 case class QuotedSharesEntry(
     companyName: String,
     valueOfShares: BigDecimal,

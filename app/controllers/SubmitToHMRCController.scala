@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import forms.SubmitToHMRCFormProvider
-import models.authentication.{Psa, Psp}
+import models.Mode
 import pages.SubmitToHMRCPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -45,7 +45,7 @@ class SubmitToHMRCController @Inject() (
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(SubmitToHMRCPage) match {
         case None        => form
@@ -55,7 +55,7 @@ class SubmitToHMRCController @Inject() (
       Ok(view(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -64,17 +64,7 @@ class SubmitToHMRCController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SubmitToHMRCPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield {
-            if (!value) {
-              Redirect(routes.IndexController.onPageLoad())
-            } else {
-              request.authenticatedUser.userType match {
-                case Psa => Redirect(routes.IndexController.onPageLoad()) // PSA redirect
-                case Psp => Redirect(routes.PspDeclarationController.onPageLoad()) // PSP redirect
-                case _   => Redirect(routes.JourneyRecoveryController.onPageLoad()) // fallback
-              }
-            }
-          }
+          } yield Redirect(SubmitToHMRCPage.nextPageWith(mode, updatedAnswers, request.authenticatedUser))
       )
   }
 }

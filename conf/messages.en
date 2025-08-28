@@ -118,6 +118,20 @@ common.dateInput.error.invalid.character = The Day/Month/Year Field must only in
 common.dateInput.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 1970
 common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the future
 
+taskList.title = Task list
+taskList.heading = Complete your overseas transfer report
+taskList.transferDetails.heading = Transfer details
+taskList.checkAndSubmit.heading = Check and submit
+taskList.memberDetails.linkText = Add details about the member
+taskList.transferDetails.linkText = Add information about the transfer
+taskList.qropsDetails.linkText = Add information about the QROPS
+taskList.schemeManagerDetails.linkText = Add QROPS scheme manager''s details
+taskList.submit.linkText = Check your answers and submit the report
+taskList.taskStatus.cannotStart = Cannot start yet
+taskList.taskStatus.notStarted = Not started yet
+taskList.taskStatus.inProgress = In progress
+taskList.taskStatus.completed = Completed
+
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
@@ -378,7 +392,7 @@ cashAmountInTransfer.title = What is the amount of cash?
 cashAmountInTransfer.heading = What is the amount of cash?
 cashAmountInTransfer.checkYourAnswersLabel = CashAmountInTransfer
 cashAmountInTransfer.error.nonNumeric = The amount of cash must be an amount of money, like 123 or 123.00
-cashAmountInTransfer.error.required = Enter the amount of cash being transferred
+cashAmountInTransfer.error.required = Enter the amount of Cash
 cashAmountInTransfer.error.aboveMaximum = The amount of cash must be {0} or less
 cashAmountInTransfer.error.belowMinimum = The amount of cash must be {0} or more
 cashAmountInTransfer.change.hidden = Cash amount in transfer
@@ -648,6 +662,13 @@ pspDeclaration.correctAndComplete = to the best of my knowledge and belief the i
 pspDeclaration.error.required = Enter the authorising scheme administrator''s ID
 pspDeclaration.error.pattern = Enter the authorising scheme administrator''s ID in the correct format, like A1234567
 pspDeclaration.change.hidden = Psp Declaration
+
+psaDeclaration.title = Declaration
+psaDeclaration.heading = Declaration
+psaDeclaration.bySubmitting = By submitting you declare that:
+psaDeclaration.receivedAndChecked = I''ve received and checked the information and acknowledgement provided by the transferring member.
+psaDeclaration.correctAndComplete = to the best of my knowledge and belief the information given in this notification is correct and complete.
+psaDeclaration.change.hidden = Psa Declaration
 
 
 submitToHMRC.title = Do you want to submit this report to HMRC?

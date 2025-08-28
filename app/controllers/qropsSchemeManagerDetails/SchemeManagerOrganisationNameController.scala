@@ -25,7 +25,7 @@ import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.qropsSchemeManagerDetails.SchemeManagerOrganisationNameView
 
@@ -39,6 +39,7 @@ class SchemeManagerOrganisationNameController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
+    taskService: TaskService,
     formProvider: SchemeManagerOrganisationNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: SchemeManagerOrganisationNameView,
@@ -65,12 +66,13 @@ class SchemeManagerOrganisationNameController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            ua1           <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
+            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1))
+            _             <- sessionRepository.set(ua2)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(SchemeManagerOrganisationNamePage.nextPage(mode, updatedAnswers))
+              case Right(Done) => Redirect(SchemeManagerOrganisationNamePage.nextPage(mode, ua2))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }
