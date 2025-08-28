@@ -628,6 +628,11 @@ quotedSharesAmendContinue.summary.value = {0} added
 quotedSharesAmendContinue.text.singular = group of quoted shares
 quotedSharesAmendContinue.text.plural = groups of quoted shares
 
+moreQuotedSharesDeclaration.title = moreQuotedSharesDeclaration
+moreQuotedSharesDeclaration.moreQuotedShares = Does the member have more than 5 quoted shares?
+moreQuotedSharesDeclaration.moreQuotedShares.hint = Select yes if the member has more than 5 quoted shares. We'll contact the scheme administrator for information on the rest of the quoted shares.
+moreQuotedSharesDeclaration.error.required = Please select an option
+
 propertyAmendContinue.title = propertyAmendContinue
 propertyAmendContinue.heading = You have added 1 Property
 propertyAmendContinue.checkYourAnswersLabel = Property
