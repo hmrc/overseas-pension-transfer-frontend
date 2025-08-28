@@ -19,8 +19,8 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
-import models.{NormalMode, UserAnswers}
 import models.assets.PropertyMiniJourney
+import models.{NormalMode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.PropertyQuery
@@ -40,7 +40,6 @@ class PropertyConfirmRemovalController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: PropertyConfirmRemovalFormProvider,
-    transferDetailsService: TransferDetailsService,
     miniJourney: PropertyMiniJourney.type,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
@@ -63,7 +62,7 @@ class PropertyConfirmRemovalController @Inject() (
           Future.successful(Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
         } else {
           (for {
-            updatedAnswers     <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            updatedAnswers     <- Future.fromTry(TransferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _                  <- sessionRepository.set(updatedAnswers)
             minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, PropertyQuery))
             _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)

@@ -23,7 +23,7 @@ import queries.assets._
 
 import scala.util.{Failure, Success, Try}
 
-class TransferDetailsService {
+object TransferDetailsService {
 
   // ----- Repeating-only helpers -----
 

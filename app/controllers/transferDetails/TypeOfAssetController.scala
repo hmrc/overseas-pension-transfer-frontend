@@ -40,7 +40,6 @@ class TypeOfAssetController @Inject() (
     displayData: DisplayAction,
     formProvider: TypeOfAssetFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    transferDetailsService: TransferDetailsService,
     view: TypeOfAssetView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
@@ -65,8 +64,8 @@ class TypeOfAssetController @Inject() (
         selectedAssets => {
           for {
             setAssetsUA               <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, selectedAssets))
-            removePrevSetAssetFlagsUA <- Future.fromTry(transferDetailsService.clearAllAssetCompletionFlags(setAssetsUA))
-            setAssetsCompletedUA      <- Future.fromTry(transferDetailsService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsUA, selectedAssets))
+            removePrevSetAssetFlagsUA <- Future.fromTry(TransferDetailsService.clearAllAssetCompletionFlags(setAssetsUA))
+            setAssetsCompletedUA      <- Future.fromTry(TransferDetailsService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsUA, selectedAssets))
             _                         <- sessionRepository.set(setAssetsCompletedUA)
           } yield TypeOfAssetNavigator.getNextAssetRoute(setAssetsCompletedUA) match {
             case Some(route) => Redirect(route)

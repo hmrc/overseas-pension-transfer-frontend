@@ -19,23 +19,20 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueFormProvider
-import models.assets.{QuotedSharesEntry, QuotedSharesMiniJourney, TypeOfAsset}
-import models.{CheckMode, NormalMode}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import models.assets.{QuotedSharesEntry, QuotedSharesMiniJourney}
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinuePage
 import play.api.inject.bind
-import play.api.libs.json.Reads
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.TransferDetailsService
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueView
 
 import scala.concurrent.Future
-import scala.util.Success
 
 class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -44,6 +41,12 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
   private lazy val quotedSharesAmendContinueRouteNormal = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(NormalMode).url
   private lazy val quotedSharesAmendContinueRouteCheck  = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(CheckMode).url
+
+  private def uaWithQuotedShares(n: Int): UserAnswers = {
+    val entry = QuotedSharesEntry("Acme", BigDecimal(10), 100, "Ord")
+    val list  = List.fill(n)(entry)
+    emptyUserAnswers.set(QuotedSharesMiniJourney.query, list).success.value
+  }
 
   "QuotedSharesAmendContinue Controller" - {
 
@@ -75,48 +78,31 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
     }
 
     "must return OK for a GET in CheckMode and save completion" in {
-      val mockSessionRepository      = mock[SessionRepository]
-      val mockTransferDetailsService = mock[TransferDetailsService]
-
-      when(mockTransferDetailsService.setAssetCompleted(any(), eqTo(TypeOfAsset.QuotedShares), eqTo(true)))
-        .thenReturn(Success(emptyUserAnswers))
+      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
+      val userAnswers = uaWithQuotedShares(1)
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[TransferDetailsService].toInstance(mockTransferDetailsService)
-          )
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request = FakeRequest(GET, quotedSharesAmendContinueRouteCheck)
         val result  = route(application, request).value
+
         status(result) mustEqual OK
       }
     }
 
     "must redirect to the page's nextPageWith when valid data 'Yes' is submitted in NormalMode" in {
-      val mockSessionRepository      = mock[SessionRepository]
-      val mockTransferDetailsService = mock[TransferDetailsService]
-      val nextIndex                  = 2
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockTransferDetailsService.setAssetCompleted(any(), eqTo(TypeOfAsset.QuotedShares), eqTo(true)))
-        .thenReturn(Success(emptyUserAnswers))
-      when(
-        mockTransferDetailsService
-          .assetCount(eqTo(QuotedSharesMiniJourney), any[models.UserAnswers])(any[Reads[QuotedSharesEntry]])
-      ).thenReturn(nextIndex)
-      when(mockSessionRepository.set(any()))
-        .thenReturn(Future.successful(true))
-
+      val userAnswers = uaWithQuotedShares(2)
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[TransferDetailsService].toInstance(mockTransferDetailsService)
-          )
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -126,8 +112,9 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        val ua2      = emptyUserAnswers.set(QuotedSharesAmendContinuePage, true).success.value
-        val expected = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
+        val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, true).success.value
+        val nextIndex = services.TransferDetailsService.assetCount(QuotedSharesMiniJourney, ua2)
+        val expected  = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -135,25 +122,13 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
     }
 
     "must redirect to the page's nextPageWith when valid data 'No' is submitted in NormalMode" in {
-      val mockSessionRepository      = mock[SessionRepository]
-      val mockTransferDetailsService = mock[TransferDetailsService]
-      val nextIndex                  = 0
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockTransferDetailsService.setAssetCompleted(any(), eqTo(TypeOfAsset.QuotedShares), eqTo(true)))
-        .thenReturn(Success(emptyUserAnswers))
-      when(
-        mockTransferDetailsService
-          .assetCount(eqTo(QuotedSharesMiniJourney), any[models.UserAnswers])(any[Reads[QuotedSharesEntry]])
-      ).thenReturn(nextIndex)
-      when(mockSessionRepository.set(any()))
-        .thenReturn(Future.successful(true))
-
+      val userAnswers = uaWithQuotedShares(0)
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[TransferDetailsService].toInstance(mockTransferDetailsService)
-          )
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -163,8 +138,9 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        val ua2      = emptyUserAnswers.set(QuotedSharesAmendContinuePage, false).success.value
-        val expected = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
+        val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, false).success.value
+        val nextIndex = services.TransferDetailsService.assetCount(QuotedSharesMiniJourney, ua2)
+        val expected  = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -172,25 +148,13 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
     }
 
     "must redirect to CYA when valid data is submitted in CheckMode" in {
-      val mockSessionRepository      = mock[SessionRepository]
-      val mockTransferDetailsService = mock[TransferDetailsService]
-      val nextIndex                  = 3
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockTransferDetailsService.setAssetCompleted(any(), eqTo(TypeOfAsset.QuotedShares), eqTo(true)))
-        .thenReturn(Success(emptyUserAnswers))
-      when(
-        mockTransferDetailsService
-          .assetCount(eqTo(QuotedSharesMiniJourney), any[models.UserAnswers])(any[Reads[QuotedSharesEntry]])
-      ).thenReturn(nextIndex)
-      when(mockSessionRepository.set(any()))
-        .thenReturn(Future.successful(true))
-
+      val userAnswers = uaWithQuotedShares(3)
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[TransferDetailsService].toInstance(mockTransferDetailsService)
-          )
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -200,8 +164,9 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val result = route(application, request).value
 
-        val ua2      = emptyUserAnswers.set(QuotedSharesAmendContinuePage, true).success.value
-        val expected = QuotedSharesAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
+        val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, true).success.value
+        val nextIndex = services.TransferDetailsService.assetCount(QuotedSharesMiniJourney, ua2)
+        val expected  = QuotedSharesAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected

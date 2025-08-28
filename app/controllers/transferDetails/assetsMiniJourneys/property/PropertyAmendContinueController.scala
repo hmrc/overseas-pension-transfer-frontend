@@ -41,7 +41,6 @@ class PropertyAmendContinueController @Inject() (
     displayData: DisplayAction,
     formProvider: PropertyAmendContinueFormProvider,
     sessionRepository: SessionRepository,
-    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: PropertyMiniJourney.type,
     view: PropertyAmendContinueView
@@ -59,7 +58,7 @@ class PropertyAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
+            updatedAnswers <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
             _              <- sessionRepository.set(updatedAnswers)
           } yield {
             val shares = PropertyAmendContinueSummary.rows(updatedAnswers)
@@ -80,11 +79,11 @@ class PropertyAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua1 <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
+            ua1 <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
             ua2 <- Future.fromTry(ua1.set(PropertyAmendContinuePage, continue))
             _   <- sessionRepository.set(ua2)
           } yield {
-            val nextIndex = transferDetailsService.assetCount(miniJourney, request.userAnswers)
+            val nextIndex = TransferDetailsService.assetCount(miniJourney, request.userAnswers)
             Redirect(PropertyAmendContinuePage.nextPageWith(mode, ua2, nextIndex))
           }
         }

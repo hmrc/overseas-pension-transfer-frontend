@@ -16,18 +16,17 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import base.SpecBase
+import base.AddressBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
-import models.assets.{PropertyEntry, PropertyMiniJourney, TypeOfAsset}
-import models.{CheckMode, NormalMode}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import models.assets.{PropertyEntry, PropertyMiniJourney}
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePage
 import play.api.inject.bind
-import play.api.libs.json.Reads
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -35,15 +34,27 @@ import services.TransferDetailsService
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
 
 import scala.concurrent.Future
-import scala.util.Success
 
-class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
 
   private val formProvider = new PropertyAmendContinueFormProvider()
   private val form         = formProvider()
 
-  private lazy val propertyAmendContinueRouteNormal = AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
-  private lazy val propertyAmendContinueRouteCheck  = AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(CheckMode).url
+  private lazy val propertyAmendContinueRouteNormal =
+    AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
+
+  private lazy val propertyAmendContinueRouteCheck  =
+    AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(CheckMode).url
+
+  private def uaWithProperties(n: Int): UserAnswers = {
+    val entry = PropertyEntry(
+      propertyAddress = propertyAddress,
+      propValue       = BigDecimal(100000),
+      propDescription = "Test property"
+    )
+    val list  = List.fill(n)(entry)
+    emptyUserAnswers.set(PropertyMiniJourney.query, list).success.value
+  }
 
   "PropertyAmendContinue Controller" - {
 
@@ -75,19 +86,13 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
     }
 
     "must return OK for a GET in CheckMode and save completion" in {
-      val mockSessionRepository      = mock[SessionRepository]
-      val mockTransferDetailsService = mock[TransferDetailsService]
-
-      when(mockTransferDetailsService.setAssetCompleted(any(), eqTo(TypeOfAsset.Property), eqTo(true)))
-        .thenReturn(Success(emptyUserAnswers))
+      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
+      val userAnswers = uaWithProperties(1)
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[TransferDetailsService].toInstance(mockTransferDetailsService)
-          )
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -98,25 +103,13 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
     }
 
     "must redirect to the page's nextPageWith when valid data 'Yes' is submitted in NormalMode" in {
-      val mockSessionRepository      = mock[SessionRepository]
-      val mockTransferDetailsService = mock[TransferDetailsService]
-      val nextIndex                  = 2
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockTransferDetailsService.setAssetCompleted(any(), eqTo(TypeOfAsset.Property), eqTo(true)))
-        .thenReturn(Success(emptyUserAnswers))
-      when(
-        mockTransferDetailsService
-          .assetCount(eqTo(PropertyMiniJourney), any[models.UserAnswers])(any[Reads[PropertyEntry]])
-      ).thenReturn(nextIndex)
-      when(mockSessionRepository.set(any()))
-        .thenReturn(Future.successful(true))
-
+      val userAnswers = uaWithProperties(2)
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[TransferDetailsService].toInstance(mockTransferDetailsService)
-          )
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -126,8 +119,9 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
 
         val result = route(application, request).value
 
-        val ua2      = emptyUserAnswers.set(PropertyAmendContinuePage, true).success.value
-        val expected = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
+        val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
+        val nextIndex = TransferDetailsService.assetCount(PropertyMiniJourney, ua2)
+        val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -135,25 +129,13 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
     }
 
     "must redirect to the page's nextPageWith when valid data 'No' is submitted in NormalMode" in {
-      val mockSessionRepository      = mock[SessionRepository]
-      val mockTransferDetailsService = mock[TransferDetailsService]
-      val nextIndex                  = 0
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockTransferDetailsService.setAssetCompleted(any(), eqTo(TypeOfAsset.Property), eqTo(true)))
-        .thenReturn(Success(emptyUserAnswers))
-      when(
-        mockTransferDetailsService
-          .assetCount(eqTo(PropertyMiniJourney), any[models.UserAnswers])(any[Reads[PropertyEntry]])
-      ).thenReturn(nextIndex)
-      when(mockSessionRepository.set(any()))
-        .thenReturn(Future.successful(true))
-
+      val userAnswers = uaWithProperties(0)
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[TransferDetailsService].toInstance(mockTransferDetailsService)
-          )
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -163,8 +145,9 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
 
         val result = route(application, request).value
 
-        val ua2      = emptyUserAnswers.set(PropertyAmendContinuePage, false).success.value
-        val expected = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
+        val ua2       = userAnswers.set(PropertyAmendContinuePage, false).success.value
+        val nextIndex = TransferDetailsService.assetCount(PropertyMiniJourney, ua2)
+        val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -172,25 +155,13 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
     }
 
     "must redirect to CYA when valid data is submitted in CheckMode" in {
-      val mockSessionRepository      = mock[SessionRepository]
-      val mockTransferDetailsService = mock[TransferDetailsService]
-      val nextIndex                  = 3
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      when(mockTransferDetailsService.setAssetCompleted(any(), eqTo(TypeOfAsset.Property), eqTo(true)))
-        .thenReturn(Success(emptyUserAnswers))
-      when(
-        mockTransferDetailsService
-          .assetCount(eqTo(PropertyMiniJourney), any[models.UserAnswers])(any[Reads[PropertyEntry]])
-      ).thenReturn(nextIndex)
-      when(mockSessionRepository.set(any()))
-        .thenReturn(Future.successful(true))
-
+      val userAnswers = uaWithProperties(3)
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[TransferDetailsService].toInstance(mockTransferDetailsService)
-          )
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -200,8 +171,9 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with
 
         val result = route(application, request).value
 
-        val ua2      = emptyUserAnswers.set(PropertyAmendContinuePage, true).success.value
-        val expected = PropertyAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
+        val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
+        val nextIndex = TransferDetailsService.assetCount(PropertyMiniJourney, ua2)
+        val expected  = PropertyAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected

@@ -17,18 +17,15 @@
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueFormProvider
 import models.assets.{OtherAssetsMiniJourney, TypeOfAsset}
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode}
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinuePage
-import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
 
@@ -43,7 +40,6 @@ class OtherAssetsAmendContinueController @Inject() (
     displayData: DisplayAction,
     formProvider: OtherAssetsAmendContinueFormProvider,
     sessionRepository: SessionRepository,
-    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
     view: OtherAssetsAmendContinueView
@@ -61,7 +57,7 @@ class OtherAssetsAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
+            updatedAnswers <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
             _              <- sessionRepository.set(updatedAnswers)
           } yield {
             val shares = OtherAssetsAmendContinueSummary.rows(updatedAnswers)
@@ -82,11 +78,11 @@ class OtherAssetsAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua1 <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
+            ua1 <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
             ua2 <- Future.fromTry(ua1.set(OtherAssetsAmendContinuePage, continue))
             _   <- sessionRepository.set(ua2)
           } yield {
-            val nextIndex = transferDetailsService.assetCount(miniJourney, request.userAnswers)
+            val nextIndex = TransferDetailsService.assetCount(miniJourney, request.userAnswers)
             Redirect(OtherAssetsAmendContinuePage.nextPageWith(mode, ua2, nextIndex))
           }
         }

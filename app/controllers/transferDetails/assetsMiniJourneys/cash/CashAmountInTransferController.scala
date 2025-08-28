@@ -20,7 +20,6 @@ import controllers.actions._
 import forms.transferDetails.CashAmountInTransferFormProvider
 import models.Mode
 import models.assets.TypeOfAsset
-import navigators.TypeOfAssetNavigator
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,7 +39,6 @@ class CashAmountInTransferController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: CashAmountInTransferFormProvider,
-    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     view: CashAmountInTransferView,
     userAnswersService: UserAnswersService
@@ -68,7 +66,7 @@ class CashAmountInTransferController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
             ua1            <- Future.fromTry(
-                                transferDetailsService.setAssetCompleted(updatedAnswers, TypeOfAsset.Cash, completed = true)
+                                TransferDetailsService.setAssetCompleted(updatedAnswers, TypeOfAsset.Cash, completed = true)
                               )
             _              <- sessionRepository.set(ua1)
             _              <- userAnswersService.setExternalUserAnswers(ua1)

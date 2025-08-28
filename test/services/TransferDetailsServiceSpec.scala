@@ -36,7 +36,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
   private val sessionRepository = mock[SessionRepository]
 
-  private val service = new TransferDetailsService
+  private val service = TransferDetailsService
 
   "assetCount" - {
     "must return the number of entries for a given asset journey" in {
