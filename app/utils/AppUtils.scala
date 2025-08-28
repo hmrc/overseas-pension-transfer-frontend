@@ -18,17 +18,27 @@ package utils
 
 import models.{QtNumber, UserAnswers}
 import pages.memberDetails.MemberNamePage
-import queries.QtNumberQuery
+import play.api.i18n.{Lang, Messages}
+import queries.{DateSubmittedQuery, QtNumberQuery}
+import utils.DateTimeFormats.dateTimeFormat
+
+import java.time.LocalDate
 
 trait AppUtils {
 
   def memberFullName(userAnswers: UserAnswers): String = {
-    userAnswers.get(MemberNamePage).map(_.fullName)
-      .getOrElse("Undefined Undefined")
+    userAnswers.get(MemberNamePage).fold("Undefined Undefined")(_.fullName)
   }
 
   def qtNumber(userAnswers: UserAnswers): QtNumber = {
     userAnswers.get(QtNumberQuery)
       .getOrElse(QtNumber.empty)
+  }
+
+  def dateTransferSubmitted(userAnswers: UserAnswers): String = {
+    implicit val lang: Lang = Lang("en")
+    userAnswers.get(DateSubmittedQuery).fold("Transfer not submitted") {
+      date => date.format(dateTimeFormat())
+    }
   }
 }

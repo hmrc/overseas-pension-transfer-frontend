@@ -31,6 +31,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import queries.QtNumberQuery
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 trait SpecBase
     extends Matchers
     with TryValues
@@ -47,6 +50,8 @@ trait SpecBase
   val psaId: PsaId = PsaId("A123456")
 
   val authenticatedUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
+
+  val testDateTransferSubmitted: String = LocalDate.now.format(DateTimeFormatter.ofPattern("d M yyyy"))
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
@@ -69,20 +74,22 @@ trait SpecBase
 
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
     DisplayRequest(
-      request           = fakeRequest,
-      authenticatedUser = authenticatedUser,
-      userAnswers       = userAnswers,
-      memberName        = testMemberName.fullName,
-      qtNumber          = testQtNumber
+      request               = fakeRequest,
+      authenticatedUser     = authenticatedUser,
+      userAnswers           = userAnswers,
+      memberName            = testMemberName.fullName,
+      qtNumber              = testQtNumber,
+      dateTransferSubmitted = testDateTransferSubmitted
     )
 
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
-      request           = FakeRequest(),
-      authenticatedUser = authenticatedUser,
-      userAnswers       = emptyUserAnswers,
-      memberName        = testMemberName.fullName,
-      qtNumber          = testQtNumber
+      request               = FakeRequest(),
+      authenticatedUser     = authenticatedUser,
+      userAnswers           = emptyUserAnswers,
+      memberName            = testMemberName.fullName,
+      qtNumber              = testQtNumber,
+      dateTransferSubmitted = testDateTransferSubmitted
     )
 
 }

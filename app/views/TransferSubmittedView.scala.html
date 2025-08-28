@@ -26,14 +26,14 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(qtNumber: Option[QtNumber], list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
+@(qtNumber: String, list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("transferSubmitted.title"))) {
 
     <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">@messages("transferSubmitted.heading")</h1>
         <div class="govuk-panel__body">@messages("transferSubmitted.referenceNumber.text")<br>
-            <strong>@qtNumber.get.toString</strong>
+            <strong>@qtNumber</strong>
         </div>
     </div>
 

@@ -17,16 +17,14 @@
 package controllers
 
 import controllers.actions._
-import models.QtNumber
-
-import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.QtNumberQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import views.html.TransferSubmittedView
+
+import javax.inject.Inject
 
 class TransferSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
@@ -40,13 +38,8 @@ class TransferSubmittedController @Inject() (
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
-      val qtReference: Option[QtNumber] =
-        request.userAnswers.get(QtNumberQuery)
+      val summaryList = TransferSubmittedSummary.rows
 
-      val summaryList = SummaryList(
-        TransferSubmittedSummary.rows(request.userAnswers)
-      )
-
-      Ok(view(qtReference, summaryList))
+      Ok(view(request.qtNumber.value, summaryList))
   }
 }

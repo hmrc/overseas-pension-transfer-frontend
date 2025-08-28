@@ -19,8 +19,6 @@ package models
 import play.api.libs.json.{Json, OFormat}
 
 case class QtNumber(value: String) {
-  override def toString: String = value
-
   def isEmpty: Boolean  = value.trim.isEmpty
   def nonEmpty: Boolean = !isEmpty
 }

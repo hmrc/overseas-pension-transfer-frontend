@@ -17,11 +17,10 @@
 package controllers
 
 import base.SpecBase
-import models.QtNumber
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import viewmodels.checkAnswers.TransferSubmittedSummary
 import views.html.TransferSubmittedView
 
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
@@ -29,8 +28,8 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
   "TransferSubmitted Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application  = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val testMessages = messages(application)
 
       running(application) {
         val request = FakeRequest(GET, routes.TransferSubmittedController.onPageLoad().url)
@@ -39,8 +38,10 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
         val view = application.injector.instanceOf[TransferSubmittedView]
 
+        val summaryList = TransferSubmittedSummary.rows(fakeDisplayRequest(request, userAnswersQtNumber), testMessages)
+
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(Some(QtNumber("QT123456")), SummaryList.apply())(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view("QT123456", summaryList)(fakeDisplayRequest(request), testMessages).toString
       }
     }
   }

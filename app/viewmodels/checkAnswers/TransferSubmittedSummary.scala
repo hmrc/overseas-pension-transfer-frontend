@@ -16,45 +16,34 @@
 
 package viewmodels.checkAnswers
 
-import models.UserAnswers
-import pages.memberDetails.MemberNamePage
-import play.api.i18n.{Lang, Messages}
-import play.api.libs.json.Format.GenericFormat
-import play.api.libs.json.OFormat.oFormatFromReadsAndOWrites
-import play.twirl.api.HtmlFormat
-import queries.DateSubmittedQuery
+import models.requests.DisplayRequest
+import play.api.i18n.Messages
+import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.DateTimeFormats.dateTimeFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 case object TransferSubmittedSummary {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    implicit val lang: Lang = messages.lang
+  def rows(implicit request: DisplayRequest[AnyContent], messages: Messages): SummaryList = {
+    val memberNameRow: SummaryListRow =
+      SummaryListRowViewModel(
+        key   = "transferSubmitted.memberName.key",
+        value = ValueViewModel(HtmlContent(request.memberName))
+      )
 
-    val memberNameRow: Option[SummaryListRow] = userAnswers.get(MemberNamePage).map {
-      answer =>
-        val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
+    val timeSubmittedRow: SummaryListRow =
+      SummaryListRowViewModel(
+        key   = "transferSubmitted.dateSubmitted.key",
+        value = ValueViewModel(HtmlContent(request.dateTransferSubmitted))
+      )
 
-        SummaryListRowViewModel(
-          key   = "transferSubmitted.memberName.key",
-          value = ValueViewModel(HtmlContent(value))
-        )
-    }
-
-    val timeSubmittedRow = userAnswers.get(DateSubmittedQuery).map {
-      answer =>
-        SummaryListRowViewModel(
-          key   = "transferSubmitted.dateSubmitted.key",
-          value = ValueViewModel(HtmlContent(answer.format(dateTimeFormat())))
-        )
-    }
-
-    Seq(
-      memberNameRow,
-      timeSubmittedRow
-    ).flatten
+    SummaryList(
+      Seq(
+        memberNameRow,
+        timeSubmittedRow
+      )
+    )
   }
 }
