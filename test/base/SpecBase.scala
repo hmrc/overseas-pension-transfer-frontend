@@ -31,8 +31,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.LocalDateTime
+import java.time.format.{DateTimeFormatter, FormatStyle}
 
 trait SpecBase
     extends Matchers
@@ -51,7 +51,8 @@ trait SpecBase
 
   val authenticatedUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
 
-  val testDateTransferSubmitted: String = LocalDate.now.format(DateTimeFormatter.ofPattern("d M yyyy"))
+  val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
+  val formattedTestDateTransferSubmitted: String = testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
@@ -62,7 +63,7 @@ trait SpecBase
   def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
 
   def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
-    userAnswersMemberNameQtNumber.set(DateSubmittedQuery, LocalDate.now()).success.value
+    userAnswersMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -82,7 +83,7 @@ trait SpecBase
       userAnswers           = userAnswers,
       memberName            = testMemberName.fullName,
       qtNumber              = testQtNumber,
-      dateTransferSubmitted = testDateTransferSubmitted
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
 
   implicit val testDisplayRequest: DisplayRequest[_] =
@@ -92,7 +93,7 @@ trait SpecBase
       userAnswers           = emptyUserAnswers,
       memberName            = testMemberName.fullName,
       qtNumber              = testQtNumber,
-      dateTransferSubmitted = testDateTransferSubmitted
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
 
 }

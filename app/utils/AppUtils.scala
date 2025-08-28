@@ -18,11 +18,8 @@ package utils
 
 import models.{QtNumber, UserAnswers}
 import pages.memberDetails.MemberNamePage
-import play.api.i18n.{Lang, Messages}
 import queries.{DateSubmittedQuery, QtNumberQuery}
-import utils.DateTimeFormats.dateTimeFormat
-
-import java.time.LocalDate
+import utils.DateTimeFormats.localDateTimeFormatter
 
 trait AppUtils {
 
@@ -36,9 +33,8 @@ trait AppUtils {
   }
 
   def dateTransferSubmitted(userAnswers: UserAnswers): String = {
-    implicit val lang: Lang = Lang("en")
     userAnswers.get(DateSubmittedQuery).fold("Transfer not submitted") {
-      date => date.format(dateTimeFormat())
+      date => date.format(localDateTimeFormatter)
     }
   }
 }

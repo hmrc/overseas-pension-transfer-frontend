@@ -21,6 +21,8 @@ import models.QtNumber
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
+import java.time.format.{DateTimeFormatter, FormatStyle}
+
 class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils {
 
   "memberFullName" - {
@@ -45,7 +47,8 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
 
   "dateTransferSubmitted" - {
     "must return date in String format when date is present" in {
-      dateTransferSubmitted(userAnswersMemberNameQtNumberTransferSubmitted) mustBe testDateTransferSubmitted
+      dateTransferSubmitted(userAnswersMemberNameQtNumberTransferSubmitted) mustBe
+        testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
     }
 
     "must return \'Transfer not submitted\' when date is not present" in {
