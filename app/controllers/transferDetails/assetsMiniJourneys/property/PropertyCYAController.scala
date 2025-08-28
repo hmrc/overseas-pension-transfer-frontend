@@ -19,10 +19,9 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, NormalMode, UserAnswers}
 import handlers.AssetThresholdHandler
-import models.{NormalMode, UserAnswers}
 import models.assets.TypeOfAsset
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

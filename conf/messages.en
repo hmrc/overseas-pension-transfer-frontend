@@ -576,6 +576,11 @@ unquotedSharesAmendContinue.summary.value = {0} added
 unquotedSharesAmendContinue.text.singular = group of unquoted shares
 unquotedSharesAmendContinue.text.plural = groups of unquoted shares
 
+moreUnquotedSharesDeclaration.title = moreUnquotedSharesDeclaration
+moreUnquotedSharesDeclaration.moreUnquotedShares = Does the member have more than 5 unquoted shares?
+moreUnquotedSharesDeclaration.moreUnquotedShares.hint = Select yes if the member has more than 5 unquoted shares. We'll contact the scheme administrator for information on the rest of the unquoted shares.
+moreUnquotedSharesDeclaration.error.required = Please select an option
+
 unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.error.required = Select one option
@@ -620,8 +625,8 @@ propertyAmendContinue.text.singular = property
 propertyAmendContinue.text.plural = properties
 
 morePropertyDeclaration.title = morePropertyDeclaration
-morePropertyDeclaration.moreProperty = Does the member have more than 5 assets?
-morePropertyDeclaration.moreProperty.hint = Select yes if the member has more than 5 assets. We'll contact the scheme administrator for information on the rest of the assets.
+morePropertyDeclaration.moreProperty = Does the member have more than 5 properties?
+morePropertyDeclaration.moreProperty.hint = Select yes if the member has more than 5 properties. We'll contact the scheme administrator for information on the rest of the properties.
 morePropertyDeclaration.error.required = Please select an option
 
 otherAssetsAmendContinue.error.required = Please select an option

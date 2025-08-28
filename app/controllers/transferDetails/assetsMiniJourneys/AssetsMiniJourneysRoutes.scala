@@ -44,6 +44,9 @@ object AssetsMiniJourneysRoutes {
   val UnquotedSharesConfirmRemovalController =
     controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesConfirmRemovalController
 
+  val MoreUnquotedSharesDeclarationController =
+    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController
+
   // ----- Quoted Shares -----
 
   val QuotedSharesStartController =

@@ -329,6 +329,11 @@ POST       /transfer-details/assets/change-unquoted-shares-amend-continue       
 GET        /transfer-details/assets/final-change-unquoted-shares-amend-continue                   controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-unquoted-shares-amend-continue                   controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onSubmit(mode: Mode = FinalCheckMode)
 
+GET        /transfer-details/assets/more-unquoted-shares-declaration                              controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onPageLoad(mode: Mode = NormalMode)
+POST       /transfer-details/assets/more-unquoted-shares-declaration                              controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onSubmit(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-more-unquoted-shares-declaration                       controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onPageLoad(mode: Mode = CheckMode)
+POST       /transfer-details/assets/change-more-unquoted-shares-declaration                       controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onSubmit(mode: Mode = CheckMode)
+
 GET        /transfer-details/assets/unquoted-shares-confirm-removal                               controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/unquoted-shares-confirm-removal                               controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalController.onSubmit(index: Int)
 
