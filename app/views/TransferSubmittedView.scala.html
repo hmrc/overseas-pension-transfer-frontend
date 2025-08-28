@@ -19,6 +19,7 @@
 @import models.requests.DisplayRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+@import views.html.components.AppFooter
 
 @this(
         layout: templates.Layout,
@@ -28,7 +29,7 @@
 
 @(qtNumber: String, list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("transferSubmitted.title"))) {
+@layout(pageTitle = titleNoForm(messages("transferSubmitted.title")), showPageFooter = false) {
 
     <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">@messages("transferSubmitted.heading")</h1>
@@ -44,6 +45,6 @@
     </div>
 
     <div>
-        <a class="govuk-link" href="@controllers.routes.IndexController.onPageLoad()">@messages("transferSubmitted.pensionSchemeLink.text", "Harper Smith")</a>
+        <a class="govuk-link" href="@controllers.routes.IndexController.onPageLoad()">@messages("transferSubmitted.pensionSchemeLink.text")</a>
     </div>
 }
