@@ -19,48 +19,72 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import base.SpecBase
 import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.apache.pekko.Done
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesSummary
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAView
+
+import scala.concurrent.Future
 
 class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val quotedSharesCyaRoute =
     controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController.onPageLoad(0).url
 
+  private val mockUserAnswersService = mock[UserAnswersService]
+  private val mockSessionRepository  = mock[SessionRepository]
+
+  private def applicationWithMocks(userAnswers: Option[UserAnswers]) =
+    applicationBuilder(userAnswers = userAnswers)
+      .overrides(
+        bind[UserAnswersService].toInstance(mockUserAnswersService),
+        bind[SessionRepository].toInstance(mockSessionRepository)
+      )
+      .build()
+
   "QuotedSharesCYA Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithAssets(assetsCount = 5))).build()
+      val ua  = userAnswersWithAssets(assetsCount = 5)
+      val app = applicationWithMocks(Some(ua))
 
-      running(application) {
+      running(app) {
         val request = FakeRequest(GET, quotedSharesCyaRoute)
 
-        val result                  = route(application, request).value
-        val view                    = application.injector.instanceOf[QuotedSharesCYAView]
-        implicit val msgs: Messages = messages(application)
+        val result                  = route(app, request).value
+        val view                    = app.injector.instanceOf[QuotedSharesCYAView]
+        implicit val msgs: Messages = messages(app)
 
-        val list = QuotedSharesSummary.rows(CheckMode, userAnswersWithAssets(assetsCount = 5), 0)
+        val list = QuotedSharesSummary.rows(CheckMode, ua, 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(SummaryList(rows = list), 0)(fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)), msgs).toString
+          view(SummaryList(rows = list), 0)(fakeDisplayRequest(request, ua), msgs).toString
       }
     }
 
     "must redirect to MoreQuotedSharesDeclarationController when threshold (5 quoted shares) is reached" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithAssets(assetsCount = 5))).build()
+      val ua  = userAnswersWithAssets(assetsCount = 5)
+      val app = applicationWithMocks(Some(ua))
 
-      running(application) {
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      running(app) {
         val request = FakeRequest(POST, quotedSharesCyaRoute)
-
-        val result = route(application, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
@@ -71,12 +95,16 @@ class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Mocki
     }
 
     "must redirect to QuotedSharesAmendContinueController when QuotedShares count is below threshold" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithAssets(assetsCount = 4))).build()
+      val ua  = userAnswersWithAssets(assetsCount = 4)
+      val app = applicationWithMocks(Some(ua))
 
-      running(application) {
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      running(app) {
         val request = FakeRequest(POST, quotedSharesCyaRoute)
-
-        val result = route(application, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
@@ -85,12 +113,11 @@ class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Mocki
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
+      val app = applicationWithMocks(None)
 
-      running(application) {
+      running(app) {
         val request = FakeRequest(GET, quotedSharesCyaRoute)
-
-        val result = route(application, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
@@ -98,12 +125,11 @@ class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Mocki
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
+      val app = applicationWithMocks(None)
 
-      running(application) {
+      running(app) {
         val request = FakeRequest(POST, quotedSharesCyaRoute)
-
-        val result = route(application, request).value
+        val result  = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
