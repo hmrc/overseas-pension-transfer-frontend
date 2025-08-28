@@ -17,6 +17,7 @@
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.assets.{OtherAssetsMiniJourney, QuotedSharesMiniJourney, TypeOfAsset}
 import models.{CheckMode, NormalMode, UserAnswers}
@@ -31,18 +32,35 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
     val emptyAnswers = UserAnswers("id")
 
     "in Normal Mode" - {
-      "must go to the cya page if no more assets" in {
-        OtherAssetsAmendContinuePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+
+      "must go to the first page in mini journey if continue selected" in {
+        val userAnswers = emptyAnswers.set(OtherAssetsAmendContinuePage, true).success.value
+        val nextIndex   = 1
+        OtherAssetsAmendContinuePage.nextPageWith(
+          NormalMode,
+          userAnswers,
+          nextIndex
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(
+          NormalMode,
+          nextIndex
+        )
       }
 
-      "must go to the next asset page if more assets" in {
+      "must go to the cya page if no-continue selected and no more assets" in {
+        val userAnswers = emptyAnswers.set(OtherAssetsAmendContinuePage, false).success.value
+        val nextIndex   = 2
+        OtherAssetsAmendContinuePage.nextPageWith(NormalMode, userAnswers, nextIndex) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if no-continue selected and more assets" in {
         val selectedTypes: Set[TypeOfAsset] = Set(OtherAssetsMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
         val userAnswers                     = for {
           ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
           ua2 <- ua1.set(AssetCompletionFlag(TypeOfAsset.Other), true)
-        } yield ua2
+          ua3 <- ua2.set(OtherAssetsAmendContinuePage, false)
+        } yield ua3
 
-        val result = OtherAssetsAmendContinuePage.nextPage(NormalMode, userAnswers.success.value)
+        val result = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, 0)
         result mustBe QuotedSharesMiniJourney.call
       }
     }

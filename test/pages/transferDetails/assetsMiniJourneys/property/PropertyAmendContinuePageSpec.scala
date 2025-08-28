@@ -17,8 +17,8 @@
 package pages.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.assets.TypeOfAsset.Property
 import models.assets.{PropertyMiniJourney, QuotedSharesMiniJourney, TypeOfAsset}
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
@@ -32,18 +32,35 @@ class PropertyAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
     val emptyAnswers = UserAnswers("id")
 
     "in Normal Mode" - {
-      "must go to the cya page if no more assets" in {
-        PropertyAmendContinuePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+
+      "must go to the first page in mini journey if continue selected" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinuePage, true).success.value
+        val nextIndex   = 1
+        PropertyAmendContinuePage.nextPageWith(
+          NormalMode,
+          userAnswers,
+          nextIndex
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
+          NormalMode,
+          nextIndex
+        )
       }
 
-      "must go to the next asset page if more assets" in {
+      "must go to the cya page if no-continue selected and no more assets" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinuePage, false).success.value
+        val nextIndex   = 2
+        PropertyAmendContinuePage.nextPageWith(NormalMode, userAnswers, nextIndex) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if no-continue selected and more assets" in {
         val selectedTypes: Set[TypeOfAsset] = Set(PropertyMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
         val userAnswers                     = for {
           ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
-          ua2 <- ua1.set(AssetCompletionFlag(Property), true)
-        } yield ua2
+          ua2 <- ua1.set(AssetCompletionFlag(TypeOfAsset.Property), true)
+          ua3 <- ua2.set(PropertyAmendContinuePage, false)
+        } yield ua3
 
-        val result = PropertyAmendContinuePage.nextPage(NormalMode, userAnswers.success.value)
+        val result = PropertyAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, 0)
         result mustBe QuotedSharesMiniJourney.call
       }
     }
@@ -51,7 +68,6 @@ class PropertyAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
     "in Check Mode" - {
 
       "must go to Check Answers" in {
-
         PropertyAmendContinuePage.nextPage(
           CheckMode,
           emptyAnswers

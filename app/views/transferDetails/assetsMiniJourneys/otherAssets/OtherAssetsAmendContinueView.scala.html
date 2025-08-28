@@ -43,7 +43,7 @@
 
 @layout(pageTitle = title(form, messages("addAdditionalOtherAsset.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

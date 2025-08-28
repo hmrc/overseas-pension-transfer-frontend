@@ -17,9 +17,9 @@
 package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.assets.TypeOfAsset.{Cash, QuotedShares, UnquotedShares}
-import models.assets.{CashMiniJourney, QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
+import models.assets.{CashMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
@@ -32,18 +32,35 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
     val emptyAnswers = UserAnswers("id")
 
     "in Normal Mode" - {
-      "must go to the cya page if no more assets" in {
-        UnquotedSharesAmendContinuePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+
+      "must go to the first page in mini journey if continue selected" in {
+        val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinuePage, true).success.value
+        val nextIndex   = 1
+        UnquotedSharesAmendContinuePage.nextPageWith(
+          NormalMode,
+          userAnswers,
+          nextIndex
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
+          NormalMode,
+          nextIndex
+        )
       }
 
-      "must go to the next asset page if more assets" in {
+      "must go to the cya page if no-continue selected and no more assets" in {
+        val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinuePage, false).success.value
+        val nextIndex   = 2
+        UnquotedSharesAmendContinuePage.nextPageWith(NormalMode, userAnswers, nextIndex) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if no-continue selected and more assets" in {
         val selectedTypes: Set[TypeOfAsset] = Set(UnquotedSharesMiniJourney.assetType, CashMiniJourney.assetType)
         val userAnswers                     = for {
           ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
-          ua2 <- ua1.set(AssetCompletionFlag(UnquotedShares), true)
-        } yield ua2
+          ua2 <- ua1.set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true)
+          ua3 <- ua2.set(UnquotedSharesAmendContinuePage, false)
+        } yield ua3
 
-        val result = UnquotedSharesAmendContinuePage.nextPage(NormalMode, userAnswers.success.value)
+        val result = UnquotedSharesAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, 0)
         result mustBe CashMiniJourney.call
       }
     }
@@ -51,7 +68,6 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
     "in Check Mode" - {
 
       "must go to Check Answers" in {
-
         UnquotedSharesAmendContinuePage.nextPage(
           CheckMode,
           emptyAnswers

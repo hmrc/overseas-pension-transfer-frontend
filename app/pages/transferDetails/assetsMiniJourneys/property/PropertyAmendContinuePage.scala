@@ -16,25 +16,31 @@
 
 package pages.transferDetails.assetsMiniJourneys.property
 
-import controllers.routes
-import models.UserAnswers
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import controllers.transferDetails.routes
+import models.{NormalMode, UserAnswers}
 import navigators.TypeOfAssetNavigator
-import pages.QuestionPage
+import pages.{NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PropertyAmendContinuePage extends QuestionPage[Boolean] {
+case object PropertyAmendContinuePage extends QuestionPage[Boolean] with NextPageWith[Int] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "propertyAmendContinue"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(answers) match {
-      case Some(route) => route
-      case None        => controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+  override protected def nextPageWith(answers: UserAnswers, nextIndex: Int): Call = {
+    answers.get(PropertyAmendContinuePage) match {
+      case Some(true)  => AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, nextIndex)
+      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(answers) match {
+          case Some(route) => route
+          case None        => routes.TransferDetailsCYAController.onPageLoad()
+        }
+      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
+  }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+    routes.TransferDetailsCYAController.onPageLoad()
 }
