@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{AddressService, CountryService, MemberDetailsService, UserAnswersService}
+import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.MembersCurrentAddressView
@@ -42,7 +42,6 @@ class MembersCurrentAddressController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: MembersCurrentAddressFormProvider,
-    memberDetailsService: MemberDetailsService,
     userAnswersService: UserAnswersService,
     countryService: CountryService,
     addressService: AddressService,

@@ -18,16 +18,13 @@ package controllers.memberDetails
 
 import controllers.actions._
 import forms.memberDetails.MemberIsResidentUKFormProvider
-import models.TaskCategory.MemberDetails
-import models.taskList.TaskStatus.InProgress
-import models.{CheckMode, Mode}
+import models.Mode
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.TaskStatusQuery
 import repositories.SessionRepository
-import services.{MemberDetailsService, TaskService, UserAnswersService}
+import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberIsResidentUKView
 
@@ -41,8 +38,6 @@ class MemberIsResidentUKController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    memberDetailsService: MemberDetailsService,
-    taskService: TaskService,
     formProvider: MemberIsResidentUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberIsResidentUKView,
@@ -68,18 +63,14 @@ class MemberIsResidentUKController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          val previousValue = request.userAnswers.get(MemberIsResidentUKPage)
-
           for {
             baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
-            ua1           <- Future.fromTry(memberDetailsService.updateMemberIsResidentUKAnswers(baseAnswers, previousValue, value))
-            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1, MemberDetails))
-            _             <- sessionRepository.set(ua2)
-            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
-            redirectMode   = memberDetailsService.getMemberIsResidentUKRedirectMode(mode, previousValue, value)
+            ua1           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers))
+            _             <- sessionRepository.set(ua1)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(MemberIsResidentUKPage.nextPage(redirectMode, ua2))
+              case Right(Done) => Redirect(MemberIsResidentUKPage.nextPage(mode, ua1))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }

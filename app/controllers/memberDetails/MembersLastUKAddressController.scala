@@ -77,7 +77,6 @@ class MembersLastUKAddressController @Inject() (
               case Right(Done) => Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
-
           }
       )
   }
