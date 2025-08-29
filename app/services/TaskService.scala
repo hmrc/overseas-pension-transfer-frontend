@@ -71,10 +71,10 @@ class TaskService @Inject() {
     }
   }
 
-  def setInProgressInCheckMode(mode: Mode, userAnswers: UserAnswers): Try[UserAnswers] =
+  def setInProgressInCheckMode(mode: Mode, userAnswers: UserAnswers, taskCategory: TaskCategory): Try[UserAnswers] =
     mode match {
       case CheckMode =>
-        userAnswers.set(TaskStatusQuery(MemberDetails), InProgress)
+        userAnswers.set(TaskStatusQuery(taskCategory), InProgress)
       case _         =>
         Success(userAnswers)
     }

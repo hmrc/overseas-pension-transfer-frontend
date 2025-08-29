@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
-import models.{TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import queries.TaskStatusQuery
@@ -111,6 +111,36 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
       ua.get(TaskStatusQuery(TaskCategory.QROPSDetails)) mustBe Some(Completed)
       ua.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)) mustBe Some(InProgress)
       ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)) mustBe Some(CannotStart)
+    }
+  }
+
+  "setInProgressInCheckMode" - {
+
+    "must set the provided task to InProgress in CheckMode" in {
+      val category = TaskCategory.TransferDetails
+
+      val userAnswers: UserAnswers = emptyUserAnswers
+      val result                   = service.setInProgressInCheckMode(CheckMode, userAnswers, category)
+
+      result.isSuccess mustBe true
+      val ua = result.get
+
+      ua.get(TaskStatusQuery(category)) mustBe Some(InProgress)
+    }
+
+    "must not modify the user answers in NormalMode" in {
+      val category = TaskCategory.TransferDetails
+
+      val userAnswers: UserAnswers =
+        emptyUserAnswers
+          .set(TaskStatusQuery(category), NotStarted).success.value
+
+      val result = service.setInProgressInCheckMode(NormalMode, userAnswers, category)
+
+      result.isSuccess mustBe true
+      val ua = result.get
+
+      ua.get(TaskStatusQuery(category)) mustBe Some(NotStarted)
     }
   }
 }
