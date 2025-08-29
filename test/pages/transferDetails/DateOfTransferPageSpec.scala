@@ -30,8 +30,7 @@ class DateOfTransferPageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        // TODO will need to be changed once pages are connected
-        DateOfTransferPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        DateOfTransferPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IsTransferCashOnlyController.onPageLoad(NormalMode)
       }
     }
 

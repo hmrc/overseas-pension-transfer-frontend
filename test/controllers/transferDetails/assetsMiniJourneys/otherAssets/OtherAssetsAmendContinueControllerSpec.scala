@@ -19,68 +19,177 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueFormProvider
-import models.NormalMode
+import models.assets.{OtherAssetsEntry, OtherAssetsMiniJourney}
+import models.{CheckMode, NormalMode, UserAnswers}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinuePage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
+import services.TransferDetailsService
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
+
+import scala.concurrent.Future
 
 class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new OtherAssetsAmendContinueFormProvider()
   private val form         = formProvider()
 
-  private lazy val otherAssetsAmendContinueRoute = AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
+  private lazy val otherAssetsAmendContinueRouteNormal =
+    AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
+
+  private lazy val otherAssetsAmendContinueRouteCheck =
+    AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(CheckMode).url
+
+  private def uaWithOtherAssets(n: Int): UserAnswers = {
+    val entry = OtherAssetsEntry(
+      assetDescription = "Antique vase",
+      assetValue       = BigDecimal(2500)
+    )
+    val list  = List.fill(n)(entry)
+    emptyUserAnswers.set(OtherAssetsMiniJourney.query, list).success.value
+  }
 
   "OtherAssetsAmendContinue Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
+    "must return OK and the correct view for a GET in NormalMode" in {
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
-        val request = FakeRequest(GET, otherAssetsAmendContinueRoute)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[OtherAssetsAmendContinueView]
+        val request = FakeRequest(GET, otherAssetsAmendContinueRouteNormal)
+        val result  = route(application, request).value
+        val view    = application.injector.instanceOf[OtherAssetsAmendContinueView]
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must return OK and the form filled for a GET in NormalMode when answer exists" in {
+      val ua          = userAnswersQtNumber.set(OtherAssetsAmendContinuePage, true).success.value
+      val application = applicationBuilder(userAnswers = Some(ua)).build()
+
+      running(application) {
+        val request = FakeRequest(GET, otherAssetsAmendContinueRouteNormal)
+        val result  = route(application, request).value
+        val view    = application.injector.instanceOf[OtherAssetsAmendContinueView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request, ua), messages(application)).toString
+      }
+    }
+
+    "must return OK for a GET in CheckMode and save completion" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      val userAnswers = uaWithOtherAssets(1)
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, otherAssetsAmendContinueRouteCheck)
+        val result  = route(application, request).value
+        status(result) mustEqual OK
+      }
+    }
+
+    "must redirect to the page's nextPageWith when valid data 'Yes' is submitted in NormalMode" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      val userAnswers = uaWithOtherAssets(2)
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
         val request =
-          FakeRequest(POST, otherAssetsAmendContinueRoute)
+          FakeRequest(POST, otherAssetsAmendContinueRouteNormal)
             .withFormUrlEncodedBody(("add-another", "Yes"))
 
         val result = route(application, request).value
 
+        val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, true).success.value
+        val nextIndex = TransferDetailsService.assetCount(OtherAssetsMiniJourney, ua2)
+        val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
+
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, 0).url
+        redirectLocation(result).value mustEqual expected
+      }
+    }
+
+    "must redirect to the page's nextPageWith when valid data 'No' is submitted in NormalMode" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      val userAnswers = uaWithOtherAssets(0)
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, otherAssetsAmendContinueRouteNormal)
+            .withFormUrlEncodedBody(("add-another", "No"))
+
+        val result = route(application, request).value
+
+        val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, false).success.value
+        val nextIndex = TransferDetailsService.assetCount(OtherAssetsMiniJourney, ua2)
+        val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual expected
+      }
+    }
+
+    "must redirect to CYA when valid data is submitted in CheckMode" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      val userAnswers = uaWithOtherAssets(3)
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onSubmit(CheckMode).url)
+            .withFormUrlEncodedBody(("add-another", "Yes"))
+
+        val result = route(application, request).value
+
+        val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, true).success.value
+        val nextIndex = TransferDetailsService.assetCount(OtherAssetsMiniJourney, ua2)
+        val expected  = OtherAssetsAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual expected
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
       val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, otherAssetsAmendContinueRoute)
+          FakeRequest(POST, otherAssetsAmendContinueRouteNormal)
             .withFormUrlEncodedBody(("value", ""))
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[OtherAssetsAmendContinueView]
-
+        val view   = application.injector.instanceOf[OtherAssetsAmendContinueView]
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
@@ -89,13 +198,11 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
-        val request = FakeRequest(GET, otherAssetsAmendContinueRoute)
-
-        val result = route(application, request).value
+        val request = FakeRequest(GET, otherAssetsAmendContinueRouteNormal)
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
@@ -103,12 +210,11 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       running(application) {
         val request =
-          FakeRequest(POST, otherAssetsAmendContinueRoute)
+          FakeRequest(POST, otherAssetsAmendContinueRouteNormal)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

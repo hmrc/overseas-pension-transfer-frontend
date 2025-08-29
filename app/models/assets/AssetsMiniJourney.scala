@@ -22,17 +22,25 @@ import play.api.libs.json.OFormat
 import play.api.mvc.Call
 import queries.assets._
 
-sealed trait AssetsMiniJourney[A <: AssetEntry] {
+sealed trait AssetsMiniJourneyBase {
   def assetType: TypeOfAsset
-  def query: AssetsQuery[List[A]]
-  def format: OFormat[A]
   def startPage: () => Call
   def isCompleted(answers: UserAnswers): Boolean
 
-  def call: Call = startPage()
+  final def call: Call = startPage()
 }
 
-object CashMiniJourney extends AssetsMiniJourney[CashEntry] {
+trait RepeatingAssetsMiniJourney[A <: AssetEntry] extends AssetsMiniJourneyBase {
+  def query: AssetsQuery[List[A]]
+  def format: OFormat[A]
+}
+
+trait SingleAssetsMiniJourney[A <: AssetEntry] extends AssetsMiniJourneyBase {
+  def query: AssetsQuery[A]
+  def format: OFormat[A]
+}
+
+object CashMiniJourney extends SingleAssetsMiniJourney[CashEntry] {
   val assetType = TypeOfAsset.Cash
   val query     = CashQuery
   val format    = CashEntry.format
@@ -42,7 +50,7 @@ object CashMiniJourney extends AssetsMiniJourney[CashEntry] {
     ua.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
-object QuotedSharesMiniJourney extends AssetsMiniJourney[QuotedSharesEntry] {
+object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEntry] {
   val assetType = TypeOfAsset.QuotedShares
   val query     = QuotedSharesQuery
   val format    = QuotedSharesEntry.format
@@ -52,7 +60,7 @@ object QuotedSharesMiniJourney extends AssetsMiniJourney[QuotedSharesEntry] {
     ua.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
-object UnquotedSharesMiniJourney extends AssetsMiniJourney[UnquotedSharesEntry] {
+object UnquotedSharesMiniJourney extends RepeatingAssetsMiniJourney[UnquotedSharesEntry] {
   val assetType = TypeOfAsset.UnquotedShares
   val query     = UnquotedSharesQuery
   val format    = UnquotedSharesEntry.format
@@ -62,7 +70,7 @@ object UnquotedSharesMiniJourney extends AssetsMiniJourney[UnquotedSharesEntry] 
     ua.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
-object PropertyMiniJourney extends AssetsMiniJourney[PropertyEntry] {
+object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] {
   val assetType = TypeOfAsset.Property
   val query     = PropertyQuery
   val format    = PropertyEntry.format
@@ -72,7 +80,7 @@ object PropertyMiniJourney extends AssetsMiniJourney[PropertyEntry] {
     ua.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
-object OtherAssetsMiniJourney extends AssetsMiniJourney[OtherAssetsEntry] {
+object OtherAssetsMiniJourney extends RepeatingAssetsMiniJourney[OtherAssetsEntry] {
   val assetType = TypeOfAsset.Other
   val query     = OtherAssetsQuery
   val format    = OtherAssetsEntry.format

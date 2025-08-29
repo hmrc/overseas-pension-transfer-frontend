@@ -21,14 +21,12 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueFormProvider
 import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import navigators.TypeOfAssetNavigator
-import play.api.Logging
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinuePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.TransferDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueView
 
@@ -43,29 +41,32 @@ class UnquotedSharesAmendContinueController @Inject() (
     displayData: DisplayAction,
     sessionRepository: SessionRepository,
     formProvider: UnquotedSharesAmendContinueFormProvider,
-    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: UnquotedSharesMiniJourney.type,
     view: UnquotedSharesAmendContinueView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
+  ) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
-      def renderView(answers: UserAnswers): Result = {
-        val shares = UnquotedSharesAmendContinueSummary.rows(answers)
-        Ok(view(form, shares, mode))
+      val preparedForm = request.userAnswers.get(UnquotedSharesAmendContinuePage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
       }
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = false))
+            updatedAnswers <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield renderView(updatedAnswers)
+          } yield {
+            val shares = UnquotedSharesAmendContinueSummary.rows(updatedAnswers)
+            Ok(view(preparedForm, shares, mode))
+          }
         case NormalMode =>
-          Future.successful(renderView(request.userAnswers))
+          val shares = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
+          Future.successful(Ok(view(preparedForm, shares, mode)))
       }
     }
 
@@ -77,17 +78,13 @@ class UnquotedSharesAmendContinueController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, shares, mode)))
         },
         continue => {
-          if (continue) {
-            val nextIndex = transferDetailsService.assetCount(miniJourney, request.userAnswers)
-            Future.successful(Redirect(AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)))
-          } else {
-            for {
-              updatedAnswers <- Future.fromTry(transferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true))
-              _              <- sessionRepository.set(updatedAnswers)
-            } yield TypeOfAssetNavigator.getNextAssetRoute(updatedAnswers) match {
-              case Some(route) => Redirect(route)
-              case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
-            }
+          for {
+            ua1 <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true))
+            ua2 <- Future.fromTry(ua1.set(UnquotedSharesAmendContinuePage, continue))
+            _   <- sessionRepository.set(ua2)
+          } yield {
+            val nextIndex = TransferDetailsService.assetCount(miniJourney, request.userAnswers)
+            Redirect(UnquotedSharesAmendContinuePage.nextPageWith(mode, ua2, nextIndex))
           }
         }
       )

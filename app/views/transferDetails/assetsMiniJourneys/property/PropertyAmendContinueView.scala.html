@@ -44,7 +44,7 @@
 
 @layout(pageTitle = title(form, messages("propertyAmendContinue.title"))) {
 
-    @formHelper(action = AssetsMiniJourneysRoutes.PropertyAmendContinueController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AssetsMiniJourneysRoutes.PropertyAmendContinueController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

@@ -17,25 +17,33 @@
 package services
 
 import models.UserAnswers
-import models.assets.{AssetEntry, AssetsMiniJourney, AssetsMiniJourneyRegistry, TypeOfAsset}
+import models.assets.TypeOfAsset.Cash
+import models.assets._
 import play.api.libs.json._
-import play.api.mvc.Call
 import queries.assets._
 
-import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 
-class TransferDetailsService {
+object TransferDetailsService {
 
-  private def assetEntries[A <: AssetEntry: Reads](journey: AssetsMiniJourney[A], userAnswers: UserAnswers): List[A] =
+  // ----- Repeating-only helpers -----
+
+  private def assetEntries[A <: AssetEntry: Reads](
+      journey: RepeatingAssetsMiniJourney[A],
+      userAnswers: UserAnswers
+    ): List[A] =
     userAnswers.get(journey.query).getOrElse(Nil)
 
-  def assetCount[A <: AssetEntry: Reads](journey: AssetsMiniJourney[A], userAnswers: UserAnswers): Int = {
+  def assetCount[A <: AssetEntry: Reads](journey: RepeatingAssetsMiniJourney[A], userAnswers: UserAnswers): Int = {
     assetEntries(journey, userAnswers).size
   }
 
+  def getAssetEntryAtIndex[A <: AssetEntry: Reads](journey: RepeatingAssetsMiniJourney[A], userAnswers: UserAnswers, index: Int): Option[A] = {
+    assetEntries(journey, userAnswers).lift(index)
+  }
+
   def removeAssetEntry[A <: AssetEntry: Format](
-      journey: AssetsMiniJourney[A],
+      journey: RepeatingAssetsMiniJourney[A],
       userAnswers: UserAnswers,
       index: Int
     ): Try[UserAnswers] = {
@@ -54,23 +62,60 @@ class TransferDetailsService {
     }
   }
 
-  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean)(implicit ec: ExecutionContext): Try[UserAnswers] =
+  def removeAllAssetEntriesExceptCash(userAnswers: UserAnswers): Try[UserAnswers] = {
+    val journeysWithoutCash = AssetsMiniJourneyRegistry.all.filterNot(_.assetType == Cash)
+
+    val clearedData =
+      journeysWithoutCash.foldLeft(Try(userAnswers)) {
+        case (acc, assetMiniJ) =>
+          acc.flatMap { ua =>
+            AssetsMiniJourneyRegistry.forType(assetMiniJ.assetType) match {
+              case Some(r: RepeatingAssetsMiniJourney[_]) => ua.remove(r.query)
+              case Some(s: SingleAssetsMiniJourney[_])    => ua.remove(s.query)
+              case _                                      => Success(ua)
+            }
+          }
+      }
+
+    for {
+      ua1 <- clearedData
+      ua2 <- ua1.set(SelectedAssetTypes, Seq[TypeOfAsset](Cash))
+      ua3 <- clearAllAssetCompletionFlags(ua2)
+    } yield ua3
+  }
+
+  // ----- Single-asset helpers (Cash) -----
+
+  def getSingle[A <: AssetEntry: Reads](
+      journey: SingleAssetsMiniJourney[A],
+      userAnswers: UserAnswers
+    ): Option[A] =
+    userAnswers.get(journey.query)
+
+  def setSingle[A <: AssetEntry: Writes](
+      journey: SingleAssetsMiniJourney[A],
+      userAnswers: UserAnswers,
+      value: A
+    ): Try[UserAnswers] =
+    userAnswers.set(journey.query, value)
+
+  def removeSingle[A <: AssetEntry](
+      journey: SingleAssetsMiniJourney[A],
+      userAnswers: UserAnswers
+    ): Try[UserAnswers] =
+    userAnswers.remove(journey.query)
+
+  // ----- Shared helpers -----
+
+  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean): Try[UserAnswers] =
     userAnswers.set(AssetCompletionFlag(assetType), completed)
 
-  def setSelectedAssetsCompleted(removePrevSetAssetFlagsUA: UserAnswers, selectedAssets: Set[TypeOfAsset])(implicit ex: ExecutionContext): Try[UserAnswers] =
-    selectedAssets.foldLeft(Try(removePrevSetAssetFlagsUA)) {
+  def setSelectedAssetsIncomplete(ua: UserAnswers, selectedAssets: Seq[TypeOfAsset]): Try[UserAnswers] =
+    selectedAssets.foldLeft(Try(ua)) {
       case (Success(ua), assetType) =>
         setAssetCompleted(ua, assetType, completed = false)
     }
 
   def clearAllAssetCompletionFlags(userAnswers: UserAnswers): Try[UserAnswers] =
     userAnswers.remove(AssetCompletionFlags)
-
-  def getNextAssetRoute(userAnswers: UserAnswers): Option[Call] = {
-    AssetsMiniJourneyRegistry.firstIncompleteJourney(userAnswers).map(_.call)
-  }
-
-  def getAssetEntryAtIndex[A <: AssetEntry: Reads](journey: AssetsMiniJourney[A], userAnswers: UserAnswers, index: Int): Option[A] = {
-    assetEntries(journey, userAnswers).lift(index)
-  }
 }

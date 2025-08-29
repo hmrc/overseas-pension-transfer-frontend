@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.cash
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.CashAmountInTransferFormProvider
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.CashAmountInTransferPage
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -39,7 +40,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val cashAmountInTransferRoute = routes.CashAmountInTransferController.onPageLoad(NormalMode).url
+  lazy val cashAmountInTransferRoute = AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(NormalMode).url
 
   "CashAmountInTransfer Controller" - {
 

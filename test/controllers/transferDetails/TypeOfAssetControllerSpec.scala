@@ -63,7 +63,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val values: Set[TypeOfAsset] = TypeOfAsset.values.toSet
+      val values: Seq[TypeOfAsset] = TypeOfAsset.values
 
       val userAnswers = userAnswersQtNumber.set(TypeOfAssetPage, values).success.value
 

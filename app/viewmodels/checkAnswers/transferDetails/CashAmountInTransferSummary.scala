@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
-import pages.transferDetails.CashAmountInTransferPage
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.{Mode, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.CurrencyFormats.currencyFormat
@@ -34,7 +34,7 @@ object CashAmountInTransferSummary {
           key     = "cashAmountInTransfer.checkYourAnswersLabel",
           value   = ValueViewModel(currencyFormat(answer)),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.CashAmountInTransferController.onPageLoad(mode).url)
+            ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("cashAmountInTransfer.change.hidden"))
           )
         )

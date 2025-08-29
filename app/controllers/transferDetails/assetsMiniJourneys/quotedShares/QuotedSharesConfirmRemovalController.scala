@@ -40,7 +40,6 @@ class QuotedSharesConfirmRemovalController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: QuotedSharesConfirmRemovalFormProvider,
-    transferDetailsService: TransferDetailsService,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: QuotedSharesMiniJourney.type,
@@ -63,7 +62,7 @@ class QuotedSharesConfirmRemovalController @Inject() (
           Future.successful(Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
         } else {
           (for {
-            updatedAnswers     <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            updatedAnswers     <- Future.fromTry(TransferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _                  <- sessionRepository.set(updatedAnswers)
             minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, QuotedSharesQuery))
             _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)

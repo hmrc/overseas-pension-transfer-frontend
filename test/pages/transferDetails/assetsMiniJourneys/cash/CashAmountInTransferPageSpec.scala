@@ -14,23 +14,37 @@
  * limitations under the License.
  */
 
-package pages.transferDetails
+package pages.transferDetails.assetsMiniJourneys.cash
 
+import base.SpecBase
 import controllers.transferDetails.routes
+import models.assets.TypeOfAsset.Cash
+import models.assets.{CashMiniJourney, QuotedSharesMiniJourney, TypeOfAsset}
 import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import pages.transferDetails.TypeOfAssetPage
+import queries.assets.AssetCompletionFlag
 
-class CashAmountInTransferPageSpec extends AnyFreeSpec with Matchers {
+class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
 
   ".nextPage" - {
 
     val emptyAnswers = UserAnswers("id")
 
     "in Normal Mode" - {
-
-      "must go to the Next page" in {
+      "must go to the cya page if no more assets" in {
         CashAmountInTransferPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if more assets" in {
+        val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
+        val userAnswers                     = for {
+          ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
+          ua2 <- ua1.set(AssetCompletionFlag(Cash), true)
+        } yield ua2
+
+        val result = CashAmountInTransferPage.nextPage(NormalMode, userAnswers.success.value)
+        result mustBe QuotedSharesMiniJourney.call
       }
     }
 

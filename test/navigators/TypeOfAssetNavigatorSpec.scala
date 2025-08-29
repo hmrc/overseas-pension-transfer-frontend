@@ -17,7 +17,9 @@
 package navigators
 
 import base.SpecBase
-import models.UserAnswers
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.{NormalMode, UserAnswers}
+import models.assets.TypeOfAsset._
 import models.assets.{QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -28,8 +30,16 @@ import queries.assets.AssetCompletionFlag
 class TypeOfAssetNavigatorSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   "getNextAssetRoute" - {
+    "must return the first uncompleted journey in order when all assets selected" in {
+      val selectedTypes: Seq[TypeOfAsset] = Seq(Cash, UnquotedShares, QuotedShares, Property, TypeOfAsset.Other)
+      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
+
+      val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers).map(_.toString)
+      result mustBe Some(AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(NormalMode).url)
+    }
+
     "must return the first uncompleted journey in order" in {
-      val selectedTypes: Set[TypeOfAsset] = Set(UnquotedSharesMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
+      val selectedTypes: Seq[TypeOfAsset] = Seq(UnquotedSharesMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
       val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
 
       val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers).map(_.toString)
@@ -37,7 +47,7 @@ class TypeOfAssetNavigatorSpec extends AnyFreeSpec with SpecBase with MockitoSug
     }
 
     "must skip journeys not in the selected assets" in {
-      val selectedTypes: Set[TypeOfAsset] = Set(QuotedSharesMiniJourney.assetType)
+      val selectedTypes: Seq[TypeOfAsset] = Seq(QuotedSharesMiniJourney.assetType)
       val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
 
       val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers).map(_.toString)
@@ -46,7 +56,7 @@ class TypeOfAssetNavigatorSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
     "must return None if all selected journeys are completed" in {
       val userAnswers = emptyUserAnswers
-        .set[Set[TypeOfAsset]](TypeOfAssetPage, Set(UnquotedSharesMiniJourney.assetType)).success.value
+        .set[Seq[TypeOfAsset]](TypeOfAssetPage, Seq(UnquotedSharesMiniJourney.assetType)).success.value
         .set(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType), true).success.value
 
       val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers)

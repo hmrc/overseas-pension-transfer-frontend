@@ -18,6 +18,7 @@ package pages.transferDetails
 
 import controllers.transferDetails.routes
 import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -29,9 +30,14 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to the Next page" in {
-        // TODO will need to be changed once pages are connected
-        IsTransferTaxablePage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+      "must go to why transfer is taxable page if user selects true" in {
+        val ua = emptyAnswers.set(IsTransferTaxablePage, true).success.value
+        IsTransferTaxablePage.nextPage(NormalMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(NormalMode)
+      }
+
+      "must go to why transfer is not taxable page if user selects false" in {
+        val ua = emptyAnswers.set(IsTransferTaxablePage, false).success.value
+        IsTransferTaxablePage.nextPage(NormalMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(NormalMode)
       }
     }
 

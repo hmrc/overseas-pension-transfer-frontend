@@ -19,20 +19,21 @@ package forms.transferDetails
 import forms.mappings.Mappings
 import models.assets.TypeOfAsset
 import play.api.data.Form
-import play.api.data.Forms.set
+import play.api.data._
+import play.api.data.Forms._
 
 import javax.inject.Inject
 
 class TypeOfAssetFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Set[TypeOfAsset]] =
+  def apply(): Form[Seq[TypeOfAsset]] =
     Form(
-      "value" -> set(enumerable[TypeOfAsset]("typeOfAsset.error.required"))
-        .verifying(nonEmptySet("typeOfAsset.error.required"))
+      "value" -> seq(enumerable[TypeOfAsset]("typeOfAsset.error.required"))
+        .verifying("typeOfAsset.error.required", _.nonEmpty)
         .verifying("typeOfAsset.error.cashOnly", selection => !isOnlyCashSelected(selection))
     )
 
-  private def isOnlyCashSelected(selection: Set[TypeOfAsset]): Boolean = {
+  private def isOnlyCashSelected(selection: Seq[TypeOfAsset]): Boolean = {
     selection.size == 1 && selection.head == TypeOfAsset.Cash
   }
 }

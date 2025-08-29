@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.transferDetails
+package controllers.transferDetails.assetsMiniJourneys.cash
 
 import controllers.actions._
 import forms.transferDetails.CashAmountInTransferFormProvider
 import models.Mode
 import models.assets.TypeOfAsset
-import navigators.TypeOfAssetNavigator
-import pages.transferDetails.CashAmountInTransferPage
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -39,7 +38,6 @@ class CashAmountInTransferController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    transferDetailsService: TransferDetailsService,
     formProvider: CashAmountInTransferFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: CashAmountInTransferView,
@@ -68,14 +66,11 @@ class CashAmountInTransferController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
             ua1            <- Future.fromTry(
-                                transferDetailsService.setAssetCompleted(updatedAnswers, TypeOfAsset.Cash, completed = true)
+                                TransferDetailsService.setAssetCompleted(updatedAnswers, TypeOfAsset.Cash, completed = true)
                               )
             _              <- sessionRepository.set(ua1)
             _              <- userAnswersService.setExternalUserAnswers(ua1)
-          } yield TypeOfAssetNavigator.getNextAssetRoute(ua1) match {
-            case Some(route) => Redirect(route)
-            case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
-          }
+          } yield Redirect(CashAmountInTransferPage.nextPage(mode, ua1))
       )
   }
 }

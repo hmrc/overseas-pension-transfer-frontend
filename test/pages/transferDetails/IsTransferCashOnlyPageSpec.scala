@@ -18,6 +18,7 @@ package pages.transferDetails
 
 import controllers.transferDetails.routes
 import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -29,9 +30,14 @@ class IsTransferCashOnlyPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
-        // TODO will need to be changed once pages are connected
-        IsTransferCashOnlyPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+      "must go to cya page if true is selected" in {
+        val ua = emptyAnswers.set(IsTransferCashOnlyPage, true).success.value
+        IsTransferCashOnlyPage.nextPage(NormalMode, ua) mustBe routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to type of asset page if false is selected" in {
+        val ua = emptyAnswers.set(IsTransferCashOnlyPage, false).success.value
+        IsTransferCashOnlyPage.nextPage(NormalMode, ua) mustEqual routes.TypeOfAssetController.onPageLoad(NormalMode)
       }
     }
 

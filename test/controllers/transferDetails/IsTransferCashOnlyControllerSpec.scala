@@ -80,6 +80,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
+      val ua                     = emptyUserAnswers.set(IsTransferCashOnlyPage, true).success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -87,7 +88,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
         .thenReturn(Future.successful(Right(Done)))
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+        applicationBuilder(userAnswers = Some(ua))
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -102,7 +103,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual IsTransferCashOnlyPage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual IsTransferCashOnlyPage.nextPage(NormalMode, ua).url
       }
     }
 

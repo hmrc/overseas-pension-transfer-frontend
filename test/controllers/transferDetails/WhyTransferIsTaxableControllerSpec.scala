@@ -19,6 +19,7 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.WhyTransferIsTaxableFormProvider
+import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
 import models.responses.UserAnswersErrorResponse
 import models.{NormalMode, WhyTransferIsTaxable}
 import org.apache.pekko.Done
@@ -85,13 +86,14 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
+      val ua                     = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(Some(ua))
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -106,7 +108,7 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual WhyTransferIsTaxablePage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual WhyTransferIsTaxablePage.nextPage(NormalMode, ua).url
       }
     }
 

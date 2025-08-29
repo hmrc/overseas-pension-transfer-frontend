@@ -30,8 +30,7 @@ class AmountOfTaxDeductedPageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        // TODO change when pages are connected
-        AmountOfTaxDeductedPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        AmountOfTaxDeductedPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.NetTransferAmountController.onPageLoad(NormalMode)
       }
     }
 
