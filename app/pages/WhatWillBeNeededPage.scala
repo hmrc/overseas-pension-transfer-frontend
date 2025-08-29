@@ -16,15 +16,14 @@
 
 package pages
 
-import controllers.memberDetails.routes
+import controllers.routes
 import models.{NormalMode, UserAnswers}
 import play.api.mvc.Call
 
 object WhatWillBeNeededPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    // TODO this will change to TaskListController once implemented
-    routes.MemberNameController.onPageLoad(mode = NormalMode)
+    routes.TaskListController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     controllers.routes.JourneyRecoveryController.onPageLoad()

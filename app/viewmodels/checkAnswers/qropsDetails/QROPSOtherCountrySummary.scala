@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.qropsDetails
 
-import controllers.routes
-import models.UserAnswers
-import pages.PspDeclarationPage
+import controllers.qropsDetails.routes
+import models.{Mode, UserAnswers}
+import pages.qropsDetails.QROPSOtherCountryPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
-object PspDeclarationSummary {
+object QROPSOtherCountrySummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PspDeclarationPage).map {
+  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(QROPSOtherCountryPage).map {
       answer =>
         SummaryListRowViewModel(
-          key     = "pspDeclaration.checkYourAnswersLabel",
+          key     = "qropsOtherCountry.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.PspDeclarationController.onPageLoad().url)
-              .withVisuallyHiddenText(messages("pspDeclaration.change.hidden"))
+            ActionItemViewModel("site.change", routes.QROPSOtherCountryController.onPageLoad(mode).url)
+              .withVisuallyHiddenText(messages("qropsOtherCountry.change.hidden"))
           )
         )
     }

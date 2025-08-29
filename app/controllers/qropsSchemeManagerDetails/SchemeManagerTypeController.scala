@@ -19,8 +19,8 @@ package controllers.qropsSchemeManagerDetails
 import controllers.actions._
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.Mode
+import models.TaskCategory.SchemeManagerDetails
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,6 +40,7 @@ class SchemeManagerTypeController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     schemeManagerService: SchemeManagerService,
+    markInProgress: MarkInProgressOnEntryAction,
     formProvider: SchemeManagerTypeFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: SchemeManagerTypeView,
@@ -49,15 +50,16 @@ class SchemeManagerTypeController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(SchemeManagerTypePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (identify andThen getData andThen requireData andThen markInProgress.forCategoryAndMode(SchemeManagerDetails, mode) andThen displayData) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(SchemeManagerTypePage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, mode))
-  }
+        Ok(view(preparedForm, mode))
+    }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
     implicit request =>

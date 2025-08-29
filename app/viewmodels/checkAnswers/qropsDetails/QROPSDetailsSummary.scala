@@ -23,16 +23,18 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 case object QROPSDetailsSummary {
 
   def rows(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val nameRow: Option[SummaryListRow]      = QROPSNameSummary.row(mode, userAnswers)
-    val referenceRow: Option[SummaryListRow] = QROPSReferenceSummary.row(mode, userAnswers)
-    val addressRow: Option[SummaryListRow]   = QROPSAddressSummary.row(mode, userAnswers)
-    val countryRow: Option[SummaryListRow]   = QROPSCountrySummary.row(mode, userAnswers)
+    val nameRow: Option[SummaryListRow]         = QROPSNameSummary.row(mode, userAnswers)
+    val referenceRow: Option[SummaryListRow]    = QROPSReferenceSummary.row(mode, userAnswers)
+    val addressRow: Option[SummaryListRow]      = QROPSAddressSummary.row(mode, userAnswers)
+    val countryRow: Option[SummaryListRow]      = QROPSCountrySummary.row(mode, userAnswers)
+    val otherCountryRow: Option[SummaryListRow] = QROPSOtherCountrySummary.row(mode, userAnswers)
 
     Seq(
       nameRow,
       referenceRow,
       addressRow,
-      countryRow
+      countryRow,
+      otherCountryRow
     ).flatten
   }
 }

@@ -17,37 +17,80 @@
 package pages.qropsDetails
 
 import controllers.qropsDetails.routes
+import models.address.Country
 import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import play.api.libs.json.Json
 
 class QROPSCountryPageSpec extends AnyFreeSpec with Matchers {
 
-  ".nextPage" - {
+  private val emptyAnswers = UserAnswers("id")
 
-    val emptyAnswers = UserAnswers("id")
+  ".nextPage" - {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to CYA when a valid Country is given" in {
+        val country = emptyAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
 
-        QROPSCountryPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
+        QROPSCountryPage.nextPage(NormalMode, country) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
+      }
+
+      "must go to Qrops Other Established Country Page when 'Other' is supplied" in {
+        val otherCountry = emptyAnswers.set(QROPSCountryPage, Country("ZZ", "Other")).success.value
+
+        QROPSCountryPage.nextPage(NormalMode, otherCountry) mustEqual
+          routes.QROPSOtherCountryController.onPageLoad(NormalMode)
+      }
+
+      "must go to /there-is-a-problem page when no country present in user answers" in {
+        QROPSCountryPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.JourneyRecoveryController.onPageLoad()
       }
     }
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to Check Answers when a valid country i s given" in {
+        val country = emptyAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
 
-        QROPSCountryPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
+        QROPSCountryPage.nextPage(CheckMode, country) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
+      }
+
+      "must go to Qrops Other Established Country Page when 'Other' is supplied" in {
+        val otherCountry = emptyAnswers.set(QROPSCountryPage, Country("ZZ", "Other")).success.value
+
+        QROPSCountryPage.nextPage(CheckMode, otherCountry) mustEqual
+          routes.QROPSOtherCountryController.onPageLoad(NormalMode)
+      }
+
+      "must go to /there-is-a-problem page when no country present in user answers" in {
+        QROPSCountryPage.nextPage(CheckMode, emptyAnswers) mustEqual controllers.routes.JourneyRecoveryController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
-      "must got to Final Check Ansers page" in {
+      "must got to Final Check Answers page" in {
         QROPSCountryPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
+    }
+  }
+
+  "cleanup" - {
+    "must remove qropsOtherCountry when Country is not Other" in {
+      val otherCountry = emptyAnswers.set(QROPSOtherCountryPage, "OtherCountryLand").success.value
+
+      QROPSCountryPage.cleanup(Some(Country("DE", "Germany")), otherCountry).success.value mustEqual
+        UserAnswers("id", Json.obj("qropsDetails" -> Json.obj()), emptyAnswers.lastUpdated)
+    }
+
+    "must not remove values when value is Other" in {
+      val otherCountry = emptyAnswers.set(QROPSOtherCountryPage, "OtherCountryLand").success.value
+
+      QROPSCountryPage.cleanup(Some(Country("ZZ", "Other")), otherCountry).success.value mustEqual
+        otherCountry
     }
   }
 }

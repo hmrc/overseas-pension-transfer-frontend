@@ -64,7 +64,7 @@
         )
 
         @govukButton(
-            ButtonViewModel(Text(messages("site.agreeAndSubmit")))
+            ButtonViewModel(Text(messages("site.agreeAndSubmit"))).preventingDoubleClick()
         )
     }
 }

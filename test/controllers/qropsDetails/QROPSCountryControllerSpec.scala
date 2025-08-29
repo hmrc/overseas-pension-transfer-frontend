@@ -122,7 +122,10 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QROPSCountryPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual QROPSCountryPage.nextPage(
+          NormalMode,
+          emptyUserAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+        ).url
       }
     }
 
