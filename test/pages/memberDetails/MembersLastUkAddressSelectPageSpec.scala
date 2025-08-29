@@ -42,7 +42,7 @@ class MembersLastUkAddressSelectPageSpec extends AnyFreeSpec with Matchers {
       "must go to confirm address page" in {
 
         MembersLastUkAddressSelectPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressConfirmController.onPageLoad(
-          NormalMode
+          CheckMode
         )
       }
     }
