@@ -32,7 +32,7 @@ case object SchemeManagerOrganisationNamePage extends QuestionPage[String] {
     routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.SchemeManagerDetailsCYAController.onPageLoad()
+    routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
 
   final def changeLink(mode: Mode): Call =
     routes.SchemeManagerOrganisationNameController.onPageLoad(mode)

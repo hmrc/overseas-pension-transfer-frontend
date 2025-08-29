@@ -25,7 +25,7 @@ import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{SchemeManagerService, UserAnswersService}
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
@@ -39,7 +39,6 @@ class SchemeManagerTypeController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    schemeManagerService: SchemeManagerService,
     markInProgress: MarkInProgressOnEntryAction,
     formProvider: SchemeManagerTypeFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -67,16 +66,13 @@ class SchemeManagerTypeController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          val previousValue = request.userAnswers.get(SchemeManagerTypePage)
           for {
-            baseAnswers    <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
-            updatedAnswers <- schemeManagerService.updateSchemeManagerTypeAnswers(baseAnswers, previousValue, value)
-            redirectMode    = schemeManagerService.getSchemeManagerTypeRedirectMode(mode, previousValue, value)
-            _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            baseAnswers   <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
+            _             <- sessionRepository.set(baseAnswers)
+            savedForLater <- userAnswersService.setExternalUserAnswers(baseAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
+              case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(mode, baseAnswers))
               case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
           }

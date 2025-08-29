@@ -37,9 +37,9 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers {
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to Organisation individual name page in CheckMode" in {
 
-        SchemeManagerOrganisationNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagerOrganisationNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
       }
     }
 
