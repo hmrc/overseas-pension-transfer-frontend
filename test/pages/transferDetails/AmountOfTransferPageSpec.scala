@@ -29,7 +29,7 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to IsTransferTaxable page" in {
         AmountOfTransferPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IsTransferTaxableController.onPageLoad(NormalMode)
       }
     }

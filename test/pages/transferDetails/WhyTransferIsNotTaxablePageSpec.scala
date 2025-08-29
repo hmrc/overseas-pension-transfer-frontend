@@ -29,7 +29,7 @@ class WhyTransferIsNotTaxablePageSpec extends AnyFreeSpec with Matchers {
 
     "in Normal Mode" - {
 
-      "must go to Index" in {
+      "must go to DateOfTransfer page" in {
 
         WhyTransferIsNotTaxablePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.DateOfTransferController.onPageLoad(NormalMode)
       }
