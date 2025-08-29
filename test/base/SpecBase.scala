@@ -29,7 +29,10 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import queries.QtNumberQuery
+import queries.{DateSubmittedQuery, QtNumberQuery}
+
+import java.time.LocalDateTime
+import java.time.format.{DateTimeFormatter, FormatStyle}
 
 trait SpecBase
     extends Matchers
@@ -52,6 +55,9 @@ trait SpecBase
 
   val pspUser: PspUser = PspUser(pspId, internalId = userAnswersId)
 
+  val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
+  val formattedTestDateTransferSubmitted: String = testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
+
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
@@ -59,6 +65,9 @@ trait SpecBase
   def userAnswersQtNumber: UserAnswers = emptyUserAnswers.set(QtNumberQuery, testQtNumber).success.value
 
   def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
+
+  def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
+    userAnswersMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -74,20 +83,22 @@ trait SpecBase
 
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
     DisplayRequest(
-      request           = fakeRequest,
-      authenticatedUser = psaUser,
-      userAnswers       = userAnswers,
-      memberName        = testMemberName.fullName,
-      qtNumber          = testQtNumber
+      request               = fakeRequest,
+      authenticatedUser     = psaUser,
+      userAnswers           = userAnswers,
+      memberName            = testMemberName.fullName,
+      qtNumber              = testQtNumber,
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
 
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
-      request           = FakeRequest(),
-      authenticatedUser = psaUser,
-      userAnswers       = emptyUserAnswers,
-      memberName        = testMemberName.fullName,
-      qtNumber          = testQtNumber
+      request               = FakeRequest(),
+      authenticatedUser     = psaUser,
+      userAnswers           = emptyUserAnswers,
+      memberName            = testMemberName.fullName,
+      qtNumber              = testQtNumber,
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
 
 }

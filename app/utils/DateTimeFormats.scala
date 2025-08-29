@@ -18,13 +18,12 @@ package utils
 
 import play.api.i18n.Lang
 
-import java.time.format.DateTimeFormatter
+import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.Locale
 
 object DateTimeFormats {
-  // Optional dateTimeFormatter, not currently used
-  // private val dateTimeFormatter        = DateTimeFormatter.ofPattern("d MMMM yyyy")
   private val dateTimeFormatterNumeric = DateTimeFormatter.ofPattern("d M yyyy")
+  val localDateTimeFormatter           = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
 
   private val localisedDateTimeFormatters = Map(
     "en" -> dateTimeFormatterNumeric,

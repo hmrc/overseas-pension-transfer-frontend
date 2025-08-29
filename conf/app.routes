@@ -464,3 +464,5 @@ GET        /task-list                                                           
 
 GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad(mode: Mode = NormalMode)
 POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit(mode: Mode = NormalMode)
+
+GET        /transfer-submitted                                                                     controllers.TransferSubmittedController.onPageLoad()
