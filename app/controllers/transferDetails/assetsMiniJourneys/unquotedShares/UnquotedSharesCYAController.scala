@@ -19,12 +19,15 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import handlers.AssetThresholdHandler
+import models.assets.TypeOfAsset
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.UnquotedSharesQuery
+import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -33,7 +36,6 @@ import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAView
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success}
 
 class UnquotedSharesCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -42,8 +44,10 @@ class UnquotedSharesCYAController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     userAnswersService: UserAnswersService,
+    assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
-    view: UnquotedSharesCYAView
+    view: UnquotedSharesCYAView,
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 
@@ -58,11 +62,22 @@ class UnquotedSharesCYAController @Inject() (
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     for {
       minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, UnquotedSharesQuery))
-      saved              <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+      updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.UnquotedShares, userSelection = None)
+      saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
+      _                  <- sessionRepository.set(request.userAnswers)
     } yield {
       saved match {
         case Right(Done) =>
-          Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
+          val unquotedSharesCount = assetThresholdHandler.getAssetCount(minimalUserAnswers, TypeOfAsset.UnquotedShares)
+          if (unquotedSharesCount >= 5) {
+            Redirect(
+              controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController.onPageLoad(mode = NormalMode)
+            )
+          } else {
+            Redirect(
+              AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode)
+            )
+          }
         case _           =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }

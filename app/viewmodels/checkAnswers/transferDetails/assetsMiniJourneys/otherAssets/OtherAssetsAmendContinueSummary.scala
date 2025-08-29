@@ -17,7 +17,9 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, Mode, UserAnswers}
+import handlers.AssetThresholdHandler
+import models.assets.TypeOfAsset
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import queries.assets.OtherAssetsQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,19 +30,32 @@ import viewmodels.implicits._
 
 object OtherAssetsAmendContinueSummary extends AppUtils {
 
+  private val thresholdHandler = new AssetThresholdHandler()
+  private val threshold        = 5
+
   def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val answers   = userAnswers.get(OtherAssetsQuery)
-    val valueText = messages("otherAssetsAmendContinue.summary.value", answers.size)
+    val maybeEntries = userAnswers.get(OtherAssetsQuery)
+    val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.Other)
+    val valueText    = messages("otherAssetsAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
 
-    answers match {
+    maybeEntries match {
       case Some(entries) if entries.nonEmpty =>
+        val changeUrl =
+          if (count < threshold) {
+            AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode).url
+          } else {
+            controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController
+              .onPageLoad(mode)
+              .url
+          }
+
         Some(
           SummaryListRowViewModel(
             key     = "otherAssetsAmendContinue.checkYourAnswersLabel",
             value   = ValueViewModel(valueText),
             actions = Seq(
-              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode).url)
+              ActionItemViewModel("site.change", changeUrl)
                 .withVisuallyHiddenText(messages("otherAssetsAmendContinue.change.hidden"))
             )
           )
