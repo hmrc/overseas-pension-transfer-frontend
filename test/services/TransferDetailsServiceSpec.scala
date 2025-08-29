@@ -17,22 +17,12 @@
 package services
 
 import base.SpecBase
-import models.assets.{QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesEntry, UnquotedSharesMiniJourney}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.transferDetails.TypeOfAssetPage
-import play.api.libs.json.Json
-import play.api.test.Helpers._
-import queries.assets.AssetCompletionFlag
-import repositories.SessionRepository
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import scala.util.{Failure, Success}
 import models.assets._
-import queries.assets.{AssetCompletionFlags, SelectedAssetTypes}
+import org.scalatest.freespec.AnyFreeSpec
+import play.api.libs.json.Json
+import queries.assets.{AssetCompletionFlag, AssetCompletionFlags, SelectedAssetTypes}
+
+import scala.util.{Failure, Success}
 
 class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
@@ -130,7 +120,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
           .set(QuotedSharesMiniJourney.query, List(QuotedSharesEntry("Q Co", 20, 2, "B"))).success.value
           .set(OtherAssetsMiniJourney.query, List(OtherAssetsEntry("Gold", 30))).success.value
           .set(CashMiniJourney.query, CashEntry(999)).success.value
-          .set(SelectedAssetTypes, Set[TypeOfAsset](TypeOfAsset.Cash, TypeOfAsset.UnquotedShares, TypeOfAsset.QuotedShares, TypeOfAsset.Other)).success.value
+          .set(SelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash, TypeOfAsset.UnquotedShares, TypeOfAsset.QuotedShares, TypeOfAsset.Other)).success.value
           .set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true).success.value
           .set(AssetCompletionFlag(TypeOfAsset.QuotedShares), true).success.value
           .set(AssetCompletionFlag(TypeOfAsset.Other), true).success.value
@@ -147,7 +137,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
       updated.get(CashMiniJourney.query) mustBe Some(CashEntry(999))
 
-      updated.get(SelectedAssetTypes) mustBe Some(Set[TypeOfAsset](TypeOfAsset.Cash))
+      updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
 
       updated.get(AssetCompletionFlag(TypeOfAsset.UnquotedShares)) mustBe None
       updated.get(AssetCompletionFlag(TypeOfAsset.QuotedShares)) mustBe None
@@ -161,7 +151,7 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
       val ua =
         emptyUserAnswers
           .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("Leftover", 10, 1, "C"))).success.value
-          .set(SelectedAssetTypes, Set[TypeOfAsset](TypeOfAsset.Cash)).success.value
+          .set(SelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash)).success.value
 
       val result = service.removeAllAssetEntriesExceptCash(ua)
 
@@ -169,16 +159,15 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
       val updated = result.get
 
       updated.get(UnquotedSharesMiniJourney.query) mustBe None
-      updated.get(SelectedAssetTypes) mustBe Some(Set[TypeOfAsset](TypeOfAsset.Cash))
+      updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
     }
 
     "must succeed and set SelectedAssetTypes to cash when there is nothing to remove" in {
-      import queries.assets.SelectedAssetTypes
       val result = service.removeAllAssetEntriesExceptCash(emptyUserAnswers)
 
       result mustBe a[Success[_]]
       val updated = result.get
-      updated.get(SelectedAssetTypes) mustBe Some(Set[TypeOfAsset](TypeOfAsset.Cash))
+      updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
     }
   }
 }

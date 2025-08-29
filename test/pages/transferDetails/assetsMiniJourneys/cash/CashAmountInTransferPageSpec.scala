@@ -37,7 +37,7 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
       }
 
       "must go to the next asset page if more assets" in {
-        val selectedTypes: Set[TypeOfAsset] = Set(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
+        val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
         val userAnswers                     = for {
           ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
           ua2 <- ua1.set(AssetCompletionFlag(Cash), true)

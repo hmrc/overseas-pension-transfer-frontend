@@ -79,7 +79,7 @@ object TransferDetailsService {
 
     for {
       ua1 <- clearedData
-      ua2 <- ua1.set(SelectedAssetTypes, Set[TypeOfAsset](Cash))
+      ua2 <- ua1.set(SelectedAssetTypes, Seq[TypeOfAsset](Cash))
       ua3 <- clearAllAssetCompletionFlags(ua2)
     } yield ua3
   }
@@ -110,7 +110,7 @@ object TransferDetailsService {
   def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean): Try[UserAnswers] =
     userAnswers.set(AssetCompletionFlag(assetType), completed)
 
-  def setSelectedAssetsIncomplete(ua: UserAnswers, selectedAssets: Set[TypeOfAsset]): Try[UserAnswers] =
+  def setSelectedAssetsIncomplete(ua: UserAnswers, selectedAssets: Seq[TypeOfAsset]): Try[UserAnswers] =
     selectedAssets.foldLeft(Try(ua)) {
       case (Success(ua), assetType) =>
         setAssetCompleted(ua, assetType, completed = false)

@@ -18,7 +18,7 @@ package forms.transferDetails
 
 import forms.behaviours.CheckboxFieldBehaviours
 import models.assets.TypeOfAsset
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 
 class TypeOfAssetFormProviderSpec extends CheckboxFieldBehaviours {
 
@@ -29,7 +29,7 @@ class TypeOfAssetFormProviderSpec extends CheckboxFieldBehaviours {
     val fieldName   = "value"
     val requiredKey = "typeOfAsset.error.required"
 
-    behave like checkboxField[TypeOfAsset](
+    behave like checkboxFieldSeq[TypeOfAsset](
       form,
       fieldName,
       validValues  = TypeOfAsset.values.filterNot(_ == TypeOfAsset.Cash),
@@ -47,6 +47,26 @@ class TypeOfAssetFormProviderSpec extends CheckboxFieldBehaviours {
       val result = form.bind(Map("value[0]" -> TypeOfAsset.Cash.toString))
 
       result.errors must contain only FormError("value", "typeOfAsset.error.cashOnly")
+    }
+  }
+
+  private def checkboxFieldSeq[T](form: Form[_], fieldName: String, validValues: Seq[T], invalidError: FormError): Unit = {
+    for {
+      (value, i) <- validValues.zipWithIndex
+    } yield s"binds `$value` successfully" in {
+      val data   = Map(
+        s"$fieldName[$i]" -> value.toString
+      )
+      val result = form.bind(data)
+      result.get mustEqual Seq(value)
+      result.errors mustBe empty
+    }
+
+    "fail to bind when the answer is invalid" in {
+      val data = Map(
+        s"$fieldName[0]" -> "invalid value"
+      )
+      form.bind(data).errors must contain(invalidError)
     }
   }
 }

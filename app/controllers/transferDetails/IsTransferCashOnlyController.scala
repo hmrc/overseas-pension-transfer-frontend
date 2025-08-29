@@ -86,7 +86,7 @@ class IsTransferCashOnlyController @Inject() (
       val netAmount = userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
       for {
         ua1 <- userAnswers.set(CashAmountInTransferPage, netAmount)
-        ua2 <- ua1.set(TypeOfAssetPage, Set[TypeOfAsset](TypeOfAsset.Cash))
+        ua2 <- ua1.set(TypeOfAssetPage, Seq[TypeOfAsset](TypeOfAsset.Cash))
         ua3 <- ua2.set(IsTransferCashOnlyPage, isCashOnly)
       } yield ua3
     } else {

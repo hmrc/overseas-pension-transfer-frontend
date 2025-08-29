@@ -21,6 +21,7 @@ import forms.transferDetails.TypeOfAssetFormProvider
 import models.Mode
 import navigators.TypeOfAssetNavigator
 import pages.transferDetails.TypeOfAssetPage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -42,7 +43,7 @@ class TypeOfAssetController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: TypeOfAssetView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   val form = formProvider()
 
@@ -62,10 +63,11 @@ class TypeOfAssetController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         selectedAssets => {
+          val orderedAssets = selectedAssets.toSeq.sorted
           for {
             setAssetsUA               <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, selectedAssets))
             removePrevSetAssetFlagsUA <- Future.fromTry(TransferDetailsService.clearAllAssetCompletionFlags(setAssetsUA))
-            setAssetsCompletedUA      <- Future.fromTry(TransferDetailsService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsUA, selectedAssets))
+            setAssetsCompletedUA      <- Future.fromTry(TransferDetailsService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsUA, orderedAssets))
             _                         <- sessionRepository.set(setAssetsCompletedUA)
           } yield TypeOfAssetNavigator.getNextAssetRoute(setAssetsCompletedUA) match {
             case Some(route) => Redirect(route)

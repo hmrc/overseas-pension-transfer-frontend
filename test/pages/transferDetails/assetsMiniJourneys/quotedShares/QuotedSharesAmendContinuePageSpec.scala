@@ -53,7 +53,7 @@ class QuotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
       }
 
       "must go to the next asset page if no-continue selected and more assets" in {
-        val selectedTypes: Set[TypeOfAsset] = Set(QuotedSharesMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
+        val selectedTypes: Seq[TypeOfAsset] = Seq(QuotedSharesMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
         val userAnswers                     = for {
           ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
           ua2 <- ua1.set(AssetCompletionFlag(TypeOfAsset.QuotedShares), true)
