@@ -19,4 +19,6 @@
 
 @()(implicit request: DisplayRequest[_])
 
-<span class="govuk-caption-l">@request.qtNumber.value</span>
+@if(request.qtNumber.nonEmpty) {
+ <span class="govuk-caption-l">@request.qtNumber.value</span>
+}
