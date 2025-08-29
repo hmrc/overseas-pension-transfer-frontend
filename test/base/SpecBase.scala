@@ -84,7 +84,7 @@ trait SpecBase
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
     DisplayRequest(
       request               = fakeRequest,
-      authenticatedUser     = authenticatedUser,
+      authenticatedUser     = psaUser,
       userAnswers           = userAnswers,
       memberName            = testMemberName.fullName,
       qtNumber              = testQtNumber,
@@ -94,7 +94,7 @@ trait SpecBase
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
       request               = FakeRequest(),
-      authenticatedUser     = authenticatedUser,
+      authenticatedUser     = psaUser,
       userAnswers           = emptyUserAnswers,
       memberName            = testMemberName.fullName,
       qtNumber              = testQtNumber,
