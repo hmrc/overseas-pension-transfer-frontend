@@ -17,7 +17,8 @@
 package services
 
 import models.UserAnswers
-import models.assets.{AssetEntry, RepeatingAssetsMiniJourney, SingleAssetsMiniJourney, TypeOfAsset}
+import models.assets.TypeOfAsset.Cash
+import models.assets._
 import play.api.libs.json._
 import queries.assets._
 
@@ -59,6 +60,28 @@ object TransferDetailsService {
       case None =>
         Failure(new NoSuchElementException(s"No entry found at query path ${queryKey.path}"))
     }
+  }
+
+  def removeAllAssetEntriesExceptCash(userAnswers: UserAnswers): Try[UserAnswers] = {
+    val journeysWithoutCash = AssetsMiniJourneyRegistry.all.filterNot(_.assetType == Cash)
+
+    val clearedData =
+      journeysWithoutCash.foldLeft(Try(userAnswers)) {
+        case (acc, assetMiniJ) =>
+          acc.flatMap { ua =>
+            AssetsMiniJourneyRegistry.forType(assetMiniJ.assetType) match {
+              case Some(r: RepeatingAssetsMiniJourney[_]) => ua.remove(r.query)
+              case Some(s: SingleAssetsMiniJourney[_])    => ua.remove(s.query)
+              case _                                      => Success(ua)
+            }
+          }
+      }
+
+    for {
+      ua1 <- clearedData
+      ua2 <- ua1.set(SelectedAssetTypes, Set[TypeOfAsset](Cash))
+      ua3 <- clearAllAssetCompletionFlags(ua2)
+    } yield ua3
   }
 
   // ----- Single-asset helpers (Cash) -----

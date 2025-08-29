@@ -43,7 +43,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
   private lazy val propertyAmendContinueRouteNormal =
     AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
 
-  private lazy val propertyAmendContinueRouteCheck  =
+  private lazy val propertyAmendContinueRouteCheck =
     AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(CheckMode).url
 
   private def uaWithProperties(n: Int): UserAnswers = {

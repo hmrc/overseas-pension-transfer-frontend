@@ -31,10 +31,10 @@ import repositories.SessionRepository
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
+import models.assets._
+import queries.assets.{AssetCompletionFlags, SelectedAssetTypes}
 
 class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
-
-  private val sessionRepository = mock[SessionRepository]
 
   private val service = TransferDetailsService
 
@@ -120,5 +120,65 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
       result.get.data mustBe Json.obj()
     }
   }
+  "removeAllAssetEntriesExceptCash" - {
 
+    "must remove all non-cash asset data, clear completion flags, and set selection to cash only" in {
+
+      val uaWithAssetsAndFlags =
+        emptyUserAnswers
+          .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("UQ Co", 10, 1, "A"))).success.value
+          .set(QuotedSharesMiniJourney.query, List(QuotedSharesEntry("Q Co", 20, 2, "B"))).success.value
+          .set(OtherAssetsMiniJourney.query, List(OtherAssetsEntry("Gold", 30))).success.value
+          .set(CashMiniJourney.query, CashEntry(999)).success.value
+          .set(SelectedAssetTypes, Set[TypeOfAsset](TypeOfAsset.Cash, TypeOfAsset.UnquotedShares, TypeOfAsset.QuotedShares, TypeOfAsset.Other)).success.value
+          .set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true).success.value
+          .set(AssetCompletionFlag(TypeOfAsset.QuotedShares), true).success.value
+          .set(AssetCompletionFlag(TypeOfAsset.Other), true).success.value
+          .set(AssetCompletionFlag(TypeOfAsset.Cash), true).success.value
+
+      val result = service.removeAllAssetEntriesExceptCash(uaWithAssetsAndFlags)
+
+      result mustBe a[Success[_]]
+      val updated = result.get
+
+      updated.get(UnquotedSharesMiniJourney.query) mustBe None
+      updated.get(QuotedSharesMiniJourney.query) mustBe None
+      updated.get(OtherAssetsMiniJourney.query) mustBe None
+
+      updated.get(CashMiniJourney.query) mustBe Some(CashEntry(999))
+
+      updated.get(SelectedAssetTypes) mustBe Some(Set[TypeOfAsset](TypeOfAsset.Cash))
+
+      updated.get(AssetCompletionFlag(TypeOfAsset.UnquotedShares)) mustBe None
+      updated.get(AssetCompletionFlag(TypeOfAsset.QuotedShares)) mustBe None
+      updated.get(AssetCompletionFlag(TypeOfAsset.Other)) mustBe None
+      updated.get(AssetCompletionFlag(TypeOfAsset.Cash)) mustBe None
+
+      updated.get(AssetCompletionFlags) mustBe None
+    }
+
+    "must remove non-cash data even if SelectedAssetTypes already equals Set(Cash)" in {
+      val ua =
+        emptyUserAnswers
+          .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("Leftover", 10, 1, "C"))).success.value
+          .set(SelectedAssetTypes, Set[TypeOfAsset](TypeOfAsset.Cash)).success.value
+
+      val result = service.removeAllAssetEntriesExceptCash(ua)
+
+      result mustBe a[Success[_]]
+      val updated = result.get
+
+      updated.get(UnquotedSharesMiniJourney.query) mustBe None
+      updated.get(SelectedAssetTypes) mustBe Some(Set[TypeOfAsset](TypeOfAsset.Cash))
+    }
+
+    "must succeed and set SelectedAssetTypes to cash when there is nothing to remove" in {
+      import queries.assets.SelectedAssetTypes
+      val result = service.removeAllAssetEntriesExceptCash(emptyUserAnswers)
+
+      result mustBe a[Success[_]]
+      val updated = result.get
+      updated.get(SelectedAssetTypes) mustBe Some(Set[TypeOfAsset](TypeOfAsset.Cash))
+    }
+  }
 }
