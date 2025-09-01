@@ -42,7 +42,6 @@ class WhyTransferIsTaxableController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    taskService: TaskService,
     formProvider: WhyTransferIsTaxableFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: WhyTransferIsTaxableView,
@@ -70,7 +69,7 @@ class WhyTransferIsTaxableController @Inject() (
         value =>
           for {
             ua1           <- Future.fromTry(request.userAnswers.set(WhyTransferIsTaxablePage, value))
-            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1, TransferDetails))
+            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1))
             _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {

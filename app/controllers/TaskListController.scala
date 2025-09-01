@@ -41,7 +41,6 @@ class TaskListController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     sessionRepository: SessionRepository,
-    taskService: TaskService,
     userAnswersService: UserAnswersService,
     view: TaskListView
   )(implicit ec: ExecutionContext
@@ -49,8 +48,8 @@ class TaskListController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
     for {
-      ua1           <- Future.fromTry(taskService.updateTaskStatusesOnMemberDetailsComplete(request.userAnswers))
-      ua2           <- Future.fromTry(taskService.updateSubmissionTaskStatus(ua1))
+      ua1           <- Future.fromTry(TaskService.updateTaskStatusesOnMemberDetailsComplete(request.userAnswers))
+      ua2           <- Future.fromTry(TaskService.updateSubmissionTaskStatus(ua1))
       savedForLater <-
         if (ua2 == request.userAnswers) {
           Future.successful(Right(Done))

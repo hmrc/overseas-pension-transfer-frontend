@@ -19,7 +19,6 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.IsTransferTaxableFormProvider
 import models.Mode
-import models.TaskCategory.TransferDetails
 import org.apache.pekko.Done
 import pages.transferDetails.IsTransferTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -39,7 +38,6 @@ class IsTransferTaxableController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    taskService: TaskService,
     formProvider: IsTransferTaxableFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: IsTransferTaxableView,
@@ -67,7 +65,7 @@ class IsTransferTaxableController @Inject() (
         value =>
           for {
             ua1           <- Future.fromTry(request.userAnswers.set(IsTransferTaxablePage, value))
-            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1, TransferDetails))
+            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1))
             _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
