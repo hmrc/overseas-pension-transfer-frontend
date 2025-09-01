@@ -19,11 +19,14 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import handlers.AssetThresholdHandler
+import models.assets.TypeOfAsset
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.PropertyQuery
+import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -40,8 +43,10 @@ class PropertyCYAController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     userAnswersService: UserAnswersService,
+    assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
-    view: PropertyCYAView
+    view: PropertyCYAView,
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
@@ -56,11 +61,22 @@ class PropertyCYAController @Inject() (
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     for {
       minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, PropertyQuery))
-      saved              <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+      updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.Property, userSelection = None)
+      saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
+      _                  <- sessionRepository.set(request.userAnswers)
     } yield {
       saved match {
         case Right(Done) =>
-          Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode))
+          val propertyCount = assetThresholdHandler.getAssetCount(minimalUserAnswers, TypeOfAsset.Property)
+          if (propertyCount >= 5) {
+            Redirect(
+              controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController.onPageLoad(mode = NormalMode)
+            )
+          } else {
+            Redirect(
+              AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)
+            )
+          }
         case _           =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }

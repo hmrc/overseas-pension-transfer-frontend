@@ -19,11 +19,14 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import handlers.AssetThresholdHandler
+import models.assets.TypeOfAsset
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.QuotedSharesQuery
+import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -40,8 +43,10 @@ class QuotedSharesCYAController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     userAnswersService: UserAnswersService,
+    assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
-    view: QuotedSharesCYAView
+    view: QuotedSharesCYAView,
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
@@ -56,11 +61,22 @@ class QuotedSharesCYAController @Inject() (
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     for {
       minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, QuotedSharesQuery))
-      saved              <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
+      updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.QuotedShares, userSelection = None)
+      saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
+      _                  <- sessionRepository.set(request.userAnswers)
     } yield {
       saved match {
         case Right(Done) =>
-          Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
+          val quotedSharesCount = assetThresholdHandler.getAssetCount(minimalUserAnswers, TypeOfAsset.QuotedShares)
+          if (quotedSharesCount >= 5) {
+            Redirect(
+              controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.MoreQuotedSharesDeclarationController.onPageLoad(mode = NormalMode)
+            )
+          } else {
+            Redirect(
+              AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)
+            )
+          }
         case _           =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }

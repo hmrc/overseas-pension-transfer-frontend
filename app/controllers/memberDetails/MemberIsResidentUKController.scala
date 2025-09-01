@@ -73,7 +73,7 @@ class MemberIsResidentUKController @Inject() (
           for {
             baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
             ua1           <- Future.fromTry(memberDetailsService.updateMemberIsResidentUKAnswers(baseAnswers, previousValue, value))
-            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1))
+            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1, MemberDetails))
             _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
             redirectMode   = memberDetailsService.getMemberIsResidentUKRedirectMode(mode, previousValue, value)

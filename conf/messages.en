@@ -597,6 +597,11 @@ unquotedSharesAmendContinue.summary.value = {0} added
 unquotedSharesAmendContinue.text.singular = group of unquoted shares
 unquotedSharesAmendContinue.text.plural = groups of unquoted shares
 
+moreUnquotedSharesDeclaration.title = moreUnquotedSharesDeclaration
+moreUnquotedSharesDeclaration.moreUnquotedShares = Does the member have more than 5 unquoted shares?
+moreUnquotedSharesDeclaration.moreUnquotedShares.hint = Select yes if the member has more than 5 unquoted shares. We''ll contact the scheme administrator for information on the rest of the unquoted shares.
+moreUnquotedSharesDeclaration.error.required = Please select an option
+
 unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.error.required = Select one option
@@ -630,6 +635,11 @@ quotedSharesAmendContinue.summary.value = {0} added
 quotedSharesAmendContinue.text.singular = group of quoted shares
 quotedSharesAmendContinue.text.plural = groups of quoted shares
 
+moreQuotedSharesDeclaration.title = moreQuotedSharesDeclaration
+moreQuotedSharesDeclaration.moreQuotedShares = Does the member have more than 5 quoted shares?
+moreQuotedSharesDeclaration.moreQuotedShares.hint = Select yes if the member has more than 5 quoted shares. We''ll contact the scheme administrator for information on the rest of the quoted shares.
+moreQuotedSharesDeclaration.error.required = Please select an option
+
 propertyAmendContinue.title = propertyAmendContinue
 propertyAmendContinue.heading = You have added 1 Property
 propertyAmendContinue.checkYourAnswersLabel = Property
@@ -640,12 +650,22 @@ propertyAmendContinue.summary.value = {0} added
 propertyAmendContinue.text.singular = property
 propertyAmendContinue.text.plural = properties
 
+morePropertyDeclaration.title = morePropertyDeclaration
+morePropertyDeclaration.moreProperty = Does the member have more than 5 properties?
+morePropertyDeclaration.moreProperty.hint = Select yes if the member has more than 5 properties. We''ll contact the scheme administrator for information on the rest of the properties.
+morePropertyDeclaration.error.required = Please select an option
+
 otherAssetsAmendContinue.error.required = Please select an option
 otherAssetsAmendContinue.checkYourAnswersLabel = Other assets
 otherAssetsAmendContinue.change.hidden = Other assets
 otherAssetsAmendContinue.summary.value = {0} added
 otherAssetsAmendContinue.text.singular = group of assets
 otherAssetsAmendContinue.text.plural = groups of assets
+
+moreOtherAssetsDeclaration.title = moreOtherAssetsDeclaration
+moreOtherAssetsDeclaration.moreOtherAssets = Does the member have more than 5 assets?
+moreOtherAssetsDeclaration.moreOtherAssets.hint = Select yes if the member has more than 5 assets. We''ll contact the scheme administrator for information on the rest of the assets.
+moreOtherAssetsDeclaration.error.required = Please select an option
 
 otherAssetsStart.title = Add other assets
 otherAssetsStart.heading = Add other assets
@@ -679,3 +699,12 @@ submitToHMRC.change.hidden = SubmitToHMRC
 submitToHMRC.hintYes = You will still be able to update the report after it''s been submitted.
 submitToHMRC.hintNo = Mark as ''in progress'' and return to the overseas pension transfer dashboard.
 
+
+transferSubmitted.title = Transfer submitted
+transferSubmitted.heading = Transfer submitted
+transferSubmitted.referenceNumber.text = Your reference number
+transferSubmitted.dashboardLink.text = Return to overseas pension dashboard
+transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
+transferSubmitted.memberName.key = Member name
+transferSubmitted.pensionScheme.key = Scheme
+transferSubmitted.dateSubmitted.key = Date submitted

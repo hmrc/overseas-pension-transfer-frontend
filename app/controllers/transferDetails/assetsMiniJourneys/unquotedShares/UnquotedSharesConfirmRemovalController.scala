@@ -19,13 +19,12 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
-import models.assets.UnquotedSharesMiniJourney
-import models.{NormalMode, UserAnswers}
+import handlers.AssetThresholdHandler
+import models.NormalMode
+import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.UnquotedSharesQuery
-import repositories.SessionRepository
-import services.{TransferDetailsService, UserAnswersService}
+import services.{MoreAssetCompletionService, TransferDetailsService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalView
 
@@ -36,15 +35,15 @@ class UnquotedSharesConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    sessionRepository: SessionRepository,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: UnquotedSharesConfirmRemovalFormProvider,
     transferDetailsService: TransferDetailsService,
-    userAnswersService: UserAnswersService,
     miniJourney: UnquotedSharesMiniJourney.type,
+    assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
-    view: UnquotedSharesConfirmRemovalView
+    view: UnquotedSharesConfirmRemovalView,
+    moreAssetCompletionService: MoreAssetCompletionService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -60,17 +59,24 @@ class UnquotedSharesConfirmRemovalController @Inject() (
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
       confirmRemoval =>
         if (!confirmRemoval) {
-          Future.successful(Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
+          val unquotedSharesCount = assetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.UnquotedShares)
+          val redirectTarget      =
+            if (unquotedSharesCount >= 5) {
+
+              controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController.onPageLoad(mode = NormalMode)
+            } else {
+              AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode)
+            }
+
+          Future.successful(Redirect(redirectTarget))
         } else {
           (for {
-            updatedAnswers     <-
-              Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _                  <- sessionRepository.set(updatedAnswers)
-            minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, UnquotedSharesQuery))
-            _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
-          } yield Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))).recover {
-            case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-          }
+            updatedAnswers <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.UnquotedShares, completed = false)
+          } yield Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
+            .recover {
+              case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
         }
     )
   }
