@@ -30,7 +30,8 @@ class FakeDisplayAction()
       request.authenticatedUser,
       request.userAnswers,
       memberFullName(request.userAnswers),
-      qtNumber(request.userAnswers)
+      qtNumber(request.userAnswers),
+      dateTransferSubmitted(request.userAnswers)
     ))
   }
 

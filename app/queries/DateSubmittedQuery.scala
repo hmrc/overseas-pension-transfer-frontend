@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package models.requests
+package queries
 
-import models.{QtNumber, UserAnswers}
-import models.authentication.AuthenticatedUser
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.JsPath
 
-case class DisplayRequest[A](
-    request: Request[A],
-    authenticatedUser: AuthenticatedUser,
-    userAnswers: UserAnswers,
-    memberName: String,
-    qtNumber: QtNumber,
-    dateTransferSubmitted: String
-  ) extends WrappedRequest[A](request)
+import java.time.LocalDateTime
+
+case object DateSubmittedQuery extends Gettable[LocalDateTime] with Settable[LocalDateTime] {
+  override def path: JsPath = JsPath \ "receiptDate"
+}
