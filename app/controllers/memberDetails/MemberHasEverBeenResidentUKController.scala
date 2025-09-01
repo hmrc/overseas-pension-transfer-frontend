@@ -19,6 +19,7 @@ package controllers.memberDetails
 import controllers.actions._
 import forms.memberDetails.MemberHasEverBeenResidentUKFormProvider
 import models.Mode
+import models.TaskCategory.MemberDetails
 import org.apache.pekko.Done
 import pages.memberDetails.MemberHasEverBeenResidentUKPage
 import play.api.data.Form
@@ -66,7 +67,7 @@ class MemberHasEverBeenResidentUKController @Inject() (
         value => {
           for {
             baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
-            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers))
+            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
             _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {

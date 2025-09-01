@@ -19,6 +19,7 @@ package controllers.qropsSchemeManagerDetails
 import controllers.actions._
 import forms.qropsSchemeManagerDetails.SchemeManagerOrganisationNameFormProvider
 import models.Mode
+import models.TaskCategory.SchemeManagerDetails
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
@@ -66,7 +67,7 @@ class SchemeManagerOrganisationNameController @Inject() (
         value =>
           for {
             ua1           <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
-            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1))
+            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = SchemeManagerDetails))
             _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
