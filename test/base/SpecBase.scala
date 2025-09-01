@@ -18,12 +18,23 @@ package base
 
 import controllers.actions._
 import models.authentication.{PsaId, PsaUser, PspId, PspUser}
+import models.address.{Countries, PropertyAddress}
+import models.authentication.{PsaId, PsaUser}
 import models.requests.DisplayRequest
 import models.{PersonName, QtNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import pages.memberDetails.MemberNamePage
+import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
+import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
+import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
+  UnquotedSharesClassPage,
+  UnquotedSharesCompanyNamePage,
+  UnquotedSharesNumberPage,
+  UnquotedSharesValuePage
+}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
@@ -101,4 +112,66 @@ trait SpecBase
       dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
 
+  def userAnswersWithAssets(assetsCount: Int = 1): UserAnswers = {
+    (0 until assetsCount).foldLeft(
+      emptyUserAnswers
+        .set(QtNumberQuery, testQtNumber)
+        .success
+        .value
+    ) { (ua, idx) =>
+      val updatedUa =
+        ua.set(
+          PropertyAddressPage(idx),
+          PropertyAddress(
+            addressLine1 = s"${idx + 1} Property${idx + 1}",
+            addressLine2 = s"Test address line ${idx + 1}",
+            None,
+            None,
+            country      = Countries.UK,
+            None
+          )
+        ).success.value
+          .set(PropertyValuePage(idx), BigDecimal(10000 + idx * 1000)) // incremental property values
+          .success.value
+          .set(PropertyDescriptionPage(idx), s"Description-${idx + 1}")
+          .success.value
+
+      // Add other assets
+      val withOtherAssets =
+        updatedUa.set(
+          OtherAssetsDescriptionPage(idx),
+          s"OtherAsset-${idx + 1}"
+        ).success.value
+          .set(OtherAssetsValuePage(idx), BigDecimal(200 + idx * 50))
+          .success.value
+
+      // Add unquoted shares
+      val withUnquotedShares =
+        withOtherAssets.set(
+          UnquotedSharesCompanyNamePage(idx),
+          s"UnquotedCompany-${idx + 1}"
+        ).success.value
+          .set(UnquotedSharesValuePage(idx), BigDecimal(300 + idx * 75))
+          .success.value
+          .set(UnquotedSharesNumberPage(idx), 400 + idx * 100)
+          .success.value
+          .set(UnquotedSharesClassPage(idx), "A")
+          .success.value
+
+      // Add quoted shares
+      val withQuotedShares =
+        withUnquotedShares.set(
+          QuotedSharesCompanyNamePage(idx),
+          s"QuotedCompany-${idx + 1}"
+        ).success.value
+          .set(QuotedSharesValuePage(idx), BigDecimal(500 + idx * 125))
+          .success.value
+          .set(QuotedSharesNumberPage(idx), 600 + idx * 150)
+          .success.value
+          .set(QuotedSharesClassPage(idx), "B")
+          .success.value
+
+      withQuotedShares
+    }
+  }
 }
