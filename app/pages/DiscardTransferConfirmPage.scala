@@ -28,8 +28,9 @@ case object DiscardTransferConfirmPage extends QuestionPage[Boolean] {
   override def toString: String = "discardTransferConfirm"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.JourneyRecoveryController.onPageLoad()
+    answers.get(DiscardTransferConfirmPage) match {
+      case Some(true) => routes.IndexController.onPageLoad()
+      case Some(false) => routes.TaskListController.onPageLoad()
+      case _ => routes.JourneyRecoveryController.onPageLoad()
+    }
 }

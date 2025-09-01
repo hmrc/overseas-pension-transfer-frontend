@@ -81,4 +81,6 @@ class UserAnswersConnector @Inject() (
           logger.warn(s"Error updating user answers for ID '${submissionDTO.referenceId}': ${e.getMessage}", e)
           Left(SubmissionErrorResponse(e.getMessage, None))
       }
+
+  def deleteAnswers(id: String):
 }

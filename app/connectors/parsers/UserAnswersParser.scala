@@ -29,6 +29,7 @@ object UserAnswersParser {
   type GetUserAnswersType = Either[UserAnswersError, UserAnswersDTO]
   type SetUserAnswersType = Either[UserAnswersError, Done]
   type SubmissionType     = Either[SubmissionErrorResponse, SubmissionResponse]
+  type DeleteUserAnswersType = Either[UserAnswersError, Done]
 
   implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
 
