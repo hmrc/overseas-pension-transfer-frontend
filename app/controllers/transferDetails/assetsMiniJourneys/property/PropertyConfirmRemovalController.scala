@@ -72,7 +72,7 @@ class PropertyConfirmRemovalController @Inject() (
           Future.successful(Redirect(redirectTarget))
         } else {
           (for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            updatedAnswers <- Future.fromTry(TransferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.Property, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
             .recover {

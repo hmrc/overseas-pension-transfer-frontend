@@ -41,7 +41,6 @@ class MoreQuotedSharesDeclarationController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: MoreQuotedSharesDeclarationFormProvider,
-    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     view: MoreQuotedSharesDeclarationView,
     moreAssetCompletionService: MoreAssetCompletionService
@@ -66,7 +65,7 @@ class MoreQuotedSharesDeclarationController @Inject() (
         case CheckMode =>
           for {
             updatedAnswers <- Future.fromTry(
-                                transferDetailsService.setAssetCompleted(
+                                TransferDetailsService.setAssetCompleted(
                                   request.userAnswers,
                                   TypeOfAsset.QuotedShares,
                                   completed = false

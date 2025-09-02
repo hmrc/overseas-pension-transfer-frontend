@@ -38,8 +38,6 @@ class QuotedSharesConfirmRemovalController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: QuotedSharesConfirmRemovalFormProvider,
-    userAnswersService: UserAnswersService,
-    transferDetailsService: TransferDetailsService,
     assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: QuotedSharesMiniJourney.type,
@@ -72,7 +70,7 @@ class QuotedSharesConfirmRemovalController @Inject() (
           Future.successful(Redirect(redirectTarget))
         } else {
           (for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            updatedAnswers <- Future.fromTry(TransferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.QuotedShares, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
             .recover {
