@@ -30,8 +30,9 @@ import models.dtos.{SubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, UserAnswersErrorResponse}
 import play.api.Logging
 import play.api.libs.json.Json
+import play.api.mvc.Result
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import java.net.URL
 import javax.inject.Inject
@@ -93,5 +94,11 @@ class UserAnswersConnector @Inject() (
           logger.warn(s"Error deleting user answers for ID '$id': ${e.getMessage}", e)
           Left(SubmissionErrorResponse(e.getMessage, None))
       }
+  }
+
+  def resetDatabase(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url = url"${appConfig.backendHost}/test-only/reset-test-data"
+    http.delete(url)
+      .execute[HttpResponse]
   }
 }

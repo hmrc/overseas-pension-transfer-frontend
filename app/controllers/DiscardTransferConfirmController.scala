@@ -62,19 +62,21 @@ class DiscardTransferConfirmController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          if (value) {
-            for {
-              _                  <- Future.fromTry(request.userAnswers.set(DiscardTransferConfirmPage, value))
-              _                  <- sessionRepository.clear(request.userAnswers.id)
-              clearedUserAnswers <- userAnswersService.clearUserAnswers(request.userAnswers.id)
-            } yield {
-              clearedUserAnswers match {
-                case Right(Done) => Redirect(DiscardTransferConfirmPage.nextPage(NormalMode, request.userAnswers))
-                case Left(_)     => InternalServerError
+          Future.fromTry(request.userAnswers.set(DiscardTransferConfirmPage, value)).flatMap {
+            answers =>
+              if (value) {
+                for {
+                  _                  <- sessionRepository.clear(answers.id)
+                  clearedUserAnswers <- userAnswersService.clearUserAnswers(answers.id)
+                } yield {
+                  clearedUserAnswers match {
+                    case Right(Done) => Redirect(DiscardTransferConfirmPage.nextPage(NormalMode, answers))
+                    case Left(_)     => InternalServerError
+                  }
+                }
+              } else {
+                Future.successful(Redirect(DiscardTransferConfirmPage.nextPage(NormalMode, answers)))
               }
-            }
-          } else {
-            Future.successful(Redirect(DiscardTransferConfirmPage.nextPage(NormalMode, request.userAnswers)))
           }
       )
   }
