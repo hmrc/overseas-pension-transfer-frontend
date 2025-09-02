@@ -62,6 +62,7 @@ class DiscardTransferConfirmController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors))),
         value =>
+          //Answers updated in the request but not needed storing in session. Answers required in request for page based navigation
           Future.fromTry(request.userAnswers.set(DiscardTransferConfirmPage, value)).flatMap {
             answers =>
               if (value) {
