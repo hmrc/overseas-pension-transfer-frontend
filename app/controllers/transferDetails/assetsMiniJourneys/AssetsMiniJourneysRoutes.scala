@@ -49,6 +49,9 @@ object AssetsMiniJourneysRoutes {
   val UnquotedSharesConfirmRemovalController =
     unquotedShares.routes.UnquotedSharesConfirmRemovalController
 
+  val MoreUnquotedSharesDeclarationController =
+    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController
+
   // ----- Quoted Shares -----
 
   val QuotedSharesStartController =
@@ -75,6 +78,9 @@ object AssetsMiniJourneysRoutes {
   val QuotedSharesConfirmRemovalController =
     quotedShares.routes.QuotedSharesConfirmRemovalController
 
+  val MoreQuotedSharesDeclarationController =
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.MoreQuotedSharesDeclarationController
+
   // ----- Property -----
 
   val PropertyStartController =
@@ -98,6 +104,9 @@ object AssetsMiniJourneysRoutes {
   val PropertyConfirmRemovalController =
     property.routes.PropertyConfirmRemovalController
 
+  val MorePropertyDeclarationController =
+    controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
+
   // ----- Other Assets -----
 
   val OtherAssetsStartController =
@@ -117,5 +126,8 @@ object AssetsMiniJourneysRoutes {
 
   val OtherAssetsConfirmRemovalController =
     otherAssets.routes.OtherAssetsConfirmRemovalController
+
+  val MoreOtherAssetsDeclarationController =
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController
 
 }

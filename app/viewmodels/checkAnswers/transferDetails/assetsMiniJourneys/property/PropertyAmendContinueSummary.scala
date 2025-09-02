@@ -17,7 +17,9 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, Mode, UserAnswers}
+import handlers.AssetThresholdHandler
+import models.assets.TypeOfAsset
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import queries.assets.PropertyQuery
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,19 +30,32 @@ import viewmodels.implicits._
 
 object PropertyAmendContinueSummary {
 
+  private val thresholdHandler = new AssetThresholdHandler()
+  private val threshold        = 5
+
   def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val answers   = userAnswers.get(PropertyQuery)
-    val valueText = messages("propertyAmendContinue.summary.value", answers.size)
+    val maybeEntries = userAnswers.get(PropertyQuery)
+    val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.Property)
+    val valueText    = messages("propertyAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
 
-    answers match {
+    maybeEntries match {
       case Some(entries) if entries.nonEmpty =>
+        val changeUrl =
+          if (count < threshold) {
+            AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode).url
+          } else {
+            controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
+              .onPageLoad(mode)
+              .url
+          }
+
         Some(
           SummaryListRowViewModel(
             key     = "propertyAmendContinue.checkYourAnswersLabel",
             value   = ValueViewModel(valueText),
             actions = Seq(
-              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode).url)
+              ActionItemViewModel("site.change", changeUrl)
                 .withVisuallyHiddenText(messages("propertyAmendContinue.change.hidden"))
             )
           )

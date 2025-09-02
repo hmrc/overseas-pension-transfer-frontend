@@ -18,18 +18,32 @@ package base
 
 import controllers.actions._
 import models.authentication.{PsaId, PsaUser, PspId, PspUser}
+import models.address.{Countries, PropertyAddress}
+import models.authentication.{PsaId, PsaUser}
 import models.requests.DisplayRequest
 import models.{PersonName, QtNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import pages.memberDetails.MemberNamePage
+import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
+import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
+import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
+  UnquotedSharesClassPage,
+  UnquotedSharesCompanyNamePage,
+  UnquotedSharesNumberPage,
+  UnquotedSharesValuePage
+}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import queries.QtNumberQuery
+import queries.{DateSubmittedQuery, QtNumberQuery}
+
+import java.time.LocalDateTime
+import java.time.format.{DateTimeFormatter, FormatStyle}
 
 trait SpecBase
     extends Matchers
@@ -52,6 +66,9 @@ trait SpecBase
 
   val pspUser: PspUser = PspUser(pspId, internalId = userAnswersId)
 
+  val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
+  val formattedTestDateTransferSubmitted: String = testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
+
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
@@ -59,6 +76,9 @@ trait SpecBase
   def userAnswersQtNumber: UserAnswers = emptyUserAnswers.set(QtNumberQuery, testQtNumber).success.value
 
   def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
+
+  def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
+    userAnswersMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -74,20 +94,84 @@ trait SpecBase
 
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
     DisplayRequest(
-      request           = fakeRequest,
-      authenticatedUser = psaUser,
-      userAnswers       = userAnswers,
-      memberName        = testMemberName.fullName,
-      qtNumber          = testQtNumber
+      request               = fakeRequest,
+      authenticatedUser     = psaUser,
+      userAnswers           = userAnswers,
+      memberName            = testMemberName.fullName,
+      qtNumber              = testQtNumber,
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
 
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
-      request           = FakeRequest(),
-      authenticatedUser = psaUser,
-      userAnswers       = emptyUserAnswers,
-      memberName        = testMemberName.fullName,
-      qtNumber          = testQtNumber
+      request               = FakeRequest(),
+      authenticatedUser     = psaUser,
+      userAnswers           = emptyUserAnswers,
+      memberName            = testMemberName.fullName,
+      qtNumber              = testQtNumber,
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
 
+  def userAnswersWithAssets(assetsCount: Int = 1): UserAnswers = {
+    (0 until assetsCount).foldLeft(
+      emptyUserAnswers
+        .set(QtNumberQuery, testQtNumber)
+        .success
+        .value
+    ) { (ua, idx) =>
+      val updatedUa =
+        ua.set(
+          PropertyAddressPage(idx),
+          PropertyAddress(
+            addressLine1 = s"${idx + 1} Property${idx + 1}",
+            addressLine2 = s"Test address line ${idx + 1}",
+            None,
+            None,
+            country      = Countries.UK,
+            None
+          )
+        ).success.value
+          .set(PropertyValuePage(idx), BigDecimal(10000 + idx * 1000)) // incremental property values
+          .success.value
+          .set(PropertyDescriptionPage(idx), s"Description-${idx + 1}")
+          .success.value
+
+      // Add other assets
+      val withOtherAssets =
+        updatedUa.set(
+          OtherAssetsDescriptionPage(idx),
+          s"OtherAsset-${idx + 1}"
+        ).success.value
+          .set(OtherAssetsValuePage(idx), BigDecimal(200 + idx * 50))
+          .success.value
+
+      // Add unquoted shares
+      val withUnquotedShares =
+        withOtherAssets.set(
+          UnquotedSharesCompanyNamePage(idx),
+          s"UnquotedCompany-${idx + 1}"
+        ).success.value
+          .set(UnquotedSharesValuePage(idx), BigDecimal(300 + idx * 75))
+          .success.value
+          .set(UnquotedSharesNumberPage(idx), 400 + idx * 100)
+          .success.value
+          .set(UnquotedSharesClassPage(idx), "A")
+          .success.value
+
+      // Add quoted shares
+      val withQuotedShares =
+        withUnquotedShares.set(
+          QuotedSharesCompanyNamePage(idx),
+          s"QuotedCompany-${idx + 1}"
+        ).success.value
+          .set(QuotedSharesValuePage(idx), BigDecimal(500 + idx * 125))
+          .success.value
+          .set(QuotedSharesNumberPage(idx), 600 + idx * 150)
+          .success.value
+          .set(QuotedSharesClassPage(idx), "B")
+          .success.value
+
+      withQuotedShares
+    }
+  }
 }

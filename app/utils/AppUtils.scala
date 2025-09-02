@@ -18,17 +18,23 @@ package utils
 
 import models.{QtNumber, UserAnswers}
 import pages.memberDetails.MemberNamePage
-import queries.QtNumberQuery
+import queries.{DateSubmittedQuery, QtNumberQuery}
+import utils.DateTimeFormats.localDateTimeFormatter
 
 trait AppUtils {
 
   def memberFullName(userAnswers: UserAnswers): String = {
-    userAnswers.get(MemberNamePage).map(_.fullName)
-      .getOrElse("Undefined Undefined")
+    userAnswers.get(MemberNamePage).fold("Undefined Undefined")(_.fullName)
   }
 
   def qtNumber(userAnswers: UserAnswers): QtNumber = {
     userAnswers.get(QtNumberQuery)
       .getOrElse(QtNumber.empty)
+  }
+
+  def dateTransferSubmitted(userAnswers: UserAnswers): String = {
+    userAnswers.get(DateSubmittedQuery).fold("Transfer not submitted") {
+      date => date.format(localDateTimeFormatter)
+    }
   }
 }

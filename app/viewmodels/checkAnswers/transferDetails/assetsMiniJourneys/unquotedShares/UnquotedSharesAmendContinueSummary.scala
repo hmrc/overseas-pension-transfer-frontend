@@ -17,6 +17,8 @@
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import handlers.AssetThresholdHandler
+import models.assets.TypeOfAsset
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import queries.assets.UnquotedSharesQuery
@@ -28,19 +30,32 @@ import viewmodels.implicits._
 
 object UnquotedSharesAmendContinueSummary extends AppUtils {
 
+  private val thresholdHandler = new AssetThresholdHandler()
+  private val threshold        = 5
+
   def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val answers   = userAnswers.get(UnquotedSharesQuery)
-    val valueText = messages("unquotedSharesAmendContinue.summary.value", answers.size)
+    val maybeEntries = userAnswers.get(UnquotedSharesQuery)
+    val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.UnquotedShares)
+    val valueText    = messages("unquotedSharesAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
 
-    answers match {
+    maybeEntries match {
       case Some(entries) if entries.nonEmpty =>
+        val changeUrl =
+          if (count < threshold) {
+            AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode).url
+          } else {
+            controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController
+              .onPageLoad(mode)
+              .url
+          }
+
         Some(
           SummaryListRowViewModel(
             key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
             value   = ValueViewModel(valueText),
             actions = Seq(
-              ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode).url)
+              ActionItemViewModel("site.change", changeUrl)
                 .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
             )
           )

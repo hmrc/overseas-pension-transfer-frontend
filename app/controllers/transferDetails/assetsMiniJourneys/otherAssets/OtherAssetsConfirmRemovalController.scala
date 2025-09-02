@@ -19,13 +19,12 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalFormProvider
-import models.assets.OtherAssetsMiniJourney
-import models.{NormalMode, UserAnswers}
+import handlers.AssetThresholdHandler
+import models.NormalMode
+import models.assets.{OtherAssetsMiniJourney, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.OtherAssetsQuery
-import repositories.SessionRepository
-import services.{TransferDetailsService, UserAnswersService}
+import services.{MoreAssetCompletionService, TransferDetailsService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalView
 
@@ -36,14 +35,16 @@ class OtherAssetsConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    sessionRepository: SessionRepository,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: OtherAssetsConfirmRemovalFormProvider,
     userAnswersService: UserAnswersService,
+    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
-    view: OtherAssetsConfirmRemovalView
+    assetThresholdHandler: AssetThresholdHandler,
+    view: OtherAssetsConfirmRemovalView,
+    moreAssetCompletionService: MoreAssetCompletionService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -59,16 +60,24 @@ class OtherAssetsConfirmRemovalController @Inject() (
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
       confirmRemoval =>
         if (!confirmRemoval) {
-          Future.successful(Redirect(AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode = NormalMode)))
+          val otherAssetsCount = assetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.Other)
+          val redirectTarget   =
+            if (otherAssetsCount >= 5) {
+
+              controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController.onPageLoad(mode = NormalMode)
+            } else {
+              AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode = NormalMode)
+            }
+
+          Future.successful(Redirect(redirectTarget))
         } else {
           (for {
-            updatedAnswers     <- Future.fromTry(TransferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _                  <- sessionRepository.set(updatedAnswers)
-            minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(updatedAnswers, OtherAssetsQuery))
-            _                  <- userAnswersService.setExternalUserAnswers(minimalUserAnswers)
-          } yield Redirect(AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode = NormalMode))).recover {
-            case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-          }
+            updatedAnswers <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.Other, completed = false)
+          } yield Redirect(AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode = NormalMode)))
+            .recover {
+              case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
         }
     )
   }
