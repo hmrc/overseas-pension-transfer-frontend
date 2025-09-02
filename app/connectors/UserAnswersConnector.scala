@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.parsers.UserAnswersParser.{
+  DeleteUserAnswersType,
   GetSubmissionResponseHttpReads,
   GetUserAnswersHttpReads,
   GetUserAnswersType,
@@ -82,5 +83,15 @@ class UserAnswersConnector @Inject() (
           Left(SubmissionErrorResponse(e.getMessage, None))
       }
 
-  def deleteAnswers(id: String):
+  def deleteAnswers(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteUserAnswersType] = {
+    def url: URL = url"${appConfig.backendService}/save-for-later/$id"
+
+    http.delete(url)
+      .execute[DeleteUserAnswersType]
+      .recover {
+        case e: Exception =>
+          logger.warn(s"Error deleting user answers for ID '$id': ${e.getMessage}", e)
+          Left(SubmissionErrorResponse(e.getMessage, None))
+      }
+  }
 }

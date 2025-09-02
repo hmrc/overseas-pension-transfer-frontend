@@ -55,7 +55,7 @@ class UserAnswersService @Inject() (
     connector.postSubmission(SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId))
   }
 
-  def clearUserAnswers(id: String): Future[Either[UserAnswersError, Done]] = {
-    connector.
+  def clearUserAnswers(id: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
+    connector.deleteAnswers(id)
   }
 }
