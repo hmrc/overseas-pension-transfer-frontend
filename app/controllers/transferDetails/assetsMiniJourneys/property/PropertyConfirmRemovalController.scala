@@ -19,6 +19,8 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
+import models.assets.PropertyMiniJourney
+import models.{NormalMode, UserAnswers}
 import handlers.AssetThresholdHandler
 import models.NormalMode
 import models.assets.{PropertyMiniJourney, TypeOfAsset}
@@ -38,7 +40,6 @@ class PropertyConfirmRemovalController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: PropertyConfirmRemovalFormProvider,
-    transferDetailsService: TransferDetailsService,
     miniJourney: PropertyMiniJourney.type,
     assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
@@ -71,7 +72,7 @@ class PropertyConfirmRemovalController @Inject() (
           Future.successful(Redirect(redirectTarget))
         } else {
           (for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            updatedAnswers <- Future.fromTry(TransferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.Property, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
             .recover {

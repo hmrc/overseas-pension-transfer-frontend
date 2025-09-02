@@ -16,11 +16,14 @@
 
 package pages.transferDetails
 
-import controllers.routes
-import models.{Mode, TaskCategory, UserAnswers, WhyTransferIsTaxable}
+import controllers.transferDetails.routes
+import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
+import models.{Mode, NormalMode, TaskCategory, UserAnswers, WhyTransferIsTaxable}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object WhyTransferIsTaxablePage extends QuestionPage[WhyTransferIsTaxable] {
 
@@ -29,11 +32,24 @@ case object WhyTransferIsTaxablePage extends QuestionPage[WhyTransferIsTaxable] 
   override def toString: String = "whyTaxableOT"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.IndexController.onPageLoad()
+    answers.get(WhyTransferIsTaxablePage) match {
+      case Some(TransferExceedsOTCAllowance) => routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode)
+      case Some(NoExclusion)                 => routes.AmountOfTaxDeductedController.onPageLoad(NormalMode)
+      case _                                 => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+    routes.TransferDetailsCYAController.onPageLoad()
 
   final def changeLink(mode: Mode): Call =
-    controllers.transferDetails.routes.WhyTransferIsTaxableController.onPageLoad(mode)
+    routes.WhyTransferIsTaxableController.onPageLoad(mode)
+
+  override def cleanup(maybeExclusion: Option[WhyTransferIsTaxable], userAnswers: UserAnswers): Try[UserAnswers] = {
+    maybeExclusion match {
+      case Some(NoExclusion) =>
+        userAnswers.remove(ApplicableTaxExclusionsPage)
+      case _                 => super.cleanup(maybeExclusion, userAnswers)
+    }
+  }
+
 }

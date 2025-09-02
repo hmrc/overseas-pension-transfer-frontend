@@ -25,9 +25,9 @@ sealed trait AssetsQuery[A] extends Gettable[A] with Settable[A] {
   def path: JsPath
 }
 
-case object CashQuery extends AssetsQuery[List[CashEntry]] {
+case object CashQuery extends AssetsQuery[CashEntry] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Cash.toString
 }
 
 case object QuotedSharesQuery extends AssetsQuery[List[QuotedSharesEntry]] {
