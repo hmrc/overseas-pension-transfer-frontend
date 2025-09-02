@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberNinoFormProvider
 import models.Mode
 import org.apache.pekko.Done
@@ -25,7 +26,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{MemberDetailsService, UserAnswersService}
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberNinoView
 
@@ -44,7 +45,7 @@ class MemberNinoController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberNinoView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport with Logging with ErrorHandling {
 
   val form = formProvider()
 
@@ -71,7 +72,7 @@ class MemberNinoController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
 
           }

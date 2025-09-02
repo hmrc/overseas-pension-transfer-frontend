@@ -17,15 +17,14 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberIsResidentUKFormProvider
+import models.Mode
 import models.TaskCategory.MemberDetails
-import models.taskList.TaskStatus.InProgress
-import models.{CheckMode, Mode}
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.TaskStatusQuery
 import repositories.SessionRepository
 import services.{MemberDetailsService, TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -48,7 +47,7 @@ class MemberIsResidentUKController @Inject() (
     view: MemberIsResidentUKView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -80,7 +79,7 @@ class MemberIsResidentUKController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberIsResidentUKPage.nextPage(redirectMode, ua2))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
         }

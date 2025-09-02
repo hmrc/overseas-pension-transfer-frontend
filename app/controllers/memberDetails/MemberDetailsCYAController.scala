@@ -18,10 +18,11 @@ package controllers.memberDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import controllers.helpers.ErrorHandling
 import models.TaskCategory.MemberDetails
-import models.taskList.TaskStatus.{Completed, InProgress}
-import org.apache.pekko.Done
+import models.taskList.TaskStatus.Completed
 import models.{CheckMode, NormalMode}
+import org.apache.pekko.Done
 import pages.memberDetails.MemberDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,7 +48,7 @@ class MemberDetailsCYAController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberDetailsCYAView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
@@ -65,7 +66,7 @@ class MemberDetailsCYAController @Inject() (
       } yield {
         savedForLater match {
           case Right(Done) => Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, ua1))
-          case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          case Left(err)   => onFailureRedirect(err)
         }
       }
   }
