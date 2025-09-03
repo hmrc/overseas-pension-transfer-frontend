@@ -8,7 +8,9 @@ GET        /assets/*file                                                        
 
 GET        /language/:lang                                                                        controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET        /start                                                                                 controllers.MpsOnrampController.onRamp(pstr: String ?= "", returnUrl: String ?= "")
+GET        /start                                                                                 controllers.MpsOnRampController.onRamp(pstr: String ?= "", returnUrl: String ?= "")
+
+GET        /dashboard                                                                             controllers.DashboardController.onPageLoad()
 
 GET        /refresh-session                                                                       controllers.KeepAliveController.keepAlive()
 
