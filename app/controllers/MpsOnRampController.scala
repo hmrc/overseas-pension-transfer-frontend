@@ -24,7 +24,7 @@ import javax.inject._
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import play.api.i18n.I18nSupport
-import queries.{PstrQuery, ReturnUrlQuery}
+import queries.mps.{PstrQuery, ReturnUrlQuery, SrnQuery}
 import repositories.DashboardSessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,11 +37,12 @@ class MpsOnRampController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onRamp(pstr: String, returnUrl: String): Action[AnyContent] = identify.async { implicit request =>
+  def onRamp(pstr: String, srn: String, returnUrl: String): Action[AnyContent] = identify.async { implicit request =>
     for {
       dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(PstrQuery, pstr))
       dd1           <- Future.fromTry(dashboardData.set(ReturnUrlQuery, returnUrl))
-      _             <- repo.set(dd1)
-    } yield Redirect(MpsOnRampPage.nextPage(dd1))
+      dd2           <- Future.fromTry(dd1.set(SrnQuery, srn))
+      _             <- repo.set(dd2)
+    } yield Redirect(MpsOnRampPage.nextPage(dd2))
   }
 }
