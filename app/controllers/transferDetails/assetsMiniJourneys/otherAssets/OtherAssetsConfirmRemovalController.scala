@@ -38,7 +38,6 @@ class OtherAssetsConfirmRemovalController @Inject() (
     requireData: DataRequiredAction,
     displayData: DisplayAction,
     formProvider: OtherAssetsConfirmRemovalFormProvider,
-    transferDetailsService: TransferDetailsService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
     assetThresholdHandler: AssetThresholdHandler,
@@ -71,7 +70,7 @@ class OtherAssetsConfirmRemovalController @Inject() (
           Future.successful(Redirect(redirectTarget))
         } else {
           (for {
-            updatedAnswers <- Future.fromTry(transferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            updatedAnswers <- Future.fromTry(TransferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.Other, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode = NormalMode)))
             .recover {

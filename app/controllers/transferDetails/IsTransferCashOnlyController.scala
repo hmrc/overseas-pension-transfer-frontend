@@ -23,8 +23,10 @@ import models.Mode
 import models.TaskCategory.TransferDetails
 import models.assets.TypeOfAsset
 import org.apache.pekko.Done
-import pages.transferDetails._
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage, TypeOfAssetPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Writes._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}
@@ -86,7 +88,7 @@ class IsTransferCashOnlyController @Inject() (
       val netAmount = userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
       for {
         ua1 <- userAnswers.set(CashAmountInTransferPage, netAmount)
-        ua2 <- ua1.set(TypeOfAssetPage, Set[TypeOfAsset](TypeOfAsset.Cash))
+        ua2 <- ua1.set(TypeOfAssetPage, Seq[TypeOfAsset](TypeOfAsset.Cash))
         ua3 <- ua2.set(IsTransferCashOnlyPage, isCashOnly)
       } yield ua3
     } else {

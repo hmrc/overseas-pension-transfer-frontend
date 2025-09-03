@@ -17,10 +17,13 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, Mode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import services.TransferDetailsService
+
+import scala.util.Try
 
 case object IsTransferCashOnlyPage extends QuestionPage[Boolean] {
 
@@ -29,10 +32,20 @@ case object IsTransferCashOnlyPage extends QuestionPage[Boolean] {
   override def toString: String = "cashOnlyTransfer"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    answers.get(IsTransferCashOnlyPage) match {
+      case Some(true)  => routes.TransferDetailsCYAController.onPageLoad()
+      case Some(false) => routes.TypeOfAssetController.onPageLoad(NormalMode)
+      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
+
+  override def cleanup(maybeTransferIsCashOnly: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    maybeTransferIsCashOnly match {
+      case Some(true) => TransferDetailsService.removeAllAssetEntriesExceptCash(userAnswers)
+      case _          => super.cleanup(maybeTransferIsCashOnly, userAnswers)
+    }
 
   final def changeLink(mode: Mode): Call =
     routes.IsTransferCashOnlyController.onPageLoad(mode)

@@ -30,8 +30,7 @@ class OverseasTransferAllowancePageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        // TODO change when pages are connected
-        OverseasTransferAllowancePage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.IndexController.onPageLoad()
+        OverseasTransferAllowancePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.AmountOfTransferController.onPageLoad(NormalMode)
       }
     }
 

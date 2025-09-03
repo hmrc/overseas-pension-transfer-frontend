@@ -27,7 +27,6 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MoreAssetCompletionService @Inject() (
-    transferDetailsService: TransferDetailsService,
     assetThresholdHandler: AssetThresholdHandler,
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService
@@ -45,7 +44,7 @@ class MoreAssetCompletionService @Inject() (
     for {
       // Step 1: mark asset completed
       updatedAnswers <- Future.fromTry(
-                          transferDetailsService.setAssetCompleted(userAnswers, assetType, completed)
+                          TransferDetailsService.setAssetCompleted(userAnswers, assetType, completed)
                         )
 
       // Step 2: enrich with threshold flags

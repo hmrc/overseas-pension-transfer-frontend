@@ -17,26 +17,16 @@
 package services
 
 import base.SpecBase
-import models.assets.{QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesEntry, UnquotedSharesMiniJourney}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import models.assets._
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json.Json
-import play.api.test.Helpers._
-import queries.assets.AssetCompletionFlag
-import repositories.SessionRepository
+import queries.assets.{AssetCompletionFlag, AssetCompletionFlags, SelectedAssetTypes}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
 
-  private val sessionRepository = mock[SessionRepository]
-
-  private val service = new TransferDetailsService
+  private val service = TransferDetailsService
 
   "assetCount" - {
     "must return the number of entries for a given asset journey" in {
@@ -83,38 +73,6 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
     }
   }
 
-  "getNextAssetRoute" - {
-    "must return the first uncompleted journey in order" in {
-      val selectedTypes: Set[TypeOfAsset] = Set(UnquotedSharesMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
-
-      val result = service.getNextAssetRoute(userAnswers).map(_.toString)
-      result mustBe Some(UnquotedSharesMiniJourney.call.url)
-    }
-
-    "must skip journeys not in the selected assets" in {
-      val selectedTypes: Set[TypeOfAsset] = Set(QuotedSharesMiniJourney.assetType)
-      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
-
-      val result = service.getNextAssetRoute(userAnswers).map(_.toString)
-      result mustBe Some(QuotedSharesMiniJourney.call.url)
-    }
-
-    "must return None if all selected journeys are completed" in {
-      val userAnswers = emptyUserAnswers
-        .set[Set[TypeOfAsset]](TypeOfAssetPage, Set(UnquotedSharesMiniJourney.assetType)).success.value
-        .set(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType), true).success.value
-
-      val result = service.getNextAssetRoute(userAnswers)
-      result mustBe None
-    }
-
-    "must return None if no asset types have been selected" in {
-      val result = service.getNextAssetRoute(emptyUserAnswers)
-      result mustBe None
-    }
-  }
-
   "setAssetCompleted" - {
     "must return updated UserAnswers with flag set to true" in {
       val result = service.setAssetCompleted(emptyUserAnswers, UnquotedSharesMiniJourney.assetType, completed = true)
@@ -152,5 +110,64 @@ class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
       result.get.data mustBe Json.obj()
     }
   }
+  "removeAllAssetEntriesExceptCash" - {
 
+    "must remove all non-cash asset data, clear completion flags, and set selection to cash only" in {
+
+      val uaWithAssetsAndFlags =
+        emptyUserAnswers
+          .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("UQ Co", 10, 1, "A"))).success.value
+          .set(QuotedSharesMiniJourney.query, List(QuotedSharesEntry("Q Co", 20, 2, "B"))).success.value
+          .set(OtherAssetsMiniJourney.query, List(OtherAssetsEntry("Gold", 30))).success.value
+          .set(CashMiniJourney.query, CashEntry(999)).success.value
+          .set(SelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash, TypeOfAsset.UnquotedShares, TypeOfAsset.QuotedShares, TypeOfAsset.Other)).success.value
+          .set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true).success.value
+          .set(AssetCompletionFlag(TypeOfAsset.QuotedShares), true).success.value
+          .set(AssetCompletionFlag(TypeOfAsset.Other), true).success.value
+          .set(AssetCompletionFlag(TypeOfAsset.Cash), true).success.value
+
+      val result = service.removeAllAssetEntriesExceptCash(uaWithAssetsAndFlags)
+
+      result mustBe a[Success[_]]
+      val updated = result.get
+
+      updated.get(UnquotedSharesMiniJourney.query) mustBe None
+      updated.get(QuotedSharesMiniJourney.query) mustBe None
+      updated.get(OtherAssetsMiniJourney.query) mustBe None
+
+      updated.get(CashMiniJourney.query) mustBe Some(CashEntry(999))
+
+      updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
+
+      updated.get(AssetCompletionFlag(TypeOfAsset.UnquotedShares)) mustBe None
+      updated.get(AssetCompletionFlag(TypeOfAsset.QuotedShares)) mustBe None
+      updated.get(AssetCompletionFlag(TypeOfAsset.Other)) mustBe None
+      updated.get(AssetCompletionFlag(TypeOfAsset.Cash)) mustBe None
+
+      updated.get(AssetCompletionFlags) mustBe None
+    }
+
+    "must remove non-cash data even if SelectedAssetTypes already equals Set(Cash)" in {
+      val ua =
+        emptyUserAnswers
+          .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("Leftover", 10, 1, "C"))).success.value
+          .set(SelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash)).success.value
+
+      val result = service.removeAllAssetEntriesExceptCash(ua)
+
+      result mustBe a[Success[_]]
+      val updated = result.get
+
+      updated.get(UnquotedSharesMiniJourney.query) mustBe None
+      updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
+    }
+
+    "must succeed and set SelectedAssetTypes to cash when there is nothing to remove" in {
+      val result = service.removeAllAssetEntriesExceptCash(emptyUserAnswers)
+
+      result mustBe a[Success[_]]
+      val updated = result.get
+      updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
+    }
+  }
 }
