@@ -30,7 +30,7 @@ import repositories.DashboardSessionRepository
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MpsOnRampController @Inject()(
+class MpsOnRampController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     repo: DashboardSessionRepository,
     identify: IdentifierAction

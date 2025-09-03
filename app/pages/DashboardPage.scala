@@ -19,7 +19,6 @@ package pages
 import controllers.routes
 import models.{DashboardData, PstrNumber, SrnNumber}
 import play.api.mvc.Call
-import queries.mps.{PstrQuery, SrnQuery}
 
 object DashboardPage extends Page {
 
