@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package queries
+package queries.mps
 
 import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-object PstrQuery extends Gettable[String] with Settable[String] {
-  override val path: JsPath = JsPath \ "mps" \ "pstr"
+object ReturnUrlQuery extends Gettable[String] with Settable[String] {
+  override val path: JsPath = JsPath \ "mps" \ "returnUrl"
 }

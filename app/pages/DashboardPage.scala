@@ -19,9 +19,21 @@ package pages
 import controllers.routes
 import models.DashboardData
 import play.api.mvc.Call
+import queries.mps.{PstrQuery, SrnQuery}
 
 object DashboardPage extends Page {
 
-  def nextPage(data: DashboardData): Call =
-    routes.WhatWillBeNeededController.onPageLoad()
+  def nextPage(dd: DashboardData): Call = {
+    val necessaryData: Option[(String, String)] =
+      for {
+        pstr <- dd.get(PstrQuery)
+        srn  <- dd.get(SrnQuery)
+      } yield (pstr, srn)
+
+    necessaryData.fold {
+      controllers.auth.routes.UnauthorisedController.onPageLoad()
+    } { case (pstr, srn) =>
+      routes.WhatWillBeNeededController.onPageLoad(pstr, srn)
+    }
+  }
 }
