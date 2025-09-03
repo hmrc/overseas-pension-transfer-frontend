@@ -94,4 +94,10 @@ class SessionRepository @Inject() (
       .toFuture()
       .map(_ => true)
   }
+
+  def clear: Future[Boolean] = Mdc.preservingMdc {
+    collection.drop()
+      .toFuture()
+      .map(_ => true)
+  }
 }

@@ -26,9 +26,10 @@ import play.api.libs.json.{JsError, JsPath, JsSuccess, JsonValidationError}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object UserAnswersParser {
-  type GetUserAnswersType = Either[UserAnswersError, UserAnswersDTO]
-  type SetUserAnswersType = Either[UserAnswersError, Done]
-  type SubmissionType     = Either[SubmissionErrorResponse, SubmissionResponse]
+  type GetUserAnswersType    = Either[UserAnswersError, UserAnswersDTO]
+  type SetUserAnswersType    = Either[UserAnswersError, Done]
+  type SubmissionType        = Either[SubmissionErrorResponse, SubmissionResponse]
+  type DeleteUserAnswersType = Either[UserAnswersError, Done]
 
   implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
 
@@ -100,6 +101,23 @@ object UserAnswersParser {
                   s" Unable to parse Json as SubmissionErrorResponse: ${formatJsonErrors(errors)}"
               )
               Left(SubmissionErrorResponse("Unable to parse Json as SubmissionErrorResponse", Some(formatJsonErrors(errors))))
+          }
+      }
+  }
+
+  implicit object DeleteUserAnswersHttpReads extends HttpReads[DeleteUserAnswersType] with Logging {
+
+    override def read(method: String, url: String, response: HttpResponse): DeleteUserAnswersType =
+      response.status match {
+        case NO_CONTENT => Right(Done)
+        case statusCode =>
+          response.json.validate[UserAnswersErrorResponse] match {
+            case JsSuccess(value, _) =>
+              logger.warn(s"[UserAnswersConnector][deleteAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
+              Left(value)
+            case JsError(errors)     =>
+              logger.warn(s"[UserAnswersConnector][deleteAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
+              Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
           }
       }
   }
