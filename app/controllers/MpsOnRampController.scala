@@ -17,30 +17,31 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import models.{DashboardData, PstrNumber, SrnNumber}
+import models.DashboardData
 import pages.MpsOnRampPage
 
 import javax.inject._
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import play.api.i18n.I18nSupport
-import queries.mps.{PstrQuery, ReturnUrlQuery, SrnQuery}
+import queries.{PstrQuery, ReturnUrlQuery}
 import repositories.DashboardSessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MpsOnRampController @Inject() (
+class MpsOnRampController @Inject()(
     val controllerComponents: MessagesControllerComponents,
     repo: DashboardSessionRepository,
     identify: IdentifierAction
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onRamp(srn: String): Action[AnyContent] = identify.async { implicit request =>
+  def onRamp(pstr: String, returnUrl: String): Action[AnyContent] = identify.async { implicit request =>
     for {
-      dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(SrnQuery, SrnNumber(srn)))
-      _             <- repo.set(dashboardData)
-    } yield Redirect(MpsOnRampPage.nextPage(dashboardData))
+      dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(PstrQuery, pstr))
+      dd1           <- Future.fromTry(dashboardData.set(ReturnUrlQuery, returnUrl))
+      _             <- repo.set(dd1)
+    } yield Redirect(MpsOnRampPage.nextPage(dd1))
   }
 }
