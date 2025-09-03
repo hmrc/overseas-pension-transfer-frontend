@@ -17,16 +17,14 @@
 package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.Mode
-import models.address.SchemeManagersAddress
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{AddressService, CountryService, UserAnswersService}
@@ -51,7 +49,7 @@ class SchemeManagersAddressController @Inject() (
     view: SchemeManagersAddressView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
+  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils with ErrorHandling {
 
   private def form: Form[SchemeManagersAddressFormData] = formProvider()
 
@@ -93,7 +91,7 @@ class SchemeManagersAddressController @Inject() (
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(SchemeManagersAddressPage.nextPage(mode, updatedAnswers))
-                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                  case Left(err)   => onFailureRedirect(err)
                 }
               }
           }

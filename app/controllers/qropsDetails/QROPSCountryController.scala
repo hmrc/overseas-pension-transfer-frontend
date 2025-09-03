@@ -17,13 +17,12 @@
 package controllers.qropsDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.qropsDetails.QROPSCountryFormProvider
-import models.{Mode, UserAnswers}
+import models.Mode
 import models.address.Country
-import models.requests.DataRequest
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
-import pages.qropsDetails.{QROPSCountryPage, QROPSOtherCountryPage}
+import pages.qropsDetails.QROPSCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -34,7 +33,6 @@ import views.html.qropsDetails.QROPSCountryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
 
 class QROPSCountryController @Inject() (
     override val messagesApi: MessagesApi,
@@ -48,7 +46,7 @@ class QROPSCountryController @Inject() (
     view: QROPSCountryView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -91,7 +89,7 @@ class QROPSCountryController @Inject() (
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
-                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                  case Left(err)   => onFailureRedirect(err)
                 }
               }
           }

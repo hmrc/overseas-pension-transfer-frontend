@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberDateOfLeavingUKFormProvider
 import models.Mode
 import org.apache.pekko.Done
@@ -24,7 +25,7 @@ import pages.memberDetails.MemberDateOfLeavingUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{MemberDetailsService, UserAnswersService}
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberDateOfLeavingUKView
 
@@ -43,7 +44,7 @@ class MemberDateOfLeavingUKController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberDateOfLeavingUKView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
@@ -71,7 +72,7 @@ class MemberDateOfLeavingUKController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberDateOfLeavingUKPage.nextPage(mode, userAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
       )

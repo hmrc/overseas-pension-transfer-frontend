@@ -20,7 +20,7 @@ import base.BaseISpec
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, delete, post, stubFor}
 import models.QtNumber
 import models.authentication.{PsaId, Psp, PspId}
-import models.dtos.{PspSubmissionDTO, SubmissionDTO, UserAnswersDTO}
+import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
 import play.api.http.Status._
@@ -100,7 +100,12 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val getAnswers = await(connector.getAnswers("testId"))
 
-        getAnswers shouldBe Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some("/error")))
+        getAnswers shouldBe Left(
+          UserAnswersErrorResponse(
+            "[[UserAnswersConnector][getAnswers]] 500 Unknown (correlationId=-)",
+            Some("""{"field": "value"}""")
+          )
+        )
       }
     }
   }

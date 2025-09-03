@@ -17,11 +17,11 @@
 package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.SchemeManagerOrganisationNameFormProvider
 import models.Mode
 import models.TaskCategory.SchemeManagerDetails
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,7 +46,7 @@ class SchemeManagerOrganisationNameController @Inject() (
     view: SchemeManagerOrganisationNameView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -74,7 +74,7 @@ class SchemeManagerOrganisationNameController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(SchemeManagerOrganisationNamePage.nextPage(mode, ua2))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
       )

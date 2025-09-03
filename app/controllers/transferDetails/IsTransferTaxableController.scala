@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.transferDetails.IsTransferTaxableFormProvider
 import models.Mode
 import models.TaskCategory.TransferDetails
@@ -45,7 +46,7 @@ class IsTransferTaxableController @Inject() (
     view: IsTransferTaxableView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -73,7 +74,7 @@ class IsTransferTaxableController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(IsTransferTaxablePage.nextPage(mode, ua2))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
       )

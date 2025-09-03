@@ -24,6 +24,7 @@ import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsError, JsPath, JsSuccess, JsonValidationError}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import utils.DownstreamLogging
 
 object UserAnswersParser {
   type GetUserAnswersType    = Either[UserAnswersError, UserAnswersDTO]
@@ -31,7 +32,7 @@ object UserAnswersParser {
   type SubmissionType        = Either[SubmissionErrorResponse, SubmissionResponse]
   type DeleteUserAnswersType = Either[UserAnswersError, Done]
 
-  implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging {
+  implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging with DownstreamLogging {
 
     override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType =
       response.status match {
@@ -39,8 +40,9 @@ object UserAnswersParser {
           response.json.validate[UserAnswersDTO] match {
             case JsSuccess(value, _) => Right(value)
             case JsError(errors)     =>
-              logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
-              Left(UserAnswersErrorResponse(s"Unable to parse Json as UserAnswersDTO", Some(formatJsonErrors(errors))))
+              val formatted = formatJsonErrors(errors)
+              logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: $formatted")
+              Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some(formatted)))
           }
         case NOT_FOUND  =>
           logger.warn("[UserAnswersConnector][getAnswers] No record was found in save for later}")
@@ -48,16 +50,18 @@ object UserAnswersParser {
         case statusCode =>
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[UserAnswersConnector][getAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
+              logger.warn(s"[UserAnswersConnector][getAnswers] Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
-              Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
+              val formatted = formatJsonErrors(errors)
+              val err       = logBackendError("[UserAnswersConnector][getAnswers]", response)
+              logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted")
+              Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
       }
   }
 
-  implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging {
+  implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging with DownstreamLogging {
 
     override def read(method: String, url: String, response: HttpResponse): SetUserAnswersType =
       response.status match {
@@ -65,42 +69,38 @@ object UserAnswersParser {
         case statusCode =>
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[UserAnswersConnector][putAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
+              logger.warn(s"[UserAnswersConnector][putAnswers] Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              logger.warn(s"[UserAnswersConnector][putAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
-              Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
+              val formatted = formatJsonErrors(errors)
+              val err       = logBackendError("[UserAnswersConnector][putAnswers]", response)
+              logger.warn(s"[UserAnswersConnector][putAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted")
+              Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
       }
   }
 
-  implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging {
+  implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging with DownstreamLogging {
 
     override def read(method: String, url: String, response: HttpResponse): SubmissionType =
       response.status match {
         case OK         => response.json.validate[SubmissionResponse] match {
             case JsSuccess(value, _) => Right(value)
             case JsError(errors)     =>
-              logger.warn(
-                s"Response code: ${response.status} - [SubmissionConnector][postSubmission]" +
-                  s" Unable to parse Json as SubmissionResponse: ${formatJsonErrors(errors)}"
-              )
-              Left(SubmissionErrorResponse(s"Unable to parse Json as SubmissionResponse", Some(formatJsonErrors(errors))))
+              val formatted = formatJsonErrors(errors)
+              logger.warn(s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionResponse: $formatted")
+              Left(SubmissionErrorResponse("Unable to parse Json as SubmissionResponse", Some(formatted)))
           }
         case statusCode =>
           response.json.validate[SubmissionErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(
-                s"Response code: ${response.status} - [SubmissionConnector][postSubmission]" +
-                  s" Error returned: downstreamStatus: $statusCode, error: ${value.error}"
-              )
+              logger.warn(s"[SubmissionConnector][postSubmission] Downstream error $statusCode: ${value.error}")
               Left(value)
             case JsError(errors)     =>
-              logger.warn(
-                s"Response code: ${response.status} - [SubmissionConnector][postSubmission]" +
-                  s" Unable to parse Json as SubmissionErrorResponse: ${formatJsonErrors(errors)}"
-              )
-              Left(SubmissionErrorResponse("Unable to parse Json as SubmissionErrorResponse", Some(formatJsonErrors(errors))))
+              val formatted = formatJsonErrors(errors)
+              val err       = logBackendError("[SubmissionConnector][postSubmission]", response)
+              logger.warn(s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionErrorResponse: $formatted")
+              Left(SubmissionErrorResponse(err.message, Some(err.body)))
           }
       }
   }

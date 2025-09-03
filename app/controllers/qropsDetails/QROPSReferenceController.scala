@@ -17,10 +17,10 @@
 package controllers.qropsDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.qropsDetails.QROPSReferenceFormProvider
 import models.Mode
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsDetails.QROPSReferencePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,7 +44,7 @@ class QROPSReferenceController @Inject() (
     view: QROPSReferenceView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -71,7 +71,7 @@ class QROPSReferenceController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(QROPSReferencePage.nextPage(mode, updatedAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
       )
