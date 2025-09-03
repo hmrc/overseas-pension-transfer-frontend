@@ -38,7 +38,7 @@ class WhatWillBeNeededController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(pstr: String, srn: String): Action[AnyContent] = identify.async { implicit request =>
     val id = request.authenticatedUser.internalId
 
     sessionRepository.get(id).flatMap {
