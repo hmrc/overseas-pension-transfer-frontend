@@ -20,6 +20,8 @@ import controllers.routes
 import models.DashboardData
 import play.api.mvc.Call
 
-object MpsOnRampPage extends Page {
-  def nextPage(data: DashboardData): Call = routes.DashboardController.onPageLoad()
+object DashboardPage extends Page {
+
+  def nextPage(data: DashboardData): Call =
+    routes.WhatWillBeNeededController.onPageLoad()
 }
