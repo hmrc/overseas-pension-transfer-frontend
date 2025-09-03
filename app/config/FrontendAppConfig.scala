@@ -65,7 +65,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val timeout: Int   = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
 
-  val cacheTtl: Long = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+  val cacheTtl: Long = configuration.get[Int]("cache.ttlSeconds")
+
+  val dashboardCacheTtl: Long = configuration.get[Long]("dashboard.ttlSeconds")
 
   val backendHost: String          = baseUrl("overseas-pension-transfer-backend")
   val backendService: String       = s"$backendHost/overseas-pension-transfer-backend"
