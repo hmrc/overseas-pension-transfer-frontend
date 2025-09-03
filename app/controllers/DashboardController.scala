@@ -17,31 +17,33 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import models.DashboardData
-import pages.MpsOnRampPage
+import pages.DashboardPage
+import play.api.i18n.I18nSupport
+import play.api.mvc._
+import repositories.DashboardSessionRepository
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.DashboardView
 
 import javax.inject._
-import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import play.api.i18n.I18nSupport
-import queries.{PstrQuery, ReturnUrlQuery}
-import repositories.DashboardSessionRepository
-
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class MpsOnRampController @Inject() (
+class DashboardController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     repo: DashboardSessionRepository,
-    identify: IdentifierAction
+    identify: IdentifierAction,
+    view: DashboardView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onRamp(pstr: String, returnUrl: String): Action[AnyContent] = identify.async { implicit request =>
-    for {
-      dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(PstrQuery, pstr))
-      dd1           <- Future.fromTry(dashboardData.set(ReturnUrlQuery, returnUrl))
-      _             <- repo.set(dd1)
-    } yield Redirect(MpsOnRampPage.nextPage(dd1))
+  def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
+    val id = request.authenticatedUser.internalId
+
+    repo.get(id).map {
+      case Some(dd) =>
+        Ok(view(DashboardPage.nextPage(dd).url))
+      case None     =>
+        Redirect(routes.JourneyRecoveryController.onPageLoad())
+    }
   }
 }
