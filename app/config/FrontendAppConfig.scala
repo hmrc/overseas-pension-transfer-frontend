@@ -70,6 +70,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val backendHost: String          = baseUrl("overseas-pension-transfer-backend")
   val backendService: String       = s"$backendHost/overseas-pension-transfer-backend"
   val addressLookupService: String = baseUrl("address-lookup")
+  val pensionSchemeService: String = baseUrl("pensions-scheme")
 
   val localLoggingEnabled: Boolean = configuration.get[Boolean]("localLoggingEnabled")
 }
