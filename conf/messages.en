@@ -69,6 +69,7 @@ journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = We''re having trouble retrieving some information.
 journeyRecovery.startAgain.option.tryAgain = Try again in a few minutes
 journeyRecovery.startAgain.option.dashboard = Return to overseas pension transfer dashboard
+journeyRecovery.startAgain.option.heading = You can:
 journeyRecovery.startAgain.title = Sorry, there is a problem with the service
 journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
