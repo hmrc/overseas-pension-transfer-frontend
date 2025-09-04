@@ -29,7 +29,7 @@ class QROPSNameFormProviderSpec extends StringFieldBehaviours {
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName = "qropsName"
 
     behave like fieldThatBindsValidData(
       form,

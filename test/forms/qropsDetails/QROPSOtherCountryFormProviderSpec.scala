@@ -29,7 +29,7 @@ class QROPSOtherCountryFormProviderSpec extends StringFieldBehaviours {
 
   ".value" - {
 
-    val fieldName = "value"
+    val fieldName = "otherEstablishedCountry"
 
     behave like fieldThatBindsValidData(
       form,
