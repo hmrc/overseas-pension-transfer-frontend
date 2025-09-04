@@ -16,9 +16,10 @@
 
 package queries.mps
 
+import models.PstrNumber
 import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 
-object PstrQuery extends Gettable[String] with Settable[String] {
+object PstrQuery extends Gettable[PstrNumber] with Settable[PstrNumber] {
   override val path: JsPath = JsPath \ "mps" \ "pstr"
 }
