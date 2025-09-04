@@ -45,7 +45,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, isTransferCashOnlyRoute)
@@ -63,7 +63,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       val userAnswers = userAnswersQtNumber.set(IsTransferCashOnlyPage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, isTransferCashOnlyRoute)
@@ -88,7 +88,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
         .thenReturn(Future.successful(Right(Done)))
 
       val application =
-        applicationBuilder(userAnswers = Some(ua))
+        applicationBuilder(userAnswers = ua)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -109,7 +109,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -129,7 +129,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, isTransferCashOnlyRoute)
@@ -143,7 +143,7 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =

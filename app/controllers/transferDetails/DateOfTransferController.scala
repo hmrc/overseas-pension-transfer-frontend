@@ -37,8 +37,7 @@ class DateOfTransferController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     formProvider: DateOfTransferFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: DateOfTransferView,
@@ -46,7 +45,7 @@ class DateOfTransferController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
     implicit request =>
       val form = formProvider()
 
@@ -58,7 +57,7 @@ class DateOfTransferController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
     implicit request =>
       val form = formProvider()
 

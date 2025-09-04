@@ -35,8 +35,7 @@ class OtherAssetsConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     formProvider: OtherAssetsConfirmRemovalFormProvider,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
@@ -47,7 +46,7 @@ class OtherAssetsConfirmRemovalController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   private val form    = formProvider()
-  private val actions = (identify andThen getData andThen requireData andThen displayData)
+  private val actions = (identify andThen getData andThen isAssociatedCheck)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
     Ok(view(form, index))

@@ -45,7 +45,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]
 
-  private def applicationWithMocks(userAnswers: Option[UserAnswers]) =
+  private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)
       .overrides(
         bind[UserAnswersService].toInstance(mockUserAnswersService),
@@ -57,7 +57,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must return OK and the correct view for a GET" in {
       val ua  = userAnswersWithAssets(assetsCount = 5)
-      val app = applicationWithMocks(Some(ua))
+      val app = applicationWithMocks(ua)
 
       running(app) {
         val request = FakeRequest(GET, propertyCyaRoute)
@@ -76,7 +76,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must redirect to MorePropertyDeclarationController when threshold (5 properties) is reached" in {
       val ua  = userAnswersWithAssets(assetsCount = 5)
-      val app = applicationWithMocks(Some(ua))
+      val app = applicationWithMocks(ua)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
@@ -96,7 +96,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must redirect to PropertyAmendContinueController when Property count is below threshold" in {
       val ua  = userAnswersWithAssets(assetsCount = 4)
-      val app = applicationWithMocks(Some(ua))
+      val app = applicationWithMocks(ua)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
@@ -113,7 +113,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val app = applicationWithMocks(None)
+      val app = applicationWithMocks(emptyUserAnswers)
 
       running(app) {
         val request = FakeRequest(GET, propertyCyaRoute)
@@ -125,7 +125,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val app = applicationWithMocks(None)
+      val app = applicationWithMocks(emptyUserAnswers)
 
       running(app) {
         val request = FakeRequest(POST, propertyCyaRoute)

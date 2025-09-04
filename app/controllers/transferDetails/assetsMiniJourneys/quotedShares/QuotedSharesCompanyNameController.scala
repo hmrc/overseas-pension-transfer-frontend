@@ -34,8 +34,7 @@ class QuotedSharesCompanyNameController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     formProvider: QuotedSharesCompanyNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: QuotedSharesCompanyNameView
@@ -44,7 +43,7 @@ class QuotedSharesCompanyNameController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
     implicit request =>
       val preparedForm = request.userAnswers.get(QuotedSharesCompanyNamePage(index)) match {
         case None        => form
@@ -54,7 +53,7 @@ class QuotedSharesCompanyNameController @Inject() (
       Ok(view(preparedForm, mode, index))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

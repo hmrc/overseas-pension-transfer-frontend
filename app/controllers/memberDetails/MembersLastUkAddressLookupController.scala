@@ -39,8 +39,7 @@ class MembersLastUkAddressLookupController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     formProvider: MembersLastUkAddressLookupFormProvider,
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
@@ -55,7 +54,7 @@ class MembersLastUkAddressLookupController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData andThen displayData) { implicit request =>
+    (identify andThen getData andThen isAssociatedCheck) { implicit request =>
       val preparedForm = request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, _)) => form.fill(postcode)
         case Some(NoAddressFound(postcode))    => form.fill(postcode)
@@ -65,7 +64,7 @@ class MembersLastUkAddressLookupController @Inject() (
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
+    (identify andThen getData andThen isAssociatedCheck).async { implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         postcode =>

@@ -47,7 +47,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, submitToHMRCRoute)
@@ -65,7 +65,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
       val userAnswers = userAnswersQtNumber.set(SubmitToHMRCPage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, submitToHMRCRoute)
@@ -86,7 +86,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -108,7 +108,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -128,7 +128,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, submitToHMRCRoute)
@@ -142,7 +142,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =
@@ -160,7 +160,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -189,8 +189,8 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
           bind[DataRequiredAction].to[DataRequiredActionImpl],
-          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswersQtNumber))),
-          bind[DisplayAction].to[FakeDisplayAction]
+          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswersQtNumber)),
+          bind[IsAssociatedCheckAction].to[FakeIsAssociatedCheckAction]
         )
         .build()
 
@@ -222,8 +222,8 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
           bind[DataRequiredAction].to[DataRequiredActionImpl],
-          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(Some(userAnswersQtNumber))),
-          bind[DisplayAction].to[FakeDisplayAction]
+          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswersQtNumber)),
+          bind[IsAssociatedCheckAction].to[FakeIsAssociatedCheckAction]
         )
         .build()
 

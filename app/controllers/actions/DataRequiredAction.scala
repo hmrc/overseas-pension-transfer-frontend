@@ -27,7 +27,6 @@ import play.api.mvc.{ActionRefiner, Result}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-
 //Convert this into the IsAssociatedAction
 //check if SRN etc exists in the UA if not get from the query params
 //make request to isAssociated and then getSchemeDetails and set in AuthenticatedUser

@@ -28,14 +28,15 @@ import scala.concurrent.ExecutionContext
 class PensionSchemeConnector @Inject() (
     appConfig: FrontendAppConfig,
     http: HttpClientV2
-  )(implicit ec: ExecutionContext) {
+  )(implicit ec: ExecutionContext
+  ) {
 
   def checkAssociation(srn: String, user: AuthenticatedUser)(implicit hc: HeaderCarrier) = {
     val url        = url"${appConfig.pensionSchemeService}/register-scheme"
     val userHeader = {
       user match {
-        case PsaUser(psaId, _) => "psaId" -> psaId.value
-        case PspUser(pspId, _) => "pspId" -> pspId.value
+        case PsaUser(psaId, _, _) => "psaId" -> psaId.value
+        case PspUser(pspId, _, _) => "pspId" -> pspId.value
       }
     }
 

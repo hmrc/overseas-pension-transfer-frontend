@@ -37,7 +37,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url)
@@ -55,7 +55,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
       val entries     = List(UnquotedSharesEntry("Company", 1000, 20, "Preferred"))
       val userAnswers = userAnswersQtNumber.set(UnquotedSharesQuery, entries).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request =
@@ -71,7 +71,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -91,7 +91,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url)
@@ -105,7 +105,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =

@@ -39,8 +39,7 @@ class PspDeclarationController @Inject() (
     userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     formProvider: PspDeclarationFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: PspDeclarationView
@@ -49,12 +48,12 @@ class PspDeclarationController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
     implicit request =>
       Ok(view(form))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

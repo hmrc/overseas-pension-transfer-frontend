@@ -46,7 +46,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, typeOfAssetRoute)
@@ -67,7 +67,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
       val userAnswers = userAnswersQtNumber.set(TypeOfAssetPage, values).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, typeOfAssetRoute)
@@ -86,7 +86,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -109,7 +109,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -129,7 +129,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, typeOfAssetRoute)
@@ -143,7 +143,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =

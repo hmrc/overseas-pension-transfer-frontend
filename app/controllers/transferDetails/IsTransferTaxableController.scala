@@ -38,8 +38,7 @@ class IsTransferTaxableController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     taskService: TaskService,
     formProvider: IsTransferTaxableFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -50,7 +49,7 @@ class IsTransferTaxableController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
     implicit request =>
       val preparedForm = request.userAnswers.get(IsTransferTaxablePage) match {
         case None        => form
@@ -60,7 +59,7 @@ class IsTransferTaxableController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

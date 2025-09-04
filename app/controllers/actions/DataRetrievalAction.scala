@@ -32,9 +32,9 @@ class DataRetrievalActionImpl @Inject() (
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DataRequest[A]]] = {
 
-    sessionRepository.get(request.authenticatedUser.internalId) map{
+    sessionRepository.get(request.authenticatedUser.internalId) map {
       case Some(answers) => Right(DataRequest(request.request, request.authenticatedUser, answers))
-      case None => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+      case None          => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
     }
   }
 }

@@ -47,7 +47,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, whyTransferIsNotTaxableRoute)
@@ -66,7 +66,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
       val userAnswers = userAnswersQtNumber.set(WhyTransferIsNotTaxablePage, WhyTransferIsNotTaxable.values.toSet).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, whyTransferIsNotTaxableRoute)
@@ -92,7 +92,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -113,7 +113,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -133,7 +133,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, whyTransferIsNotTaxableRoute)
@@ -147,7 +147,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =
@@ -170,7 +170,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
