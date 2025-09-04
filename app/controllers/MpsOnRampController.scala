@@ -37,12 +37,10 @@ class MpsOnRampController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onRamp(pstr: String, srn: String, returnUrl: String): Action[AnyContent] = identify.async { implicit request =>
+  def onRamp(srn: String): Action[AnyContent] = identify.async { implicit request =>
     for {
-      dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(PstrQuery, PstrNumber(pstr)))
-      dd1           <- Future.fromTry(dashboardData.set(ReturnUrlQuery, returnUrl))
-      dd2           <- Future.fromTry(dd1.set(SrnQuery, SrnNumber(srn)))
-      _             <- repo.set(dd2)
-    } yield Redirect(MpsOnRampPage.nextPage(dd2))
+      dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(SrnQuery, SrnNumber(srn)))
+      _             <- repo.set(dashboardData)
+    } yield Redirect(MpsOnRampPage.nextPage(dashboardData))
   }
 }
