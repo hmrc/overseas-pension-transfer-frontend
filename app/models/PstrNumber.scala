@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package queries.mps
+package models
 
-import models.SrnNumber
-import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
+import play.api.libs.json._
 
-object SrnQuery extends Gettable[SrnNumber] with Settable[SrnNumber] {
-  override val path: JsPath = JsPath \ "mps" \ "srn"
+case class PstrNumber(value: String)
+
+object PstrNumber {
+  implicit val format: Format[PstrNumber] = Json.valueFormat[PstrNumber]
 }
