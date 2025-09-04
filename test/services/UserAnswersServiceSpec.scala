@@ -100,4 +100,24 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
     }
   }
+
+  "clearUserAnswers" - {
+    "return a Right(Done) status when Right(Done) is received from the connector" in {
+      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val setUserAnswers = await(service.clearUserAnswers(userAnswersId))
+
+      setUserAnswers mustBe Right(Done)
+    }
+
+    "Return Left(error) when Left(error) is received from the connector" in {
+      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error Message", None))))
+
+      val setUserAnswers = await(service.clearUserAnswers(userAnswersId))
+
+      setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
+    }
+  }
 }

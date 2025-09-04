@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import controllers.routes
-import models.DashboardData
-import play.api.mvc.Call
-import queries.mps.SrnQuery
+sealed trait DownstreamError {
+  def message: String
+}
 
-object DashboardPage extends Page {
-
-  def nextPage(dd: DashboardData): Call = dd.get(SrnQuery) match {
-    case Some(_) => routes.WhatWillBeNeededController.onPageLoad()
-    case _       => controllers.auth.routes.UnauthorisedController.onPageLoad()
-  }
+final case class BackendError(
+    correlationId: String,
+    status: Int,
+    reason: String,
+    origin: String,
+    body: String
+  ) extends DownstreamError {
+  val message: String = s"[$origin] $status $reason (correlationId=$correlationId)"
 }

@@ -17,16 +17,14 @@
 package controllers.transferDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.transferDetails.OverseasTransferAllowanceFormProvider
-import models.TaskCategory.{MemberDetails, TransferDetails}
-import models.taskList.TaskStatus.InProgress
-import models.{CheckMode, Mode, NormalMode}
+import models.Mode
+import models.TaskCategory.TransferDetails
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
 import pages.transferDetails.OverseasTransferAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.TaskStatusQuery
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -48,7 +46,7 @@ class OverseasTransferAllowanceController @Inject() (
     view: OverseasTransferAllowanceView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -77,7 +75,7 @@ class OverseasTransferAllowanceController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(OverseasTransferAllowancePage.nextPage(mode, updatedAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
       )

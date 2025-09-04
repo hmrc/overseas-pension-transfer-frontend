@@ -18,6 +18,7 @@ package controllers.qropsDetails
 
 import com.google.inject.Inject
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import controllers.helpers.ErrorHandling
 import models.TaskCategory.QROPSDetails
 import models.taskList.TaskStatus.Completed
 import org.apache.pekko.Done
@@ -46,7 +47,7 @@ class QROPSDetailsCYAController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: QROPSDetailsCYAView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
@@ -64,7 +65,7 @@ class QROPSDetailsCYAController @Inject() (
       } yield {
         savedForLater match {
           case Right(Done) => Redirect(QROPSDetailsSummaryPage.nextPage(NormalMode, ua))
-          case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          case Left(err)   => onFailureRedirect(err)
         }
       }
   }

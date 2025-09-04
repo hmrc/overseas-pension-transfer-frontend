@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package controllers.helpers
 
-import controllers.routes
-import models.DashboardData
-import play.api.mvc.Call
-import queries.mps.SrnQuery
+import play.api.Logging
+import play.api.mvc.{RequestHeader, Result, Results}
+import play.api.routing.Router
 
-object DashboardPage extends Page {
+trait ErrorHandling extends Logging {
 
-  def nextPage(dd: DashboardData): Call = dd.get(SrnQuery) match {
-    case Some(_) => routes.WhatWillBeNeededController.onPageLoad()
-    case _       => controllers.auth.routes.UnauthorisedController.onPageLoad()
+  protected def onFailureRedirect(err: Any)(implicit rh: RequestHeader): Result = {
+    val (controller, method) = rh.attrs.get(Router.Attrs.HandlerDef)
+      .map(hd => (hd.controller, hd.method))
+      .getOrElse(("UnknownController", "UnknownMethod"))
+
+    logger.warn(s"[$controller.$method] downstream persistence error: $err")
+    Results.Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
   }
 }
