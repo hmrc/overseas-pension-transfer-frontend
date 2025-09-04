@@ -17,14 +17,14 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{DashboardData, PstrNumber, SrnNumber}
 import play.api.mvc.Call
+import queries.mps.{PstrQuery, SrnQuery}
 
-object IndexPage extends Page {
+object DashboardPage extends Page {
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.TaskListController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.JourneyRecoveryController.onPageLoad()
+  def nextPage(dd: DashboardData): Call = (dd.get(PstrQuery), dd.get(SrnQuery)) match {
+    case (Some(_), Some(_)) => routes.WhatWillBeNeededController.onPageLoad()
+    case _                  => controllers.auth.routes.UnauthorisedController.onPageLoad()
+  }
 }

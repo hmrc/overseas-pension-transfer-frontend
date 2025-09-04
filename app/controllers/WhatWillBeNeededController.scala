@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, PstrNumber, SrnNumber, UserAnswers}
 import pages.WhatWillBeNeededPage
 import play.api.Logging
 import play.api.i18n.I18nSupport

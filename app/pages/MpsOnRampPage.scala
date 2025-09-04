@@ -17,14 +17,9 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.DashboardData
 import play.api.mvc.Call
 
-object IndexPage extends Page {
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.TaskListController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.JourneyRecoveryController.onPageLoad()
+object MpsOnRampPage extends Page {
+  def nextPage(data: DashboardData): Call = routes.DashboardController.onPageLoad()
 }

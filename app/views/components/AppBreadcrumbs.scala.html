@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages
+@this(
+        govukBreadcrumbs: GovukBreadcrumbs
+)
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import play.api.mvc.Call
+@()(implicit messages: Messages)
 
-object IndexPage extends Page {
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.TaskListController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.JourneyRecoveryController.onPageLoad()
-}
+@govukBreadcrumbs(Breadcrumbs(
+    items = Seq(
+        BreadcrumbsItem(
+            content = messages("breadcrumbs.mps"),
+            href = Some("#") //TODO: Update with the actual URL when we have it
+        ),
+        BreadcrumbsItem(
+            content = messages("breadcrumbs.pensionScheme"),
+            href = Some("#") //TODO: Update with the actual URL when we have it
+        ),
+        BreadcrumbsItem(
+            content = messages("breadcrumbs.otc"),
+        )
+    )
+))

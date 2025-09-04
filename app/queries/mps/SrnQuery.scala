@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package queries.mps
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import play.api.mvc.Call
+import models.SrnNumber
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-object IndexPage extends Page {
-
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.TaskListController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.JourneyRecoveryController.onPageLoad()
+object SrnQuery extends Gettable[SrnNumber] with Settable[SrnNumber] {
+  override val path: JsPath = JsPath \ "mps" \ "srn"
 }

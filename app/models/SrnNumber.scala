@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package pages
+package models
 
-import controllers.routes
-import models.{NormalMode, UserAnswers}
-import play.api.mvc.Call
+import play.api.libs.json._
 
-object IndexPage extends Page {
+case class SrnNumber(value: String)
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.TaskListController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.JourneyRecoveryController.onPageLoad()
+object SrnNumber {
+  implicit val format: Format[SrnNumber] = Json.valueFormat[SrnNumber]
 }
