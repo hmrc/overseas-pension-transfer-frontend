@@ -16,16 +16,19 @@
 
 package models.authentication
 
+import models.SrnNumber
+
 //Add Scheme Details in here - Scheme Name and SchemeId/SRN
 sealed trait AuthenticatedUser {
   def internalId: String
   def userType: UserType
+  def srn: Option[SrnNumber]
 }
 
-case class PsaUser(psaId: PsaId, internalId: String) extends AuthenticatedUser {
+case class PsaUser(psaId: PsaId, internalId: String, srn: Option[SrnNumber] = None) extends AuthenticatedUser {
   override val userType: UserType = Psa
 }
 
-case class PspUser(pspId: PspId, internalId: String) extends AuthenticatedUser {
+case class PspUser(pspId: PspId, internalId: String, srn: Option[SrnNumber] = None) extends AuthenticatedUser {
   override val userType: UserType = Psp
 }
