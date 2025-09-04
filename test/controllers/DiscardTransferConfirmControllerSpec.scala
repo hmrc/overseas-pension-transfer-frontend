@@ -19,8 +19,10 @@ package controllers
 import base.SpecBase
 import forms.DiscardTransferConfirmFormProvider
 import models.NormalMode
+import models.responses.UserAnswersErrorResponse
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DiscardTransferConfirmPage
@@ -28,6 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.DiscardTransferConfirmView
 
 import scala.concurrent.Future
@@ -75,16 +78,20 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
       }
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect and clear session and save for later when user answers true" in {
+      val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
 
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.clearUserAnswers(any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
@@ -96,7 +103,58 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual DiscardTransferConfirmPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual controllers.routes.IndexController.onPageLoad().url
+
+        verify(mockSessionRepository, times(1)).clear(any())
+        verify(mockUserAnswersService, times(1)).clearUserAnswers(any())(any())
+      }
+    }
+
+    "must redirect to the task list page when user answers false" in {
+      val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, false).success.value
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, discardTransferConfirmRoute)
+            .withFormUrlEncodedBody(("discardTransfer", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
+
+      }
+    }
+
+    "must return Internal Server Error when clearUserAnswers returns a Left(DeleteFailed)" in {
+      val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
+
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.clearUserAnswers(any())(any())) thenReturn
+        Future.successful(Left(UserAnswersErrorResponse("Error", None)))
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, discardTransferConfirmRoute)
+            .withFormUrlEncodedBody(("discardTransfer", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
       }
     }
 

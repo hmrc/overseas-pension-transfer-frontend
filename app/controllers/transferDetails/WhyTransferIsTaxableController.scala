@@ -17,16 +17,14 @@
 package controllers.transferDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.transferDetails.WhyTransferIsTaxableFormProvider
-import models.{CheckMode, Mode}
-import models.TaskCategory.{MemberDetails, TransferDetails}
-import models.taskList.TaskStatus.InProgress
+import models.Mode
+import models.TaskCategory.TransferDetails
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
 import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.TaskStatusQuery
 import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -47,7 +45,7 @@ class WhyTransferIsTaxableController @Inject() (
     view: WhyTransferIsTaxableView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -75,7 +73,7 @@ class WhyTransferIsTaxableController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(WhyTransferIsTaxablePage.nextPage(mode, ua2))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
       )

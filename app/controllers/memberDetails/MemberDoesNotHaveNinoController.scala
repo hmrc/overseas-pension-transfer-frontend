@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberDoesNotHaveNinoFormProvider
 import models.Mode
 import org.apache.pekko.Done
@@ -43,7 +44,7 @@ class MemberDoesNotHaveNinoController @Inject() (
     view: MemberDoesNotHaveNinoView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -69,7 +70,7 @@ class MemberDoesNotHaveNinoController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberDoesNotHaveNinoPage.nextPage(mode, updatedAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
 
           }

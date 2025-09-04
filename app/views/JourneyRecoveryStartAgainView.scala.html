@@ -15,27 +15,29 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
 
 @this(
-        layout: templates.Layout,
-        govukButton: GovukButton
+    layout: templates.Layout
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("journeyRecovery.startAgain.title"))) {
+@layout(pageTitle = titleNoForm(messages("journeyRecovery.startAgain.title")), showPageFooter = false) {
 
-    <h1 class="govuk-heading-l">@messages("journeyRecovery.startAgain.heading")</h1>
+<h1 class="govuk-heading-xl">@messages("journeyRecovery.continue.heading")</h1>
 
-    <p class="govuk-body">@messages("journeyRecovery.startAgain.guidance")</p>
+<p class="govuk-body">@messages("journeyRecovery.continue.guidance")</p>
 
-    <p class="govuk-body">
-        @govukButton(
-            ButtonViewModel(Text(messages("site.startAgain")))
-                .asLink(routes.IndexController.onPageLoad().url)
-        )
-    </p>
+<h2 class="govuk-heading-s">@messages("journeyRecovery.startAgain.option.heading")</h2>
+
+<ul class="govuk-list govuk-list--bullet">
+    <li>@messages("journeyRecovery.startAgain.option.tryAgain")</li>
+    <li>
+        <a class="govuk-link" href="@controllers.routes.IndexController.onPageLoad().url">
+            @messages("journeyRecovery.startAgain.option.dashboard")
+        </a>
+    </li>
+</ul>
 }

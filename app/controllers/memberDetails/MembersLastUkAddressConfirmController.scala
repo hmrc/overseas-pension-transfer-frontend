@@ -17,11 +17,12 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberConfirmLastUkAddressFormProvider
 import models.address.MembersLastUKAddress
 import models.{Mode, NormalMode}
 import org.apache.pekko.Done
-import pages.memberDetails.{MemberIsResidentUKPage, MembersLastUKAddressPage, MembersLastUkAddressConfirmPage, MembersLastUkAddressSelectPage}
+import pages.memberDetails.{MembersLastUKAddressPage, MembersLastUkAddressConfirmPage, MembersLastUkAddressSelectPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -47,7 +48,7 @@ class MembersLastUkAddressConfirmController @Inject() (
     view: MembersLastUkAddressConfirmView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form: Form[Boolean] = formProvider()
 
@@ -85,7 +86,7 @@ class MembersLastUkAddressConfirmController @Inject() (
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(MembersLastUkAddressConfirmPage.nextPage(mode, updatedAnswers))
-                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                  case Left(err)   => onFailureRedirect(err)
                 }
               }
           )

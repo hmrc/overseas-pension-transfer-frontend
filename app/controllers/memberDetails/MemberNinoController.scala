@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberNinoFormProvider
 import models.Mode
 import org.apache.pekko.Done
@@ -44,7 +45,7 @@ class MemberNinoController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberNinoView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport with Logging with ErrorHandling {
 
   val form = formProvider()
 
@@ -71,7 +72,7 @@ class MemberNinoController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
 
           }

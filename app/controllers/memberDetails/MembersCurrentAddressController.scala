@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.Mode
 import org.apache.pekko.Done
@@ -48,7 +49,7 @@ class MembersCurrentAddressController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MembersCurrentAddressView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController with I18nSupport with Logging with ErrorHandling {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
@@ -83,7 +84,7 @@ class MembersCurrentAddressController @Inject() (
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(MembersCurrentAddressPage.nextPage(mode, userAnswers))
-                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                  case Left(err)   => onFailureRedirect(err)
                 }
 
               }

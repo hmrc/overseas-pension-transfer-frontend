@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberIsResidentUKFormProvider
 import models.Mode
 import models.TaskCategory.MemberDetails
@@ -44,7 +45,7 @@ class MemberIsResidentUKController @Inject() (
     view: MemberIsResidentUKView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -72,7 +73,7 @@ class MemberIsResidentUKController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberIsResidentUKPage.nextPage(mode, ua1))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
         }

@@ -40,6 +40,9 @@ object TypeOfAsset extends Enumerable.Implicits {
     Other
   )
 
+  implicit val ordering: Ordering[TypeOfAsset] =
+    Ordering.by[TypeOfAsset, Int](t => values.indexOf(t))
+
   def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
     values.zipWithIndex.map {
       case (value, index) =>

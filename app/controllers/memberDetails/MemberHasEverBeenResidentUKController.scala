@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberHasEverBeenResidentUKFormProvider
 import models.Mode
 import models.TaskCategory.MemberDetails
@@ -45,7 +46,7 @@ class MemberHasEverBeenResidentUKController @Inject() (
     view: MemberHasEverBeenResidentUKView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form: Form[Boolean] = formProvider()
 
@@ -73,7 +74,7 @@ class MemberHasEverBeenResidentUKController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberHasEverBeenResidentUKPage.nextPage(mode, ua2))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
         }

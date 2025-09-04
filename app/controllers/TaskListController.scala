@@ -17,14 +17,10 @@
 package controllers
 
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
-import models.NormalMode
-import models.TaskCategory.QROPSDetails
-import models.taskList.TaskStatus.Completed
+import controllers.helpers.ErrorHandling
 import org.apache.pekko.Done
-import pages.qropsDetails.QROPSDetailsSummaryPage
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import queries.TaskStatusQuery
 import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -44,7 +40,7 @@ class TaskListController @Inject() (
     userAnswersService: UserAnswersService,
     view: TaskListView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
     for {
@@ -59,7 +55,7 @@ class TaskListController @Inject() (
     } yield {
       savedForLater match {
         case Right(Done) => Ok(view(TaskListViewModel.rows(ua2), TaskListViewModel.submissionRow(ua2)))
-        case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+        case Left(err)   => onFailureRedirect(err)
       }
     }
   }

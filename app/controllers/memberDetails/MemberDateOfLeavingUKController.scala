@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberDateOfLeavingUKFormProvider
 import models.Mode
 import org.apache.pekko.Done
@@ -43,7 +44,7 @@ class MemberDateOfLeavingUKController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: MemberDateOfLeavingUKView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
@@ -71,7 +72,7 @@ class MemberDateOfLeavingUKController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberDateOfLeavingUKPage.nextPage(mode, userAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
       )
