@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import models.DashboardData
+import models.{DashboardData, PstrNumber, SrnNumber}
 import pages.MpsOnRampPage
 
 import javax.inject._
@@ -39,9 +39,9 @@ class MpsOnRampController @Inject() (
 
   def onRamp(pstr: String, srn: String, returnUrl: String): Action[AnyContent] = identify.async { implicit request =>
     for {
-      dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(PstrQuery, pstr))
+      dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(PstrQuery, PstrNumber(pstr)))
       dd1           <- Future.fromTry(dashboardData.set(ReturnUrlQuery, returnUrl))
-      dd2           <- Future.fromTry(dd1.set(SrnQuery, srn))
+      dd2           <- Future.fromTry(dd1.set(SrnQuery, SrnNumber(srn)))
       _             <- repo.set(dd2)
     } yield Redirect(MpsOnRampPage.nextPage(dd2))
   }

@@ -16,7 +16,7 @@ GET        /refresh-session                                                     
 
 GET        /there-is-a-problem                                                                    controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET        /what-will-be-needed                                                                   controllers.WhatWillBeNeededController.onPageLoad(pstr: String, srn: String)
+GET        /what-will-be-needed                                                                   controllers.WhatWillBeNeededController.onPageLoad()
 
 GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
 
