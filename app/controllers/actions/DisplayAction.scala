@@ -23,7 +23,7 @@ import utils.AppUtils
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DisplayActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DisplayAction with AppUtils {
+class IsAssociatedActionImpl @Inject()()g (implicit val executionContext: ExecutionContext) extends IsAssociatedAction with AppUtils {
 
   override protected def transform[A](request: DataRequest[A]): Future[DisplayRequest[A]] = {
     Future.successful(
@@ -39,4 +39,4 @@ class DisplayActionImpl @Inject() (implicit val executionContext: ExecutionConte
   }
 }
 
-trait DisplayAction extends ActionTransformer[DataRequest, DisplayRequest]
+trait IsAssociatedAction extends ActionTransformer[DataRequest, DisplayRequest]
