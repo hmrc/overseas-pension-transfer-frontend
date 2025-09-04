@@ -98,7 +98,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       running(application) {
         val request =
           FakeRequest(POST, qropsNameRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("qropsName", "answer"))
 
         val result = route(application, request).value
 
@@ -114,9 +114,9 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       running(application) {
         val request =
           FakeRequest(POST, qropsNameRoute)
-            .withFormUrlEncodedBody(("value", ""))
+            .withFormUrlEncodedBody(("qropsName", ""))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("qropsName" -> ""))
 
         val view = application.injector.instanceOf[QROPSNameView]
 
@@ -148,7 +148,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       running(application) {
         val request =
           FakeRequest(POST, qropsNameRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("qropsName", "answer"))
 
         val result = route(application, request).value
 
@@ -176,7 +176,7 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       running(application) {
         val req =
           FakeRequest(POST, qropsNameRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("qropsName", "answer"))
 
         val result = route(application, req).value
 
