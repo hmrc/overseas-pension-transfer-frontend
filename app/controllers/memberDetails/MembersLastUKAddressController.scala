@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MembersLastUKAddressFormProvider
 import models.Mode
 import models.address._
@@ -45,7 +46,7 @@ class MembersLastUKAddressController @Inject() (
     view: MembersLastUKAddressView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
     implicit request =>
@@ -75,7 +76,7 @@ class MembersLastUKAddressController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
 
           }

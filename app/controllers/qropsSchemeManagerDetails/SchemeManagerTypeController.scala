@@ -17,6 +17,7 @@
 package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.Mode
 import models.TaskCategory.SchemeManagerDetails
@@ -46,7 +47,7 @@ class SchemeManagerTypeController @Inject() (
     view: SchemeManagerTypeView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -77,7 +78,7 @@ class SchemeManagerTypeController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
         }

@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.transferDetails.IsTransferCashOnlyFormProvider
 import models.Mode
 import models.TaskCategory.TransferDetails
@@ -49,7 +50,7 @@ class IsTransferCashOnlyController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: IsTransferCashOnlyView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -76,7 +77,7 @@ class IsTransferCashOnlyController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, ua2))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
       )

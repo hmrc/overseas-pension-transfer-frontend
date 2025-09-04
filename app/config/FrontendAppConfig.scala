@@ -69,7 +69,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val dashboardCacheTtl: Long = configuration.get[Long]("dashboard.ttlSeconds")
 
-  val backendService: String       = s"${baseUrl("overseas-pension-transfer-backend")}/overseas-pension-transfer-backend"
+  val backendHost: String          = baseUrl("overseas-pension-transfer-backend")
+  val backendService: String       = s"$backendHost/overseas-pension-transfer-backend"
   val addressLookupService: String = baseUrl("address-lookup")
   val pensionSchemeService: String = baseUrl("pensions-scheme")
 

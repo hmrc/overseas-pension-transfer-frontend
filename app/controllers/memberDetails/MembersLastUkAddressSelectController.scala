@@ -17,11 +17,12 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MembersLastUkAddressSelectFormProvider
-import models.address.{AddressLookupResult, AddressRecords, MembersLookupLastUkAddress, NoAddressFound}
+import models.address.{AddressRecords, MembersLookupLastUkAddress, NoAddressFound}
 import models.{Mode, NormalMode}
 import org.apache.pekko.Done
-import pages.memberDetails.{MemberIsResidentUKPage, MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
+import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -46,7 +47,7 @@ class MembersLastUkAddressSelectController @Inject() (
     view: MembersLastUkAddressSelectView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen getData andThen requireData andThen displayData) { implicit request =>
@@ -89,7 +90,7 @@ class MembersLastUkAddressSelectController @Inject() (
                   } yield {
                     savedForLater match {
                       case Right(Done) => Redirect(MembersLastUkAddressSelectPage.nextPage(mode, updatedAnswers))
-                      case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                      case Left(err)   => onFailureRedirect(err)
                     }
                   }
 

@@ -17,10 +17,10 @@
 package controllers.qropsSchemeManagerDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.SchemeManagersContactFormProvider
 import models.Mode
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,7 +44,7 @@ class SchemeManagersContactController @Inject() (
     view: SchemeManagersContactView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 
@@ -71,7 +71,7 @@ class SchemeManagersContactController @Inject() (
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(SchemeManagersContactPage.nextPage(mode, updatedAnswers))
-              case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              case Left(err)   => onFailureRedirect(err)
             }
           }
       )

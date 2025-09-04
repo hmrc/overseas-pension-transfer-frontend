@@ -17,10 +17,10 @@
 package connectors
 
 import base.BaseISpec
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, stubFor}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, delete, post, stubFor}
 import models.QtNumber
 import models.authentication.{PsaId, Psp, PspId}
-import models.dtos.{PspSubmissionDTO, SubmissionDTO, UserAnswersDTO}
+import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import org.apache.pekko.Done
 import play.api.http.Status._
@@ -100,7 +100,12 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val getAnswers = await(connector.getAnswers("testId"))
 
-        getAnswers shouldBe Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some("/error")))
+        getAnswers shouldBe Left(
+          UserAnswersErrorResponse(
+            "[[UserAnswersConnector][getAnswers]] 500 Unknown (correlationId=-)",
+            Some("""{"field": "value"}""")
+          )
+        )
       }
     }
   }
@@ -185,6 +190,35 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
         val response = await(connector.postSubmission(submissionDTO))
 
         response shouldBe Left(SubmissionErrorResponse("Failed to save answers", None))
+      }
+    }
+  }
+
+  "deleteAnswers" should {
+    "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
+      stubFor(delete("/overseas-pension-transfer-backend/save-for-later/testId")
+        .willReturn(
+          aResponse()
+            .withStatus(NO_CONTENT)
+        ))
+
+      val putAnswers = await(connector.deleteAnswers("testId"))
+
+      putAnswers shouldBe Right(Done)
+    }
+
+    "return UserAnswersErrorResponse" when {
+      "500 is returned" in {
+        stubFor(delete("/overseas-pension-transfer-backend/save-for-later/testId")
+          .willReturn(
+            aResponse()
+              .withStatus(INTERNAL_SERVER_ERROR)
+              .withBody( """{ "error": "Failed to save answers" }""")
+          ))
+
+        val putAnswers = await(connector.deleteAnswers("testId"))
+
+        putAnswers shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
       }
     }
   }

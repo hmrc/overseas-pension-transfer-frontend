@@ -19,7 +19,7 @@ This is the frontend microservice application that is part of the Managing Pensi
 
    > `sm2 --stop OVERSEAS_PENSION_TRANSFER_FRONTEND`
 
-   > `sbt run`
+   > `sbt run -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes`
 
 The service runs on port `15600` by default.
 

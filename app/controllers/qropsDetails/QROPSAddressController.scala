@@ -17,11 +17,10 @@
 package controllers.qropsDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
 import models.Mode
-import models.address.QROPSAddress
 import org.apache.pekko.Done
-import pages.memberDetails.MemberIsResidentUKPage
 import pages.qropsDetails.QROPSAddressPage
 import play.api.Logging
 import play.api.data.Form
@@ -51,7 +50,7 @@ class QROPSAddressController @Inject() (
     view: QROPSAddressView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils {
+  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils with ErrorHandling {
 
   private def form(): Form[QROPSAddressFormData] = formProvider()
 
@@ -88,7 +87,7 @@ class QROPSAddressController @Inject() (
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(QROPSAddressPage.nextPage(mode, updatedAnswers))
-                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                  case Left(err)   => onFailureRedirect(err)
                 }
               }
           }
