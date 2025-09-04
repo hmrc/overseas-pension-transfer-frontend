@@ -16,6 +16,7 @@
 
 package models.authentication
 
+//Add Scheme Details in here - Scheme Name and SchemeId/SRN
 sealed trait AuthenticatedUser {
   def internalId: String
   def userType: UserType

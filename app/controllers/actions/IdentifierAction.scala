@@ -19,6 +19,7 @@ package controllers.actions
 import controllers.auth.routes
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import connectors.PensionSchemeConnector
 import models.authentication.{AuthenticatedUser, Psa, PsaUser, Psp, PspUser}
 import models.requests.IdentifierRequest
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
