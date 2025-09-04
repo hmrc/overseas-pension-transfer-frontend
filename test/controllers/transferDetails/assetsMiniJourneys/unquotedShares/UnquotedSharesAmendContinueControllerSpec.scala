@@ -60,7 +60,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
   "UnquotedSharesAmendContinue Controller" - {
 
     "must return OK and the correct view for a GET in NormalMode" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesAmendContinueRouteNormal)
@@ -74,7 +74,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
     "must return OK and the form filled for a GET in NormalMode when answer exists" in {
       val userAnswers = userAnswersQtNumber.set(UnquotedSharesAmendContinuePage, value = true).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesAmendContinueRouteNormal)
@@ -92,7 +92,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
       val userAnswers = uaWithUnquotedShares(1)
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -109,7 +109,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
       val userAnswers = uaWithUnquotedShares(2)
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -135,7 +135,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
       val userAnswers = uaWithUnquotedShares(0)
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -161,7 +161,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
       val userAnswers = uaWithUnquotedShares(3)
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -182,7 +182,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -200,7 +200,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesAmendContinueRouteNormal)
@@ -212,7 +212,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =

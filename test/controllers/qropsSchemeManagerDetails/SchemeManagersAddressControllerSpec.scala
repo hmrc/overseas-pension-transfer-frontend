@@ -63,7 +63,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
-      val application = applicationBuilder(Some(emptyUserAnswers))
+      val application = applicationBuilder(emptyUserAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
@@ -88,7 +88,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
-      val application = applicationBuilder(Some(userAnswers))
+      val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
@@ -124,7 +124,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .thenReturn(Some(Country("GB", "United Kingdom")))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService),
@@ -152,7 +152,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
-      val application = applicationBuilder(Some(emptyUserAnswers))
+      val application = applicationBuilder(emptyUserAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
@@ -179,7 +179,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, schemeManagersAddressRoute)
@@ -193,7 +193,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =
@@ -224,7 +224,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
       when(mockCountryService.find("GB"))
         .thenReturn(Some(Country("GB", "United Kingdom")))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService),

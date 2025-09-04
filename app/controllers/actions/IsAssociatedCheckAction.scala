@@ -31,10 +31,11 @@ import utils.AppUtils
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsAssociatedCheckActionImpl @Inject()(
+class IsAssociatedCheckActionImpl @Inject() (
     pensionSchemeConnector: PensionSchemeConnector,
     dashboardSessionRepository: DashboardSessionRepository
-                                      )(implicit val executionContext: ExecutionContext) extends IsAssociatedCheckAction with AppUtils {
+  )(implicit val executionContext: ExecutionContext
+  ) extends IsAssociatedCheckAction with AppUtils {
 
   override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
@@ -50,8 +51,8 @@ class IsAssociatedCheckActionImpl @Inject()(
                     request.authenticatedUser match {
                       case PsaUser(userId, id, None) => PsaUser(userId, id, Some(srn))
                       case PspUser(userId, id, None) => PspUser(userId, id, Some(srn))
-                      case user@PsaUser(_, _, _) => user
-                      case user@PspUser(_, _, _) => user
+                      case user @ PsaUser(_, _, _)   => user
+                      case user @ PspUser(_, _, _)   => user
                     }
                   }
 
@@ -70,7 +71,7 @@ class IsAssociatedCheckActionImpl @Inject()(
                 }
             }
         }
-      case None => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+      case None                => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
 
     }
   }

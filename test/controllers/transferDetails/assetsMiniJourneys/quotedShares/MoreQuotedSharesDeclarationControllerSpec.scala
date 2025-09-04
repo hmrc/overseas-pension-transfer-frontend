@@ -39,7 +39,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
   "MoreQuotedSharesDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithAssets(assetsCount = 5))).build()
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
       running(application) {
         val request = FakeRequest(GET, moreQuotedSharesDeclarationRoute)
 
@@ -56,7 +56,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = userAnswersQtNumber.set(MoreQuotedSharesDeclarationPage, true).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, moreQuotedSharesDeclarationRoute)
@@ -70,7 +70,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to CYA page when valid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersWithAssets(assetsCount = 5))).build()
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
 
       running(application) {
         val request =
@@ -85,7 +85,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -104,7 +104,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, moreQuotedSharesDeclarationRoute)
@@ -117,7 +117,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =

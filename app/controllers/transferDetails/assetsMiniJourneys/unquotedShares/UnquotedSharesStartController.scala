@@ -30,13 +30,12 @@ class UnquotedSharesStartController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesStartView
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
     implicit request =>
       Ok(view(UnquotedSharesStartPage.nextPage(mode = NormalMode, request.userAnswers).url))
   }

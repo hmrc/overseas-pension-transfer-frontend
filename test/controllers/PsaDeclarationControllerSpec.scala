@@ -43,7 +43,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   "PsaDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, psaDeclarationRoute)
@@ -68,7 +68,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         .thenReturn(Future.successful(true))
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+        applicationBuilder(userAnswers = userAnswersQtNumber)
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -92,7 +92,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         .thenReturn(Future.successful(Left(SubmissionErrorResponse("boom", None))))
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+        applicationBuilder(userAnswers = userAnswersQtNumber)
           .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
           .build()
 
@@ -107,7 +107,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, psaDeclarationRoute)
@@ -120,7 +120,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(POST, psaDeclarationRoute)

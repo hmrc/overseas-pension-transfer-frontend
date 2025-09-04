@@ -47,7 +47,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesNumberRoute)
@@ -65,7 +65,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       val userAnswers = userAnswersQtNumber.set(UnquotedSharesNumberPage(index), validAnswer).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesNumberRoute)
@@ -86,7 +86,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+        applicationBuilder(userAnswers = userAnswersQtNumber)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -106,7 +106,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -126,7 +126,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesNumberRoute)
@@ -140,7 +140,7 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =

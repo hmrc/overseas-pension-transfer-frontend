@@ -40,8 +40,7 @@ class MembersLastUkAddressConfirmController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     addressService: AddressService,
     formProvider: MemberConfirmLastUkAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -52,7 +51,7 @@ class MembersLastUkAddressConfirmController @Inject() (
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
     implicit request =>
       val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
@@ -66,7 +65,7 @@ class MembersLastUkAddressConfirmController @Inject() (
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
     implicit request =>
       val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {

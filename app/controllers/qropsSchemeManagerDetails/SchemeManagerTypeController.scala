@@ -38,8 +38,7 @@ class SchemeManagerTypeController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     schemeManagerService: SchemeManagerService,
     markInProgress: MarkInProgressOnEntryAction,
     formProvider: SchemeManagerTypeFormProvider,
@@ -52,7 +51,7 @@ class SchemeManagerTypeController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData andThen markInProgress.forCategoryAndMode(SchemeManagerDetails, mode) andThen displayData) {
+    (identify andThen getData andThen markInProgress.forCategoryAndMode(SchemeManagerDetails, mode) andThen isAssociatedCheck) {
       implicit request =>
         val preparedForm = request.userAnswers.get(SchemeManagerTypePage) match {
           case None        => form
@@ -62,7 +61,7 @@ class SchemeManagerTypeController @Inject() (
         Ok(view(preparedForm, mode))
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

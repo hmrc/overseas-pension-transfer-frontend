@@ -46,7 +46,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, qropsOtherCountryRoute)
@@ -64,7 +64,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val userAnswers = userAnswersQtNumber.set(QROPSOtherCountryPage, "answer").success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, qropsOtherCountryRoute)
@@ -87,7 +87,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       when(mockUserAnswersService.setExternalUserAnswers(any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+        applicationBuilder(userAnswers = userAnswersQtNumber)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -108,7 +108,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -128,7 +128,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, qropsOtherCountryRoute)
@@ -142,7 +142,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =
@@ -165,7 +165,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
         Future.successful(Left(UserAnswersErrorResponse("error", None)))
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+        applicationBuilder(userAnswers = userAnswersQtNumber)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)

@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
 import controllers.helpers.ErrorHandling
 import org.apache.pekko.Done
 import play.api.i18n.I18nSupport
@@ -34,8 +34,7 @@ class TaskListController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     sessionRepository: SessionRepository,
     taskService: TaskService,
     userAnswersService: UserAnswersService,
@@ -43,7 +42,7 @@ class TaskListController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async { implicit request =>
     for {
       ua1           <- Future.fromTry(taskService.updateTaskStatusesOnMemberDetailsComplete(request.userAnswers))
       ua2           <- Future.fromTry(taskService.updateSubmissionTaskStatus(ua1))

@@ -17,7 +17,7 @@
 package controllers.transferDetails
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
 import controllers.helpers.ErrorHandling
 import models.TaskCategory.TransferDetails
 import models.taskList.TaskStatus.Completed
@@ -40,8 +40,7 @@ class TransferDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    isAssociatedCheck: IsAssociatedCheckAction,
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
@@ -49,14 +48,14 @@ class TransferDetailsCYAController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
     implicit request =>
       val list = SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, request.userAnswers))
 
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
     implicit request =>
       for {
         ua            <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(TransferDetails), Completed))

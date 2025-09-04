@@ -17,24 +17,26 @@
 package controllers.actions
 
 import models.requests.{DataRequest, DisplayRequest}
+import play.api.mvc.Result
 import utils.AppUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDisplayAction()
-    extends DisplayAction with AppUtils {
-
-  override protected def transform[A](request: DataRequest[A]): Future[DisplayRequest[A]] = {
-    Future.successful(DisplayRequest(
-      request.request,
-      request.authenticatedUser,
-      request.userAnswers,
-      memberFullName(request.userAnswers),
-      qtNumber(request.userAnswers),
-      dateTransferSubmitted(request.userAnswers)
-    ))
-  }
+class FakeIsAssociatedCheckAction()
+    extends IsAssociatedCheckAction with AppUtils {
 
   implicit override protected val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
+
+  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DisplayRequest[A]]] =
+    Future.successful(Right(
+      DisplayRequest(
+        request.request,
+        request.authenticatedUser,
+        request.userAnswers,
+        memberFullName(request.userAnswers),
+        qtNumber(request.userAnswers),
+        dateTransferSubmitted(request.userAnswers)
+      )
+    ))
 }

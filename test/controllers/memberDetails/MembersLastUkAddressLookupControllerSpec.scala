@@ -48,7 +48,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, membersLastUkAddressLookupRoute)
@@ -79,7 +79,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         )
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService),
@@ -101,7 +101,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
         val request =
@@ -135,7 +135,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         )
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService),
@@ -157,7 +157,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, membersLastUkAddressLookupRoute)
@@ -185,7 +185,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         )
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService),
@@ -210,7 +210,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =
@@ -241,7 +241,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
           )
         )
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService),

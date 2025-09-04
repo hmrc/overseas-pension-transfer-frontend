@@ -47,7 +47,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, schemeManagerEmailRoute)
@@ -65,7 +65,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
       val userAnswers = emptyUserAnswers.set(SchemeManagersEmailPage, "answer").success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, schemeManagerEmailRoute)
@@ -88,7 +88,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -109,7 +109,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =
@@ -129,7 +129,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, schemeManagerEmailRoute)
@@ -143,7 +143,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =
@@ -166,7 +166,7 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

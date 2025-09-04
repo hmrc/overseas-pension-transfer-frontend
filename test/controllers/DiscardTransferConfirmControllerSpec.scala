@@ -46,7 +46,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, discardTransferConfirmRoute)
@@ -64,7 +64,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
 
       val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, discardTransferConfirmRoute)
@@ -88,7 +88,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
       when(mockUserAnswersService.clearUserAnswers(any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -114,7 +114,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
       val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, false).success.value
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers)).build()
+        applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request =
@@ -140,7 +140,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         Future.successful(Left(UserAnswersErrorResponse("Error", None)))
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -160,7 +160,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =
@@ -180,7 +180,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, discardTransferConfirmRoute)
@@ -194,7 +194,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =

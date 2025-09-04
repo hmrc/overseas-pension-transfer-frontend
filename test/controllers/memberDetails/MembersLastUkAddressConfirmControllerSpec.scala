@@ -49,7 +49,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(addressSelectedUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = addressSelectedUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
@@ -67,7 +67,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val application = applicationBuilder(userAnswers = Some(addressSelectedUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = addressSelectedUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
@@ -91,7 +91,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(Some(addressSelectedUserAnswers))
+      val application = applicationBuilder(addressSelectedUserAnswers)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -109,7 +109,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
@@ -122,7 +122,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request =
@@ -144,7 +144,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(addressSelectedUserAnswers))
+      val application = applicationBuilder(addressSelectedUserAnswers)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

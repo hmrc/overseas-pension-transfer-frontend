@@ -42,7 +42,6 @@ class QROPSAddressController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
     formProvider: QROPSAddressFormProvider,
     countryService: CountryService,
     addressService: AddressService,
@@ -54,7 +53,7 @@ class QROPSAddressController @Inject() (
 
   private def form(): Form[QROPSAddressFormData] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(QROPSAddressPage) match {
         case None          => form()
@@ -66,7 +65,7 @@ class QROPSAddressController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
       form().bindFromRequest().fold(
         formWithErrors => {

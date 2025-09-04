@@ -18,14 +18,14 @@ class $className$Controller @Inject()(
                                         sessionRepository: SessionRepository,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        displayData: DisplayAction,
+
+                                        isAssociatedCheck: IsAssociatedCheckAction,
                                         formProvider: $className$FormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: $className$View
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData  andThen isAssociatedCheck) {
     implicit request =>
 
       val form = formProvider()
@@ -38,7 +38,7 @@ class $className$Controller @Inject()(
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData  andThen isAssociatedCheck).async {
     implicit request =>
 
       val form = formProvider()
