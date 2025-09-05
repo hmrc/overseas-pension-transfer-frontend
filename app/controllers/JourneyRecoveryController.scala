@@ -23,7 +23,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._
 import uk.gov.hmrc.play.bootstrap.binders._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.{JourneyRecoveryContinueView, JourneyRecoveryStartAgainView}
+import views.html.JourneyRecoveryContinueView
+import views.html.errors.JourneyRecoveryView
 
 import javax.inject.Inject
 
@@ -31,7 +32,7 @@ class JourneyRecoveryController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
     continueView: JourneyRecoveryContinueView,
-    startAgainView: JourneyRecoveryStartAgainView
+    recoveryView: JourneyRecoveryView
   ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(continueUrl: Option[RedirectUrl] = None): Action[AnyContent] = identify {
@@ -49,6 +50,6 @@ class JourneyRecoveryController @Inject() (
 
       safeUrl
         .map(url => Ok(continueView(url)))
-        .getOrElse(Ok(startAgainView()))
+        .getOrElse(Ok(recoveryView()))
   }
 }

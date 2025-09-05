@@ -33,6 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.UserAnswersService
+import views.html.errors.AddressLookupDownView
 import views.html.memberDetails.MembersLastUkAddressLookupView
 
 import scala.concurrent.Future
@@ -169,7 +170,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
       }
     }
 
-    "must redirect to nextPageRecovery when the connector returns an error" in {
+    "must return ServiceUnavailable and render the address lookup down view when the connector returns an error" in {
       val mockSessionRepository      = mock[SessionRepository]
       val mockUserAnswersService     = mock[UserAnswersService]
       val mockAddressLookupConnector = mock[AddressLookupConnector]
@@ -200,11 +201,14 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual
-          MembersLastUkAddressLookupPage.nextPageRecovery(
-            Some(MembersLastUkAddressLookupPage.recoveryModeReturnUrl)
-          ).url
+        status(result) mustEqual SERVICE_UNAVAILABLE
+
+        val view = application.injector.instanceOf[AddressLookupDownView]
+        contentAsString(result) mustEqual
+          view(MembersLastUkAddressLookupPage.recoveryModeReturnUrl, controllers.routes.IndexController.onPageLoad().url)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
       }
     }
 
