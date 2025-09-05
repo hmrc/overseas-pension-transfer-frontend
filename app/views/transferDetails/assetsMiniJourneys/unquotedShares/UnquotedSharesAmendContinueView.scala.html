@@ -39,7 +39,7 @@
 @pluralTxt = @{messages("unquotedSharesAmendContinue.text.plural")}
 @partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
 
-@titleText = @{messages("unquotedSharesAmendContinue.common.title", shares.size, partTxt)}
+@titleText = @{messages("unquotedSharesAmendContinue.title", shares.size, partTxt)}
 
 @layout(pageTitle = title(form, titleText)) {
 

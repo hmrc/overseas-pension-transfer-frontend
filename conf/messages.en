@@ -628,6 +628,8 @@ addAdditionalOtherAsset.checkYourAnswersLabel = Do you need to add another asset
 addAdditionalOtherAsset.error.required = Please select an option
 addAdditionalOtherAsset.change.hidden = Do you need to add another asset?
 
+unquotedSharesAmendContinue.title = unquotedSharesAmendContinue
+
 quotedSharesAmendContinue.title = quotedSharesAmendContinue
 quotedSharesAmendContinue.heading = You have added 1 quoted shares
 quotedSharesAmendContinue.error.required = Please select an option
