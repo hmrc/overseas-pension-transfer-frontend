@@ -18,7 +18,7 @@ package pages.memberDetails
 
 import controllers.memberDetails.routes
 import models.address.AddressLookupResult
-import models.{NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -33,7 +33,7 @@ case object MembersLastUkAddressLookupPage extends QuestionPage[AddressLookupRes
     routes.MembersLastUkAddressSelectController.onPageLoad(mode = NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.MembersLastUkAddressSelectController.onPageLoad(mode = NormalMode)
+    routes.MembersLastUkAddressSelectController.onPageLoad(mode = CheckMode)
 
   def nextPageNoResults(): Call =
     routes.MembersLastUkAddressNotFoundController.onPageLoad()

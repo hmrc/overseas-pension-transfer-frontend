@@ -137,7 +137,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
       }
     }
 
-    "must redirect to NormalMode if changed from false to true in CheckMode" in {
+    "must redirect to next page in CheckMode if changed from false to true in CheckMode" in {
       val previousAnswers        = emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -162,7 +162,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(CheckMode).url
       }
     }
 

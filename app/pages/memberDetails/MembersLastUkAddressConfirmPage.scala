@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
@@ -30,8 +30,13 @@ case object MembersLastUkAddressConfirmPage extends Page {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.MemberDetailsCYAController.onPageLoad()
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
+    answers.get(MemberDateOfLeavingUKPage) match {
+      case Some(_) => routes.MemberDetailsCYAController.onPageLoad()
+      case None    => routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
+      case _       => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 
   val recoveryModeReturnUrl: String = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
 }

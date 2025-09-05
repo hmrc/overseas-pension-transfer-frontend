@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{MemberDetailsService, TaskService, UserAnswersService}
+import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberHasEverBeenResidentUKView
 
@@ -41,8 +41,6 @@ class MemberHasEverBeenResidentUKController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    memberDetailsService: MemberDetailsService,
-    taskService: TaskService,
     formProvider: MemberHasEverBeenResidentUKFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberHasEverBeenResidentUKView,
@@ -68,17 +66,14 @@ class MemberHasEverBeenResidentUKController @Inject() (
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          val previousValue = request.userAnswers.get(MemberHasEverBeenResidentUKPage)
           for {
             baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
-            ua1           <- Future.fromTry(memberDetailsService.updateMemberHasEverBeenResidentUKAnswers(baseAnswers, previousValue, value))
-            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1, MemberDetails))
+            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
             _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
-            redirectMode   = memberDetailsService.getMemberHasEverBeenResidentUKRedirectMode(mode, previousValue, value)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(MemberHasEverBeenResidentUKPage.nextPage(redirectMode, ua2))
+              case Right(Done) => Redirect(MemberHasEverBeenResidentUKPage.nextPage(mode, ua2))
               case Left(err)   => onFailureRedirect(err)
             }
           }

@@ -25,7 +25,7 @@ import queries.TaskStatusQuery
 
 class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
 
-  private val service = new TaskService
+  private val service = TaskService
 
   "updateTaskStatusesOnMemberDetailsComplete" - {
 

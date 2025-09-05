@@ -18,7 +18,7 @@ package pages.memberDetails
 
 import controllers.memberDetails.routes
 import models.address.MembersLookupLastUkAddress
-import models.{NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -33,7 +33,7 @@ case object MembersLastUkAddressSelectPage extends QuestionPage[MembersLookupLas
     routes.MembersLastUkAddressConfirmController.onPageLoad(mode = NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.MembersLastUkAddressConfirmController.onPageLoad(mode = NormalMode)
+    routes.MembersLastUkAddressConfirmController.onPageLoad(mode = CheckMode)
 
   val recoveryModeReturnUrl: String = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
 }
