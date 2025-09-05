@@ -18,18 +18,22 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.authentication.{AuthenticatedUser, PsaId, PsaUser, PspUser}
+import connectors.parsers.PensionSchemeParser.{GetPensionSchemeDetailsHttpReads, PensionSchemeDetailsType}
+import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
+import models.responses.PensionSchemeErrorResponse
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import utils.DownstreamLogging
 
 import java.net.URL
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.{ExecutionContext, Future}
 
 class PensionSchemeConnector @Inject() (
     appConfig: FrontendAppConfig,
     http: HttpClientV2
   )(implicit ec: ExecutionContext
-  ) {
+  ) extends DownstreamLogging {
 
   def checkAssociation(srn: String, user: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url        = url"${appConfig.pensionSchemeService}/pensions-scheme/is-psa-associated"
@@ -48,4 +52,26 @@ class PensionSchemeConnector @Inject() (
       .execute[Boolean]
   }
 
+  def getSchemeDetails(srn: String, authenticatedUser: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[PensionSchemeDetailsType] = {
+    val url = authenticatedUser match {
+      case PsaUser(_, _, _) => url"${appConfig.pensionSchemeService}/scheme/$srn"
+      case PspUser(_, _, _) => url"${appConfig.pensionSchemeService}/psp-scheme/$srn"
+    }
+
+    val headers: Seq[(String, String)] = authenticatedUser match {
+      case PsaUser(_, _, _) => Seq("schemeIdType" -> "srn", "idNumber" -> srn)
+      case PspUser(_, _, _) => Seq("srn" -> srn)
+    }
+
+    http.get(url)
+      .setHeader(
+        headers: _*
+      )
+      .execute[PensionSchemeDetailsType]
+      .recover {
+        case e: Exception =>
+          val errMsg = logNonHttpError("[PensionSchemeConnector][getSchemeDetails]", hc, e)
+          Left(PensionSchemeErrorResponse(errMsg, None))
+      }
+  }
 }

@@ -16,25 +16,28 @@
 
 package controllers
 
+import connectors.PensionSchemeConnector
 import controllers.actions.IdentifierAction
-import models.{DashboardData, NormalMode, PstrNumber, SrnNumber, UserAnswers}
-import pages.{MpsOnRampPage, WhatWillBeNeededPage}
+import models.{DashboardData, SrnNumber}
+import pages.MpsOnRampPage
 import play.api.Logging
+import play.api.i18n.I18nSupport
+import play.api.mvc._
+import queries.mps.SrnQuery
+import repositories.DashboardSessionRepository
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject._
-import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import play.api.i18n.I18nSupport
-import queries.mps.{PstrQuery, ReturnUrlQuery, SrnQuery}
-import repositories.DashboardSessionRepository
-
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 @Singleton
 class MpsOnRampController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     dashboardRepo: DashboardSessionRepository,
-    identify: IdentifierAction
+    identify: IdentifierAction,
+    pensionSchemeConnector: PensionSchemeConnector
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -44,6 +47,11 @@ class MpsOnRampController @Inject() (
       persisted <- dashboardRepo.set(dd)
     } yield {
       if (persisted) {
+        val responseEither = Await.ready(pensionSchemeConnector.getSchemeDetails("S2400000040", request.authenticatedUser), Duration.Inf).value.get
+        responseEither match {
+          case Success(r) => logger.info(s"success: ${r.toOption.get}")
+          case Failure(e) => logger.warn(s"failed: $e")
+        }
         Redirect(MpsOnRampPage.nextPage(dd))
       } else {
         logger.warn("Dashboard repo set returned false")
@@ -54,5 +62,4 @@ class MpsOnRampController @Inject() (
       InternalServerError
     }
   }
-
 }
