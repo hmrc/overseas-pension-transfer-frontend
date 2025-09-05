@@ -18,10 +18,10 @@ package controllers.actions
 
 import connectors.PensionSchemeConnector
 import controllers.routes
-import models.authentication.{AuthenticatedUser, Psa, PsaUser, PspUser}
+import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
 import models.requests.{DataRequest, DisplayRequest}
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{ActionBuilder, ActionRefiner, ActionTransformer, Result}
+import play.api.mvc.{ActionRefiner, Result}
 import queries.mps.SrnQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -67,9 +67,10 @@ class IsAssociatedCheckActionImpl @Inject() (
                     )
                   )
                 } else {
-                  Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+                  Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad()))
                 }
             }
+          case None      => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
         }
       case None                => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
 

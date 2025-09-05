@@ -188,7 +188,6 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRequiredAction].to[DataRequiredActionImpl],
           bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswersQtNumber)),
           bind[IsAssociatedCheckAction].to[FakeIsAssociatedCheckAction]
         )
@@ -221,7 +220,6 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRequiredAction].to[DataRequiredActionImpl],
           bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswersQtNumber)),
           bind[IsAssociatedCheckAction].to[FakeIsAssociatedCheckAction]
         )

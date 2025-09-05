@@ -53,7 +53,6 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers) = new GuiceApplicationBuilder()
     .overrides(
       bind[IdentifierAction].toInstance(fakeIdentifierAction),
-      bind[DataRequiredAction].to[DataRequiredActionImpl],
       bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
       bind[IsAssociatedCheckAction].to[FakeIsAssociatedCheckAction]
     )

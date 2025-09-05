@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
 import controllers.helpers.ErrorHandling
 import org.apache.pekko.Done
 import play.api.i18n.I18nSupport

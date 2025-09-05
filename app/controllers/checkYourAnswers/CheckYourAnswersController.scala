@@ -17,8 +17,8 @@
 package controllers.checkYourAnswers
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
-import models.{FinalCheckMode, Mode}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
+import models.FinalCheckMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
