@@ -225,33 +225,6 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
-
-      running(application) {
-        val req    = FakeRequest(GET, memberHasEverBeenResidentUKRoute)
-        val result = route(application, req).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
-
-      running(application) {
-        val req =
-          FakeRequest(POST, memberHasEverBeenResidentUKRoute)
-            .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, req).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]

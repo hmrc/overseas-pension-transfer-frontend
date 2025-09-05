@@ -40,7 +40,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
     "when there is no data in the cache" - {
 
-      "must set userAnswers to 'None' in the request" in {
+      "must redirect to JourneyRecovery" in {
 
         val sessionRepository = mock[SessionRepository]
         when(sessionRepository.get("id")) thenReturn Future(None)
@@ -51,7 +51,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         futureResult.left.map {
           result =>
             result.header.status mustBe SEE_OTHER
-            result.header.headers.get("Location") mustBe controllers.routes.JourneyRecoveryController.onPageLoad()
+            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
         }
       }
     }
@@ -69,7 +69,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         result.map {
           dataRequest =>
-            dataRequest.userAnswers mustBe Some(userAnswers)
+            dataRequest.userAnswers mustBe userAnswers
         }
       }
     }
