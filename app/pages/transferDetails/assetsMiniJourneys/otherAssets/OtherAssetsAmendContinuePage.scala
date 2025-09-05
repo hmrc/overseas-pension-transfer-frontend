@@ -39,9 +39,19 @@ case object OtherAssetsAmendContinuePage extends QuestionPage[Boolean] with Next
         }
       case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
-
   }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
+
+  override protected def nextPageCheckModeWith(answers: UserAnswers, nextIndex: Int): Call = {
+    answers.get(OtherAssetsAmendContinuePage) match {
+      case Some(true)  => AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, nextIndex)
+      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(answers) match {
+          case Some(route) => route
+          case None        => routes.TransferDetailsCYAController.onPageLoad()
+        }
+      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }

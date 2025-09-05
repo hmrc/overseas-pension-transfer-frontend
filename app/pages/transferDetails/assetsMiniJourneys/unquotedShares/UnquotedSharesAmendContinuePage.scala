@@ -43,4 +43,15 @@ case object UnquotedSharesAmendContinuePage extends QuestionPage[Boolean] with N
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
+
+  override protected def nextPageCheckModeWith(answers: UserAnswers, nextIndex: Int): Call = {
+    answers.get(UnquotedSharesAmendContinuePage) match {
+      case Some(true)  => AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)
+      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(answers) match {
+          case Some(route) => route
+          case None        => routes.TransferDetailsCYAController.onPageLoad()
+        }
+      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }
