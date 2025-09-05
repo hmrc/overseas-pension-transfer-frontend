@@ -17,14 +17,15 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import models.DashboardData
-import pages.MpsOnRampPage
+import models.{DashboardData, NormalMode, PstrNumber, SrnNumber, UserAnswers}
+import pages.{MpsOnRampPage, WhatWillBeNeededPage}
+import play.api.Logging
 
 import javax.inject._
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import play.api.i18n.I18nSupport
-import queries.{PstrQuery, ReturnUrlQuery}
+import queries.mps.{PstrQuery, ReturnUrlQuery, SrnQuery}
 import repositories.DashboardSessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,16 +33,26 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class MpsOnRampController @Inject() (
     val controllerComponents: MessagesControllerComponents,
-    repo: DashboardSessionRepository,
+    dashboardRepo: DashboardSessionRepository,
     identify: IdentifierAction
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onRamp(pstr: String, returnUrl: String): Action[AnyContent] = identify.async { implicit request =>
-    for {
-      dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(PstrQuery, pstr))
-      dd1           <- Future.fromTry(dashboardData.set(ReturnUrlQuery, returnUrl))
-      _             <- repo.set(dd1)
-    } yield Redirect(MpsOnRampPage.nextPage(dd1))
+  def onRamp(srn: String): Action[AnyContent] = identify.async { implicit request =>
+    (for {
+      dd        <- Future.fromTry(DashboardData(request.authenticatedUser.internalId).set(SrnQuery, SrnNumber(srn)))
+      persisted <- dashboardRepo.set(dd)
+    } yield {
+      if (persisted) {
+        Redirect(MpsOnRampPage.nextPage(dd))
+      } else {
+        logger.warn("Dashboard repo set returned false")
+        Redirect(routes.JourneyRecoveryController.onPageLoad())
+      }
+    }).recover { case t =>
+      logger.error("Failed to persist dashboard data", t)
+      InternalServerError
+    }
   }
+
 }
