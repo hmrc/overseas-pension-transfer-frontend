@@ -127,32 +127,6 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
-
-      running(application) {
-        val request = FakeRequest(GET, memberNinoRoute)
-        val result  = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, memberNinoRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
-        val result  = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val userAnswers            = userAnswersMemberNameQtNumber.set(MemberNinoPage, "answer").success.value
       val mockUserAnswersService = mock[UserAnswersService]

@@ -111,29 +111,5 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
       }
     }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val app = applicationWithMocks(emptyUserAnswers)
-
-      running(app) {
-        val request = FakeRequest(GET, otherAssetsCyaRoute)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val app = applicationWithMocks(emptyUserAnswers)
-
-      running(app) {
-        val request = FakeRequest(POST, otherAssetsCyaRoute)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
   }
 }

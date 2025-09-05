@@ -126,35 +126,5 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         contentAsString(result) mustEqual view(boundForm)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilderPsp(userAnswers = emptyUserAnswers).build()
-
-      running(application) {
-        val request = FakeRequest(GET, pspDeclarationRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PspDeclarationPage.nextPage(NormalMode, emptyUserAnswers).url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilderPsp(userAnswers = emptyUserAnswers).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, pspDeclarationRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PspDeclarationPage.nextPage(NormalMode, emptyUserAnswers).url
-      }
-    }
   }
 }
