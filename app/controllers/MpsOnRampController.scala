@@ -17,8 +17,9 @@
 package controllers
 
 import controllers.actions.IdentifierAction
-import models.{DashboardData, PstrNumber, SrnNumber}
-import pages.MpsOnRampPage
+import models.{DashboardData, NormalMode, PstrNumber, SrnNumber, UserAnswers}
+import pages.{MpsOnRampPage, WhatWillBeNeededPage}
+import play.api.Logging
 
 import javax.inject._
 import play.api.mvc._
@@ -32,15 +33,26 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class MpsOnRampController @Inject() (
     val controllerComponents: MessagesControllerComponents,
-    repo: DashboardSessionRepository,
+    dashboardRepo: DashboardSessionRepository,
     identify: IdentifierAction
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onRamp(srn: String): Action[AnyContent] = identify.async { implicit request =>
-    for {
-      dashboardData <- Future.fromTry(new DashboardData(request.authenticatedUser.internalId).set(SrnQuery, SrnNumber(srn)))
-      _             <- repo.set(dashboardData)
-    } yield Redirect(MpsOnRampPage.nextPage(dashboardData))
+    (for {
+      dd        <- Future.fromTry(DashboardData(request.authenticatedUser.internalId).set(SrnQuery, SrnNumber(srn)))
+      persisted <- dashboardRepo.set(dd)
+    } yield {
+      if (persisted) {
+        Redirect(MpsOnRampPage.nextPage(dd))
+      } else {
+        logger.warn("Dashboard repo set returned false")
+        Redirect(routes.JourneyRecoveryController.onPageLoad())
+      }
+    }).recover { case t =>
+      logger.error("Failed to persist dashboard data", t)
+      InternalServerError
+    }
   }
+
 }
