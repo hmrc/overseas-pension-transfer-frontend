@@ -17,12 +17,12 @@
 package controllers.qropsSchemeManagerDetails
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
 import controllers.helpers.ErrorHandling
 import models.TaskCategory.SchemeManagerDetails
 import models.taskList.TaskStatus.Completed
-import org.apache.pekko.Done
 import models.{CheckMode, NormalMode}
+import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagerDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

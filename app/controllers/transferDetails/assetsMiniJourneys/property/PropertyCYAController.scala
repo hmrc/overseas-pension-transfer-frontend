@@ -17,7 +17,7 @@
 package controllers.transferDetails.assetsMiniJourneys.property
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset

@@ -17,7 +17,7 @@
 package controllers.memberDetails
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
 import controllers.helpers.ErrorHandling
 import models.TaskCategory.MemberDetails
 import models.taskList.TaskStatus.Completed
