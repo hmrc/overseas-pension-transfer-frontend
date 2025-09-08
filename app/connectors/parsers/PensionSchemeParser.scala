@@ -21,7 +21,7 @@ import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{JsError, JsSuccess, Reads, __}
+import play.api.libs.json.{__, JsError, JsSuccess, Reads}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.DownstreamLogging
 
