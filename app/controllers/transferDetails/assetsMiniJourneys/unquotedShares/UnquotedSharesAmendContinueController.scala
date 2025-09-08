@@ -36,7 +36,7 @@ class UnquotedSharesAmendContinueController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
     formProvider: UnquotedSharesAmendContinueFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -48,7 +48,7 @@ class UnquotedSharesAmendContinueController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen isAssociatedCheck).async { implicit request =>
+    (identify andThen schemeData andThen getData).async { implicit request =>
       val preparedForm = request.userAnswers.get(UnquotedSharesAmendContinuePage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -68,7 +68,7 @@ class UnquotedSharesAmendContinueController @Inject() (
       }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {

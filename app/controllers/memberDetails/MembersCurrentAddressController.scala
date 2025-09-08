@@ -40,7 +40,7 @@ class MembersCurrentAddressController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     formProvider: MembersCurrentAddressFormProvider,
     memberDetailsService: MemberDetailsService,
     userAnswersService: UserAnswersService,
@@ -51,7 +51,7 @@ class MembersCurrentAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(MembersCurrentAddressPage) match {
@@ -62,7 +62,7 @@ class MembersCurrentAddressController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       val form = formProvider()
       form.bindFromRequest().fold(

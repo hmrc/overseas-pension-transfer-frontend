@@ -37,6 +37,7 @@ class SchemeManagersEmailController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
+    schemeData: SchemeDataAction,
     formProvider: SchemeManagersEmailFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: SchemeManagersEmailView,
@@ -46,7 +47,7 @@ class SchemeManagersEmailController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(SchemeManagersEmailPage) match {
         case None        => form

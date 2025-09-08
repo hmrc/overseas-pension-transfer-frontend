@@ -14,15 +14,15 @@ import views.html.$className$View
 import scala.concurrent.{ExecutionContext, Future}
 
 class $className$Controller @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
+                                       override val messagesApi: MessagesApi,
+                                       sessionRepository: SessionRepository,
+                                       identify: IdentifierAction,
+                                       getData: DataRetrievalAction,
 
-                                        isAssociatedCheck: IsAssociatedCheckAction,
-                                        formProvider: $className$FormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: $className$View
+                                       schemeData: SchemeDataAction,
+                                       formProvider: $className$FormProvider,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       view: $className$View
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()

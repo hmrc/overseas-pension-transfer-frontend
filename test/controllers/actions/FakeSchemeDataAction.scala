@@ -16,27 +16,24 @@
 
 package controllers.actions
 
-import models.requests.{DataRequest, DisplayRequest}
+import models.SrnNumber
+import models.requests.{DataRequest, DisplayRequest, IdentifierRequest}
 import play.api.mvc.Result
 import utils.AppUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeIsAssociatedCheckAction()
-    extends IsAssociatedCheckAction with AppUtils {
+class FakeSchemeDataAction()
+    extends SchemeDataAction with AppUtils {
 
   implicit override protected val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
 
-  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DisplayRequest[A]]] =
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] =
     Future.successful(Right(
-      DisplayRequest(
+      IdentifierRequest(
         request.request,
-        request.authenticatedUser,
-        request.userAnswers,
-        memberFullName(request.userAnswers),
-        qtNumber(request.userAnswers),
-        dateTransferSubmitted(request.userAnswers)
+        request.authenticatedUser.updateSrnNumber(SrnNumber("12345"))
       )
     ))
 }

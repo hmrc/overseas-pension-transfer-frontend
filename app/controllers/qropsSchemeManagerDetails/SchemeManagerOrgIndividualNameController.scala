@@ -38,7 +38,7 @@ class SchemeManagerOrgIndividualNameController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     formProvider: SchemeManagerOrgIndividualNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: SchemeManagerOrgIndividualNameView,
@@ -48,7 +48,7 @@ class SchemeManagerOrgIndividualNameController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(SchemeManagerOrgIndividualNamePage) match {
         case None        => form
@@ -58,7 +58,7 @@ class SchemeManagerOrgIndividualNameController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

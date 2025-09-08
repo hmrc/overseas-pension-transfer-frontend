@@ -54,7 +54,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     .overrides(
       bind[IdentifierAction].toInstance(fakeIdentifierAction),
       bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
-      bind[IsAssociatedCheckAction].to[FakeIsAssociatedCheckAction]
+      bind[SchemeDataAction].to[FakeSchemeDataAction]
     )
 
   "PspDeclaration Controller" - {

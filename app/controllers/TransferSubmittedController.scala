@@ -30,12 +30,12 @@ class TransferSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: TransferSubmittedView
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad: Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val summaryList = TransferSubmittedSummary.rows
 

@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import models.UserAnswers
-import models.requests.{DataRequest, IdentifierRequest}
+import models.requests.{DataRequest, DisplayRequest, IdentifierRequest}
 import org.mockito.Mockito._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -33,7 +33,7 @@ import scala.concurrent.Future
 class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
-    def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, DataRequest[A]]] = refine(request)
+    def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = refine(request)
   }
 
   "Data Retrieval Action" - {
@@ -58,7 +58,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
     "when there is data in the cache" - {
 
-      "must build a userAnswers object and add it to the request" in {
+      "must build a userAnswers, memberName, qtNumber and dateTransferSubmitted object and add it to the request" in {
         val userAnswers = UserAnswers("id")
 
         val sessionRepository = mock[SessionRepository]
@@ -68,8 +68,8 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val result = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
 
         result.map {
-          dataRequest =>
-            dataRequest.userAnswers mustBe userAnswers
+          displayRequest =>
+            displayRequest.userAnswers mustBe userAnswers
         }
       }
     }

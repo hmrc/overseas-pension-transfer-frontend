@@ -41,6 +41,7 @@ class QROPSAddressController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
+    schemeData: SchemeDataAction,
     getData: DataRetrievalAction,
     formProvider: QROPSAddressFormProvider,
     countryService: CountryService,
@@ -53,7 +54,7 @@ class QROPSAddressController @Inject() (
 
   private def form(): Form[QROPSAddressFormData] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(QROPSAddressPage) match {
         case None          => form()

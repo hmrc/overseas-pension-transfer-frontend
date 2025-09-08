@@ -18,8 +18,8 @@ package controllers.actions
 
 import connectors.PensionSchemeConnector
 import controllers.routes
-import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
-import models.requests.{DataRequest, DisplayRequest}
+import models.requests.IdentifierRequest
+import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import queries.mps.SrnQuery
@@ -31,13 +31,13 @@ import utils.AppUtils
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsAssociatedCheckActionImpl @Inject() (
+class SchemeDataActionImpl @Inject() (
     pensionSchemeConnector: PensionSchemeConnector,
     dashboardSessionRepository: DashboardSessionRepository
   )(implicit val executionContext: ExecutionContext
-  ) extends IsAssociatedCheckAction with AppUtils {
+  ) extends SchemeDataAction with AppUtils with Logging {
 
-  override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
     dashboardSessionRepository.get(request.authenticatedUser.internalId) flatMap {
@@ -47,23 +47,10 @@ class IsAssociatedCheckActionImpl @Inject() (
             pensionSchemeConnector.checkAssociation(srn.value, request.authenticatedUser) map {
               isAssociated =>
                 if (isAssociated) {
-                  def authedUser: AuthenticatedUser = {
-                    request.authenticatedUser match {
-                      case PsaUser(userId, id, None) => PsaUser(userId, id, Some(srn))
-                      case PspUser(userId, id, None) => PspUser(userId, id, Some(srn))
-                      case user @ PsaUser(_, _, _)   => user
-                      case user @ PspUser(_, _, _)   => user
-                    }
-                  }
-
                   Right(
-                    DisplayRequest(
+                    IdentifierRequest(
                       request.request,
-                      authedUser,
-                      request.userAnswers,
-                      memberFullName(request.userAnswers),
-                      qtNumber(request.userAnswers),
-                      dateTransferSubmitted(request.userAnswers)
+                      request.authenticatedUser.updateSrnNumber(srn)
                     )
                   )
                 } else {
@@ -78,4 +65,4 @@ class IsAssociatedCheckActionImpl @Inject() (
   }
 }
 
-trait IsAssociatedCheckAction extends ActionRefiner[DataRequest, DisplayRequest]
+trait SchemeDataAction extends ActionRefiner[IdentifierRequest, IdentifierRequest]

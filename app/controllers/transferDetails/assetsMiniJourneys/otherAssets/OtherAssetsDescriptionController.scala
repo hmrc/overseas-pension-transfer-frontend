@@ -34,7 +34,7 @@ class OtherAssetsDescriptionController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     formProvider: OtherAssetsDescriptionFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: OtherAssetsDescriptionView
@@ -43,7 +43,7 @@ class OtherAssetsDescriptionController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(OtherAssetsDescriptionPage(index)) match {
         case None        => form
@@ -53,7 +53,7 @@ class OtherAssetsDescriptionController @Inject() (
       Ok(view(preparedForm, mode, index))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

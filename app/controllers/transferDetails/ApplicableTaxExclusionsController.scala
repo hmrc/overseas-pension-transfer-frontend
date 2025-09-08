@@ -34,7 +34,7 @@ class ApplicableTaxExclusionsController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     formProvider: ApplicableTaxExclusionsFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: ApplicableTaxExclusionsView
@@ -43,7 +43,7 @@ class ApplicableTaxExclusionsController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(ApplicableTaxExclusionsPage) match {
         case None        => form
@@ -53,7 +53,7 @@ class ApplicableTaxExclusionsController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

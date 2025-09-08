@@ -38,7 +38,7 @@ class MoreUnquotedSharesDeclarationController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     formProvider: MoreUnquotedSharesDeclarationFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MoreUnquotedSharesDeclarationView,
@@ -49,7 +49,7 @@ class MoreUnquotedSharesDeclarationController @Inject() (
   private val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen isAssociatedCheck).async { implicit request =>
+    (identify andThen schemeData andThen getData).async { implicit request =>
       val preparedForm = request.userAnswers.get(MoreUnquotedSharesDeclarationPage) match {
         case Some(value) => form.fill(value)
         case None        => form
@@ -79,7 +79,7 @@ class MoreUnquotedSharesDeclarationController @Inject() (
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen isAssociatedCheck).async { implicit request =>
+    (identify andThen schemeData andThen getData).async { implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
           val assets = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)

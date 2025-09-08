@@ -17,7 +17,7 @@
 package controllers.qropsSchemeManagerDetails
 
 import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
 import models.TaskCategory.SchemeManagerDetails
 import models.taskList.TaskStatus.Completed
@@ -40,7 +40,7 @@ class SchemeManagerDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
@@ -48,14 +48,14 @@ class SchemeManagerDetailsCYAController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val list = SummaryListViewModel(SchemeManagerDetailsSummary.rows(CheckMode, request.userAnswers))
 
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       for {
         ua            <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(SchemeManagerDetails), Completed))

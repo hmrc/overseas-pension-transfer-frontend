@@ -35,7 +35,7 @@ class QuotedSharesConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     formProvider: QuotedSharesConfirmRemovalFormProvider,
     assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
@@ -46,7 +46,7 @@ class QuotedSharesConfirmRemovalController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   private val form    = formProvider()
-  private val actions = (identify andThen getData andThen isAssociatedCheck)
+  private val actions = (identify andThen schemeData andThen getData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
     Ok(view(form, index))

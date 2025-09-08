@@ -38,18 +38,18 @@ class PsaDeclarationController @Inject() (
     userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: PsaDeclarationView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       Ok(view())
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers).flatMap {
         case Right(SubmissionResponse(qtNumber)) =>

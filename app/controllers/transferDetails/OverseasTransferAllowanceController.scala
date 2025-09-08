@@ -38,7 +38,7 @@ class OverseasTransferAllowanceController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     markInProgress: MarkInProgressOnEntryAction,
     formProvider: OverseasTransferAllowanceFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -50,7 +50,7 @@ class OverseasTransferAllowanceController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen markInProgress.forCategoryAndMode(TransferDetails, mode) andThen isAssociatedCheck) {
+    (identify andThen schemeData andThen getData andThen markInProgress.forCategoryAndMode(TransferDetails, mode)) {
       implicit request =>
         val preparedForm = request.userAnswers.get(OverseasTransferAllowancePage) match {
           case None        => form
@@ -60,7 +60,7 @@ class OverseasTransferAllowanceController @Inject() (
 
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

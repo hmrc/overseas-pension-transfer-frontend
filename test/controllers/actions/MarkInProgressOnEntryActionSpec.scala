@@ -17,10 +17,10 @@
 package controllers.actions
 
 import base.SpecBase
-import models.requests.DataRequest
+import models.requests.{DataRequest, DisplayRequest}
 import models.responses.UserAnswersErrorResponse
 import models.taskList.TaskStatus
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, QtNumber, TaskCategory, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -42,11 +42,14 @@ class MarkInProgressOnEntryActionSpec
     with SpecBase
     with MockitoSugar {
 
-  private def mkDataRequest[A](ua: UserAnswers) =
-    DataRequest(
-      request           = FakeRequest(),
-      authenticatedUser = psaUser,
-      userAnswers       = ua
+  private def mkDisplayRequest[A](ua: UserAnswers) =
+    DisplayRequest(
+      request               = FakeRequest(),
+      authenticatedUser     = psaUser,
+      userAnswers           = ua,
+      memberName            = "Firstname Lastname",
+      qtNumber              = QtNumber.empty,
+      dateTransferSubmitted = "Transfer not submitted"
     )
 
   "MarkInProgressOnEntryActionImpl.forCategoryAndMode" - {
@@ -64,12 +67,12 @@ class MarkInProgressOnEntryActionSpec
         val action  = new MarkInProgressOnEntryActionImpl(sessionRepo, uaService)
         val refiner = action.forCategoryAndMode(TaskCategory.MemberDetails, NormalMode)
 
-        val req = mkDataRequest(emptyUserAnswers)
+        val req = mkDisplayRequest(emptyUserAnswers)
 
         val resultFuture =
           refiner.invokeBlock(
             request = req,
-            block   = (_: DataRequest[_]) => Future.successful(Ok)
+            block   = (_: DisplayRequest[_]) => Future.successful(Ok)
           )
 
         status(resultFuture) mustBe OK
@@ -99,10 +102,10 @@ class MarkInProgressOnEntryActionSpec
       val action  = new MarkInProgressOnEntryActionImpl(sessionRepo, uaService)
       val refiner = action.forCategoryAndMode(TaskCategory.MemberDetails, NormalMode)
 
-      val req = mkDataRequest(emptyUserAnswers)
+      val req = mkDisplayRequest(emptyUserAnswers)
 
       val resultFuture =
-        refiner.invokeBlock(req, (_: DataRequest[_]) => Future.successful(Ok))
+        refiner.invokeBlock(req, (_: DisplayRequest[_]) => Future.successful(Ok))
 
       status(resultFuture) mustBe SEE_OTHER
       redirectLocation(resultFuture).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url
@@ -116,12 +119,12 @@ class MarkInProgressOnEntryActionSpec
       val action  = new MarkInProgressOnEntryActionImpl(sessionRepo, uaService)
       val refiner = action.forCategoryAndMode(TaskCategory.MemberDetails, CheckMode)
 
-      val req = mkDataRequest(emptyUserAnswers)
+      val req = mkDisplayRequest(emptyUserAnswers)
 
       val resultFuture =
         refiner.invokeBlock(
           request = req,
-          block   = { dr: DataRequest[_] =>
+          block   = { dr: DisplayRequest[_] =>
             dr.userAnswers mustBe req.userAnswers
             Future.successful(Ok)
           }
