@@ -46,7 +46,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
 
   "refine" - {
     "return Right of Display request when checkAssociation returns true" in {
-      val dataJson = Json.obj("mps" -> Json.obj("srn" -> "12345"))
+      val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj("srnNumber" -> "S1234567", "pstrNumber" -> "12345678AB", "schemeName" -> "Scheme Name"))
 
       when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
       when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
@@ -56,8 +56,8 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
         PsaUser(
           PsaId("psaId"),
           "internalId",
-          Some(PensionSchemeDetails(SrnNumber("S0000000000"), PstrNumber(""), "Scheme Name"))
-        gi)
+          Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
+        )
       )
 
       val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
@@ -73,7 +73,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
     }
 
     "return Left Redirect to Unauthorised when checkAssociation returns false" in {
-      val dataJson = Json.obj("mps" -> Json.obj("srn" -> "12345"))
+      val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj("srnNumber" -> "S1234567", "pstrNumber" -> "12345678AB", "schemeName" -> "Scheme Name"))
 
       when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
       when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(false)
@@ -83,7 +83,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
         PsaUser(
           PsaId("psaId"),
           "internalId",
-          Some(PensionSchemeDetails(SrnNumber("S0000000000"), PstrNumber(""), "Scheme Name"))
+          Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
         )
       )
 
@@ -98,7 +98,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
 
     "Return Left and redirect to Journey Recovery" - {
       "when there is no srn found" in {
-        val dataJson = Json.obj("mps" -> Json.obj())
+        val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj())
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
 
@@ -107,7 +107,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           PsaUser(
             PsaId("psaId"),
             "internalId",
-            Some(PensionSchemeDetails(SrnNumber("S0000000000"), PstrNumber(""), "Scheme Name"))
+            Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
           )
         )
 
@@ -129,7 +129,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
             PsaUser(
               PsaId("psaId"),
               "internalId",
-              Some(PensionSchemeDetails(SrnNumber("S0000000000"), PstrNumber(""), "Scheme Name"))
+              Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
             )
           )
 

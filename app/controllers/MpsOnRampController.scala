@@ -18,18 +18,17 @@ package controllers
 
 import connectors.PensionSchemeConnector
 import controllers.actions.IdentifierAction
-import models.{DashboardData, SrnNumber}
+import models.DashboardData
 import pages.MpsOnRampPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject._
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.util.{Failure, Success}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MpsOnRampController @Inject() (
@@ -41,24 +40,26 @@ class MpsOnRampController @Inject() (
   ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onRamp(srn: String): Action[AnyContent] = identify.async { implicit request =>
-    (for {
-      dd        <- Future.fromTry(DashboardData(request.authenticatedUser.internalId).set(SrnQuery, SrnNumber(srn)))
-      persisted <- dashboardRepo.set(dd)
-    } yield {
-      if (persisted) {
-        val responseEither = Await.ready(pensionSchemeConnector.getSchemeDetails(srn, request.authenticatedUser), Duration.Inf).value.get
-        responseEither match {
-          case Success(r) => logger.info(s"success: ${r.toOption.get}")
-          case Failure(e) => logger.warn(s"failed: $e")
+    val dashboardData = DashboardData(request.authenticatedUser.internalId)
+
+    pensionSchemeConnector.getSchemeDetails(srn, request.authenticatedUser).flatMap {
+      case Right(psd) =>
+        Future.fromTry(dashboardData.set(PensionSchemeDetailsQuery, psd)).flatMap { dd1 =>
+          dashboardRepo.set(dd1).map { persisted =>
+            if (persisted) {
+              Redirect(MpsOnRampPage.nextPage(dd1))
+            } else {
+              logger.warn("[MpsOnRampController][onRamp] dashboardRepo.set returned false")
+              Redirect(routes.JourneyRecoveryController.onPageLoad())
+            }
+          }
         }
-        Redirect(MpsOnRampPage.nextPage(dd))
-      } else {
-        logger.warn("Dashboard repo set returned false")
-        Redirect(routes.JourneyRecoveryController.onPageLoad())
-      }
-    }).recover { case t =>
-      logger.error("Failed to persist dashboard data", t)
-      InternalServerError
+      case Left(err)  =>
+        logger.warn(s"[MpsOnRampController][onRamp] Downstream error while fetching scheme details for $srn: $err")
+        Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+    }.recover { case t =>
+      logger.error("[MpsOnRampController][onRamp] Failed while setting/persisting dashboard data", t)
+      Redirect(routes.JourneyRecoveryController.onPageLoad())
     }
   }
 }
