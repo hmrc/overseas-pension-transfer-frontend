@@ -47,7 +47,7 @@ class MpsOnRampController @Inject() (
       persisted <- dashboardRepo.set(dd)
     } yield {
       if (persisted) {
-        val responseEither = Await.ready(pensionSchemeConnector.getSchemeDetails("S2400000040", request.authenticatedUser), Duration.Inf).value.get
+        val responseEither = Await.ready(pensionSchemeConnector.getSchemeDetails(srn, request.authenticatedUser), Duration.Inf).value.get
         responseEither match {
           case Success(r) => logger.info(s"success: ${r.toOption.get}")
           case Failure(e) => logger.warn(s"failed: $e")
