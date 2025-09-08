@@ -37,7 +37,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
   "MpsOnRampController onRamp" - {
 
-    "must store PensionSchemeDetails in dashboard cache and redirect to next page when repo returns true" in {
+    "must store PensionSchemeDetails in dashboard cache and redirect to next page" in {
       val mockRepo      = mock[DashboardSessionRepository]
       val mockConnector = mock[PensionSchemeConnector]
 
@@ -102,7 +102,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       }
     }
 
-    "must redirect to Journey Recovery when the repo returns false" in {
+    "must redirect to Journey Recovery when the repo fails to set data" in {
       val mockRepo      = mock[DashboardSessionRepository]
       val mockConnector = mock[PensionSchemeConnector]
 
@@ -132,7 +132,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       }
     }
 
-    "must redirect to Journey Recovery when persisting to the repo fails" in {
+    "must redirect to Journey Recovery when persisting to the repo throws an exception" in {
       val mockRepo      = mock[DashboardSessionRepository]
       val mockConnector = mock[PensionSchemeConnector]
 
