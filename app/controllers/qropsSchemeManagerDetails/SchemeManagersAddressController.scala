@@ -41,6 +41,7 @@ class SchemeManagersAddressController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
+    schemeData: SchemeDataAction,
     formProvider: SchemeManagersAddressFormProvider,
     countryService: CountryService,
     addressService: AddressService,
@@ -52,7 +53,7 @@ class SchemeManagersAddressController @Inject() (
 
   private def form: Form[SchemeManagersAddressFormData] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val userAnswers  = request.userAnswers
       val preparedForm = userAnswers.get(SchemeManagersAddressPage) match {

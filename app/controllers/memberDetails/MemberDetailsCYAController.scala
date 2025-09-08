@@ -17,7 +17,7 @@
 package controllers.memberDetails
 
 import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
 import models.TaskCategory.MemberDetails
 import models.taskList.TaskStatus.Completed
@@ -43,20 +43,20 @@ class MemberDetailsCYAController @Inject() (
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     taskService: TaskService,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDetailsCYAView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val list = SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, request.userAnswers))
 
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       for {
         ua1           <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(MemberDetails), Completed))

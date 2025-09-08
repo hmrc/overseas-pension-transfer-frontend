@@ -17,7 +17,7 @@
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, IsAssociatedCheckAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
@@ -40,7 +40,7 @@ class OtherAssetsCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     userAnswersService: UserAnswersService,
     assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
@@ -49,7 +49,7 @@ class OtherAssetsCYAController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  private val actions = (identify andThen getData andThen isAssociatedCheck)
+  private val actions = (identify andThen schemeData andThen getData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
     val list = SummaryListViewModel(OtherAssetsSummary.rows(CheckMode, request.userAnswers, index))

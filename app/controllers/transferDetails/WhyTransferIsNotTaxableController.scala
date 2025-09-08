@@ -37,7 +37,7 @@ class WhyTransferIsNotTaxableController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     formProvider: WhyTransferIsNotTaxableFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: WhyTransferIsNotTaxableView,
@@ -47,7 +47,7 @@ class WhyTransferIsNotTaxableController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(WhyTransferIsNotTaxablePage) match {
         case None        => form
@@ -57,7 +57,7 @@ class WhyTransferIsNotTaxableController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

@@ -38,7 +38,7 @@ class QROPSNameController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     markInProgress: MarkInProgressOnEntryAction,
     formProvider: QROPSNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -50,7 +50,7 @@ class QROPSNameController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen markInProgress.forCategoryAndMode(QROPSDetails, mode) andThen isAssociatedCheck) {
+    (identify andThen schemeData andThen getData andThen markInProgress.forCategoryAndMode(QROPSDetails, mode)) {
       implicit request =>
         val preparedForm = request.userAnswers.get(QROPSNamePage) match {
           case None        => form
@@ -60,7 +60,7 @@ class QROPSNameController @Inject() (
         Ok(view(preparedForm, mode))
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

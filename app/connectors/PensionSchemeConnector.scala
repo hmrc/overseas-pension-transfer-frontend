@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
 import java.net.URL
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PensionSchemeConnector @Inject() (
     appConfig: FrontendAppConfig,
@@ -31,8 +31,8 @@ class PensionSchemeConnector @Inject() (
   )(implicit ec: ExecutionContext
   ) {
 
-  def checkAssociation(srn: String, user: AuthenticatedUser)(implicit hc: HeaderCarrier) = {
-    val url        = url"${appConfig.pensionSchemeService}/register-scheme"
+  def checkAssociation(srn: String, user: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val url        = url"${appConfig.pensionSchemeService}/pensions-scheme/is-psa-associated"
     val userHeader = {
       user match {
         case PsaUser(psaId, _, _) => "psaId" -> psaId.value
@@ -40,7 +40,7 @@ class PensionSchemeConnector @Inject() (
       }
     }
 
-    http.post(url)
+    http.get(url)
       .setHeader(
         "schemeReferenceNumber" -> srn,
         userHeader

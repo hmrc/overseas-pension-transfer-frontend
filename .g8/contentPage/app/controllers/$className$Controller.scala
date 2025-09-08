@@ -12,7 +12,7 @@ class $className$Controller @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
 
-                                       isAssociatedCheck: IsAssociatedCheckAction,
+                                       schemeData: SchemeDataAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: $className$View
                                      ) extends FrontendBaseController with I18nSupport {

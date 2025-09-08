@@ -39,7 +39,7 @@ class MembersLastUKAddressController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     formProvider: MembersLastUKAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUKAddressView,
@@ -47,7 +47,7 @@ class MembersLastUKAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       def form(): Form[MembersLastUKAddress] = formProvider()
       val userAnswers                        = request.userAnswers
@@ -60,7 +60,7 @@ class MembersLastUKAddressController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       def form(): Form[MembersLastUKAddress] = formProvider()
 

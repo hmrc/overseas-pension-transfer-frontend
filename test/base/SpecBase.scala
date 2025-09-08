@@ -88,7 +88,7 @@ trait SpecBase
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[MarkInProgressOnEntryAction].to[FakeMarkInProgressAction],
-        bind[IsAssociatedCheckAction].to[FakeIsAssociatedCheckAction]
+        bind[SchemeDataAction].to[FakeSchemeDataAction]
       )
 
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =

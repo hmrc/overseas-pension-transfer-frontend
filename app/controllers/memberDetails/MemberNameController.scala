@@ -39,6 +39,7 @@ class MemberNameController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
+    schemeData: SchemeDataAction,
     markInProgress: MarkInProgressOnEntryAction,
     formProvider: MemberNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -50,7 +51,7 @@ class MemberNameController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen markInProgress.forCategoryAndMode(MemberDetails, mode)) {
+    (identify andThen schemeData andThen getData andThen markInProgress.forCategoryAndMode(MemberDetails, mode)) {
       implicit request =>
         val preparedForm = request.userAnswers.get(MemberNamePage) match {
           case None        => form

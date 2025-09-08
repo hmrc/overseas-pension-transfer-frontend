@@ -23,12 +23,18 @@ sealed trait AuthenticatedUser {
   def internalId: String
   def userType: UserType
   def srn: Option[SrnNumber]
+
+  def updateSrnNumber(srnNumber: SrnNumber): AuthenticatedUser
 }
 
 case class PsaUser(psaId: PsaId, internalId: String, srn: Option[SrnNumber] = None) extends AuthenticatedUser {
   override val userType: UserType = Psa
+
+  override def updateSrnNumber(srnNumber: SrnNumber): AuthenticatedUser = this.copy(srn = Some(srnNumber))
 }
 
 case class PspUser(pspId: PspId, internalId: String, srn: Option[SrnNumber] = None) extends AuthenticatedUser {
   override val userType: UserType = Psp
+
+  override def updateSrnNumber(srnNumber: SrnNumber): AuthenticatedUser = this.copy(srn = Some(srnNumber))
 }

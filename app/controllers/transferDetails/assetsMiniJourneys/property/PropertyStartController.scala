@@ -31,12 +31,12 @@ class PropertyStartController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     view: PropertyStartView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       Ok(view(PropertyStartPage.nextPage(mode = NormalMode, request.userAnswers).url))
   }

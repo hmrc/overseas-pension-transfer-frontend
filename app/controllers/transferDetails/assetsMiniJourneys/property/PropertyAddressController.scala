@@ -38,7 +38,7 @@ class PropertyAddressController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     formProvider: PropertyAddressFormProvider,
     countryService: CountryService,
     addressService: AddressService,
@@ -47,7 +47,7 @@ class PropertyAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(PropertyAddressPage(index)) match {
@@ -58,7 +58,7 @@ class PropertyAddressController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode, index))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       val form = formProvider()
       form.bindFromRequest().fold(

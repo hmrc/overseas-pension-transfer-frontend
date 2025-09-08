@@ -19,7 +19,7 @@ class $className$Controller @Inject()(
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
 
-                                       isAssociatedCheck: IsAssociatedCheckAction,
+                                       schemeData: SchemeDataAction,
                                        formProvider: $className$FormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: $className$View

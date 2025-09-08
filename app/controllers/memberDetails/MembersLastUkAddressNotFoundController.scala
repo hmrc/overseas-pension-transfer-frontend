@@ -30,13 +30,13 @@ class MembersLastUkAddressNotFoundController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    isAssociatedCheck: IsAssociatedCheckAction,
+    schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressNotFoundView
   ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    (identify andThen getData andThen isAssociatedCheck) { implicit request =>
+    (identify andThen schemeData andThen getData) { implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(NoAddressFound(searchedPostcode)) =>
           Ok(view(searchedPostcode))
