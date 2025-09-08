@@ -18,11 +18,12 @@ package controllers.actions
 
 import connectors.PensionSchemeConnector
 import controllers.routes
+import models.PensionSchemeDetails
 import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
-import queries.mps.SrnQuery
+import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -42,22 +43,22 @@ class SchemeDataActionImpl @Inject() (
 
     dashboardSessionRepository.get(request.authenticatedUser.internalId) flatMap {
       case Some(dashboardData) =>
-        dashboardData.get(SrnQuery) match {
-          case Some(srn) =>
+        dashboardData.get(PensionSchemeDetailsQuery) match {
+          case Some(scheme @ PensionSchemeDetails(srn, _, _)) =>
             pensionSchemeConnector.checkAssociation(srn.value, request.authenticatedUser) map {
               isAssociated =>
                 if (isAssociated) {
                   Right(
                     IdentifierRequest(
                       request.request,
-                      request.authenticatedUser.updateSrnNumber(srn)
+                      request.authenticatedUser.updatePensionSchemeDetails(scheme)
                     )
                   )
                 } else {
                   Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad()))
                 }
             }
-          case None      => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+          case None                                           => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
         }
       case None                => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
 

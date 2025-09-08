@@ -23,7 +23,6 @@ import pages.MpsOnRampPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import queries.mps.SrnQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
