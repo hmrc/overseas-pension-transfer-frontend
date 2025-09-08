@@ -33,7 +33,7 @@ class FakeSchemeDataAction()
     Future.successful(Right(
       IdentifierRequest(
         request.request,
-        request.authenticatedUser.updateSrnNumber(SrnNumber("12345"))
+        request.authenticatedUser.updatePensionSchemeDetails(SrnNumber("12345"))
       )
     ))
 }

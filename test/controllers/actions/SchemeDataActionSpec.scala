@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import connectors.PensionSchemeConnector
-import models.{DashboardData, QtNumber, SrnNumber, UserAnswers}
+import models.{DashboardData, PensionSchemeDetails, PstrNumber, QtNumber, SrnNumber, UserAnswers}
 import models.authentication.{PsaId, PsaUser}
 import models.requests.{DataRequest, DisplayRequest, IdentifierRequest}
 import org.mockito.ArgumentMatchers.any
@@ -51,7 +51,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
       when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
       when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
 
-      val identifierRequest = IdentifierRequest(FakeRequest(), PsaUser(PsaId("psaId"), "internalId", Some(SrnNumber("12345"))))
+      val identifierRequest = IdentifierRequest(
+        FakeRequest(),
+        PsaUser(
+          PsaId("psaId"),
+          "internalId",
+          Some(PensionSchemeDetails(SrnNumber("S0000000000"), PstrNumber(""), "Scheme Name"))
+        gi)
+      )
 
       val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
@@ -71,7 +78,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
       when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
       when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(false)
 
-      val identifierRequest = IdentifierRequest(FakeRequest(), PsaUser(PsaId("psaId"), "internalId", Some(SrnNumber("12345"))))
+      val identifierRequest = IdentifierRequest(
+        FakeRequest(),
+        PsaUser(
+          PsaId("psaId"),
+          "internalId",
+          Some(PensionSchemeDetails(SrnNumber("S0000000000"), PstrNumber(""), "Scheme Name"))
+        )
+      )
 
       val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
@@ -88,7 +102,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
 
-        val identifierRequest = IdentifierRequest(FakeRequest(), PsaUser(PsaId("psaId"), "internalId", Some(SrnNumber("12345"))))
+        val identifierRequest = IdentifierRequest(
+          FakeRequest(),
+          PsaUser(
+            PsaId("psaId"),
+            "internalId",
+            Some(PensionSchemeDetails(SrnNumber("S0000000000"), PstrNumber(""), "Scheme Name"))
+          )
+        )
 
         val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
@@ -102,7 +123,15 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
       "when there is no dashboard data returned" - {
         when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
 
-        val identifierRequest = IdentifierRequest(FakeRequest(), PsaUser(PsaId("psaId"), "internalId", Some(SrnNumber("12345"))))
+        val identifierRequest =
+          IdentifierRequest(
+            FakeRequest(),
+            PsaUser(
+              PsaId("psaId"),
+              "internalId",
+              Some(PensionSchemeDetails(SrnNumber("S0000000000"), PstrNumber(""), "Scheme Name"))
+            )
+          )
 
         val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 

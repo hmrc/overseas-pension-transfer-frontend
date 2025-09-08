@@ -16,25 +16,25 @@
 
 package models.authentication
 
-import models.SrnNumber
+import models.{PensionSchemeDetails, SrnNumber}
 
 //Add Scheme Details in here - Scheme Name and SchemeId/SRN
 sealed trait AuthenticatedUser {
   def internalId: String
   def userType: UserType
-  def srn: Option[SrnNumber]
+  def pensionSchemeDetails: Option[PensionSchemeDetails]
 
-  def updateSrnNumber(srnNumber: SrnNumber): AuthenticatedUser
+  def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser
 }
 
-case class PsaUser(psaId: PsaId, internalId: String, srn: Option[SrnNumber] = None) extends AuthenticatedUser {
+case class PsaUser(psaId: PsaId, internalId: String, pensionSchemeDetails: Option[PensionSchemeDetails] = None) extends AuthenticatedUser {
   override val userType: UserType = Psa
 
-  override def updateSrnNumber(srnNumber: SrnNumber): AuthenticatedUser = this.copy(srn = Some(srnNumber))
+  override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
 }
 
-case class PspUser(pspId: PspId, internalId: String, srn: Option[SrnNumber] = None) extends AuthenticatedUser {
+case class PspUser(pspId: PspId, internalId: String, pensionSchemeDetails: Option[PensionSchemeDetails] = None) extends AuthenticatedUser {
   override val userType: UserType = Psp
 
-  override def updateSrnNumber(srnNumber: SrnNumber): AuthenticatedUser = this.copy(srn = Some(srnNumber))
+  override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
 }
