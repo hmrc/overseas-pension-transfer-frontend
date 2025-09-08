@@ -28,6 +28,7 @@
 )
 
 @(qtNumber: String, list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
+@schemeName = @{request.authenticatedUser.pensionSchemeDetails.map(_.schemeName).getOrElse("Scheme name not found")}
 
 @layout(pageTitle = titleNoForm(messages("transferSubmitted.title")), showPageFooter = false) {
 
@@ -41,10 +42,11 @@
     @govukSummaryList(list)
 
     <div class="govuk-body">
-        <a class="govuk-link govuk-body" href="@controllers.routes.IndexController.onPageLoad()">@messages("transferSubmitted.dashboardLink.text")</a>
+        <a class="govuk-link govuk-body" href="@controllers.routes.DashboardController.onPageLoad()">@messages("transferSubmitted.dashboardLink.text")</a>
     </div>
 
     <div class="govuk-body">
-        <a class="govuk-link govuk-body" href="@controllers.routes.IndexController.onPageLoad()">@messages("transferSubmitted.pensionSchemeLink.text")</a>
+        @*TODO: Update this with the pension scheme MPS link when we have it *@
+        <a class="govuk-link govuk-body" href="@controllers.routes.IndexController.onPageLoad()">@messages("transferSubmitted.pensionSchemeLink.text", schemeName)</a>
     </div>
 }
