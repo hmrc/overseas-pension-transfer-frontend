@@ -17,14 +17,17 @@
 package pages
 
 import controllers.routes
-import models.{DashboardData, PstrNumber, SrnNumber}
+import models.DashboardData
 import play.api.mvc.Call
-import queries.mps.{PstrQuery, SrnQuery}
+import queries.PensionSchemeDetailsQuery
 
 object DashboardPage extends Page {
 
-  def nextPage(dd: DashboardData): Call = (dd.get(PstrQuery), dd.get(SrnQuery)) match {
-    case (Some(_), Some(_)) => routes.WhatWillBeNeededController.onPageLoad()
-    case _                  => controllers.auth.routes.UnauthorisedController.onPageLoad()
-  }
+  def nextPage(dd: DashboardData): Call =
+    dd.get(PensionSchemeDetailsQuery) match {
+      case Some(_) =>
+        routes.WhatWillBeNeededController.onPageLoad()
+      case _       =>
+        controllers.auth.routes.UnauthorisedController.onPageLoad()
+    }
 }
