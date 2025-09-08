@@ -51,14 +51,9 @@ class PensionSchemeConnector @Inject() (
   }
 
   def getSchemeDetails(srn: String, authenticatedUser: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[PensionSchemeDetailsType] = {
-    val url = authenticatedUser match {
-      case PsaUser(_, _, _) => url"${appConfig.pensionSchemeService}/scheme/$srn"
-      case PspUser(_, _, _) => url"${appConfig.pensionSchemeService}/psp-scheme/$srn"
-    }
-
-    val headers: Seq[(String, String)] = authenticatedUser match {
-      case PsaUser(_, _, _) => Seq("schemeIdType" -> "srn", "idNumber" -> srn)
-      case PspUser(_, _, _) => Seq("srn" -> srn)
+    val (url, headers) = authenticatedUser match {
+      case PsaUser(_, _, _) => (url"${appConfig.pensionSchemeService}/scheme/$srn", Seq("schemeIdType" -> "srn", "idNumber" -> srn))
+      case PspUser(_, _, _) => (url"${appConfig.pensionSchemeService}/psp-scheme/$srn", Seq("srn" -> srn))
     }
 
     http.get(url)

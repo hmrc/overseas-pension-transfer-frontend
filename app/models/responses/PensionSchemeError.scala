@@ -16,7 +16,13 @@
 
 package models.responses
 
+import play.api.libs.json.{Json, Reads}
+
 sealed trait PensionSchemeError
 
 case class PensionSchemeNotAssociated()                                       extends PensionSchemeError
 case class PensionSchemeErrorResponse(error: String, details: Option[String]) extends PensionSchemeError
+
+object PensionSchemeErrorResponse {
+  implicit def reads: Reads[PensionSchemeErrorResponse] = Json.reads[PensionSchemeErrorResponse]
+}
