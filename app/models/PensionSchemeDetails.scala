@@ -18,8 +18,8 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PensionSchemeData(srnNumber: SrnNumber, pstrNumber: PstrNumber, schemeName: String)
+case class PensionSchemeDetails(srnNumber: SrnNumber, pstrNumber: PstrNumber, schemeName: String)
 
-object PensionSchemeData {
-  implicit val format: OFormat[PensionSchemeData] = Json.format
+object PensionSchemeDetails {
+  implicit val format: OFormat[PensionSchemeDetails] = Json.format
 }
