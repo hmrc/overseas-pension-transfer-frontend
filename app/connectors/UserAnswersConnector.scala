@@ -37,6 +37,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import utils.DownstreamLogging
 
 import java.net.URL
+import java.util.UUID.randomUUID
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -77,15 +78,19 @@ class UserAnswersConnector @Inject() (
       }
   }
 
-  def postSubmission(submissionDTO: SubmissionDTO)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionType] =
+  def postSubmission(submissionDTO: SubmissionDTO)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionType] = {
+    val correlationId: String = hc.otherHeaders.toMap.getOrElse("CorrelationId", randomUUID().toString)
+
     http.post(submissionUrl(submissionDTO.referenceId))
       .withBody(Json.toJson(submissionDTO))
+      .setHeader("CorrelationId" -> correlationId)
       .execute[SubmissionType]
       .recover {
         case e: Exception =>
           val errMsg = logNonHttpError("[UserAnswersConnector][postSubmission]", hc, e)
           Left(SubmissionErrorResponse(errMsg, None))
       }
+  }
 
   def deleteAnswers(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteUserAnswersType] = {
     def url: URL = url"${appConfig.backendService}/save-for-later/$id"
