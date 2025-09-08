@@ -48,7 +48,6 @@ class IdentifierActionImpl @Inject() (
   private def predicate: Predicate = buildPredicate(config)
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
-    logger.info("\n\nStarted IdentifierAction\n\n")
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
