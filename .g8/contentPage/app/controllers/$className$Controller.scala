@@ -11,13 +11,12 @@ class $className$Controller @Inject()(
                                        override val messagesApi: MessagesApi,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
-
                                        schemeData: SchemeDataAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: $className$View
                                      ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData  andThen isAssociatedCheck) {
+  def onPageLoad: Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       Ok(view())
   }
