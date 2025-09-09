@@ -447,7 +447,7 @@ applicableTaxExclusions.publicService = The QROPS is an overseas public service 
 applicableTaxExclusions.internationalOrg = The QROPS is a pension scheme of an international organisation and the individual is employed by that international organisation.
 applicableTaxExclusions.resident = Both the individual and QROPS are resident in the same country.
 applicableTaxExclusions.hint = Select all that apply.
-applicableTaxExclusions.checkYourAnswersLabel = Why transfer is not taxable
+applicableTaxExclusions.checkYourAnswersLabel = Applicable exclusion
 applicableTaxExclusions.error.required = Select at least one reason why the transfer is not taxable
 applicableTaxExclusions.change.hidden = Why transfer is not taxable
 
@@ -473,7 +473,7 @@ netTransferAmount.hint = For example, £60000 or £19,300.54.
 
 quotedSharesValue.title = What is the value of these quoted shares?
 quotedSharesValue.heading = What is the value of these quoted shares?
-quotedSharesValue.checkYourAnswersLabel = Quoted shares value
+quotedSharesValue.checkYourAnswersLabel = Value of quoted shares
 quotedSharesValue.error.nonNumeric = The value of quoted shares must be an amount of money, like £123 or 123.00
 quotedSharesValue.error.required = Enter the value of quoted shares
 quotedSharesValue.error.aboveMaximum = The value of quoted shares must be {0} or less
@@ -501,7 +501,7 @@ unquotedSharesValue.change.hidden = Value of unquoted shares
 
 quotedSharesCompanyName.title = What is the name of the company these quoted shares relate to?
 quotedSharesCompanyName.heading = What is the name of the company these quoted shares relate to?
-quotedSharesCompanyName.checkYourAnswersLabel = Quoted shares company name
+quotedSharesCompanyName.checkYourAnswersLabel = Company name
 quotedSharesCompanyName.error.required = Enter the company name
 quotedSharesCompanyName.error.length = The company name must be 160 characters or less
 quotedSharesCompanyName.change.hidden = Quoted shares company name
@@ -512,7 +512,7 @@ unquotedShareStart.paragraph = The following questions are about unquoted shares
 
 unquotedSharesCompanyName.title = What is the name of the company these unquoted shares relate to?
 unquotedSharesCompanyName.heading = What is the name of the company these unquoted shares relate to?
-unquotedSharesCompanyName.checkYourAnswersLabel = Unquoted shares company name
+unquotedSharesCompanyName.checkYourAnswersLabel = Company name
 unquotedSharesCompanyName.error.required = Enter company name
 unquotedSharesCompanyName.error.length = The company name must be 160 characters or less
 unquotedSharesCompanyName.change.hidden = Unquoted shares company name

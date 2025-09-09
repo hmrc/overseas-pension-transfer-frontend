@@ -32,6 +32,7 @@ case object TransferDetailsSummary {
     val amountOfTransfer: Option[SummaryListRow]          = AmountOfTransferSummary.row(mode, userAnswers)
     val isTransferTaxable: Option[SummaryListRow]         = IsTransferTaxableSummary.row(mode, userAnswers)
     val whyTransferIsTaxable: Option[SummaryListRow]      = WhyTransferIsTaxableSummary.row(mode, userAnswers)
+    val whyTransferIsNotTaxable: Option[SummaryListRow]   = WhyTransferIsNotTaxableSummary.row(mode, userAnswers)
     val applicableTaxExclusions: Option[SummaryListRow]   = ApplicableTaxExclusionsSummary.row(mode, userAnswers)
     val amountOfTaxDeducted: Option[SummaryListRow]       = AmountOfTaxDeductedSummary.row(mode, userAnswers)
     val netTransferAmount: Option[SummaryListRow]         = NetTransferAmountSummary.row(mode, userAnswers)
@@ -53,6 +54,7 @@ case object TransferDetailsSummary {
       amountOfTransfer,
       isTransferTaxable,
       whyTransferIsTaxable,
+      whyTransferIsNotTaxable,
       applicableTaxExclusions,
       amountOfTaxDeducted,
       netTransferAmount,
