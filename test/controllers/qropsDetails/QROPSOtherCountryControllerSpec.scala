@@ -97,7 +97,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       running(application) {
         val request =
           FakeRequest(POST, qropsOtherCountryRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("otherEstablishedCountry", "answer"))
 
         val result = route(application, request).value
 
@@ -113,9 +113,9 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       running(application) {
         val request =
           FakeRequest(POST, qropsOtherCountryRoute)
-            .withFormUrlEncodedBody(("value", ""))
+            .withFormUrlEncodedBody(("otherEstablishedCountry", ""))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("otherEstablishedCountry" -> ""))
 
         val view = application.injector.instanceOf[QROPSOtherCountryView]
 
@@ -145,7 +145,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       running(application) {
         val request =
           FakeRequest(POST, qropsOtherCountryRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("otherEstablishedCountry", "answer"))
 
         val result = route(application, request).value
 

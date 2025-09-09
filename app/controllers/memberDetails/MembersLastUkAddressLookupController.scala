@@ -17,17 +17,18 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import controllers.helpers.ErrorHandling
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.Mode
 import models.address.{AddressLookupResult, AddressRecords, NoAddressFound}
 import org.apache.pekko.Done
 import pages.memberDetails.MembersLastUkAddressLookupPage
-import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{AddressService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.errors.AddressLookupDownView
 import views.html.memberDetails.MembersLastUkAddressLookupView
 
 import javax.inject.Inject
@@ -43,9 +44,12 @@ class MembersLastUkAddressLookupController @Inject() (
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressLookupView,
-    userAnswersService: UserAnswersService
+    userAnswersService: UserAnswersService,
+    addressLookupDownView: AddressLookupDownView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  ) extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   private val form = formProvider()
 
@@ -66,14 +70,7 @@ class MembersLastUkAddressLookupController @Inject() (
         postcode =>
           addressService.membersLastUkAddressLookup(postcode).flatMap {
             case None =>
-              logger.warn(s"Address lookup failed for postcode: $postcode")
-              Future.successful(
-                Redirect(
-                  MembersLastUkAddressLookupPage.nextPageRecovery(
-                    Some(MembersLastUkAddressLookupPage.recoveryModeReturnUrl)
-                  )
-                )
-              )
+              Future.successful(onAddressLookupFailure(postcode, addressLookupDownView))
 
             case Some(result: AddressLookupResult) =>
               for {
@@ -87,7 +84,8 @@ class MembersLastUkAddressLookupController @Inject() (
                       case _: AddressRecords => Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
                       case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
                     }
-                  case _           => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                  case Left(err)   =>
+                    onFailureRedirect(err)
                 }
 
               }
