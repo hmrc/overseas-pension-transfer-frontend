@@ -79,11 +79,9 @@ class UserAnswersConnector @Inject() (
   }
 
   def postSubmission(submissionDTO: SubmissionDTO)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionType] = {
-    val correlationId: String = hc.otherHeaders.toMap.getOrElse("CorrelationId", randomUUID().toString)
 
     http.post(submissionUrl(submissionDTO.referenceId))
       .withBody(Json.toJson(submissionDTO))
-      .setHeader("CorrelationId" -> correlationId)
       .execute[SubmissionType]
       .recover {
         case e: Exception =>
