@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.transferDetails.WhyTransferIsNotTaxablePage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
