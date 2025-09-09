@@ -74,6 +74,14 @@ journeyRecovery.startAgain.title = Sorry, there is a problem with the service
 journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
 
+addressLookupDown.title = Sorry, there is a problem with the service
+addressLookupDown.heading = Sorry, there is a problem with the service
+addressLookupDown.body = We''re having trouble retrieving some information.
+addressLookupDown.options.heading = You can:
+addressLookupDown.options.tryAgain = Try again in a few minutes
+addressLookupDown.options.dashboard = Return to overseas pension transfer dashboard
+addressLookupDown.options.enterManually = Enter the information manually
+
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.

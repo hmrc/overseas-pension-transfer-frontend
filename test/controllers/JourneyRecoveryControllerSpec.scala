@@ -21,7 +21,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
-import views.html.{JourneyRecoveryContinueView, JourneyRecoveryStartAgainView}
+import views.html.JourneyRecoveryContinueView
+import views.html.errors.JourneyRecoveryView
 
 class JourneyRecoveryControllerSpec extends AnyFreeSpec with SpecBase {
 
@@ -59,10 +60,10 @@ class JourneyRecoveryControllerSpec extends AnyFreeSpec with SpecBase {
 
           val result = route(application, request).value
 
-          val startAgainView = application.injector.instanceOf[JourneyRecoveryStartAgainView]
+          val recoveryView = application.injector.instanceOf[JourneyRecoveryView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView()(request, messages(application)).toString
+          contentAsString(result) mustEqual recoveryView()(request, messages(application)).toString
         }
       }
     }
@@ -78,10 +79,10 @@ class JourneyRecoveryControllerSpec extends AnyFreeSpec with SpecBase {
 
           val result = route(application, request).value
 
-          val startAgainView = application.injector.instanceOf[JourneyRecoveryStartAgainView]
+          val recoveryView = application.injector.instanceOf[JourneyRecoveryView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView()(request, messages(application)).toString
+          contentAsString(result) mustEqual recoveryView()(request, messages(application)).toString
         }
       }
     }
