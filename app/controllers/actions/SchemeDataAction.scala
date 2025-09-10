@@ -41,27 +41,31 @@ class SchemeDataActionImpl @Inject() (
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
-    dashboardSessionRepository.get(request.authenticatedUser.internalId) flatMap {
-      case Some(dashboardData) =>
-        dashboardData.get(PensionSchemeDetailsQuery) match {
-          case Some(scheme @ PensionSchemeDetails(srn, _, _)) =>
-            pensionSchemeConnector.checkAssociation(srn.value, request.authenticatedUser) map {
-              isAssociated =>
-                if (isAssociated) {
-                  Right(
-                    IdentifierRequest(
-                      request.request,
-                      request.authenticatedUser.updatePensionSchemeDetails(scheme)
+    if (request.authenticatedUser.pensionSchemeDetails.isEmpty) {
+      dashboardSessionRepository.get(request.authenticatedUser.internalId) flatMap {
+        case Some(dashboardData) =>
+          dashboardData.get(PensionSchemeDetailsQuery) match {
+            case Some(scheme @ PensionSchemeDetails(srn, _, _)) =>
+              pensionSchemeConnector.checkAssociation(srn.value, request.authenticatedUser) map {
+                isAssociated =>
+                  if (isAssociated) {
+                    Right(
+                      IdentifierRequest(
+                        request.request,
+                        request.authenticatedUser.updatePensionSchemeDetails(scheme)
+                      )
                     )
-                  )
-                } else {
-                  Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad()))
-                }
-            }
-          case None                                           => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
-        }
-      case None                => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+                  } else {
+                    Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad()))
+                  }
+              }
+            case None                                           => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+          }
+        case None                => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
 
+      }
+    } else {
+      Future.successful(Right(request))
     }
   }
 }

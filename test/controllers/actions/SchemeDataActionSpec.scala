@@ -45,30 +45,53 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
   }
 
   "refine" - {
-    "return Right of Display request when checkAssociation returns true" in {
-      val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj("srnNumber" -> "S1234567", "pstrNumber" -> "12345678AB", "schemeName" -> "Scheme Name"))
+    "return Right of Identifier request" - {
+      "when authenticatedUser has NO existing pensionSchemeDetails and checkAssociation returns true" in {
+        val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj("srnNumber" -> "S1234567", "pstrNumber" -> "12345678AB", "schemeName" -> "Scheme Name"))
 
-      when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
-      when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
+        when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
 
-      val identifierRequest = IdentifierRequest(
-        FakeRequest(),
-        PsaUser(
-          PsaId("psaId"),
-          "internalId",
-          Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
+        val identifierRequest = IdentifierRequest(
+          FakeRequest(),
+          PsaUser(
+            PsaId("psaId"),
+            "internalId",
+            None
+          )
         )
-      )
 
-      val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-      refine.map {
-        request =>
-          request mustBe
-            IdentifierRequest(
-              identifierRequest.request,
+        refine.map {
+          request =>
+            request.authenticatedUser mustBe
+              PsaUser(
+                PsaId("psaId"),
+                "internalId",
+                Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
+              )
+        }
+      }
+
+      "when authenticatedUser has existing pensionSchemeDetails" in {
+
+        val identifierRequest = IdentifierRequest(
+          FakeRequest(),
+          PsaUser(
+            PsaId("psaId"),
+            "internalId",
+            Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
+          )
+        )
+
+        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+
+        refine.map {
+          request =>
+            request.authenticatedUser mustBe
               identifierRequest.authenticatedUser
-            )
+        }
       }
     }
 
@@ -83,7 +106,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
         PsaUser(
           PsaId("psaId"),
           "internalId",
-          Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
+          None
         )
       )
 
@@ -107,7 +130,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           PsaUser(
             PsaId("psaId"),
             "internalId",
-            Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
+            None
           )
         )
 
@@ -129,7 +152,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
             PsaUser(
               PsaId("psaId"),
               "internalId",
-              Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
+              None
             )
           )
 
