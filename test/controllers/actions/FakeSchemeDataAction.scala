@@ -16,8 +16,8 @@
 
 package controllers.actions
 
-import models.SrnNumber
-import models.requests.{DataRequest, DisplayRequest, IdentifierRequest}
+import models.requests.IdentifierRequest
+import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
 import play.api.mvc.Result
 import utils.AppUtils
 
@@ -33,7 +33,13 @@ class FakeSchemeDataAction()
     Future.successful(Right(
       IdentifierRequest(
         request.request,
-        request.authenticatedUser.updatePensionSchemeDetails(SrnNumber("12345"))
+        request.authenticatedUser.updatePensionSchemeDetails(
+          PensionSchemeDetails(
+            SrnNumber("S1234567"),
+            PstrNumber("12345678AB"),
+            "Scheme Name"
+          )
+        )
       )
     ))
 }

@@ -18,7 +18,6 @@ class $className;format="cap"$Controller @Inject()(
                                          sessionRepository: SessionRepository,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
-
                                          schemeData: SchemeDataAction,
                                          formProvider: $className$FormProvider,
                                          val controllerComponents: MessagesControllerComponents,
@@ -27,7 +26,7 @@ class $className;format="cap"$Controller @Inject()(
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData  andThen isAssociatedCheck) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get($className$Page) match {
@@ -38,7 +37,7 @@ class $className;format="cap"$Controller @Inject()(
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData  andThen isAssociatedCheck).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
 
       form.bindFromRequest().fold(

@@ -36,7 +36,7 @@ class PensionSchemeConnector @Inject() (
   ) extends DownstreamLogging {
 
   def checkAssociation(srn: String, user: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url        = url"${appConfig.pensionSchemeService}/pensions-scheme/is-psa-associated"
+    val url        = url"${appConfig.pensionSchemeService}/is-psa-associated"
     val userHeader = {
       user match {
         case PsaUser(psaId, _, _) => "psaId" -> psaId.value

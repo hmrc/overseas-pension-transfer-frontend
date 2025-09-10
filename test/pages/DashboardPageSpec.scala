@@ -17,26 +17,26 @@
 package pages
 
 import controllers.routes
-import models.{DashboardData, SrnNumber}
+import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
 import org.scalatest.TryValues._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import queries.mps.SrnQuery
+import queries.PensionSchemeDetailsQuery
 
 class DashboardPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
-    "must go to WhatWillBeNeeded when SRN exists" in {
+    "must go to WhatWillBeNeeded when PensionSchemeDetails exists" in {
       val dd = DashboardData("internal-id")
-        .set(SrnQuery, SrnNumber("S1234567"))
+        .set(PensionSchemeDetailsQuery, PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
         .success
         .value
 
       DashboardPage.nextPage(dd) mustEqual routes.WhatWillBeNeededController.onPageLoad()
     }
 
-    "must go to Unauthorised when SRN is missing" in {
+    "must go to Unauthorised when PensionSchemeDetails is missing" in {
       val dd = DashboardData("internal-id")
 
       DashboardPage.nextPage(dd) mustEqual controllers.auth.routes.UnauthorisedController.onPageLoad()

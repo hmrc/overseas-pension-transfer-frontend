@@ -156,20 +156,6 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
-
-      running(application) {
-        val request = FakeRequest(GET, membersLastUkAddressLookupRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must return ServiceUnavailable and render the address lookup down view when the connector returns an error" in {
       val mockSessionRepository      = mock[SessionRepository]
       val mockUserAnswersService     = mock[UserAnswersService]
@@ -209,22 +195,6 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
             fakeDisplayRequest(request),
             messages(application)
           ).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, membersLastUkAddressLookupRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }
 

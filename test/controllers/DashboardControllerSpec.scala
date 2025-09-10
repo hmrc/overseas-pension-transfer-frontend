@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import models.{DashboardData, PstrNumber, SrnNumber}
+import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -25,7 +25,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.mps.{PstrQuery, SrnQuery}
+import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import views.html.DashboardView
 
@@ -36,17 +36,15 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
   "DashboardController onPageLoad" - {
 
     "must return OK and render the view when dashboard data exists" in {
-      val mockRepo = mock[DashboardSessionRepository]
-
-      val dd = DashboardData(id = "ignore")
-        .set(SrnQuery, SrnNumber("S1234567")).flatMap(
-          _.set(PstrQuery, PstrNumber("12345678AB"))
-        ).get
+      val mockRepo             = mock[DashboardSessionRepository]
+      val pensionSchemeDetails = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
+      val dd                   = DashboardData(id = "ignore")
+        .set(PensionSchemeDetailsQuery, pensionSchemeDetails).success.value
 
       when(mockRepo.get(any[String])).thenReturn(Future.successful(Some(dd)))
 
       val application =
-        applicationBuilder(userAnswers = None)
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(bind[DashboardSessionRepository].toInstance(mockRepo))
           .build()
 
@@ -67,7 +65,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockRepo.get(any[String])).thenReturn(Future.successful(None))
 
       val application =
-        applicationBuilder(userAnswers = None)
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(bind[DashboardSessionRepository].toInstance(mockRepo))
           .build()
 
