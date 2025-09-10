@@ -16,15 +16,15 @@
 
 package controllers.actions
 
+import base.SpecBase
 import models.requests.IdentifierRequest
-import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
 import play.api.mvc.Result
 import utils.AppUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class FakeSchemeDataAction()
-    extends SchemeDataAction with AppUtils {
+    extends SchemeDataAction with AppUtils with SpecBase {
 
   implicit override protected val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
@@ -34,11 +34,7 @@ class FakeSchemeDataAction()
       IdentifierRequest(
         request.request,
         request.authenticatedUser.updatePensionSchemeDetails(
-          PensionSchemeDetails(
-            SrnNumber("S1234567"),
-            PstrNumber("12345678AB"),
-            "Scheme Name"
-          )
+          schemeDetails
         )
       )
     ))
