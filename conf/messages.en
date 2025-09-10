@@ -250,7 +250,7 @@ memberDateOfLeavingUK.change.hidden = Date member left UK
 
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
-qropsName.checkYourAnswersLabel = QROPS full name
+qropsName.checkYourAnswersLabel = Full name
 qropsName.error.required = Enter the full name of the QROPS receiving the transfer
 qropsName.error.length = The full name of the QROPS must be 160 characters or less
 qropsName.change.hidden = QROPS full name
@@ -259,14 +259,14 @@ qropsReference.title = What is the QROPS reference?
 qropsReference.heading = What is the QROPS reference?
 qropsReference.hint = For example, QROPS123456.
 qropsReference.prefix = QROPS
-qropsReference.checkYourAnswersLabel = QROPS reference
+qropsReference.checkYourAnswersLabel = Reference
 qropsReference.error.required = Enter the QROPS Reference
 qropsReference.error.invalid = Enter the QROPS reference in a valid format
 qropsReference.change.hidden = QROPS reference
 
 qropsAddress.title = Address of the QROPS
 qropsAddress.heading = Address of the QROPS
-qropsAddress.checkYourAnswersLabel = QROPS address
+qropsAddress.checkYourAnswersLabel = Address
 qropsAddress.error.addressLine1.required = Enter the first line of QROPS address
 qropsAddress.error.addressLine2.required = Enter the second line of QROPS address
 
