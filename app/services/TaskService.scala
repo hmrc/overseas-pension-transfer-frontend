@@ -16,7 +16,6 @@
 
 package services
 
-import com.google.inject.{Inject, Singleton}
 import models.TaskCategory.{MemberDetails, SubmissionDetails}
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
 import models.{CheckMode, Mode, TaskCategory, UserAnswers}
@@ -24,8 +23,7 @@ import queries.TaskStatusQuery
 
 import scala.util.{Success, Try}
 
-@Singleton
-class TaskService @Inject() {
+object TaskService {
 
   def updateTaskStatusesOnMemberDetailsComplete(userAnswers: UserAnswers): Try[UserAnswers] = {
     val others =

@@ -39,7 +39,6 @@ class SchemeManagerOrganisationNameController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
-    taskService: TaskService,
     formProvider: SchemeManagerOrganisationNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: SchemeManagerOrganisationNameView,
@@ -67,7 +66,7 @@ class SchemeManagerOrganisationNameController @Inject() (
         value =>
           for {
             ua1           <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
-            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1, SchemeManagerDetails))
+            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = SchemeManagerDetails))
             _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {

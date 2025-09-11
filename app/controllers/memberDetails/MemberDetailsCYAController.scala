@@ -42,7 +42,6 @@ class MemberDetailsCYAController @Inject() (
     getData: DataRetrievalAction,
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
-    taskService: TaskService,
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDetailsCYAView

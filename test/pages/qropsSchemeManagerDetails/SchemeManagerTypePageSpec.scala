@@ -49,9 +49,20 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers {
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to Manger's name page in CheckMode when the type is 'Individual'" in {
 
-        SchemeManagerTypePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagerTypePage.nextPage(
+          CheckMode,
+          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+        ) mustEqual routes.SchemeManagersNameController.onPageLoad(CheckMode)
+      }
+
+      "must go to Organisation name page when the type is 'Organisation'" in {
+
+        SchemeManagerTypePage.nextPage(
+          CheckMode,
+          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+        ) mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode)
       }
     }
 
