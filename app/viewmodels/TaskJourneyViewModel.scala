@@ -83,8 +83,8 @@ object TaskJourneyViewModels {
     val id                   = "submit"
     val linkTextKey          = "taskList.submit.linkText"
     // TODO: These will need to be updated with the actual submission pages when they are completed
-    def start(m: Mode): Call = controllers.routes.IndexController.onPageLoad()
-    def cya(): Call          = controllers.routes.IndexController.onPageLoad()
+    def start(m: Mode): Call = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    def cya(): Call          = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
   }
 
   val values: Seq[TaskJourneyViewModel] = Seq(
