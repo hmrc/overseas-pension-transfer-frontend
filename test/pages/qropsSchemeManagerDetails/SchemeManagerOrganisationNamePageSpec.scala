@@ -17,7 +17,8 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, PersonName, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -40,6 +41,11 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers {
       "must go to Organisation individual name page in CheckMode" in {
 
         SchemeManagerOrganisationNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
+      }
+
+      "must go to CYA if Organisation individual name exists in mongo" in {
+        val ua = emptyAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("Bill", "Withers")).success.value
+        SchemeManagerOrganisationNamePage.nextPage(CheckMode, ua) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
 

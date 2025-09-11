@@ -34,7 +34,7 @@ case object SchemeManagerOrganisationNamePage extends QuestionPage[String] {
   override protected def nextPageCheckMode(answers: UserAnswers): Call = {
     answers.get(SchemeManagerOrgIndividualNamePage) match {
       case Some(_) => routes.SchemeManagerDetailsCYAController.onPageLoad()
-      case None => routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
+      case None    => routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
     }
   }
 
