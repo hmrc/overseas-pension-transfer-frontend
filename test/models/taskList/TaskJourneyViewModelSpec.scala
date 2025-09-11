@@ -61,8 +61,8 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
         "SubmissionDetails",
         TaskJourneyViewModels.SubmissionDetailsJourneyViewModel,
         TaskCategory.SubmissionDetails,
-        (_: Mode) => controllers.routes.IndexController.onPageLoad(),
-        () => controllers.routes.IndexController.onPageLoad()
+        (_: Mode) => controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad(),
+        () => controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       )
     )
 
