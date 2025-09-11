@@ -42,10 +42,8 @@ class SubmitToHMRCPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to task list  if no selected" in {
         val ua = emptyAnswers.set(SubmitToHMRCPage, false).success.value
-        // TODO: Change to task list when implemented
-        SubmitToHMRCPage.nextPageWith(NormalMode, ua, pspUser) mustEqual controllers.routes.IndexController.onPageLoad()
+        SubmitToHMRCPage.nextPageWith(NormalMode, ua, pspUser) mustEqual controllers.routes.DashboardController.onPageLoad()
       }
     }
-
   }
 }

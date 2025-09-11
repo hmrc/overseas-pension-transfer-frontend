@@ -32,8 +32,7 @@ class PspDeclarationPageSpec extends AnyFreeSpec with Matchers {
 
       "must go to submission screen on successful submission" in {
         val ua = emptyAnswers.set(PspDeclarationPage, "A1234567").success.value
-        // TODO: Change to submission screen once implemented
-        PspDeclarationPage.nextPage(NormalMode, ua) mustEqual routes.IndexController.onPageLoad()
+        PspDeclarationPage.nextPage(NormalMode, ua) mustEqual routes.TransferSubmittedController.onPageLoad()
       }
 
       "must go to journey on unsuccessful submission" in {
