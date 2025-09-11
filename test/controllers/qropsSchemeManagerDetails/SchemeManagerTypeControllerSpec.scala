@@ -113,7 +113,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
       }
     }
 
-    "must redirect to NormalMode if changed from 'Individual' to 'Organisation' in CheckMode" in {
+    "must redirect to next page in CheckMode if changed from 'Individual' to 'Organisation' in CheckMode" in {
       val previousAnswers        = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -138,7 +138,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode).url
       }
     }
 

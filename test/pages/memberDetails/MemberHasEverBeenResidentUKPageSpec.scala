@@ -37,8 +37,6 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
           emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
         ) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
-    }
-    "in Normal Mode" - {
 
       "must go to Member Last UK Address Lookup when answer is 'true'" in {
 
@@ -51,9 +49,20 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to Check Answers page when answer is 'false'" in {
 
-        MemberHasEverBeenResidentUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberHasEverBeenResidentUKPage.nextPage(
+          CheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
+        ) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+      }
+
+      "must go to Member Last UK Address Lookup in CheckMode when answer is 'true'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          CheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
+        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(CheckMode)
       }
     }
 

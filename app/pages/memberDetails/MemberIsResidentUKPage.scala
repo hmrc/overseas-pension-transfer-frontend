@@ -22,6 +22,8 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object MemberIsResidentUKPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
@@ -36,8 +38,22 @@ case object MemberIsResidentUKPage extends QuestionPage[Boolean] {
     }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    memberDetails.routes.MemberDetailsCYAController.onPageLoad()
+    answers.get(MemberIsResidentUKPage) match {
+      case Some(false) => memberDetails.routes.MemberHasEverBeenResidentUKController.onPageLoad(CheckMode)
+      case Some(true)  => memberDetails.routes.MemberDetailsCYAController.onPageLoad()
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
 
   final def changeLink(mode: Mode): Call =
     memberDetails.routes.MemberIsResidentUKController.onPageLoad(mode)
+
+  override def cleanup(maybeIsResidentUk: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    maybeIsResidentUk match {
+      case Some(true) => userAnswers
+          .remove(MemberHasEverBeenResidentUKPage)
+          .flatMap(_.remove(MembersLastUKAddressPage))
+          .flatMap(_.remove(MemberDateOfLeavingUKPage))
+      case _          => super.cleanup(maybeIsResidentUk, userAnswers)
+    }
+  }
 }

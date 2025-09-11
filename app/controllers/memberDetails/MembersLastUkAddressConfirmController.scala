@@ -80,8 +80,7 @@ class MembersLastUkAddressConfirmController @Inject() (
             _ =>
               for {
                 clearedLookupUA <- addressService.clearAddressLookups(request.userAnswers)
-                updatedAnswers  <-
-                  Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, addressToSave))
+                updatedAnswers  <- Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, addressToSave))
                 _               <- sessionRepository.set(updatedAnswers)
                 savedForLater   <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {

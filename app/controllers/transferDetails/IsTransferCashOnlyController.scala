@@ -44,7 +44,6 @@ class IsTransferCashOnlyController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     displayData: DisplayAction,
-    taskService: TaskService,
     userAnswersService: UserAnswersService,
     formProvider: IsTransferCashOnlyFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -71,7 +70,7 @@ class IsTransferCashOnlyController @Inject() (
         value =>
           for {
             ua1           <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value))
-            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1, TransferDetails))
+            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
             _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {

@@ -18,8 +18,11 @@ package pages.memberDetails
 
 import controllers.memberDetails.routes
 import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+
+import java.time.LocalDate
 
 class MembersLastUkAddressConfirmPageSpec extends AnyFreeSpec with Matchers {
 
@@ -37,9 +40,13 @@ class MembersLastUkAddressConfirmPageSpec extends AnyFreeSpec with Matchers {
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to Check Answers if Members Date of Leaving UK present" in {
+        val ua = emptyAnswers.set(MemberDateOfLeavingUKPage, LocalDate.now()).success.value
+        MembersLastUkAddressConfirmPage.nextPage(CheckMode, ua) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+      }
 
-        MembersLastUkAddressConfirmPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+      "must go to Members Date of Leaving UK in NormalMode if not present" in {
+        MembersLastUkAddressConfirmPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
       }
     }
 

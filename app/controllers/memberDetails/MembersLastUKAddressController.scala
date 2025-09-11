@@ -78,7 +78,6 @@ class MembersLastUKAddressController @Inject() (
               case Right(Done) => Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
-
           }
       )
   }
