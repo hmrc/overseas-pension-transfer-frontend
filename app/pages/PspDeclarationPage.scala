@@ -28,8 +28,5 @@ case object PspDeclarationPage extends QuestionPage[String] {
   override def toString: String = "pspDeclaration"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    answers.get(PspDeclarationPage) match {
-      case Some(_) => controllers.routes.TransferSubmittedController.onPageLoad()
-      case None    => routes.JourneyRecoveryController.onPageLoad()
-    }
+    controllers.routes.TransferSubmittedController.onPageLoad()
 }

@@ -29,14 +29,8 @@ class PspDeclarationPageSpec extends AnyFreeSpec with Matchers {
     val emptyAnswers = UserAnswers("id")
 
     "in Normal Mode" - {
-
       "must go to submission screen on successful submission" in {
-        val ua = emptyAnswers.set(PspDeclarationPage, "A1234567").success.value
-        PspDeclarationPage.nextPage(NormalMode, ua) mustEqual routes.TransferSubmittedController.onPageLoad()
-      }
-
-      "must go to journey on unsuccessful submission" in {
-        PspDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.JourneyRecoveryController.onPageLoad()
+        PspDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
       }
     }
   }
