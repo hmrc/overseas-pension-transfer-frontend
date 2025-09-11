@@ -18,8 +18,10 @@ package controllers
 
 import controllers.actions.IdentifierAction
 import pages.DashboardPage
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DashboardView
@@ -34,15 +36,22 @@ class DashboardController @Inject() (
     identify: IdentifierAction,
     view: DashboardView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
     val id = request.authenticatedUser.internalId
 
     repo.get(id).map {
       case Some(dd) =>
-        Ok(view(DashboardPage.nextPage(dd).url))
+        dd.get(PensionSchemeDetailsQuery) match {
+          case Some(psd) =>
+            Ok(view(psd.schemeName, DashboardPage.nextPage(dd).url))
+          case None      =>
+            logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails in dashboard data for $id")
+            Redirect(routes.JourneyRecoveryController.onPageLoad())
+        }
       case None     =>
+        logger.warn(s"[DashboardController][onPageLoad] No dashboard data found for $id")
         Redirect(routes.JourneyRecoveryController.onPageLoad())
     }
   }

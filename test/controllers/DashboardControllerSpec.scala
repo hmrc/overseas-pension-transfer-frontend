@@ -22,6 +22,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import pages.DashboardPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -53,7 +54,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val result  = route(application, request).value
 
         val view         = application.injector.instanceOf[DashboardView]
-        val expectedHtml = view(pages.DashboardPage.nextPage(dd).url)(request, messages(application)).toString
+        val expectedHtml = view(pensionSchemeDetails.schemeName, DashboardPage.nextPage(dd).url)(request, messages(application)).toString
 
         status(result) mustBe OK
         contentAsString(result) mustBe expectedHtml

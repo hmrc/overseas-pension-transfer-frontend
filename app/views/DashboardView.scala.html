@@ -22,7 +22,7 @@
         govukButton: GovukButton
 )
 
-@(nextPage: String)(implicit request: Request[_], messages: Messages)
+@(schemeName: String, nextPage: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("dashboard.title")),
@@ -30,7 +30,7 @@
     showPageFooter = false,
     showBreadcrumbs = true
 ) {
-
+    <span class="govuk-caption-l">@schemeName</span>
     <h1 class="govuk-heading-l">@messages("dashboard.heading")</h1>
 
     <p class="govuk-body">
