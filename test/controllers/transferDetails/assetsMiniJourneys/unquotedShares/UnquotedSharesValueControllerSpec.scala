@@ -47,7 +47,7 @@ class UnquotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesValueRoute)
@@ -65,7 +65,7 @@ class UnquotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with M
 
       val userAnswers = userAnswersQtNumber.set(UnquotedSharesValuePage(index), validAnswer).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesValueRoute)
@@ -86,7 +86,7 @@ class UnquotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with M
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswersQtNumber))
+        applicationBuilder(userAnswers = userAnswersQtNumber)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -106,7 +106,7 @@ class UnquotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -121,37 +121,6 @@ class UnquotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with M
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, unquotedSharesValueRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, unquotedSharesValueRoute)
-            .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

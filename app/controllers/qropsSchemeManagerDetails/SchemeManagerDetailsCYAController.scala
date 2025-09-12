@@ -17,12 +17,12 @@
 package controllers.qropsSchemeManagerDetails
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
 import models.TaskCategory.SchemeManagerDetails
 import models.taskList.TaskStatus.Completed
-import org.apache.pekko.Done
 import models.{CheckMode, NormalMode}
+import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagerDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,8 +40,7 @@ class SchemeManagerDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
@@ -49,14 +48,14 @@ class SchemeManagerDetailsCYAController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val list = SummaryListViewModel(SchemeManagerDetailsSummary.rows(CheckMode, request.userAnswers))
 
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       for {
         ua            <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(SchemeManagerDetails), Completed))

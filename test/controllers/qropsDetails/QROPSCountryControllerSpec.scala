@@ -59,7 +59,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = emptyUserAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         ).build()
@@ -80,7 +80,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
-      val application = applicationBuilder(Some(userAnswers))
+      val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
@@ -107,7 +107,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -131,7 +131,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).overrides(
         bind[CountryService].toInstance(mockCountryService)
       ).build()
 
@@ -151,36 +151,6 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, qropsCountryRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, qropsCountryRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -190,7 +160,7 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

@@ -19,8 +19,14 @@ package utils
 import play.api.Logging
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import models.BackendError
+import play.api.libs.json.{JsPath, JsonValidationError}
 
 trait DownstreamLogging extends Logging {
+
+  val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {
+    errors =>
+      errors.map(_._1.toString()).mkString(" | ")
+  }
 
   private def correlationFromResponse(response: HttpResponse): Option[String] =
     response.header("X-Request-ID")

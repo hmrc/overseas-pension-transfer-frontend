@@ -16,27 +16,26 @@
 
 package controllers.actions
 
-import models.requests.{DataRequest, DisplayRequest}
-import play.api.mvc.ActionTransformer
+import base.SpecBase
+import models.requests.IdentifierRequest
+import play.api.mvc.Result
 import utils.AppUtils
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DisplayActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DisplayAction with AppUtils {
+class FakeSchemeDataAction()
+    extends SchemeDataAction with AppUtils with SpecBase {
 
-  override protected def transform[A](request: DataRequest[A]): Future[DisplayRequest[A]] = {
-    Future.successful(
-      DisplayRequest(
+  implicit override protected val executionContext: ExecutionContext =
+    scala.concurrent.ExecutionContext.Implicits.global
+
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] =
+    Future.successful(Right(
+      IdentifierRequest(
         request.request,
-        request.authenticatedUser,
-        request.userAnswers,
-        memberFullName(request.userAnswers),
-        qtNumber(request.userAnswers),
-        dateTransferSubmitted(request.userAnswers)
+        request.authenticatedUser.updatePensionSchemeDetails(
+          schemeDetails
+        )
       )
-    )
-  }
+    ))
 }
-
-trait DisplayAction extends ActionTransformer[DataRequest, DisplayRequest]

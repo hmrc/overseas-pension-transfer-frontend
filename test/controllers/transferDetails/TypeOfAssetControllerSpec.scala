@@ -46,7 +46,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, typeOfAssetRoute)
@@ -67,7 +67,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
       val userAnswers = userAnswersQtNumber.set(TypeOfAssetPage, values).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, typeOfAssetRoute)
@@ -86,7 +86,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -109,7 +109,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -124,36 +124,6 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, typeOfAssetRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, typeOfAssetRoute)
-            .withFormUrlEncodedBody(("value[0]", TypeOfAsset.values.head.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

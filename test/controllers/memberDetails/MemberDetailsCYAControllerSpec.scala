@@ -47,7 +47,7 @@ class MemberDetailsCYAControllerSpec
   "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.MemberDetailsCYAController.onPageLoad().url)
@@ -62,19 +62,6 @@ class MemberDetailsCYAControllerSpec
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, routes.MemberDetailsCYAController.onPageLoad().url)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must set MemberDetails to Completed on POST, persist externally, and redirect to Task List" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -84,7 +71,7 @@ class MemberDetailsCYAControllerSpec
         .thenReturn(Future.successful(Right(Done)))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -121,7 +108,7 @@ class MemberDetailsCYAControllerSpec
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)

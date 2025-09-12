@@ -46,7 +46,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
   "MemberNino Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, memberNinoRoute)
@@ -65,7 +65,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = userAnswersMemberNameQtNumber.set(MemberNinoPage, "answer").success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, memberNinoRoute)
@@ -88,7 +88,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
         .thenReturn(Future.successful(Right(Done)))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -108,7 +108,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
         val request =
@@ -127,32 +127,6 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, memberNinoRoute)
-        val result  = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, memberNinoRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
-        val result  = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val userAnswers            = userAnswersMemberNameQtNumber.set(MemberNinoPage, "answer").success.value
       val mockUserAnswersService = mock[UserAnswersService]
@@ -163,7 +137,7 @@ class MemberNinoControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(userAnswers))
+      val application = applicationBuilder(userAnswers)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

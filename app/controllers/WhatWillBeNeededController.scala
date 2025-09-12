@@ -16,8 +16,8 @@
 
 package controllers
 
-import controllers.actions.IdentifierAction
-import models.{NormalMode, UserAnswers}
+import controllers.actions.{IdentifierAction, SchemeDataAction}
+import models.{NormalMode, PstrNumber, SrnNumber, UserAnswers}
 import pages.WhatWillBeNeededPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -33,12 +33,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class WhatWillBeNeededController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
+    schemeData: SchemeDataAction,
     view: WhatWillBeNeededView,
     sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     val id = request.authenticatedUser.internalId
 
     sessionRepository.get(id).flatMap {

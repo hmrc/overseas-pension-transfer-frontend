@@ -16,13 +16,12 @@
 
 package connectors.parsers
 
-import connectors.parsers.UserAnswersParser.GetUserAnswersHttpReads.logger
-import models.dtos.{SubmissionDTO, UserAnswersDTO}
-import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersError, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import models.dtos.UserAnswersDTO
+import models.responses._
 import org.apache.pekko.Done
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
-import play.api.libs.json.{JsError, JsPath, JsSuccess, JsonValidationError}
+import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.DownstreamLogging
 
@@ -105,7 +104,7 @@ object UserAnswersParser {
       }
   }
 
-  implicit object DeleteUserAnswersHttpReads extends HttpReads[DeleteUserAnswersType] with Logging {
+  implicit object DeleteUserAnswersHttpReads extends HttpReads[DeleteUserAnswersType] with Logging with DownstreamLogging {
 
     override def read(method: String, url: String, response: HttpResponse): DeleteUserAnswersType =
       response.status match {
@@ -120,10 +119,5 @@ object UserAnswersParser {
               Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
           }
       }
-  }
-
-  private val formatJsonErrors: scala.collection.Seq[(JsPath, scala.collection.Seq[JsonValidationError])] => String = {
-    errors =>
-      errors.map(_._1.toString()).mkString(" | ")
   }
 }

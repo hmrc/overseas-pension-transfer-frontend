@@ -26,9 +26,8 @@ class Module extends AbstractModule {
   override def configure(): Unit = {
 
     bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[IdentifierAction]).to(classOf[IdentifierActionImpl]).asEagerSingleton()
-    bind(classOf[DisplayAction]).to(classOf[DisplayActionImpl]).asEagerSingleton()
+    bind(classOf[SchemeDataAction]).to(classOf[SchemeDataActionImpl]).asEagerSingleton()
     bind(classOf[MarkInProgressOnEntryAction]).to(classOf[MarkInProgressOnEntryActionImpl]).asEagerSingleton()
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
   }

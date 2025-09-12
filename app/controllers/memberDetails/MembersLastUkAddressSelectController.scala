@@ -39,8 +39,7 @@ class MembersLastUkAddressSelectController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     formProvider: MembersLastUkAddressSelectFormProvider,
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
@@ -50,7 +49,7 @@ class MembersLastUkAddressSelectController @Inject() (
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData andThen displayData) { implicit request =>
+    (identify andThen schemeData andThen getData) { implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, records)) =>
           val idAddressPairs  = records.map(r => (r.id, MembersLookupLastUkAddress.fromAddressRecord(r)))
@@ -69,7 +68,7 @@ class MembersLastUkAddressSelectController @Inject() (
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
+    (identify andThen schemeData andThen getData).async { implicit request =>
       request.userAnswers.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, records)) =>
           val idAddressPairs  = records.map(r => (r.id, MembersLookupLastUkAddress.fromAddressRecord(r)))

@@ -37,8 +37,7 @@ class MemberDateOfBirthController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     formProvider: MemberDateOfBirthFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDateOfBirthView,
@@ -46,7 +45,7 @@ class MemberDateOfBirthController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val form = formProvider()
 
@@ -58,7 +57,7 @@ class MemberDateOfBirthController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       val form = formProvider()
 

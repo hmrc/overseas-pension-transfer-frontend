@@ -34,8 +34,7 @@ class AmountOfTaxDeductedController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     formProvider: AmountOfTaxDeductedFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: AmountOfTaxDeductedView
@@ -44,7 +43,7 @@ class AmountOfTaxDeductedController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(AmountOfTaxDeductedPage) match {
         case None        => form
@@ -54,7 +53,7 @@ class AmountOfTaxDeductedController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

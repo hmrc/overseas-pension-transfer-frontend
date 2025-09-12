@@ -36,7 +36,6 @@ class DiscardTransferConfirmController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
     formProvider: DiscardTransferConfirmFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: DiscardTransferConfirmView,
@@ -46,7 +45,7 @@ class DiscardTransferConfirmController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(DiscardTransferConfirmPage) match {
         case None        => form
@@ -56,7 +55,7 @@ class DiscardTransferConfirmController @Inject() (
       Ok(view(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

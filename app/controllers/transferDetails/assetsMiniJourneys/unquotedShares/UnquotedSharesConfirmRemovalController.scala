@@ -35,8 +35,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     formProvider: UnquotedSharesConfirmRemovalFormProvider,
     miniJourney: UnquotedSharesMiniJourney.type,
     assetThresholdHandler: AssetThresholdHandler,
@@ -47,7 +46,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   private val form    = formProvider()
-  private val actions = (identify andThen getData andThen requireData andThen displayData)
+  private val actions = (identify andThen schemeData andThen getData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
     Ok(view(form, index))

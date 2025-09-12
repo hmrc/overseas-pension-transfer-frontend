@@ -34,8 +34,7 @@ class PropertyDescriptionController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     formProvider: PropertyDescriptionFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: PropertyDescriptionView
@@ -44,7 +43,7 @@ class PropertyDescriptionController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(PropertyDescriptionPage(index)) match {
         case None        => form
@@ -54,7 +53,7 @@ class PropertyDescriptionController @Inject() (
       Ok(view(preparedForm, mode, index))
   }
 
-  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>

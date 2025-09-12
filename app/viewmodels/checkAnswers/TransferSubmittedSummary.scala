@@ -33,6 +33,15 @@ case object TransferSubmittedSummary {
         value = ValueViewModel(HtmlContent(request.memberName))
       )
 
+    val schemeName: String =
+      request.authenticatedUser.pensionSchemeDetails.map(_.schemeName).getOrElse("Scheme name not found")
+
+    val schemeNameRow: SummaryListRow =
+      SummaryListRowViewModel(
+        key   = "transferSubmitted.pensionScheme.key",
+        value = ValueViewModel(HtmlContent(schemeName))
+      )
+
     val timeSubmittedRow: SummaryListRow =
       SummaryListRowViewModel(
         key   = "transferSubmitted.dateSubmitted.key",
@@ -42,6 +51,7 @@ case object TransferSubmittedSummary {
     SummaryList(
       Seq(
         memberNameRow,
+        schemeNameRow,
         timeSubmittedRow
       )
     )

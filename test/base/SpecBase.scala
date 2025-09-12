@@ -17,11 +17,10 @@
 package base
 
 import controllers.actions._
-import models.authentication.{PsaId, PsaUser, PspId, PspUser}
 import models.address.{Countries, PropertyAddress}
-import models.authentication.{PsaId, PsaUser}
+import models.authentication.{PsaId, PsaUser, PspId, PspUser}
 import models.requests.DisplayRequest
-import models.{PersonName, QtNumber, UserAnswers}
+import models.{PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SrnNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -66,6 +65,12 @@ trait SpecBase
 
   val pspUser: PspUser = PspUser(pspId, internalId = userAnswersId)
 
+  val schemeDetails = PensionSchemeDetails(
+    SrnNumber("S1234567"),
+    PstrNumber("12345678AB"),
+    "Scheme Name"
+  )
+
   val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
   val formattedTestDateTransferSubmitted: String = testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
 
@@ -82,20 +87,19 @@ trait SpecBase
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
+  protected def applicationBuilder(userAnswers: UserAnswers = UserAnswers("id")): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[MarkInProgressOnEntryAction].to[FakeMarkInProgressAction],
-        bind[DisplayAction].to[FakeDisplayAction]
+        bind[SchemeDataAction].to[FakeSchemeDataAction]
       )
 
   def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
     DisplayRequest(
       request               = fakeRequest,
-      authenticatedUser     = psaUser,
+      authenticatedUser     = psaUser.updatePensionSchemeDetails(schemeDetails),
       userAnswers           = userAnswers,
       memberName            = testMemberName.fullName,
       qtNumber              = testQtNumber,
@@ -105,7 +109,7 @@ trait SpecBase
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
       request               = FakeRequest(),
-      authenticatedUser     = psaUser,
+      authenticatedUser     = psaUser.updatePensionSchemeDetails(schemeDetails),
       userAnswers           = emptyUserAnswers,
       memberName            = testMemberName.fullName,
       qtNumber              = testQtNumber,

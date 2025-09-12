@@ -13,6 +13,10 @@ site.signIn = Sign in
 site.govuk = GOV.UK
 site.agreeAndSubmit = Agree and submit
 
+breadcrumbs.mps = MPS
+breadcrumbs.pensionScheme = Pension scheme
+breadcrumbs.otc = Overseas pension transfer
+
 date.day = Day
 date.month = Month
 date.year = Year
@@ -36,6 +40,10 @@ footer.link.text.tasklist = Return to task list
 index.title = report-transfer-qualified-recognised-overseas-pension-scheme
 index.heading = report-transfer-qualified-recognised-overseas-pension-scheme
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+
+dashboard.title = Report overseas transfer dashboard
+dashboard.heading = Report a transfer to a qualified recognised overseas pension scheme
+dashboard.linkText = Start a new transfer
 
 requiredInfo.title = What you will need
 requiredInfo.heading = What you will need

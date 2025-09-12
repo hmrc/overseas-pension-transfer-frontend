@@ -17,19 +17,20 @@
 package controllers.actions
 
 import models.{Mode, TaskCategory}
-import models.requests.DataRequest
+import models.requests.{DataRequest, DisplayRequest}
 import play.api.mvc.{ActionRefiner, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class FakeMarkInProgressAction extends MarkInProgressOnEntryAction {
 
-  override def forCategoryAndMode(category: TaskCategory, mode: Mode): ActionRefiner[DataRequest, DataRequest] = new ActionRefiner[DataRequest, DataRequest] {
+  override def forCategoryAndMode(category: TaskCategory, mode: Mode): ActionRefiner[DisplayRequest, DisplayRequest] =
+    new ActionRefiner[DisplayRequest, DisplayRequest] {
 
-    override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] =
-      Future.successful(Right(request))
+      override protected def refine[A](request: DisplayRequest[A]): Future[Either[Result, DisplayRequest[A]]] =
+        Future.successful(Right(request))
 
-    implicit override protected val executionContext: ExecutionContext =
-      scala.concurrent.ExecutionContext.Implicits.global
-  }
+      implicit override protected val executionContext: ExecutionContext =
+        scala.concurrent.ExecutionContext.Implicits.global
+    }
 }

@@ -28,7 +28,7 @@ class MembersLastUkAddressNotFoundControllerSpec extends AnyFreeSpec with SpecBa
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(noAddressFoundUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = noAddressFoundUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.MembersLastUkAddressNotFoundController.onPageLoad().url)

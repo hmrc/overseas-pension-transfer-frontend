@@ -16,9 +16,12 @@
 
 package controllers.actions
 
-import models.requests.{IdentifierRequest, OptionalDataRequest}
-import play.api.mvc.ActionTransformer
+import controllers.routes
+import models.requests.{DisplayRequest, IdentifierRequest}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
+import utils.AppUtils
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -26,14 +29,22 @@ import scala.concurrent.{ExecutionContext, Future}
 class DataRetrievalActionImpl @Inject() (
     val sessionRepository: SessionRepository
   )(implicit val executionContext: ExecutionContext
-  ) extends DataRetrievalAction {
+  ) extends DataRetrievalAction with AppUtils {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
-
-    sessionRepository.get(request.authenticatedUser.internalId).map {
-      OptionalDataRequest(request.request, request.authenticatedUser, _)
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
+    sessionRepository.get(request.authenticatedUser.internalId) map {
+      case Some(answers) =>
+        Right(DisplayRequest(
+          request.request,
+          request.authenticatedUser,
+          answers,
+          memberFullName(answers),
+          qtNumber(answers),
+          dateTransferSubmitted(answers)
+        ))
+      case None          => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
     }
   }
 }
 
-trait DataRetrievalAction extends ActionTransformer[IdentifierRequest, OptionalDataRequest]
+trait DataRetrievalAction extends ActionRefiner[IdentifierRequest, DisplayRequest]

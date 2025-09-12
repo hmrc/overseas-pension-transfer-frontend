@@ -19,8 +19,10 @@ package controllers.actions
 import controllers.auth.routes
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import connectors.PensionSchemeConnector
 import models.authentication.{AuthenticatedUser, Psa, PsaUser, Psp, PspUser}
 import models.requests.IdentifierRequest
+import play.api.Logging
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -41,7 +43,7 @@ class IdentifierActionImpl @Inject() (
     val parser: BodyParsers.Default
   )(implicit val executionContext: ExecutionContext
   ) extends IdentifierAction
-    with AuthorisedFunctions with AuthSupport {
+    with AuthorisedFunctions with AuthSupport with Logging {
 
   private def predicate: Predicate = buildPredicate(config)
 

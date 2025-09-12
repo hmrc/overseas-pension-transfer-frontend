@@ -58,7 +58,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
   "OtherAssetsAmendContinue Controller" - {
 
     "must return OK and the correct view for a GET in NormalMode" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, otherAssetsAmendContinueRouteNormal)
@@ -72,7 +72,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
     "must return OK and the form filled for a GET in NormalMode when answer exists" in {
       val ua          = userAnswersQtNumber.set(OtherAssetsAmendContinuePage, true).success.value
-      val application = applicationBuilder(userAnswers = Some(ua)).build()
+      val application = applicationBuilder(userAnswers = ua).build()
 
       running(application) {
         val request = FakeRequest(GET, otherAssetsAmendContinueRouteNormal)
@@ -90,7 +90,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
       val userAnswers = uaWithOtherAssets(1)
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -107,7 +107,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
       val userAnswers = uaWithOtherAssets(2)
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -133,7 +133,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
       val userAnswers = uaWithOtherAssets(0)
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -159,7 +159,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
       val userAnswers = uaWithOtherAssets(3)
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -180,7 +180,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -194,33 +194,6 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, otherAssetsAmendContinueRouteNormal)
-        val result  = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, otherAssetsAmendContinueRouteNormal)
-            .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

@@ -30,7 +30,7 @@ import views.html.checkYourAnswers.CheckYourAnswersView
 
 class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val application = applicationBuilder(Some(userAnswersQtNumber)).build()
+  private val application = applicationBuilder(userAnswersQtNumber).build()
 
   private lazy val checkYourAnswersRoute = routes.CheckYourAnswersController.onPageLoad().url
 

@@ -14,20 +14,19 @@ import views.html.$className$View
 import scala.concurrent.{ExecutionContext, Future}
 
 class $className$Controller @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        displayData: DisplayAction,
-                                        formProvider: $className$FormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: $className$View
+                                       override val messagesApi: MessagesApi,
+                                       sessionRepository: SessionRepository,
+                                       identify: IdentifierAction,
+                                       getData: DataRetrievalAction,
+                                       schemeData: SchemeDataAction,
+                                       formProvider: $className$FormProvider,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       view: $className$View
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get($className$Page) match {
@@ -38,7 +37,7 @@ class $className$Controller @Inject()(
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
 
       form.bindFromRequest().fold(

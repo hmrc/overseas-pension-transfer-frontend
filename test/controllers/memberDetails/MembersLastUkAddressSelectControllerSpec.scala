@@ -50,7 +50,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(addressFoundUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = addressFoundUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, memberSelectLastUkAddressRoute)
@@ -82,7 +82,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(Some(addressFoundUserAnswers))
+      val application = applicationBuilder(addressFoundUserAnswers)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -103,7 +103,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(addressFoundUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = addressFoundUserAnswers).build()
 
       running(application) {
         val request =
@@ -125,36 +125,6 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, memberSelectLastUkAddressRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, memberSelectLastUkAddressRoute)
-            .withFormUrlEncodedBody(("value", validIds.head))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -164,7 +134,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(addressFoundUserAnswers))
+      val application = applicationBuilder(addressFoundUserAnswers)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

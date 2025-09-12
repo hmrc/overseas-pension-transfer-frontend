@@ -45,7 +45,7 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]
 
-  private def applicationWithMocks(userAnswers: Option[UserAnswers]) =
+  private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)
       .overrides(
         bind[UserAnswersService].toInstance(mockUserAnswersService),
@@ -57,7 +57,7 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
       val ua  = userAnswersWithAssets(assetsCount = 5)
-      val app = applicationWithMocks(Some(ua))
+      val app = applicationWithMocks(ua)
 
       running(app) {
         val request = FakeRequest(GET, unquotedSharesCyaRoute)
@@ -76,7 +76,7 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to MoreUnquotedSharesDeclarationController when threshold (5 unquoted shares) is reached" in {
       val ua  = userAnswersWithAssets(assetsCount = 5)
-      val app = applicationWithMocks(Some(ua))
+      val app = applicationWithMocks(ua)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
@@ -96,7 +96,7 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to UnquotedSharesAmendContinueController when UnquotedShares count is below threshold" in {
       val ua  = userAnswersWithAssets(assetsCount = 4)
-      val app = applicationWithMocks(Some(ua))
+      val app = applicationWithMocks(ua)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
@@ -109,30 +109,6 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(NormalMode).url
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val app = applicationWithMocks(None)
-
-      running(app) {
-        val request = FakeRequest(GET, unquotedSharesCyaRoute)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val app = applicationWithMocks(None)
-
-      running(app) {
-        val request = FakeRequest(POST, unquotedSharesCyaRoute)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
