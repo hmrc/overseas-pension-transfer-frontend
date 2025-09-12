@@ -22,5 +22,5 @@ import play.api.mvc.Call
 object PsaDeclarationPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad()
+    controllers.routes.TransferSubmittedController.onPageLoad()
 }
