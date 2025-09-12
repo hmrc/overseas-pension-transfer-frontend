@@ -24,10 +24,13 @@
 
 @layout(
  pageTitle = titleNoForm(messages("unauthorised.title")),
- timeout = false
+ timeout = false,
+ showPageFooter = false
 ) {
 
     <h1 class="govuk-heading-xl">@messages("unauthorised.heading")</h1>
 
-    <p class="govuk-body">@messages("unauthorised.guidance")</p>
+    <p class="govuk-body">@messages("unauthorised.guidance1")</p>
+    <p class="govuk-body">@messages("unauthorised.guidance2")</p>
+    <p class="govuk-body">@Html(messages("unauthorised.link", "https://www.gov.uk/guidance/manage-a-registered-pension-scheme"))</p>
 }
