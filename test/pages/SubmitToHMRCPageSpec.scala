@@ -40,7 +40,7 @@ class SubmitToHMRCPageSpec extends AnyFreeSpec with SpecBase {
         SubmitToHMRCPage.nextPageWith(NormalMode, ua, pspUser) mustEqual routes.PspDeclarationController.onPageLoad()
       }
 
-      "must go to task list  if no selected" in {
+      "must go to dashboard if no selected" in {
         val ua = emptyAnswers.set(SubmitToHMRCPage, false).success.value
         SubmitToHMRCPage.nextPageWith(NormalMode, ua, pspUser) mustEqual controllers.routes.DashboardController.onPageLoad()
       }
