@@ -4,10 +4,11 @@
 This is the frontend microservice application that is part of the Managing Pensions Schemes service concerned with moving pensions abroad. It is connected to the MPS dashboard.
 
 ## Dependencies
-| Service    | Link |
-| -------- | ------- |
-| overseas-pension-transfer-backend  | https://github.com/hmrc/overseas-pension-transfer-backend    |
-| address-lookup  | https://github.com/hmrc/address-lookup    |
+| Service                           | Link                                                      |
+|-----------------------------------|-----------------------------------------------------------|
+| overseas-pension-transfer-backend | https://github.com/hmrc/overseas-pension-transfer-backend |
+| address-lookup                    | https://github.com/hmrc/address-lookup                    |
+| pensions-scheme                   | https://github.com/hmrc/pensions-scheme                   |
 
 ## Running the service
 
@@ -25,15 +26,18 @@ The service runs on port `15600` by default.
 
 ## Authentication
 | Enrolment Key | Identifier Name | Identifier Value |
-|---------------| ------- |------- |
-|HMRC-PODSPP-ORG|PSPID|<ANY_VALUE>|
-|HMRC-PODS-ORG|PSAID|<ANY_VALUE>|
+|---------------| ------- |------------------|
+|HMRC-PODSPP-ORG|PSPID| 21000005         |
+|HMRC-PODS-ORG|PSAID| A2100005         |
+
+For more details on what stubs we are using please visit:
+https://github.com/hmrc/pensions-scheme-stubs
 
 ## Navigating the service
 
 ### Start Journey 
 
-1. Navigate to http://localhost:15600/report-transfer-qualified-recognised-overseas-pension-scheme
+1. Redirect URL: http://localhost:15600/report-transfer-qualified-recognised-overseas-pension-scheme/start?srn=S2400000001
 
 ## Running tests
 
