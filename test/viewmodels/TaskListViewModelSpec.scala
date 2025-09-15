@@ -92,7 +92,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
         val transfer = findRowById(rows, TaskJourneyViewModels.TransferDetailsJourneyViewModel.id)
 
         transfer.href.value mustEqual controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(models.NormalMode).url
-        transfer.status.tag.value.classes must include("govuk-tag--blue")
+        transfer.status.tag.value.classes must include("govuk-tag--light-blue")
       }
     }
 
