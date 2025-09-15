@@ -31,7 +31,7 @@
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages("discardTransferConfirm.title"))) {
+@layout(pageTitle = title(form, messages("discardTransferConfirm.title")), showPageFooter = false) {
 
     @formHelper(action = routes.DiscardTransferConfirmController.onSubmit(), Symbol("autoComplete") -> "off") {
 

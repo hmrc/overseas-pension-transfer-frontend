@@ -1,4 +1,4 @@
-service.name = Report an overseas pension transfer
+service.name = Report a transfer to a qualified recognised overseas pension scheme
 
 site.back = Back
 site.remove = Remove
@@ -34,11 +34,11 @@ error.prefix = Error
 error.summary.title = There is a problem
 
 footer.link.text.discard.report = Discard transfer report
-footer.link.text.dashboard = Return to overseas pension transfer dashboard
+footer.link.text.dashboard = Return to Report a transfer to a QROPS dashboard
 footer.link.text.tasklist = Return to task list
 
-index.title = report-transfer-qualified-recognised-overseas-pension-scheme
-index.heading = report-transfer-qualified-recognised-overseas-pension-scheme
+index.title = Report a transfer to a qualified recognised overseas pension scheme
+index.heading = Report a transfer to a qualified recognised overseas pension scheme
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
 dashboard.title = Report overseas transfer dashboard
@@ -48,7 +48,7 @@ dashboard.linkText = Start a new transfer
 requiredInfo.title = What you will need
 requiredInfo.heading = What you will need
 requiredInfo.text.bold = You do not have to complete everything at once.
-requiredInfo.text.normal = Once you've added in the member's name and National Insurance information, we'll create a unique transfer reference (e.g. QT123456) so you can save the transfer in a state of 'In progress', and come back to complete it later.
+requiredInfo.text.normal = We''ll save the report as ''in progress'' when you add the member''s name. You can come back to complete it at any time.
 requiredInfo.memberDetails.heading = The member''s details
 requiredInfo.memberDetails.bullet1 = The member''s name, National Insurance number and date of birth
 requiredInfo.memberDetails.bullet2 = The member''s address
@@ -65,7 +65,7 @@ requiredInfo.transferDetails.bullet6 = The transfer date
 requiredInfo.transferDetails.bullet7 = Whether the transfer is cash only or a mix of cash and assets; and if the latter, details of the assets and amounts
 requiredInfo.qropsDetails.heading = The QROPS details
 requiredInfo.qropsDetails.bullet1 = The full name of the QROPS
-requiredInfo.qropsDetails.bullet2 = The QROPS reference (ID)
+requiredInfo.qropsDetails.bullet2 = The QROPS reference
 requiredInfo.qropsDetails.bullet3 = The country or territory in which the QROPS was established
 requiredInfo.qropsDetails.bullet4 = The address of the QROPS
 requiredInfo.schemeManager.heading = The QROPS scheme manager
@@ -74,10 +74,9 @@ requiredInfo.schemeManager.bullet2 = The scheme manager's address and contact de
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service
-journeyRecovery.continue.guidance = We''re having trouble retrieving some information.
-journeyRecovery.startAgain.option.tryAgain = Try again in a few minutes
-journeyRecovery.startAgain.option.dashboard = Return to overseas pension transfer dashboard
-journeyRecovery.startAgain.option.heading = You can:
+journeyRecovery.continue.guidance = Try again later.
+journeyRecovery.continue.guidance.extra = Your transfer report will be saved as ''in progress''. You can come back to your dashboard to complete it at any time.
+
 journeyRecovery.startAgain.title = Sorry, there is a problem with the service
 journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
@@ -141,7 +140,7 @@ common.dateInput.error.invalid = Enter the day, month, year in the correct forma
 common.dateInput.error.invalid.timeFrame = Date cannot be before 1901, or in the future
 
 taskList.title = Task list
-taskList.heading = Complete your overseas transfer report
+taskList.heading = Complete your transfer report
 taskList.transferDetails.heading = Transfer details
 taskList.checkAndSubmit.heading = Check and submit
 taskList.memberDetails.linkText = Add details about the member
@@ -158,7 +157,6 @@ checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
 checkYourAnswers.memberDetails.heading = The member''s details
-checkYourAnswers.memberDetails.insetText = Take note of the transfer reference (e.g., QT123456) or National Insurance number as you will be able to identify the form and search by these details later.
 checkYourAnswers.qropsDetails.heading = The QROPS details
 checkYourAnswers.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
 checkYourAnswers.transferDetails.heading = The transfer details
@@ -188,8 +186,8 @@ memberNino.change.hidden = National Insurance number
 memberNino.hint = For example, QQ123456A.
 memberNino.doesNotHaveNino.link.text = Member doesn''t have a National Insurance number.
 
-memberDoesNotHaveNino.title = Why the member doesn’t have a National Insurance number?
-memberDoesNotHaveNino.heading = Why doesn’t {0} have a National Insurance number?
+memberDoesNotHaveNino.title = Why does the member not have a National Insurance number?
+memberDoesNotHaveNino.heading = Why does {0} not have a National Insurance number?
 memberDoesNotHaveNino.checkYourAnswersLabel = Why no National Insurance number
 memberDoesNotHaveNino.error.required = Enter the reason the member does not have a National Insurance number and a reference we can use to identify them
 memberDoesNotHaveNino.error.length = The reason for not having a National Insurance number and reference in its place must be must be 160 characters or less
@@ -219,8 +217,8 @@ memberIsResidentUK.checkYourAnswersLabel = Is member a UK resident
 memberIsResidentUK.error.required = Select one option
 memberIsResidentUK.change.hidden = Is member a UK resident
 
-memberHasEverBeenResidentUK.title = Has {0} ever been a resident in the UK for tax purposes?
-memberHasEverBeenResidentUK.heading = Has {0} ever been a resident in the UK for tax purposes?
+memberHasEverBeenResidentUK.title = Has {0} ever been a resident of the UK for tax purposes?
+memberHasEverBeenResidentUK.heading = Has {0} ever been a resident of the UK for tax purposes?
 memberHasEverBeenResidentUK.checkYourAnswersLabel = Have they ever been a UK resident
 memberHasEverBeenResidentUK.error.required = Select one option
 memberHasEverBeenResidentUK.change.hidden = Have they ever been a UK resident
@@ -283,8 +281,8 @@ qropsReference.error.required = Enter the QROPS Reference
 qropsReference.error.invalid = Enter the QROPS reference in a valid format
 qropsReference.change.hidden = QROPS reference
 
-qropsAddress.title = Address of the QROPS
-qropsAddress.heading = Address of the QROPS
+qropsAddress.title = What is the address of the QROPS?
+qropsAddress.heading = What is the address of the QROPS?
 qropsAddress.checkYourAnswersLabel = Address
 qropsAddress.error.addressLine1.required = Enter the first line of QROPS address
 qropsAddress.error.addressLine2.required = Enter the second line of QROPS address
@@ -311,8 +309,8 @@ schemeManagerType.checkYourAnswersLabel = Organisation or individual
 schemeManagerType.error.required = Select if the scheme manager is an individual or an organisation
 schemeManagerType.change.hidden = Organisation or individual
 
-schemeManagersName.title = What is the manager''s name?
-schemeManagersName.heading = What is the manager''s name?
+schemeManagersName.title = What is the scheme manager''s name?
+schemeManagersName.heading = What is the scheme manager''s name?
 schemeManagersName.checkYourAnswersLabel = Manager name
 schemeManagersName.error.firstName.required = Enter the Scheme manager''s first name
 schemeManagersName.error.lastName.required = Enter the Scheme manager''s last name
@@ -330,8 +328,8 @@ organisationName.error.length = The name of the organisation must be 160 charact
 organisationName.error.pattern = The name of the organisation must only include letters, spaces, apostrophes and hyphens
 organisationName.change.hidden = Organisation name
 
-orgIndividualName.title = Contact details of an individual within the organisation
-orgIndividualName.heading = Contact details of an individual within the organisation with whom HMRC should correspond
+orgIndividualName.title = Who is the contact within the organisation?
+orgIndividualName.heading = Who is the contact within the organisation?
 orgIndividualName.checkYourAnswersLabel = Organisation contact
 orgIndividualName.error.firstName.required = Enter the individual''s first name
 orgIndividualName.error.lastName.required = Enter the individual''s last name
@@ -386,8 +384,8 @@ whyTransferIsNotTaxable.change.hidden = Why isn''t this a taxable overseas trans
 whyTransferIsNotTaxable.paragraph = The transfer value does not exceed the members available overseas transfer allowance at the time of transfer and:
 whyTransferIsNotTaxable.hint = Select all that apply.
 
-overseasTransferAllowance.title = What is the amount of the overseas transfer allowance before making this transfer?
-overseasTransferAllowance.heading = What is the amount of the overseas transfer allowance before making this transfer?
+overseasTransferAllowance.title = How much of the member''s overseas transfer allowance is available before this transfer?
+overseasTransferAllowance.heading = How much of the member''s overseas transfer allowance is available before this transfer?
 overseasTransferAllowance.checkYourAnswersLabel = Transfer allowance
 overseasTransferAllowance.error.required = Enter the amount of the transfer allowance
 overseasTransferAllowance.error.nonNumeric = The transfer allowance must be an amount of money, like 123 or 123.00
@@ -445,7 +443,6 @@ typeOfAsset.change.hidden = Type of assets included in the transfer
 
 dateOfTransfer.title = What was the date of the transfer?
 dateOfTransfer.heading = What was the date of the transfer?
-dateOfTransfer.instruction = This cannot be a date in the future.
 dateOfTransfer.hint = For example, 31 03 2023.
 dateOfTransfer.checkYourAnswersLabel = Date of transfer
 dateOfTransfer.error.required.all = Enter the date of the transfer
@@ -554,7 +551,7 @@ unquotedSharesNumber.error.wholeNumber = The number of unquoted shares must be a
 unquotedSharesNumber.error.nonNumeric = The number of unquoted shares must be a number, like 10 or 125
 unquotedSharesNumber.error.outOfRange = The number of unquoted shares must be between 0 and 9999999
 unquotedSharesNumber.change.hidden = Number of unquoted shares
-unquotedSharesNumber.hint = Must be a whole number, for example 2000 or 4586
+unquotedSharesNumber.hint = Must be a whole number, for example 2000 or 4586.
 
 quotedSharesNumber.title = How many quoted shares in this company are part of this transfer?
 quotedSharesNumber.heading = How many quoted shares in this company are part of this transfer?
@@ -564,7 +561,7 @@ quotedSharesNumber.error.wholeNumber = The number of quoted shares must be a who
 quotedSharesNumber.error.nonNumeric = The number of quoted shares must be a number, like 10 or 125
 quotedSharesNumber.error.outOfRange = The number of quoted shares must be between 0 and 9999999
 quotedSharesNumber.change.hidden = Number of quoted shares
-quotedSharesNumber.hint = Must be a whole number, for example 2000 or 4586
+quotedSharesNumber.hint = Must be a whole number, for example 2000 or 4586.
 
 propertyValue.title = What is the value of this property?
 propertyValue.heading = What is the value of this property?
@@ -683,8 +680,8 @@ otherAssetsAmendContinue.error.required = Please select an option
 otherAssetsAmendContinue.checkYourAnswersLabel = Other assets
 otherAssetsAmendContinue.change.hidden = Other assets
 otherAssetsAmendContinue.summary.value = {0} added
-otherAssetsAmendContinue.text.singular = group of assets
-otherAssetsAmendContinue.text.plural = groups of assets
+otherAssetsAmendContinue.text.singular = asset
+otherAssetsAmendContinue.text.plural = assets
 
 moreOtherAssetsDeclaration.title = moreOtherAssetsDeclaration
 moreOtherAssetsDeclaration.moreOtherAssets = Does the member have more than 5 assets?
@@ -700,7 +697,7 @@ cashAmountInTransfer.checkYourAnswersLabel = Amount of cash
 pspDeclaration.title = Declaration
 pspDeclaration.heading = Declaration
 pspDeclaration.label = What is the authorising scheme administrator''s ID?
-pspDeclaration.bySubmitting = By submitting you declare that:
+pspDeclaration.bySubmitting = By submitting I declare that:
 pspDeclaration.receivedAndChecked = I''ve received and checked the information and acknowledgement on behalf of the scheme administrator.
 pspDeclaration.correctAndComplete = to the best of my knowledge and belief the information given in this notification is correct and complete and that the content of this report has been approved by the scheme administrator named below has authorised me to submit this report.
 pspDeclaration.error.required = Enter the authorising scheme administrator''s ID
@@ -709,7 +706,7 @@ pspDeclaration.change.hidden = Psp Declaration
 
 psaDeclaration.title = Declaration
 psaDeclaration.heading = Declaration
-psaDeclaration.bySubmitting = By submitting you declare that:
+psaDeclaration.bySubmitting = By submitting I declare that:
 psaDeclaration.receivedAndChecked = I''ve received and checked the information and acknowledgement provided by the transferring member.
 psaDeclaration.correctAndComplete = to the best of my knowledge and belief the information given in this notification is correct and complete.
 psaDeclaration.change.hidden = Psa Declaration

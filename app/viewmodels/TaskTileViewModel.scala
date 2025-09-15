@@ -35,7 +35,7 @@ final case class TaskTileViewModel(
       val (msgKey, extraClasses) = status match {
         case TaskStatus.CannotStart => ("taskList.taskStatus.cannotStart", "govuk-tag--grey")
         case TaskStatus.NotStarted  => ("taskList.taskStatus.notStarted", "govuk-tag--blue")
-        case TaskStatus.InProgress  => ("taskList.taskStatus.inProgress", "govuk-tag--blue")
+        case TaskStatus.InProgress  => ("taskList.taskStatus.inProgress", "govuk-tag--light-blue")
         case TaskStatus.Completed   => ("taskList.taskStatus.completed", "")
       }
       TaskListItemStatus(tag =

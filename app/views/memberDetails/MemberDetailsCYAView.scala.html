@@ -43,10 +43,6 @@
 
     @govukSummaryList(list)
 
-    @govukInsetText(InsetText(
-        content = Text(messages("checkYourAnswers.memberDetails.insetText"))
-    ))
-
     @formHelper(action = controllers.memberDetails.routes.MemberDetailsCYAController.onSubmit(), Symbol("autoComplete") -> "off") {
         @govukButton(
             ButtonViewModel(Text(messages("site.continue")))
