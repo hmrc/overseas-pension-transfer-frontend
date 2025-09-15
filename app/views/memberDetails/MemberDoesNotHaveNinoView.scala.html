@@ -49,10 +49,7 @@
         @govukTextarea(
             TextareaViewModel(
                 field = form("value"),
-                label = Label(
-                    content = messages("memberDoesNotHaveNino.hint")
-                )
-            )
+            ).withHint(HintViewModel(Text(messages("memberDoesNotHaveNino.hint"))))
         )
 
         @link("memberNinoPageLink", memberNinoPage, messages("memberDoesNotHaveNino.memberNino.link.text"), extraClasses = "govuk-body")

@@ -30,14 +30,5 @@
 
 <p class="govuk-body">@messages("journeyRecovery.continue.guidance")</p>
 
-<h2 class="govuk-heading-s">@messages("journeyRecovery.startAgain.option.heading")</h2>
-
-<ul class="govuk-list govuk-list--bullet">
-    <li>@messages("journeyRecovery.startAgain.option.tryAgain")</li>
-    <li>
-        <a class="govuk-link" href="@controllers.routes.IndexController.onPageLoad().url">
-            @messages("journeyRecovery.startAgain.option.dashboard")
-        </a>
-    </li>
-</ul>
+<p class="govuk-body">@messages("journeyRecovery.continue.guidance.extra")</p>
 }
