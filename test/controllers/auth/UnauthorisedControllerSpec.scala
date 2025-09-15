@@ -43,7 +43,7 @@ class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {
     }
 
     "must contain the correct unauthorised link and text" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.UnauthorisedController.onPageLoad().url)
