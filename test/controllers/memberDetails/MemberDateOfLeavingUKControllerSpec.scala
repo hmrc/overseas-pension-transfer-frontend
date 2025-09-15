@@ -64,7 +64,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
         val req    = getRequest()
@@ -81,7 +81,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = userAnswersMemberNameQtNumber.set(MemberDateOfLeavingUKPage, validAnswer).success.value
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = getRequest()
@@ -104,7 +104,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
         .thenReturn(Future.successful(Right(Done)))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -121,7 +121,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       val request = FakeRequest(POST, memberDateOfLeavingUKRoute)
         .withFormUrlEncodedBody(("value", "invalid value"))
@@ -139,30 +139,6 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val result = route(application, getRequest()).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val result = route(application, postRequest()).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -172,7 +148,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(emptyUserAnswers))
+      val application = applicationBuilder(emptyUserAnswers)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

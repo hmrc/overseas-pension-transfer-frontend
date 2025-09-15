@@ -26,7 +26,7 @@ import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{SchemeManagerService, UserAnswersService}
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
@@ -38,9 +38,7 @@ class SchemeManagerTypeController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
-    schemeManagerService: SchemeManagerService,
+    schemeData: SchemeDataAction,
     markInProgress: MarkInProgressOnEntryAction,
     formProvider: SchemeManagerTypeFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -52,7 +50,7 @@ class SchemeManagerTypeController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData andThen markInProgress.forCategoryAndMode(SchemeManagerDetails, mode) andThen displayData) {
+    (identify andThen schemeData andThen getData andThen markInProgress.forCategoryAndMode(SchemeManagerDetails, mode)) {
       implicit request =>
         val preparedForm = request.userAnswers.get(SchemeManagerTypePage) match {
           case None        => form
@@ -62,22 +60,19 @@ class SchemeManagerTypeController @Inject() (
         Ok(view(preparedForm, mode))
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          val previousValue = request.userAnswers.get(SchemeManagerTypePage)
           for {
-            baseAnswers    <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
-            updatedAnswers <- schemeManagerService.updateSchemeManagerTypeAnswers(baseAnswers, previousValue, value)
-            redirectMode    = schemeManagerService.getSchemeManagerTypeRedirectMode(mode, previousValue, value)
-            _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            baseAnswers   <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
+            _             <- sessionRepository.set(baseAnswers)
+            savedForLater <- userAnswersService.setExternalUserAnswers(baseAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(redirectMode, updatedAnswers))
+              case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(mode, baseAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
           }

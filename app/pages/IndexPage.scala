@@ -23,7 +23,7 @@ import play.api.mvc.Call
 object IndexPage extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.WhatWillBeNeededController.onPageLoad()
+    routes.TaskListController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.JourneyRecoveryController.onPageLoad()

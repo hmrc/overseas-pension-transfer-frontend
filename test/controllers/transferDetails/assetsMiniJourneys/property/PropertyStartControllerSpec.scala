@@ -35,7 +35,7 @@ class PropertyStartControllerSpec extends AnyFreeSpec with SpecBase with Mockito
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request  = FakeRequest(GET, propertyStartRoute)

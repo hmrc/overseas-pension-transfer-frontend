@@ -35,9 +35,6 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
           emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
         ) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
-    }
-
-    "in Normal Mode" - {
 
       "must go to Member Has Ever Been Uk Resident when 'false'" in {
 
@@ -50,9 +47,20 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to Check Answers page when 'true'" in {
 
-        MemberIsResidentUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberIsResidentUKPage.nextPage(
+          CheckMode,
+          emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
+        ) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+      }
+
+      "must go to Member Has Ever Been Uk Resident in check mode when 'false'" in {
+
+        MemberIsResidentUKPage.nextPage(
+          CheckMode,
+          emptyUserAnswers.set(MemberIsResidentUKPage, false).success.value
+        ) mustEqual routes.MemberHasEverBeenResidentUKController.onPageLoad(CheckMode)
       }
     }
 

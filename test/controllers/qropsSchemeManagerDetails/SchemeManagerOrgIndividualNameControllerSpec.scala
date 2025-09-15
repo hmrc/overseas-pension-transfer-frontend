@@ -50,7 +50,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, orgIndNameRoute)
@@ -66,7 +66,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, orgIndNameRoute)
@@ -92,7 +92,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -113,7 +113,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -131,36 +131,6 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, orgIndNameRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, orgIndNameRoute)
-            .withFormUrlEncodedBody(("orgIndFirstName", "value 1"), ("orgIndLastName", "value 2"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -170,7 +140,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

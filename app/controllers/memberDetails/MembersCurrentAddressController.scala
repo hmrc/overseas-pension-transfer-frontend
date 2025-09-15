@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{AddressService, CountryService, MemberDetailsService, UserAnswersService}
+import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.MembersCurrentAddressView
@@ -40,10 +40,8 @@ class MembersCurrentAddressController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     formProvider: MembersCurrentAddressFormProvider,
-    memberDetailsService: MemberDetailsService,
     userAnswersService: UserAnswersService,
     countryService: CountryService,
     addressService: AddressService,
@@ -52,7 +50,7 @@ class MembersCurrentAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(MembersCurrentAddressPage) match {
@@ -63,7 +61,7 @@ class MembersCurrentAddressController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       val form = formProvider()
       form.bindFromRequest().fold(

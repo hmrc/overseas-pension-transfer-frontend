@@ -37,8 +37,7 @@ class PropertyAmendContinueController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     formProvider: PropertyAmendContinueFormProvider,
     sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
@@ -50,7 +49,7 @@ class PropertyAmendContinueController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
+    (identify andThen schemeData andThen getData).async { implicit request =>
       val preparedForm = request.userAnswers.get(PropertyAmendContinuePage) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -70,7 +69,7 @@ class PropertyAmendContinueController @Inject() (
       }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {

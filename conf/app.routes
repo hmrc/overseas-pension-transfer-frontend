@@ -8,6 +8,10 @@ GET        /assets/*file                                                        
 
 GET        /language/:lang                                                                        controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
+GET        /start                                                                                 controllers.MpsOnRampController.onRamp(srn: String ?= "")
+
+GET        /dashboard                                                                             controllers.DashboardController.onPageLoad()
+
 GET        /refresh-session                                                                       controllers.KeepAliveController.keepAlive()
 
 GET        /there-is-a-problem                                                                    controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)

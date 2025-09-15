@@ -60,7 +60,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).overrides(
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).overrides(
         bind[CountryService].toInstance(mockCountryService)
       ).build()
 
@@ -89,7 +89,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers =
         userAnswersMemberNameQtNumber.set(PropertyAddressPage(index), propertyAddress).success.value
-      val application = applicationBuilder(Some(userAnswers))
+      val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
@@ -126,7 +126,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         .thenReturn(Some(Country("GB", "United Kingdom")))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService)
@@ -152,7 +152,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
@@ -177,36 +177,6 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           displayRequest,
           messages(application)
         ).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, propertyAddressRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual
-          JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, propertyAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "value 1"), ("addressLine2", "value 2"))
-        val result  = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }
   }

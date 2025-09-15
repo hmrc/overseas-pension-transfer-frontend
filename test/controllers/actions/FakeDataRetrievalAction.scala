@@ -17,14 +17,23 @@
 package controllers.actions
 
 import models.UserAnswers
-import models.requests.{IdentifierRequest, OptionalDataRequest}
+import models.requests.{DataRequest, DisplayRequest, IdentifierRequest, OptionalDataRequest}
+import play.api.mvc.Result
+import utils.AppUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
+class FakeDataRetrievalAction(dataToReturn: UserAnswers) extends DataRetrievalAction with AppUtils {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, request.authenticatedUser, dataToReturn))
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] =
+    Future(Right(DisplayRequest(
+      request.request,
+      request.authenticatedUser,
+      dataToReturn,
+      memberFullName(dataToReturn),
+      qtNumber(dataToReturn),
+      dateTransferSubmitted(dataToReturn)
+    )))
 
   implicit override protected val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global

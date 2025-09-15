@@ -17,7 +17,7 @@
 package controllers.actions
 
 import models.{Mode, NormalMode, TaskCategory}
-import models.requests.DataRequest
+import models.requests.{DataRequest, DisplayRequest}
 import models.taskList.TaskStatus.InProgress
 import org.apache.pekko.Done
 import play.api.mvc._
@@ -32,7 +32,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 trait MarkInProgressOnEntryAction {
-  def forCategoryAndMode(category: TaskCategory, mode: Mode): ActionRefiner[DataRequest, DataRequest]
+  def forCategoryAndMode(category: TaskCategory, mode: Mode): ActionRefiner[DisplayRequest, DisplayRequest]
 }
 
 class MarkInProgressOnEntryActionImpl @Inject() (
@@ -44,11 +44,11 @@ class MarkInProgressOnEntryActionImpl @Inject() (
   /** ActionRefiner that marks the given task category as InProgress when entering a journey in NormalMode. Persists the updated UserAnswers to session and
     * middleware. Falls back to JourneyRecovery if persistence fails.
     */
-  override def forCategoryAndMode(category: TaskCategory, mode: Mode): ActionRefiner[DataRequest, DataRequest] =
-    new ActionRefiner[DataRequest, DataRequest] {
+  override def forCategoryAndMode(category: TaskCategory, mode: Mode): ActionRefiner[DisplayRequest, DisplayRequest] =
+    new ActionRefiner[DisplayRequest, DisplayRequest] {
       override protected def executionContext: ExecutionContext = ec
 
-      override protected def refine[A](request: DataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
+      override protected def refine[A](request: DisplayRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
 
         implicit val hc: HeaderCarrier =
           HeaderCarrierConverter.fromRequest(request)

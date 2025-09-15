@@ -50,19 +50,18 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-  def applicationBuilderPsp(userAnswers: Option[UserAnswers] = None) = new GuiceApplicationBuilder()
+  def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers) = new GuiceApplicationBuilder()
     .overrides(
       bind[IdentifierAction].toInstance(fakeIdentifierAction),
-      bind[DataRequiredAction].to[DataRequiredActionImpl],
       bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
-      bind[DisplayAction].to[FakeDisplayAction]
+      bind[SchemeDataAction].to[FakeSchemeDataAction]
     )
 
   "PspDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, pspDeclarationRoute)
@@ -89,7 +88,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       val ua = emptyUserAnswers.set(PspDeclarationPage, "A1234567").success.value
 
-      val application = applicationBuilderPsp(userAnswers = Some(ua))
+      val application = applicationBuilderPsp(userAnswers = ua)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -110,7 +109,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilderPsp(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilderPsp(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -125,36 +124,6 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilderPsp(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, pspDeclarationRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PspDeclarationPage.nextPage(NormalMode, emptyUserAnswers).url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilderPsp(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, pspDeclarationRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PspDeclarationPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
   }

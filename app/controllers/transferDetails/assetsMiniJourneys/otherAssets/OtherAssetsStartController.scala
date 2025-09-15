@@ -31,13 +31,12 @@ class OtherAssetsStartController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     view: OtherAssetsStartView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       Ok(view(OtherAssetsStartPage.nextPage(mode = NormalMode, request.userAnswers).url))
   }

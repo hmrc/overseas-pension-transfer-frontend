@@ -41,7 +41,7 @@ class SchemeManagersAddressController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
+    schemeData: SchemeDataAction,
     formProvider: SchemeManagersAddressFormProvider,
     countryService: CountryService,
     addressService: AddressService,
@@ -53,7 +53,7 @@ class SchemeManagersAddressController @Inject() (
 
   private def form: Form[SchemeManagersAddressFormData] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val userAnswers  = request.userAnswers
       val preparedForm = userAnswers.get(SchemeManagersAddressPage) match {
@@ -66,7 +66,7 @@ class SchemeManagersAddressController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {

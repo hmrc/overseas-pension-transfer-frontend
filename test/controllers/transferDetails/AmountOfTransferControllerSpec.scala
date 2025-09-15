@@ -49,7 +49,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, amountOfTransferRoute)
@@ -67,7 +67,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       val userAnswers = userAnswersQtNumber.set(AmountOfTransferPage, validAnswer).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, amountOfTransferRoute)
@@ -90,7 +90,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -111,7 +111,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -129,37 +129,6 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, amountOfTransferRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, amountOfTransferRoute)
-            .withFormUrlEncodedBody(("value", validAnswer.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -169,7 +138,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

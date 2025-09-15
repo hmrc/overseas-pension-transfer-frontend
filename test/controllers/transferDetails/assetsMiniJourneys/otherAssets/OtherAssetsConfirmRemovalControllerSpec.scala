@@ -37,7 +37,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(1).url)
@@ -55,7 +55,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
       val entries     = List(OtherAssetsEntry("Other", 1000))
       val userAnswers = userAnswersQtNumber.set(OtherAssetsQuery, entries).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request =
@@ -71,7 +71,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -86,36 +86,6 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(1).url)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(1).url)
-            .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

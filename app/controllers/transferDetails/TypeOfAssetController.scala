@@ -37,8 +37,7 @@ class TypeOfAssetController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     formProvider: TypeOfAssetFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: TypeOfAssetView
@@ -47,7 +46,7 @@ class TypeOfAssetController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(TypeOfAssetPage) match {
         case None        => form
@@ -58,7 +57,7 @@ class TypeOfAssetController @Inject() (
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    (identify andThen getData andThen requireData andThen displayData).async { implicit request =>
+    (identify andThen schemeData andThen getData).async { implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),

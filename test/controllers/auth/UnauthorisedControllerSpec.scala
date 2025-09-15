@@ -17,7 +17,6 @@
 package controllers.auth
 
 import base.SpecBase
-import controllers.auth.routes
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -29,7 +28,7 @@ class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.UnauthorisedController.onPageLoad().url)
@@ -40,6 +39,19 @@ class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view()(request, messages(application)).toString
+      }
+    }
+
+    "must contain the correct unauthorised link and text" in {
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.UnauthorisedController.onPageLoad().url)
+
+        val result = route(application, request).value
+        val body   = contentAsString(result)
+
+        body must include("""<a href="https://www.gov.uk/guidance/manage-a-registered-pension-scheme" class="govuk-link">Find out more about access to Managing Pension Schemes.</a>""")
       }
     }
   }

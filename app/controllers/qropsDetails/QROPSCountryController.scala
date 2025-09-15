@@ -39,7 +39,7 @@ class QROPSCountryController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
+    schemeData: SchemeDataAction,
     formProvider: QROPSCountryFormProvider,
     countryService: CountryService,
     val controllerComponents: MessagesControllerComponents,
@@ -50,7 +50,7 @@ class QROPSCountryController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(QROPSCountryPage) match {
         case None          => form
@@ -61,7 +61,7 @@ class QROPSCountryController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {

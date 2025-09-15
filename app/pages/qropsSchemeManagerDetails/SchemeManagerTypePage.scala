@@ -22,6 +22,8 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object SchemeManagerTypePage extends QuestionPage[SchemeManagerType] {
 
   override def path: JsPath = JsPath \ TaskCategory.SchemeManagerDetails.toString \ toString
@@ -36,8 +38,23 @@ case object SchemeManagerTypePage extends QuestionPage[SchemeManagerType] {
     }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.SchemeManagerDetailsCYAController.onPageLoad()
+    answers.get(SchemeManagerTypePage) match {
+      case Some(SchemeManagerType.Individual)   => routes.SchemeManagersNameController.onPageLoad(CheckMode)
+      case Some(SchemeManagerType.Organisation) => routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode)
+      case _                                    => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
 
   final def changeLink(mode: Mode): Call =
     routes.SchemeManagerTypeController.onPageLoad(mode)
+
+  override def cleanup(maybeSchemeManagerType: Option[SchemeManagerType], userAnswers: UserAnswers): Try[UserAnswers] = {
+    maybeSchemeManagerType match {
+      case Some(SchemeManagerType.Organisation) => userAnswers
+          .remove(SchemeManagersNamePage)
+      case Some(SchemeManagerType.Individual)   => userAnswers
+          .remove(SchemeManagerOrganisationNamePage)
+          .flatMap(_.remove(SchemeManagerOrgIndividualNamePage))
+      case _                                    => super.cleanup(maybeSchemeManagerType, userAnswers)
+    }
+  }
 }

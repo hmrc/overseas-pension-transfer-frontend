@@ -15,16 +15,16 @@
  *@
 
 @import config.FrontendAppConfig
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import play.twirl.api.Html
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
-@import views.html.components.AppFooter
 @import viewmodels.FooterLink
-@import play.twirl.api.Html
-@import play.api.mvc.RequestHeader
-@import play.api.i18n.Messages
+@import views.html.components.{AppBreadcrumbs, AppFooter}
 
 @this(
         appConfig: FrontendAppConfig,
@@ -36,7 +36,8 @@
         hmrcStandardPage: HmrcStandardPage,
         appFooter: AppFooter,
         autocompleteCss: HmrcAccessibleAutocompleteCss,
-        autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
+        autocompleteJavascript: HmrcAccessibleAutocompleteJavascript,
+        appBreadcrumbs: AppBreadcrumbs
 )
 
 
@@ -47,7 +48,8 @@
         showHmrcBanner: Boolean = false,
         showPageFooter: Boolean = true,
         showStartFooter: Boolean = false,
-        showCYAFooter: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
+        showCYAFooter: Boolean = false,
+        showBreadcrumbs: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
 
 @head = {
     @autocompleteCss()
@@ -88,6 +90,7 @@
     pageTitle = Some(pageTitle),
     templateOverrides = TemplateOverrides(
         additionalHeadBlock = Some(head),
+      beforeContentBlock = if(showBreadcrumbs) Some(appBreadcrumbs()) else None,
         additionalScriptsBlock = Some(autocompleteJavascript())
     ),
     serviceURLs = ServiceURLs(

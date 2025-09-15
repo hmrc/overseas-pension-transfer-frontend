@@ -17,8 +17,8 @@
 package controllers.checkYourAnswers
 
 import com.google.inject.Inject
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, DisplayAction, IdentifierAction}
-import models.{FinalCheckMode, Mode}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
+import models.FinalCheckMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -33,13 +33,12 @@ class CheckYourAnswersController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: CheckYourAnswersView
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val memberDetailsSummaryList        = SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, request.userAnswers))
       val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, request.userAnswers))

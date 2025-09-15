@@ -43,7 +43,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, applicableTaxExclusionsRoute)
@@ -62,7 +62,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
       val userAnswers = userAnswersQtNumber.set(ApplicableTaxExclusionsPage, ApplicableTaxExclusions.values.toSet).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, applicableTaxExclusionsRoute)
@@ -86,7 +86,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -106,7 +106,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersQtNumber)).build()
+      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
 
       running(application) {
         val request =
@@ -121,36 +121,6 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, applicableTaxExclusionsRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, applicableTaxExclusionsRoute)
-            .withFormUrlEncodedBody(("value[0]", ApplicableTaxExclusions.values.head.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

@@ -42,9 +42,7 @@ class IsTransferCashOnlyController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
-    taskService: TaskService,
+    schemeData: SchemeDataAction,
     userAnswersService: UserAnswersService,
     formProvider: IsTransferCashOnlyFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -54,7 +52,7 @@ class IsTransferCashOnlyController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(IsTransferCashOnlyPage) match {
         case None        => form
@@ -63,7 +61,7 @@ class IsTransferCashOnlyController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -71,7 +69,7 @@ class IsTransferCashOnlyController @Inject() (
         value =>
           for {
             ua1           <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value))
-            ua2           <- Future.fromTry(taskService.setInProgressInCheckMode(mode, ua1, TransferDetails))
+            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
             _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {

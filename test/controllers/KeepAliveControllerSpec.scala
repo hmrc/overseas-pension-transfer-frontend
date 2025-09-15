@@ -40,7 +40,7 @@ class KeepAliveControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
 
         val application =
-          applicationBuilder(Some(emptyUserAnswers))
+          applicationBuilder(emptyUserAnswers)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
@@ -52,30 +52,6 @@ class KeepAliveControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
           status(result) mustEqual OK
           verify(mockSessionRepository, times(1)).keepAlive(emptyUserAnswers.id)
-        }
-      }
-    }
-
-    "when the user has not answered any questions" - {
-
-      "must return OK" in {
-
-        val mockSessionRepository = mock[SessionRepository]
-        when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
-
-        val application =
-          applicationBuilder(None)
-            .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-            .build()
-
-        running(application) {
-
-          val request = FakeRequest(GET, routes.KeepAliveController.keepAlive().url)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual OK
-          verify(mockSessionRepository, never()).keepAlive(any())
         }
       }
     }

@@ -38,7 +38,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
   "TaskListViewModel.rows" - {
 
     "suppresses href when status is CannotStart and shows grey tag" in {
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
       running(application) {
 
         val rows = TaskListViewModel.rows(emptyUserAnswers)

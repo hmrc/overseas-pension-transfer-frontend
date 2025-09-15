@@ -39,8 +39,7 @@ class MembersLastUKAddressController @Inject() (
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    displayData: DisplayAction,
+    schemeData: SchemeDataAction,
     formProvider: MembersLastUKAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUKAddressView,
@@ -48,7 +47,7 @@ class MembersLastUKAddressController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       def form(): Form[MembersLastUKAddress] = formProvider()
       val userAnswers                        = request.userAnswers
@@ -61,7 +60,7 @@ class MembersLastUKAddressController @Inject() (
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData andThen displayData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       def form(): Form[MembersLastUKAddress] = formProvider()
 
@@ -78,7 +77,6 @@ class MembersLastUKAddressController @Inject() (
               case Right(Done) => Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
-
           }
       )
   }

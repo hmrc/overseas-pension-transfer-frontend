@@ -31,8 +31,12 @@ case object SchemeManagerOrganisationNamePage extends QuestionPage[String] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.SchemeManagerDetailsCYAController.onPageLoad()
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
+    answers.get(SchemeManagerOrgIndividualNamePage) match {
+      case Some(_) => routes.SchemeManagerDetailsCYAController.onPageLoad()
+      case None    => routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     routes.SchemeManagerOrganisationNameController.onPageLoad(mode)

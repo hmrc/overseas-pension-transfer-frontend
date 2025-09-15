@@ -45,7 +45,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]
 
-  private def applicationWithMocks(userAnswers: Option[UserAnswers]) =
+  private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)
       .overrides(
         bind[UserAnswersService].toInstance(mockUserAnswersService),
@@ -57,7 +57,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must return OK and the correct view for a GET" in {
       val ua  = userAnswersWithAssets(assetsCount = 5)
-      val app = applicationWithMocks(Some(ua))
+      val app = applicationWithMocks(ua)
 
       running(app) {
         val request = FakeRequest(GET, otherAssetsCyaRoute)
@@ -76,7 +76,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must redirect to MoreOtherAssetsDeclarationController when threshold (5 other assets) is reached" in {
       val ua  = userAnswersWithAssets(assetsCount = 5)
-      val app = applicationWithMocks(Some(ua))
+      val app = applicationWithMocks(ua)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
@@ -96,7 +96,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must redirect to OtherAssetsAmendContinueController when OtherAssets count is below threshold" in {
       val ua  = userAnswersWithAssets(assetsCount = 4)
-      val app = applicationWithMocks(Some(ua))
+      val app = applicationWithMocks(ua)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
@@ -109,30 +109,6 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
-      }
-    }
-
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-      val app = applicationWithMocks(None)
-
-      running(app) {
-        val request = FakeRequest(GET, otherAssetsCyaRoute)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      val app = applicationWithMocks(None)
-
-      running(app) {
-        val request = FakeRequest(POST, otherAssetsCyaRoute)
-        val result  = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

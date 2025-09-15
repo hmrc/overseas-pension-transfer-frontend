@@ -60,7 +60,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(userAnswersMemberNameQtNumber)).overrides(
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).overrides(
         bind[CountryService].toInstance(mockCountryService)
       ).build()
 
@@ -88,7 +88,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers =
         userAnswersMemberNameQtNumber.set(MembersCurrentAddressPage, membersCurrentAddress).success.value
-      val application = applicationBuilder(Some(userAnswers))
+      val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
@@ -127,7 +127,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         .thenReturn(Future.successful(Right(Done)))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService),
@@ -154,7 +154,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(Some(userAnswersMemberNameQtNumber))
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
@@ -182,36 +182,6 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       }
     }
 
-    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request = FakeRequest(GET, membersCurrentAddressRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual
-          JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None).build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, membersCurrentAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "value 1"), ("addressLine2", "value 2"))
-        val result  = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -221,7 +191,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(Some(emptyUserAnswers))
+      val application = applicationBuilder(emptyUserAnswers)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
