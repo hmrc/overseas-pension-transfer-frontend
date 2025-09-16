@@ -38,8 +38,7 @@ case object SubmitToHMRCPage
           case _   => routes.JourneyRecoveryController.onPageLoad()
         }
       case Some(false) =>
-        // TODO: This should redirect to the task list when implemented
-        routes.IndexController.onPageLoad()
+        routes.DashboardController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
   }
