@@ -28,8 +28,13 @@ case class FooterLink(id: String, href: String, text: String)
 
 object FooterLink {
 
-  def build(showCYAFooter: Boolean = false, showStartFooter: Boolean = false, showPageFooter: Boolean = true)(implicit messages: Messages): Seq[FooterLink] = {
-    val links = Seq.newBuilder[FooterLink]
+  def build(
+      showCYAFooter: Boolean      = false,
+      showStartFooter: Boolean    = false,
+      showPageFooter: Boolean     = true,
+      showTaskListFooter: Boolean = false
+    )(implicit messages: Messages
+    ): Seq[FooterLink] = {
 
     val dashboardLink = FooterLink(
       id   = "returnDashboardLink",
@@ -37,22 +42,23 @@ object FooterLink {
       text = messages("footer.link.text.dashboard")
     )
 
-    if (showStartFooter) {
-      links += dashboardLink
-    } else if (showCYAFooter) {
-      links += FooterLink(
-        id   = "discardReportLink",
-        href = routes.DiscardTransferConfirmController.onPageLoad().url,
-        text = messages("footer.link.text.discard.report")
-      )
-      links += dashboardLink
-    } else if (showPageFooter) {
-      links += FooterLink(
-        id   = "returnTaskListLink",
-        href = routes.TaskListController.onPageLoad().url,
-        text = messages("footer.link.text.tasklist")
-      )
+    val discardReportLink = FooterLink(
+      id   = "discardReportLink",
+      href = routes.DiscardTransferConfirmController.onPageLoad().url,
+      text = messages("footer.link.text.discard.report")
+    )
+
+    val taskListLink = FooterLink(
+      id   = "returnTaskListLink",
+      href = routes.TaskListController.onPageLoad().url,
+      text = messages("footer.link.text.tasklist")
+    )
+
+    (showStartFooter, showCYAFooter, showTaskListFooter, showPageFooter) match {
+      case (true, _, _, _) | (_, true, _, _) => Seq(dashboardLink)
+      case (_, _, true, _)                   => Seq(discardReportLink, dashboardLink)
+      case (_, _, _, true)                   => Seq(taskListLink)
+      case _                                 => Seq.empty
     }
-    links.result()
   }
 }

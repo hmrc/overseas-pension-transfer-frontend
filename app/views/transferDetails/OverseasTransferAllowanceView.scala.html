@@ -51,7 +51,6 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @qtNumber()
         @govukInput(
             InputViewModel(
                 field = form("otAllowance"),
@@ -63,10 +62,7 @@
             .withPrefix(PrefixOrSuffix(content = Text("£")))
             .withWidth(Fixed10)
         )
-        @govukDetails(Details(
-            summary = Text(messages("overseasTransferAllowance.help.title")),
-            content = Text(messages("overseasTransferAllowance.help.details"))
-        ))
+
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
         )
