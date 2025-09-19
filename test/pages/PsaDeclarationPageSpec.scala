@@ -31,8 +31,7 @@ class PsaDeclarationPageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to submission screen on successful submission" in {
-        // TODO: Change to submission screen once implemented
-        PsaDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        PsaDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
       }
     }
   }

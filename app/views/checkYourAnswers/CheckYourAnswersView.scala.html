@@ -25,12 +25,12 @@
 
 
 @this(
- layout: templates.Layout,
- formHelper: FormWithCSRF,
- govukSummaryList: GovukSummaryList,
- govukButton: GovukButton,
- govukInsetText : GovukInsetText,
- heading: CheckYourAnswersHeading
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        govukButton: GovukButton,
+        govukInsetText : GovukInsetText,
+        heading: CheckYourAnswersHeading
 )
 
 @(memberDetails: SummaryList, transferDetails: SummaryList, qropsDetails: SummaryList, schemeManagerDetails: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
@@ -53,7 +53,7 @@
 
  @govukSummaryList(schemeManagerDetails)
 
- @formHelper(action = controllers.routes.JourneyRecoveryController.onPageLoad(), Symbol("autoComplete") -> "off") {
+ @formHelper(action = controllers.routes.SubmitToHMRCController.onPageLoad(), Symbol("autoComplete") -> "off") {
   @govukButton(
    ButtonViewModel(Text(messages("site.continue")))
   )
