@@ -16,12 +16,10 @@
 
 package controllers
 
-import connectors.TransferConnector
 import controllers.actions.IdentifierAction
 import pages.DashboardPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
 import play.api.mvc._
 import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
@@ -30,13 +28,11 @@ import views.html.DashboardView
 
 import javax.inject._
 import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success}
 
 @Singleton
 class DashboardController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     repo: DashboardSessionRepository,
-    transferConnector: TransferConnector,
     identify: IdentifierAction,
     view: DashboardView
   )(implicit ec: ExecutionContext
@@ -48,19 +44,9 @@ class DashboardController @Inject() (
     repo.get(id).map {
       case Some(dd) =>
         dd.get(PensionSchemeDetailsQuery) match {
-          case Some(psd) => {
-            transferConnector.getAllTransfers(psd.pstrNumber).onComplete {
-              case Success(Right(dto)) =>
-                logger.info(s"[DashboardController][onPageLoad] getAllTransfers: pstr=${dto.pstr.value}, count=${dto.transfers.size}")
-                logger.info(Json.prettyPrint(Json.toJson(dto.transfers.head)))
-              case Success(Left(err))  =>
-                logger.warn(s"[DashboardController][onPageLoad] getAllTransfers failed: $err")
-              case Failure(ex)         =>
-                logger.error(s"[DashboardController][onPageLoad] getAllTransfers exception", ex)
-            }
+          case Some(psd) =>
             Ok(view(psd.schemeName, DashboardPage.nextPage(dd).url))
-          }
-          case None      =>
+          case None =>
             logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails in dashboard data for $id")
             Redirect(routes.JourneyRecoveryController.onPageLoad())
         }
