@@ -18,6 +18,8 @@ package controllers.actions
 
 import controllers.routes
 import models.requests.{DisplayRequest, IdentifierRequest}
+import play.api.Logging
+import play.api.libs.json.Json
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
@@ -29,11 +31,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class DataRetrievalActionImpl @Inject() (
     val sessionRepository: SessionRepository
   )(implicit val executionContext: ExecutionContext
-  ) extends DataRetrievalAction with AppUtils {
+  ) extends DataRetrievalAction with AppUtils with Logging {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
     sessionRepository.get(request.authenticatedUser.internalId) map {
       case Some(answers) =>
+        logger.info(Json.prettyPrint(Json.toJson(answers)))
         Right(DisplayRequest(
           request.request,
           request.authenticatedUser,
