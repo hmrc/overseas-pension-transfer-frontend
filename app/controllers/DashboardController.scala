@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
 import pages.DashboardPage
 import play.api.Logging
@@ -28,7 +29,7 @@ import services.TransferService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import viewmodels.AllTransfersViewModel
+import viewmodels.PaginatedAllTransfersViewModel
 import views.html.DashboardView
 
 import javax.inject._
@@ -40,9 +41,16 @@ class DashboardController @Inject() (
     repo: DashboardSessionRepository,
     identify: IdentifierAction,
     transferService: TransferService,
-    view: DashboardView
+    view: DashboardView,
+    appConfig: FrontendAppConfig
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
+
+  private def currentPage(implicit req: Request[_]): Int =
+    req.getQueryString("page").flatMap(_.toIntOption).filter(_ >= 1).getOrElse(1)
+
+  private def pageUrl(n: Int): String =
+    s"${routes.DashboardController.onPageLoad().url}?page=$n"
 
   def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
@@ -57,10 +65,17 @@ class DashboardController @Inject() (
                 logger.warn(s"[DashboardController] getAllTransfersData failed: $e")
                 Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
               case Right(updated) =>
-                val transfers   = updated.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-                val transfersVm = AllTransfersViewModel.from(transfers)
+                val items = updated.get(TransfersOverviewQuery).getOrElse(Seq.empty)
+
+                val vm = PaginatedAllTransfersViewModel.build(
+                  items      = items,
+                  page       = currentPage,
+                  pageSize   = appConfig.transfersPerPage,
+                  urlForPage = pageUrl
+                )
+
                 repo.set(updated).map { _ =>
-                  Ok(view(psd.schemeName, DashboardPage.nextPage(updated).url, transfersVm))
+                  Ok(view(psd.schemeName, DashboardPage.nextPage(updated).url, vm))
                 }
             }
           case None      =>

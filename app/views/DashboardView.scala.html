@@ -15,16 +15,17 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import viewmodels.PaginatedAllTransfersViewModel
 @import views.ViewUtils.titleNoForm
-@import viewmodels.AllTransfersViewModel
 
 @this(
         layout: templates.Layout,
         govukButton: GovukButton,
-        govukTable: GovukTable
+        govukTable: GovukTable,
+        govukPagination: GovukPagination
 )
 
-@(schemeName: String, nextPage: String, vm: AllTransfersViewModel)(implicit request: Request[_], messages: Messages)
+@(schemeName: String, nextPage: String, vm: PaginatedAllTransfersViewModel)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("dashboard.title")),
@@ -42,10 +43,11 @@
 
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-    <h2 class="govuk-heading-l">@messages("dashboard.allTransfers.heading")</h2>
+    <h2 class="govuk-heading-m govuk-!-padding-bottom-2">@messages("dashboard.allTransfers.heading")</h2>
 
     @if(vm.table.rows.nonEmpty) {
         @govukTable(vm.table)
+        @vm.pagination.map(govukPagination(_))
     } else {
         <p class="govuk-body">@messages("dashboard.allTransfers.empty")</p>
     }

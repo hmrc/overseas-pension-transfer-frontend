@@ -32,9 +32,14 @@ case class AllTransfersItem(
     qtStatus: Option[QtStatus],
     pstrNumber: Option[PstrNumber]
   ) {
-  def displayLastUpdatedDate: Option[LocalDate] = lastUpdated.orElse(submissionDate)
+  def lastUpdatedDate: Option[LocalDate] = lastUpdated.orElse(submissionDate)
 }
 
 object AllTransfersItem {
   implicit val format: OFormat[AllTransfersItem] = Json.format
+
+  implicit val ordering: Ordering[AllTransfersItem] =
+    Ordering.by[AllTransfersItem, Option[LocalDate]](t => t.lastUpdatedDate)(
+      Ordering.Option(Ordering[LocalDate]).reverse
+    )
 }

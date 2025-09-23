@@ -27,9 +27,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableR
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-final case class AllTransfersViewModel(table: Table)
+final case class AllTransfersTableViewModel(table: Table)
 
-object AllTransfersViewModel {
+object AllTransfersTableViewModel {
 
   private val dateFmt: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuuu")
 
@@ -50,7 +50,7 @@ object AllTransfersViewModel {
   private def cell(content: Content) =
     TableRow(content = content, classes = rowPad)
 
-  def from(items: Seq[AllTransfersItem])(implicit messages: Messages): AllTransfersViewModel = {
+  def from(items: Seq[AllTransfersItem])(implicit messages: Messages): Table = {
 
     val head: Seq[HeadCell] = Seq(
       HeadCell(Text(messages("dashboard.allTransfers.head.member"))),
@@ -59,9 +59,7 @@ object AllTransfersViewModel {
       HeadCell(Text(messages("dashboard.allTransfers.head.updated")))
     )
 
-    val sorted = items.sortBy(_.submissionDate)(Ordering.Option[LocalDate].reverse)
-
-    val rows: Seq[Seq[TableRow]] = sorted.map { it =>
+    val rows: Seq[Seq[TableRow]] = items.map { it =>
       val name = memberName(it.memberFirstName, it.memberSurname)
       val link = HtmlFormat.raw(s"""<a class="govuk-link" href="#">$name</a>""") // TODO: Replace with actual link
       val stat = it.qtStatus.map {
@@ -79,11 +77,9 @@ object AllTransfersViewModel {
       )
     }
 
-    AllTransfersViewModel(
-      Table(
-        head = Some(head),
-        rows = rows
-      )
+    Table(
+      head = Some(head),
+      rows = rows
     )
   }
 }

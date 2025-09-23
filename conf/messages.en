@@ -12,6 +12,10 @@ site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
 site.agreeAndSubmit = Agree and submit
+site.previous = Previous
+site.next = Next
+pagination.landmark = Table pagination
+
 
 breadcrumbs.mps = MPS
 breadcrumbs.pensionScheme = Pension scheme
