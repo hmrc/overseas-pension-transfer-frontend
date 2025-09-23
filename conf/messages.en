@@ -44,6 +44,14 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 dashboard.title = Report overseas transfer dashboard
 dashboard.heading = Report a transfer to a qualified recognised overseas pension scheme
 dashboard.linkText = Start a new transfer
+dashboard.allTransfers.heading = All transfers
+dashboard.allTransfers.head.member = Member name
+dashboard.allTransfers.head.status = Status
+dashboard.allTransfers.head.reference = Transfer reference
+dashboard.allTransfers.head.updated = Last updated
+dashboard.allTransfers.status.submitted = Submitted to HMRC
+dashboard.allTransfers.status.inProgress = In progress
+dashboard.allTransfers.empty = This scheme does not currently have any overseas pension transfer reports.
 
 requiredInfo.title = What you will need
 requiredInfo.heading = What you will need

@@ -16,19 +16,22 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.titleNoForm
+@import viewmodels.AllTransfersViewModel
 
 @this(
         layout: templates.Layout,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        govukTable: GovukTable
 )
 
-@(schemeName: String, nextPage: String)(implicit request: Request[_], messages: Messages)
+@(schemeName: String, nextPage: String, vm: AllTransfersViewModel)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle    = titleNoForm(messages("dashboard.title")),
     showBackLink = false,
     showPageFooter = false,
-    showBreadcrumbs = true
+    showBreadcrumbs = true,
+    fullWidth = true
 ) {
     <span class="govuk-caption-l">@schemeName</span>
     <h1 class="govuk-heading-l">@messages("dashboard.heading")</h1>
@@ -39,4 +42,13 @@
 
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
+    <h2 class="govuk-heading-l">@messages("dashboard.allTransfers.heading")</h2>
+
+    @if(vm.table.rows.nonEmpty) {
+        @govukTable(vm.table)
+    } else {
+        <p class="govuk-body">@messages("dashboard.allTransfers.empty")</p>
+    }
+
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-padding-top-8">
 }
