@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.qropsDetails
 
 import base.SpecBase
-import models.{CheckMode, PersonName}
+import models.CheckMode
+import models.address.{Country, QROPSAddress}
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNamePage
+import pages.qropsDetails.QROPSAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class SchemeManagerOrgIndividualNameSummarySpec extends AnyFreeSpec with SpecBase {
+class QROPSAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "Organisation individual's name Summary" - {
+  "QROPSAddressSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when OrgIndividualNamePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("FirstName", "LastName")).success.value
-      val result  = SchemeManagerOrgIndividualNameSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when QROPSAddressPage has a value" in {
+      val answers = emptyUserAnswers.set(QROPSAddressPage, QROPSAddress("Line1", "Line2", None, None, None, Country("GB", "United Kingdom"))).success.value
+      val result  = QROPSAddressSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("orgIndividualName.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("FirstName LastName")
+      result.get.key.content.asHtml.body must include("qropsAddress.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include("Line1<br>Line2<br>United Kingdom")
+      result.get.value.content.asHtml.body must not include "<br><br>"
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode).url
+        controllers.qropsDetails.routes.QROPSAddressController.onPageLoad(CheckMode).url
     }
   }
 }

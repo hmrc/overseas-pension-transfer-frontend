@@ -84,6 +84,8 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
       row mustBe defined
       row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "<br><br>"
+      row.get.actions.get.items.head.href mustBe
+        controllers.qropsSchemeManagerDetails.routes.SchemeManagersAddressController.onPageLoad(CheckMode).url
     }
 
     "return None when address is not present" in {

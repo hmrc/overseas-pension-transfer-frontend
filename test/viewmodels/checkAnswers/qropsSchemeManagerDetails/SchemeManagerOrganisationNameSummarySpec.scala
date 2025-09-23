@@ -35,6 +35,8 @@ class SchemeManagerOrganisationNameSummarySpec extends AnyFreeSpec with SpecBase
       result mustBe defined
       result.get.key.content.asHtml.body must include("organisationName.checkYourAnswersLabel")
       result.get.value.content.asHtml.body must include("Organisation Sample Name")
+      result.get.actions.get.items.head.href mustBe
+        controllers.qropsSchemeManagerDetails.routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode).url
     }
   }
 }

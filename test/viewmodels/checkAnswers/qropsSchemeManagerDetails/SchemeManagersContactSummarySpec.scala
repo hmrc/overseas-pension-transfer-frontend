@@ -17,26 +17,26 @@
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
 import base.SpecBase
-import models.{CheckMode, PersonName}
+import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNamePage
+import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class SchemeManagerOrgIndividualNameSummarySpec extends AnyFreeSpec with SpecBase {
+class SchemeManagersContactSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "Organisation individual's name Summary" - {
+  "SchemeManagersContact" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when OrgIndividualNamePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("FirstName", "LastName")).success.value
-      val result  = SchemeManagerOrgIndividualNameSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when SchemeManagersContactPage has a value" in {
+      val answers = emptyUserAnswers.set(SchemeManagersContactPage, "Scheme Manager Contact").success.value
+      val result  = SchemeManagersContactSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("orgIndividualName.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("FirstName LastName")
+      result.get.key.content.asHtml.body must include("schemeManagersContact.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include("Scheme Manager Contact")
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode).url
+        controllers.qropsSchemeManagerDetails.routes.SchemeManagersContactController.onPageLoad(CheckMode).url
     }
   }
 }

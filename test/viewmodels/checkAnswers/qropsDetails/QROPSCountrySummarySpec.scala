@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.qropsDetails
 
 import base.SpecBase
-import models.{CheckMode, PersonName}
+import models.CheckMode
+import models.address.Country
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNamePage
+import pages.qropsDetails.QROPSCountryPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class SchemeManagerOrgIndividualNameSummarySpec extends AnyFreeSpec with SpecBase {
+class QROPSCountrySummarySpec extends AnyFreeSpec with SpecBase {
 
-  "Organisation individual's name Summary" - {
+  "QROPSCountrySummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when OrgIndividualNamePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("FirstName", "LastName")).success.value
-      val result  = SchemeManagerOrgIndividualNameSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when QROPSCountryPage has a value" in {
+      val answers = emptyUserAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+      val result  = QROPSCountrySummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("orgIndividualName.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("FirstName LastName")
+      result.get.key.content.asHtml.body must include("qropsCountry.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include("United Kingdom")
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode).url
+        controllers.qropsDetails.routes.QROPSCountryController.onPageLoad(CheckMode).url
     }
   }
 }
