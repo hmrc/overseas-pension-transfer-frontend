@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails.NetTransferAmountPage
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class NetTransferAmountSummarySpec extends AnyFreeSpec with SpecBase {
+class QuotedSharesClassSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "NetTransferAmountSummary" - {
+  "QuotedSharesClassSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when NetTransferAmountPage has a value" in {
-      val answers = emptyUserAnswers.set(NetTransferAmountPage, BigDecimal(12345.33)).success.value
-      val result  = NetTransferAmountSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when QuotedSharesClassPage has a value" in {
+      val answers = emptyUserAnswers.set(QuotedSharesClassPage(0), "Quoted Shares Class").success.value
+      val result  = QuotedSharesClassSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("netTransferAmount.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("£12,345.33")
+      result.get.key.content.asHtml.body must include("quotedSharesClass.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include("Quoted Shares Class")
       result.get.actions.get.items.head.href mustBe
-        controllers.transferDetails.routes.NetTransferAmountController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(CheckMode, 0).url
     }
   }
 }

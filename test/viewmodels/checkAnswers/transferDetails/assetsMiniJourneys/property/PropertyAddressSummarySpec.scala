@@ -14,30 +14,35 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
+import models.address.{Country, PropertyAddress}
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class CashAmountInTransferSummarySpec extends AnyFreeSpec with SpecBase {
+class PropertyAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "CashAmountInTransferSummary" - {
+  "PropertyAddressSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when CashAmountInTransferPage has a value" in {
-      val answers = emptyUserAnswers.set(CashAmountInTransferPage, BigDecimal(12345.33)).success.value
-      val result  = CashAmountInTransferSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when PropertyAddressPage has a value" in {
+      val answers = emptyUserAnswers.set(
+        PropertyAddressPage(0),
+        PropertyAddress("Line1", "Line2", None, None, Country("GB", "United Kingdom"), None)
+      ).success.value
+
+      val result = PropertyAddressSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("cashAmountInTransfer.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("£12,345.33")
+      result.get.key.content.asHtml.body must include("propertyAddress.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include("Line1<br>Line2<br>United Kingdom")
       result.get.actions.get.items.head.href mustBe
-        AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, 0).url
     }
   }
 }

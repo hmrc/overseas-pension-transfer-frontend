@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionSummary
 
-class CashAmountInTransferSummarySpec extends AnyFreeSpec with SpecBase {
+class PropertyValueSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "CashAmountInTransferSummary" - {
+  "PropertyValueSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when CashAmountInTransferPage has a value" in {
-      val answers = emptyUserAnswers.set(CashAmountInTransferPage, BigDecimal(12345.33)).success.value
-      val result  = CashAmountInTransferSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when PropertyValuePage has a value" in {
+      val answers = emptyUserAnswers.set(PropertyValuePage(0), BigDecimal(12345.99)).success.value
+      val result  = PropertyValueSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("cashAmountInTransfer.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("£12,345.33")
+      result.get.key.content.asHtml.body must include("propertyValue.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include("£12,345.99")
       result.get.actions.get.items.head.href mustBe
-        AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode, 0).url
     }
   }
 }

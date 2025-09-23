@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class CashAmountInTransferSummarySpec extends AnyFreeSpec with SpecBase {
+class UnquotedSharesCompanyNameSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "CashAmountInTransferSummary" - {
+  "UnquotedSharesCompanyNameSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when CashAmountInTransferPage has a value" in {
-      val answers = emptyUserAnswers.set(CashAmountInTransferPage, BigDecimal(12345.33)).success.value
-      val result  = CashAmountInTransferSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when UnquotedSharesCompanyNamePage has a value" in {
+      val answers = emptyUserAnswers.set(UnquotedSharesCompanyNamePage(0), "Unquoted Shares Company Name").success.value
+      val result  = UnquotedSharesCompanyNameSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("cashAmountInTransfer.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("£12,345.33")
+      result.get.key.content.asHtml.body must include("unquotedSharesCompanyName.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include("Unquoted Shares Company Name")
       result.get.actions.get.items.head.href mustBe
-        AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(CheckMode, 0).url
     }
   }
 }

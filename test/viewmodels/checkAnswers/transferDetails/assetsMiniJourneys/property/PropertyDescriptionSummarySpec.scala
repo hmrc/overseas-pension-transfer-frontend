@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.transferDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails.NetTransferAmountPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-class NetTransferAmountSummarySpec extends AnyFreeSpec with SpecBase {
+class PropertyDescriptionSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "NetTransferAmountSummary" - {
+  "PropertyDescriptionSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when NetTransferAmountPage has a value" in {
-      val answers = emptyUserAnswers.set(NetTransferAmountPage, BigDecimal(12345.33)).success.value
-      val result  = NetTransferAmountSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when PropertyDescriptionPage has a value" in {
+      val answers = emptyUserAnswers.set(PropertyDescriptionPage(0), "Property Description").success.value
+      val result  = PropertyDescriptionSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("netTransferAmount.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("£12,345.33")
+      result.get.key.content.asHtml.body must include("propertyDescription.checkYourAnswersLabel")
+      result.get.value.content.asHtml.body must include("Property Description")
       result.get.actions.get.items.head.href mustBe
-        controllers.transferDetails.routes.NetTransferAmountController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode, 0).url
     }
   }
 }
