@@ -1,44 +1,59 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package services
 
 import connectors.TransferConnector
 import models.{DashboardData, PstrNumber}
 import models.dtos.GetAllTransfersDTO
 import models.responses.{AllTransfersUnexpectedError, NoTransfersFound, TransferError}
-import queries.dashboard.{TransfersLastSyncedAtQuery, TransfersOverviewQuery}
+import queries.dashboard.{TransfersDataUpdatedAtQuery, TransfersOverviewQuery, TransfersSyncedAtQuery}
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.Instant
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
 @Singleton
 class TransferService @Inject() (
-                                           connector: TransferConnector
-                                         )(implicit ec: ExecutionContext) {
+    connector: TransferConnector
+  )(implicit ec: ExecutionContext
+  ) {
 
-
-  def getAllTransfersData(current: DashboardData, pstr: PstrNumber)
-                 (implicit hc: HeaderCarrier): Future[Either[TransferError, DashboardData]] =
+  def getAllTransfersData(current: DashboardData, pstr: PstrNumber)(implicit hc: HeaderCarrier): Future[Either[TransferError, DashboardData]] =
     connector.getAllTransfers(pstr).map {
       case Left(NoTransfersFound) =>
-
-        current.set(TransfersOverviewQuery, Seq.empty) match {
-          case Success(updated) => Right(updated)
-          case Failure(e)       => Left(AllTransfersUnexpectedError("Failed to clear transfers data", Some(e.getMessage)))
-        }
-
-      case Left(err) =>
+        (for {
+          dd1 <- current.set(TransfersOverviewQuery, Seq.empty)
+          dd2 <- dd1.set(TransfersSyncedAtQuery, Instant.now())
+        } yield dd2).fold(
+          e => Left(AllTransfersUnexpectedError("Failed to update dashboard", Some(e.getMessage))),
+          updated => Right(updated)
+        )
+      case Left(err)              =>
         Left(err)
-      case Right(dto) =>
-        mergeFromDto(current, dto) match {
-          case Success(updated) => Right(updated)
-          case Failure(e)       => Left(AllTransfersUnexpectedError("Failed to merge transfers into dashboard", Some(e.getMessage)))
-        }
+      case Right(dto)             =>
+        (for {
+          dd1 <- current.set(TransfersOverviewQuery, dto.transfers)
+          dd2 <- dd1.set(TransfersSyncedAtQuery, Instant.now())
+          dd3 <- dd2.set(TransfersDataUpdatedAtQuery, dto.lastUpdated) // upstream timestamp
+        } yield dd3).fold(
+          e => Left(AllTransfersUnexpectedError("Failed to merge transfers", Some(e.getMessage))),
+          updated => Right(updated)
+        )
     }
-
-  private def mergeFromDto(current: DashboardData, dto: GetAllTransfersDTO): Try[DashboardData] =
-    for {
-      dd1 <- current.set(TransfersOverviewQuery, dto.transfers)
-      dd2 <- dd1.set(TransfersLastSyncedAtQuery, dto.lastUpdated)
-    } yield dd2
 }

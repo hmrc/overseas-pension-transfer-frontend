@@ -28,9 +28,12 @@ case class AllTransfersItem(
     memberFirstName: Option[String],
     memberSurname: Option[String],
     submissionDate: Option[LocalDate],
+    lastUpdated: Option[LocalDate],
     qtStatus: Option[QtStatus],
     pstrNumber: Option[PstrNumber]
-  )
+  ) {
+  def displayLastUpdatedDate: Option[LocalDate] = lastUpdated.orElse(submissionDate)
+}
 
 object AllTransfersItem {
   implicit val format: OFormat[AllTransfersItem] = Json.format
