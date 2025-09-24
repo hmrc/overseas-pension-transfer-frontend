@@ -22,6 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MemberHasEverBeenResidentUKPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 class MemberHasEverBeenResidentUkSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -33,8 +34,8 @@ class MemberHasEverBeenResidentUkSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = MemberHasEverBeenResidentUKSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("memberHasEverBeenResidentUK.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("site.yes")
+      result.get.key.content mustBe Text(messages("memberHasEverBeenResidentUK.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text(messages("site.yes"))
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberHasEverBeenResidentUKController.onPageLoad(CheckMode).url
     }

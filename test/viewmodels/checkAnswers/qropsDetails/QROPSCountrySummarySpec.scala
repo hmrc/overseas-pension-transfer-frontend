@@ -23,6 +23,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsDetails.QROPSCountryPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class QROPSCountrySummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -34,8 +35,8 @@ class QROPSCountrySummarySpec extends AnyFreeSpec with SpecBase {
       val result  = QROPSCountrySummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("qropsCountry.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("United Kingdom")
+      result.get.key.content mustBe Text(messages("qropsCountry.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("United Kingdom")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsDetails.routes.QROPSCountryController.onPageLoad(CheckMode).url
     }

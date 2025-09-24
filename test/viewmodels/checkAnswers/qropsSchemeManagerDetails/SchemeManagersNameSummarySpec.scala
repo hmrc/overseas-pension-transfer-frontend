@@ -22,6 +22,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class SchemeManagersNameSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -33,8 +35,8 @@ class SchemeManagersNameSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = SchemeManagersNameSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("schemeManagersName.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("FirstName LastName")
+      result.get.key.content mustBe Text(messages("schemeManagersName.checkYourAnswersLabel"))
+      result.get.value.content mustBe HtmlContent("FirstName LastName")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagersNameController.onPageLoad(CheckMode).url
     }

@@ -22,6 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsDetails.QROPSNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class QROPSNameSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -33,8 +34,8 @@ class QROPSNameSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = QROPSNameSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("qropsName.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("QROPS Sample Name")
+      result.get.key.content mustBe Text(messages("qropsName.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("QROPS Sample Name")
     }
   }
 }

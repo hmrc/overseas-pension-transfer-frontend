@@ -23,6 +23,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class WhyTransferIsTaxableSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -34,8 +36,8 @@ class WhyTransferIsTaxableSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = WhyTransferIsTaxableSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("whyTransferIsTaxable.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("transferExceedsOTCAllowance")
+      result.get.key.content mustBe Text(messages("whyTransferIsTaxable.checkYourAnswersLabel"))
+      result.get.value.content mustBe HtmlContent("whyTransferIsTaxable.transferExceedsOTCAllowance")
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.WhyTransferIsTaxableController.onPageLoad(CheckMode).url
     }

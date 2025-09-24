@@ -23,6 +23,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class UnquotedSharesValueSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -34,8 +35,8 @@ class UnquotedSharesValueSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = UnquotedSharesValueSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("unquotedSharesValue.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("£19,875.99")
+      result.get.key.content mustBe Text(messages("unquotedSharesValue.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("£19,875.99")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(CheckMode, 0).url
     }

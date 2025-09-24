@@ -23,6 +23,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -44,8 +46,8 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
       val row = SchemeManagersAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
-      row.get.key.content.asHtml.body must include("schemeManagersAddress.checkYourAnswersLabel")
-      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Line3<br>Line4<br>Line5<br>Finland")
+      row.get.key.content mustBe Text(messages("schemeManagersAddress.checkYourAnswersLabel"))
+      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Line3<br>Line4<br>Line5<br>Finland")
     }
 
     "must return a row with only required fields present" in {
@@ -63,7 +65,7 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
       val row     = SchemeManagersAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
-      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
+      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "null"
     }
 
@@ -82,7 +84,7 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
       val row = SchemeManagersAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
-      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
+      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "<br><br>"
       row.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagersAddressController.onPageLoad(CheckMode).url

@@ -22,6 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MemberDateOfBirthPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 import java.time.LocalDate
 
@@ -35,8 +36,8 @@ class MemberDateOfBirthSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = MemberDateOfBirthSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("memberDateOfBirth.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("5 5 1995")
+      result.get.key.content mustBe Text(messages("memberDateOfBirth.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("5 5 1995")
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberDateOfBirthController.onPageLoad(CheckMode).url
     }

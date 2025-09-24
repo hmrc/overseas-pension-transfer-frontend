@@ -23,6 +23,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionSummary
 
 class PropertyValueSummarySpec extends AnyFreeSpec with SpecBase {
@@ -35,8 +36,8 @@ class PropertyValueSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = PropertyValueSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("propertyValue.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("£12,345.99")
+      result.get.key.content mustBe Text(messages("propertyValue.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("£12,345.99")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode, 0).url
     }

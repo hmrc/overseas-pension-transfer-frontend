@@ -22,6 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class AmountOfTaxDeductedSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -33,8 +34,8 @@ class AmountOfTaxDeductedSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = AmountOfTaxDeductedSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("amountOfTaxDeducted.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("£12,345.33")
+      result.get.key.content mustBe Text(messages("amountOfTaxDeducted.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("£12,345.33")
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.AmountOfTaxDeductedController.onPageLoad(CheckMode).url
     }

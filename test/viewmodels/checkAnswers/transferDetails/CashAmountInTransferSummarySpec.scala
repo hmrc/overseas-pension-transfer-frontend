@@ -23,6 +23,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class CashAmountInTransferSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -34,8 +35,8 @@ class CashAmountInTransferSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = CashAmountInTransferSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("cashAmountInTransfer.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("£12,345.33")
+      result.get.key.content mustBe Text(messages("cashAmountInTransfer.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("£12,345.33")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(CheckMode).url
     }

@@ -22,6 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class SchemeManagerEmailSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -33,8 +34,8 @@ class SchemeManagerEmailSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = SchemeManagersEmailSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("schemeManagersEmail.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("Scheme Manager Sample Email")
+      result.get.key.content mustBe Text(messages("schemeManagersEmail.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("Scheme Manager Sample Email")
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagersEmailController.onPageLoad(CheckMode).url
     }

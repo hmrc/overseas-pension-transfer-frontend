@@ -24,6 +24,7 @@ import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberP
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class UnquotedSharesNumberSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -35,8 +36,8 @@ class UnquotedSharesNumberSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = UnquotedSharesNumberSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("unquotedSharesNumber.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("12")
+      result.get.key.content mustBe Text(messages("unquotedSharesNumber.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("12")
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(CheckMode, 0).url
     }

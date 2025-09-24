@@ -24,6 +24,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import queries.assets.OtherAssetsQuery
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class OtherAssetsAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -35,8 +36,8 @@ class OtherAssetsAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
       val result  = OtherAssetsAmendContinueSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content.asHtml.body must include("otherAssetsAmendContinue.checkYourAnswersLabel")
-      result.get.value.content.asHtml.body must include("otherAssetsAmendContinue.summary.value")
+      result.get.key.content mustBe Text(messages("otherAssetsAmendContinue.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text(messages("otherAssetsAmendContinue.summary.value"))
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(CheckMode).url
     }
