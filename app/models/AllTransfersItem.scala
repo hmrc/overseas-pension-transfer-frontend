@@ -32,7 +32,7 @@ case class AllTransfersItem(
     qtStatus: Option[QtStatus],
     pstrNumber: Option[PstrNumber]
   ) {
-  def lastUpdatedDate: Option[LocalDate] = lastUpdated.orElse(submissionDate)
+  private def lastUpdatedDate: Option[LocalDate] = lastUpdated.orElse(submissionDate)
 }
 
 object AllTransfersItem {
