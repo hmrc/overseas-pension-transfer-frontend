@@ -22,7 +22,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage
 @import viewmodels.FooterLink
 @import views.html.components.{AppBreadcrumbs, AppFooter}
 
@@ -98,7 +99,7 @@
         serviceUrl = Some(routes.IndexController.onPageLoad().url),
         signOutUrl = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut().url) else None
     ),
-    banners = Banners(
+    banners = hmrcstandardpage.Banners(
         displayHmrcBanner = showHmrcBanner,
         phaseBanner = Some(betaBanner(appConfig.feedbackUrl))
     ),
