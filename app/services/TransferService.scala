@@ -17,16 +17,14 @@
 package services
 
 import connectors.TransferConnector
-import models.{DashboardData, PstrNumber}
-import models.dtos.GetAllTransfersDTO
 import models.responses.{AllTransfersUnexpectedError, NoTransfersFound, TransferError}
+import models.{DashboardData, PstrNumber}
 import queries.dashboard.{TransfersDataUpdatedAtQuery, TransfersOverviewQuery, TransfersSyncedAtQuery}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
 
 @Singleton
 class TransferService @Inject() (
