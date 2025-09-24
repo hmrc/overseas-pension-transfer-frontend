@@ -67,7 +67,7 @@ object AllTransfersTableViewModel {
         case InProgress           => messages("dashboard.allTransfers.status.inProgress")
       }.getOrElse("-")
       val ref  = it.qtReference.map(_.value).getOrElse("-")
-      val upd  = fmtLocalDate(it.submissionDate)
+      val upd  = fmtLocalDate(it.lastUpdatedDate)
 
       Seq(
         cell(content = HtmlContent(link)),
