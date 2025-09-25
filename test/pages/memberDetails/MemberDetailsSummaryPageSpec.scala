@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -25,7 +25,7 @@ class MemberDetailsSummaryPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers("id")
+    val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
       "must go to Task List page" in {
