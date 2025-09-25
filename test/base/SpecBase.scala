@@ -57,6 +57,8 @@ trait SpecBase
 
   val userAnswersId: String = "id"
 
+  val pstr: PstrNumber = PstrNumber("12345678AB")
+
   val psaId: PsaId = PsaId("A123456")
 
   val psaUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
@@ -74,7 +76,7 @@ trait SpecBase
   val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
   val formattedTestDateTransferSubmitted: String = testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
+  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId, pstr)
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
 
@@ -87,7 +89,7 @@ trait SpecBase
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  protected def applicationBuilder(userAnswers: UserAnswers = UserAnswers("id")): GuiceApplicationBuilder =
+  protected def applicationBuilder(userAnswers: UserAnswers = UserAnswers("id", PstrNumber("12345678AB"))): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].to[FakeIdentifierAction],

@@ -29,6 +29,7 @@ class DeserialisationException(message: String) extends RuntimeException(message
 
 final case class UserAnswers(
     id: String,
+    pstr: PstrNumber,
     data: JsObject       = Json.obj(),
     lastUpdated: Instant = Instant.now
   ) {
@@ -112,9 +113,9 @@ object UserAnswers {
         Failure(error)
     }
 
-  def initialise(id: String): Try[UserAnswers] =
+  def initialise(id: String, pstrNumber: PstrNumber): Try[UserAnswers] =
     for {
-      ua1 <- UserAnswers(id).set(TaskStatusQuery(MemberDetails), NotStarted)
+      ua1 <- UserAnswers(id, pstrNumber).set(TaskStatusQuery(MemberDetails), NotStarted)
       ua2 <- ua1.set(TaskStatusQuery(QROPSDetails), CannotStart)
       ua3 <- ua2.set(TaskStatusQuery(SchemeManagerDetails), CannotStart)
       ua4 <- ua3.set(TaskStatusQuery(TransferDetails), CannotStart)
@@ -127,6 +128,7 @@ object UserAnswers {
 
     (
       (__ \ "_id").read[String] and
+        (__ \ "pstr").read[String].map(PstrNumber.apply) and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
     )(UserAnswers.apply _)
@@ -138,9 +140,10 @@ object UserAnswers {
 
     (
       (__ \ "_id").write[String] and
+        (__ \ "pstr").write[PstrNumber] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
-    )(ua => (ua.id, ua.data, ua.lastUpdated))
+    )(ua => (ua.id, ua.pstr, ua.data, ua.lastUpdated))
   }
 
   implicit val format: OFormat[UserAnswers] = OFormat(reads, writes)

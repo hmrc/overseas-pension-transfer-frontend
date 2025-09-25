@@ -18,7 +18,7 @@ package pages.qropsDetails
 
 import controllers.qropsDetails.routes
 import models.address.Country
-import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -26,7 +26,7 @@ import play.api.libs.json.Json
 
 class QROPSCountryPageSpec extends AnyFreeSpec with Matchers {
 
-  private val emptyAnswers = UserAnswers("id")
+  private val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
 
   ".nextPage" - {
 
@@ -83,7 +83,7 @@ class QROPSCountryPageSpec extends AnyFreeSpec with Matchers {
       val otherCountry = emptyAnswers.set(QROPSOtherCountryPage, "OtherCountryLand").success.value
 
       QROPSCountryPage.cleanup(Some(Country("DE", "Germany")), otherCountry).success.value mustEqual
-        UserAnswers("id", Json.obj("qropsDetails" -> Json.obj()), emptyAnswers.lastUpdated)
+        UserAnswers("id", PstrNumber("12345678AB"), Json.obj("qropsDetails" -> Json.obj()), emptyAnswers.lastUpdated)
     }
 
     "must not remove values when value is Other" in {

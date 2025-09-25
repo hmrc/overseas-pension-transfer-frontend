@@ -17,7 +17,7 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PersonName, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, PersonName, PstrNumber, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -26,7 +26,7 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers("id")
+    val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
 

@@ -16,7 +16,7 @@
 
 package models.dtos
 
-import models.UserAnswers
+import models.{PstrNumber, UserAnswers}
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json._
 
@@ -24,6 +24,7 @@ import java.time.Instant
 
 final case class UserAnswersDTO(
     referenceId: String,
+    pstr: PstrNumber,
     data: JsObject,
     lastUpdated: Instant
   )
@@ -33,15 +34,17 @@ object UserAnswersDTO {
   implicit val format: OFormat[UserAnswersDTO] = {
     val reads: Reads[UserAnswersDTO] = (
       (__ \ "referenceId").read[String] and
+        (__ \ "pstr").read[String].map(PstrNumber.apply) and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read[Instant]
     )(UserAnswersDTO.apply _)
 
     val writes: OWrites[UserAnswersDTO] = (
       (__ \ "referenceId").write[String] and
+        (__ \ "pstr").write[PstrNumber] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write[Instant]
-    )(unlift(UserAnswersDTO.unapply))
+    )(uad => (uad.referenceId, uad.pstr, uad.data, uad.lastUpdated))
 
     OFormat(reads, writes)
   }
@@ -51,6 +54,7 @@ object UserAnswersDTO {
       // The reference id WILL NOT be the user answers id. I only put this here because
       // the actual implementation is outside the scope of my ticket.
       referenceId = ua.id,
+      pstr        = ua.pstr,
       data        = ua.data,
       lastUpdated = ua.lastUpdated
     )
@@ -58,6 +62,7 @@ object UserAnswersDTO {
   def toUserAnswers(dto: UserAnswersDTO): UserAnswers =
     UserAnswers(
       id          = dto.referenceId,
+      pstr        = dto.pstr,
       data        = dto.data,
       lastUpdated = dto.lastUpdated
     )

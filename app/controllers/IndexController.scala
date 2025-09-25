@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions.IdentifierAction
+import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.{NormalMode, UserAnswers}
 import pages.IndexPage
 import play.api.i18n.I18nSupport
@@ -30,12 +30,13 @@ import scala.concurrent.ExecutionContext
 class IndexController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     identify: IdentifierAction,
+    schemeData: SchemeDataAction,
     view: IndexView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = identify { implicit request =>
-    val userAnswers = UserAnswers(request.authenticatedUser.internalId)
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData) { implicit request =>
+    val userAnswers = UserAnswers(request.authenticatedUser.internalId, request.authenticatedUser.pensionSchemeDetails.get.pstrNumber)
     Ok(view(IndexPage.nextPage(mode = NormalMode, userAnswers).url))
   }
 }

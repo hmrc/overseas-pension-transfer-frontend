@@ -18,7 +18,7 @@ package connectors
 
 import base.BaseISpec
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, delete, post, stubFor}
-import models.QtNumber
+import models.{PstrNumber, QtNumber}
 import models.authentication.{PsaId, Psp, PspId}
 import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
   private val instant        = Instant.now()
-  private val userAnswersDTO = UserAnswersDTO("testId", JsObject(Map("field" -> JsString("value"))), instant)
+  private val userAnswersDTO = UserAnswersDTO("testId", PstrNumber("12345678AB"), JsObject(Map("field" -> JsString("value"))), instant)
   private val submissionDTO  = PspSubmissionDTO("testId", Psp, PspId("X1234567"), PsaId("a1234567"), instant)
 
   val connector: UserAnswersConnector = inject[UserAnswersConnector]
@@ -88,7 +88,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val getAnswers = await(connector.getAnswers("testId"))
 
-        getAnswers shouldBe Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some("/data | /lastUpdated | /referenceId")))
+        getAnswers shouldBe Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some("/pstr | /data | /lastUpdated | /referenceId")))
       }
 
       "500 returned with invalid payload" in {

@@ -54,7 +54,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       val application = applicationBuilder().build()
       running(application) {
 
-        val ua = UserAnswers(userAnswersId)
+        val ua = UserAnswers(userAnswersId, pstr)
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
 
         val rows      = TaskListViewModel.rows(ua)
@@ -70,7 +70,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       val application = applicationBuilder().build()
       running(application) {
 
-        val ua = UserAnswers(userAnswersId)
+        val ua = UserAnswers(userAnswersId, pstr)
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.NotStarted).success.value
 
         val rows      = TaskListViewModel.rows(ua)
@@ -85,7 +85,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       val application = applicationBuilder().build()
       running(application) {
 
-        val ua = UserAnswers(userAnswersId)
+        val ua = UserAnswers(userAnswersId, pstr)
           .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.InProgress).success.value
 
         val rows     = TaskListViewModel.rows(ua)

@@ -56,7 +56,7 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
         )
       )
 
-      val original = UserAnswers("id", fullData, instant)
+      val original = UserAnswers("id", PstrNumber("12345678AB"), fullData, instant)
 
       val result = UserAnswers.buildMinimal(original, UnquotedSharesQuery)
 
@@ -73,7 +73,7 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
     }
 
     "must return Failure if the original UserAnswers does not contain the query value" in {
-      val empty = UserAnswers("id", Json.obj(), instant)
+      val empty = UserAnswers("id", PstrNumber("12345678AB"), Json.obj(), instant)
 
       val result = UserAnswers.buildMinimal(empty, QuotedSharesQuery)
 
@@ -83,8 +83,9 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "initialise" - {
     "should set expected default statuses" in {
-      val id = "id"
-      val ua = UserAnswers.initialise(id).get
+      val id   = "id"
+      val pstr = PstrNumber("12345678AB")
+      val ua   = UserAnswers.initialise(id, pstr).get
 
       ua.id mustBe id
       ua.get(TaskStatusQuery(MemberDetails)) mustBe Some(TaskStatus.NotStarted)

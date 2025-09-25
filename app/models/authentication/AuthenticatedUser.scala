@@ -16,7 +16,7 @@
 
 package models.authentication
 
-import models.{PensionSchemeDetails, SrnNumber}
+import models.PensionSchemeDetails
 
 //Add Scheme Details in here - Scheme Name and SchemeId/SRN
 sealed trait AuthenticatedUser {
