@@ -20,10 +20,8 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
-/** Exactly one of `submissionDate` or `lastUpdated` should be defined.
- * Submitted/Compiled => submissionDate
- * InProgress         => lastUpdated
- */
+/** Exactly one of `submissionDate` or `lastUpdated` should be defined. Submitted/Compiled => submissionDate InProgress => lastUpdated
+  */
 case class AllTransfersItem(
     transferReference: Option[String],
     qtReference: Option[QtNumber],
@@ -36,6 +34,7 @@ case class AllTransfersItem(
     qtStatus: Option[QtStatus],
     pstrNumber: Option[PstrNumber]
   ) {
+
   def isValid: Boolean =
     submissionDate.isDefined ^ lastUpdated.isDefined
 
