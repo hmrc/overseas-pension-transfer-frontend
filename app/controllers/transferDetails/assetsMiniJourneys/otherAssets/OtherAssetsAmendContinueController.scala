@@ -24,7 +24,7 @@ import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendCont
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.TransferDetailsService
+import services.AssetsMiniJourneyService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
@@ -56,7 +56,7 @@ class OtherAssetsAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
+            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
             _              <- sessionRepository.set(updatedAnswers)
           } yield {
             val shares = OtherAssetsAmendContinueSummary.rows(updatedAnswers)
@@ -77,11 +77,11 @@ class OtherAssetsAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua1 <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
+            ua1 <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
             ua2 <- Future.fromTry(ua1.set(OtherAssetsAmendContinuePage, continue))
             _   <- sessionRepository.set(ua2)
           } yield {
-            val nextIndex = TransferDetailsService.assetCount(miniJourney, request.userAnswers)
+            val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
             Redirect(OtherAssetsAmendContinuePage.nextPageWith(mode, ua2, nextIndex))
           }
         }
