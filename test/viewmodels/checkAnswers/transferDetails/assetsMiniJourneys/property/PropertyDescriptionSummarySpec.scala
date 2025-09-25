@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
-import models.{CheckMode, SchemeManagerType}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class SchemeManagerTypeSummarySpec extends AnyFreeSpec with SpecBase {
+class PropertyDescriptionSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "Scheme manager type Summary" - {
+  "PropertyDescriptionSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when SchemeManagerTypePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-      val result  = SchemeManagerTypeSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when PropertyDescriptionPage has a value" in {
+      val answers = emptyUserAnswers.set(PropertyDescriptionPage(0), "Property Description").success.value
+      val result  = PropertyDescriptionSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagerType.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages(s"schemeManagerType.${SchemeManagerType.Individual.toString}"))
+      result.get.key.content mustBe Text(messages("propertyDescription.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("Property Description")
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode, 0).url
     }
   }
 }

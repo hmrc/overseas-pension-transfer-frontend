@@ -14,31 +14,37 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
-import models.{CheckMode, SchemeManagerType}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.CheckMode
+import models.address.{Country, PropertyAddress}
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class SchemeManagerTypeSummarySpec extends AnyFreeSpec with SpecBase {
+class PropertyAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "Scheme manager type Summary" - {
+  "PropertyAddressSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when SchemeManagerTypePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-      val result  = SchemeManagerTypeSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when PropertyAddressPage has a value" in {
+      val answers = emptyUserAnswers.set(
+        PropertyAddressPage(0),
+        PropertyAddress("Line1", "Line2", None, None, Country("GB", "United Kingdom"), None)
+      ).success.value
+
+      val result = PropertyAddressSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagerType.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages(s"schemeManagerType.${SchemeManagerType.Individual.toString}"))
+      result.get.key.content mustBe Text(messages("propertyAddress.checkYourAnswersLabel"))
+      result.get.value.content mustBe HtmlContent("Line1<br>Line2<br>United Kingdom")
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, 0).url
     }
   }
 }

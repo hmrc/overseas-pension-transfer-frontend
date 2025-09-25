@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
 import base.SpecBase
-import models.{CheckMode, SchemeManagerType}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class SchemeManagerTypeSummarySpec extends AnyFreeSpec with SpecBase {
+class QuotedSharesNumberSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "Scheme manager type Summary" - {
+  "QuotedSharesNumberSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when SchemeManagerTypePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-      val result  = SchemeManagerTypeSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when QuotedSharesNumberPage has a value" in {
+      val answers = emptyUserAnswers.set(QuotedSharesNumberPage(0), 12).success.value
+      val result  = QuotedSharesNumberSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagerType.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages(s"schemeManagerType.${SchemeManagerType.Individual.toString}"))
+      result.get.key.content mustBe Text(messages("quotedSharesNumber.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("12")
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(CheckMode, 0).url
     }
   }
 }

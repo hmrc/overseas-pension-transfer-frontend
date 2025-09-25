@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
 import base.SpecBase
-import models.{CheckMode, SchemeManagerType}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class SchemeManagerTypeSummarySpec extends AnyFreeSpec with SpecBase {
+class QuotedSharesValueSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "Scheme manager type Summary" - {
+  "QuotedSharesValueSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when SchemeManagerTypePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-      val result  = SchemeManagerTypeSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when QuotedSharesBaluePage has a value" in {
+      val answers = emptyUserAnswers.set(QuotedSharesValuePage(0), BigDecimal(19875.99)).success.value
+      val result  = QuotedSharesValueSummary.row(CheckMode, answers, 0)
 
       result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagerType.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages(s"schemeManagerType.${SchemeManagerType.Individual.toString}"))
+      result.get.key.content mustBe Text(messages("quotedSharesValue.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("£19,875.99")
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(CheckMode, 0).url
     }
   }
 }

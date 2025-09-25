@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.transferDetails
 
 import base.SpecBase
-import models.{CheckMode, SchemeManagerType}
+import models.CheckMode
+import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
+import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class SchemeManagerTypeSummarySpec extends AnyFreeSpec with SpecBase {
+class WhyTransferIsTaxableSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "Scheme manager type Summary" - {
+  "WhyTransferIsTaxableSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when SchemeManagerTypePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-      val result  = SchemeManagerTypeSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when WhyTransferIsTaxablePage has a value" in {
+      val answers = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+      val result  = WhyTransferIsTaxableSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagerType.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages(s"schemeManagerType.${SchemeManagerType.Individual.toString}"))
+      result.get.key.content mustBe Text(messages("whyTransferIsTaxable.checkYourAnswersLabel"))
+      result.get.value.content mustBe HtmlContent("whyTransferIsTaxable.transferExceedsOTCAllowance")
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(CheckMode).url
+        controllers.transferDetails.routes.WhyTransferIsTaxableController.onPageLoad(CheckMode).url
     }
   }
 }

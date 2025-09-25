@@ -19,23 +19,25 @@ package viewmodels.checkAnswers.qropsDetails
 import base.SpecBase
 import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsDetails.QROPSNamePage
+import pages.qropsDetails.QROPSOtherCountryPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class QROPSNameSummarySpec extends AnyFreeSpec with SpecBase {
+class QROPSOtherCountrySummarySpec extends AnyFreeSpec with SpecBase {
 
-  "QROPSName Summary" - {
+  "QROPSOtherCountrySummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when QROPSNamePage has a value" in {
-      val answers = emptyUserAnswers.set(QROPSNamePage, "QROPS Sample Name").success.value
-      val result  = QROPSNameSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when QROPSOtherCountryPage has a value" in {
+      val answers = emptyUserAnswers.set(QROPSOtherCountryPage, "Other Country").success.value
+      val result  = QROPSOtherCountrySummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content mustBe Text(messages("qropsName.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("QROPS Sample Name")
+      result.get.key.content mustBe Text(messages("qropsOtherCountry.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("Other Country")
+      result.get.actions.get.items.head.href mustBe
+        controllers.qropsDetails.routes.QROPSOtherCountryController.onPageLoad(CheckMode).url
     }
   }
 }

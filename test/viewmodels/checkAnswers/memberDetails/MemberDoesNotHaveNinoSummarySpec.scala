@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsDetails
+package viewmodels.checkAnswers.memberDetails
 
 import base.SpecBase
 import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsDetails.QROPSNamePage
+import pages.memberDetails.MemberDoesNotHaveNinoPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
-class QROPSNameSummarySpec extends AnyFreeSpec with SpecBase {
+class MemberDoesNotHaveNinoSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "QROPSName Summary" - {
+  "MemberDoesNotHaveNino" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when QROPSNamePage has a value" in {
-      val answers = emptyUserAnswers.set(QROPSNamePage, "QROPS Sample Name").success.value
-      val result  = QROPSNameSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when MemberDoesNotHaveNinoPage has a value" in {
+      val answers = emptyUserAnswers.set(MemberDoesNotHaveNinoPage, "Member No Nino reason").success.value
+      val result  = MemberDoesNotHaveNinoSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content mustBe Text(messages("qropsName.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("QROPS Sample Name")
+      result.get.key.content mustBe Text(messages("memberDoesNotHaveNino.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text(messages("Member No Nino reason"))
+      result.get.actions.get.items.head.href mustBe
+        controllers.memberDetails.routes.MemberDoesNotHaveNinoController.onPageLoad(CheckMode).url
     }
   }
 }

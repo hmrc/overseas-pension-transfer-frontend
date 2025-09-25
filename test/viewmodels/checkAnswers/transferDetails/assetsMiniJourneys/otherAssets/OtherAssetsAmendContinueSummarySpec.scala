@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
+import models.assets.OtherAssetsEntry
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import queries.assets.OtherAssetsQuery
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-class SchemeManagerOrganisationNameSummarySpec extends AnyFreeSpec with SpecBase {
+class OtherAssetsAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
 
-  "Organisation name Summary" - {
+  "OtherAssetsDescriptionSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when OrganisationNamePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerOrganisationNamePage, "Organisation Sample Name").success.value
-      val result  = SchemeManagerOrganisationNameSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when OtherAssetsQuery has a value" in {
+      val answers = emptyUserAnswers.set(OtherAssetsQuery, List(OtherAssetsEntry("description", BigDecimal(1000.00)))).success.value
+      val result  = OtherAssetsAmendContinueSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content mustBe Text(messages("organisationName.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Organisation Sample Name")
+      result.get.key.content mustBe Text(messages("otherAssetsAmendContinue.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text(messages("otherAssetsAmendContinue.summary.value"))
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode).url
+        AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(CheckMode).url
     }
   }
 }

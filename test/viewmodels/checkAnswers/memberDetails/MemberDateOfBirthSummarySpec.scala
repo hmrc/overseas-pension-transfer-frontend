@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers.qropsSchemeManagerDetails
+package viewmodels.checkAnswers.memberDetails
 
 import base.SpecBase
-import models.{CheckMode, SchemeManagerType}
+import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
+import pages.memberDetails.MemberDateOfBirthPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class SchemeManagerTypeSummarySpec extends AnyFreeSpec with SpecBase {
+import java.time.LocalDate
 
-  "Scheme manager type Summary" - {
+class MemberDateOfBirthSummarySpec extends AnyFreeSpec with SpecBase {
+
+  "MemberDateOfBirth" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when SchemeManagerTypePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-      val result  = SchemeManagerTypeSummary.row(CheckMode, answers)
+    "must return a SummaryListRow when MemberDateOfBirthPage has a value" in {
+      val answers = emptyUserAnswers.set(MemberDateOfBirthPage, LocalDate.of(1995, 5, 5)).success.value
+      val result  = MemberDateOfBirthSummary.row(CheckMode, answers)
 
       result mustBe defined
-      result.get.key.content mustBe Text(messages("schemeManagerType.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages(s"schemeManagerType.${SchemeManagerType.Individual.toString}"))
+      result.get.key.content mustBe Text(messages("memberDateOfBirth.checkYourAnswersLabel"))
+      result.get.value.content mustBe Text("5 5 1995")
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(CheckMode).url
+        controllers.memberDetails.routes.MemberDateOfBirthController.onPageLoad(CheckMode).url
     }
   }
 }
