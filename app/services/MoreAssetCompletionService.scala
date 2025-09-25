@@ -44,7 +44,7 @@ class MoreAssetCompletionService @Inject() (
     for {
       // Step 1: mark asset completed
       updatedAnswers <- Future.fromTry(
-                          TransferDetailsService.setAssetCompleted(userAnswers, assetType, completed)
+                          AssetsMiniJourneyService.setAssetCompleted(userAnswers, assetType, completed)
                         )
 
       // Step 2: enrich with threshold flags

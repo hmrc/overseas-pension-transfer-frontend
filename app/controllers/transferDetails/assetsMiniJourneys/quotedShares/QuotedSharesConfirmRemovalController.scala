@@ -24,7 +24,7 @@ import models.NormalMode
 import models.assets.{QuotedSharesMiniJourney, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{MoreAssetCompletionService, TransferDetailsService}
+import services.{AssetsMiniJourneyService, MoreAssetCompletionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesConfirmRemovalView
 
@@ -69,7 +69,7 @@ class QuotedSharesConfirmRemovalController @Inject() (
           Future.successful(Redirect(redirectTarget))
         } else {
           (for {
-            updatedAnswers <- Future.fromTry(TransferDetailsService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
             _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.QuotedShares, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
             .recover {

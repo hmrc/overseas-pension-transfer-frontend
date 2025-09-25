@@ -24,7 +24,7 @@ import queries.assets._
 
 import scala.util.{Failure, Success, Try}
 
-object TransferDetailsService {
+object AssetsMiniJourneyService {
 
   // ----- Repeating-only helpers -----
 

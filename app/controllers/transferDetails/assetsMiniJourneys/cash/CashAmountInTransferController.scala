@@ -24,7 +24,7 @@ import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{TransferDetailsService, UserAnswersService}
+import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.CashAmountInTransferView
 
@@ -65,7 +65,7 @@ class CashAmountInTransferController @Inject() (
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
             ua1            <- Future.fromTry(
-                                TransferDetailsService.setAssetCompleted(updatedAnswers, TypeOfAsset.Cash, completed = true)
+                                AssetsMiniJourneyService.setAssetCompleted(updatedAnswers, TypeOfAsset.Cash, completed = true)
                               )
             _              <- sessionRepository.set(ua1)
             _              <- userAnswersService.setExternalUserAnswers(ua1)

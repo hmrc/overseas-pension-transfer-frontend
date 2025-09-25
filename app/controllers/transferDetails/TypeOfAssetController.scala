@@ -25,7 +25,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.TransferDetailsService
+import services.AssetsMiniJourneyService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.TypeOfAssetView
 
@@ -65,8 +65,8 @@ class TypeOfAssetController @Inject() (
           val orderedAssets = selectedAssets.toSeq.sorted
           for {
             setAssetsUA               <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, selectedAssets))
-            removePrevSetAssetFlagsUA <- Future.fromTry(TransferDetailsService.clearAllAssetCompletionFlags(setAssetsUA))
-            setAssetsCompletedUA      <- Future.fromTry(TransferDetailsService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsUA, orderedAssets))
+            removePrevSetAssetFlagsUA <- Future.fromTry(AssetsMiniJourneyService.clearAllAssetCompletionFlags(setAssetsUA))
+            setAssetsCompletedUA      <- Future.fromTry(AssetsMiniJourneyService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsUA, orderedAssets))
             _                         <- sessionRepository.set(setAssetsCompletedUA)
           } yield TypeOfAssetNavigator.getNextAssetRoute(setAssetsCompletedUA) match {
             case Some(route) => Redirect(route)

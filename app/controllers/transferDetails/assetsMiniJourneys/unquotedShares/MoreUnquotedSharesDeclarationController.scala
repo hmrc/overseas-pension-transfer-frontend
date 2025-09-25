@@ -25,7 +25,7 @@ import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedShare
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.{MoreAssetCompletionService, TransferDetailsService}
+import services.{AssetsMiniJourneyService, MoreAssetCompletionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationView
@@ -64,7 +64,7 @@ class MoreUnquotedSharesDeclarationController @Inject() (
         case CheckMode =>
           for {
             updatedAnswers <- Future.fromTry(
-                                TransferDetailsService.setAssetCompleted(
+                                AssetsMiniJourneyService.setAssetCompleted(
                                   request.userAnswers,
                                   TypeOfAsset.UnquotedShares,
                                   completed = false

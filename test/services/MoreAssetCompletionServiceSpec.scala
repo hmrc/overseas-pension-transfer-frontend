@@ -71,7 +71,7 @@ class MoreAssetCompletionServiceSpec
           val userAnswers: UserAnswers = userAnswersWithAssets(assetsCount = 5)
 
           val updated: UserAnswers =
-            TransferDetailsService.setAssetCompleted(userAnswers, assetType, completed = true).success.value
+            AssetsMiniJourneyService.setAssetCompleted(userAnswers, assetType, completed = true).success.value
 
           when(mockAssetThresholdHandler.handle(any(), any(), any()))
             .thenReturn(updated)
@@ -96,7 +96,7 @@ class MoreAssetCompletionServiceSpec
         s"should handle case when userSelection is None for $assetType" in {
           val userAnswers          = userAnswersWithAssets()
           val updated: UserAnswers =
-            TransferDetailsService.setAssetCompleted(userAnswers, assetType, completed = true).success.value
+            AssetsMiniJourneyService.setAssetCompleted(userAnswers, assetType, completed = true).success.value
 
           when(mockAssetThresholdHandler.handle(any(), any(), any()))
             .thenReturn(updated)

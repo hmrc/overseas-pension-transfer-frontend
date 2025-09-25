@@ -24,7 +24,7 @@ import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePa
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.TransferDetailsService
+import services.AssetsMiniJourneyService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
@@ -57,7 +57,7 @@ class PropertyAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
+            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
             _              <- sessionRepository.set(updatedAnswers)
           } yield {
             val shares = PropertyAmendContinueSummary.rows(updatedAnswers)
@@ -78,11 +78,11 @@ class PropertyAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua1 <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
+            ua1 <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
             ua2 <- Future.fromTry(ua1.set(PropertyAmendContinuePage, continue))
             _   <- sessionRepository.set(ua2)
           } yield {
-            val nextIndex = TransferDetailsService.assetCount(miniJourney, request.userAnswers)
+            val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
             Redirect(PropertyAmendContinuePage.nextPageWith(mode, ua2, nextIndex))
           }
         }
