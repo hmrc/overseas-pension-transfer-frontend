@@ -40,7 +40,6 @@ class SchemeDataActionImpl @Inject() (
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
-
     if (request.authenticatedUser.pensionSchemeDetails.isEmpty) {
       dashboardSessionRepository.get(request.authenticatedUser.internalId) flatMap {
         case Some(dashboardData) =>

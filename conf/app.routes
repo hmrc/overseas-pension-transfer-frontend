@@ -10,7 +10,7 @@ GET        /language/:lang                                                      
 
 GET        /start                                                                                 controllers.MpsOnRampController.onRamp(srn: String ?= "")
 
-GET        /dashboard                                                                             controllers.DashboardController.onPageLoad()
+GET        /dashboard                                                                             controllers.DashboardController.onPageLoad(page: Int ?= 1)
 
 GET        /refresh-session                                                                       controllers.KeepAliveController.keepAlive()
 

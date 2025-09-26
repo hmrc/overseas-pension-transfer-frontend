@@ -75,5 +75,5 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val pensionSchemeHost: String    = baseUrl("pensions-scheme")
   val pensionSchemeService: String = s"$pensionSchemeHost/pensions-scheme"
 
-  val localLoggingEnabled: Boolean = configuration.get[Boolean]("localLoggingEnabled")
+  val transfersPerPage: Int = configuration.get[Int]("pagination.transfersPerPage")
 }

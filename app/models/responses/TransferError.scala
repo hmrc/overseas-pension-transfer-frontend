@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package models
+package models.responses
 
-import play.api.libs.json.{Format, Json}
+trait TransferError
 
-case class QtNumber(value: String) {
-  def isEmpty: Boolean  = value.trim.isEmpty
-  def nonEmpty: Boolean = !isEmpty
-}
-
-object QtNumber {
-  val empty: QtNumber                   = QtNumber("")
-  implicit val format: Format[QtNumber] = Json.valueFormat[QtNumber]
-}
+case object NoTransfersFound                                                 extends TransferError
+case object InternalServerError                                              extends TransferError
+case class AllTransfersUnexpectedError(msg: String, details: Option[String]) extends TransferError

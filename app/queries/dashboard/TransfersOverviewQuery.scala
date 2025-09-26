@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package queries.dashboard
 
-import play.api.libs.json.{Format, Json}
+import models.AllTransfersItem
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-case class QtNumber(value: String) {
-  def isEmpty: Boolean  = value.trim.isEmpty
-  def nonEmpty: Boolean = !isEmpty
-}
-
-object QtNumber {
-  val empty: QtNumber                   = QtNumber("")
-  implicit val format: Format[QtNumber] = Json.valueFormat[QtNumber]
+case object TransfersOverviewQuery extends Gettable[Seq[AllTransfersItem]] with Settable[Seq[AllTransfersItem]] {
+  override def path: JsPath = JsPath \ "transfers" \ "data"
 }

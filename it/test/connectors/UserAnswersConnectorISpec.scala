@@ -158,7 +158,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
           aResponse()
             .withStatus(OK)
             .withHeader("Content-Type", "application/json")
-            .withBody("""{ "qtNumber": { "value": "QT123456" } }""")
+            .withBody("""{ "qtNumber": "QT123456" }""")
         ))
 
       val response = await(connector.postSubmission(submissionDTO))
