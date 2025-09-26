@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.TransferDetailsService
+import services.AssetsMiniJourneyService
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueView
 
 import scala.concurrent.Future
@@ -121,7 +121,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(UnquotedSharesAmendContinuePage, value = true).success.value
-        val nextIndex = TransferDetailsService.assetCount(UnquotedSharesMiniJourney, ua2)
+        val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
         val expected  = UnquotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
@@ -147,7 +147,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(UnquotedSharesAmendContinuePage, value = false).success.value
-        val nextIndex = TransferDetailsService.assetCount(UnquotedSharesMiniJourney, ua2)
+        val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
         val expected  = UnquotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
@@ -173,7 +173,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(UnquotedSharesAmendContinuePage, value = true).success.value
-        val nextIndex = TransferDetailsService.assetCount(UnquotedSharesMiniJourney, ua2)
+        val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
         val expected  = UnquotedSharesAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER

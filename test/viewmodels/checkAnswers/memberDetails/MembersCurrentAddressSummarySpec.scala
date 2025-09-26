@@ -23,6 +23,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -45,8 +47,8 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
       val row = MembersCurrentAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
-      row.get.key.content.asHtml.body must include("membersCurrentAddress.checkYourAnswersLabel")
-      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Line3<br>Line4<br>Finland<br>Postcode<br>POBox")
+      row.get.key.content mustBe Text(messages("membersCurrentAddress.checkYourAnswersLabel"))
+      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Line3<br>Line4<br>Finland<br>Postcode<br>POBox")
     }
 
     "must return a row with only required fields present" in {
@@ -65,7 +67,7 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
       val row     = MembersCurrentAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
-      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
+      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "null"
     }
 //TODO: This test should be fixed once it is decided how to handle whitespace in optional fields
@@ -86,7 +88,7 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
       val row = MembersCurrentAddressSummary.row(CheckMode, answers)
 
       row mustBe defined
-      row.get.value.content.asHtml.body must include("Line1<br>Line2<br>Finland")
+      row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "<br><br>"
     }
 

@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{ApplicableTaxExclusions, CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{ApplicableTaxExclusions, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

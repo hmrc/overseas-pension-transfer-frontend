@@ -113,7 +113,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, true).success.value
-        val nextIndex = services.TransferDetailsService.assetCount(QuotedSharesMiniJourney, ua2)
+        val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
         val expected  = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
@@ -139,7 +139,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, false).success.value
-        val nextIndex = services.TransferDetailsService.assetCount(QuotedSharesMiniJourney, ua2)
+        val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
         val expected  = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
@@ -165,7 +165,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, true).success.value
-        val nextIndex = services.TransferDetailsService.assetCount(QuotedSharesMiniJourney, ua2)
+        val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
         val expected  = QuotedSharesAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER

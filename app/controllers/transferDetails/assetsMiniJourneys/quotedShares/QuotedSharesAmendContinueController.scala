@@ -25,7 +25,7 @@ import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendCo
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.TransferDetailsService
+import services.AssetsMiniJourneyService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueView
@@ -57,7 +57,7 @@ class QuotedSharesAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
+            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
             _              <- sessionRepository.set(updatedAnswers)
           } yield {
             val shares = QuotedSharesAmendContinueSummary.rows(updatedAnswers)
@@ -78,11 +78,11 @@ class QuotedSharesAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua1 <- Future.fromTry(TransferDetailsService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
+            ua1 <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
             ua2 <- Future.fromTry(ua1.set(QuotedSharesAmendContinuePage, continue))
             _   <- sessionRepository.set(ua2)
           } yield {
-            val nextIndex = TransferDetailsService.assetCount(miniJourney, request.userAnswers)
+            val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
             Redirect(QuotedSharesAmendContinuePage.nextPageWith(mode, ua2, nextIndex))
           }
         }

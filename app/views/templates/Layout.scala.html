@@ -22,7 +22,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, ServiceURLs, TemplateOverrides}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage
 @import viewmodels.FooterLink
 @import views.html.components.{AppBreadcrumbs, AppFooter}
 @import views.html.templates.fullWidthMainContentLayout
@@ -51,8 +52,9 @@
         showPageFooter: Boolean = true,
         showStartFooter: Boolean = false,
         showCYAFooter: Boolean = false,
-        showBreadcrumbs: Boolean = false,
-        fullWidth: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
+        showTasklistFooter: Boolean = false,
+        fullWidth: Boolean = false,
+        showBreadcrumbs: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
 
 @head = {
     @autocompleteCss()
@@ -85,7 +87,7 @@
 
 @content = {
     @contentBlock
-    @appFooter()(FooterLink.build(showCYAFooter, showStartFooter, showPageFooter))
+    @appFooter()(FooterLink.build(showCYAFooter, showStartFooter, showPageFooter, showTasklistFooter))
     @hmrcReportTechnicalIssueHelper()
 }
 
@@ -101,7 +103,7 @@
         serviceUrl = Some(routes.IndexController.onPageLoad().url),
         signOutUrl = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut().url) else None
     ),
-    banners = Banners(
+    banners = hmrcstandardpage.Banners(
         displayHmrcBanner = showHmrcBanner,
         phaseBanner = Some(betaBanner(appConfig.feedbackUrl))
     ),

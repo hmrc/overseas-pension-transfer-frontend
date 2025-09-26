@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.TransferDetailsService
+import services.AssetsMiniJourneyService
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
 
 import scala.concurrent.Future
@@ -120,7 +120,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
-        val nextIndex = TransferDetailsService.assetCount(PropertyMiniJourney, ua2)
+        val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
@@ -146,7 +146,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(PropertyAmendContinuePage, false).success.value
-        val nextIndex = TransferDetailsService.assetCount(PropertyMiniJourney, ua2)
+        val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
@@ -172,7 +172,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
-        val nextIndex = TransferDetailsService.assetCount(PropertyMiniJourney, ua2)
+        val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER

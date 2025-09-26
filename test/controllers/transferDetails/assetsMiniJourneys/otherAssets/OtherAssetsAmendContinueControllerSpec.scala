@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.TransferDetailsService
+import services.AssetsMiniJourneyService
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
 
 import scala.concurrent.Future
@@ -119,7 +119,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, true).success.value
-        val nextIndex = TransferDetailsService.assetCount(OtherAssetsMiniJourney, ua2)
+        val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
         val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
@@ -145,7 +145,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, false).success.value
-        val nextIndex = TransferDetailsService.assetCount(OtherAssetsMiniJourney, ua2)
+        val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
         val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
@@ -171,7 +171,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val result = route(application, request).value
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, true).success.value
-        val nextIndex = TransferDetailsService.assetCount(OtherAssetsMiniJourney, ua2)
+        val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
         val expected  = OtherAssetsAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
 
         status(result) mustEqual SEE_OTHER

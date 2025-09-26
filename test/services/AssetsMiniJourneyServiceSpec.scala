@@ -24,9 +24,9 @@ import queries.assets.{AssetCompletionFlag, AssetCompletionFlags, SelectedAssetT
 
 import scala.util.{Failure, Success}
 
-class TransferDetailsServiceSpec extends AnyFreeSpec with SpecBase {
+class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
 
-  private val service = TransferDetailsService
+  private val service = AssetsMiniJourneyService
 
   "assetCount" - {
     "must return the number of entries for a given asset journey" in {
