@@ -47,7 +47,7 @@ class DashboardController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(page: Int): Action[AnyContent] = identify.async { implicit request =>
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
     val id                         = request.authenticatedUser.internalId
 
@@ -61,12 +61,13 @@ class DashboardController @Inject() (
           logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for $id")
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         } { pensionSchemeDetails =>
-          renderDashboard(dashboardData, pensionSchemeDetails)
+          renderDashboard(page, dashboardData, pensionSchemeDetails)
         }
     }
   }
 
   private def renderDashboard(
+      page: Int,
       dashboardData: DashboardData,
       pensionSchemeDetails: PensionSchemeDetails
     )(implicit request: Request[_],
@@ -82,7 +83,7 @@ class DashboardController @Inject() (
           val items = updated.get(TransfersOverviewQuery).getOrElse(Seq.empty)
           val vm    = PaginatedAllTransfersViewModel.build(
             items      = items,
-            page       = currentPage,
+            page       = page,
             pageSize   = appConfig.transfersPerPage,
             urlForPage = pageUrl
           )
@@ -95,10 +96,6 @@ class DashboardController @Inject() (
     }
   }
 
-  private def currentPage(implicit req: Request[_]): Int =
-    req.getQueryString("page").flatMap(_.toIntOption).filter(_ >= 1).getOrElse(1)
-
   private def pageUrl(n: Int): String =
     s"${routes.DashboardController.onPageLoad().url}?page=$n"
-
 }

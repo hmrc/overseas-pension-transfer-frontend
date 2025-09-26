@@ -72,13 +72,13 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val view      = application.injector.instanceOf[DashboardView]
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
-        val items                   = dd.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-        def pageUrl(n: Int): String = s"${routes.DashboardController.onPageLoad().url}?page=$n"
-        val vm                      = PaginatedAllTransfersViewModel.build(
+        val items = dd.get(TransfersOverviewQuery).getOrElse(Seq.empty)
+
+        val vm = PaginatedAllTransfersViewModel.build(
           items      = items,
           page       = 1,
           pageSize   = appConfig.transfersPerPage,
-          urlForPage = pageUrl
+          urlForPage = routes.DashboardController.onPageLoad(_).url
         )(stubMessages())
 
         val expectedHtml =
