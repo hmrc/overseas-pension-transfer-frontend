@@ -97,5 +97,5 @@ class DashboardController @Inject() (
   }
 
   private def pageUrl(n: Int): String =
-    s"${routes.DashboardController.onPageLoad().url}?page=$n"
+    routes.DashboardController.onPageLoad(n).url
 }
