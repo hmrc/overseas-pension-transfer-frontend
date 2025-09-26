@@ -19,7 +19,6 @@ package controllers.actions
 import controllers.routes
 import models.requests.{DisplayRequest, IdentifierRequest}
 import play.api.Logging
-import play.api.libs.json.Json
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
@@ -36,7 +35,6 @@ class DataRetrievalActionImpl @Inject() (
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
     sessionRepository.get(request.authenticatedUser.internalId) map {
       case Some(answers) =>
-        logger.info(Json.prettyPrint(Json.toJson(answers)))
         Right(DisplayRequest(
           request.request,
           request.authenticatedUser,

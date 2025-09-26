@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
 case class QtNumber(value: String) {
   def isEmpty: Boolean  = value.trim.isEmpty
@@ -24,6 +24,6 @@ case class QtNumber(value: String) {
 }
 
 object QtNumber {
-  val empty: QtNumber                    = QtNumber("")
-  implicit val format: OFormat[QtNumber] = Json.format[QtNumber]
+  val empty: QtNumber                   = QtNumber("")
+  implicit val format: Format[QtNumber] = Json.valueFormat[QtNumber]
 }
