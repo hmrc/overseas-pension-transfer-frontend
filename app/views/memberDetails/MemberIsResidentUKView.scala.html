@@ -20,6 +20,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
+@import viewmodels.LegendSize.Large
 
 @this(
         layout: templates.Layout,
@@ -47,8 +48,9 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(Text(messages("radios.hint")))
+                legend = LegendViewModel(Text(messages("memberIsResidentUK.heading", memberName))).asPageHeading(size = Large)
             )
+            .withHint(HintViewModel(Text(messages("radios.hint"))))
         )
 
         @govukButton(

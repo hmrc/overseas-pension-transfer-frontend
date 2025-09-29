@@ -23,6 +23,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
+@import viewmodels.LegendSize.Large
 
 @this(
         layout: templates.Layout,
@@ -45,11 +46,11 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("otherAssetsConfirmRemoval.heading")</h1>
 
         @govukRadios(
             RadiosViewModel.yesNo(
-                field = form("value")
+                field = form("value"),
+                legend = LegendViewModel(Text(messages("otherAssetsConfirmRemoval.heading"))).asPageHeading(size = Large)
             )
         )
 
