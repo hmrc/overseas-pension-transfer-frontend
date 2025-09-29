@@ -16,14 +16,22 @@
 
 package models
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json._
 
-case class QtNumber(value: String) {
-  def isEmpty: Boolean  = value.trim.isEmpty
-  def nonEmpty: Boolean = !isEmpty
-}
+sealed trait QtStatus
 
-object QtNumber {
-  val empty: QtNumber                   = QtNumber("")
-  implicit val format: Format[QtNumber] = Json.valueFormat[QtNumber]
+object QtStatus extends Enumerable.Implicits {
+
+  case object Compiled   extends WithName("Compiled") with QtStatus
+  case object Submitted  extends WithName("Submitted") with QtStatus
+  case object InProgress extends WithName("In Progress") with QtStatus
+
+  val values: Seq[QtStatus] = Seq(
+    Compiled,
+    Submitted,
+    InProgress
+  )
+
+  implicit val enumerable: Enumerable[QtStatus] =
+    Enumerable(values.map(v => v.toString -> v): _*)
 }

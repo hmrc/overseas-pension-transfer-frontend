@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package models
+package models.dtos
 
-import play.api.libs.json.{Format, Json}
+import models.{AllTransfersItem, PstrNumber}
+import play.api.libs.json._
 
-case class QtNumber(value: String) {
-  def isEmpty: Boolean  = value.trim.isEmpty
-  def nonEmpty: Boolean = !isEmpty
-}
+import java.time.Instant
 
-object QtNumber {
-  val empty: QtNumber                   = QtNumber("")
-  implicit val format: Format[QtNumber] = Json.valueFormat[QtNumber]
+final case class GetAllTransfersDTO(
+    pstr: PstrNumber,
+    lastUpdated: Instant,
+    transfers: Seq[AllTransfersItem]
+  )
+
+object GetAllTransfersDTO {
+
+  implicit val format: OFormat[GetAllTransfersDTO] = Json.format[GetAllTransfersDTO]
 }

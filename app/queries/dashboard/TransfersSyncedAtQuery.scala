@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package queries.dashboard
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.JsPath
+import queries.{Gettable, Settable}
 
-case class QtNumber(value: String) {
-  def isEmpty: Boolean  = value.trim.isEmpty
-  def nonEmpty: Boolean = !isEmpty
-}
+import java.time.Instant
 
-object QtNumber {
-  val empty: QtNumber                   = QtNumber("")
-  implicit val format: Format[QtNumber] = Json.valueFormat[QtNumber]
+case object TransfersSyncedAtQuery extends Gettable[Instant] with Settable[Instant] {
+  override def path: JsPath = JsPath \ "transfers" \ "lastSyncedAt"
 }

@@ -26,6 +26,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage
 @import viewmodels.FooterLink
 @import views.html.components.{AppBreadcrumbs, AppFooter}
+@import views.html.templates.fullWidthMainContentLayout
 
 @this(
         appConfig: FrontendAppConfig,
@@ -38,9 +39,10 @@
         appFooter: AppFooter,
         autocompleteCss: HmrcAccessibleAutocompleteCss,
         autocompleteJavascript: HmrcAccessibleAutocompleteJavascript,
-        appBreadcrumbs: AppBreadcrumbs
+        appBreadcrumbs: AppBreadcrumbs,
+        twoThirdsLayout: TwoThirdsMainContent,
+        fullWidthMainContent: fullWidthMainContentLayout
 )
-
 
 @(pageTitle: String,
         showBackLink: Boolean = true,
@@ -51,6 +53,7 @@
         showStartFooter: Boolean = false,
         showCYAFooter: Boolean = false,
         showTasklistFooter: Boolean = false,
+        fullWidth: Boolean = false,
         showBreadcrumbs: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
 
 @head = {
@@ -92,8 +95,9 @@
     pageTitle = Some(pageTitle),
     templateOverrides = TemplateOverrides(
         additionalHeadBlock = Some(head),
-      beforeContentBlock = if(showBreadcrumbs) Some(appBreadcrumbs()) else None,
-        additionalScriptsBlock = Some(autocompleteJavascript())
+        beforeContentBlock = if(showBreadcrumbs) Some(appBreadcrumbs()) else None,
+        additionalScriptsBlock = Some(autocompleteJavascript()),
+        mainContentLayout = if(fullWidth) Some(fullWidthMainContent(_)) else Some(twoThirdsLayout(_))
     ),
     serviceURLs = ServiceURLs(
         serviceUrl = Some(routes.IndexController.onPageLoad().url),
