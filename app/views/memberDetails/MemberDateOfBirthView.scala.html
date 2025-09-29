@@ -52,8 +52,7 @@
         @govukDateInput(
             DateViewModel(
                 field  = form("value"),
-            )
-            .withHint(HintViewModel(Text(messages("common.dateInput.hint"))))
+                legend = LegendViewModel(Text(messages("common.dateInput.hint"))))
         )
 
         @govukButton(

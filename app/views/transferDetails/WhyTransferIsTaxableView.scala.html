@@ -46,9 +46,9 @@
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                items  = WhyTransferIsTaxable.options
+                items  = WhyTransferIsTaxable.options,
+                legend = LegendViewModel(Text(messages("radios.hint")))
             )
-            .withHint(HintViewModel(Text(messages("radios.hint"))))
         )
 
         @govukButton(

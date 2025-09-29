@@ -21,15 +21,13 @@
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
 
-
-
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
@@ -47,9 +45,9 @@
 
         @govukRadios(
             RadiosViewModel.yesNo(
-                field = form("value")
+                field = form("value"),
+                legend = LegendViewModel(Text(messages("radios.hint")))
             )
-            .withHint(HintViewModel(Text(messages("radios.hint"))))
         )
 
         @govukButton(
