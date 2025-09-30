@@ -63,7 +63,6 @@ class UnquotedSharesCYAController @Inject() (
       minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, UnquotedSharesQuery))
       updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.UnquotedShares, userSelection = None)
       saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
-      _                  <- sessionRepository.set(request.userAnswers)
     } yield {
       saved match {
         case Right(Done) =>

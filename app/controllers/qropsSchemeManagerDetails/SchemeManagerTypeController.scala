@@ -67,8 +67,8 @@ class SchemeManagerTypeController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           for {
-            baseAnswers   <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
-            _             <- sessionRepository.set(baseAnswers)
+            baseAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
+
             savedForLater <- userAnswersService.setExternalUserAnswers(baseAnswers)
           } yield {
             savedForLater match {

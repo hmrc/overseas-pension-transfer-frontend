@@ -18,7 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
-import models.UserAnswers
+import models.{SessionData, UserAnswers}
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
@@ -49,10 +49,11 @@ class UserAnswersService @Inject() (
   def submitDeclaration(
       authenticatedUser: AuthenticatedUser,
       userAnswers: UserAnswers,
+      sessionData: SessionData,
       maybePsaId: Option[PsaId] = None
     )(implicit hc: HeaderCarrier
     ): Future[Either[SubmissionErrorResponse, SubmissionResponse]] = {
-    connector.postSubmission(SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId))
+    connector.postSubmission(SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId, sessionData))
   }
 
   def clearUserAnswers(id: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {

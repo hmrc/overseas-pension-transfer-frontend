@@ -65,7 +65,6 @@ class WhyTransferIsNotTaxableController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhyTransferIsNotTaxablePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {

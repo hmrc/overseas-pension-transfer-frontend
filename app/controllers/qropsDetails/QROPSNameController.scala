@@ -68,8 +68,8 @@ class QROPSNameController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSNamePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+
+            savedForLater <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(QROPSNamePage.nextPage(mode, updatedAnswers))

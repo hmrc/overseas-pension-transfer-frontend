@@ -75,7 +75,6 @@ class PropertyAddressController @Inject() (
             case Some(addressToSave) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyAddressPage(index), addressToSave))
-                _              <- sessionRepository.set(updatedAnswers).map(_ => logger.info(Json.stringify(updatedAnswers.data)))
               } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
           }
       )

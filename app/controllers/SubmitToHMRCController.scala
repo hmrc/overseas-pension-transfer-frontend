@@ -62,7 +62,6 @@ class SubmitToHMRCController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SubmitToHMRCPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(SubmitToHMRCPage.nextPageWith(mode, updatedAnswers, request.authenticatedUser))
       )
   }

@@ -66,8 +66,8 @@ class MemberNinoController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNinoPage, value).flatMap(_.remove(MemberDoesNotHaveNinoPage)))
-            _              <- sessionRepository.set(updatedAnswers)
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+
+            savedForLater <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberNinoPage.nextPage(mode, updatedAnswers))

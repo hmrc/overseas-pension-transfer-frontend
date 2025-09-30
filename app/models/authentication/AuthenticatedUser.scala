@@ -16,9 +16,9 @@
 
 package models.authentication
 
-import models.{PensionSchemeDetails, SrnNumber}
+import models.PensionSchemeDetails
+import play.api.libs.json._
 
-//Add Scheme Details in here - Scheme Name and SchemeId/SRN
 sealed trait AuthenticatedUser {
   def internalId: String
   def userType: UserType
@@ -27,14 +27,40 @@ sealed trait AuthenticatedUser {
   def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser
 }
 
+object AuthenticatedUser {
+
+  implicit val format: Format[AuthenticatedUser] = new Format[AuthenticatedUser] {
+
+    override def reads(json: JsValue): JsResult[AuthenticatedUser] =
+      (json.validate[PsaUser].isSuccess, json.validate[PspUser].isSuccess) match {
+        case (true, false) => PsaUser.format.reads(json)
+        case (false, true) => PspUser.format.reads(json)
+        case _             => JsError("Json not a valid AuthenticatedUser")
+      }
+
+    override def writes(o: AuthenticatedUser): JsValue = o match {
+      case psa: PsaUser => PsaUser.format.writes(psa)
+      case psp: PspUser => PspUser.format.writes(psp)
+    }
+  }
+}
+
 case class PsaUser(psaId: PsaId, internalId: String, pensionSchemeDetails: Option[PensionSchemeDetails] = None) extends AuthenticatedUser {
   override val userType: UserType = Psa
 
   override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
 }
 
+object PsaUser {
+  implicit val format: Format[PsaUser] = Json.format[PsaUser]
+}
+
 case class PspUser(pspId: PspId, internalId: String, pensionSchemeDetails: Option[PensionSchemeDetails] = None) extends AuthenticatedUser {
   override val userType: UserType = Psp
 
   override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
+}
+
+object PspUser {
+  implicit val format: Format[PspUser] = Json.format[PspUser]
 }

@@ -65,7 +65,6 @@ class AmountOfTransferController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountOfTransferPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {

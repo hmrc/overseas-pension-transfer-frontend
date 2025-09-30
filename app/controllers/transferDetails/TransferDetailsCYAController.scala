@@ -22,13 +22,11 @@ import controllers.helpers.ErrorHandling
 import models.TaskCategory.TransferDetails
 import models.taskList.TaskStatus.Completed
 import models.{CheckMode, NormalMode}
-import org.apache.pekko.Done
 import pages.transferDetails.TransferDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TaskStatusQuery
 import repositories.SessionRepository
-import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
@@ -42,7 +40,6 @@ class TransferDetailsCYAController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: TransferDetailsCYAView
   )(implicit ec: ExecutionContext
@@ -58,14 +55,10 @@ class TransferDetailsCYAController @Inject() (
   def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       for {
-        ua            <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(TransferDetails), Completed))
-        _             <- sessionRepository.set(ua)
-        savedForLater <- userAnswersService.setExternalUserAnswers(ua)
+        sd <- Future.fromTry(request.sessionData.set(TaskStatusQuery(TransferDetails), Completed))
+        _  <- sessionRepository.set(sd)
       } yield {
-        savedForLater match {
-          case Right(Done) => Redirect(TransferDetailsSummaryPage.nextPage(NormalMode, ua))
-          case Left(err)   => onFailureRedirect(err)
-        }
+        Redirect(TransferDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
       }
   }
 }

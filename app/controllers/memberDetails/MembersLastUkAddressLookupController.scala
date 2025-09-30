@@ -75,8 +75,8 @@ class MembersLastUkAddressLookupController @Inject() (
             case Some(result: AddressLookupResult) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, result))
-                _              <- sessionRepository.set(updatedAnswers)
-                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+
+                savedForLater <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
                   case Right(Done) =>

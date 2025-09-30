@@ -68,7 +68,6 @@ class OverseasTransferAllowanceController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(OverseasTransferAllowancePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
 
           } yield {

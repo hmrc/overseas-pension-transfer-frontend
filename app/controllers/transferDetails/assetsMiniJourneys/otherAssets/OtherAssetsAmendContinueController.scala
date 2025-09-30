@@ -57,7 +57,7 @@ class OtherAssetsAmendContinueController @Inject() (
         case CheckMode  =>
           for {
             updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
-            _              <- sessionRepository.set(updatedAnswers)
+
           } yield {
             val shares = OtherAssetsAmendContinueSummary.rows(updatedAnswers)
             Ok(view(preparedForm, shares, mode))
@@ -79,7 +79,7 @@ class OtherAssetsAmendContinueController @Inject() (
           for {
             ua1 <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
             ua2 <- Future.fromTry(ua1.set(OtherAssetsAmendContinuePage, continue))
-            _   <- sessionRepository.set(ua2)
+
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
             Redirect(OtherAssetsAmendContinuePage.nextPageWith(mode, ua2, nextIndex))

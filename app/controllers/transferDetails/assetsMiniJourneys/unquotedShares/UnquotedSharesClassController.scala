@@ -61,7 +61,6 @@ class UnquotedSharesClassController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UnquotedSharesClassPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(UnquotedSharesClassPage(index).nextPage(mode, updatedAnswers))
       )
   }

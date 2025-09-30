@@ -25,7 +25,6 @@ import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.memberDetails.MemberIsResidentUKView
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MemberIsResidentUKController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -67,7 +65,6 @@ class MemberIsResidentUKController @Inject() (
           for {
             baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
             ua1           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
-            _             <- sessionRepository.set(ua1)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             savedForLater match {

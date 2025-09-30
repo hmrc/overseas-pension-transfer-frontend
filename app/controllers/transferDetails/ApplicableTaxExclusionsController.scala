@@ -61,7 +61,6 @@ class ApplicableTaxExclusionsController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ApplicableTaxExclusionsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(ApplicableTaxExclusionsPage.nextPage(mode, updatedAnswers))
       )
   }

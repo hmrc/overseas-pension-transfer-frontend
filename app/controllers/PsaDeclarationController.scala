@@ -51,11 +51,10 @@ class PsaDeclarationController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers).flatMap {
+      userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData).flatMap {
         case Right(SubmissionResponse(qtNumber)) =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QtNumberQuery, qtNumber))
-            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(PsaDeclarationPage.nextPage(mode, updatedAnswers))
         case _                                   => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
       }

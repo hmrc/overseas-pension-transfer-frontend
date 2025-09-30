@@ -62,7 +62,7 @@ class OtherAssetsCYAController @Inject() (
       minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, OtherAssetsQuery))
       updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.Other, userSelection = None)
       saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
-      _                  <- sessionRepository.set(request.userAnswers)
+
     } yield {
       saved match {
         case Right(Done) =>

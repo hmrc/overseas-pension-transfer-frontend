@@ -17,15 +17,19 @@
 package controllers
 
 import controllers.actions.{IdentifierAction, SchemeDataAction}
-import models.{NormalMode, PstrNumber, SrnNumber, UserAnswers}
+import models.{NormalMode, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import pages.WhatWillBeNeededPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WhatWillBeNeededView
 
+import java.time.Instant
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,31 +39,43 @@ class WhatWillBeNeededController @Inject() (
     identify: IdentifierAction,
     schemeData: SchemeDataAction,
     view: WhatWillBeNeededView,
-    sessionRepository: SessionRepository
+    sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
-    val id = request.authenticatedUser.internalId
+    val sessionData = SessionData(
+      request.authenticatedUser.internalId,
+      UUID.randomUUID().toString,
+      request.authenticatedUser.pensionSchemeDetails.get,
+      request.authenticatedUser,
+      Json.obj(),
+      Instant.now
+    )
 
-    sessionRepository.get(id).flatMap {
-      case Some(existing) =>
-        Future.successful(Ok(view(WhatWillBeNeededPage.nextPage(NormalMode, existing).url)))
+    sessionRepository.get(sessionData.sessionId).flatMap {
+      case Some(_) =>
+        // This is going to initiate some Locking
+        Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad()))
 
       case None =>
+        val newUa = UserAnswers(sessionData.transferId)
+
         for {
-          newUa     <- Future.fromTry(UserAnswers.initialise(id))
-          persisted <- sessionRepository.set(newUa)
+          updatedSessionData <- Future.fromTry(UserAnswers.initialise(sessionData))
+          persisted          <- sessionRepository.set(updatedSessionData)
+          _                  <- userAnswersService.setExternalUserAnswers(newUa)
         } yield {
           if (persisted) {
             Ok(view(WhatWillBeNeededPage.nextPage(NormalMode, newUa).url))
           } else {
-            logger.warn("SessionRepository.set returned false during UA initialisation")
+            logger.warn("SessionRepository.set returned false during SessionData initialisation")
             Redirect(routes.JourneyRecoveryController.onPageLoad())
           }
         }
     } recover { case e =>
-      logger.warn("Failed to initialise UA with defaults", e)
+      logger.warn("Failed to initialise UserAnswers with defaults", e)
       Redirect(routes.JourneyRecoveryController.onPageLoad())
     }
   }

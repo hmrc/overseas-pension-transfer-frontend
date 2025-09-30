@@ -61,7 +61,6 @@ class OtherAssetsValueController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherAssetsValuePage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(OtherAssetsValuePage(index).nextPage(mode, updatedAnswers))
       )
   }

@@ -67,7 +67,6 @@ class WhyTransferIsTaxableController @Inject() (
           for {
             ua1           <- Future.fromTry(request.userAnswers.set(WhyTransferIsTaxablePage, value))
             ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
-            _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
             savedForLater match {

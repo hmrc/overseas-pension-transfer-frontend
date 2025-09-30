@@ -20,7 +20,6 @@ import handlers.AssetThresholdHandler
 import models.UserAnswers
 import models.assets._
 import queries.assets._
-import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -28,7 +27,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MoreAssetCompletionService @Inject() (
     assetThresholdHandler: AssetThresholdHandler,
-    sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) {
@@ -57,7 +55,6 @@ class MoreAssetCompletionService @Inject() (
       _ <- userAnswersService.setExternalUserAnswers(
              assetThresholdHandler.handle(minimalAnswers, assetType, userSelection)
            )
-      _ <- sessionRepository.set(enrichedAnswers)
     } yield enrichedAnswers
   }
 

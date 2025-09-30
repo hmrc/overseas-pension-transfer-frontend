@@ -70,7 +70,6 @@ class MoreQuotedSharesDeclarationController @Inject() (
                                   completed = false
                                 )
                               )
-            _              <- sessionRepository.set(updatedAnswers)
           } yield renderView(updatedAnswers)
 
         case NormalMode =>

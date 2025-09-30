@@ -65,9 +65,9 @@ class SchemeManagerOrganisationNameController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            ua1           <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
-            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = SchemeManagerDetails))
-            _             <- sessionRepository.set(ua2)
+            ua1 <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
+            ua2 <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = SchemeManagerDetails))
+
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
             savedForLater match {

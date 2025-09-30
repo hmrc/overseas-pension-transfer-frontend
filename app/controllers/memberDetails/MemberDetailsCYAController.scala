@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TaskStatusQuery
 import repositories.SessionRepository
-import services.{TaskService, UserAnswersService}
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.govuk.summarylist._
@@ -41,7 +41,6 @@ class MemberDetailsCYAController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService,
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: MemberDetailsCYAView
@@ -58,14 +57,10 @@ class MemberDetailsCYAController @Inject() (
   def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       for {
-        ua1           <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(MemberDetails), Completed))
-        _             <- sessionRepository.set(ua1)
-        savedForLater <- userAnswersService.setExternalUserAnswers(ua1)
+        sd <- Future.fromTry(request.sessionData.set(TaskStatusQuery(MemberDetails), Completed))
+        _  <- sessionRepository.set(sd)
       } yield {
-        savedForLater match {
-          case Right(Done) => Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, ua1))
-          case Left(err)   => onFailureRedirect(err)
-        }
+        Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
       }
   }
 }

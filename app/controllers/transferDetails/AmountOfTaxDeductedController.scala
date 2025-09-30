@@ -61,7 +61,6 @@ class AmountOfTaxDeductedController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountOfTaxDeductedPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(AmountOfTaxDeductedPage.nextPage(mode, updatedAnswers))
       )
   }

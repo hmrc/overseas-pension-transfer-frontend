@@ -57,7 +57,6 @@ class MarkInProgressOnEntryActionImpl @Inject() (
           case NormalMode =>
             for {
               updated <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(category), InProgress))
-              _       <- sessionRepository.set(updated)
               saved   <- userAnswersService.setExternalUserAnswers(updated)
             } yield saved match {
               case Right(Done) => Right(request.copy(userAnswers = updated))

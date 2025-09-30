@@ -61,7 +61,7 @@ class QuotedSharesNumberController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesNumberPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
+
           } yield Redirect(QuotedSharesNumberPage(index).nextPage(mode, updatedAnswers))
       )
   }

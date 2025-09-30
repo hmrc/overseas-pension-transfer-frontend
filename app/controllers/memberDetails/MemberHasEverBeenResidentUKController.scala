@@ -66,9 +66,9 @@ class MemberHasEverBeenResidentUKController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           for {
-            baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
-            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
-            _             <- sessionRepository.set(ua2)
+            baseAnswers <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
+            ua2         <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
+
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
             savedForLater match {

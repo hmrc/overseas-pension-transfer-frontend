@@ -67,7 +67,6 @@ class DateOfTransferController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfTransferPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {

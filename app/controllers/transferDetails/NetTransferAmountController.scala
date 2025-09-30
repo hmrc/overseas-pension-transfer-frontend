@@ -61,7 +61,6 @@ class NetTransferAmountController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NetTransferAmountPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(NetTransferAmountPage.nextPage(mode, updatedAnswers))
       )
   }

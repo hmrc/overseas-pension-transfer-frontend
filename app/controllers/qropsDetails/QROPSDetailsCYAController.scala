@@ -22,13 +22,11 @@ import controllers.helpers.ErrorHandling
 import models.TaskCategory.QROPSDetails
 import models.taskList.TaskStatus.Completed
 import models.{CheckMode, NormalMode}
-import org.apache.pekko.Done
 import pages.qropsDetails.QROPSDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TaskStatusQuery
 import repositories.SessionRepository
-import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import viewmodels.govuk.summarylist._
@@ -42,7 +40,6 @@ class QROPSDetailsCYAController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: QROPSDetailsCYAView
   )(implicit ec: ExecutionContext
@@ -58,14 +55,10 @@ class QROPSDetailsCYAController @Inject() (
   def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       for {
-        ua            <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(QROPSDetails), Completed))
-        _             <- sessionRepository.set(ua)
-        savedForLater <- userAnswersService.setExternalUserAnswers(ua)
+        sd <- Future.fromTry(request.sessionData.set(TaskStatusQuery(QROPSDetails), Completed))
+        _  <- sessionRepository.set(sd)
       } yield {
-        savedForLater match {
-          case Right(Done) => Redirect(QROPSDetailsSummaryPage.nextPage(NormalMode, ua))
-          case Left(err)   => onFailureRedirect(err)
-        }
+        Redirect(QROPSDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
       }
   }
 }

@@ -112,14 +112,14 @@ object UserAnswers {
         Failure(error)
     }
 
-  def initialise(id: String): Try[UserAnswers] =
+  def initialise(sd: SessionData): Try[SessionData] =
     for {
-      ua1 <- UserAnswers(id).set(TaskStatusQuery(MemberDetails), NotStarted)
-      ua2 <- ua1.set(TaskStatusQuery(QROPSDetails), CannotStart)
-      ua3 <- ua2.set(TaskStatusQuery(SchemeManagerDetails), CannotStart)
-      ua4 <- ua3.set(TaskStatusQuery(TransferDetails), CannotStart)
-      ua5 <- ua4.set(TaskStatusQuery(SubmissionDetails), CannotStart)
-    } yield ua5
+      sd1 <- sd.set(TaskStatusQuery(MemberDetails), NotStarted)
+      sd2 <- sd1.set(TaskStatusQuery(QROPSDetails), CannotStart)
+      sd3 <- sd2.set(TaskStatusQuery(SchemeManagerDetails), CannotStart)
+      sd4 <- sd3.set(TaskStatusQuery(TransferDetails), CannotStart)
+      sd5 <- sd4.set(TaskStatusQuery(SubmissionDetails), CannotStart)
+    } yield sd5
 
   val reads: Reads[UserAnswers] = {
 

@@ -21,7 +21,6 @@ import controllers.helpers.ErrorHandling
 import org.apache.pekko.Done
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.TaskListViewModel
@@ -35,7 +34,6 @@ class TaskListController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
-    sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     view: TaskListView
   )(implicit ec: ExecutionContext
@@ -43,13 +41,13 @@ class TaskListController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData).async { implicit request =>
     for {
-      ua1           <- Future.fromTry(TaskService.updateTaskStatusesOnMemberDetailsComplete(request.userAnswers))
+      ua1           <- Future.fromTry(TaskService.updateTaskStatusesOnMemberDetailsComplete(request.sessionData))
       ua2           <- Future.fromTry(TaskService.updateSubmissionTaskStatus(ua1))
       savedForLater <-
-        if (ua2 == request.userAnswers) {
+        if (ua2 == request.sessionData) {
           Future.successful(Right(Done))
         } else {
-          sessionRepository.set(ua2).flatMap(_ => userAnswersService.setExternalUserAnswers(ua2))
+          userAnswersService.setExternalUserAnswers(request.userAnswers)
         }
     } yield {
       savedForLater match {

@@ -86,8 +86,8 @@ class SchemeManagersAddressController @Inject() (
             case Some(address) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersAddressPage, address))
-                _              <- sessionRepository.set(updatedAnswers)
-                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+
+                savedForLater <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(SchemeManagersAddressPage.nextPage(mode, updatedAnswers))

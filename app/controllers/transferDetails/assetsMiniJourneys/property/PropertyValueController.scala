@@ -61,7 +61,6 @@ class PropertyValueController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyValuePage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
           } yield Redirect(PropertyValuePage(index).nextPage(mode, updatedAnswers))
       )
   }

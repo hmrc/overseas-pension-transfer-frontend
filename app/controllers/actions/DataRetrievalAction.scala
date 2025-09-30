@@ -19,32 +19,44 @@ package controllers.actions
 import controllers.routes
 import models.requests.{DisplayRequest, IdentifierRequest}
 import play.api.Logging
-import play.api.mvc.Results.Redirect
+import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
+import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.AppUtils
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DataRetrievalActionImpl @Inject() (
-    val sessionRepository: SessionRepository
+    sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService
   )(implicit val executionContext: ExecutionContext
   ) extends DataRetrievalAction with AppUtils with Logging {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
-    sessionRepository.get(request.authenticatedUser.internalId) map {
-      case Some(answers) =>
-        Right(DisplayRequest(
-          request.request,
-          request.authenticatedUser,
-          answers,
-          memberFullName(answers),
-          qtNumber(answers),
-          dateTransferSubmitted(answers)
-        ))
-      case None          => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
+
+    sessionRepository.get(request.authenticatedUser.internalId) flatMap {
+      case Some(value) =>
+        userAnswersService.getExternalUserAnswers(value.transferId) map {
+          case Right(answers) =>
+            Right(DisplayRequest(
+              request.request,
+              request.authenticatedUser,
+              answers,
+              value,
+              memberFullName(answers),
+              qtNumber(answers),
+              dateTransferSubmitted(answers)
+            ))
+          case Left(_)        => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+        }
+      case None        => Future.successful(Left(BadRequest))
     }
+
   }
 }
 
