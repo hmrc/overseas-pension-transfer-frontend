@@ -43,12 +43,13 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("memberIsResidentUK.heading", memberName)</h1>
 
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(Text(messages("memberIsResidentUK.heading", memberName))).asPageHeading(size = Large)
+                legend = LegendViewModel(Text(messages("memberIsResidentUK.heading", memberName)))
+                    .asPageHeading(size = Large)
+                    .withCssClass("govuk-!-margin-bottom-6")
             )
             .withHint(HintViewModel(Text(messages("radios.hint"))))
         )

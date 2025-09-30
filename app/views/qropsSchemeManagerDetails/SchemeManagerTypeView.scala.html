@@ -20,6 +20,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
+@import viewmodels.LegendSize.Large
 
 @this(
         layout: templates.Layout,
@@ -41,14 +42,16 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("schemeManagerType.heading")</h1>
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
                 items  = SchemeManagerType.options,
-                legend = LegendViewModel(Text(messages("radios.hint")))
+                legend = LegendViewModel(Text(messages("schemeManagerType.heading")))
+                    .asPageHeading(size = Large)
+                    .withCssClass("govuk-!-margin-bottom-6")
             )
+            .withHint(HintViewModel(Text(messages("radios.hint"))))
         )
 
         @govukButton(

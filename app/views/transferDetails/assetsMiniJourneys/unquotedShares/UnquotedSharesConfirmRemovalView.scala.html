@@ -52,7 +52,9 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(Text(messages("unquotedSharesConfirmRemoval.heading"))).asPageHeading(size = Large)
+                legend = LegendViewModel(Text(messages("unquotedSharesConfirmRemoval.heading")))
+                    .asPageHeading(size = Large)
+                    .withCssClass("govuk-!-margin-bottom-6")
             )
         )
 
