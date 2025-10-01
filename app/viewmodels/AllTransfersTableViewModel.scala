@@ -18,6 +18,7 @@ package viewmodels
 
 import models.AllTransfersItem
 import models.QtStatus.{Compiled, InProgress, Submitted}
+import navigators.AllTransfersLinkNavigator
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
@@ -60,17 +61,18 @@ object AllTransfersTableViewModel {
     )
 
     val rows: Seq[Seq[TableRow]] = items.map { it =>
-      val name = memberName(it.memberFirstName, it.memberSurname)
-      val link = HtmlFormat.raw(s"""<a class="govuk-link" href="#">$name</a>""") // TODO: Replace with actual link
-      val stat = it.qtStatus.map {
+      val name     = memberName(it.memberFirstName, it.memberSurname)
+      val linkCall = AllTransfersLinkNavigator.linkFor(it)
+      val linkHtml = HtmlFormat.raw(s"""<a class="govuk-link" href="${linkCall.url}">$name</a>""")
+      val stat     = it.qtStatus.map {
         case Compiled | Submitted => messages("dashboard.allTransfers.status.submitted")
         case InProgress           => messages("dashboard.allTransfers.status.inProgress")
       }.getOrElse("-")
-      val ref  = it.qtReference.map(_.value).getOrElse("-")
-      val upd  = fmtLocalDate(it.lastUpdatedDate)
+      val ref      = it.qtReference.map(_.value).getOrElse("-")
+      val upd      = fmtLocalDate(it.lastUpdatedDate)
 
       Seq(
-        cell(content = HtmlContent(link)),
+        cell(content = HtmlContent(linkHtml)),
         cell(content = Text(stat)),
         cell(content = Text(ref)),
         cell(content = Text(upd))
