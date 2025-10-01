@@ -44,8 +44,8 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val userAnswersDTO: UserAnswersDTO = UserAnswersDTO("id", JsObject(Map("field" -> JsString("value"))), instant)
-  private val userAnswers: UserAnswers       = UserAnswers("id", JsObject(Map("field" -> JsString("value"))), instant)
+  private val userAnswersDTO: UserAnswersDTO = UserAnswersDTO("id", pstr, JsObject(Map("field" -> JsString("value"))), instant)
+  private val userAnswers: UserAnswers       = UserAnswers("id", pstr, JsObject(Map("field" -> JsString("value"))), instant)
 
   "getUserAnswers" - {
     "return prepopulated Right(UserAnswers) when Left(GetUserAnswersSuccessResponse) is returned" in {
@@ -53,7 +53,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
         .thenReturn(Future.successful(Right(userAnswersDTO)))
 
-      val getUserAnswers = service.getExternalUserAnswers(userAnswersId)
+      val getUserAnswers = service.getExternalUserAnswers(userAnswers)
 
       await(getUserAnswers) mustBe Right(userAnswers)
     }
@@ -62,7 +62,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersNotFoundResponse)))
 
-      val getUserAnswers = await(service.getExternalUserAnswers(userAnswersId))
+      val getUserAnswers = await(service.getExternalUserAnswers(userAnswers))
 
       getUserAnswers map {
         ua =>
@@ -75,7 +75,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error message", None))))
 
-      val getUserAnswers = await(service.getExternalUserAnswers(userAnswersId))
+      val getUserAnswers = await(service.getExternalUserAnswers(userAnswers))
 
       getUserAnswers mustBe Left(UserAnswersErrorResponse("Error message", None))
     }

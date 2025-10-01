@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -31,19 +31,19 @@ class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers {
     "in Normal Mode" - {
 
       "must go to Index when DiscardTransferConfirm in UserAnswers is true" in {
-        val userAnswers: UserAnswers = UserAnswers("id").set(DiscardTransferConfirmPage, true).success.value
+        val userAnswers: UserAnswers = UserAnswers("id", PstrNumber("12345678AB")).set(DiscardTransferConfirmPage, true).success.value
 
         DiscardTransferConfirmPage.nextPage(NormalMode, userAnswers) mustEqual routes.IndexController.onPageLoad()
       }
 
       "must go to Task List page when DiscardTransferConfirm in UserAnswers is false" in {
-        val userAnswers: UserAnswers = UserAnswers("id").set(DiscardTransferConfirmPage, false).success.value
+        val userAnswers: UserAnswers = UserAnswers("id", PstrNumber("12345678AB")).set(DiscardTransferConfirmPage, false).success.value
 
         DiscardTransferConfirmPage.nextPage(NormalMode, userAnswers) mustEqual routes.TaskListController.onPageLoad()
       }
 
       "must got to Journey Recovery page when User Answers is empty" in {
-        val userAnswers: UserAnswers = UserAnswers("id")
+        val userAnswers: UserAnswers = UserAnswers("id", PstrNumber("12345678AB"))
 
         DiscardTransferConfirmPage.nextPage(NormalMode, userAnswers) mustEqual routes.JourneyRecoveryController.onPageLoad()
       }
