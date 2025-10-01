@@ -16,14 +16,18 @@
 
 package controllers
 
+import connectors.TransferConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
+import models.dtos.UserAnswersDTO
 import org.apache.pekko.Done
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import viewmodels.TaskListViewModel
 import views.html.TaskListView
 
@@ -37,6 +41,7 @@ class TaskListController @Inject() (
     schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
+    transferConnector: TransferConnector,
     view: TaskListView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
@@ -58,4 +63,28 @@ class TaskListController @Inject() (
       }
     }
   }
+
+  def continueJourney(referenceId: String, pstr: String, qtStatus: String, versionNumber: Option[String]): Action[AnyContent] =
+    (identify andThen schemeData andThen getData).async { implicit request =>
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
+
+      transferConnector
+        .getSpecificTransfer(
+          transferReference = Some(referenceId),
+          pstrNumber        = pstr,
+          qtStatus          = qtStatus
+        )
+        .flatMap {
+          case Right(dto) =>
+            val ua = UserAnswersDTO
+              .toUserAnswers(dto)
+
+            sessionRepository.set(ua).map {
+               _ => Redirect(routes.TaskListController.onPageLoad())
+            }
+
+          case Left(_) =>
+            Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+        }
+    }
 }

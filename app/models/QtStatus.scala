@@ -24,7 +24,7 @@ object QtStatus extends Enumerable.Implicits {
 
   case object Compiled   extends WithName("Compiled") with QtStatus
   case object Submitted  extends WithName("Submitted") with QtStatus
-  case object InProgress extends WithName("In Progress") with QtStatus
+  case object InProgress extends WithName("InProgress") with QtStatus
 
   val values: Seq[QtStatus] = Seq(
     Compiled,
