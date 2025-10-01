@@ -16,7 +16,7 @@
 
 package handlers
 
-import models.{RichJsObject, UserAnswers}
+import models.{RichJsObject, SessionData, UserAnswers}
 import models.assets.TypeOfAsset
 import play.api.libs.json._
 
@@ -32,9 +32,9 @@ class AssetThresholdHandler {
   )
 
   /** Get count of assets of given type */
-  def getAssetCount(userAnswers: UserAnswers, assetType: TypeOfAsset): Int =
+  def getAssetCount(sessionData: SessionData, assetType: TypeOfAsset): Int =
     assetChecks.get(assetType).map { case (assetKey, _) =>
-      (userAnswers.data \ "transferDetails" \ assetKey)
+      (sessionData.data \ "transferDetails" \ assetKey)
         .asOpt[Seq[JsValue]]
         .map(_.size)
         .getOrElse(0)
@@ -45,14 +45,14 @@ class AssetThresholdHandler {
     *   - count == threshold → userSelection (or false if not provided)
     */
   def handle(
-      userAnswers: UserAnswers,
+      sessionData: SessionData,
       assetType: TypeOfAsset,
       userSelection: Option[Boolean] = None
-    ): UserAnswers = {
+    ): SessionData = {
 
     assetChecks.get(assetType) match {
       case Some((_, flagKey)) =>
-        val assetCount = getAssetCount(userAnswers, assetType)
+        val assetCount = getAssetCount(sessionData, assetType)
 
         val flag = assetCount match {
           case count if count < AssetThresholdLimit  => false
@@ -60,13 +60,13 @@ class AssetThresholdHandler {
           case _                                     => false
         }
 
-        val updatedData = userAnswers.data
+        val updatedData = sessionData.data
           .setObject(JsPath \ "transferDetails" \ flagKey, Json.toJson(flag))
-          .getOrElse(userAnswers.data)
+          .getOrElse(sessionData.data)
 
-        userAnswers.copy(data = updatedData)
+        sessionData.copy(data = updatedData)
 
-      case None => userAnswers
+      case None => sessionData
     }
   }
 }

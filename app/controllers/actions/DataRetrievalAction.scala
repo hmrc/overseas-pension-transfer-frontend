@@ -48,9 +48,9 @@ class DataRetrievalActionImpl @Inject() (
               request.authenticatedUser,
               answers,
               value,
-              memberFullName(answers),
-              qtNumber(answers),
-              dateTransferSubmitted(answers)
+              memberFullName(value),
+              qtNumber(value),
+              dateTransferSubmitted(value)
             ))
           case Left(_)        => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         }

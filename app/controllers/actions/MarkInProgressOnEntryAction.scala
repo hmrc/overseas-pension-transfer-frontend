@@ -16,17 +16,13 @@
 
 package controllers.actions
 
-import models.{Mode, NormalMode, TaskCategory}
-import models.requests.{DataRequest, DisplayRequest}
+import models.requests.DisplayRequest
 import models.taskList.TaskStatus.InProgress
-import org.apache.pekko.Done
-import play.api.mvc._
+import models.{Mode, NormalMode, TaskCategory}
 import play.api.mvc.Results.Redirect
+import play.api.mvc._
 import queries.TaskStatusQuery
 import repositories.SessionRepository
-import services.UserAnswersService
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,8 +32,7 @@ trait MarkInProgressOnEntryAction {
 }
 
 class MarkInProgressOnEntryActionImpl @Inject() (
-    sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) extends MarkInProgressOnEntryAction {
 
@@ -49,18 +44,17 @@ class MarkInProgressOnEntryActionImpl @Inject() (
       override protected def executionContext: ExecutionContext = ec
 
       override protected def refine[A](request: DisplayRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
-
-        implicit val hc: HeaderCarrier =
-          HeaderCarrierConverter.fromRequest(request)
-
         mode match {
           case NormalMode =>
             for {
-              updated <- Future.fromTry(request.userAnswers.set(TaskStatusQuery(category), InProgress))
-              saved   <- userAnswersService.setExternalUserAnswers(updated)
-            } yield saved match {
-              case Right(Done) => Right(request.copy(userAnswers = updated))
-              case _           => Left(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+              updated <- Future.fromTry(request.sessionData.set(TaskStatusQuery(category), InProgress))
+              saved   <- sessionRepository.set(updated)
+            } yield {
+              if (saved) {
+                Right(request.copy(sessionData = updated))
+              } else {
+                Left(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+              }
             }
 
           case _ => Future.successful(Right(request))

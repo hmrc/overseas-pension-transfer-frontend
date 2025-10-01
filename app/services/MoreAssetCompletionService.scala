@@ -17,9 +17,10 @@
 package services
 
 import handlers.AssetThresholdHandler
-import models.UserAnswers
 import models.assets._
+import models.{SessionData, UserAnswers}
 import queries.assets._
+import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -27,54 +28,52 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MoreAssetCompletionService @Inject() (
     assetThresholdHandler: AssetThresholdHandler,
-    userAnswersService: UserAnswersService
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) {
 
   def completeAsset(
-      userAnswers: UserAnswers,
+      sessionData: SessionData,
       assetType: TypeOfAsset,
       completed: Boolean,
       userSelection: Option[Boolean] = None
-    )(implicit hc: HeaderCarrier
-    ): Future[UserAnswers] = {
+    ): Future[SessionData] = {
 
     for {
       // Step 1: mark asset completed
-      updatedAnswers <- Future.fromTry(
-                          AssetsMiniJourneyService.setAssetCompleted(userAnswers, assetType, completed)
-                        )
+      updatedSessionData <- Future.fromTry(
+                              AssetsMiniJourneyService.setAssetCompleted(sessionData, assetType, completed)
+                            )
 
       // Step 2: enrich with threshold flags
-      enrichedAnswers = assetThresholdHandler.handle(updatedAnswers, assetType, userSelection)
+      enrichedSessionData = assetThresholdHandler.handle(updatedSessionData, assetType, userSelection)
 
-      // Step 3: build minimal model for BE
-      minimalAnswers = buildMinimal(enrichedAnswers, assetType)
+      // Step 3: build minimal model for Sessiom
+      minimalSessionData = buildMinimal(enrichedSessionData, assetType)
 
-      // Step 4: persist minimal model BE + enriched full copy Session
-      _ <- userAnswersService.setExternalUserAnswers(
-             assetThresholdHandler.handle(minimalAnswers, assetType, userSelection)
-           )
-    } yield enrichedAnswers
+      // Step 4: persist minimal model Sessiom + enriched full copy Session
+      _ <- sessionRepository.set(assetThresholdHandler.handle(minimalSessionData, assetType, userSelection))
+
+    } yield enrichedSessionData
   }
 
   /** Choose correct query for the given asset type and build minimal model */
-  private def buildMinimal(userAnswers: UserAnswers, assetType: TypeOfAsset): UserAnswers = {
+  private def buildMinimal(sessionData: SessionData, assetType: TypeOfAsset): SessionData = {
     assetType match {
       case TypeOfAsset.Property =>
-        UserAnswers.buildMinimal(userAnswers, PropertyQuery)
+        UserAnswers.buildMinimal(sessionData, PropertyQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.Other =>
-        UserAnswers.buildMinimal(userAnswers, OtherAssetsQuery)
+        UserAnswers.buildMinimal(sessionData, OtherAssetsQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.QuotedShares =>
-        UserAnswers.buildMinimal(userAnswers, QuotedSharesQuery)
+        UserAnswers.buildMinimal(sessionData, QuotedSharesQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.UnquotedShares =>
-        UserAnswers.buildMinimal(userAnswers, UnquotedSharesQuery)
+        UserAnswers.buildMinimal(sessionData, UnquotedSharesQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.Cash =>

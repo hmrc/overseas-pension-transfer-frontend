@@ -99,12 +99,12 @@ final case class UserAnswers(
 object UserAnswers {
 
   def buildMinimal[A](
-      original: UserAnswers,
+      original: SessionData,
       page: Settable[A] with Gettable[A]
     )(implicit reads: Reads[A],
       writes: Writes[A],
       mf: Manifest[A]
-    ): Try[UserAnswers] =
+    ): Try[SessionData] =
     original.getWithLogging(page) match {
       case Right(value) =>
         original.copy(data = Json.obj()).set(page, value)

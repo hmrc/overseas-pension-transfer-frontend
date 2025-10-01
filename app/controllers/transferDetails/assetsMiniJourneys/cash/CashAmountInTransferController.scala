@@ -64,11 +64,12 @@ class CashAmountInTransferController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
-            ua1            <- Future.fromTry(
-                                AssetsMiniJourneyService.setAssetCompleted(updatedAnswers, TypeOfAsset.Cash, completed = true)
+            sd             <- Future.fromTry(
+                                AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Cash, completed = true)
                               )
-            _              <- userAnswersService.setExternalUserAnswers(ua1)
-          } yield Redirect(CashAmountInTransferPage.nextPage(mode, ua1))
+            _              <- sessionRepository.set(sd)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+          } yield Redirect(CashAmountInTransferPage.nextPage(mode, updatedAnswers))
       )
   }
 }

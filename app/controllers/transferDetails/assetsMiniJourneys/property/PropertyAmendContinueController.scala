@@ -57,9 +57,10 @@ class PropertyAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
+            updatedSessionData <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Property, completed = true))
+            _                  <- sessionRepository.set(updatedSessionData)
           } yield {
-            val shares = PropertyAmendContinueSummary.rows(updatedAnswers)
+            val shares = PropertyAmendContinueSummary.rows(request.userAnswers)
             Ok(view(preparedForm, shares, mode))
           }
         case NormalMode =>
@@ -77,11 +78,12 @@ class PropertyAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua1 <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
-            ua2 <- Future.fromTry(ua1.set(PropertyAmendContinuePage, continue))
+            sd <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Property, completed = true))
+            _  <- sessionRepository.set(sd)
+            ua <- Future.fromTry(request.userAnswers.set(PropertyAmendContinuePage, continue))
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(PropertyAmendContinuePage.nextPageWith(mode, ua2, nextIndex))
+            Redirect(PropertyAmendContinuePage.nextPageWith(mode, ua, nextIndex))
           }
         }
       )

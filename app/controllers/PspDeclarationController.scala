@@ -63,7 +63,9 @@ class PspDeclarationController @Inject() (
           userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId)).flatMap {
             case Right(SubmissionResponse(qtNumber)) =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(QtNumberQuery, qtNumber))
+                updatedAnswers     <- Future.fromTry(request.userAnswers.set(QtNumberQuery, qtNumber))
+                updatedSessionData <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
+                _                  <- sessionRepository.set(updatedSessionData)
               } yield Redirect(PspDeclarationPage.nextPage(mode, updatedAnswers))
             case _                                   => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
           }
