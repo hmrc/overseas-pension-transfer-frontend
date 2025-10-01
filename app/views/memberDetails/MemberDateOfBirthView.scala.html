@@ -20,6 +20,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
+@import viewmodels.LegendSize.Large
 
 @this(
         layout: templates.Layout,
@@ -37,9 +38,6 @@
 
     @formHelper(action = controllers.memberDetails.routes.MemberDateOfBirthController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
-        @qtNumber()
-        <h1 class="govuk-heading-l">@messages("memberDateOfBirth.heading", memberName)</h1>
-
         @if(form.errors.nonEmpty) {
             @{
               val missingFields = form.errors.head.args
@@ -49,10 +47,16 @@
             }
         }
 
+        @qtNumber()
+
         @govukDateInput(
             DateViewModel(
                 field  = form("value"),
-                legend = LegendViewModel(Text(messages("common.dateInput.hint"))))
+                legend = LegendViewModel(Text(messages("memberDateOfBirth.heading", memberName)))
+                    .asPageHeading(size = Large)
+                    .withCssClass("govuk-!-margin-bottom-6")
+            )
+            .withHint(HintViewModel(Text(messages("common.dateInput.hint"))))
         )
 
         @govukButton(

@@ -46,7 +46,9 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                legend = LegendViewModel(Text(messages("isTransferTaxable.heading"))).asPageHeading(size = Large)
+                legend = LegendViewModel(Text(messages("isTransferTaxable.heading")))
+                    .asPageHeading(size = Large)
+                    .withCssClass("govuk-!-margin-bottom-6")
             )
             .withHint(HintViewModel(Text(messages("radios.hint"))))
         )
