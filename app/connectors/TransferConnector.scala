@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.parsers.TransferParser.{GetAllTransfersHttpReads, GetAllTransfersType}
+import connectors.parsers.UserAnswersParser._
 import models.PstrNumber
 import models.responses.{AllTransfersUnexpectedError, UserAnswersErrorResponse}
 import play.api.Logging
@@ -45,6 +46,35 @@ class TransferConnector @Inject() (
         case e: Exception =>
           val errMsg = logNonHttpError("[TransferConnector][getAllTransfers]", hc, e)
           Left(AllTransfersUnexpectedError(errMsg, None))
+      }
+  }
+
+  def getSpecificTransfer(
+      transferReference: Option[String],
+      qtNumber: Option[String]      = None,
+      pstrNumber: String,
+      qtStatus: String,
+      versionNumber: Option[String] = None
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[GetUserAnswersType] = {
+    val referenceId = transferReference.orElse(qtNumber).getOrElse(throw new IllegalArgumentException(
+      "getSpecificTransfer must have one of either transferReference or qtNumber"
+    ))
+
+    def allTransfersUrl: URL =
+      url"${appConfig.backendService}/get-transfer/$referenceId"
+
+    val queryStringParams =
+      Seq("pstr" -> pstrNumber, "qtStatus" -> qtStatus) ++ versionNumber.toSeq.map("versionNumber" -> _)
+
+    http.get(allTransfersUrl)
+      .transform(_.addQueryStringParameters(queryStringParams: _*))
+      .execute[GetUserAnswersType]
+      .recover {
+        case e: Exception =>
+          val errMsg = logNonHttpError("[TransferConnector][getSpecificTransfer]", hc, e)
+          Left(UserAnswersErrorResponse(errMsg, None))
       }
   }
 }
