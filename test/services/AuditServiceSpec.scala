@@ -17,7 +17,7 @@
 package audit
 
 import config.FrontendAppConfig
-import models.audit.TransferStartedAuditModel
+import models.audit.StartNewTransferAuditModel
 import models.authentication.{PsaId, PsaUser}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -53,7 +53,7 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar {
   ".sendAudit" - {
 
     "must send an event to the audit connector for OverseasPensionTransferReportStarted" in {
-      val eventModel = TransferStartedAuditModel(authenticatedUser)
+      val eventModel = StartNewTransferAuditModel(authenticatedUser)
 
       when(mockAppConfig.appName).thenReturn(appName)
       service.audit(eventModel)

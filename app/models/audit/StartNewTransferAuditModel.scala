@@ -18,9 +18,9 @@ package models.audit
 
 import models.audit.JourneyStartedType.StartNewTransfer
 import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
 
-case class TransferStartedAuditModel(authenticatedUser: AuthenticatedUser) extends JsonAuditModel {
+case class StartNewTransferAuditModel(authenticatedUser: AuthenticatedUser) extends JsonAuditModel {
 
   override val auditType: String        = "OverseasPensionTransferReportStarted"
   // TODO UPDATE ID AFTER NICKS TICKET
@@ -51,8 +51,8 @@ case class TransferStartedAuditModel(authenticatedUser: AuthenticatedUser) exten
   ) ++ pensionSchemeName ++ pstr
 }
 
-object TransferStartedAuditModel {
+object StartNewTransferAuditModel {
 
-  def build(authenticatedUser: AuthenticatedUser): TransferStartedAuditModel =
-    TransferStartedAuditModel(authenticatedUser)
+  def build(authenticatedUser: AuthenticatedUser): StartNewTransferAuditModel =
+    StartNewTransferAuditModel(authenticatedUser)
 }

@@ -23,7 +23,7 @@ import models.authentication.{PsaId, PsaUser, PspId, PspUser}
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 
-class TransferStartedAuditModelSpec extends AnyFreeSpec with Matchers {
+class StartNewTransferAuditModelSpec extends AnyFreeSpec with Matchers {
 
   "must create correct minimal json for Individual and PSA" in {
 
@@ -42,7 +42,7 @@ class TransferStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "requesterIdentifier"       -> "21000005"
     )
 
-    val result = TransferStartedAuditModel.build(authenticatedUser)
+    val result = StartNewTransferAuditModel.build(authenticatedUser)
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
   }
@@ -64,7 +64,7 @@ class TransferStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "requesterIdentifier"       -> "21000005"
     )
 
-    val result = TransferStartedAuditModel.build(authenticatedUser)
+    val result = StartNewTransferAuditModel.build(authenticatedUser)
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
   }
@@ -94,7 +94,7 @@ class TransferStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "requesterIdentifier"       -> "21000005"
     )
 
-    val result = TransferStartedAuditModel.build(authenticatedUser)
+    val result = StartNewTransferAuditModel.build(authenticatedUser)
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
   }
