@@ -37,8 +37,6 @@ class TransferStartedAuditModelSpec extends AnyFreeSpec with Matchers {
     val expectedJson = Json.obj(
       "journey"                   -> "startNewTransferReport",
       "internalReportReferenceId" -> "testID",
-      "pensionSchemeName"         -> "",
-      "pensionSchemeTaxReference" -> "",
       "roleLoggedInAs"            -> "Psa",
       "affinityGroup"             -> "Individual",
       "requesterIdentifier"       -> "21000005"
@@ -61,8 +59,6 @@ class TransferStartedAuditModelSpec extends AnyFreeSpec with Matchers {
     val expectedJson = Json.obj(
       "journey"                   -> "startNewTransferReport",
       "internalReportReferenceId" -> "testID",
-      "pensionSchemeName"         -> "",
-      "pensionSchemeTaxReference" -> "",
       "roleLoggedInAs"            -> "Psp",
       "affinityGroup"             -> "Organisation",
       "requesterIdentifier"       -> "21000005"

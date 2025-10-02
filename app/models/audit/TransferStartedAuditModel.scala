@@ -18,17 +18,24 @@ package models.audit
 
 import models.audit.JourneyStartedType.StartNewTransfer
 import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 
 case class TransferStartedAuditModel(authenticatedUser: AuthenticatedUser) extends JsonAuditModel {
 
-  override val auditType: String = "OverseasPensionTransferReportStarted"
-
-  private val pensionSchemeName         = authenticatedUser.pensionSchemeDetails.map(_.schemeName).getOrElse("")
-  private val pstr                      = authenticatedUser.pensionSchemeDetails.map(_.pstrNumber.value).getOrElse("")
-  private val userRole                  = authenticatedUser.userType
+  override val auditType: String        = "OverseasPensionTransferReportStarted"
   // TODO UPDATE ID AFTER NICKS TICKET
   private val internalReportReferenceId = "testID"
+  private val userRole                  = authenticatedUser.userType
+
+  private val pensionSchemeName =
+    authenticatedUser.pensionSchemeDetails
+      .map(details => Json.obj("pensionSchemeName" -> details.schemeName))
+      .getOrElse(Json.obj())
+
+  private val pstr =
+    authenticatedUser.pensionSchemeDetails
+      .map(details => Json.obj("pensionSchemeTaxReference" -> details.pstrNumber.value))
+      .getOrElse(Json.obj())
 
   private val (userId, affinityGroup) = authenticatedUser match {
     case PsaUser(psaId, _, _, affinityGroup) => (psaId.value, affinityGroup)
@@ -38,12 +45,10 @@ case class TransferStartedAuditModel(authenticatedUser: AuthenticatedUser) exten
   override val detail: JsValue = Json.obj(
     "journey"                   -> StartNewTransfer.toString,
     "internalReportReferenceId" -> internalReportReferenceId,
-    "pensionSchemeName"         -> pensionSchemeName,
-    "pensionSchemeTaxReference" -> pstr,
     "roleLoggedInAs"            -> userRole,
     "affinityGroup"             -> affinityGroup,
     "requesterIdentifier"       -> userId
-  )
+  ) ++ pensionSchemeName ++ pstr
 }
 
 object TransferStartedAuditModel {
