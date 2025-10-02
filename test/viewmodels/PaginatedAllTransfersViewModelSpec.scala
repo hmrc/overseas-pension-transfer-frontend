@@ -23,14 +23,14 @@ import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers._
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate, ZoneOffset}
 import java.time.format.DateTimeFormatter
 
 class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
   implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
 
-  private def mkItem(idx: Int, date: LocalDate): AllTransfersItem =
+  private def mkItem(idx: Int, when: Instant): AllTransfersItem =
     AllTransfersItem(
       transferReference = Some(s"TR-$idx"),
       qtReference       = None,
@@ -39,10 +39,17 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       memberFirstName   = Some(s"Name$idx"),
       memberSurname     = Some("McUser"),
       submissionDate    = None,
-      lastUpdated       = Some(date),
+      lastUpdated       = Some(when),
       qtStatus          = None,
-      pstrNumber        = None
+      pstrNumber        = None,
+      qtDate            = None
     )
+
+  private def toInstant(d: LocalDate): Instant =
+    d.atStartOfDay(ZoneOffset.UTC).toInstant
+
+  private def toLocalDateUTC(i: Instant): LocalDate =
+    i.atZone(ZoneOffset.UTC).toLocalDate
 
   private def urlFor(n: Int): String = s"/dash?page=$n"
 
@@ -57,7 +64,7 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
   "PaginatedAllTransfersViewModel.build" - {
 
     "must return no pagination when there is only a single page" in {
-      val items    = (1 to 5).map(i => mkItem(i, LocalDate.of(2025, 1, i)))
+      val items    = (1 to 5).map(i => mkItem(i, toInstant(LocalDate.of(2025, 1, i))))
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
@@ -72,7 +79,7 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
     }
 
     "must return pagination with correct items, current page marking, and prev/next links" in {
-      val items    = (1 to 23).map(i => mkItem(i, LocalDate.of(2025, 1, i)))
+      val items    = (1 to 23).map(i => mkItem(i, toInstant(LocalDate.of(2025, 1, i))))
       val pageSize = 10
       val page     = 2
 
@@ -110,25 +117,26 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
         LocalDate.of(2025, 2, 28),
         LocalDate.of(2025, 1, 31)
       )
-      val items = dates.zipWithIndex.map { case (d, i) => mkItem(i + 1, d) }
+      val items = dates.zipWithIndex.map { case (d, i) => mkItem(i + 1, toInstant(d)) }
 
-      val vm           = PaginatedAllTransfersViewModel.build(
+      val vm = PaginatedAllTransfersViewModel.build(
         items      = items,
         page       = 1,
         pageSize   = 3,
         urlForPage = urlFor
       )
+
       val expectedTop3 = dates.sortBy(identity).reverse.take(3)
 
       val top3SortedItems = items.sorted.take(3)
-      val renderedTop3    = top3SortedItems.map(_.lastUpdatedDate.get)
+      val renderedTop3    = top3SortedItems.flatMap(_.lastUpdatedDate).map(toLocalDateUTC)
 
       renderedTop3 mustBe expectedTop3
       vm.table.rows.size mustBe 3
     }
 
     "must maintain strict descending order across pages" in {
-      val items    = (1 to 23).map(i => mkItem(i, LocalDate.of(2025, 1, i)))
+      val items    = (1 to 23).map(i => mkItem(i, toInstant(LocalDate.of(2025, 1, i))))
       val pageSize = 10
 
       val vmPage1 = PaginatedAllTransfersViewModel.build(

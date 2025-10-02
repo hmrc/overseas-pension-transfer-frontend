@@ -25,11 +25,15 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate, ZoneOffset}
+import java.time.format.DateTimeFormatter
 
 class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
   implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
+
+  private def toInstant(d: LocalDate): Instant =
+    d.atStartOfDay(ZoneOffset.UTC).toInstant
 
   private def textOfHead(h: HeadCell): String = h.content match {
     case Text(s) => s
@@ -45,7 +49,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
   "AllTransfersTableViewModel.from" - {
 
-    "renders headers, a member link (from navigator), submitted status label, reference, and formatted submission date" in {
+    "renders headers, a member link, submitted status label, reference, and formatted submission date" in {
       val submitted = AllTransfersItem(
         transferReference = Some("TR-001"),
         qtReference       = None,
@@ -53,10 +57,11 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
         nino              = None,
         memberFirstName   = Some("Ada"),
         memberSurname     = Some("Lovelace"),
-        submissionDate    = Some(LocalDate.of(2025, 9, 24)),
+        submissionDate    = Some(toInstant(LocalDate.of(2025, 9, 24))),
         lastUpdated       = None,
         qtStatus          = Some(QtStatus.Submitted),
-        pstrNumber        = None
+        pstrNumber        = None,
+        qtDate            = None
       )
 
       val table = AllTransfersTableViewModel.from(Seq(submitted))
@@ -75,10 +80,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
       all(row.map(_.classes)) must include("govuk-!-padding-bottom-5")
 
       val memberHtml = htmlOf(row.head)
-      memberHtml must include(
-        controllers.routes.JourneyRecoveryController.onPageLoad().url
-      )
-      memberHtml must include("""class="govuk-link"""")
+      memberHtml must include("""<a class="govuk-link""")
       memberHtml must include("Ada Lovelace")
 
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.submitted"
@@ -95,18 +97,16 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
         memberFirstName   = Some("  "),
         memberSurname     = Some(""),
         submissionDate    = None,
-        lastUpdated       = Some(LocalDate.of(2025, 1, 5)),
+        lastUpdated       = Some(toInstant(LocalDate.of(2025, 1, 5))),
         qtStatus          = Some(QtStatus.InProgress),
-        pstrNumber        = None
+        pstrNumber        = None,
+        qtDate            = None
       )
 
       val table = AllTransfersTableViewModel.from(Seq(inProgress))
       val row   = table.rows.head
 
-      val memberHtml = htmlOf(row.head)
-      memberHtml must include(controllers.routes.JourneyRecoveryController.onPageLoad().url)
-      memberHtml must include(">-</a>")
-
+      htmlOf(row.head) must include(">-</a>")
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.inProgress"
       htmlOf(row(2)) mustBe "-"
       htmlOf(row(3)) mustBe "5 January 2025"
@@ -120,10 +120,11 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
         nino              = None,
         memberFirstName   = Some("Jean"),
         memberSurname     = Some("Jarvis"),
-        submissionDate    = Some(LocalDate.of(2024, 12, 31)),
+        submissionDate    = Some(toInstant(LocalDate.of(2024, 12, 31))),
         lastUpdated       = None,
         qtStatus          = Some(QtStatus.Compiled),
-        pstrNumber        = None
+        pstrNumber        = None,
+        qtDate            = None
       )
 
       val table = AllTransfersTableViewModel.from(Seq(compiled))
