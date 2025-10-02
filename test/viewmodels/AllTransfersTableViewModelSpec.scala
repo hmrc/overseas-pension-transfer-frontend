@@ -45,7 +45,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
   "AllTransfersTableViewModel.from" - {
 
-    "renders headers, a dead member link, submitted status label, reference, and formatted submission date" in {
+    "renders headers, a member link (from navigator), submitted status label, reference, and formatted submission date" in {
       val submitted = AllTransfersItem(
         transferReference = Some("TR-001"),
         qtReference       = None,
@@ -75,7 +75,10 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
       all(row.map(_.classes)) must include("govuk-!-padding-bottom-5")
 
       val memberHtml = htmlOf(row.head)
-      memberHtml must include("""<a class="govuk-link" href="#">""")
+      memberHtml must include(
+        controllers.routes.JourneyRecoveryController.onPageLoad().url
+      )
+      memberHtml must include("""class="govuk-link"""")
       memberHtml must include("Ada Lovelace")
 
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.submitted"
@@ -100,7 +103,10 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
       val table = AllTransfersTableViewModel.from(Seq(inProgress))
       val row   = table.rows.head
 
-      htmlOf(row.head) must include(">-</a>")
+      val memberHtml = htmlOf(row.head)
+      memberHtml must include(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+      memberHtml must include(">-</a>")
+
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.inProgress"
       htmlOf(row(2)) mustBe "-"
       htmlOf(row(3)) mustBe "5 January 2025"

@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import models.UserAnswers
+import models.{PstrNumber, UserAnswers}
 import models.requests.{DataRequest, DisplayRequest, IdentifierRequest}
 import org.mockito.Mockito._
 import org.scalatest.freespec.AnyFreeSpec
@@ -59,7 +59,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "when there is data in the cache" - {
 
       "must build a userAnswers, memberName, qtNumber and dateTransferSubmitted object and add it to the request" in {
-        val userAnswers = UserAnswers("id")
+        val userAnswers = UserAnswers("id", PstrNumber("12345678AB"))
 
         val sessionRepository = mock[SessionRepository]
         when(sessionRepository.get("id")) thenReturn Future(Some(userAnswers))

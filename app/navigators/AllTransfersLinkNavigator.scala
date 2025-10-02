@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package pages
+package navigators
 
 import controllers.routes
-import models.{NormalMode, PstrNumber, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import models.AllTransfersItem
+import models.QtStatus.{Compiled, InProgress, Submitted}
+import play.api.mvc.Call
 
-class PsaDeclarationPageSpec extends AnyFreeSpec with Matchers {
+object AllTransfersLinkNavigator {
 
-  ".nextPage" - {
-
-    val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
-
-    "in Normal Mode" - {
-
-      "must go to submission screen on successful submission" in {
-        PsaDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
-      }
+  // TODO: Wire real destinations when pages/controllers exist.
+  def linkFor(item: AllTransfersItem): Call =
+    item.qtStatus match {
+      case Some(InProgress)           => routes.JourneyRecoveryController.onPageLoad()
+      case Some(Submitted | Compiled) => routes.JourneyRecoveryController.onPageLoad()
+      case _                          => routes.DashboardController.onPageLoad()
     }
-  }
 }

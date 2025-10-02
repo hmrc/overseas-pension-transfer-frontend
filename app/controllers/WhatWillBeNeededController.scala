@@ -48,7 +48,7 @@ class WhatWillBeNeededController @Inject() (
 
       case None =>
         for {
-          newUa     <- Future.fromTry(UserAnswers.initialise(id))
+          newUa     <- Future.fromTry(UserAnswers.initialise(id, request.authenticatedUser.pensionSchemeDetails.get.pstrNumber))
           persisted <- sessionRepository.set(newUa)
         } yield {
           if (persisted) {

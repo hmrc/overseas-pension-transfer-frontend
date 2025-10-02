@@ -16,7 +16,7 @@
 
 package queries
 
-import models.{TaskCategory, UserAnswers}
+import models.{PstrNumber, TaskCategory, UserAnswers}
 import models.taskList.TaskStatus
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -25,7 +25,7 @@ class TaskStatusQuerySpec extends AnyFreeSpec with Matchers {
 
   "TaskStatusQuery" - {
     "should write and read at category.status" in {
-      val ua0 = UserAnswers("id-1")
+      val ua0 = UserAnswers("id-1", PstrNumber("12345678AB"))
       val q   = TaskStatusQuery(TaskCategory.MemberDetails)
 
       val ua1 = ua0.set(q, TaskStatus.InProgress).get
@@ -35,7 +35,7 @@ class TaskStatusQuerySpec extends AnyFreeSpec with Matchers {
     }
 
     "setting one category should not affect another" in {
-      val ua0 = UserAnswers("id-2")
+      val ua0 = UserAnswers("id-2", PstrNumber("12345678AB"))
       val mQ  = TaskStatusQuery(TaskCategory.MemberDetails)
       val tQ  = TaskStatusQuery(TaskCategory.TransferDetails)
 
@@ -47,7 +47,7 @@ class TaskStatusQuerySpec extends AnyFreeSpec with Matchers {
 
     "remove should prune the status key and be idempotent" in {
       val q   = TaskStatusQuery(TaskCategory.MemberDetails)
-      val ua1 = UserAnswers("id-3").set(q, TaskStatus.InProgress).get
+      val ua1 = UserAnswers("id-3", PstrNumber("12345678AB")).set(q, TaskStatus.InProgress).get
       val ua2 = ua1.remove(q).get
       val ua3 = ua2.remove(q).get
 
