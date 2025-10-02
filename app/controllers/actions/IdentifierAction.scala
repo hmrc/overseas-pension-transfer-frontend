@@ -19,11 +19,10 @@ package controllers.actions
 import controllers.auth.routes
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.PensionSchemeConnector
-import models.authentication.{AuthenticatedUser, Psa, PsaUser, Psp, PspUser}
+import models.authentication.AuthenticatedUser
 import models.requests.IdentifierRequest
 import play.api.Logging
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, internalId}
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
@@ -51,10 +50,10 @@ class IdentifierActionImpl @Inject() (
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised(predicate).retrieve(internalId and allEnrolments) {
-      case optInternalId ~ enrolments =>
+    authorised(predicate).retrieve(internalId and allEnrolments and affinityGroup) {
+      case optInternalId ~ enrolments ~ Some(affinityGroup) =>
         val internalId                           = getOrElseFailWithUnauthorised(optInternalId, "Unable to retrieve internalId")
-        val authenticatedUser: AuthenticatedUser = extractUser(enrolments, config, internalId)
+        val authenticatedUser: AuthenticatedUser = extractUser(enrolments, config, internalId, affinityGroup)
         block(IdentifierRequest(request, authenticatedUser))
     } recover handleAuthException
   }

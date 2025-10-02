@@ -17,8 +17,8 @@
 package models.authentication
 
 import models.PensionSchemeDetails
+import uk.gov.hmrc.auth.core.AffinityGroup
 
-//Add Scheme Details in here - Scheme Name and SchemeId/SRN
 sealed trait AuthenticatedUser {
   def internalId: String
   def userType: UserType
@@ -27,13 +27,23 @@ sealed trait AuthenticatedUser {
   def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser
 }
 
-case class PsaUser(psaId: PsaId, internalId: String, pensionSchemeDetails: Option[PensionSchemeDetails] = None) extends AuthenticatedUser {
+case class PsaUser(
+    psaId: PsaId,
+    internalId: String,
+    pensionSchemeDetails: Option[PensionSchemeDetails] = None,
+    affinityGroup: AffinityGroup
+  ) extends AuthenticatedUser {
   override val userType: UserType = Psa
 
   override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
 }
 
-case class PspUser(pspId: PspId, internalId: String, pensionSchemeDetails: Option[PensionSchemeDetails] = None) extends AuthenticatedUser {
+case class PspUser(
+    pspId: PspId,
+    internalId: String,
+    pensionSchemeDetails: Option[PensionSchemeDetails] = None,
+    affinityGroup: AffinityGroup
+  ) extends AuthenticatedUser {
   override val userType: UserType = Psp
 
   override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))

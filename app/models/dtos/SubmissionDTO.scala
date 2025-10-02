@@ -32,14 +32,14 @@ object SubmissionDTO {
 
   def fromRequest(authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, maybePsaId: Option[PsaId]): SubmissionDTO =
     authenticatedUser match {
-      case PsaUser(psaId, internalId, _) =>
+      case PsaUser(psaId, internalId, _, _) =>
         PsaSubmissionDTO(
           referenceId = internalId,
           userId      = psaId,
           lastUpdated = userAnswers.lastUpdated
         )
 
-      case PspUser(pspId, internalId, _s) =>
+      case PspUser(pspId, internalId, _s, _) =>
         PspSubmissionDTO(
           referenceId = internalId,
           userId      = pspId,
