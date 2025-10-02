@@ -31,7 +31,12 @@ trait AuthSupport extends Logging {
         or Enrolment(config.pspEnrolment.serviceName))
   }
 
-  def extractUser(enrolments: Enrolments, config: FrontendAppConfig, internalId: String): AuthenticatedUser = {
+  def extractUser(
+      enrolments: Enrolments,
+      config: FrontendAppConfig,
+      internalId: String,
+      affinityGroup: AffinityGroup
+    ): AuthenticatedUser = {
     val matched = enrolments.enrolments.collectFirst {
       case e if e.key == config.psaEnrolment.serviceName => (e, config.psaEnrolment, Psa)
       case e if e.key == config.pspEnrolment.serviceName => (e, config.pspEnrolment, Psp)
@@ -44,8 +49,8 @@ trait AuthSupport extends Logging {
       .getOrElse(throw new RuntimeException(s"Missing identifier for ${enrolment.key}"))
 
     userType match {
-      case Psa => PsaUser(PsaId(id), internalId)
-      case Psp => PspUser(PspId(id), internalId)
+      case Psa => PsaUser(PsaId(id), internalId, affinityGroup = affinityGroup)
+      case Psp => PspUser(PspId(id), internalId, affinityGroup = affinityGroup)
     }
   }
 

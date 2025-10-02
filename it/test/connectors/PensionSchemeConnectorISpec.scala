@@ -23,6 +23,7 @@ import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.test.Injecting
 import stubs.PensionSchemeStub
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
 
@@ -32,8 +33,8 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
   val pstr: String     = "24000040IN"
   val schemeNm: String = "Open Scheme Overview API Test"
 
-  val psaUser: AuthenticatedUser = PsaUser(PsaId("A2100005"), "ext-psa", None)
-  val pspUser: AuthenticatedUser = PspUser(PspId("21000005"), "ext-psp", None)
+  val psaUser: AuthenticatedUser = PsaUser(PsaId("A2100005"), "ext-psa", None, Individual)
+  val pspUser: AuthenticatedUser = PspUser(PspId("21000005"), "ext-psp", None, Individual)
 
   "PensionSchemeConnector.checkAssociation" when {
     "checking association status" must {

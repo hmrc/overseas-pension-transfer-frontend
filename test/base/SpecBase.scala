@@ -40,6 +40,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, FormatStyle}
@@ -61,11 +62,11 @@ trait SpecBase
 
   val psaId: PsaId = PsaId("A123456")
 
-  val psaUser: PsaUser = PsaUser(psaId, internalId = userAnswersId)
+  val psaUser: PsaUser = PsaUser(psaId, internalId = userAnswersId, affinityGroup = Individual)
 
   val pspId = PspId("X7654321")
 
-  val pspUser: PspUser = PspUser(pspId, internalId = userAnswersId)
+  val pspUser: PspUser = PspUser(pspId, internalId = userAnswersId, affinityGroup = Individual)
 
   val schemeDetails = PensionSchemeDetails(
     SrnNumber("S1234567"),

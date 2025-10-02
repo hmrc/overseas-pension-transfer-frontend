@@ -32,6 +32,7 @@ import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import views.html.SubmitToHMRCView
 
 import scala.concurrent.Future
@@ -148,7 +149,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val pspUser = PspUser(PspId("A123456"), "userInternalId")
+      val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)
 
       val cc = stubControllerComponents()
 
@@ -180,7 +181,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val pspUser = PspUser(PspId("A123456"), "userInternalId")
+      val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)
 
       val cc = stubControllerComponents()
 
