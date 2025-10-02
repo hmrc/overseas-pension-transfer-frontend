@@ -60,7 +60,8 @@ class WhatWillBeNeededController @Inject() (
         Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad()))
 
       case None =>
-        val newUa = UserAnswers(sessionData.transferId)
+        //TODO remove .get
+        val newUa = UserAnswers(sessionData.transferId, request.authenticatedUser.pensionSchemeDetails.get.pstrNumber)
 
         for {
           updatedSessionData <- Future.fromTry(SessionData.initialise(sessionData))

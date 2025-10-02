@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.assets.{CashMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
 import queries.assets.AssetCompletionFlag
@@ -29,7 +29,7 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers("id")
+    val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
 
