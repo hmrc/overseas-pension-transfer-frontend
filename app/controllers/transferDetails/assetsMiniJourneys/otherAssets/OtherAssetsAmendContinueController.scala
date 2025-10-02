@@ -24,7 +24,7 @@ import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendCont
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.AssetsMiniJourneyService
+import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
@@ -38,7 +38,7 @@ class OtherAssetsAmendContinueController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     formProvider: OtherAssetsAmendContinueFormProvider,
-    sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
     view: OtherAssetsAmendContinueView
@@ -56,11 +56,11 @@ class OtherAssetsAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedSessionData <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Other, completed = true))
-            _                  <- sessionRepository.set(updatedSessionData)
+            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
 
           } yield {
-            val shares = OtherAssetsAmendContinueSummary.rows(request.userAnswers)
+            val shares = OtherAssetsAmendContinueSummary.rows(updatedAnswers)
             Ok(view(preparedForm, shares, mode))
           }
         case NormalMode =>
@@ -78,12 +78,12 @@ class OtherAssetsAmendContinueController @Inject() (
         },
         continue => {
           for {
-            sd <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Other, completed = true))
-            _  <- sessionRepository.set(sd)
-            ua <- Future.fromTry(request.userAnswers.set(OtherAssetsAmendContinuePage, continue))
+            ua  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
+            ua1 <- Future.fromTry(ua.set(OtherAssetsAmendContinuePage, continue))
+            _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(OtherAssetsAmendContinuePage.nextPageWith(mode, ua, nextIndex))
+            Redirect(OtherAssetsAmendContinuePage.nextPageWith(mode, ua1, nextIndex))
           }
         }
       )

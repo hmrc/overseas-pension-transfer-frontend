@@ -44,15 +44,15 @@ object AssetsMiniJourneyService {
 
   def removeAssetEntry[A <: AssetEntry: Format](
       journey: RepeatingAssetsMiniJourney[A],
-      sessionData: SessionData,
+      userAnswers: UserAnswers,
       index: Int
-    ): Try[SessionData] = {
+    ): Try[UserAnswers] = {
     val queryKey = journey.query
 
-    sessionData.get(queryKey) match {
+    userAnswers.get(queryKey) match {
       case Some(currentList) if index >= 0 && index < currentList.size =>
         val updatedList = currentList.patch(index, Nil, 1)
-        sessionData.set(queryKey, updatedList)
+        userAnswers.set(queryKey, updatedList)
 
       case Some(_) =>
         Failure(new IndexOutOfBoundsException(s"Index $index out of bounds"))
@@ -62,11 +62,11 @@ object AssetsMiniJourneyService {
     }
   }
 
-  def removeAllAssetEntriesExceptCash(sessionData: SessionData): Try[SessionData] = {
+  def removeAllAssetEntriesExceptCash(userAnswers: UserAnswers): Try[UserAnswers] = {
     val journeysWithoutCash = AssetsMiniJourneyRegistry.all.filterNot(_.assetType == Cash)
 
     val clearedData =
-      journeysWithoutCash.foldLeft(Try(sessionData)) {
+      journeysWithoutCash.foldLeft(Try(userAnswers)) {
         case (acc, assetMiniJ) =>
           acc.flatMap { sd =>
             AssetsMiniJourneyRegistry.forType(assetMiniJ.assetType) match {
@@ -78,10 +78,10 @@ object AssetsMiniJourneyService {
       }
 
     for {
-      sd1 <- clearedData
-      sd2 <- sd1.set(SelectedAssetTypes, Seq[TypeOfAsset](Cash))
-      sd3 <- clearAllAssetCompletionFlags(sd2)
-    } yield sd3
+      ua1 <- clearedData
+      ua2 <- ua1.set(SelectedAssetTypes, Seq[TypeOfAsset](Cash))
+      ua3 <- clearAllAssetCompletionFlags(ua2)
+    } yield ua3
   }
 
   // ----- Single-asset helpers (Cash) -----
@@ -107,15 +107,15 @@ object AssetsMiniJourneyService {
 
   // ----- Shared helpers -----
 
-  def setAssetCompleted(sessionData: SessionData, assetType: TypeOfAsset, completed: Boolean): Try[SessionData] =
-    sessionData.set(AssetCompletionFlag(assetType), completed)
+  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean): Try[UserAnswers] =
+    userAnswers.set(AssetCompletionFlag(assetType), completed)
 
-  def setSelectedAssetsIncomplete(sd: SessionData, selectedAssets: Seq[TypeOfAsset]): Try[SessionData] =
-    selectedAssets.foldLeft(Try(sd)) {
+  def setSelectedAssetsIncomplete(userAnswers: UserAnswers, selectedAssets: Seq[TypeOfAsset]): Try[UserAnswers] =
+    selectedAssets.foldLeft(Try(userAnswers)) {
       case (Success(ua), assetType) =>
-        setAssetCompleted(sd, assetType, completed = false)
+        setAssetCompleted(ua, assetType, completed = false)
     }
 
-  def clearAllAssetCompletionFlags(sessionData: SessionData): Try[SessionData] =
-    sessionData.remove(AssetCompletionFlags)
+  def clearAllAssetCompletionFlags(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(AssetCompletionFlags)
 }

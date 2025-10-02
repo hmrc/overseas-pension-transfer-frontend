@@ -63,7 +63,7 @@ class WhatWillBeNeededController @Inject() (
         val newUa = UserAnswers(sessionData.transferId)
 
         for {
-          updatedSessionData <- Future.fromTry(UserAnswers.initialise(sessionData))
+          updatedSessionData <- Future.fromTry(SessionData.initialise(sessionData))
           persisted          <- sessionRepository.set(updatedSessionData)
           _                  <- userAnswersService.setExternalUserAnswers(newUa)
         } yield {

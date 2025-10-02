@@ -16,10 +16,12 @@
 
 package models
 
+import models.TaskCategory.{MemberDetails, QROPSDetails, SchemeManagerDetails, SubmissionDetails, TransferDetails}
 import models.authentication.AuthenticatedUser
+import models.taskList.TaskStatus.{CannotStart, NotStarted}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import queries.{Gettable, Settable}
+import queries.{Gettable, Settable, TaskStatusQuery}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
@@ -118,4 +120,13 @@ object SessionData {
   )(session => (session.sessionId, session.transferId, session.schemeInformation, session.user, session.data, session.lastUpdated))
 
   implicit val format: Format[SessionData] = Format[SessionData](reads, writes)
+
+  def initialise(sd: SessionData): Try[SessionData] =
+    for {
+      sd1 <- sd.set(TaskStatusQuery(MemberDetails), NotStarted)
+      sd2 <- sd1.set(TaskStatusQuery(QROPSDetails), CannotStart)
+      sd3 <- sd2.set(TaskStatusQuery(SchemeManagerDetails), CannotStart)
+      sd4 <- sd3.set(TaskStatusQuery(TransferDetails), CannotStart)
+      sd5 <- sd4.set(TaskStatusQuery(SubmissionDetails), CannotStart)
+    } yield sd5
 }

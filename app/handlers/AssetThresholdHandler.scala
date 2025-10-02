@@ -32,9 +32,9 @@ class AssetThresholdHandler {
   )
 
   /** Get count of assets of given type */
-  def getAssetCount(sessionData: SessionData, assetType: TypeOfAsset): Int =
+  def getAssetCount(userAnswers: UserAnswers, assetType: TypeOfAsset): Int =
     assetChecks.get(assetType).map { case (assetKey, _) =>
-      (sessionData.data \ "transferDetails" \ assetKey)
+      (userAnswers.data \ "transferDetails" \ assetKey)
         .asOpt[Seq[JsValue]]
         .map(_.size)
         .getOrElse(0)
@@ -45,14 +45,14 @@ class AssetThresholdHandler {
     *   - count == threshold → userSelection (or false if not provided)
     */
   def handle(
-      sessionData: SessionData,
+      userAnswers: UserAnswers,
       assetType: TypeOfAsset,
       userSelection: Option[Boolean] = None
-    ): SessionData = {
+    ): UserAnswers = {
 
     assetChecks.get(assetType) match {
       case Some((_, flagKey)) =>
-        val assetCount = getAssetCount(sessionData, assetType)
+        val assetCount = getAssetCount(userAnswers, assetType)
 
         val flag = assetCount match {
           case count if count < AssetThresholdLimit  => false
@@ -60,13 +60,13 @@ class AssetThresholdHandler {
           case _                                     => false
         }
 
-        val updatedData = sessionData.data
+        val updatedData = userAnswers.data
           .setObject(JsPath \ "transferDetails" \ flagKey, Json.toJson(flag))
-          .getOrElse(sessionData.data)
+          .getOrElse(userAnswers.data)
 
-        sessionData.copy(data = updatedData)
+        userAnswers.copy(data = updatedData)
 
-      case None => sessionData
+      case None => userAnswers
     }
   }
 }

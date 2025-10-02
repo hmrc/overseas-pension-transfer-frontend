@@ -99,27 +99,18 @@ final case class UserAnswers(
 object UserAnswers {
 
   def buildMinimal[A](
-      original: SessionData,
+      original: UserAnswers,
       page: Settable[A] with Gettable[A]
     )(implicit reads: Reads[A],
       writes: Writes[A],
       mf: Manifest[A]
-    ): Try[SessionData] =
+    ): Try[UserAnswers] =
     original.getWithLogging(page) match {
       case Right(value) =>
         original.copy(data = Json.obj()).set(page, value)
       case Left(error)  =>
         Failure(error)
     }
-
-  def initialise(sd: SessionData): Try[SessionData] =
-    for {
-      sd1 <- sd.set(TaskStatusQuery(MemberDetails), NotStarted)
-      sd2 <- sd1.set(TaskStatusQuery(QROPSDetails), CannotStart)
-      sd3 <- sd2.set(TaskStatusQuery(SchemeManagerDetails), CannotStart)
-      sd4 <- sd3.set(TaskStatusQuery(TransferDetails), CannotStart)
-      sd5 <- sd4.set(TaskStatusQuery(SubmissionDetails), CannotStart)
-    } yield sd5
 
   val reads: Reads[UserAnswers] = {
 
