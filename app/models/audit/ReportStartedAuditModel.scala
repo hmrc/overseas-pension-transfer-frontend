@@ -16,11 +16,15 @@
 
 package models.audit
 
-import models.audit.JourneyStartedType.StartNewTransfer
+import models.AllTransfersItem
 import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
 import play.api.libs.json.{JsValue, Json}
 
-case class StartNewTransferAuditModel(authenticatedUser: AuthenticatedUser) extends JsonAuditModel {
+case class ReportStartedAuditModel(
+    authenticatedUser: AuthenticatedUser,
+    journey: JourneyStartedType,
+    allTransfersItem: Option[AllTransfersItem]
+  ) extends JsonAuditModel {
 
   override val auditType: String        = "OverseasPensionTransferReportStarted"
   // TODO UPDATE ID AFTER NICKS TICKET
@@ -42,17 +46,47 @@ case class StartNewTransferAuditModel(authenticatedUser: AuthenticatedUser) exte
     case PspUser(pspId, _, _, affinityGroup) => (pspId.value, affinityGroup)
   }
 
+  private val memberFirstName =
+    allTransfersItem
+      .map(item => {
+        val name: String = item.memberFirstName.getOrElse("")
+        Json.obj("memberFirstName" -> name)
+      }).getOrElse(Json.obj())
+
+  private val memberSurname =
+    allTransfersItem
+      .map(item => {
+        val surname: String = item.memberSurname.getOrElse("")
+        Json.obj("memberSurname" -> surname)
+      }).getOrElse(Json.obj())
+
+  private val memberNino =
+    allTransfersItem
+      .map(item => {
+        val nino: String = item.nino.getOrElse("")
+        Json.obj("memberNino" -> nino)
+      }).getOrElse(Json.obj())
+
+  private val qtNumber =
+    allTransfersItem.flatMap(_.qtReference)
+      .map(qt => Json.obj("overseasPensionTransferReportReference" -> qt.value))
+      .getOrElse(Json.obj())
+
   override val detail: JsValue = Json.obj(
-    "journey"                   -> StartNewTransfer.toString,
+    "journey"                   -> journey.toString,
     "internalReportReferenceId" -> internalReportReferenceId,
     "roleLoggedInAs"            -> userRole,
     "affinityGroup"             -> affinityGroup,
     "requesterIdentifier"       -> userId
-  ) ++ pensionSchemeName ++ pstr
+  ) ++ pensionSchemeName ++ pstr ++ memberFirstName ++ memberSurname ++ memberNino ++ qtNumber
 }
 
-object StartNewTransferAuditModel {
+object ReportStartedAuditModel {
 
-  def build(authenticatedUser: AuthenticatedUser): StartNewTransferAuditModel =
-    StartNewTransferAuditModel(authenticatedUser)
+  def build(
+      authenticatedUser: AuthenticatedUser,
+      journey: JourneyStartedType,
+      allTransfersItem: Option[AllTransfersItem]
+    ): ReportStartedAuditModel =
+    ReportStartedAuditModel(authenticatedUser, journey, allTransfersItem)
 }

@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package audit
+package services
 
 import config.FrontendAppConfig
-import models.audit.StartNewTransferAuditModel
+import models.audit.{JourneyStartedType, ReportStartedAuditModel}
 import models.authentication.{PsaId, PsaUser}
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
-import services.AuditService
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -34,7 +34,7 @@ import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar {
+class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
 
   private val mockAuditConnector: AuditConnector    = mock[AuditConnector]
   private val mockAppConfig                         = mock[FrontendAppConfig]
@@ -50,29 +50,38 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar {
     Individual
   )
 
+  override def beforeEach(): Unit = {
+    Mockito.reset(mockAuditConnector)
+    Mockito.reset(mockAppConfig)
+    super.beforeEach()
+  }
+
   ".sendAudit" - {
 
-    "must send an event to the audit connector for OverseasPensionTransferReportStarted" in {
-      val eventModel = StartNewTransferAuditModel(authenticatedUser)
+    JourneyStartedType.values.foreach {
+      journey =>
+        s"must send an event to the audit connector for $journey event type" in {
+          val eventModel = ReportStartedAuditModel(authenticatedUser, journey, None)
 
-      when(mockAppConfig.appName).thenReturn(appName)
-      service.audit(eventModel)
-      val eventCaptor: ArgumentCaptor[ExtendedDataEvent] = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+          when(mockAppConfig.appName).thenReturn(appName)
+          service.audit(eventModel)
+          val eventCaptor: ArgumentCaptor[ExtendedDataEvent] = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
 
-      verify(mockAuditConnector, times(1)).sendExtendedEvent(eventCaptor.capture())(any(), any())
+          verify(mockAuditConnector, times(1)).sendExtendedEvent(eventCaptor.capture())(any(), any())
 
-      val expectedJson = Json.obj(
-        "journey"                   -> "startNewTransferReport",
-        "internalReportReferenceId" -> "testID",
-        "roleLoggedInAs"            -> "Psa",
-        "affinityGroup"             -> "Individual",
-        "requesterIdentifier"       -> "21000005"
-      )
+          val expectedJson = Json.obj(
+            "journey"                   -> journey.toString,
+            "internalReportReferenceId" -> "testID",
+            "roleLoggedInAs"            -> "Psa",
+            "affinityGroup"             -> "Individual",
+            "requesterIdentifier"       -> "21000005"
+          )
 
-      val event = eventCaptor.getValue
-      event.auditSource mustEqual appName
-      event.auditType mustEqual "OverseasPensionTransferReportStarted"
-      event.detail mustEqual expectedJson
+          val event = eventCaptor.getValue
+          event.auditSource mustEqual appName
+          event.auditType mustEqual "OverseasPensionTransferReportStarted"
+          event.detail mustEqual expectedJson
+        }
     }
   }
 }
