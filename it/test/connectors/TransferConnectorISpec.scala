@@ -25,7 +25,7 @@ import org.scalatest.OptionValues
 import play.api.test.Injecting
 import stubs.TransferBackendStub
 
-import java.time.LocalDate
+import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues {
@@ -52,7 +52,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
             first.memberFirstName.value   shouldBe "David"
             first.memberSurname.value     shouldBe "Warne"
             first.nino.value              shouldBe "AA000000A"
-            first.submissionDate.value    shouldBe LocalDate.of(2025, 3, 14)
+            first.submissionDate.value    shouldBe Instant.parse("2025-03-14T00:00:00Z")
             first.lastUpdated             shouldBe empty
             first.qtStatus.value          shouldBe Submitted
             first.pstrNumber.value        shouldBe pstr
