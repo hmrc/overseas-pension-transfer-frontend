@@ -34,10 +34,10 @@ class UserAnswersService @Inject() (
   )(implicit ec: ExecutionContext
   ) extends Logging {
 
-  def getExternalUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
-    connector.getAnswers(userAnswers.id) map {
+  def getExternalUserAnswers(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
+    connector.getAnswers(sessionData.transferId) map {
       case Right(userAnswersDTO)             => Right(toUserAnswers(userAnswersDTO))
-      case Left(UserAnswersNotFoundResponse) => Right(UserAnswers(userAnswers.id, userAnswers.pstr))
+      case Left(UserAnswersNotFoundResponse) => Right(UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber))
       case Left(error)                       => Left(error)
     }
   }

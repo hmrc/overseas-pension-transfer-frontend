@@ -100,7 +100,8 @@ final case class UserAnswers(
 object UserAnswers {
 
   def buildMinimal[A](
-      original: UserAnswers,
+      original: SessionData,
+      answers: UserAnswers,
       page: Settable[A] with Gettable[A]
     )(implicit reads: Reads[A],
       writes: Writes[A],
@@ -108,7 +109,9 @@ object UserAnswers {
     ): Try[UserAnswers] =
     original.getWithLogging(page) match {
       case Right(value) =>
-        original.copy(data = Json.obj()).set(page, value)
+        println("\n----\nvalue = " + value + "\n----\n")
+        println("\n----\nsetValue = " + answers.copy(data = Json.obj()).set(page, value) + "\n----\n")
+        answers.copy(data = Json.obj()).set(page, value)
       case Left(error)  =>
         Failure(error)
     }

@@ -16,17 +16,17 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import models.{Mode, UserAnswers}
+import models.{Mode, SessionData, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case object UnquotedSharesSummary {
 
-  def rows(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val companyNameRow: Option[SummaryListRow]   = UnquotedSharesCompanyNameSummary.row(mode, userAnswers, index)
-    val valueRow: Option[SummaryListRow]         = UnquotedSharesValueSummary.row(mode, userAnswers, index)
-    val quantityRow: Option[SummaryListRow]      = UnquotedSharesNumberSummary.row(mode, userAnswers, index)
-    val classOfSharesRow: Option[SummaryListRow] = UnquotedSharesClassSummary.row(mode, userAnswers, index)
+  def rows(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val companyNameRow: Option[SummaryListRow]   = UnquotedSharesCompanyNameSummary.row(mode, sessionData, index)
+    val valueRow: Option[SummaryListRow]         = UnquotedSharesValueSummary.row(mode, sessionData, index)
+    val quantityRow: Option[SummaryListRow]      = UnquotedSharesNumberSummary.row(mode, sessionData, index)
+    val classOfSharesRow: Option[SummaryListRow] = UnquotedSharesClassSummary.row(mode, sessionData, index)
 
     Seq(companyNameRow, valueRow, quantityRow, classOfSharesRow).flatten
   }

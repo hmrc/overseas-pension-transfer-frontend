@@ -28,53 +28,58 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MoreAssetCompletionService @Inject() (
     assetThresholdHandler: AssetThresholdHandler,
+    sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) {
 
   def completeAsset(
       userAnswers: UserAnswers,
+      sessionData: SessionData,
       assetType: TypeOfAsset,
       completed: Boolean,
       userSelection: Option[Boolean] = None
     )(implicit hc: HeaderCarrier
-    ): Future[UserAnswers] = {
+    ): Future[SessionData] = {
 
     for {
       // Step 1: mark asset completed
-      updatedAnswers <- Future.fromTry(
-                          AssetsMiniJourneyService.setAssetCompleted(userAnswers, assetType, completed)
+      updatedSession <- Future.fromTry(
+                          AssetsMiniJourneyService.setAssetCompleted(sessionData, assetType, completed)
                         )
 
-      // Step 2: enrich with threshold flags
-      enrichedAnswers = assetThresholdHandler.handle(updatedAnswers, assetType, userSelection)
+      // Step 2 Update Session with Completed Flag
+      _              <- sessionRepository.set(updatedSession)
 
-      // Step 3: build minimal model for Sessiom
-      minimalAnswers = buildMinimal(enrichedAnswers, assetType)
+      // Step 3: enrich with threshold flags
+      enrichedAnswers = assetThresholdHandler.handle(userAnswers, assetType, userSelection)
 
-      // Step 4: persist minimal model Sessiom + enriched full copy Session
+      // Step 4: build minimal model for Save For Later
+      minimalAnswers = buildMinimal(enrichedAnswers, sessionData, assetType)
+
+      // Step 5: persist minimal model SaveForLater + enriched full copy Session
       _ <- userAnswersService.setExternalUserAnswers(assetThresholdHandler.handle(minimalAnswers, assetType, userSelection))
 
-    } yield enrichedAnswers
+    } yield updatedSession
   }
 
   /** Choose correct query for the given asset type and build minimal model */
-  private def buildMinimal(userAnswers: UserAnswers, assetType: TypeOfAsset): UserAnswers = {
+  private def buildMinimal(userAnswers: UserAnswers, sessionData: SessionData, assetType: TypeOfAsset): UserAnswers = {
     assetType match {
       case TypeOfAsset.Property =>
-        UserAnswers.buildMinimal(userAnswers, PropertyQuery)
+        UserAnswers.buildMinimal(sessionData, userAnswers, PropertyQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.Other =>
-        UserAnswers.buildMinimal(userAnswers, OtherAssetsQuery)
+        UserAnswers.buildMinimal(sessionData, userAnswers, OtherAssetsQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.QuotedShares =>
-        UserAnswers.buildMinimal(userAnswers, QuotedSharesQuery)
+        UserAnswers.buildMinimal(sessionData, userAnswers, QuotedSharesQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.UnquotedShares =>
-        UserAnswers.buildMinimal(userAnswers, UnquotedSharesQuery)
+        UserAnswers.buildMinimal(sessionData, userAnswers, UnquotedSharesQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.Cash =>

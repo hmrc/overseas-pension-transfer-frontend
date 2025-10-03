@@ -63,14 +63,15 @@ class MorePropertyDeclarationController @Inject() (
       mode match {
         case CheckMode =>
           for {
-            updatedAnswers <- Future.fromTry(
+            updatedSession <- Future.fromTry(
                                 AssetsMiniJourneyService.setAssetCompleted(
-                                  request.userAnswers,
+                                  request.sessionData,
                                   TypeOfAsset.Property,
                                   completed = false
                                 )
                               )
-          } yield renderView(updatedAnswers)
+            _              <- sessionRepository.set(updatedSession)
+          } yield renderView(request.userAnswers)
 
         case NormalMode =>
           Future.successful(renderView(request.userAnswers))
@@ -86,9 +87,10 @@ class MorePropertyDeclarationController @Inject() (
         },
         continue => {
           for {
-            userAnswers                <- Future.fromTry(request.userAnswers.set(MorePropertyDeclarationPage, continue))
-            userAnswersAfterCompletion <- moreAssetCompletionService.completeAsset(userAnswers, TypeOfAsset.Property, completed = true, Some(continue))
-          } yield TypeOfAssetNavigator.getNextAssetRoute(userAnswersAfterCompletion) match {
+            userAnswers            <- Future.fromTry(request.userAnswers.set(MorePropertyDeclarationPage, continue))
+            sessionAfterCompletion <-
+              moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.Property, completed = true, Some(continue))
+          } yield TypeOfAssetNavigator.getNextAssetRoute(sessionAfterCompletion) match {
             case Some(route) => Redirect(route)
             case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
           }

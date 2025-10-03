@@ -38,6 +38,7 @@ class UnquotedSharesAmendContinueController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     userAnswersService: UserAnswersService,
+    sessionRepository: SessionRepository,
     formProvider: UnquotedSharesAmendContinueFormProvider,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: UnquotedSharesMiniJourney.type,
@@ -49,16 +50,17 @@ class UnquotedSharesAmendContinueController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
-      val preparedForm = request.userAnswers.get(UnquotedSharesAmendContinuePage) match {
+      val preparedForm = request.sessionData.get(UnquotedSharesAmendContinuePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true))
+            updatedSession <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.UnquotedShares, completed = true))
+            _              <- sessionRepository.set(updatedSession)
           } yield {
-            val shares = UnquotedSharesAmendContinueSummary.rows(updatedAnswers)
+            val shares = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
             Ok(view(preparedForm, shares, mode))
           }
         case NormalMode =>
@@ -76,12 +78,13 @@ class UnquotedSharesAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.UnquotedShares, completed = true))
+            sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.UnquotedShares, completed = true))
+            _   <- sessionRepository.set(sd)
             ua1 <- Future.fromTry(request.userAnswers.set(UnquotedSharesAmendContinuePage, continue))
             _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(UnquotedSharesAmendContinuePage.nextPageWith(mode, ua1, nextIndex))
+            Redirect(UnquotedSharesAmendContinuePage.nextPageWith(mode, ua1, sd, nextIndex))
           }
         }
       )

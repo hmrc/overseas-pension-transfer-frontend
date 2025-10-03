@@ -25,7 +25,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.AssetsMiniJourneyService
+import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.TypeOfAssetView
 
@@ -34,6 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TypeOfAssetController @Inject() (
     override val messagesApi: MessagesApi,
+    userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -65,10 +66,14 @@ class TypeOfAssetController @Inject() (
           val orderedAssets = selectedAssets.toSeq.sorted
           for {
             setAssetsUA               <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, selectedAssets))
-            removePrevSetAssetFlagsUA <- Future.fromTry(AssetsMiniJourneyService.clearAllAssetCompletionFlags(setAssetsUA))
-            setAssetsCompletedUA      <- Future.fromTry(AssetsMiniJourneyService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsUA, orderedAssets))
+            setAssetsSD               <- Future.fromTry(request.sessionData.set(TypeOfAssetPage, selectedAssets))
+            removePrevSetAssetFlagsSD <- Future.fromTry(AssetsMiniJourneyService.clearAllAssetCompletionFlags(setAssetsSD))
+            setAssetsCompletedUA      <- Future.fromTry(AssetsMiniJourneyService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsSD, orderedAssets))
+            _                         <- userAnswersService.setExternalUserAnswers(setAssetsUA)
+            _                         <- sessionRepository.set(setAssetsCompletedUA)
           } yield TypeOfAssetNavigator.getNextAssetRoute(setAssetsCompletedUA) match {
-            case Some(route) => Redirect(route)
+            case Some(route) =>
+              Redirect(route)
             case None        => Redirect(routes.TransferDetailsCYAController.onPageLoad())
           }
         }

@@ -59,7 +59,7 @@ class OtherAssetsCYAController @Inject() (
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     for {
-      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, OtherAssetsQuery))
+      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.sessionData, request.userAnswers, OtherAssetsQuery))
       updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.Other, userSelection = None)
       saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
 

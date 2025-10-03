@@ -59,7 +59,7 @@ class QuotedSharesCYAController @Inject() (
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     for {
-      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, QuotedSharesQuery))
+      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.sessionData, request.userAnswers, QuotedSharesQuery))
       updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.QuotedShares, userSelection = None)
       saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
     } yield {

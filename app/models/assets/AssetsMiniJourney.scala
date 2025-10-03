@@ -17,7 +17,7 @@
 package models.assets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, SessionData, UserAnswers}
 import play.api.libs.json.OFormat
 import play.api.mvc.Call
 import queries.assets._
@@ -25,7 +25,7 @@ import queries.assets._
 sealed trait AssetsMiniJourneyBase {
   def assetType: TypeOfAsset
   def startPage: () => Call
-  def isCompleted(answers: UserAnswers): Boolean
+  def isCompleted(session: SessionData): Boolean
 
   final def call: Call = startPage()
 }
@@ -46,8 +46,8 @@ object CashMiniJourney extends SingleAssetsMiniJourney[CashEntry] {
   val format    = CashEntry.format
   val startPage = () => CashAmountInTransferController.onPageLoad(NormalMode)
 
-  def isCompleted(ua: UserAnswers): Boolean =
-    ua.get(AssetCompletionFlag(assetType)).contains(true)
+  def isCompleted(sd: SessionData): Boolean =
+    sd.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
 object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEntry] {
@@ -56,8 +56,8 @@ object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEn
   val format    = QuotedSharesEntry.format
   val startPage = () => QuotedSharesStartController.onPageLoad()
 
-  def isCompleted(ua: UserAnswers): Boolean =
-    ua.get(AssetCompletionFlag(assetType)).contains(true)
+  def isCompleted(sd: SessionData): Boolean =
+    sd.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
 object UnquotedSharesMiniJourney extends RepeatingAssetsMiniJourney[UnquotedSharesEntry] {
@@ -66,8 +66,8 @@ object UnquotedSharesMiniJourney extends RepeatingAssetsMiniJourney[UnquotedShar
   val format    = UnquotedSharesEntry.format
   val startPage = () => UnquotedSharesStartController.onPageLoad()
 
-  def isCompleted(ua: UserAnswers): Boolean =
-    ua.get(AssetCompletionFlag(assetType)).contains(true)
+  def isCompleted(sd: SessionData): Boolean =
+    sd.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
 object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] {
@@ -76,8 +76,8 @@ object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] {
   val format    = PropertyEntry.format
   val startPage = () => PropertyStartController.onPageLoad()
 
-  def isCompleted(ua: UserAnswers): Boolean =
-    ua.get(AssetCompletionFlag(assetType)).contains(true)
+  def isCompleted(sd: SessionData): Boolean =
+    sd.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
 object OtherAssetsMiniJourney extends RepeatingAssetsMiniJourney[OtherAssetsEntry] {
@@ -86,6 +86,6 @@ object OtherAssetsMiniJourney extends RepeatingAssetsMiniJourney[OtherAssetsEntr
   val format    = OtherAssetsEntry.format
   val startPage = () => OtherAssetsStartController.onPageLoad()
 
-  def isCompleted(ua: UserAnswers): Boolean =
-    ua.get(AssetCompletionFlag(assetType)).contains(true)
+  def isCompleted(sd: SessionData): Boolean =
+    sd.get(AssetCompletionFlag(assetType)).contains(true)
 }

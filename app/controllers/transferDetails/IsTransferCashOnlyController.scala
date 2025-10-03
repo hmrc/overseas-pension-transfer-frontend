@@ -19,7 +19,7 @@ package controllers.transferDetails
 import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.IsTransferCashOnlyFormProvider
-import models.Mode
+import models.{Mode, SessionData}
 import models.TaskCategory.TransferDetails
 import models.assets.TypeOfAsset
 import org.apache.pekko.Done

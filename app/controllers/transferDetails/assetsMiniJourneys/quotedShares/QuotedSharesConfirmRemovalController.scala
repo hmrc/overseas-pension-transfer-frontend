@@ -70,7 +70,7 @@ class QuotedSharesConfirmRemovalController @Inject() (
         } else {
           (for {
             updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.QuotedShares, completed = false)
+            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.QuotedShares, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
             .recover {
               case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())

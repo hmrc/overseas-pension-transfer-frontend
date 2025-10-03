@@ -22,6 +22,8 @@ import play.api.libs.json._
 
 sealed trait AssetEntry
 
+case object Incomplete extends AssetEntry
+
 case class CashEntry(
     cashValue: BigDecimal
   ) extends AssetEntry

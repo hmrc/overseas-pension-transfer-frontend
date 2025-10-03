@@ -59,7 +59,7 @@ class PropertyCYAController @Inject() (
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     for {
-      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, PropertyQuery))
+      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.sessionData, request.userAnswers, PropertyQuery))
       updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.Property, userSelection = None)
       saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
     } yield {

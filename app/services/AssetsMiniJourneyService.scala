@@ -80,8 +80,7 @@ object AssetsMiniJourneyService {
     for {
       ua1 <- clearedData
       ua2 <- ua1.set(SelectedAssetTypes, Seq[TypeOfAsset](Cash))
-      ua3 <- clearAllAssetCompletionFlags(ua2)
-    } yield ua3
+    } yield ua2
   }
 
   // ----- Single-asset helpers (Cash) -----
@@ -107,15 +106,15 @@ object AssetsMiniJourneyService {
 
   // ----- Shared helpers -----
 
-  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean): Try[UserAnswers] =
-    userAnswers.set(AssetCompletionFlag(assetType), completed)
+  def setAssetCompleted(sessionData: SessionData, assetType: TypeOfAsset, completed: Boolean): Try[SessionData] =
+    sessionData.set(AssetCompletionFlag(assetType), completed)
 
-  def setSelectedAssetsIncomplete(userAnswers: UserAnswers, selectedAssets: Seq[TypeOfAsset]): Try[UserAnswers] =
-    selectedAssets.foldLeft(Try(userAnswers)) {
+  def setSelectedAssetsIncomplete(sessionData: SessionData, selectedAssets: Seq[TypeOfAsset]): Try[SessionData] =
+    selectedAssets.foldLeft(Try(sessionData)) {
       case (Success(ua), assetType) =>
-        setAssetCompleted(ua, assetType, completed = false)
+        setAssetCompleted(sessionData, assetType, completed = false)
     }
 
-  def clearAllAssetCompletionFlags(userAnswers: UserAnswers): Try[UserAnswers] =
-    userAnswers.remove(AssetCompletionFlags)
+  def clearAllAssetCompletionFlags(sessionData: SessionData): Try[SessionData] =
+    sessionData.remove(AssetCompletionFlags)
 }

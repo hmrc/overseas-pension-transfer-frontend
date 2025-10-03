@@ -45,6 +45,7 @@ class WhatWillBeNeededController @Inject() (
   ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
+    // TODO remove .get
     val sessionData = SessionData(
       request.authenticatedUser.internalId,
       UUID.randomUUID().toString,
@@ -60,8 +61,7 @@ class WhatWillBeNeededController @Inject() (
         Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad()))
 
       case None =>
-        //TODO remove .get
-        val newUa = UserAnswers(sessionData.transferId, request.authenticatedUser.pensionSchemeDetails.get.pstrNumber)
+        val newUa = UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber)
 
         for {
           updatedSessionData <- Future.fromTry(SessionData.initialise(sessionData))

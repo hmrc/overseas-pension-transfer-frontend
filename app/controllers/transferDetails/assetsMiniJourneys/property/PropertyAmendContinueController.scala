@@ -40,6 +40,7 @@ class PropertyAmendContinueController @Inject() (
     schemeData: SchemeDataAction,
     formProvider: PropertyAmendContinueFormProvider,
     userAnswersService: UserAnswersService,
+    sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: PropertyMiniJourney.type,
     view: PropertyAmendContinueView
@@ -57,10 +58,10 @@ class PropertyAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            updatedSession <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Property, completed = true))
+            _              <- sessionRepository.set(updatedSession)
           } yield {
-            val shares = PropertyAmendContinueSummary.rows(updatedAnswers)
+            val shares = PropertyAmendContinueSummary.rows(request.userAnswers)
             Ok(view(preparedForm, shares, mode))
           }
         case NormalMode =>
@@ -78,12 +79,12 @@ class PropertyAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Property, completed = true))
-            ua1 <- Future.fromTry(ua.set(PropertyAmendContinuePage, continue))
-            _   <- userAnswersService.setExternalUserAnswers(ua1)
+            sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Property, completed = true))
+            _   <- sessionRepository.set(sd)
+            ua1 <- Future.fromTry(request.userAnswers.set(PropertyAmendContinuePage, continue))
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(PropertyAmendContinuePage.nextPageWith(mode, ua1, nextIndex))
+            Redirect(PropertyAmendContinuePage.nextPageWith(mode, ua1, sd, nextIndex))
           }
         }
       )

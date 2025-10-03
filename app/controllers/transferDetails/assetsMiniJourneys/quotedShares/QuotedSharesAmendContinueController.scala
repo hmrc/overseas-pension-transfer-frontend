@@ -39,6 +39,7 @@ class QuotedSharesAmendContinueController @Inject() (
     schemeData: SchemeDataAction,
     formProvider: QuotedSharesAmendContinueFormProvider,
     userAnswersService: UserAnswersService,
+    sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: QuotedSharesMiniJourney.type,
     view: QuotedSharesAmendContinueView
@@ -56,10 +57,10 @@ class QuotedSharesAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            updatedSession <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.QuotedShares, completed = true))
+            _              <- sessionRepository.set(updatedSession)
           } yield {
-            val shares = QuotedSharesAmendContinueSummary.rows(updatedAnswers)
+            val shares = QuotedSharesAmendContinueSummary.rows(request.userAnswers)
             Ok(view(preparedForm, shares, mode))
           }
         case NormalMode =>
@@ -77,12 +78,13 @@ class QuotedSharesAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
-            ua1 <- Future.fromTry(ua.set(QuotedSharesAmendContinuePage, continue))
+            sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.QuotedShares, completed = true))
+            _   <- sessionRepository.set(sd)
+            ua1 <- Future.fromTry(request.userAnswers.set(QuotedSharesAmendContinuePage, continue))
             _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(QuotedSharesAmendContinuePage.nextPageWith(mode, ua1, nextIndex))
+            Redirect(QuotedSharesAmendContinuePage.nextPageWith(mode, ua1, sd, nextIndex))
           }
         }
       )

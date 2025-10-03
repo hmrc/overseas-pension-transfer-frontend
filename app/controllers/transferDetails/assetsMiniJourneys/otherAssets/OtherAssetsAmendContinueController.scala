@@ -39,6 +39,7 @@ class OtherAssetsAmendContinueController @Inject() (
     schemeData: SchemeDataAction,
     formProvider: OtherAssetsAmendContinueFormProvider,
     userAnswersService: UserAnswersService,
+    sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
     view: OtherAssetsAmendContinueView
@@ -56,11 +57,10 @@ class OtherAssetsAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
-
+            updatedSession <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Other, completed = true))
+            _              <- sessionRepository.set(updatedSession)
           } yield {
-            val shares = OtherAssetsAmendContinueSummary.rows(updatedAnswers)
+            val shares = OtherAssetsAmendContinueSummary.rows(request.userAnswers)
             Ok(view(preparedForm, shares, mode))
           }
         case NormalMode =>
@@ -78,12 +78,12 @@ class OtherAssetsAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.Other, completed = true))
-            ua1 <- Future.fromTry(ua.set(OtherAssetsAmendContinuePage, continue))
-            _   <- userAnswersService.setExternalUserAnswers(ua1)
+            sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Other, completed = true))
+            _   <- sessionRepository.set(sd)
+            ua1 <- Future.fromTry(request.userAnswers.set(OtherAssetsAmendContinuePage, continue))
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(OtherAssetsAmendContinuePage.nextPageWith(mode, ua1, nextIndex))
+            Redirect(OtherAssetsAmendContinuePage.nextPageWith(mode, ua1, sd, nextIndex))
           }
         }
       )

@@ -19,6 +19,7 @@ package controllers.actions
 import controllers.routes
 import models.requests.{DisplayRequest, IdentifierRequest}
 import play.api.Logging
+import play.api.libs.json.Json
 import play.api.mvc.Results.{BadRequest, Redirect}
 import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
@@ -41,8 +42,9 @@ class DataRetrievalActionImpl @Inject() (
 
     sessionRepository.get(request.authenticatedUser.internalId) flatMap {
       case Some(value) =>
-        userAnswersService.getExternalUserAnswers(value.transferId) map {
+        userAnswersService.getExternalUserAnswers(value) map {
           case Right(answers) =>
+            println("\n----\nuserAnswers = " + Json.prettyPrint(answers.data) + "\n----\n")
             Right(DisplayRequest(
               request.request,
               request.authenticatedUser,
