@@ -48,11 +48,13 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("quotedSharesConfirmRemoval.heading")</h1>
 
         @govukRadios(
             RadiosViewModel.yesNo(
-                field = form("value")
+                field = form("value"),
+                legend = LegendViewModel(Text(messages("quotedSharesConfirmRemoval.heading")))
+                    .asPageHeading(size = Large)
+                    .withCssClass("govuk-!-margin-bottom-6")
             )
         )
 
