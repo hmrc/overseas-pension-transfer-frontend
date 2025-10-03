@@ -45,7 +45,7 @@ class QuotedSharesValueController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(QuotedSharesValuePage(index)) match {
+      val preparedForm = request.sessionData.get(QuotedSharesValuePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,8 +60,9 @@ class QuotedSharesValueController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesValuePage(index), value))
-          } yield Redirect(QuotedSharesValuePage(index).nextPage(mode, updatedAnswers))
+            updatedSession <- Future.fromTry(request.sessionData.set(QuotedSharesValuePage(index), value))
+            _              <- sessionRepository.set(updatedSession)
+          } yield Redirect(QuotedSharesValuePage(index).nextPage(mode, request.userAnswers))
       )
   }
 }

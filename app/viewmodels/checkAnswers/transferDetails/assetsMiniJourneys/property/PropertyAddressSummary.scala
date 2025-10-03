@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import models.{Mode, UserAnswers}
+import models.{Mode, SessionData, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -27,8 +27,8 @@ import viewmodels.implicits._
 
 object PropertyAddressSummary {
 
-  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] = {
-    answers.get(PropertyAddressPage(index)).map {
+  def row(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Option[SummaryListRow] = {
+    sessionData.get(PropertyAddressPage(index)).map {
       address =>
         {
           val addressVM = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)

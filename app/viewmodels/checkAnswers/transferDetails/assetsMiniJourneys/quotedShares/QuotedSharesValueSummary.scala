@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
-import models.{Mode, UserAnswers}
+import models.{Mode, SessionData, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,8 +26,8 @@ import viewmodels.implicits._
 
 object QuotedSharesValueSummary {
 
-  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QuotedSharesValuePage(index)).map {
+  def row(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    sessionData.get(QuotedSharesValuePage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "quotedSharesValue.checkYourAnswersLabel",

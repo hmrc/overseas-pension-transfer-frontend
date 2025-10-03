@@ -45,7 +45,7 @@ class PropertyValueController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(PropertyValuePage(index)) match {
+      val preparedForm = request.sessionData.get(PropertyValuePage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,8 +60,9 @@ class PropertyValueController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyValuePage(index), value))
-          } yield Redirect(PropertyValuePage(index).nextPage(mode, updatedAnswers))
+            updatedSession <- Future.fromTry(request.sessionData.set(PropertyValuePage(index), value))
+            _              <- sessionRepository.set(updatedSession)
+          } yield Redirect(PropertyValuePage(index).nextPage(mode, request.userAnswers))
       )
   }
 }

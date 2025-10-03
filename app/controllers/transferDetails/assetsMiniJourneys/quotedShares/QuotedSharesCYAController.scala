@@ -52,7 +52,7 @@ class QuotedSharesCYAController @Inject() (
   private val actions = (identify andThen schemeData andThen getData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(QuotedSharesSummary.rows(CheckMode, request.userAnswers, index))
+    val list = SummaryListViewModel(QuotedSharesSummary.rows(CheckMode, request.sessionData, index))
 
     Ok(view(list, index))
   }

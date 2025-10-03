@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import models.{Mode, UserAnswers}
+import models.{Mode, SessionData, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,8 +26,8 @@ import viewmodels.implicits._
 
 object PropertyDescriptionSummary {
 
-  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(PropertyDescriptionPage(index)).map {
+  def row(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    sessionData.get(PropertyDescriptionPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "propertyDescription.checkYourAnswersLabel",

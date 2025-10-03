@@ -60,8 +60,9 @@ class QuotedSharesCompanyNameController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesCompanyNamePage(index), value))
-          } yield Redirect(QuotedSharesCompanyNamePage(index).nextPage(mode, updatedAnswers))
+            updatedSession <- Future.fromTry(request.sessionData.set(QuotedSharesCompanyNamePage(index), value))
+            _              <- sessionRepository.set(updatedSession)
+          } yield Redirect(QuotedSharesCompanyNamePage(index).nextPage(mode, request.userAnswers))
       )
   }
 }
