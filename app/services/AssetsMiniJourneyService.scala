@@ -62,6 +62,26 @@ object AssetsMiniJourneyService {
     }
   }
 
+  def removeAssetEntry[A <: AssetEntry: Format](
+      journey: RepeatingAssetsMiniJourney[A],
+      sessionData: SessionData,
+      index: Int
+    ): Try[SessionData] = {
+    val queryKey = journey.query
+
+    sessionData.get(queryKey) match {
+      case Some(currentList) if index >= 0 && index < currentList.size =>
+        val updatedList = currentList.patch(index, Nil, 1)
+        sessionData.set(queryKey, updatedList)
+
+      case Some(_) =>
+        Failure(new IndexOutOfBoundsException(s"Index $index out of bounds"))
+
+      case None =>
+        Failure(new NoSuchElementException(s"No entry found at query path ${queryKey.path}"))
+    }
+  }
+
   def removeAllAssetEntriesExceptCash(userAnswers: UserAnswers): Try[UserAnswers] = {
     val journeysWithoutCash = AssetsMiniJourneyRegistry.all.filterNot(_.assetType == Cash)
 

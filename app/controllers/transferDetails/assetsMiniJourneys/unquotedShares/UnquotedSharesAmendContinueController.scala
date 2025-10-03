@@ -50,7 +50,7 @@ class UnquotedSharesAmendContinueController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
-      val preparedForm = request.sessionData.get(UnquotedSharesAmendContinuePage) match {
+      val preparedForm = request.userAnswers.get(UnquotedSharesAmendContinuePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }

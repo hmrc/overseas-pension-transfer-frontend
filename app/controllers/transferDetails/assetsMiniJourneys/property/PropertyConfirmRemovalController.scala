@@ -26,7 +26,8 @@ import models.NormalMode
 import models.assets.{PropertyMiniJourney, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService}
+import repositories.SessionRepository
+import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalView
 
@@ -41,6 +42,8 @@ class PropertyConfirmRemovalController @Inject() (
     formProvider: PropertyConfirmRemovalFormProvider,
     miniJourney: PropertyMiniJourney.type,
     assetThresholdHandler: AssetThresholdHandler,
+    userAnswersService: UserAnswersService,
+    sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     view: PropertyConfirmRemovalView,
     moreAssetCompletionService: MoreAssetCompletionService
@@ -72,6 +75,9 @@ class PropertyConfirmRemovalController @Inject() (
         } else {
           (for {
             updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
+            updatedSession <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.sessionData, index))
+            _              <- sessionRepository.set(updatedSession)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
             _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.Property, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
             .recover {

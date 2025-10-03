@@ -23,8 +23,10 @@ import handlers.AssetThresholdHandler
 import models.NormalMode
 import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService}
+import repositories.SessionRepository
+import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalView
 
@@ -39,6 +41,8 @@ class UnquotedSharesConfirmRemovalController @Inject() (
     formProvider: UnquotedSharesConfirmRemovalFormProvider,
     miniJourney: UnquotedSharesMiniJourney.type,
     assetThresholdHandler: AssetThresholdHandler,
+    userAnswersService: UserAnswersService,
+    sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesConfirmRemovalView,
     moreAssetCompletionService: MoreAssetCompletionService
@@ -70,8 +74,13 @@ class UnquotedSharesConfirmRemovalController @Inject() (
         } else {
           (for {
             updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.UnquotedShares, completed = false)
-          } yield Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
+            updatedSession <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.sessionData, index))
+            _              <- sessionRepository.set(updatedSession)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, updatedSession, TypeOfAsset.UnquotedShares, completed = false)
+          } yield {
+            Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
+          })
             .recover {
               case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
