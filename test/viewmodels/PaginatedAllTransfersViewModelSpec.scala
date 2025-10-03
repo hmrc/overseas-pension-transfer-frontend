@@ -22,15 +22,17 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers._
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
 
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
 class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
   implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
 
-  private def mkItem(idx: Int, date: LocalDate): AllTransfersItem =
+  private def mkItem(idx: Int, when: Instant): AllTransfersItem =
     AllTransfersItem(
       transferReference = Some(s"TR-$idx"),
       qtReference       = None,
@@ -39,25 +41,47 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       memberFirstName   = Some(s"Name$idx"),
       memberSurname     = Some("McUser"),
       submissionDate    = None,
-      lastUpdated       = Some(date),
+      lastUpdated       = Some(when),
       qtStatus          = None,
-      pstrNumber        = None
+      pstrNumber        = None,
+      qtDate            = None
     )
 
+  private def utc(y: Int, m: Int, d: Int, hh: Int = 0, mm: Int = 0): Instant =
+    ZonedDateTime.of(y, m, d, hh, mm, 0, 0, ZoneOffset.UTC).toInstant
+
+  private val dateFmt = DateTimeFormatter.ofPattern("d MMMM uuuu")
+  private val timeFmt = DateTimeFormatter.ofPattern("h:mma")
+
+  // This regex extracts the time and date from the paragraph structure of the lastUpdated call
+  // capture group 1 == date, capture group 2 == time
+  private val dateTimeR =
+    """(?is)<p[^>]*>\s*([^<]+?)\s*</p>\s*<p[^>]*>\s*([^<]+?)\s*</p>""".r
+
+  private def lastUpdatedDateTime(row: TableRow): (String, String) = row.content match {
+    case HtmlContent(h) =>
+      dateTimeR.findFirstMatchIn(h.toString) match {
+        case Some(m) => (m.group(1), m.group(2))
+        case None    => fail(s"Could not parse updated cell HTML: ${h.toString.take(200)}")
+      }
+    case Text("-")      => ("-", "-")
+    case other          => fail(s"Unexpected updated cell content: $other")
+  }
+
+  private def getLastUpdatedCol(vm: PaginatedAllTransfersViewModel): Seq[(String, String)] =
+    vm.table.rows.map(_.last).map(lastUpdatedDateTime)
+
+  private def fmt(i: Instant): (String, String) = {
+    val z = i.atZone(ZoneOffset.UTC)
+    (dateFmt.format(z), timeFmt.format(z).toLowerCase)
+  }
+
   private def urlFor(n: Int): String = s"/dash?page=$n"
-
-  private val fmt: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuuu")
-
-  private def lastUpdatedText(row: uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow): String =
-    row.content.asHtml.toString
-
-  private def dateColOf(vm: PaginatedAllTransfersViewModel): Seq[String] =
-    vm.table.rows.map(_.last).map(lastUpdatedText)
 
   "PaginatedAllTransfersViewModel.build" - {
 
     "must return no pagination when there is only a single page" in {
-      val items    = (1 to 5).map(i => mkItem(i, LocalDate.of(2025, 1, i)))
+      val items    = (1 to 5).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
@@ -72,7 +96,7 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
     }
 
     "must return pagination with correct items, current page marking, and prev/next links" in {
-      val items    = (1 to 23).map(i => mkItem(i, LocalDate.of(2025, 1, i)))
+      val items    = (1 to 23).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
       val pageSize = 10
       val page     = 2
 
@@ -101,34 +125,37 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       p.next.get.labelText mustBe Some("site.next")
     }
 
-    "must sort items by latest date before paginating (newest first on page 1)" in {
-      val dates = Seq(
-        LocalDate.of(2025, 3, 5),
-        LocalDate.of(2025, 1, 1),
-        LocalDate.of(2025, 2, 10),
-        LocalDate.of(2025, 3, 1),
-        LocalDate.of(2025, 2, 28),
-        LocalDate.of(2025, 1, 31)
+    "must sort items by latest before paginating (newest first on page 1)" in {
+      val instants = Seq(
+        utc(2025, 3, 5, 12, 0),
+        utc(2025, 1, 1, 0, 0),
+        utc(2025, 2, 10, 8, 30),
+        utc(2025, 3, 1, 23, 45),
+        utc(2025, 2, 28, 19, 10),
+        utc(2025, 1, 31, 6, 15)
       )
-      val items = dates.zipWithIndex.map { case (d, i) => mkItem(i + 1, d) }
+      val items    = instants.zipWithIndex.map { case (ins, i) => mkItem(i + 1, ins) }
 
-      val vm           = PaginatedAllTransfersViewModel.build(
+      val vm = PaginatedAllTransfersViewModel.build(
         items      = items,
         page       = 1,
         pageSize   = 3,
         urlForPage = urlFor
       )
-      val expectedTop3 = dates.sortBy(identity).reverse.take(3)
 
-      val top3SortedItems = items.sorted.take(3)
-      val renderedTop3    = top3SortedItems.map(_.lastUpdatedDate.get)
+      val expectedTop3: Seq[(String, String)] =
+        instants.sorted(Ordering[Instant]).reverse.take(3).map(fmt)
 
-      renderedTop3 mustBe expectedTop3
+      val actualTop3: Seq[(String, String)] = getLastUpdatedCol(vm)
+
+      actualTop3 mustBe expectedTop3
       vm.table.rows.size mustBe 3
     }
 
-    "must maintain strict descending order across pages" in {
-      val items    = (1 to 23).map(i => mkItem(i, LocalDate.of(2025, 1, i)))
+    "must maintain strict descending order across pages (date & time)" in {
+      val items    = (1 to 23).map { d =>
+        mkItem(d, utc(2025, 9, d, 10, 15))
+      }
       val pageSize = 10
 
       val vmPage1 = PaginatedAllTransfersViewModel.build(
@@ -144,20 +171,22 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
         urlForPage = urlFor
       )
 
-      val expectedPage1 = (23 to 14 by -1).map(d => fmt.format(LocalDate.of(2025, 1, d)))
-      val expectedPage2 = (13 to 4 by -1).map(d => fmt.format(LocalDate.of(2025, 1, d)))
+      val expectedPage1 = (23 to 14 by -1).map(d => fmt(utc(2025, 9, d, 10, 15)))
+      val expectedPage2 = (13 to 4 by -1).map(d => fmt(utc(2025, 9, d, 10, 15)))
 
-      val page1Dates = dateColOf(vmPage1)
-      val page2Dates = dateColOf(vmPage2)
+      val actualPage1 = getLastUpdatedCol(vmPage1)
+      val actualPage2 = getLastUpdatedCol(vmPage2)
 
-      page1Dates.size mustBe 10
-      page2Dates.size mustBe 10
+      actualPage1.size mustBe 10
+      actualPage2.size mustBe 10
 
-      page1Dates mustBe expectedPage1
-      page2Dates mustBe expectedPage2
+      actualPage1 mustBe expectedPage1
+      actualPage2 mustBe expectedPage2
 
-      page1Dates.last mustBe "14 January 2025"
-      page2Dates.head mustBe "13 January 2025"
+      actualPage1.last._1 mustBe "14 September 2025"
+      actualPage2.head._1 mustBe "13 September 2025"
+      actualPage1.last._2 mustBe "10:15am"
+      actualPage2.head._2 mustBe "10:15am"
     }
   }
 }

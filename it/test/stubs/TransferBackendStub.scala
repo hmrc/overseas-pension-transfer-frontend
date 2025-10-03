@@ -77,7 +77,7 @@ object TransferBackendStub {
        |      "nino": "AA000000A",
        |      "memberFirstName": "David",
        |      "memberSurname": "Warne",
-       |      "submissionDate": "2025-03-14",
+       |      "submissionDate": "2025-03-14T00:00:00Z",
        |      "qtStatus": "Submitted",
        |      "pstrNumber": "$pstr"
        |    },
@@ -88,7 +88,7 @@ object TransferBackendStub {
        |      "nino": "AA000001A",
        |      "memberFirstName": "Edith",
        |      "memberSurname": "Ennis-Hill",
-       |      "lastUpdated": "2025-05-01",
+       |      "lastUpdated": "2025-05-01T00:00:00Z",
        |      "qtStatus": "In Progress",
        |      "pstrNumber": "$pstr"
        |    }
@@ -109,7 +109,7 @@ object TransferBackendStub {
        |      "transferReference": "TR-VALID-1",
        |      "memberFirstName": "Alice",
        |      "memberSurname": "Adams",
-       |      "submissionDate": "2025-01-10",
+       |      "submissionDate": "2025-01-10T00:00:00Z",
        |      "qtStatus": "Submitted",
        |      "pstrNumber": "$pstr"
        |    },
@@ -117,7 +117,7 @@ object TransferBackendStub {
        |      "transferReference": "TR-VALID-2",
        |      "memberFirstName": "Bob",
        |      "memberSurname": "Brown",
-       |      "lastUpdated": "2025-02-11",
+       |      "lastUpdated": "2025-02-11T00:00:00Z",
        |      "qtStatus": "In Progress",
        |      "pstrNumber": "$pstr"
        |    },
@@ -125,8 +125,8 @@ object TransferBackendStub {
        |      "transferReference": "TR-INVALID-BOTH",
        |      "memberFirstName": "Charlie",
        |      "memberSurname": "Clark",
-       |      "submissionDate": "2025-03-12",
-       |      "lastUpdated": "2025-03-13",
+       |      "submissionDate": "2025-03-12T00:00:00Z",
+       |      "lastUpdated": "2025-03-13T00:00:00Z",
        |      "qtStatus": "Submitted",
        |      "pstrNumber": "$pstr"
        |    }
