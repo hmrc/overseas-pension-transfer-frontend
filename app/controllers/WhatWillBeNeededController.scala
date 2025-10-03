@@ -55,7 +55,7 @@ class WhatWillBeNeededController @Inject() (
       Instant.now
     )
 
-    sessionRepository.get(sessionData.sessionId).flatMap {
+    sessionRepository.getByTransferId(sessionData.transferId).flatMap {
       case Some(_) =>
         // This is going to initiate some Locking
         Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad()))

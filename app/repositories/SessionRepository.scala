@@ -53,7 +53,8 @@ class SessionRepository @Inject() (
 
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
-  private def byId(id: String): Bson = Filters.equal("_id", id)
+  private def byId(id: String): Bson         = Filters.equal("_id", id)
+  private def byTransferId(id: String): Bson = Filters.equal("transferId", id)
 
   def keepAlive(id: String): Future[Boolean] = Mdc.preservingMdc {
     collection
@@ -70,6 +71,15 @@ class SessionRepository @Inject() (
       _ =>
         collection
           .find(byId(id))
+          .headOption()
+    }
+  }
+
+  def getByTransferId(id: String): Future[Option[SessionData]] = Mdc.preservingMdc {
+    keepAlive(id).flatMap {
+      _ =>
+        collection
+          .find(byTransferId(id))
           .headOption()
     }
   }

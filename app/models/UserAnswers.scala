@@ -109,8 +109,6 @@ object UserAnswers {
     ): Try[UserAnswers] =
     original.getWithLogging(page) match {
       case Right(value) =>
-        println("\n----\nvalue = " + value + "\n----\n")
-        println("\n----\nsetValue = " + answers.copy(data = Json.obj()).set(page, value) + "\n----\n")
         answers.copy(data = Json.obj()).set(page, value)
       case Left(error)  =>
         Failure(error)
