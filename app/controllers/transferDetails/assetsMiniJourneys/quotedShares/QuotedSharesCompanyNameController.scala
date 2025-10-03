@@ -23,6 +23,7 @@ import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompany
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameView
 
@@ -31,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class QuotedSharesCompanyNameController @Inject() (
     override val messagesApi: MessagesApi,
+    userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -60,9 +62,9 @@ class QuotedSharesCompanyNameController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedSession <- Future.fromTry(request.sessionData.set(QuotedSharesCompanyNamePage(index), value))
-            _              <- sessionRepository.set(updatedSession)
-          } yield Redirect(QuotedSharesCompanyNamePage(index).nextPage(mode, request.userAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesCompanyNamePage(index), value))
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+          } yield Redirect(QuotedSharesCompanyNamePage(index).nextPage(mode, updatedAnswers))
       )
   }
 }

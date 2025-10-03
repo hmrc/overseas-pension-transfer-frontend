@@ -26,8 +26,8 @@ import viewmodels.implicits._
 
 object OtherAssetsDescriptionSummary {
 
-  def row(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    sessionData.get(OtherAssetsDescriptionPage(index)).map {
+  def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(OtherAssetsDescriptionPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "assetValueDescription.checkYourAnswersLabel",

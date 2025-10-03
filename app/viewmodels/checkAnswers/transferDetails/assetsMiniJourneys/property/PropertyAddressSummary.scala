@@ -27,8 +27,8 @@ import viewmodels.implicits._
 
 object PropertyAddressSummary {
 
-  def row(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Option[SummaryListRow] = {
-    sessionData.get(PropertyAddressPage(index)).map {
+  def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] = {
+    userAnswers.get(PropertyAddressPage(index)).map {
       address =>
         {
           val addressVM = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)

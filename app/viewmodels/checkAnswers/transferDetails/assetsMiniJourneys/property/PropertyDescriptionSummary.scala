@@ -26,8 +26,8 @@ import viewmodels.implicits._
 
 object PropertyDescriptionSummary {
 
-  def row(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    sessionData.get(PropertyDescriptionPage(index)).map {
+  def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(PropertyDescriptionPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "propertyDescription.checkYourAnswersLabel",

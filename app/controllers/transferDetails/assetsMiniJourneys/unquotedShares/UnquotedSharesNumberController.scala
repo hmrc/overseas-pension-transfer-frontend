@@ -23,6 +23,7 @@ import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNum
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberView
 
@@ -31,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnquotedSharesNumberController @Inject() (
     override val messagesApi: MessagesApi,
+    userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -45,7 +47,7 @@ class UnquotedSharesNumberController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val preparedForm = request.sessionData.get(UnquotedSharesNumberPage(index)) match {
+      val preparedForm = request.userAnswers.get(UnquotedSharesNumberPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,9 +62,9 @@ class UnquotedSharesNumberController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedSession <- Future.fromTry(request.sessionData.set(UnquotedSharesNumberPage(index), value))
-            _              <- sessionRepository.set(updatedSession)
-          } yield Redirect(UnquotedSharesNumberPage(index).nextPage(mode, request.userAnswers))
+            updatedSession <- Future.fromTry(request.userAnswers.set(UnquotedSharesNumberPage(index), value))
+            _              <- userAnswersService.setExternalUserAnswers(updatedSession)
+          } yield Redirect(UnquotedSharesNumberPage(index).nextPage(mode, updatedSession))
       )
   }
 }

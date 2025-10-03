@@ -23,6 +23,7 @@ import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassPa
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassView
 
@@ -31,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class QuotedSharesClassController @Inject() (
     override val messagesApi: MessagesApi,
+    userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -45,7 +47,7 @@ class QuotedSharesClassController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val preparedForm = request.sessionData.get(QuotedSharesClassPage(index)) match {
+      val preparedForm = request.userAnswers.get(QuotedSharesClassPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,9 +62,9 @@ class QuotedSharesClassController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedSession <- Future.fromTry(request.sessionData.set(QuotedSharesClassPage(index), value))
-            _              <- sessionRepository.set(updatedSession)
-          } yield Redirect(QuotedSharesClassPage(index).nextPage(mode, request.userAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesClassPage(index), value))
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+          } yield Redirect(QuotedSharesClassPage(index).nextPage(mode, updatedAnswers))
       )
   }
 }

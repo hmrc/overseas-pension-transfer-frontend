@@ -22,9 +22,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object OtherAssetsSummary {
 
-  def rows(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val valueDescriptionRow: Option[SummaryListRow] = OtherAssetsDescriptionSummary.row(mode, sessionData, index)
-    val valueRow: Option[SummaryListRow]            = OtherAssetsValueSummary.row(mode, sessionData, index)
+  def rows(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val valueDescriptionRow: Option[SummaryListRow] = OtherAssetsDescriptionSummary.row(mode, userAnswers, index)
+    val valueRow: Option[SummaryListRow]            = OtherAssetsValueSummary.row(mode, userAnswers, index)
 
     Seq(valueDescriptionRow, valueRow).flatten
   }

@@ -25,7 +25,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{AddressService, CountryService}
+import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
@@ -35,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyAddressController @Inject() (
     override val messagesApi: MessagesApi,
+    userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
@@ -50,7 +51,7 @@ class PropertyAddressController @Inject() (
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val form                   = formProvider()
-      val preparedForm           = request.sessionData.get(PropertyAddressPage(index)) match {
+      val preparedForm           = request.userAnswers.get(PropertyAddressPage(index)) match {
         case None          => form
         case Some(address) => form.fill(PropertyAddressFormData.fromDomain(address))
       }
@@ -74,9 +75,9 @@ class PropertyAddressController @Inject() (
               )
             case Some(addressToSave) =>
               for {
-                updatedSession <- Future.fromTry(request.sessionData.set(PropertyAddressPage(index), addressToSave))
-                _              <- sessionRepository.set(updatedSession)
-              } yield Redirect(PropertyAddressPage(index).nextPage(mode, request.userAnswers))
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyAddressPage(index), addressToSave))
+                _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+              } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
           }
       )
   }

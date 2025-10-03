@@ -26,8 +26,8 @@ import viewmodels.implicits._
 
 object UnquotedSharesClassSummary {
 
-  def row(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    sessionData.get(UnquotedSharesClassPage(index)).map {
+  def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(UnquotedSharesClassPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "unquotedSharesClass.checkYourAnswersLabel",

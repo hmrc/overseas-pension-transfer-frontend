@@ -52,14 +52,14 @@ class PropertyCYAController @Inject() (
   private val actions = (identify andThen schemeData andThen getData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(PropertySummary.rows(CheckMode, request.sessionData, index))
+    val list = SummaryListViewModel(PropertySummary.rows(CheckMode, request.userAnswers, index))
 
     Ok(view(list, index))
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     for {
-      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.sessionData, request.userAnswers, PropertyQuery))
+      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, PropertyQuery))
       updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.Property, userSelection = None)
       saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
     } yield {

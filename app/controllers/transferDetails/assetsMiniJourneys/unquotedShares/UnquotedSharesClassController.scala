@@ -23,6 +23,7 @@ import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCla
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassView
 
@@ -32,6 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnquotedSharesClassController @Inject() (
     override val messagesApi: MessagesApi,
     sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -45,7 +47,7 @@ class UnquotedSharesClassController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val preparedForm = request.sessionData.get(UnquotedSharesClassPage(index)) match {
+      val preparedForm = request.userAnswers.get(UnquotedSharesClassPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,9 +62,9 @@ class UnquotedSharesClassController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedSession <- Future.fromTry(request.sessionData.set(UnquotedSharesClassPage(index), value))
-            _              <- sessionRepository.set(updatedSession)
-          } yield Redirect(UnquotedSharesClassPage(index).nextPage(mode, request.userAnswers))
+            updatedSession <- Future.fromTry(request.userAnswers.set(UnquotedSharesClassPage(index), value))
+            _              <- userAnswersService.setExternalUserAnswers(updatedSession)
+          } yield Redirect(UnquotedSharesClassPage(index).nextPage(mode, updatedSession))
       )
   }
 }

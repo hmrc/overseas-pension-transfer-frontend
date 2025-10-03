@@ -52,14 +52,14 @@ class QuotedSharesCYAController @Inject() (
   private val actions = (identify andThen schemeData andThen getData)
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(QuotedSharesSummary.rows(CheckMode, request.sessionData, index))
+    val list = SummaryListViewModel(QuotedSharesSummary.rows(CheckMode, request.userAnswers, index))
 
     Ok(view(list, index))
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
     for {
-      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.sessionData, request.userAnswers, QuotedSharesQuery))
+      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, QuotedSharesQuery))
       updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.QuotedShares, userSelection = None)
       saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
     } yield {

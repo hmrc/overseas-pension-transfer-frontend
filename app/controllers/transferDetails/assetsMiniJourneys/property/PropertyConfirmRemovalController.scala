@@ -75,8 +75,6 @@ class PropertyConfirmRemovalController @Inject() (
         } else {
           (for {
             updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            updatedSession <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.sessionData, index))
-            _              <- sessionRepository.set(updatedSession)
             _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
             _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.Property, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))

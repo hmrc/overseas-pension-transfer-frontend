@@ -22,10 +22,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case object PropertySummary {
 
-  def rows(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val propertyAddress: Option[SummaryListRow]     = PropertyAddressSummary.row(mode, sessionData, index)
-    val propertyValue: Option[SummaryListRow]       = PropertyValueSummary.row(mode, sessionData, index)
-    val propertyDescription: Option[SummaryListRow] = PropertyDescriptionSummary.row(mode, sessionData, index)
+  def rows(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val propertyAddress: Option[SummaryListRow]     = PropertyAddressSummary.row(mode, userAnswers, index)
+    val propertyValue: Option[SummaryListRow]       = PropertyValueSummary.row(mode, userAnswers, index)
+    val propertyDescription: Option[SummaryListRow] = PropertyDescriptionSummary.row(mode, userAnswers, index)
 
     Seq(propertyAddress, propertyValue, propertyDescription).flatten
   }

@@ -26,8 +26,8 @@ import viewmodels.implicits._
 
 object QuotedSharesValueSummary {
 
-  def row(mode: Mode, sessionData: SessionData, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    sessionData.get(QuotedSharesValuePage(index)).map {
+  def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(QuotedSharesValuePage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "quotedSharesValue.checkYourAnswersLabel",

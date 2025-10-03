@@ -67,19 +67,19 @@ class MoreAssetCompletionService @Inject() (
   private def buildMinimal(userAnswers: UserAnswers, sessionData: SessionData, assetType: TypeOfAsset): UserAnswers = {
     assetType match {
       case TypeOfAsset.Property =>
-        UserAnswers.buildMinimal(sessionData, userAnswers, PropertyQuery)
+        UserAnswers.buildMinimal(userAnswers, PropertyQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.Other =>
-        UserAnswers.buildMinimal(sessionData, userAnswers, OtherAssetsQuery)
+        UserAnswers.buildMinimal(userAnswers, OtherAssetsQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.QuotedShares =>
-        UserAnswers.buildMinimal(sessionData, userAnswers, QuotedSharesQuery)
+        UserAnswers.buildMinimal(userAnswers, QuotedSharesQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.UnquotedShares =>
-        UserAnswers.buildMinimal(sessionData, userAnswers, UnquotedSharesQuery)
+        UserAnswers.buildMinimal(userAnswers, UnquotedSharesQuery)
           .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
 
       case TypeOfAsset.Cash =>

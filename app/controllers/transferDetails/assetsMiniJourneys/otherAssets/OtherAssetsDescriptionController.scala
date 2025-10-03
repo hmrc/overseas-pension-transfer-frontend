@@ -23,6 +23,7 @@ import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescripti
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionView
 
@@ -34,6 +35,7 @@ class OtherAssetsDescriptionController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
+    userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository,
     formProvider: OtherAssetsDescriptionFormProvider,
     val controllerComponents: MessagesControllerComponents,
@@ -45,7 +47,7 @@ class OtherAssetsDescriptionController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val preparedForm = request.sessionData.get(OtherAssetsDescriptionPage(index)) match {
+      val preparedForm = request.userAnswers.get(OtherAssetsDescriptionPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -60,9 +62,9 @@ class OtherAssetsDescriptionController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedSession <- Future.fromTry(request.sessionData.set(OtherAssetsDescriptionPage(index), value))
-            _              <- sessionRepository.set(updatedSession)
-          } yield Redirect(OtherAssetsDescriptionPage(index).nextPage(mode, request.userAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherAssetsDescriptionPage(index), value))
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+          } yield Redirect(OtherAssetsDescriptionPage(index).nextPage(mode, updatedAnswers))
       )
   }
 }
