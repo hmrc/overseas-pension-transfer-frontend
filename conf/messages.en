@@ -41,10 +41,6 @@ footer.link.text.discard.report = Discard transfer report
 footer.link.text.dashboard = Return to Report a transfer to a QROPS dashboard
 footer.link.text.tasklist = Return to task list
 
-index.title = Report a transfer to a qualifying recognised overseas pension scheme
-index.heading = Report a transfer to a qualifying recognised overseas pension scheme
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
-
 dashboard.title = Report overseas transfer dashboard
 dashboard.heading = Report a transfer to a qualifying recognised overseas pension scheme
 dashboard.linkText = Start a new transfer
