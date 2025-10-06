@@ -167,4 +167,23 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
   }
+
+  "must create correct json with failure reason for startJourneyFailed" in {
+    val user         = authenticatedPsp.copy(affinityGroup = Organisation, pensionSchemeDetails = Some(pensionSchemeDetails))
+    val expectedJson = Json.obj(
+      "journey"                   -> "startNewTransferReport",
+      "internalReportReferenceId" -> "testID",
+      "reasonForFailure"          -> "503: Forbidden request",
+      "pensionSchemeName"         -> "Pension Scheme A",
+      "pensionSchemeTaxReference" -> "PSTR123",
+      "roleLoggedInAs"            -> "Psp",
+      "affinityGroup"             -> "Organisation",
+      "requesterIdentifier"       -> "21000005"
+    )
+    val failure      = Some("503: Forbidden request")
+    val result       = ReportStartedAuditModel.build(user, StartNewTransfer, None, failure)
+
+    result.auditType mustBe "OverseasPensionTransferReportStarted"
+    result.detail mustBe expectedJson
+  }
 }
