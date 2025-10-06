@@ -89,7 +89,7 @@ object TransferBackendStub {
        |      "memberFirstName": "Edith",
        |      "memberSurname": "Ennis-Hill",
        |      "lastUpdated": "2025-05-01T00:00:00Z",
-       |      "qtStatus": "In Progress",
+       |      "qtStatus": "InProgress",
        |      "pstrNumber": "$pstr"
        |    }
        |  ]
@@ -118,7 +118,7 @@ object TransferBackendStub {
        |      "memberFirstName": "Bob",
        |      "memberSurname": "Brown",
        |      "lastUpdated": "2025-02-11T00:00:00Z",
-       |      "qtStatus": "In Progress",
+       |      "qtStatus": "InProgress",
        |      "pstrNumber": "$pstr"
        |    },
        |    {
