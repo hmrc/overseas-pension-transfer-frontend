@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class DateOfTransferFormProvider @Inject() extends Mappings {
 
-  def minDate: LocalDate    = LocalDate of (1901, 1, 1)
+  def minDate: LocalDate    = LocalDate of (2012, 4, 6)
   def maxDate: LocalDate    = LocalDate.now(ZoneOffset.UTC)
   private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 
@@ -40,8 +40,8 @@ class DateOfTransferFormProvider @Inject() extends Mappings {
         allRequiredKey   = "dateOfTransfer.error.required.all"
       )
         .verifying(
-          maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateFormatter)),
-          minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateFormatter))
+          maxDate(maxDate, "dateOfTransfer.error.invalid.mindate", maxDate.format(dateFormatter)),
+          minDate(minDate, "dateOfTransfer.error.invalid.mindate", minDate.format(dateFormatter))
         )
     )
 }

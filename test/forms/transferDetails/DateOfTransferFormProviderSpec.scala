@@ -30,7 +30,7 @@ class DateOfTransferFormProviderSpec extends DateBehaviours {
   ".value" - {
 
     val validData = datesBetween(
-      min = LocalDate.of(2000, 1, 1),
+      min = LocalDate.of(2012, 4, 6),
       max = LocalDate.now(ZoneOffset.UTC)
     )
 

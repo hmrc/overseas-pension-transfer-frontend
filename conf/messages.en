@@ -455,6 +455,7 @@ dateOfTransfer.hint = For example, 31 03 2023.
 dateOfTransfer.checkYourAnswersLabel = Date of transfer
 dateOfTransfer.error.required.all = Enter the date of the transfer
 dateOfTransfer.change.hidden = Date of transfer
+dateOfTransfer.error.invalid.mindate = Date cannot be before 6 April 2012, or in the future
 
 applicableTaxExclusions.title = Please provide the applicable exclusion
 applicableTaxExclusions.heading = Please provide the applicable exclusion
