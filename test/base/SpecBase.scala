@@ -20,7 +20,7 @@ import controllers.actions._
 import models.address.{Countries, PropertyAddress}
 import models.authentication.{PsaId, PsaUser, PspId, PspUser}
 import models.requests.DisplayRequest
-import models.{PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SrnNumber, UserAnswers}
+import models.{PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SessionData, SrnNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -38,10 +38,11 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
 
-import java.time.LocalDateTime
+import java.time.{Instant, LocalDateTime}
 import java.time.format.{DateTimeFormatter, FormatStyle}
 
 trait SpecBase
@@ -78,9 +79,26 @@ trait SpecBase
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId, pstr)
 
+  def emptySessionData: SessionData = SessionData(
+    "sessionId",
+    "id",
+    PensionSchemeDetails(
+      SrnNumber("1234567890"),
+      PstrNumber("12345678AB"),
+      "SchemeName"
+    ),
+    PsaUser(
+      PsaId("A123456"),
+      "internalId",
+      None
+    ),
+    Json.obj(),
+    Instant.now
+  )
+
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
 
-  def userAnswersQtNumber: UserAnswers = emptyUserAnswers.set(QtNumberQuery, testQtNumber).success.value
+  def sessionDataQtNumber: SessionData = emptySessionData.set(QtNumberQuery, testQtNumber).success.value
 
   def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
 
@@ -89,11 +107,14 @@ trait SpecBase
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  protected def applicationBuilder(userAnswers: UserAnswers = UserAnswers("id", PstrNumber("12345678AB"))): GuiceApplicationBuilder =
+  protected def applicationBuilder(
+      userAnswers: UserAnswers = UserAnswers("id", PstrNumber("12345678AB")),
+      sessionData: SessionData = sessionDataQtNumber
+    ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
         bind[MarkInProgressOnEntryAction].to[FakeMarkInProgressAction],
         bind[SchemeDataAction].to[FakeSchemeDataAction]
       )
@@ -103,6 +124,7 @@ trait SpecBase
       request               = fakeRequest,
       authenticatedUser     = psaUser.updatePensionSchemeDetails(schemeDetails),
       userAnswers           = userAnswers,
+      sessionData           = emptySessionData,
       memberName            = testMemberName.fullName,
       qtNumber              = testQtNumber,
       dateTransferSubmitted = formattedTestDateTransferSubmitted
@@ -113,6 +135,7 @@ trait SpecBase
       request               = FakeRequest(),
       authenticatedUser     = psaUser.updatePensionSchemeDetails(schemeDetails),
       userAnswers           = emptyUserAnswers,
+      sessionData           = emptySessionData,
       memberName            = testMemberName.fullName,
       qtNumber              = testQtNumber,
       dateTransferSubmitted = formattedTestDateTransferSubmitted

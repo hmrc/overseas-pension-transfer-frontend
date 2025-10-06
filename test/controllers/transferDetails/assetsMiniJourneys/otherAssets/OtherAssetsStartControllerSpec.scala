@@ -31,7 +31,7 @@ class OtherAssetsStartControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.OtherAssetsStartController.onPageLoad().url)

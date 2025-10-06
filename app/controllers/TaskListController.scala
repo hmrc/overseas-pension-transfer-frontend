@@ -18,10 +18,10 @@ package controllers
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
-import org.apache.pekko.Done
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import services.{TaskService, UserAnswersService}
+import repositories.SessionRepository
+import services.TaskService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.TaskListViewModel
 import views.html.TaskListView
@@ -34,25 +34,26 @@ class TaskListController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
-    userAnswersService: UserAnswersService,
+    sessionRepository: SessionRepository,
     view: TaskListView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData).async { implicit request =>
     for {
-      ua1           <- Future.fromTry(TaskService.updateTaskStatusesOnMemberDetailsComplete(request.sessionData))
-      ua2           <- Future.fromTry(TaskService.updateSubmissionTaskStatus(ua1))
-      savedForLater <-
-        if (ua2 == request.sessionData) {
-          Future.successful(Right(Done))
+      sd1            <- Future.fromTry(TaskService.updateTaskStatusesOnMemberDetailsComplete(request.sessionData))
+      sd2            <- Future.fromTry(TaskService.updateSubmissionTaskStatus(sd1))
+      sessionUpdated <-
+        if (sd2 == request.sessionData) {
+          Future.successful(true)
         } else {
-          userAnswersService.setExternalUserAnswers(request.userAnswers)
+          sessionRepository.set(sd2)
         }
     } yield {
-      savedForLater match {
-        case Right(Done) => Ok(view(TaskListViewModel.rows(ua2), TaskListViewModel.submissionRow(ua2)))
-        case Left(err)   => onFailureRedirect(err)
+      if (sessionUpdated) {
+        Ok(view(TaskListViewModel.rows(sd2), TaskListViewModel.submissionRow(sd2)))
+      } else {
+        onFailureRedirect("Session Repository unable to update Task List")
       }
     }
   }

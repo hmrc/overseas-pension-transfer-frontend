@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import models.UserAnswers
+import models.{SessionData, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
@@ -39,7 +39,7 @@ class WhatWillBeNeededControllerSpec
 
     "must return OK and the correct view when UserAnswers already exist (no write)" in {
       val mockRepo = mock[SessionRepository]
-      when(mockRepo.get(any[String])).thenReturn(Future.successful(Some(emptyUserAnswers)))
+      when(mockRepo.get(any[String])).thenReturn(Future.successful(Some(emptySessionData)))
 
       val application =
         applicationBuilder()
@@ -55,14 +55,14 @@ class WhatWillBeNeededControllerSpec
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(request, messages(application)).toString
 
-        verify(mockRepo, never()).set(any[UserAnswers])
+        verify(mockRepo, never()).set(any[SessionData])
       }
     }
 
     "must initialise UserAnswers, persist once, and render the view when none exist" in {
       val mockRepo = mock[SessionRepository]
       when(mockRepo.get(any[String])).thenReturn(Future.successful(None))
-      when(mockRepo.set(any[UserAnswers])).thenReturn(Future.successful(true))
+      when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder()
@@ -78,14 +78,14 @@ class WhatWillBeNeededControllerSpec
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(nextPage)(request, messages(application)).toString
 
-        verify(mockRepo).set(any[UserAnswers])
+        verify(mockRepo).set(any[SessionData])
       }
     }
 
     "must redirect to JourneyRecovery when persistence returns false" in {
       val mockRepo = mock[SessionRepository]
       when(mockRepo.get(any[String])).thenReturn(Future.successful(None))
-      when(mockRepo.set(any[UserAnswers])).thenReturn(Future.successful(false))
+      when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(false))
 
       val application =
         applicationBuilder()

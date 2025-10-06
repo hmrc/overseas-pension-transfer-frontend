@@ -37,7 +37,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(1).url)
@@ -53,9 +53,9 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
 
     "must redirect to the next page when valid data is submitted" in {
       val entries     = List(QuotedSharesEntry("Company", 1000, 20, "Preferred"))
-      val userAnswers = userAnswersQtNumber.set(QuotedSharesQuery, entries).success.value
+      val sessionData = sessionDataQtNumber.set(QuotedSharesQuery, entries).success.value
 
-      val application = applicationBuilder(userAnswers = userAnswers).build()
+      val application = applicationBuilder(sessionData = sessionData).build()
 
       running(application) {
         val request =
@@ -71,7 +71,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request =

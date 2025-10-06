@@ -55,29 +55,19 @@ class WhatWillBeNeededController @Inject() (
       Instant.now
     )
 
-    sessionRepository.getByTransferId(sessionData.transferId).flatMap {
-      case Some(_) =>
-        // This is going to initiate some Locking
-        Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad()))
+    val newUa = UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber)
 
-      case None =>
-        val newUa = UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber)
-
-        for {
-          updatedSessionData <- Future.fromTry(SessionData.initialise(sessionData))
-          persisted          <- sessionRepository.set(updatedSessionData)
-          _                  <- userAnswersService.setExternalUserAnswers(newUa)
-        } yield {
-          if (persisted) {
-            Ok(view(WhatWillBeNeededPage.nextPage(NormalMode, newUa).url))
-          } else {
-            logger.warn("SessionRepository.set returned false during SessionData initialisation")
-            Redirect(routes.JourneyRecoveryController.onPageLoad())
-          }
-        }
-    } recover { case e =>
-      logger.warn("Failed to initialise UserAnswers with defaults", e)
-      Redirect(routes.JourneyRecoveryController.onPageLoad())
+    for {
+      updatedSessionData <- Future.fromTry(SessionData.initialise(sessionData))
+      persisted          <- sessionRepository.set(updatedSessionData)
+      _                  <- userAnswersService.setExternalUserAnswers(newUa)
+    } yield {
+      if (persisted) {
+        Ok(view(WhatWillBeNeededPage.nextPage(NormalMode, newUa).url))
+      } else {
+        logger.warn("SessionRepository.set returned false during SessionData initialisation")
+        Redirect(routes.JourneyRecoveryController.onPageLoad())
+      }
     }
   }
 }

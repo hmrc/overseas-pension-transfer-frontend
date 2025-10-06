@@ -53,7 +53,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers) = new GuiceApplicationBuilder()
     .overrides(
       bind[IdentifierAction].toInstance(fakeIdentifierAction),
-      bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+      bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionDataQtNumber)),
       bind[SchemeDataAction].to[FakeSchemeDataAction]
     )
 
@@ -61,7 +61,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, pspDeclarationRoute)
@@ -109,7 +109,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilderPsp(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilderPsp().build()
 
       running(application) {
         val request =

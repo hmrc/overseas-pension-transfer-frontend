@@ -47,7 +47,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, schemeManagersContactRoute)
@@ -63,7 +63,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(SchemeManagersContactPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(SchemeManagersContactPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -109,7 +109,7 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =

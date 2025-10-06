@@ -100,21 +100,6 @@ final case class UserAnswers(
 object UserAnswers {
 
   def buildMinimal[A](
-      original: SessionData,
-      answers: UserAnswers,
-      page: Settable[A] with Gettable[A]
-    )(implicit reads: Reads[A],
-      writes: Writes[A],
-      mf: Manifest[A]
-    ): Try[UserAnswers] =
-    original.getWithLogging(page) match {
-      case Right(value) =>
-        answers.copy(data = Json.obj()).set(page, value)
-      case Left(error)  =>
-        Failure(error)
-    }
-
-  def buildMinimal[A](
       original: UserAnswers,
       page: Settable[A] with Gettable[A]
     )(implicit reads: Reads[A],

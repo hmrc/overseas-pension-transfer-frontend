@@ -44,19 +44,18 @@ class DataRetrievalActionImpl @Inject() (
       case Some(value) =>
         userAnswersService.getExternalUserAnswers(value) map {
           case Right(answers) =>
-            println("\n----\nuserAnswers = " + Json.prettyPrint(answers.data) + "\n----\n")
             Right(DisplayRequest(
               request.request,
               request.authenticatedUser,
               answers,
               value,
-              memberFullName(value),
+              memberFullName(answers),
               qtNumber(value),
               dateTransferSubmitted(value)
             ))
           case Left(_)        => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         }
-      case None        => Future.successful(Left(BadRequest))
+      case None        => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
     }
 
   }

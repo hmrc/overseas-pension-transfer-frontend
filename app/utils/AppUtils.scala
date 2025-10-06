@@ -16,15 +16,15 @@
 
 package utils
 
-import models.{QtNumber, SessionData}
+import models.{QtNumber, SessionData, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import utils.DateTimeFormats.localDateTimeFormatter
 
 trait AppUtils {
 
-  def memberFullName(sessionData: SessionData): String = {
-    sessionData.get(MemberNamePage).fold("Undefined Undefined")(_.fullName)
+  def memberFullName(userAnswers: UserAnswers): String = {
+    userAnswers.get(MemberNamePage).fold("Undefined Undefined")(_.fullName)
   }
 
   def qtNumber(sessionData: SessionData): QtNumber = {

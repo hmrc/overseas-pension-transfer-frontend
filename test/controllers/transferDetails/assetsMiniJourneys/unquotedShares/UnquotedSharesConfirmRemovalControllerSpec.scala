@@ -37,7 +37,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url)
@@ -53,7 +53,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
     "must redirect to the next page when valid data is submitted" in {
       val entries     = List(UnquotedSharesEntry("Company", 1000, 20, "Preferred"))
-      val userAnswers = userAnswersQtNumber.set(UnquotedSharesQuery, entries).success.value
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -71,7 +71,7 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =

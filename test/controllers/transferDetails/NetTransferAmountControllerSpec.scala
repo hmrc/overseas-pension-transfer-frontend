@@ -45,7 +45,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, amountOfTransferAfterTaxRoute)
@@ -61,7 +61,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(NetTransferAmountPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(NetTransferAmountPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -84,7 +84,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = userAnswersQtNumber)
+        applicationBuilder()
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -104,7 +104,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =

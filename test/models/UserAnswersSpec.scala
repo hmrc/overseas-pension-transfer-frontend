@@ -80,19 +80,4 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
       result.isFailure mustBe true
     }
   }
-
-  "initialise" - {
-    "should set expected default statuses" in {
-      val id   = "id"
-      val pstr = PstrNumber("12345678AB")
-      val ua   = UserAnswers.initialise(id, pstr).get
-
-      ua.id mustBe id
-      ua.get(TaskStatusQuery(MemberDetails)) mustBe Some(TaskStatus.NotStarted)
-      ua.get(TaskStatusQuery(QROPSDetails)) mustBe Some(TaskStatus.CannotStart)
-      ua.get(TaskStatusQuery(SchemeManagerDetails)) mustBe Some(TaskStatus.CannotStart)
-      ua.get(TaskStatusQuery(TransferDetails)) mustBe Some(TaskStatus.CannotStart)
-      ua.get(TaskStatusQuery(SubmissionDetails)) mustBe Some(TaskStatus.CannotStart)
-    }
-  }
 }

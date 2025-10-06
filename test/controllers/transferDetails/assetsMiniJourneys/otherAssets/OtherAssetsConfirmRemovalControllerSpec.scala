@@ -37,7 +37,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(1).url)
@@ -53,7 +53,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must redirect to the next page when valid data is submitted" in {
       val entries     = List(OtherAssetsEntry("Other", 1000))
-      val userAnswers = userAnswersQtNumber.set(OtherAssetsQuery, entries).success.value
+      val userAnswers = emptyUserAnswers.set(OtherAssetsQuery, entries).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -71,7 +71,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request =

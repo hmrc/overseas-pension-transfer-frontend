@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, SessionData, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -48,7 +48,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, schemeManagerTypeRoute)
@@ -64,7 +64,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -173,7 +173,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
 
-        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        val captor = ArgumentCaptor.forClass(classOf[SessionData])
         verify(mockSessionRepository).set(captor.capture())
 
         val updatedAnswers = captor.getValue
@@ -183,7 +183,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =

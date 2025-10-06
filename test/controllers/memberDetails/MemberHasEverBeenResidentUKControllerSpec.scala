@@ -34,6 +34,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.memberDetails.MemberHasEverBeenResidentUKView
 
 import scala.concurrent.Future
@@ -167,6 +168,8 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must remove MembersLastUKAddressPage if changed from true to false in CheckMode" in {
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+
       val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
       val previousAnswers = emptyUserAnswers
         .set(MemberHasEverBeenResidentUKPage, true).success.value
@@ -198,7 +201,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
         redirectLocation(result).value mustEqual routes.MemberDetailsCYAController.onPageLoad().url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(captor.capture())
+        verify(mockUserAnswersService).setExternalUserAnswers(captor.capture())
 
         val updatedAnswers = captor.getValue
         updatedAnswers.get(MembersLastUKAddressPage) mustBe None

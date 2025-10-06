@@ -19,7 +19,7 @@ package controllers.memberDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import models.TaskCategory._
-import models.{TaskCategory, UserAnswers}
+import models.{SessionData, TaskCategory, UserAnswers}
 import models.taskList.TaskStatus
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -47,7 +47,7 @@ class MemberDetailsCYAControllerSpec
   "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, routes.MemberDetailsCYAController.onPageLoad().url)
@@ -66,7 +66,7 @@ class MemberDetailsCYAControllerSpec
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
       when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
         .thenReturn(Future.successful(Right(Done)))
 
@@ -86,8 +86,8 @@ class MemberDetailsCYAControllerSpec
         redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
 
         verify(mockSessionRepository).set(
-          org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
-            ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.Completed)
+          org.mockito.ArgumentMatchers.argThat[SessionData] { sd =>
+            sd.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.Completed)
           }
         )
 
@@ -103,7 +103,7 @@ class MemberDetailsCYAControllerSpec
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
       when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
 
