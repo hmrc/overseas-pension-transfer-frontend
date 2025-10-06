@@ -34,7 +34,7 @@ class DateOfTransferFormProvider @Inject() extends Mappings {
     Form(
       "value" -> localDate(
         invalidCharacter = "common.dateInput.error.invalid.character",
-        invalidKey       = "common.dateInput.error.invalid",
+        invalidKey       = "dateOfTransfer.error.invalid",
         requiredKey      = "common.dateInput.error.required",
         twoRequiredKey   = "common.dateInput.error.required.two",
         allRequiredKey   = "dateOfTransfer.error.required.all"
