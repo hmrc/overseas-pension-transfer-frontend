@@ -111,8 +111,6 @@ unauthorised.guidance1 = You need to be a pension scheme practitioner or adminis
 unauthorised.guidance2 = Your scheme administrator may need to authorise you as a practitioner.
 unauthorised.link = <a href="{0}" class="govuk-link">Find out more about access to Managing Pension Schemes.</a>
 
-radios.hint = Select one.
-
 common.addressInput.addressLine1 = Address line 1
 common.addressInput.addressLine2 = Address line 2
 common.addressInput.addressLine3 = Address line 3 (optional)
