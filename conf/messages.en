@@ -224,13 +224,13 @@ memberIsResidentUK.heading = Is {0} currently a resident of the UK for tax purpo
 memberIsResidentUK.yes = Yes
 memberIsResidentUK.no = No
 memberIsResidentUK.checkYourAnswersLabel = Is member a UK resident
-memberIsResidentUK.error.required = Select one option
+memberIsResidentUK.error.required = Select yes if the member is currently a resident of the UK for tax purposes
 memberIsResidentUK.change.hidden = Is member a UK resident
 
 memberHasEverBeenResidentUK.title = Has {0} ever been a resident of the UK for tax purposes?
 memberHasEverBeenResidentUK.heading = Has {0} ever been a resident of the UK for tax purposes?
 memberHasEverBeenResidentUK.checkYourAnswersLabel = Have they ever been a UK resident
-memberHasEverBeenResidentUK.error.required = Select one option
+memberHasEverBeenResidentUK.error.required = Select yes if the member has ever been a resident of the UK for tax purposes
 memberHasEverBeenResidentUK.change.hidden = Have they ever been a UK resident
 
 membersLastUkAddressLookup.title = Find {0}''s last principal residential address in the UK
@@ -631,19 +631,19 @@ moreUnquotedSharesDeclaration.error.required = Please select an option
 
 unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
-unquotedSharesConfirmRemoval.error.required = Select one option
+unquotedSharesConfirmRemoval.error.required = Select yes if you want to remove these unquoted shares
 
 quotedSharesConfirmRemoval.title = Are you sure you want to remove these quoted shares?
 quotedSharesConfirmRemoval.heading = Are you sure you want to remove these quoted shares?
-quotedSharesConfirmRemoval.error.required = Select one option
+quotedSharesConfirmRemoval.error.required = Select yes if you want to remove these quoted shares
 
 propertyConfirmRemoval.title = Are you sure you want to remove this property?
 propertyConfirmRemoval.heading = Are you sure you want to remove this property?
-propertyConfirmRemoval.error.required = Select one option
+propertyConfirmRemoval.error.required = Select yes if you want to remove this property
 
 otherAssetsConfirmRemoval.title = Are you sure you want to remove these other assets?
 otherAssetsConfirmRemoval.heading = Are you sure you want to remove these other assets?
-otherAssetsConfirmRemoval.error.required = Select one option
+otherAssetsConfirmRemoval.error.required = Select yes if you want to remove these other assets
 
 addAdditionalOtherAsset.title = Do you need to add another asset?
 addAdditionalOtherAsset.heading = You have added 1 asset
