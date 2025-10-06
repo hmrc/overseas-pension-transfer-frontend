@@ -88,16 +88,12 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(emptyUserAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -116,16 +112,12 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
     "must redirect to next page in CheckMode if changed from true to false in CheckMode" in {
       val previousAnswers        = emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -150,16 +142,12 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
         .set(MembersLastUKAddressPage, lastUkAdd).success.value
 
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -175,7 +163,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
         redirectLocation(result).value mustEqual routes.MemberDetailsCYAController.onPageLoad().url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockUserAnswersService).setExternalUserAnswers(captor.capture())
+        verify(mockUserAnswersService).setExternalUserAnswers(captor.capture())(any)
 
         val updatedAnswers = captor.getValue
         updatedAnswers.get(MemberHasEverBeenResidentUKPage) mustBe None
@@ -204,16 +192,12 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(emptyUserAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

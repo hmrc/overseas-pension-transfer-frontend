@@ -79,7 +79,7 @@ trait SpecBase
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId, pstr)
 
-  def emptySessionData: SessionData = SessionData(
+  val emptySessionData: SessionData = SessionData(
     "sessionId",
     "id",
     PensionSchemeDetails(
@@ -92,8 +92,7 @@ trait SpecBase
       "internalId",
       None
     ),
-    Json.obj(),
-    Instant.now
+    Json.obj()
   )
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
@@ -101,6 +100,9 @@ trait SpecBase
   def sessionDataQtNumber: SessionData = emptySessionData.set(QtNumberQuery, testQtNumber).success.value
 
   def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
+
+  def sessionDataQtNumberTransferSubmitted: SessionData =
+    sessionDataQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
 
   def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
     userAnswersMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value

@@ -61,7 +61,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
 
-      when(mockUserAnswersService.submitDeclaration(any(), any(), any())(any[HeaderCarrier]))
+      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456")))))
 
       when(mockSessionRepository.set(any()))
@@ -88,7 +88,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     "must redirect to Journey Recovery when submission fails" in {
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.submitDeclaration(any(), any(), any())(any[HeaderCarrier]))
+      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Left(SubmissionErrorResponse("boom", None))))
 
       val application =

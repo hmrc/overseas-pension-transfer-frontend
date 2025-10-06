@@ -66,7 +66,6 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
 
   def rows(answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(UnquotedSharesQuery)
-    println("\n----\nmaybeEntries = " + maybeEntries + "\n----\n")
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(

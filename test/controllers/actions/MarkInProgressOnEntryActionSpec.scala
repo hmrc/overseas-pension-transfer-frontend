@@ -86,7 +86,7 @@ class MarkInProgressOnEntryActionSpec
 
       val sessionRepo = mock[SessionRepository]
 
-      when(sessionRepo.set(any[SessionData])) thenReturn Future.successful(true)
+      when(sessionRepo.set(any[SessionData])) thenReturn Future.successful(false)
 
       val action  = new MarkInProgressOnEntryActionImpl(sessionRepo)
       val refiner = action.forCategoryAndMode(TaskCategory.MemberDetails, NormalMode)

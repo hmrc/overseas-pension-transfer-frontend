@@ -63,9 +63,9 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val sessionData = sessionDataQtNumber.set(PropertyValuePage(index), validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(PropertyValuePage(index), validAnswer).success.value
 
-      val application = applicationBuilder(sessionData = sessionData).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, propertyValueRoute)

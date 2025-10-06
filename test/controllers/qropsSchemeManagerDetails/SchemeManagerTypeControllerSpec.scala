@@ -33,6 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
 import scala.concurrent.Future
@@ -87,16 +88,12 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val userAnswers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
 
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -116,16 +113,12 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     "must redirect to next page in CheckMode if changed from 'Individual' to 'Organisation' in CheckMode" in {
       val previousAnswers        = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -143,22 +136,19 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     }
 
     "must remove previous data if SchemeManagerType changes" in {
-      val mngrName        = PersonName("FirstNameMngr", "LastNameMngr")
-      val previousAnswers = emptyUserAnswers
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      val mngrName                   = PersonName("FirstNameMngr", "LastNameMngr")
+      val previousAnswers            = emptyUserAnswers
         .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         .set(SchemeManagersNamePage, mngrName).success.value
 
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -173,8 +163,8 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
 
-        val captor = ArgumentCaptor.forClass(classOf[SessionData])
-        verify(mockSessionRepository).set(captor.capture())
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockUserAnswersService).setExternalUserAnswers(captor.capture())(any)
 
         val updatedAnswers = captor.getValue
         updatedAnswers.get(SchemeManagersNamePage) mustBe None
@@ -203,16 +193,12 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

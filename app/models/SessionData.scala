@@ -33,7 +33,7 @@ case class SessionData(
     schemeInformation: PensionSchemeDetails,
     user: AuthenticatedUser,
     data: JsObject,
-    lastUpdated: Instant
+    lastUpdated: Instant = Instant.now
   ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =

@@ -29,13 +29,13 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Writes._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{TaskService, UserAnswersService}
+import services.{AssetsMiniJourneyService, TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.IsTransferCashOnlyView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
+import scala.util.{Success, Try}
 
 class IsTransferCashOnlyController @Inject() (
     override val messagesApi: MessagesApi,
@@ -71,6 +71,8 @@ class IsTransferCashOnlyController @Inject() (
             ua1           <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value))
             ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
+            sd            <- Future.fromTry(updateCashOnlySession(request.sessionData, value))
+            _             <- sessionRepository.set(sd)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, ua2))
@@ -80,14 +82,25 @@ class IsTransferCashOnlyController @Inject() (
       )
   }
 
+  private def updateCashOnlySession(sessionData: SessionData, isCashOnly: Boolean): Try[SessionData] =
+    if (isCashOnly) {
+      for {
+        sd  <- AssetsMiniJourneyService.clearAllAssetCompletionFlags(sessionData)
+        sd1 <- sd.set(TypeOfAssetPage, Seq[TypeOfAsset](TypeOfAsset.Cash))
+      } yield sd1
+    } else {
+      Success(sessionData)
+    }
+
   private def updateCashOnlyAnswers(userAnswers: models.UserAnswers, isCashOnly: Boolean): Try[models.UserAnswers] = {
     if (isCashOnly) {
       val netAmount = userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
       for {
-        ua1 <- userAnswers.set(CashAmountInTransferPage, netAmount)
-        ua2 <- ua1.set(TypeOfAssetPage, Seq[TypeOfAsset](TypeOfAsset.Cash))
-        ua3 <- ua2.set(IsTransferCashOnlyPage, isCashOnly)
-      } yield ua3
+        ua1 <- AssetsMiniJourneyService.removeAllAssetEntriesExceptCash(userAnswers)
+        ua2 <- ua1.set(CashAmountInTransferPage, netAmount)
+        ua3 <- ua2.set(TypeOfAssetPage, Seq[TypeOfAsset](TypeOfAsset.Cash))
+        ua4 <- ua3.set(IsTransferCashOnlyPage, isCashOnly)
+      } yield ua4
     } else {
       for {
         ua1 <- userAnswers.remove(CashAmountInTransferPage)

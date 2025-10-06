@@ -99,7 +99,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CashAmountInTransferPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual CashAmountInTransferPage.nextPageWith(NormalMode, emptyUserAnswers, emptySessionData).url
       }
     }
 

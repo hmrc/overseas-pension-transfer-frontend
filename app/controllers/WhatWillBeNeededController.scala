@@ -51,8 +51,7 @@ class WhatWillBeNeededController @Inject() (
       UUID.randomUUID().toString,
       request.authenticatedUser.pensionSchemeDetails.get,
       request.authenticatedUser,
-      Json.obj(),
-      Instant.now
+      Json.obj()
     )
 
     val newUa = UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber)

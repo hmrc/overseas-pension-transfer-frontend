@@ -61,9 +61,9 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val sessionData = sessionDataQtNumber.set(PropertyDescriptionPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(PropertyDescriptionPage(index), "answer").success.value
 
-      val application = applicationBuilder(sessionData = sessionData).build()
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, propertyDescriptionRoute)

@@ -88,11 +88,11 @@ object AssetsMiniJourneyService {
     val clearedData =
       journeysWithoutCash.foldLeft(Try(userAnswers)) {
         case (acc, assetMiniJ) =>
-          acc.flatMap { sd =>
+          acc.flatMap { ua =>
             AssetsMiniJourneyRegistry.forType(assetMiniJ.assetType) match {
-              case Some(r: RepeatingAssetsMiniJourney[_]) => sd.remove(r.query)
-              case Some(s: SingleAssetsMiniJourney[_])    => sd.remove(s.query)
-              case _                                      => Success(sd)
+              case Some(r: RepeatingAssetsMiniJourney[_]) => ua.remove(r.query)
+              case Some(s: SingleAssetsMiniJourney[_])    => ua.remove(s.query)
+              case _                                      => Success(ua)
             }
           }
       }

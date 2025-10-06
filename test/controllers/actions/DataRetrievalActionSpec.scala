@@ -41,7 +41,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val sessionData        = SessionData(
+  private val sessionData = SessionData(
     "sessionId",
     "transferId",
     PensionSchemeDetails(
@@ -89,7 +89,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val userAnswersService = mock[UserAnswersService]
 
         when(sessionRepository.get(any())).thenReturn(Future.successful(Some(sessionData)))
-        when(userAnswersService.getExternalUserAnswers(any())).thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
         val action = new Harness(sessionRepository, userAnswersService)
 
@@ -112,7 +112,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val userAnswersService = mock[UserAnswersService]
 
         when(sessionRepository.get("id")) thenReturn Future(Some(sessionData))
-        when(userAnswersService.getExternalUserAnswers(any())).thenReturn(Future.successful(Right(userAnswers)))
+        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Right(userAnswers)))
         val action = new Harness(sessionRepository, userAnswersService)
 
         val result = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue

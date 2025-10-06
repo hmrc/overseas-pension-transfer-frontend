@@ -21,12 +21,19 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalFormProvider
 import models.NormalMode
 import models.assets.OtherAssetsEntry
+import org.apache.pekko.Done
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.assets.OtherAssetsQuery
+import services.UserAnswersService
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalView
+
+import scala.concurrent.Future
 
 class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -52,10 +59,18 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val entries     = List(OtherAssetsEntry("Other", 1000))
-      val userAnswers = emptyUserAnswers.set(OtherAssetsQuery, entries).success.value
+      val entries                = List(OtherAssetsEntry("Other", 1000))
+      val userAnswers            = emptyUserAnswers.set(OtherAssetsQuery, entries).success.value
+      val mockUserAnswersService = mock[UserAnswersService]
 
-      val application = applicationBuilder(userAnswers = userAnswers).build()
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(userAnswers = userAnswers)
+        .overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -86,6 +101,32 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
+      }
+    }
+
+    "must redirect to JourneyRecovery when Exception occurs from userAnswersService" in {
+      val entries                = List(OtherAssetsEntry("Other", 1000))
+      val userAnswers            = emptyUserAnswers.set(OtherAssetsQuery, entries).success.value
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.failed(new Exception("Error")))
+
+      val application = applicationBuilder(userAnswers = userAnswers)
+        .overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(0).url)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

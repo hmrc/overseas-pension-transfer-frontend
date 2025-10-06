@@ -80,7 +80,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
 
-      when(mockUserAnswersService.submitDeclaration(any(), any(), any())(any[HeaderCarrier]))
+      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456")))))
 
       when(mockSessionRepository.set(any()))

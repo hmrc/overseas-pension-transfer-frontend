@@ -22,7 +22,7 @@ import models.{SessionData, UserAnswers}
 import models.assets.TypeOfAsset
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, verify, when}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -30,7 +30,6 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatestplus.mockito.MockitoSugar
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import org.mockito.Mockito.reset
 
 import scala.concurrent.Future
 
@@ -87,7 +86,7 @@ class MoreAssetCompletionServiceSpec
 
             verify(mockAssetThresholdHandler).handle(userAnswers, assetType, Some(true))
             verify(mockUserAnswersService).setExternalUserAnswers(userAnswers)
-            verify(mockSessionRepository).set(emptySessionData)
+            verify(mockSessionRepository).set(updated)
 
             succeed
           }
@@ -119,6 +118,9 @@ class MoreAssetCompletionServiceSpec
         val userAnswers = userAnswersWithAssets()
         val asset       = TypeOfAsset.Property
 
+        when(mockSessionRepository.set(any()))
+          .thenReturn(Future.successful(true))
+
         when(mockAssetThresholdHandler.handle(any(), any(), any()))
           .thenThrow(new RuntimeException("boom"))
 
@@ -127,7 +129,7 @@ class MoreAssetCompletionServiceSpec
         recoverToExceptionIf[RuntimeException](completed).map { ex =>
           ex.getMessage mustBe "boom"
           verify(mockUserAnswersService, never()).setExternalUserAnswers(any())(any[HeaderCarrier])
-          verify(mockSessionRepository, never()).set(any())
+          verify(mockSessionRepository, times(1)).set(any())
           succeed
         }
       }
@@ -135,6 +137,9 @@ class MoreAssetCompletionServiceSpec
       "should throw IllegalArgumentException for unsupported asset type Cash" in {
         val userAnswers = emptyUserAnswers
         val asset       = TypeOfAsset.Cash
+
+        when(mockSessionRepository.set(any()))
+          .thenReturn(Future.successful(true))
 
         recoverToExceptionIf[IllegalArgumentException] {
           service.completeAsset(userAnswers, emptySessionData, asset, completed = true)
