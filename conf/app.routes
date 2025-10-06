@@ -106,7 +106,8 @@ POST       /member-details/change-member-select-last-uk-address                 
 GET        /member-details/final-change-member-select-last-uk-address                             controllers.memberDetails.MembersLastUkAddressSelectController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /member-details/final-change-member-select-last-uk-address                             controllers.memberDetails.MembersLastUkAddressSelectController.onSubmit(mode: Mode = FinalCheckMode)
 
-GET        /member-details/member-last-uk-address-not-found                                       controllers.memberDetails.MembersLastUkAddressNotFoundController.onPageLoad()
+GET        /member-details/member-last-uk-address-not-found                                       controllers.memberDetails.MembersLastUkAddressNotFoundController.onPageLoad(mode: Mode = NormalMode)
+GET        /member-details/change-member-last-uk-address-not-found                                controllers.memberDetails.MembersLastUkAddressNotFoundController.onPageLoad(mode: Mode = CheckMode)
 
 GET        /member-details/member-confirm-last-uk-address                                         controllers.memberDetails.MembersLastUkAddressConfirmController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/member-confirm-last-uk-address                                         controllers.memberDetails.MembersLastUkAddressConfirmController.onSubmit(mode: Mode = NormalMode)

@@ -152,7 +152,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MembersLastUkAddressLookupPage.nextPageNoResults().url
+        redirectLocation(result).value mustEqual MembersLastUkAddressLookupPage.nextPageNoResults(NormalMode).url
       }
     }
 
