@@ -38,7 +38,7 @@ object FooterLink {
 
     val dashboardLink = FooterLink(
       id   = "returnDashboardLink",
-      href = routes.IndexController.onPageLoad().url, // TODO Index to be as Dashboard once implemented
+      href = routes.DashboardController.onPageLoad().url,
       text = messages("footer.link.text.dashboard")
     )
 
