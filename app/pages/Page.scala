@@ -29,7 +29,7 @@ trait Page {
     mode match {
       case NormalMode     => nextPageNormalMode(answers)
       case CheckMode      => nextPageCheckMode(answers)
-      case FinalCheckMode => nextPageFinalCheckMode
+      case FinalCheckMode => nextPageFinalCheckMode(answers)
     }
 
   protected def nextPageNormalMode(answers: UserAnswers): Call =
@@ -38,7 +38,7 @@ trait Page {
   protected def nextPageCheckMode(answers: UserAnswers): Call =
     throw new NotImplementedError("nextPageCheckMode is not implemented on this page")
 
-  private def nextPageFinalCheckMode: Call =
+  protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
     routes.CheckYourAnswersController.onPageLoad()
 
   def nextPageRecovery(returnUrl: Option[String] = None): Call =
