@@ -55,10 +55,11 @@ object FooterLink {
     )
 
     (showStartFooter, showCYAFooter, showTaskListFooter, showPageFooter) match {
-      case (true, _, _, _) | (_, true, _, _) => Seq(dashboardLink)
-      case (_, _, true, _)                   => Seq(discardReportLink, dashboardLink)
-      case (_, _, _, true)                   => Seq(taskListLink)
-      case _                                 => Seq.empty
+      case (true, _, _, _) => Seq(dashboardLink)
+      case (_, true, _, _) => Seq(discardReportLink, taskListLink)
+      case (_, _, true, _) => Seq(discardReportLink, dashboardLink)
+      case (_, _, _, true) => Seq(taskListLink)
+      case _               => Seq.empty
     }
   }
 }
