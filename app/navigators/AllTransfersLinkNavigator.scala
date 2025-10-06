@@ -36,6 +36,6 @@ object AllTransfersLinkNavigator {
           versionNumber = None
         )
       case Some(Submitted | Compiled) => routes.JourneyRecoveryController.onPageLoad()
-      case _                          => routes.DashboardController.onPageLoad()
+      case _                          => routes.JourneyRecoveryController.onPageLoad()
     }
 }

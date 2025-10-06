@@ -17,7 +17,8 @@
 package navigators
 
 import base.SpecBase
-import models.AllTransfersItem
+import controllers.routes
+import models.{AllTransfersItem, PstrNumber}
 import models.QtStatus.{Compiled, InProgress, Submitted}
 import org.scalatest.freespec.AnyFreeSpec
 
@@ -25,7 +26,7 @@ class AllTransfersLinkNavigatorSpec extends AnyFreeSpec with SpecBase {
 
   private def itemWith(status: Option[models.QtStatus]): AllTransfersItem =
     AllTransfersItem(
-      transferReference = None,
+      transferReference = if (status.contains(InProgress)) Some("TR123456") else None,
       qtReference       = None,
       qtVersion         = None,
       nino              = None,
@@ -34,20 +35,25 @@ class AllTransfersLinkNavigatorSpec extends AnyFreeSpec with SpecBase {
       submissionDate    = None,
       lastUpdated       = None,
       qtStatus          = status,
-      pstrNumber        = None,
+      pstrNumber        = if (status.contains(InProgress)) Some(PstrNumber("24000005IN")) else None,
       qtDate            = None
     )
 
-  "fallback goes to dashboard page 1 (default route)" in {
+  "fallback goes to journey recovery page" in {
     val item = itemWith(None)
     AllTransfersLinkNavigator.linkFor(item).url mustBe
-      controllers.routes.DashboardController.onPageLoad().url
+      controllers.routes.JourneyRecoveryController.onPageLoad().url
   }
 
   "in-progress routes to JourneyRecovery (placeholder)" in {
     val item = itemWith(Some(InProgress))
     AllTransfersLinkNavigator.linkFor(item).url mustBe
-      controllers.routes.JourneyRecoveryController.onPageLoad().url
+      routes.TaskListController.continueJourney(
+        referenceId   = item.transferReference.get,
+        pstr          = item.pstrNumber.get.value,
+        qtStatus      = InProgress.toString,
+        versionNumber = None
+      ).url
   }
 
   "submitted routes to JourneyRecovery (placeholder)" in {

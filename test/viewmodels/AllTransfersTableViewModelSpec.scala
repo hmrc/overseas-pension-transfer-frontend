@@ -17,7 +17,7 @@
 package viewmodels
 
 import base.SpecBase
-import models.{AllTransfersItem, QtStatus}
+import models.{AllTransfersItem, PstrNumber, QtStatus}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
@@ -101,7 +101,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "renders in-progress label and uses lastUpdated (date+time)" in {
       val inProgress = AllTransfersItem(
-        transferReference = None,
+        transferReference = Some("TR123456"),
         qtReference       = None,
         qtVersion         = None,
         nino              = None,
@@ -110,7 +110,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
         submissionDate    = None,
         lastUpdated       = Some(utc(2025, 1, 5, 17, 3)),
         qtStatus          = Some(QtStatus.InProgress),
-        pstrNumber        = None,
+        pstrNumber        = Some(PstrNumber("24000005IN")),
         qtDate            = None
       )
 
