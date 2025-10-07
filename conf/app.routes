@@ -11,7 +11,7 @@ GET        /start                                                               
 GET        /dashboard                                                                             controllers.DashboardController.onPageLoad(page: Int ?= 1)
 
 GET        /task-list                                                                             controllers.TaskListController.onPageLoad()
-GET        /task-list/continue                                                                    controllers.TaskListController.continueJourney(referenceId: String, pstr: String, qtStatus: String, versionNumber: Option[String])
+GET        /task-list/continue                                                                    controllers.TaskListController.continueJourney(referenceId: String, pstr: String, qtStatus: String)
 
 GET        /refresh-session                                                                       controllers.KeepAliveController.keepAlive()
 
@@ -20,6 +20,8 @@ GET        /there-is-a-problem                                                  
 GET        /what-will-be-needed                                                                   controllers.WhatWillBeNeededController.onPageLoad()
 
 GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
+
+GET        /view-submitted-transfer                                                               controllers.ViewSubmittedController.onPageLoad(qtNumber: String, pstr: String, qtStatus: String, version: String)
 
 GET        /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onPageLoad()
 POST       /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onSubmit()
