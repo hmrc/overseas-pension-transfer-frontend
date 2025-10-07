@@ -21,6 +21,8 @@ import models.AllTransfersItem
 import models.QtStatus.{Compiled, InProgress, Submitted}
 import play.api.mvc.Call
 
+import java.time.{LocalDateTime, ZoneOffset}
+
 object AllTransfersLinkNavigator {
 
   def linkFor(item: AllTransfersItem): Call =
@@ -34,10 +36,14 @@ object AllTransfersLinkNavigator {
           qtStatus    = InProgress.toString
         )
       case Some(Submitted | Compiled) =>
-        val id      = item.qtReference.map(_.value).getOrElse(throw new IllegalArgumentException("Submitted transfer must have qtReference"))
-        val pstr    = item.pstrNumber.map(_.value).getOrElse(throw new IllegalArgumentException("Submitted transfer must have pstrNumber"))
-        val version = item.qtVersion.getOrElse(throw new IllegalArgumentException("Submitted transfer must have qtVersion"))
-        routes.ViewSubmittedController.onPageLoad(id, pstr, Submitted.toString, version)
+        val id            = item.qtReference.map(_.value).getOrElse(throw new IllegalArgumentException("Submitted transfer must have qtReference"))
+        val pstr          = item.pstrNumber.map(_.value).getOrElse(throw new IllegalArgumentException("Submitted transfer must have pstrNumber"))
+        val version       = item.qtVersion.getOrElse(throw new IllegalArgumentException("Submitted transfer must have qtVersion"))
+        val dateSubmitted =
+          item.submissionDate.map(inst => LocalDateTime.ofInstant(inst, ZoneOffset.UTC)).getOrElse(throw new IllegalArgumentException(
+            "Submitted transfer must have dateSubmitted"
+          ))
+        routes.ViewSubmittedController.onPageLoad(id, pstr, Submitted.toString, version, dateSubmitted.toString)
       case _                          => routes.JourneyRecoveryController.onPageLoad()
     }
 }
