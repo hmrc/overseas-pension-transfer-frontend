@@ -18,6 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.cash
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
+import models.assets.CashEntry
 import models.{Mode, SessionData, TaskCategory, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.{NextPageWith, QuestionPage}
@@ -28,7 +29,7 @@ case object CashAmountInTransferPage extends QuestionPage[BigDecimal] with NextP
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
-  override def toString: String = "cashValue"
+  override def toString: String = CashEntry.CashValue
 
   override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call =
     TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {

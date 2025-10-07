@@ -22,6 +22,7 @@ import models.Mode
 import models.assets.TypeOfAsset
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, UserAnswersService}
