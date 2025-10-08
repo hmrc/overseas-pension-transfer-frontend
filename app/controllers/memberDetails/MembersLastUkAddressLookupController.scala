@@ -24,6 +24,7 @@ import models.address.{AddressLookupResult, AddressRecords, NoAddressFound}
 import org.apache.pekko.Done
 import pages.memberDetails.MembersLastUkAddressLookupPage
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{AddressService, UserAnswersService}
@@ -36,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MembersLastUkAddressLookupController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -44,6 +44,7 @@ class MembersLastUkAddressLookupController @Inject() (
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressLookupView,
+    sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     addressLookupDownView: AddressLookupDownView
   )(implicit ec: ExecutionContext
@@ -69,25 +70,21 @@ class MembersLastUkAddressLookupController @Inject() (
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         postcode =>
           addressService.membersLastUkAddressLookup(postcode).flatMap {
-            case None =>
+            case None                              =>
               Future.successful(onAddressLookupFailure(postcode, addressLookupDownView))
-
             case Some(result: AddressLookupResult) =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressLookupPage, result))
-
-                savedForLater <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+                updatedAnswers <- Future.fromTry(request.sessionData.set(MembersLastUkAddressLookupPage, result))
+                stored         <- sessionRepository.set(updatedAnswers)
               } yield {
-                savedForLater match {
-                  case Right(Done) =>
-                    result match {
-                      case _: AddressRecords => Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
-                      case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
-                    }
-                  case Left(err)   =>
-                    onFailureRedirect(err)
+                if (stored) {
+                  result match {
+                    case _: AddressRecords => Redirect(MembersLastUkAddressLookupPage.nextPage(mode, request.userAnswers))
+                    case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
+                  }
+                } else {
+                  onFailureRedirect("Error storing value in SessionData")
                 }
-
               }
           }
       )

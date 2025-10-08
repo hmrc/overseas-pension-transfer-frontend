@@ -25,7 +25,6 @@ import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.qropsSchemeManagerDetails.SchemeManagerOrganisationNameView
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeManagerOrganisationNameController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -65,9 +63,8 @@ class SchemeManagerOrganisationNameController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            ua1 <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
-            ua2 <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = SchemeManagerDetails))
-
+            ua1           <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
+            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = SchemeManagerDetails))
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
             savedForLater match {

@@ -50,7 +50,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = addressFoundUserAnswers).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressFoundSessionData).build()
 
       running(application) {
         val request = FakeRequest(GET, memberSelectLastUkAddressRoute)
@@ -82,7 +82,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(addressFoundUserAnswers)
+      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressFoundSessionData)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -103,7 +103,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = addressFoundUserAnswers).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressFoundSessionData).build()
 
       running(application) {
         val request =
@@ -125,19 +125,14 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
       }
     }
 
-    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
+    "must redirect to JourneyRecovery for a POST when sessionRepository returns a false" in {
+      val mockSessionRepository = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(false)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
-
-      val application = applicationBuilder(addressFoundUserAnswers)
+      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressFoundSessionData)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
+          bind[SessionRepository].toInstance(mockSessionRepository)
         )
         .build()
 

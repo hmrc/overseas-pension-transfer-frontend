@@ -121,12 +121,16 @@ trait SpecBase
         bind[SchemeDataAction].to[FakeSchemeDataAction]
       )
 
-  def fakeDisplayRequest[A](fakeRequest: FakeRequest[A], userAnswers: UserAnswers = emptyUserAnswers): DisplayRequest[A] =
+  def fakeDisplayRequest[A](
+      fakeRequest: FakeRequest[A],
+      userAnswers: UserAnswers = emptyUserAnswers,
+      sessionData: SessionData = emptySessionData
+    ): DisplayRequest[A] =
     DisplayRequest(
       request               = fakeRequest,
       authenticatedUser     = psaUser.updatePensionSchemeDetails(schemeDetails),
       userAnswers           = userAnswers,
-      sessionData           = emptySessionData,
+      sessionData           = sessionData,
       memberName            = testMemberName.fullName,
       qtNumber              = testQtNumber,
       dateTransferSubmitted = formattedTestDateTransferSubmitted

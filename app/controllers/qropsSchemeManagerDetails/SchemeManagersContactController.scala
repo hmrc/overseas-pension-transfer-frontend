@@ -24,7 +24,6 @@ import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.qropsSchemeManagerDetails.SchemeManagersContactView
@@ -34,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeManagersContactController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -65,8 +63,7 @@ class SchemeManagersContactController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersContactPage, value))
-
-            savedForLater <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(SchemeManagersContactPage.nextPage(mode, updatedAnswers))

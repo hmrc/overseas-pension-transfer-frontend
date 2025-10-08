@@ -51,7 +51,7 @@ class MembersLastUkAddressConfirmController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
+      val maybeSelectedAddress = request.sessionData.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
         case Some(selectedAddress) =>
           val viewModel = AddressViewModel.fromAddress(selectedAddress)
@@ -65,7 +65,7 @@ class MembersLastUkAddressConfirmController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      val maybeSelectedAddress = request.userAnswers.get(MembersLastUkAddressSelectPage)
+      val maybeSelectedAddress = request.sessionData.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
         case Some(selectedAddress) =>
           val viewModel     = AddressViewModel.fromAddress(selectedAddress)
@@ -76,8 +76,8 @@ class MembersLastUkAddressConfirmController @Inject() (
             },
             _ =>
               for {
-                clearedLookupUA <- addressService.clearAddressLookups(request.userAnswers)
-                updatedAnswers  <- Future.fromTry(clearedLookupUA.set(MembersLastUKAddressPage, addressToSave))
+                clearedLookupUA <- addressService.clearAddressLookups(request.sessionData)
+                updatedAnswers  <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, addressToSave))
                 savedForLater   <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {

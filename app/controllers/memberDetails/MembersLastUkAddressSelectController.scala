@@ -24,6 +24,7 @@ import models.{Mode, NormalMode}
 import org.apache.pekko.Done
 import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{AddressService, UserAnswersService}
@@ -36,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MembersLastUkAddressSelectController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -44,13 +44,14 @@ class MembersLastUkAddressSelectController @Inject() (
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressSelectView,
+    sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData) { implicit request =>
-      request.userAnswers.get(MembersLastUkAddressLookupPage) match {
+      request.sessionData.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, records)) =>
           val idAddressPairs  = records.map(r => (r.id, MembersLookupLastUkAddress.fromAddressRecord(r)))
           val ids             = idAddressPairs.map(_._1)
@@ -69,7 +70,7 @@ class MembersLastUkAddressSelectController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
-      request.userAnswers.get(MembersLastUkAddressLookupPage) match {
+      request.sessionData.get(MembersLastUkAddressLookupPage) match {
         case Some(AddressRecords(postcode, records)) =>
           val idAddressPairs  = records.map(r => (r.id, MembersLookupLastUkAddress.fromAddressRecord(r)))
           val ids             = idAddressPairs.map(_._1)
@@ -83,13 +84,13 @@ class MembersLastUkAddressSelectController @Inject() (
                 case Some(record) =>
                   val addressToSave = MembersLookupLastUkAddress.fromAddressRecord(record)
                   for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUkAddressSelectPage, addressToSave))
-
-                    savedForLater <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+                    updatedAnswers <- Future.fromTry(request.sessionData.set(MembersLastUkAddressSelectPage, addressToSave))
+                    stored         <- sessionRepository.set(updatedAnswers)
                   } yield {
-                    savedForLater match {
-                      case Right(Done) => Redirect(MembersLastUkAddressSelectPage.nextPage(mode, updatedAnswers))
-                      case Left(err)   => onFailureRedirect(err)
+                    if (stored) {
+                      Redirect(MembersLastUkAddressSelectPage.nextPage(mode, request.userAnswers))
+                    } else {
+                      onFailureRedirect("Error storing value in SessionData")
                     }
                   }
 
