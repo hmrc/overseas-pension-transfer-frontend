@@ -48,7 +48,7 @@ class WhatWillBeNeededController @Inject() (
     // TODO remove .get
     val sessionData = SessionData(
       request.authenticatedUser.internalId,
-      UUID.randomUUID().toString,
+      transferId = UUID.randomUUID().toString,
       request.authenticatedUser.pensionSchemeDetails.get,
       request.authenticatedUser,
       Json.obj()

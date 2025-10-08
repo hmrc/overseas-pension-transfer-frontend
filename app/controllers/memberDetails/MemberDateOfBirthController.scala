@@ -67,8 +67,7 @@ class MemberDateOfBirthController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfBirthPage, value))
-
-            savedForLater <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberDateOfBirthPage.nextPage(mode, updatedAnswers))
