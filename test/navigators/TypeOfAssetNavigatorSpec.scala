@@ -73,7 +73,7 @@ class TypeOfAssetNavigatorSpec extends AnyFreeSpec with SpecBase with MockitoSug
 object FakePage extends pages.Page {
   override def toString: String = "fakePage"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call = controllers.routes.IndexController.onPageLoad()
+  override protected def nextPageNormalMode(answers: UserAnswers): Call = controllers.routes.DashboardController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call = controllers.routes.JourneyRecoveryController.onPageLoad()
 }

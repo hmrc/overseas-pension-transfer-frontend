@@ -34,7 +34,7 @@
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 @memberName = @{request.memberName}
 
-@manualEntry = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
+@manualEntry = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(mode).url}
 
 @layout(pageTitle = title(form, messages("membersLastUkAddressLookup.title", memberName))) {
 

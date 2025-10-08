@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import controllers.actions._
+import models.Mode
 import models.address.NoAddressFound
 import pages.memberDetails.MembersLastUkAddressLookupPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,14 +36,13 @@ class MembersLastUkAddressNotFoundController @Inject() (
     view: MembersLastUkAddressNotFoundView
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] =
+  def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData) { implicit request =>
       request.sessionData.get(MembersLastUkAddressLookupPage) match {
         case Some(NoAddressFound(searchedPostcode)) =>
-          Ok(view(searchedPostcode))
+          Ok(view(searchedPostcode, mode))
         case _                                      =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }
     }
-
 }

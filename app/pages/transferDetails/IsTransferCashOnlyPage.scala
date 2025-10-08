@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
+import models.{CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -39,7 +39,18 @@ case object IsTransferCashOnlyPage extends QuestionPage[Boolean] {
     }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+    answers.get(IsTransferCashOnlyPage) match {
+      case Some(true)  => routes.TransferDetailsCYAController.onPageLoad()
+      case Some(false) => routes.TypeOfAssetController.onPageLoad(CheckMode)
+      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    answers.get(IsTransferCashOnlyPage) match {
+      case Some(true)  => super.nextPageFinalCheckMode(answers)
+      case Some(false) => routes.TypeOfAssetController.onPageLoad(FinalCheckMode)
+      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
 
   def cleanup(maybeTransferIsCashOnly: Option[Boolean], userAnswers: UserAnswers, sessionData: SessionData): Try[UserAnswers] =
     maybeTransferIsCashOnly match {

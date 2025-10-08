@@ -37,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MembersLastUkAddressLookupController @Inject() (
     override val messagesApi: MessagesApi,
+    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -44,7 +45,6 @@ class MembersLastUkAddressLookupController @Inject() (
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressLookupView,
-    sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     addressLookupDownView: AddressLookupDownView
   )(implicit ec: ExecutionContext
@@ -80,7 +80,7 @@ class MembersLastUkAddressLookupController @Inject() (
                 if (stored) {
                   result match {
                     case _: AddressRecords => Redirect(MembersLastUkAddressLookupPage.nextPage(mode, request.userAnswers))
-                    case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
+                    case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults(mode))
                   }
                 } else {
                   onFailureRedirect("Error storing value in SessionData")
