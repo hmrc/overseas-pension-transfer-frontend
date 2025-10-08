@@ -23,7 +23,7 @@ class MembersLastUkAddressLookupFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey   = "membersLastUkAddressLookup.error.required"
   val patternKey    = "membersLastUkAddressLookup.error.patternKey"
-  val postcodeRegex = "^(GIR|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
+  val postcodeRegex = "^(GIR 0AA|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
 
   val form = new MembersLastUkAddressLookupFormProvider()()
 
