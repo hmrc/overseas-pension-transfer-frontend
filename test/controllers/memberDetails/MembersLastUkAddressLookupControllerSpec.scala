@@ -152,7 +152,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MembersLastUkAddressLookupPage.nextPageNoResults().url
+        redirectLocation(result).value mustEqual MembersLastUkAddressLookupPage.nextPageNoResults(NormalMode).url
       }
     }
 
@@ -191,7 +191,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
         val view = application.injector.instanceOf[AddressLookupDownView]
         contentAsString(result) mustEqual
-          view(MembersLastUkAddressLookupPage.recoveryModeReturnUrl, controllers.routes.IndexController.onPageLoad().url)(
+          view(MembersLastUkAddressLookupPage.recoveryModeReturnUrl, controllers.routes.DashboardController.onPageLoad().url)(
             fakeDisplayRequest(request),
             messages(application)
           ).toString

@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import base.{AddressBase, SpecBase}
+import models.{CheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,14 +32,30 @@ class MembersLastUkAddressNotFoundControllerSpec extends AnyFreeSpec with SpecBa
       val application = applicationBuilder(userAnswers = noAddressFoundUserAnswers).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.MembersLastUkAddressNotFoundController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.MembersLastUkAddressNotFoundController.onPageLoad(NormalMode).url)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[MembersLastUkAddressNotFoundView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(noAddressFound.postcode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(noAddressFound.postcode, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+      }
+    }
+
+    "must return OK and the correct view for a GET in CheckMode" in {
+
+      val application = applicationBuilder(userAnswers = noAddressFoundUserAnswers).build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.MembersLastUkAddressNotFoundController.onPageLoad(CheckMode).url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[MembersLastUkAddressNotFoundView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(noAddressFound.postcode, CheckMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
   }

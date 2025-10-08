@@ -82,7 +82,7 @@ class MembersLastUkAddressLookupController @Inject() (
                   case Right(Done) =>
                     result match {
                       case _: AddressRecords => Redirect(MembersLastUkAddressLookupPage.nextPage(mode, updatedAnswers))
-                      case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults())
+                      case _: NoAddressFound => Redirect(MembersLastUkAddressLookupPage.nextPageNoResults(mode))
                     }
                   case Left(err)   =>
                     onFailureRedirect(err)

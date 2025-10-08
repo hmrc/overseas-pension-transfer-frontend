@@ -30,7 +30,7 @@ case object TypeOfAssetPage extends QuestionPage[Seq[TypeOfAsset]] {
   override def toString: String = "typeOfAsset"
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.IndexController.onPageLoad() // TODO change while connecting the pages
+    controllers.routes.DashboardController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
