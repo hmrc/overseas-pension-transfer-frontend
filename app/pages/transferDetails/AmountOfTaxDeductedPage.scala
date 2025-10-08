@@ -32,7 +32,7 @@ case object AmountOfTaxDeductedPage extends QuestionPage[BigDecimal] {
     routes.NetTransferAmountController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+    routes.NetTransferAmountController.onPageLoad(CheckMode)
 
   final def changeLink(mode: Mode): Call =
     routes.AmountOfTaxDeductedController.onPageLoad(mode)

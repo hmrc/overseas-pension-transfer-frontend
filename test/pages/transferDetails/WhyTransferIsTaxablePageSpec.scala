@@ -44,8 +44,14 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers {
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
-        WhyTransferIsTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+      "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
+        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+        WhyTransferIsTaxablePage.nextPage(CheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(CheckMode)
+      }
+
+      "must go to amount of tax deducted page if NoExclusion selected" in {
+        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
+        WhyTransferIsTaxablePage.nextPage(CheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(CheckMode)
       }
     }
 
