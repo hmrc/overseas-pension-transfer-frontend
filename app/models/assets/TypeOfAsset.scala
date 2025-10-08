@@ -28,7 +28,7 @@ sealed trait TypeOfAsset {
 
 object TypeOfAsset extends Enumerable.Implicits {
 
-  case object Cash           extends WithName("cashAssets") with TypeOfAsset {
+  case object Cash extends WithName("cashAssets") with TypeOfAsset {
     override val entryName: String = "cashValue"
   }
 
@@ -36,15 +36,15 @@ object TypeOfAsset extends Enumerable.Implicits {
     override val entryName: String = "unquotedShares"
   }
 
-  case object QuotedShares   extends WithName("quotedShareAssets") with TypeOfAsset {
+  case object QuotedShares extends WithName("quotedShareAssets") with TypeOfAsset {
     override val entryName: String = "quotedShares"
   }
 
-  case object Property       extends WithName("propertyAsset") with TypeOfAsset {
+  case object Property extends WithName("propertyAsset") with TypeOfAsset {
     override val entryName: String = "propertyAssets"
   }
 
-  case object Other          extends WithName("otherAsset") with TypeOfAsset {
+  case object Other extends WithName("otherAsset") with TypeOfAsset {
     override val entryName: String = "otherAssets"
   }
 
