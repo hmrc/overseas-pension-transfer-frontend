@@ -28,8 +28,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
+import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,25 +46,25 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
   private val internalIdValue = "test-user-id"
   private val enrolmentKey    = "HMRC-PODS-ORG"
+  private val affinityGroup   = Individual
   private val identifierKey   = "PSAID"
   private val identifierValue = "A1234567"
   private val fakeRequest     = FakeRequest()
+
+  private val enrolment = Enrolment(
+    enrolmentKey,
+    Seq(EnrolmentIdentifier(identifierKey, identifierValue)),
+    "Activated"
+  )
+
+  type RetrievalResult = Option[String] ~ Enrolments ~ Option[AffinityGroup]
 
   private val action = new IdentifierActionImpl(mockAuthConnector, appConfig, bodyParsers)
 
   "IdentifierAction" - {
 
-    "must allow access with valid internalId and required enrolment" in {
-      val enrolment = Enrolment(
-        enrolmentKey,
-        Seq(EnrolmentIdentifier(identifierKey, identifierValue)),
-        "Activated"
-      )
-
-      type RetrievalResult = Option[String] ~ Enrolments
-
-      val expectedRetrieval: RetrievalResult =
-        new ~(Some(internalIdValue), Enrolments(Set(enrolment)))
+    "must allow access with valid internalId, required enrolment and affinityGroup" in {
+      val expectedRetrieval = Some(internalIdValue) and Enrolments(Set(enrolment)) and Some(affinityGroup)
 
       when(mockAuthConnector.authorise[RetrievalResult](any(), any[Retrieval[RetrievalResult]])(any(), any()))
         .thenReturn(Future.successful(expectedRetrieval))
@@ -76,6 +78,21 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       status(result) mustBe OK
       contentAsString(result) must include(s"OK - $internalIdValue")
+    }
+
+    "must not allow access without affinityGroup" in {
+      val expectedRetrieval = Some(internalIdValue) and Enrolments(Set(enrolment)) and None
+
+      when(mockAuthConnector.authorise[RetrievalResult](any(), any[Retrieval[RetrievalResult]])(any(), any()))
+        .thenReturn(Future.successful(expectedRetrieval))
+
+      val result = action.invokeBlock(
+        fakeRequest,
+        (_: IdentifierRequest[AnyContent]) => Future.successful(Ok(s"OK"))
+      )
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
 
     "must redirect to login if no active session" in {

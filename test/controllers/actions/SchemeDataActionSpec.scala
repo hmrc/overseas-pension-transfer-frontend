@@ -30,6 +30,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import repositories.DashboardSessionRepository
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -57,7 +58,8 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           PsaUser(
             PsaId("psaId"),
             "internalId",
-            None
+            None,
+            affinityGroup = Individual
           )
         )
 
@@ -69,7 +71,8 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
               PsaUser(
                 PsaId("psaId"),
                 "internalId",
-                Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
+                Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")),
+                affinityGroup = Individual
               )
         }
       }
@@ -81,7 +84,8 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           PsaUser(
             PsaId("psaId"),
             "internalId",
-            Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
+            Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")),
+            affinityGroup = Individual
           )
         )
 
@@ -106,7 +110,8 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
         PsaUser(
           PsaId("psaId"),
           "internalId",
-          None
+          None,
+          affinityGroup = Individual
         )
       )
 
@@ -130,7 +135,8 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           PsaUser(
             PsaId("psaId"),
             "internalId",
-            None
+            None,
+            affinityGroup = Individual
           )
         )
 
@@ -152,7 +158,8 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
             PsaUser(
               PsaId("psaId"),
               "internalId",
-              None
+              None,
+              affinityGroup = Individual
             )
           )
 
