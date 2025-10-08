@@ -65,11 +65,11 @@ class SchemeManagerTypeController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           for {
-            baseAnswers   <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
-            savedForLater <- userAnswersService.setExternalUserAnswers(baseAnswers)
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(mode, baseAnswers))
+              case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
           }

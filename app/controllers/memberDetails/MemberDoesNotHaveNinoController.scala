@@ -23,6 +23,7 @@ import models.Mode
 import org.apache.pekko.Done
 import pages.memberDetails.{MemberDoesNotHaveNinoPage, MemberNinoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.UserAnswersService
@@ -64,8 +65,7 @@ class MemberDoesNotHaveNinoController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value).flatMap(_.remove(MemberNinoPage)))
-
-            savedForLater <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberDoesNotHaveNinoPage.nextPage(mode, updatedAnswers))
