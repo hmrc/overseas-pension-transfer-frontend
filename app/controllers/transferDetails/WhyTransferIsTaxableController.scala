@@ -25,7 +25,6 @@ import org.apache.pekko.Done
 import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.WhyTransferIsTaxableView
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class WhyTransferIsTaxableController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,

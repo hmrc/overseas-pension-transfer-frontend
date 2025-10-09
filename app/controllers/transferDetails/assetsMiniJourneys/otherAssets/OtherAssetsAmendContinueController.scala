@@ -24,7 +24,7 @@ import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendCont
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, UserAnswersService}
+import services.AssetsMiniJourneyService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
@@ -38,7 +38,6 @@ class OtherAssetsAmendContinueController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     formProvider: OtherAssetsAmendContinueFormProvider,
-    userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,

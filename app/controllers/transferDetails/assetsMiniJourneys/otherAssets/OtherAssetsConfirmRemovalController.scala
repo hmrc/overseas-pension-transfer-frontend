@@ -24,7 +24,6 @@ import models.NormalMode
 import models.assets.{OtherAssetsMiniJourney, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalView
@@ -39,7 +38,6 @@ class OtherAssetsConfirmRemovalController @Inject() (
     schemeData: SchemeDataAction,
     formProvider: OtherAssetsConfirmRemovalFormProvider,
     userAnswersService: UserAnswersService,
-    sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
     assetThresholdHandler: AssetThresholdHandler,

@@ -22,7 +22,6 @@ import models.Mode
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameView
@@ -32,7 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnquotedSharesCompanyNameController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,

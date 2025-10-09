@@ -23,9 +23,7 @@ import handlers.AssetThresholdHandler
 import models.NormalMode
 import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalView
@@ -42,7 +40,6 @@ class UnquotedSharesConfirmRemovalController @Inject() (
     miniJourney: UnquotedSharesMiniJourney.type,
     assetThresholdHandler: AssetThresholdHandler,
     userAnswersService: UserAnswersService,
-    sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesConfirmRemovalView,
     moreAssetCompletionService: MoreAssetCompletionService

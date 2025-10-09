@@ -27,7 +27,6 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.UnquotedSharesQuery
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -45,8 +44,7 @@ class UnquotedSharesCYAController @Inject() (
     userAnswersService: UserAnswersService,
     assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
-    view: UnquotedSharesCYAView,
-    sessionRepository: SessionRepository
+    view: UnquotedSharesCYAView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 

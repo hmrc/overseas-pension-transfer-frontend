@@ -21,13 +21,10 @@ import controllers.helpers.ErrorHandling
 import forms.memberDetails.MembersLastUkAddressSelectFormProvider
 import models.address.{AddressRecords, MembersLookupLastUkAddress, NoAddressFound}
 import models.{Mode, NormalMode}
-import org.apache.pekko.Done
 import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{AddressService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.AddressViewModel
 import views.html.memberDetails.MembersLastUkAddressSelectView
@@ -41,11 +38,9 @@ class MembersLastUkAddressSelectController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     formProvider: MembersLastUkAddressSelectFormProvider,
-    addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUkAddressSelectView,
-    sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 

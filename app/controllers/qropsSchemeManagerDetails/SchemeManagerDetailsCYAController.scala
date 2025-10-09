@@ -22,13 +22,11 @@ import controllers.helpers.ErrorHandling
 import models.TaskCategory.SchemeManagerDetails
 import models.taskList.TaskStatus.Completed
 import models.{CheckMode, NormalMode}
-import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagerDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TaskStatusQuery
 import repositories.SessionRepository
-import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
 import viewmodels.govuk.summarylist._
@@ -42,7 +40,6 @@ class SchemeManagerDetailsCYAController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: SchemeManagerDetailsCYAView
   )(implicit ec: ExecutionContext

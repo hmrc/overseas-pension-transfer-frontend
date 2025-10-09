@@ -22,7 +22,6 @@ import models.Mode
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionView
@@ -36,7 +35,6 @@ class OtherAssetsDescriptionController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     userAnswersService: UserAnswersService,
-    sessionRepository: SessionRepository,
     formProvider: OtherAssetsDescriptionFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: OtherAssetsDescriptionView

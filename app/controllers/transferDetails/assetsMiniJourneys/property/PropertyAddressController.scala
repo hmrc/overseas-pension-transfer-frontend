@@ -22,9 +22,7 @@ import models.Mode
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
@@ -36,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class PropertyAddressController @Inject() (
     override val messagesApi: MessagesApi,
     userAnswersService: UserAnswersService,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,

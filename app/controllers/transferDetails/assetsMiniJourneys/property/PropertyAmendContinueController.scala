@@ -24,9 +24,8 @@ import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePa
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, UserAnswersService}
+import services.AssetsMiniJourneyService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
 
@@ -39,7 +38,6 @@ class PropertyAmendContinueController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     formProvider: PropertyAmendContinueFormProvider,
-    userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: PropertyMiniJourney.type,

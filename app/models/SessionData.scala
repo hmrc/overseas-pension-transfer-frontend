@@ -41,31 +41,6 @@ case class SessionData(
 
   import play.api.libs.json._
 
-  def getWithLogging[A](page: Gettable[A])(implicit rds: Reads[A], mf: Manifest[A]): Either[Throwable, A] = {
-    val path     = page.path
-    val rawValue = path.asSingleJson(data).getOrElse(JsNull)
-    val result   = Reads.at(path).reads(data)
-
-    result match {
-      case JsSuccess(value, _) =>
-        Right(value)
-
-      case JsError(errors) =>
-        val errorMsg =
-          s"""
-             |Path     : $path
-             |Expected : ${mf.runtimeClass.getSimpleName}
-             |Actual   : ${Json.prettyPrint(rawValue)}
-             |Errors   : ${errors.map {
-              case (jsPath, validationErrors) =>
-                s"$jsPath -> ${validationErrors.map(_.message).mkString(", ")}"
-            }.mkString("\n           |           ")}
-             |""".stripMargin
-
-        Left(new DeserialisationException(errorMsg))
-    }
-  }
-
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[SessionData] = {
 
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {

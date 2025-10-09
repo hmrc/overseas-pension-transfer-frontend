@@ -22,7 +22,6 @@ import models.Mode
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueView
@@ -33,7 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnquotedSharesValueController @Inject() (
     override val messagesApi: MessagesApi,
     userAnswersService: UserAnswersService,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
