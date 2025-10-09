@@ -20,6 +20,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
+@import viewmodels.LegendSize.Large
 
 @this(
         layout: templates.Layout,
@@ -41,12 +42,14 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("whyTransferIsTaxable.heading")</h1>
 
         @govukRadios(
             RadiosViewModel(
                 field  = form("value"),
-                items  = WhyTransferIsTaxable.options
+                items  = WhyTransferIsTaxable.options,
+                legend = LegendViewModel(Text(messages("whyTransferIsTaxable.heading")))
+                    .asPageHeading(size = Large)
+                    .withCssClass("govuk-!-margin-bottom-6")
             )
         )
 
