@@ -79,17 +79,26 @@ class DashboardController @Inject() (
           logger.warn(s"[DashboardController] getAllTransfersData failed: $err")
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         },
-        updated => {
-          val items = updated.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-          val vm    = PaginatedAllTransfersViewModel.build(
-            items      = items,
+        updatedData => {
+          val allTransfers  = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
+          val expiringItems = repo.findExpiringWithin7Days(allTransfers)
+
+          val viewModel = PaginatedAllTransfersViewModel.build(
+            items      = allTransfers,
             page       = page,
             pageSize   = appConfig.transfersPerPage,
             urlForPage = pageUrl
           )
 
-          repo.set(updated).map { _ =>
-            Ok(view(pensionSchemeDetails.schemeName, DashboardPage.nextPage(updated).url, vm))
+          repo.set(updatedData).map { _ =>
+            Ok(
+              view(
+                schemeName    = pensionSchemeDetails.schemeName,
+                nextPage      = DashboardPage.nextPage(updatedData).url,
+                vm            = viewModel,
+                expiringItems = expiringItems
+              )
+            )
           }
         }
       )
