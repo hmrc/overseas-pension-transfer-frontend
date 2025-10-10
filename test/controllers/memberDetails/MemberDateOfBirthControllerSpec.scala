@@ -64,7 +64,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberName).build()
 
       running(application) {
         val request = getRequest()
@@ -82,7 +82,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersMemberNameQtNumber.set(MemberDateOfBirthPage, validAnswer).success.value
+      val userAnswers = userAnswersMemberName.set(MemberDateOfBirthPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -108,7 +108,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
         .thenReturn(Future.successful(Right(Done)))
 
       val application =
-        applicationBuilder(userAnswers = emptyUserAnswers)
+        applicationBuilder(userAnswers = userAnswersMemberName)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -119,13 +119,13 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, postRequest()).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MemberDateOfBirthPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual MemberDateOfBirthPage.nextPage(NormalMode, userAnswersMemberName).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberName).build()
 
       val request = FakeRequest(POST, memberDateOfBirthRoute)
         .withFormUrlEncodedBody(("value", "invalid value"))
@@ -152,7 +152,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(userAnswersMemberNameQtNumber)
+      val application = applicationBuilder(userAnswersMemberName)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

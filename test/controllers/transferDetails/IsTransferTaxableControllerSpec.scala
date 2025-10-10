@@ -47,7 +47,7 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, isTransferTaxableRoute)
@@ -63,7 +63,7 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(IsTransferTaxablePage, true).success.value
+      val userAnswers = emptyUserAnswers.set(IsTransferTaxablePage, true).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 

@@ -44,13 +44,13 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
   private lazy val orgIndNameRoute = routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode).url
 
   private val validAnswer = PersonName("value 1", "value 2")
-  private val userAnswers = userAnswersQtNumber.set(SchemeManagerOrgIndividualNamePage, validAnswer).success.value
+  private val userAnswers = emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, validAnswer).success.value
 
   "MemberName Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, orgIndNameRoute)
@@ -113,7 +113,7 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =

@@ -33,7 +33,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.UserAnswersService
-import viewmodels.AddressViewModel
 import views.html.memberDetails.MembersLastUkAddressConfirmView
 
 import scala.concurrent.Future
@@ -49,7 +48,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = addressSelectedUserAnswers).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressSelectedSessionData).build()
 
       running(application) {
         val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
@@ -59,7 +58,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode, address)(
-          fakeDisplayRequest(request, addressSelectedUserAnswers),
+          fakeDisplayRequest(request, sessionData = addressSelectedSessionData),
           messages(application)
         ).toString
       }
@@ -67,7 +66,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val application = applicationBuilder(userAnswers = addressSelectedUserAnswers).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressSelectedSessionData).build()
 
       running(application) {
         val request = FakeRequest(GET, memberConfirmLastUkAddressRoute)
@@ -76,7 +75,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form.fill(true), NormalMode, address)(
-          fakeDisplayRequest(request, addressSelectedUserAnswers),
+          fakeDisplayRequest(request, sessionData = addressSelectedSessionData),
           messages(application)
         ).toString
       }
@@ -91,7 +90,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(addressSelectedUserAnswers)
+      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressSelectedSessionData)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -116,7 +115,7 @@ class MembersLastUkAddressConfirmControllerSpec extends AnyFreeSpec with Mockito
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      val application = applicationBuilder(addressSelectedUserAnswers)
+      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressSelectedSessionData)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

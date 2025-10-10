@@ -37,9 +37,9 @@ class ApplicableTaxExclusionsPageSpec extends AnyFreeSpec with Matchers {
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to AmountOfTaxDeducted in CheckMode" in {
 
-        ApplicableTaxExclusionsPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        ApplicableTaxExclusionsPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(CheckMode)
       }
     }
 

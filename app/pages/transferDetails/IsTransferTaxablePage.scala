@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -39,7 +39,11 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
   }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+    answers.get(IsTransferTaxablePage) match {
+      case Some(true)  => routes.WhyTransferIsTaxableController.onPageLoad(CheckMode)
+      case Some(false) => routes.WhyTransferIsNotTaxableController.onPageLoad(CheckMode)
+      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
 
   final def changeLink(mode: Mode): Call =
     routes.IsTransferTaxableController.onPageLoad(mode)
@@ -50,7 +54,9 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
         for {
           ua1 <- userAnswers.remove(WhyTransferIsTaxablePage)
           ua2 <- ua1.remove(ApplicableTaxExclusionsPage)
-        } yield ua2
+          ua3 <- ua2.remove(AmountOfTaxDeductedPage)
+          ua4 <- ua3.remove(NetTransferAmountPage)
+        } yield ua4
       case Some(true)  =>
         userAnswers.remove(WhyTransferIsNotTaxablePage)
       case _           => super.cleanup(maybeTransferIsTaxable, userAnswers)

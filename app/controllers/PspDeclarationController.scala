@@ -60,12 +60,12 @@ class PspDeclarationController @Inject() (
           Future.successful(BadRequest(view(formWithErrors))),
         psaIdString => {
           val psaId = PsaId(psaIdString)
-          userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, Some(psaId)).flatMap {
+          userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId)).flatMap {
             case Right(SubmissionResponse(qtNumber)) =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(QtNumberQuery, qtNumber))
-                _              <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(PspDeclarationPage.nextPage(mode, updatedAnswers))
+                updatedSessionData <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
+                _                  <- sessionRepository.set(updatedSessionData)
+              } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
             case _                                   => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
           }
         }

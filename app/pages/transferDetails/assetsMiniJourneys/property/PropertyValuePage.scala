@@ -25,7 +25,7 @@ import play.api.mvc.Call
 
 case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.toString \ index \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.entryName \ index \ toString
 
   override def toString: String = PropertyEntry.PropValue
 

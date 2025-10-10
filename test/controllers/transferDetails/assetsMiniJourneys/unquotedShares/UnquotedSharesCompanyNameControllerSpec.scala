@@ -45,7 +45,7 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesCompanyNameRoute)
@@ -61,7 +61,7 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(UnquotedSharesCompanyNamePage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesCompanyNamePage(index), "answer").success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -84,7 +84,7 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = userAnswersQtNumber)
+        applicationBuilder()
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -96,13 +96,13 @@ class UnquotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnquotedSharesCompanyNamePage(index).nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual UnquotedSharesCompanyNamePage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =

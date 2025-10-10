@@ -26,10 +26,10 @@
 )
 
 
-@(postcode: String)(implicit request: DisplayRequest[_], messages: Messages)
+@(postcode: String, mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
-@searchAgain = @{controllers.memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
-@manualEntry = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
+@searchAgain = @{controllers.memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(mode).url}
+@manualEntry = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(mode).url}
 
 @layout(pageTitle = titleNoForm(messages("memberLastUkAddressNotFound.title"))) {
 

@@ -1,4 +1,4 @@
-service.name = Report a transfer to a qualified recognised overseas pension scheme
+service.name = Report a transfer to a qualifying recognised overseas pension scheme
 
 site.back = Back
 site.remove = Remove
@@ -19,7 +19,7 @@ pagination.landmark = Table pagination
 
 breadcrumbs.mps = MPS
 breadcrumbs.pensionScheme = Pension scheme
-breadcrumbs.otc = Overseas pension transfer
+breadcrumbs.otc = Report a transfer to a QROPS
 
 date.day = Day
 date.month = Month
@@ -41,12 +41,8 @@ footer.link.text.discard.report = Discard transfer report
 footer.link.text.dashboard = Return to Report a transfer to a QROPS dashboard
 footer.link.text.tasklist = Return to task list
 
-index.title = Report a transfer to a qualified recognised overseas pension scheme
-index.heading = Report a transfer to a qualified recognised overseas pension scheme
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
-
 dashboard.title = Report overseas transfer dashboard
-dashboard.heading = Report a transfer to a qualified recognised overseas pension scheme
+dashboard.heading = Report a transfer to a qualifying recognised overseas pension scheme
 dashboard.linkText = Start a new transfer
 dashboard.allTransfers.heading = All transfers
 dashboard.allTransfers.head.member = Member name
@@ -56,6 +52,10 @@ dashboard.allTransfers.head.updated = Last updated
 dashboard.allTransfers.status.submitted = Submitted to HMRC
 dashboard.allTransfers.status.inProgress = In progress
 dashboard.allTransfers.empty = This scheme does not currently have any overseas pension transfer reports.
+dashboard.banner.title = Important
+dashboard.banner.inProgress.text = The transfer for {0} will be deleted in 7 days if you do not work on it.
+dashboard.banner.updateInProgress.text = The update for {0} will be deleted in 7 days if you do not work on it.
+dashboard.banner.linkText = View transfer
 
 requiredInfo.title = What you will need
 requiredInfo.heading = What you will need
@@ -110,8 +110,6 @@ unauthorised.heading = You do not have access to this service
 unauthorised.guidance1 = You need to be a pension scheme practitioner or administrator to use this service.
 unauthorised.guidance2 = Your scheme administrator may need to authorise you as a practitioner.
 unauthorised.link = <a href="{0}" class="govuk-link">Find out more about access to Managing Pension Schemes.</a>
-
-radios.hint = Select one.
 
 common.addressInput.addressLine1 = Address line 1
 common.addressInput.addressLine2 = Address line 2
@@ -226,13 +224,13 @@ memberIsResidentUK.heading = Is {0} currently a resident of the UK for tax purpo
 memberIsResidentUK.yes = Yes
 memberIsResidentUK.no = No
 memberIsResidentUK.checkYourAnswersLabel = Is member a UK resident
-memberIsResidentUK.error.required = Select one option
+memberIsResidentUK.error.required = Select yes if the member is currently a resident of the UK for tax purposes
 memberIsResidentUK.change.hidden = Is member a UK resident
 
 memberHasEverBeenResidentUK.title = Has {0} ever been a resident of the UK for tax purposes?
 memberHasEverBeenResidentUK.heading = Has {0} ever been a resident of the UK for tax purposes?
 memberHasEverBeenResidentUK.checkYourAnswersLabel = Have they ever been a UK resident
-memberHasEverBeenResidentUK.error.required = Select one option
+memberHasEverBeenResidentUK.error.required = Select yes if the member has ever been a resident of the UK for tax purposes
 memberHasEverBeenResidentUK.change.hidden = Have they ever been a UK resident
 
 membersLastUkAddressLookup.title = Find {0}''s last principal residential address in the UK
@@ -440,11 +438,11 @@ amountOfTaxDeducted.hint = For example, £60000 or £19,300.54.
 
 typeOfAsset.title = Type of assets included in the transfer
 typeOfAsset.heading = Type of assets included in the transfer
-typeOfAsset.cash = Cash
-typeOfAsset.unquotedShares = Unquoted shares
-typeOfAsset.quotedShares = Quoted shares
-typeOfAsset.propertyAssets = Property
-typeOfAsset.otherAssets = Other
+typeOfAsset.cashAssets = Cash
+typeOfAsset.unquotedShareAssets = Unquoted shares
+typeOfAsset.quotedShareAssets = Quoted shares
+typeOfAsset.propertyAsset = Property
+typeOfAsset.otherAsset = Other
 typeOfAsset.hint = Select all that apply.
 typeOfAsset.checkYourAnswersLabel = Type of assets included in the transfer
 typeOfAsset.error.required = Select at least one type of asset
@@ -457,6 +455,8 @@ dateOfTransfer.hint = For example, 31 03 2023.
 dateOfTransfer.checkYourAnswersLabel = Date of transfer
 dateOfTransfer.error.required.all = Enter the date of the transfer
 dateOfTransfer.change.hidden = Date of transfer
+dateOfTransfer.error.invalid.mindate = Date cannot be before 6 April 2012, or in the future
+dateOfTransfer.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 2018
 
 applicableTaxExclusions.title = Please provide the applicable exclusion
 applicableTaxExclusions.heading = Please provide the applicable exclusion
@@ -633,19 +633,19 @@ moreUnquotedSharesDeclaration.error.required = Please select an option
 
 unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
-unquotedSharesConfirmRemoval.error.required = Select one option
+unquotedSharesConfirmRemoval.error.required = Select yes if you want to remove these unquoted shares
 
 quotedSharesConfirmRemoval.title = Are you sure you want to remove these quoted shares?
 quotedSharesConfirmRemoval.heading = Are you sure you want to remove these quoted shares?
-quotedSharesConfirmRemoval.error.required = Select one option
+quotedSharesConfirmRemoval.error.required = Select yes if you want to remove these quoted shares
 
 propertyConfirmRemoval.title = Are you sure you want to remove this property?
 propertyConfirmRemoval.heading = Are you sure you want to remove this property?
-propertyConfirmRemoval.error.required = Select one option
+propertyConfirmRemoval.error.required = Select yes if you want to remove this property
 
 otherAssetsConfirmRemoval.title = Are you sure you want to remove these other assets?
 otherAssetsConfirmRemoval.heading = Are you sure you want to remove these other assets?
-otherAssetsConfirmRemoval.error.required = Select one option
+otherAssetsConfirmRemoval.error.required = Select yes if you want to remove these other assets
 
 addAdditionalOtherAsset.title = Do you need to add another asset?
 addAdditionalOtherAsset.heading = You have added 1 asset
@@ -727,7 +727,7 @@ submitToHMRC.heading = Do you want to submit this report to HMRC?
 submitToHMRC.checkYourAnswersLabel = Save and continue
 submitToHMRC.error.required = Select yes if you want to submit the report
 submitToHMRC.change.hidden = SubmitToHMRC
-submitToHMRC.hintYes = You will still be able to update the report after it''s been submitted.
+submitToHMRC.hintYes = You will still be able to amend the report after it''s been submitted.
 submitToHMRC.hintNo = Mark as ''in progress'' and return to the dashboard.
 
 

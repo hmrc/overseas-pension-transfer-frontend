@@ -17,34 +17,81 @@
 package controllers.actions
 
 import base.SpecBase
-import models.{PstrNumber, UserAnswers}
+import models.authentication.{PsaId, PsaUser}
+import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import models.requests.{DataRequest, DisplayRequest, IdentifierRequest}
+import models.responses.UserAnswersErrorResponse
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.SEE_OTHER
+import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import repositories.SessionRepository
+import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  private val sessionData = SessionData(
+    "sessionId",
+    "transferId",
+    PensionSchemeDetails(
+      SrnNumber("12345"),
+      PstrNumber("12345678AB"),
+      "Scheme Name"
+    ),
+    psaUser,
+    Json.obj(),
+    Instant.now
+  )
+
+  class Harness(sessionRepository: SessionRepository, userAnswersService: UserAnswersService)
+      extends DataRetrievalActionImpl(sessionRepository, userAnswersService) {
     def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = refine(request)
   }
 
   "Data Retrieval Action" - {
 
-    "when there is no data in the cache" - {
+    "when there is no session data in the cache" - {
 
       "must redirect to JourneyRecovery" in {
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(None)
-        val action            = new Harness(sessionRepository)
+        val sessionRepository  = mock[SessionRepository]
+        val userAnswersService = mock[UserAnswersService]
+
+        when(sessionRepository.get(any())).thenReturn(Future.successful(None))
+
+        val action = new Harness(sessionRepository, userAnswersService)
+
+        val futureResult = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
+
+        futureResult.left.map {
+          result =>
+            result.header.status mustBe SEE_OTHER
+            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        }
+      }
+    }
+
+    "when there is no data returned from user answers service" - {
+      "must redirect to JourneyRecovery" in {
+
+        val sessionRepository  = mock[SessionRepository]
+        val userAnswersService = mock[UserAnswersService]
+
+        when(sessionRepository.get(any())).thenReturn(Future.successful(Some(sessionData)))
+        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+
+        val action = new Harness(sessionRepository, userAnswersService)
 
         val futureResult = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
 
@@ -61,9 +108,12 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       "must build a userAnswers, memberName, qtNumber and dateTransferSubmitted object and add it to the request" in {
         val userAnswers = UserAnswers("id", PstrNumber("12345678AB"))
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(Some(userAnswers))
-        val action            = new Harness(sessionRepository)
+        val sessionRepository  = mock[SessionRepository]
+        val userAnswersService = mock[UserAnswersService]
+
+        when(sessionRepository.get("id")) thenReturn Future(Some(sessionData))
+        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Right(userAnswers)))
+        val action = new Harness(sessionRepository, userAnswersService)
 
         val result = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
 

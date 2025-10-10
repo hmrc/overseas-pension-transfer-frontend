@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
-import models.{CheckMode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import queries.TaskStatusQuery
@@ -31,14 +31,14 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
 
     "must set non-submission tasks from CannotStart -> NotStarted when MemberDetails is Completed " +
       "and leave other statuses and SubmissionDetails unchanged" in {
-        val ua0: UserAnswers =
-          emptyUserAnswers
+        val sd0: SessionData =
+          emptySessionData
             .set(TaskStatusQuery(TaskCategory.MemberDetails), Completed).success.value
             .set(TaskStatusQuery(TaskCategory.TransferDetails), CannotStart).success.value
             .set(TaskStatusQuery(TaskCategory.QROPSDetails), InProgress).success.value
             .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), CannotStart).success.value
             .set(TaskStatusQuery(TaskCategory.SubmissionDetails), CannotStart).success.value
-        val result           = service.updateTaskStatusesOnMemberDetailsComplete(ua0)
+        val result           = service.updateTaskStatusesOnMemberDetailsComplete(sd0)
 
         result.isSuccess mustBe true
         val ua = result.get
@@ -51,14 +51,14 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
       }
 
     "must set non-submission tasks to CannotStart when MemberDetails is not Completed " in {
-      val ua0: UserAnswers =
-        emptyUserAnswers
+      val sd0: SessionData =
+        emptySessionData
           .set(TaskStatusQuery(TaskCategory.MemberDetails), InProgress).success.value
           .set(TaskStatusQuery(TaskCategory.TransferDetails), InProgress).success.value
           .set(TaskStatusQuery(TaskCategory.QROPSDetails), NotStarted).success.value
           .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), InProgress).success.value
           .set(TaskStatusQuery(TaskCategory.SubmissionDetails), CannotStart).success.value
-      val result           = service.updateTaskStatusesOnMemberDetailsComplete(ua0)
+      val result           = service.updateTaskStatusesOnMemberDetailsComplete(sd0)
 
       result.isSuccess mustBe true
       val ua = result.get
@@ -74,14 +74,14 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
   "updateSubmissionTaskStatus" - {
 
     "must set submission task from CannotStart -> NotStarted when all journeys Completed " in {
-      val ua0: UserAnswers =
-        emptyUserAnswers
+      val sd0: SessionData =
+        emptySessionData
           .set(TaskStatusQuery(TaskCategory.MemberDetails), Completed).success.value
           .set(TaskStatusQuery(TaskCategory.TransferDetails), Completed).success.value
           .set(TaskStatusQuery(TaskCategory.QROPSDetails), Completed).success.value
           .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), Completed).success.value
           .set(TaskStatusQuery(TaskCategory.SubmissionDetails), CannotStart).success.value
-      val result           = service.updateSubmissionTaskStatus(ua0)
+      val result           = service.updateSubmissionTaskStatus(sd0)
 
       result.isSuccess mustBe true
       val ua = result.get
@@ -94,14 +94,14 @@ class TaskServiceSpec extends AnyFreeSpec with SpecBase with Matchers {
     }
 
     "must set submission task to CannotStart when other task is not Completed " in {
-      val ua0: UserAnswers =
-        emptyUserAnswers
+      val sd0: SessionData =
+        emptySessionData
           .set(TaskStatusQuery(TaskCategory.MemberDetails), Completed).success.value
           .set(TaskStatusQuery(TaskCategory.TransferDetails), Completed).success.value
           .set(TaskStatusQuery(TaskCategory.QROPSDetails), Completed).success.value
           .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), InProgress).success.value
           .set(TaskStatusQuery(TaskCategory.SubmissionDetails), NotStarted).success.value
-      val result           = service.updateSubmissionTaskStatus(ua0)
+      val result           = service.updateSubmissionTaskStatus(sd0)
 
       result.isSuccess mustBe true
       val ua = result.get

@@ -31,15 +31,22 @@ class TypeOfAssetSummarySpec extends AnyFreeSpec with SpecBase {
   "TypeOfAssetSummary" - {
     implicit val messages: Messages = stubMessages()
 
-    "must return a SummaryListRow when TypeOfAssetPage has a value" in {
+    "must return a SummaryListRow when TypeOfAssetPage has a value other than Cash only" in {
       val answers = emptyUserAnswers.set(TypeOfAssetPage, Seq(Cash, Property)).success.value
       val result  = TypeOfAssetSummary.row(CheckMode, answers)
 
       result mustBe defined
       result.get.key.content mustBe Text(messages("typeOfAsset.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages("typeOfAsset.cash,<br>typeOfAsset.propertyAssets"))
+      result.get.value.content mustBe HtmlContent(messages("typeOfAsset.cashAssets,<br>typeOfAsset.propertyAsset"))
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.TypeOfAssetController.onPageLoad(CheckMode).url
+    }
+
+    "must not return a SummaryListRow when TypeOfAssetPage has only Cash as the value" in {
+      val answers = emptyUserAnswers.set(TypeOfAssetPage, Seq(Cash)).success.value
+      val result  = TypeOfAssetSummary.row(CheckMode, answers)
+
+      result mustBe None
     }
   }
 }

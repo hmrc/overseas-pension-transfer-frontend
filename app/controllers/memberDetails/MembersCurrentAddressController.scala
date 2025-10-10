@@ -24,9 +24,7 @@ import org.apache.pekko.Done
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
@@ -37,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MembersCurrentAddressController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -78,7 +75,6 @@ class MembersCurrentAddressController @Inject() (
             case Some(addressToSave) =>
               for {
                 userAnswers   <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
-                _             <- sessionRepository.set(userAnswers).map(_ => logger.info(Json.stringify(userAnswers.data)))
                 savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers)
               } yield {
                 savedForLater match {

@@ -18,22 +18,22 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, SessionData, UserAnswers}
 import navigators.TypeOfAssetNavigator
-import pages.{NextPageWith, QuestionPage}
+import pages.{MiniJourneyNextPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object OtherAssetsAmendContinuePage extends QuestionPage[Boolean] with NextPageWith[Int] {
+case object OtherAssetsAmendContinuePage extends QuestionPage[Boolean] with MiniJourneyNextPage {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "otherAssetsAmendContinue"
 
-  override protected def nextPageWith(answers: UserAnswers, nextIndex: Int): Call = {
+  override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call = {
     answers.get(OtherAssetsAmendContinuePage) match {
       case Some(true)  => AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, nextIndex)
-      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(answers) match {
+      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
           case Some(route) => route
           case None        => routes.TransferDetailsCYAController.onPageLoad()
         }
@@ -44,10 +44,10 @@ case object OtherAssetsAmendContinuePage extends QuestionPage[Boolean] with Next
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.TransferDetailsCYAController.onPageLoad()
 
-  override protected def nextPageCheckModeWith(answers: UserAnswers, nextIndex: Int): Call = {
+  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call = {
     answers.get(OtherAssetsAmendContinuePage) match {
       case Some(true)  => AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, nextIndex)
-      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(answers) match {
+      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
           case Some(route) => route
           case None        => routes.TransferDetailsCYAController.onPageLoad()
         }

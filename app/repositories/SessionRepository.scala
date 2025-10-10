@@ -16,15 +16,16 @@
 
 package repositories
 
+import com.mongodb.client.model
 import config.FrontendAppConfig
-import models.UserAnswers
+import models.SessionData
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model._
 import play.api.libs.json.Format
+import uk.gov.hmrc.mdc.Mdc
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-import uk.gov.hmrc.play.http.logging.Mdc
 
 import java.time.{Clock, Instant}
 import java.util.concurrent.TimeUnit
@@ -37,23 +38,27 @@ class SessionRepository @Inject() (
     appConfig: FrontendAppConfig,
     clock: Clock
   )(implicit ec: ExecutionContext
-  ) extends PlayMongoRepository[UserAnswers](
-      collectionName = "user-answers",
+  ) extends PlayMongoRepository[SessionData](
+      collectionName = "session-data",
       mongoComponent = mongoComponent,
-      domainFormat   = UserAnswers.format,
+      domainFormat   = SessionData.format,
       indexes        = Seq(
         IndexModel(
           Indexes.ascending("lastUpdated"),
           IndexOptions()
             .name("lastUpdatedIdx")
             .expireAfter(appConfig.cacheTtl, TimeUnit.SECONDS)
+        ),
+        IndexModel(
+          Indexes.ascending("transferId")
         )
       )
     ) {
 
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
-  private def byId(id: String): Bson = Filters.equal("_id", id)
+  private def byId(id: String): Bson         = Filters.equal("_id", id)
+  private def byTransferId(id: String): Bson = Filters.equal("transferId", id)
 
   def keepAlive(id: String): Future[Boolean] = Mdc.preservingMdc {
     collection
@@ -65,7 +70,17 @@ class SessionRepository @Inject() (
       .map(_ => true)
   }
 
-  def get(id: String): Future[Option[UserAnswers]] = Mdc.preservingMdc {
+  def keepAliveByTransferId(id: String): Future[Boolean] = Mdc.preservingMdc {
+    collection
+      .updateOne(
+        filter = byTransferId(id),
+        update = Updates.set("lastUpdated", Instant.now(clock))
+      )
+      .toFuture()
+      .map(_ => true)
+  }
+
+  def get(id: String): Future[Option[SessionData]] = Mdc.preservingMdc {
     keepAlive(id).flatMap {
       _ =>
         collection
@@ -74,14 +89,23 @@ class SessionRepository @Inject() (
     }
   }
 
-  def set(answers: UserAnswers): Future[Boolean] = Mdc.preservingMdc {
+  def getByTransferId(id: String): Future[Option[SessionData]] = Mdc.preservingMdc {
+    keepAliveByTransferId(id).flatMap {
+      _ =>
+        collection
+          .find(byTransferId(id))
+          .headOption()
+    }
+  }
 
-    val updatedAnswers = answers copy (lastUpdated = Instant.now(clock))
+  def set(sessionData: SessionData): Future[Boolean] = Mdc.preservingMdc {
+
+    val updatedSession = sessionData copy (lastUpdated = Instant.now(clock))
 
     collection
       .replaceOne(
-        filter      = byId(updatedAnswers.id),
-        replacement = updatedAnswers,
+        filter      = byId(updatedSession.sessionId),
+        replacement = updatedSession,
         options     = ReplaceOptions().upsert(true)
       )
       .toFuture()

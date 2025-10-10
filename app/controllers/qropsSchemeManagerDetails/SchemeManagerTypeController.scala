@@ -25,7 +25,6 @@ import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeManagerTypeController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -67,12 +65,11 @@ class SchemeManagerTypeController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           for {
-            baseAnswers   <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
-            _             <- sessionRepository.set(baseAnswers)
-            savedForLater <- userAnswersService.setExternalUserAnswers(baseAnswers)
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(mode, baseAnswers))
+              case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
           }

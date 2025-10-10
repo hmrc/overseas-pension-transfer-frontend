@@ -25,7 +25,6 @@ import org.apache.pekko.Done
 import pages.qropsDetails.QROPSCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.{CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
@@ -36,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class QROPSCountryController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -84,7 +82,6 @@ class QROPSCountryController @Inject() (
               for {
                 removeQropsOtherCountry <- Future.fromTry(QROPSCountryPage.cleanup(Some(country), request.userAnswers))
                 updatedAnswers          <- Future.fromTry(removeQropsOtherCountry.set(QROPSCountryPage, country))
-                _                       <- sessionRepository.set(updatedAnswers)
                 savedForLater           <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {

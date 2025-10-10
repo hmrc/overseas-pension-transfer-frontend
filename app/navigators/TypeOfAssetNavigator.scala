@@ -16,13 +16,13 @@
 
 package navigators
 
-import models.UserAnswers
+import models.{SessionData, UserAnswers}
 import models.assets.AssetsMiniJourneyRegistry
 import play.api.mvc.Call
 
 object TypeOfAssetNavigator {
 
-  def getNextAssetRoute(userAnswers: UserAnswers): Option[Call] = {
-    AssetsMiniJourneyRegistry.firstIncompleteJourney(userAnswers).map(_.call)
+  def getNextAssetRoute(sessionData: SessionData): Option[Call] = {
+    AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call)
   }
 }

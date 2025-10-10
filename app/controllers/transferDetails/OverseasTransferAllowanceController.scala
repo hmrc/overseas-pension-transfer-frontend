@@ -25,7 +25,6 @@ import org.apache.pekko.Done
 import pages.transferDetails.OverseasTransferAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.OverseasTransferAllowanceView
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class OverseasTransferAllowanceController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -68,7 +66,6 @@ class OverseasTransferAllowanceController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(OverseasTransferAllowancePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
 
           } yield {

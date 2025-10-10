@@ -16,7 +16,7 @@
 
 package models.assets
 
-import models.UserAnswers
+import models.{SessionData, UserAnswers}
 import queries.assets.SelectedAssetTypes
 
 object AssetsMiniJourneyRegistry {
@@ -35,9 +35,9 @@ object AssetsMiniJourneyRegistry {
   def forType(assetType: TypeOfAsset): Option[AssetsMiniJourneyBase] =
     all.find(_.assetType == assetType)
 
-  def selectedJourneys(userAnswers: UserAnswers): Seq[AssetsMiniJourneyBase] =
-    userAnswers.get(SelectedAssetTypes).toSeq.flatten.flatMap(forType)
+  def selectedJourneys(sessionData: SessionData): Seq[AssetsMiniJourneyBase] =
+    sessionData.get(SelectedAssetTypes).toSeq.flatten.flatMap(forType)
 
-  def firstIncompleteJourney(userAnswers: UserAnswers): Option[AssetsMiniJourneyBase] =
-    selectedJourneys(userAnswers).find(!_.isCompleted(userAnswers))
+  def firstIncompleteJourney(sessionData: SessionData): Option[AssetsMiniJourneyBase] =
+    selectedJourneys(sessionData).find(!_.isCompleted(sessionData))
 }

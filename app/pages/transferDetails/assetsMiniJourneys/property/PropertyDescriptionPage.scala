@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 case class PropertyDescriptionPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.toString \ index \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.entryName \ index \ toString
 
   override def toString: String = PropertyEntry.PropDescription
 

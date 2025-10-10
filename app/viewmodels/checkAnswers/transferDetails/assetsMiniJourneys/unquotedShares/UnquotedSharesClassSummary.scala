@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import models.{CheckMode, Mode, UserAnswers}
+import models.{CheckMode, Mode, SessionData, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,8 +26,8 @@ import viewmodels.implicits._
 
 object UnquotedSharesClassSummary {
 
-  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(UnquotedSharesClassPage(index)).map {
+  def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(UnquotedSharesClassPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "unquotedSharesClass.checkYourAnswersLabel",

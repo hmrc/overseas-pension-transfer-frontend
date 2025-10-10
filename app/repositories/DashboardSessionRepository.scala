@@ -17,7 +17,7 @@
 package repositories
 
 import config.FrontendAppConfig
-import models.DashboardData
+import models.{AllTransfersItem, DashboardData, QtStatus}
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model._
 import play.api.libs.json.Format
@@ -52,6 +52,20 @@ class DashboardSessionRepository @Inject() (
     ) {
 
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+
+  private val SevenDaysMillis: Long = 7L * 24 * 60 * 60 * 1000
+
+  def findExpiringWithin7Days(allTransfers: Seq[AllTransfersItem]): Seq[AllTransfersItem] = {
+    val now          = Instant.now(clock)
+    val sevenDaysAgo = now.minusMillis(SevenDaysMillis)
+
+    val expirableStatuses = Seq(QtStatus.InProgress, QtStatus.AmendInProgress)
+
+    allTransfers.filter { t =>
+      t.qtStatus.exists(expirableStatuses.contains) &&
+      t.lastUpdated.exists(updated => !updated.isBefore(sevenDaysAgo) && !updated.isAfter(now))
+    }
+  }
 
   private def byId(id: String): Bson = Filters.equal("_id", id)
 

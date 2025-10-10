@@ -53,7 +53,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
         .thenReturn(Future.successful(Right(userAnswersDTO)))
 
-      val getUserAnswers = service.getExternalUserAnswers(userAnswers)
+      val getUserAnswers = service.getExternalUserAnswers(emptySessionData)
 
       await(getUserAnswers) mustBe Right(userAnswers)
     }
@@ -62,7 +62,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersNotFoundResponse)))
 
-      val getUserAnswers = await(service.getExternalUserAnswers(userAnswers))
+      val getUserAnswers = await(service.getExternalUserAnswers(emptySessionData))
 
       getUserAnswers map {
         ua =>
@@ -75,7 +75,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error message", None))))
 
-      val getUserAnswers = await(service.getExternalUserAnswers(userAnswers))
+      val getUserAnswers = await(service.getExternalUserAnswers(emptySessionData))
 
       getUserAnswers mustBe Left(UserAnswersErrorResponse("Error message", None))
     }

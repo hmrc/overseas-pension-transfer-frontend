@@ -34,8 +34,8 @@
 
 @(form: Form[_], mode: Mode, address: AddressViewModel)(implicit request: DisplayRequest[_], messages: Messages)
 @memberName = @{request.memberName}
-@searchAgain = @{controllers.memberDetails.routes.MembersLastUkAddressSelectController.onPageLoad(NormalMode).url}
-@manualEntry = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(NormalMode).url}
+@searchAgain = @{controllers.memberDetails.routes.MembersLastUkAddressSelectController.onPageLoad(mode).url}
+@manualEntry = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(mode).url}
 
 @layout(pageTitle = title(form, messages("memberConfirmLastUkAddress.title", memberName))) {
 

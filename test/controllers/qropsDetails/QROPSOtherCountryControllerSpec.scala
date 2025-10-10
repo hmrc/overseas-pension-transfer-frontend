@@ -46,7 +46,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, qropsOtherCountryRoute)
@@ -62,7 +62,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(QROPSOtherCountryPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(QROPSOtherCountryPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -87,7 +87,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       when(mockUserAnswersService.setExternalUserAnswers(any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
-        applicationBuilder(userAnswers = userAnswersQtNumber)
+        applicationBuilder()
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -102,13 +102,13 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QROPSOtherCountryPage.nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual QROPSOtherCountryPage.nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =
@@ -135,7 +135,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
         Future.successful(Left(UserAnswersErrorResponse("error", None)))
 
       val application =
-        applicationBuilder(userAnswers = userAnswersQtNumber)
+        applicationBuilder()
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)

@@ -33,7 +33,7 @@ class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers {
       "must go to Index when DiscardTransferConfirm in UserAnswers is true" in {
         val userAnswers: UserAnswers = UserAnswers("id", PstrNumber("12345678AB")).set(DiscardTransferConfirmPage, true).success.value
 
-        DiscardTransferConfirmPage.nextPage(NormalMode, userAnswers) mustEqual routes.IndexController.onPageLoad()
+        DiscardTransferConfirmPage.nextPage(NormalMode, userAnswers) mustEqual routes.DashboardController.onPageLoad()
       }
 
       "must go to Task List page when DiscardTransferConfirm in UserAnswers is false" in {

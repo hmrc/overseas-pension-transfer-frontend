@@ -47,7 +47,7 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, quotedSharesNumberRoute)
@@ -63,7 +63,7 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(QuotedSharesNumberPage(index), validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(QuotedSharesNumberPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -86,7 +86,7 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = userAnswersQtNumber)
+        applicationBuilder(sessionData = sessionDataQtNumber)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -106,7 +106,7 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request =

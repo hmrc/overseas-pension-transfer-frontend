@@ -43,7 +43,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   "PsaDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, psaDeclarationRoute)
@@ -61,14 +61,14 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
 
-      when(mockUserAnswersService.submitDeclaration(any(), any(), any())(any[HeaderCarrier]))
+      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456")))))
 
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))
 
       val application =
-        applicationBuilder(userAnswers = userAnswersQtNumber)
+        applicationBuilder()
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -88,11 +88,11 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     "must redirect to Journey Recovery when submission fails" in {
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.submitDeclaration(any(), any(), any())(any[HeaderCarrier]))
+      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Left(SubmissionErrorResponse("boom", None))))
 
       val application =
-        applicationBuilder(userAnswers = userAnswersQtNumber)
+        applicationBuilder()
           .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
           .build()
 

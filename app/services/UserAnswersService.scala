@@ -18,7 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
-import models.UserAnswers
+import models.{SessionData, UserAnswers}
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
@@ -34,10 +34,10 @@ class UserAnswersService @Inject() (
   )(implicit ec: ExecutionContext
   ) extends Logging {
 
-  def getExternalUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
-    connector.getAnswers(userAnswers.id) map {
+  def getExternalUserAnswers(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
+    connector.getAnswers(sessionData.transferId) map {
       case Right(userAnswersDTO)             => Right(toUserAnswers(userAnswersDTO))
-      case Left(UserAnswersNotFoundResponse) => Right(UserAnswers(userAnswers.id, userAnswers.pstr))
+      case Left(UserAnswersNotFoundResponse) => Right(UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber))
       case Left(error)                       => Left(error)
     }
   }
@@ -49,10 +49,11 @@ class UserAnswersService @Inject() (
   def submitDeclaration(
       authenticatedUser: AuthenticatedUser,
       userAnswers: UserAnswers,
+      sessionData: SessionData,
       maybePsaId: Option[PsaId] = None
     )(implicit hc: HeaderCarrier
     ): Future[Either[SubmissionErrorResponse, SubmissionResponse]] = {
-    connector.postSubmission(SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId))
+    connector.postSubmission(SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId, sessionData))
   }
 
   def clearUserAnswers(id: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {

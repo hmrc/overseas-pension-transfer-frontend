@@ -29,7 +29,7 @@ case object DiscardTransferConfirmPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     answers.get(DiscardTransferConfirmPage) match {
-      case Some(true)  => routes.IndexController.onPageLoad()
+      case Some(true)  => routes.DashboardController.onPageLoad()
       case Some(false) => routes.TaskListController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }

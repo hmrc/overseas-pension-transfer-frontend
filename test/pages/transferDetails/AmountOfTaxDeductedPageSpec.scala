@@ -36,9 +36,9 @@ class AmountOfTaxDeductedPageSpec extends AnyFreeSpec with Matchers {
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to Check Net Transfer amount in checkMode" in {
 
-        AmountOfTaxDeductedPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        AmountOfTaxDeductedPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.NetTransferAmountController.onPageLoad(CheckMode)
       }
     }
 

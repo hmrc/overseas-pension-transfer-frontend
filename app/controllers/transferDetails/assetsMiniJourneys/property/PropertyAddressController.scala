@@ -22,10 +22,8 @@ import models.Mode
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.{AddressService, CountryService}
+import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
@@ -35,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyAddressController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -75,7 +73,7 @@ class PropertyAddressController @Inject() (
             case Some(addressToSave) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyAddressPage(index), addressToSave))
-                _              <- sessionRepository.set(updatedAnswers).map(_ => logger.info(Json.stringify(updatedAnswers.data)))
+                _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
           }
       )

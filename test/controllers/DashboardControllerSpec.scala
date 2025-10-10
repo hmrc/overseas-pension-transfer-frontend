@@ -55,6 +55,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockRepo.set(any[DashboardData])).thenReturn(Future.successful(true))
       when(mockService.getAllTransfersData(meq(dd), meq(pensionSchemeDetails.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
+      when(mockRepo.findExpiringWithin7Days(any())).thenReturn(Seq.empty)
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
@@ -82,14 +83,20 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         )(stubMessages())
 
         val expectedHtml =
-          view(pensionSchemeDetails.schemeName, DashboardPage.nextPage(dd).url, vm)(request, messages(application)).toString
+          view(
+            schemeName    = pensionSchemeDetails.schemeName,
+            nextPage      = DashboardPage.nextPage(dd).url,
+            vm            = vm,
+            expiringItems = Seq.empty
+          )(request, messages(application)).toString
 
         status(result) mustBe OK
         contentAsString(result) mustBe expectedHtml
 
         verify(mockRepo).get(any[String])
-        verify(mockService).getAllTransfersData(meq(dd), meq(pensionSchemeDetails.pstrNumber))(any[HeaderCarrier])
         verify(mockRepo).set(any[DashboardData])
+        verify(mockRepo).findExpiringWithin7Days(any())
+        verify(mockService).getAllTransfersData(meq(dd), meq(pensionSchemeDetails.pstrNumber))(any[HeaderCarrier])
       }
     }
 

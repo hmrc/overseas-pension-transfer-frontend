@@ -22,6 +22,7 @@ import models.Mode
 import models.assets.TypeOfAsset
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, UserAnswersService}
@@ -64,12 +65,12 @@ class CashAmountInTransferController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
-            ua1            <- Future.fromTry(
-                                AssetsMiniJourneyService.setAssetCompleted(updatedAnswers, TypeOfAsset.Cash, completed = true)
+            updatedSession <- Future.fromTry(
+                                AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Cash, completed = true)
                               )
-            _              <- sessionRepository.set(ua1)
-            _              <- userAnswersService.setExternalUserAnswers(ua1)
-          } yield Redirect(CashAmountInTransferPage.nextPage(mode, ua1))
+            _              <- sessionRepository.set(updatedSession)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+          } yield Redirect(CashAmountInTransferPage.nextPageWith(mode, updatedAnswers, updatedSession))
       )
   }
 }

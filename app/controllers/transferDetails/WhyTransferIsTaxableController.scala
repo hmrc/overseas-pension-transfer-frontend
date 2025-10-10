@@ -25,7 +25,6 @@ import org.apache.pekko.Done
 import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.WhyTransferIsTaxableView
@@ -35,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class WhyTransferIsTaxableController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -67,7 +65,6 @@ class WhyTransferIsTaxableController @Inject() (
           for {
             ua1           <- Future.fromTry(request.userAnswers.set(WhyTransferIsTaxablePage, value))
             ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
-            _             <- sessionRepository.set(ua2)
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
             savedForLater match {

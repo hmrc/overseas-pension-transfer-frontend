@@ -17,15 +17,14 @@
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.actions._
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueFormProvider
 import models.assets.{QuotedSharesMiniJourney, TypeOfAsset}
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinuePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.AssetsMiniJourneyService
+import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueView
@@ -39,6 +38,7 @@ class QuotedSharesAmendContinueController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     formProvider: QuotedSharesAmendContinueFormProvider,
+    userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: QuotedSharesMiniJourney.type,
@@ -57,10 +57,10 @@ class QuotedSharesAmendContinueController @Inject() (
       mode match {
         case CheckMode  =>
           for {
-            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
-            _              <- sessionRepository.set(updatedAnswers)
+            updatedSession <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.QuotedShares, completed = true))
+            _              <- sessionRepository.set(updatedSession)
           } yield {
-            val shares = QuotedSharesAmendContinueSummary.rows(updatedAnswers)
+            val shares = QuotedSharesAmendContinueSummary.rows(request.userAnswers)
             Ok(view(preparedForm, shares, mode))
           }
         case NormalMode =>
@@ -78,12 +78,13 @@ class QuotedSharesAmendContinueController @Inject() (
         },
         continue => {
           for {
-            ua1 <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.userAnswers, TypeOfAsset.QuotedShares, completed = true))
-            ua2 <- Future.fromTry(ua1.set(QuotedSharesAmendContinuePage, continue))
-            _   <- sessionRepository.set(ua2)
+            sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.QuotedShares, completed = true))
+            _   <- sessionRepository.set(sd)
+            ua1 <- Future.fromTry(request.userAnswers.set(QuotedSharesAmendContinuePage, continue))
+            _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(QuotedSharesAmendContinuePage.nextPageWith(mode, ua2, nextIndex))
+            Redirect(QuotedSharesAmendContinuePage.nextPageWith(mode, ua1, sd, nextIndex))
           }
         }
       )

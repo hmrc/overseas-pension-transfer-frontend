@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
-import models.{Mode, UserAnswers}
+import models.{Mode, SessionData, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -26,8 +26,8 @@ import viewmodels.implicits._
 
 object OtherAssetsDescriptionSummary {
 
-  def row(mode: Mode, answers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OtherAssetsDescriptionPage(index)).map {
+  def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(OtherAssetsDescriptionPage(index)).map {
       answer =>
         SummaryListRowViewModel(
           key     = "assetValueDescription.checkYourAnswersLabel",

@@ -32,39 +32,39 @@ class TypeOfAssetNavigatorSpec extends AnyFreeSpec with SpecBase with MockitoSug
   "getNextAssetRoute" - {
     "must return the first uncompleted journey in order when all assets selected" in {
       val selectedTypes: Seq[TypeOfAsset] = Seq(Cash, UnquotedShares, QuotedShares, Property, TypeOfAsset.Other)
-      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
+      val sessionData                     = emptySessionData.set(TypeOfAssetPage, selectedTypes).success.value
 
-      val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers).map(_.toString)
+      val result = TypeOfAssetNavigator.getNextAssetRoute(sessionData).map(_.toString)
       result mustBe Some(AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(NormalMode).url)
     }
 
     "must return the first uncompleted journey in order" in {
       val selectedTypes: Seq[TypeOfAsset] = Seq(UnquotedSharesMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
+      val sessionData                     = emptySessionData.set(TypeOfAssetPage, selectedTypes).success.value
 
-      val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers).map(_.toString)
+      val result = TypeOfAssetNavigator.getNextAssetRoute(sessionData).map(_.toString)
       result mustBe Some(UnquotedSharesMiniJourney.call.url)
     }
 
     "must skip journeys not in the selected assets" in {
       val selectedTypes: Seq[TypeOfAsset] = Seq(QuotedSharesMiniJourney.assetType)
-      val userAnswers                     = emptyUserAnswers.set(TypeOfAssetPage, selectedTypes).success.value
+      val sessionData                     = emptySessionData.set(TypeOfAssetPage, selectedTypes).success.value
 
-      val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers).map(_.toString)
+      val result = TypeOfAssetNavigator.getNextAssetRoute(sessionData).map(_.toString)
       result mustBe Some(QuotedSharesMiniJourney.call.url)
     }
 
     "must return None if all selected journeys are completed" in {
-      val userAnswers = emptyUserAnswers
+      val sessionData = emptySessionData
         .set[Seq[TypeOfAsset]](TypeOfAssetPage, Seq(UnquotedSharesMiniJourney.assetType)).success.value
         .set(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType), true).success.value
 
-      val result = TypeOfAssetNavigator.getNextAssetRoute(userAnswers)
+      val result = TypeOfAssetNavigator.getNextAssetRoute(sessionData)
       result mustBe None
     }
 
     "must return None if no asset types have been selected" in {
-      val result = TypeOfAssetNavigator.getNextAssetRoute(emptyUserAnswers)
+      val result = TypeOfAssetNavigator.getNextAssetRoute(emptySessionData)
       result mustBe None
     }
   }
@@ -73,7 +73,7 @@ class TypeOfAssetNavigatorSpec extends AnyFreeSpec with SpecBase with MockitoSug
 object FakePage extends pages.Page {
   override def toString: String = "fakePage"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call = controllers.routes.IndexController.onPageLoad()
+  override protected def nextPageNormalMode(answers: UserAnswers): Call = controllers.routes.DashboardController.onPageLoad()
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call = controllers.routes.JourneyRecoveryController.onPageLoad()
 }

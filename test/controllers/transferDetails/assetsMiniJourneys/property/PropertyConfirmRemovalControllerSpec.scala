@@ -37,7 +37,7 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onPageLoad(1).url)
@@ -54,7 +54,7 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
     "must redirect to the next page when valid data is submitted" in {
 
       val entries     = List(PropertyEntry(propertyAddress, 1000, "description"))
-      val userAnswers = userAnswersQtNumber.set(PropertyQuery, entries).success.value
+      val userAnswers = emptyUserAnswers.set(PropertyQuery, entries).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -72,7 +72,7 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request =

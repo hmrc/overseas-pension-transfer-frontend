@@ -17,6 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
+import models.assets.TypeOfAsset.Cash
 import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.TypeOfAssetPage
 import play.api.i18n.Messages
@@ -29,24 +30,24 @@ import viewmodels.implicits._
 object TypeOfAssetSummary {
 
   def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TypeOfAssetPage).map {
-      answers =>
+    answers.get(TypeOfAssetPage).flatMap {
+      case Seq(Cash) => None
+      case answers   =>
         val value = ValueViewModel(
           HtmlContent(
             answers.map {
               answer => HtmlFormat.escape(messages(s"typeOfAsset.$answer")).toString
-            }
-              .mkString(",<br>")
+            }.mkString(",<br>")
           )
         )
 
-        SummaryListRowViewModel(
+        Some(SummaryListRowViewModel(
           key     = "typeOfAsset.checkYourAnswersLabel",
           value   = value,
           actions = Seq(
             ActionItemViewModel("site.change", routes.TypeOfAssetController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("typeOfAsset.change.hidden"))
           )
-        )
+        ))
     }
 }

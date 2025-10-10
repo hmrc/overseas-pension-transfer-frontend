@@ -48,7 +48,7 @@ trait ErrorHandling extends Logging {
     logger.warn(s"[$controller.$method] address lookup failed for postcode: $postcode")
 
     val enterManuallyUrl = MembersLastUkAddressLookupPage.recoveryModeReturnUrl
-    val dashboardUrl     = controllers.routes.IndexController.onPageLoad().url
+    val dashboardUrl     = controllers.routes.DashboardController.onPageLoad().url
 
     ServiceUnavailable(addressLookupDownView(enterManuallyUrl, dashboardUrl))
   }

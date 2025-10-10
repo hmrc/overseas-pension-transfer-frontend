@@ -36,7 +36,7 @@
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 @memberName = @{request.memberName}
 
-@addressLookupPage = @{controllers.memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url}
+@addressLookupPage = @{controllers.memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(mode).url}
 
 @layout(pageTitle = title(form, messages("membersLastUKAddress.title"))) {
 

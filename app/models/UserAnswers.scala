@@ -113,15 +113,6 @@ object UserAnswers {
         Failure(error)
     }
 
-  def initialise(id: String, pstrNumber: PstrNumber): Try[UserAnswers] =
-    for {
-      ua1 <- UserAnswers(id, pstrNumber).set(TaskStatusQuery(MemberDetails), NotStarted)
-      ua2 <- ua1.set(TaskStatusQuery(QROPSDetails), CannotStart)
-      ua3 <- ua2.set(TaskStatusQuery(SchemeManagerDetails), CannotStart)
-      ua4 <- ua3.set(TaskStatusQuery(TransferDetails), CannotStart)
-      ua5 <- ua4.set(TaskStatusQuery(SubmissionDetails), CannotStart)
-    } yield ua5
-
   val reads: Reads[UserAnswers] = {
 
     import play.api.libs.functional.syntax._

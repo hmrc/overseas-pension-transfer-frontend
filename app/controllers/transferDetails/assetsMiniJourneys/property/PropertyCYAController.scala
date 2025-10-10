@@ -26,7 +26,6 @@ import org.apache.pekko.Done
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.PropertyQuery
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -44,8 +43,7 @@ class PropertyCYAController @Inject() (
     userAnswersService: UserAnswersService,
     assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
-    view: PropertyCYAView,
-    sessionRepository: SessionRepository
+    view: PropertyCYAView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
@@ -62,7 +60,6 @@ class PropertyCYAController @Inject() (
       minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, PropertyQuery))
       updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.Property, userSelection = None)
       saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
-      _                  <- sessionRepository.set(request.userAnswers)
     } yield {
       saved match {
         case Right(Done) =>

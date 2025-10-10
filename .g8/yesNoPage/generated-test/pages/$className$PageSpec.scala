@@ -15,7 +15,7 @@ class $className$PageSpec extends AnyFreeSpec with Matchers {
 
       "must go to Index" in {
 
-        $className$Page.nextPage(NormalMode, emptyAnswers) mustEqual routes.IndexController.onPageLoad()
+        $className$Page.nextPage(NormalMode, emptyAnswers) mustEqual routes.DashboardController.onPageLoad()
       }
     }
 

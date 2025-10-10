@@ -27,25 +27,25 @@ sealed trait AssetsQuery[A] extends Gettable[A] with Settable[A] {
 
 case object CashQuery extends AssetsQuery[CashEntry] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Cash.toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Cash.entryName
 }
 
 case object QuotedSharesQuery extends AssetsQuery[List[QuotedSharesEntry]] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.entryName
 }
 
 case object UnquotedSharesQuery extends AssetsQuery[List[UnquotedSharesEntry]] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName
 }
 
 case object PropertyQuery extends AssetsQuery[List[PropertyEntry]] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.entryName
 }
 
 case object OtherAssetsQuery extends AssetsQuery[List[OtherAssetsEntry]] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Other.toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Other.entryName
 }

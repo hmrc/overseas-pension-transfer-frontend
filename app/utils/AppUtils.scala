@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{QtNumber, UserAnswers}
+import models.{QtNumber, SessionData, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import utils.DateTimeFormats.localDateTimeFormatter
@@ -27,13 +27,13 @@ trait AppUtils {
     userAnswers.get(MemberNamePage).fold("Undefined Undefined")(_.fullName)
   }
 
-  def qtNumber(userAnswers: UserAnswers): QtNumber = {
-    userAnswers.get(QtNumberQuery)
+  def qtNumber(sessionData: SessionData): QtNumber = {
+    sessionData.get(QtNumberQuery)
       .getOrElse(QtNumber.empty)
   }
 
-  def dateTransferSubmitted(userAnswers: UserAnswers): String = {
-    userAnswers.get(DateSubmittedQuery).fold("Transfer not submitted") {
+  def dateTransferSubmitted(sessionData: SessionData): String = {
+    sessionData.get(DateSubmittedQuery).fold("Transfer not submitted") {
       date => date.format(localDateTimeFormatter)
     }
   }

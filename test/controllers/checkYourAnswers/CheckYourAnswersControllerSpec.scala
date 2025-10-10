@@ -30,12 +30,12 @@ import views.html.checkYourAnswers.CheckYourAnswersView
 
 class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val application = applicationBuilder(userAnswersQtNumber).build()
+  private val application = applicationBuilder().build()
 
   private lazy val checkYourAnswersRoute = routes.CheckYourAnswersController.onPageLoad().url
 
   val memberDetailsSummaryList        = SummaryListViewModel(Seq.empty)
-  val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, userAnswersQtNumber)(messages(application)))
+  val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, emptyUserAnswers)(messages(application)))
   val qropsDetailsSummaryList         = SummaryListViewModel(Seq.empty)
   val schemeManagerDetailsSummaryList = SummaryListViewModel(Seq.empty)
 
