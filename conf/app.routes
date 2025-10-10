@@ -486,6 +486,7 @@ GET        /psa-declaration                                                     
 POST       /psa-declaration                                                                       controllers.PsaDeclarationController.onSubmit(mode: Mode = NormalMode)
 
 GET        /task-list                                                                             controllers.TaskListController.onPageLoad()
+GET        /task-list/in-progress                                                                 controllers.TaskListController.fromDashboard(transferId: String)
 
 GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad(mode: Mode = NormalMode)
 POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit(mode: Mode = NormalMode)

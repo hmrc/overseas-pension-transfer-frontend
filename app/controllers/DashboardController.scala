@@ -17,7 +17,8 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.IdentifierAction
+import controllers.actions.{IdentifierAction, SchemeDataAction}
+import models.requests.IdentifierRequest
 import models.{DashboardData, PensionSchemeDetails}
 import pages.DashboardPage
 import play.api.Logging
@@ -42,6 +43,7 @@ class DashboardController @Inject() (
     repo: DashboardSessionRepository,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
+    getSchemeData: SchemeDataAction,
     transferService: TransferService,
     view: DashboardView,
     appConfig: FrontendAppConfig

@@ -16,10 +16,12 @@
 
 package viewmodels
 
-import models.AllTransfersItem
+import models.{AllTransfersItem, PensionSchemeDetails}
 import models.QtStatus.{Compiled, InProgress, Submitted}
+import models.requests.IdentifierRequest
 import navigators.AllTransfersLinkNavigator
 import play.api.i18n.Messages
+import play.api.mvc.AnyContent
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
@@ -27,8 +29,6 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableR
 
 import java.time.{Instant, ZoneOffset}
 import java.time.format.DateTimeFormatter
-
-final case class AllTransfersTableViewModel(table: Table)
 
 object AllTransfersTableViewModel {
 

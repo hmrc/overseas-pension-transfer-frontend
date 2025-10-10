@@ -217,9 +217,41 @@ class TaskListControllerSpec
 
         status(res) mustEqual OK
 
-        verify(mockSessionRepository).set(ArgumentMatchers.argThat[SessionData] { ua =>
-          ua.get(TaskStatusQuery(TaskCategory.SubmissionDetails)).contains(TaskStatus.NotStarted)
+        verify(mockSessionRepository).set(ArgumentMatchers.argThat[SessionData] { sd =>
+          sd.get(TaskStatusQuery(TaskCategory.SubmissionDetails)).contains(TaskStatus.NotStarted)
         })
+      }
+    }
+
+    "fromDashboard" - {
+      "must redirect to TaskList onPageLoad and set new session data" in {
+        val mockSessionRepository = mock[SessionRepository]
+
+        when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
+
+        val initialSD =
+          sessionDataQtNumber
+            .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
+            .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
+            .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
+            .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), TaskStatus.Completed).success.value
+            .set(TaskStatusQuery(TaskCategory.SubmissionDetails), TaskStatus.CannotStart).success.value
+
+        val app =
+          applicationBuilder(sessionData = initialSD)
+            .overrides(
+              bind[SessionRepository].toInstance(mockSessionRepository)
+            )
+            .build()
+
+        running(app) {
+          val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard("transferId").url)
+          val res = route(app, req).value
+
+          status(res) mustEqual SEE_OTHER
+
+          verify(mockSessionRepository, times(1)).set(any())
+        }
       }
     }
   }

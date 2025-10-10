@@ -16,12 +16,14 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction, SchemeDataActionImpl}
 import controllers.helpers.ErrorHandling
+import models.{PensionSchemeDetails, SessionData}
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc._
 import repositories.SessionRepository
-import services.TaskService
+import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.TaskListViewModel
 import views.html.TaskListView
@@ -35,6 +37,7 @@ class TaskListController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService,
     view: TaskListView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
@@ -55,6 +58,21 @@ class TaskListController @Inject() (
       } else {
         onFailureRedirect("Session Repository unable to update Task List")
       }
+    }
+  }
+
+  def fromDashboard(transferId: String): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
+    val newSession = SessionData(
+      request.authenticatedUser.internalId,
+      transferId,
+      request.authenticatedUser.pensionSchemeDetails.get,
+      request.authenticatedUser,
+      data = Json.obj()
+    )
+
+    sessionRepository.set(newSession) map {
+      _ =>
+        Redirect(controllers.routes.TaskListController.onPageLoad())
     }
   }
 }
