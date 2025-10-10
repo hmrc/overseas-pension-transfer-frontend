@@ -75,14 +75,14 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
 
   "setAssetCompleted" - {
     "must return updated UserAnswers with flag set to true" in {
-      val result = service.setAssetCompleted(emptyUserAnswers, UnquotedSharesMiniJourney.assetType, completed = true)
+      val result = service.setAssetCompleted(emptySessionData, UnquotedSharesMiniJourney.assetType, completed = true)
 
       result mustBe a[Success[_]]
       result.get.get(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType)) mustBe Some(true)
     }
 
     "must return updated UserAnswers with flag set to false" in {
-      val result = service.setAssetCompleted(emptyUserAnswers, QuotedSharesMiniJourney.assetType, completed = false)
+      val result = service.setAssetCompleted(emptySessionData, QuotedSharesMiniJourney.assetType, completed = false)
 
       result mustBe a[Success[_]]
       result.get.get(AssetCompletionFlag(QuotedSharesMiniJourney.assetType)) mustBe Some(false)
@@ -90,21 +90,21 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
   }
   "clearAllAssetCompletionFlags" - {
     "must remove all completion flags" in {
-      val userAnswersWithFlags = emptyUserAnswers
+      val sessionDataWithFlags = emptySessionData
         .set(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType), true).success.value
         .set(AssetCompletionFlag(QuotedSharesMiniJourney.assetType), true).success.value
 
-      val result = service.clearAllAssetCompletionFlags(userAnswersWithFlags)
+      val result = service.clearAllAssetCompletionFlags(sessionDataWithFlags)
 
       result mustBe a[Success[_]]
-      val updatedAnswers = result.get
+      val updatedSession = result.get
 
-      updatedAnswers.get(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType)) mustBe None
-      updatedAnswers.get(AssetCompletionFlag(QuotedSharesMiniJourney.assetType)) mustBe None
+      updatedSession.get(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType)) mustBe None
+      updatedSession.get(AssetCompletionFlag(QuotedSharesMiniJourney.assetType)) mustBe None
     }
 
     "must still succeed if there are no flags to remove" in {
-      val result = service.clearAllAssetCompletionFlags(emptyUserAnswers)
+      val result = service.clearAllAssetCompletionFlags(emptySessionData)
 
       result mustBe a[Success[_]]
       result.get.data mustBe Json.obj()
@@ -121,10 +121,6 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
           .set(OtherAssetsMiniJourney.query, List(OtherAssetsEntry("Gold", 30))).success.value
           .set(CashMiniJourney.query, CashEntry(999)).success.value
           .set(SelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash, TypeOfAsset.UnquotedShares, TypeOfAsset.QuotedShares, TypeOfAsset.Other)).success.value
-          .set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true).success.value
-          .set(AssetCompletionFlag(TypeOfAsset.QuotedShares), true).success.value
-          .set(AssetCompletionFlag(TypeOfAsset.Other), true).success.value
-          .set(AssetCompletionFlag(TypeOfAsset.Cash), true).success.value
 
       val result = service.removeAllAssetEntriesExceptCash(uaWithAssetsAndFlags)
 
@@ -138,13 +134,6 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
       updated.get(CashMiniJourney.query) mustBe Some(CashEntry(999))
 
       updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
-
-      updated.get(AssetCompletionFlag(TypeOfAsset.UnquotedShares)) mustBe None
-      updated.get(AssetCompletionFlag(TypeOfAsset.QuotedShares)) mustBe None
-      updated.get(AssetCompletionFlag(TypeOfAsset.Other)) mustBe None
-      updated.get(AssetCompletionFlag(TypeOfAsset.Cash)) mustBe None
-
-      updated.get(AssetCompletionFlags) mustBe None
     }
 
     "must remove non-cash data even if SelectedAssetTypes already equals Set(Cash)" in {

@@ -18,11 +18,11 @@ package services
 
 import base.SpecBase
 import handlers.AssetThresholdHandler
-import models.UserAnswers
+import models.{SessionData, UserAnswers}
 import models.assets.TypeOfAsset
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, verify, when}
+import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -30,7 +30,6 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatestplus.mockito.MockitoSugar
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import org.mockito.Mockito.reset
 
 import scala.concurrent.Future
 
@@ -70,11 +69,11 @@ class MoreAssetCompletionServiceSpec
 
           val userAnswers: UserAnswers = userAnswersWithAssets(assetsCount = 5)
 
-          val updated: UserAnswers =
-            AssetsMiniJourneyService.setAssetCompleted(userAnswers, assetType, completed = true).success.value
+          val updated: SessionData =
+            AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
 
           when(mockAssetThresholdHandler.handle(any(), any(), any()))
-            .thenReturn(updated)
+            .thenReturn(userAnswers)
 
           when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
             .thenReturn(Future.successful(Right(Done)))
@@ -82,11 +81,11 @@ class MoreAssetCompletionServiceSpec
           when(mockSessionRepository.set(any()))
             .thenReturn(Future.successful(true))
 
-          service.completeAsset(userAnswers, assetType, completed = true, userSelection = Some(true)).map { result =>
+          service.completeAsset(userAnswers, emptySessionData, assetType, completed = true, userSelection = Some(true)).map { result =>
             result mustBe updated
 
-            verify(mockAssetThresholdHandler).handle(updated, assetType, Some(true))
-            verify(mockUserAnswersService).setExternalUserAnswers(updated)
+            verify(mockAssetThresholdHandler).handle(userAnswers, assetType, Some(true))
+            verify(mockUserAnswersService).setExternalUserAnswers(userAnswers)
             verify(mockSessionRepository).set(updated)
 
             succeed
@@ -95,11 +94,11 @@ class MoreAssetCompletionServiceSpec
 
         s"should handle case when userSelection is None for $assetType" in {
           val userAnswers          = userAnswersWithAssets()
-          val updated: UserAnswers =
-            AssetsMiniJourneyService.setAssetCompleted(userAnswers, assetType, completed = true).success.value
+          val updated: SessionData =
+            AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
 
           when(mockAssetThresholdHandler.handle(any(), any(), any()))
-            .thenReturn(updated)
+            .thenReturn(userAnswers)
 
           when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
             .thenReturn(Future.successful(Right(Done)))
@@ -107,9 +106,9 @@ class MoreAssetCompletionServiceSpec
           when(mockSessionRepository.set(any()))
             .thenReturn(Future.successful(true))
 
-          service.completeAsset(userAnswers, assetType, completed = true).map { result =>
+          service.completeAsset(userAnswers, updated, assetType, completed = true).map { result =>
             result mustBe updated
-            verify(mockAssetThresholdHandler).handle(updated, assetType, None)
+            verify(mockAssetThresholdHandler).handle(userAnswers, assetType, None)
             succeed
           }
         }
@@ -119,15 +118,18 @@ class MoreAssetCompletionServiceSpec
         val userAnswers = userAnswersWithAssets()
         val asset       = TypeOfAsset.Property
 
+        when(mockSessionRepository.set(any()))
+          .thenReturn(Future.successful(true))
+
         when(mockAssetThresholdHandler.handle(any(), any(), any()))
           .thenThrow(new RuntimeException("boom"))
 
-        val completed = service.completeAsset(userAnswers, asset, completed = true)
+        val completed = service.completeAsset(userAnswers, emptySessionData, asset, completed = true)
 
         recoverToExceptionIf[RuntimeException](completed).map { ex =>
           ex.getMessage mustBe "boom"
           verify(mockUserAnswersService, never()).setExternalUserAnswers(any())(any[HeaderCarrier])
-          verify(mockSessionRepository, never()).set(any())
+          verify(mockSessionRepository, times(1)).set(any())
           succeed
         }
       }
@@ -136,8 +138,11 @@ class MoreAssetCompletionServiceSpec
         val userAnswers = emptyUserAnswers
         val asset       = TypeOfAsset.Cash
 
+        when(mockSessionRepository.set(any()))
+          .thenReturn(Future.successful(true))
+
         recoverToExceptionIf[IllegalArgumentException] {
-          service.completeAsset(userAnswers, asset, completed = true)
+          service.completeAsset(userAnswers, emptySessionData, asset, completed = true)
         } map { ex =>
           ex.getMessage mustBe "Cash assets not supported for threshold handling"
         }

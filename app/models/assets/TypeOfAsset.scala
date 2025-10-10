@@ -22,15 +22,31 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewmodels.govuk.checkbox._
 
-sealed trait TypeOfAsset
+sealed trait TypeOfAsset {
+  val entryName: String
+}
 
 object TypeOfAsset extends Enumerable.Implicits {
 
-  case object Cash           extends WithName("cash") with TypeOfAsset
-  case object UnquotedShares extends WithName("unquotedShares") with TypeOfAsset
-  case object QuotedShares   extends WithName("quotedShares") with TypeOfAsset
-  case object Property       extends WithName("propertyAssets") with TypeOfAsset
-  case object Other          extends WithName("otherAssets") with TypeOfAsset
+  case object Cash extends WithName("cashAssets") with TypeOfAsset {
+    override val entryName: String = "cashValue"
+  }
+
+  case object UnquotedShares extends WithName("unquotedShareAssets") with TypeOfAsset {
+    override val entryName: String = "unquotedShares"
+  }
+
+  case object QuotedShares extends WithName("quotedShareAssets") with TypeOfAsset {
+    override val entryName: String = "quotedShares"
+  }
+
+  case object Property extends WithName("propertyAsset") with TypeOfAsset {
+    override val entryName: String = "propertyAssets"
+  }
+
+  case object Other extends WithName("otherAsset") with TypeOfAsset {
+    override val entryName: String = "otherAssets"
+  }
 
   val values: Seq[TypeOfAsset] = Seq(
     Cash,

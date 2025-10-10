@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -52,9 +52,11 @@ case object IsTransferCashOnlyPage extends QuestionPage[Boolean] {
       case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
 
-  override def cleanup(maybeTransferIsCashOnly: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+  def cleanup(maybeTransferIsCashOnly: Option[Boolean], userAnswers: UserAnswers, sessionData: SessionData): Try[UserAnswers] =
     maybeTransferIsCashOnly match {
-      case Some(true) => AssetsMiniJourneyService.removeAllAssetEntriesExceptCash(userAnswers)
+      case Some(true) =>
+        AssetsMiniJourneyService.clearAllAssetCompletionFlags(sessionData)
+        AssetsMiniJourneyService.removeAllAssetEntriesExceptCash(userAnswers)
       case _          => super.cleanup(maybeTransferIsCashOnly, userAnswers)
     }
 

@@ -39,6 +39,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         OtherAssetsAmendContinuePage.nextPageWith(
           NormalMode,
           userAnswers,
+          emptySessionData,
           nextIndex
         ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(
           NormalMode,
@@ -49,18 +50,19 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
       "must go to the cya page if no-continue selected and no more assets" in {
         val userAnswers = emptyAnswers.set(OtherAssetsAmendContinuePage, false).success.value
         val nextIndex   = 2
-        OtherAssetsAmendContinuePage.nextPageWith(NormalMode, userAnswers, nextIndex) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        OtherAssetsAmendContinuePage.nextPageWith(NormalMode, userAnswers, emptySessionData, nextIndex) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if no-continue selected and more assets" in {
         val selectedTypes: Seq[TypeOfAsset] = Seq(OtherAssetsMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val userAnswers                     = for {
-          ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
-          ua2 <- ua1.set(AssetCompletionFlag(TypeOfAsset.Other), true)
-          ua3 <- ua2.set(OtherAssetsAmendContinuePage, false)
-        } yield ua3
+        val userAnswers                     = emptyAnswers.set(OtherAssetsAmendContinuePage, false)
+        val sessionData                     =
+          for {
+            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Other), true)
+          } yield sd2
 
-        val result = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, 0)
+        val result = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value, 0)
         result mustBe QuotedSharesMiniJourney.call
       }
     }

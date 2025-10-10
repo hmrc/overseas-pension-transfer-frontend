@@ -18,7 +18,7 @@ package viewmodels
 
 import models.taskList.TaskStatus
 import models.taskList.TaskStatus.CannotStart
-import models.{Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import play.api.mvc.Call
 import queries.TaskStatusQuery
 
@@ -31,11 +31,11 @@ trait TaskJourneyViewModel {
   def start(mode: Mode): Call
   def cya(): Call
 
-  final def status(ua: UserAnswers): TaskStatus =
-    ua.get(TaskStatusQuery(category)).getOrElse(CannotStart)
+  final def status(sd: SessionData): TaskStatus =
+    sd.get(TaskStatusQuery(category)).getOrElse(CannotStart)
 
-  final def entry(ua: UserAnswers): Call =
-    status(ua) match {
+  final def entry(sd: SessionData): Call =
+    status(sd) match {
       case TaskStatus.Completed => cya()
       case _                    => start(NormalMode)
     }

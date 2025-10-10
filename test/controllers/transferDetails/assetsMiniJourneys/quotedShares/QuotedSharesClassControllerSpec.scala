@@ -45,7 +45,7 @@ class QuotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, quotedSharesClassRoute)
@@ -61,7 +61,7 @@ class QuotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(QuotedSharesClassPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(QuotedSharesClassPage(index), "answer").success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -84,7 +84,7 @@ class QuotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with Moc
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = userAnswersQtNumber)
+        applicationBuilder(sessionData = sessionDataQtNumber)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -96,13 +96,13 @@ class QuotedSharesClassControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QuotedSharesClassPage(index).nextPage(NormalMode, userAnswersQtNumber).url
+        redirectLocation(result).value mustEqual QuotedSharesClassPage(index).nextPage(NormalMode, emptyUserAnswers).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request =

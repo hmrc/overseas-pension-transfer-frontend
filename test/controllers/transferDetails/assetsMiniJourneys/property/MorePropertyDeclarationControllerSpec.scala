@@ -55,8 +55,8 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = userAnswersQtNumber.set(MorePropertyDeclarationPage, true).success.value
-      val application = applicationBuilder(userAnswers = userAnswers).build()
+      val userAnswers = emptyUserAnswers.set(MorePropertyDeclarationPage, true).success.value
+      val application = applicationBuilder(userAnswers = userAnswers, sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, morePropertyDeclarationRoute)
@@ -85,7 +85,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request =

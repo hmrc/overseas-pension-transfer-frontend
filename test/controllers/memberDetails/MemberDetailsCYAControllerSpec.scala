@@ -19,7 +19,7 @@ package controllers.memberDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import models.TaskCategory._
-import models.{TaskCategory, UserAnswers}
+import models.{SessionData, TaskCategory, UserAnswers}
 import models.taskList.TaskStatus
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -47,7 +47,7 @@ class MemberDetailsCYAControllerSpec
   "Check Your Answers Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, routes.MemberDetailsCYAController.onPageLoad().url)
@@ -63,18 +63,14 @@ class MemberDetailsCYAControllerSpec
     }
 
     "must set MemberDetails to Completed on POST, persist externally, and redirect to Task List" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
+      val mockSessionRepository = mock[SessionRepository]
 
-      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
-        .thenReturn(Future.successful(Right(Done)))
+      when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
+            bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
@@ -86,41 +82,10 @@ class MemberDetailsCYAControllerSpec
         redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
 
         verify(mockSessionRepository).set(
-          org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
-            ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.Completed)
+          org.mockito.ArgumentMatchers.argThat[SessionData] { sd =>
+            sd.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.Completed)
           }
         )
-
-        verify(mockUserAnswersService).setExternalUserAnswers(
-          org.mockito.ArgumentMatchers.argThat[UserAnswers] { ua =>
-            ua.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.Completed)
-          }
-        )(any())
-      }
-    }
-
-    "must redirect to Journey Recovery on POST when external persistence returns Left" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any[UserAnswers])) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any()))
-        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
-
-      val application =
-        applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
-
-      running(application) {
-        val request = FakeRequest(POST, routes.MemberDetailsCYAController.onSubmit().url)
-        val result  = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
       }
     }
   }

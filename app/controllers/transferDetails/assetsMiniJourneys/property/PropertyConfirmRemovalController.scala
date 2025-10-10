@@ -19,14 +19,12 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import controllers.actions._
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
-import models.assets.PropertyMiniJourney
-import models.{NormalMode, UserAnswers}
 import handlers.AssetThresholdHandler
 import models.NormalMode
 import models.assets.{PropertyMiniJourney, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService}
+import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalView
 
@@ -41,6 +39,7 @@ class PropertyConfirmRemovalController @Inject() (
     formProvider: PropertyConfirmRemovalFormProvider,
     miniJourney: PropertyMiniJourney.type,
     assetThresholdHandler: AssetThresholdHandler,
+    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: PropertyConfirmRemovalView,
     moreAssetCompletionService: MoreAssetCompletionService
@@ -72,7 +71,8 @@ class PropertyConfirmRemovalController @Inject() (
         } else {
           (for {
             updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.Property, completed = false)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.Property, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
             .recover {
               case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())

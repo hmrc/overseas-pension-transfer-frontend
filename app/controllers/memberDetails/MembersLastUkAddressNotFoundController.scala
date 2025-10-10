@@ -38,7 +38,7 @@ class MembersLastUkAddressNotFoundController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData) { implicit request =>
-      request.userAnswers.get(MembersLastUkAddressLookupPage) match {
+      request.sessionData.get(MembersLastUkAddressLookupPage) match {
         case Some(NoAddressFound(searchedPostcode)) =>
           Ok(view(searchedPostcode, mode))
         case _                                      =>

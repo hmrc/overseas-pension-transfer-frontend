@@ -68,7 +68,8 @@ class MemberNameController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            sessionData    <- Future.fromTry(request.sessionData.set(MemberNamePage, value))
+            _              <- sessionRepository.set(sessionData)
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {

@@ -16,7 +16,7 @@
 
 package handlers
 
-import models.{RichJsObject, UserAnswers}
+import models.{RichJsObject, SessionData, UserAnswers}
 import models.assets.TypeOfAsset
 import play.api.libs.json._
 

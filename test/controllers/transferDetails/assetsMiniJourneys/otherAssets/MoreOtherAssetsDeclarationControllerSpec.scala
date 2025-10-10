@@ -55,7 +55,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = userAnswersQtNumber.set(MoreOtherAssetsDeclarationPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(MoreOtherAssetsDeclarationPage, true).success.value
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
@@ -85,7 +85,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =

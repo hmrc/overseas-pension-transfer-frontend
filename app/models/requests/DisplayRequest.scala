@@ -16,7 +16,7 @@
 
 package models.requests
 
-import models.{QtNumber, UserAnswers}
+import models.{QtNumber, SessionData, UserAnswers}
 import models.authentication.AuthenticatedUser
 import play.api.mvc.{Request, WrappedRequest}
 
@@ -24,6 +24,7 @@ case class DisplayRequest[A](
     request: Request[A],
     authenticatedUser: AuthenticatedUser,
     userAnswers: UserAnswers,
+    sessionData: SessionData,
     memberName: String,
     qtNumber: QtNumber,
     dateTransferSubmitted: String

@@ -25,7 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
-import repositories.DashboardSessionRepository
+import repositories.{DashboardSessionRepository, SessionRepository}
 import services.TransferService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -40,6 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DashboardController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     repo: DashboardSessionRepository,
+    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     transferService: TransferService,
     view: DashboardView,
@@ -51,18 +52,20 @@ class DashboardController @Inject() (
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
     val id                         = request.authenticatedUser.internalId
 
-    repo.get(id).flatMap {
-      case None =>
-        logger.warn(s"[DashboardController][onPageLoad] No dashboard data found for $id")
-        Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-
-      case Some(dashboardData) =>
-        dashboardData.get(PensionSchemeDetailsQuery).fold {
-          logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for $id")
+    sessionRepository.clear(id) flatMap { _ =>
+      repo.get(id).flatMap {
+        case None =>
+          logger.warn(s"[DashboardController][onPageLoad] No dashboard data found for $id")
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        } { pensionSchemeDetails =>
-          renderDashboard(page, dashboardData, pensionSchemeDetails)
-        }
+
+        case Some(dashboardData) =>
+          dashboardData.get(PensionSchemeDetailsQuery).fold {
+            logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for $id")
+            Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+          } { pensionSchemeDetails =>
+            renderDashboard(page, dashboardData, pensionSchemeDetails)
+          }
+      }
     }
   }
 

@@ -46,7 +46,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, cashAmountInTransferRoute)
@@ -62,7 +62,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(CashAmountInTransferPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(CashAmountInTransferPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -85,7 +85,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = userAnswersQtNumber)
+        applicationBuilder()
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -99,13 +99,13 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CashAmountInTransferPage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual CashAmountInTransferPage.nextPageWith(NormalMode, emptyUserAnswers, emptySessionData).url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =
