@@ -19,7 +19,7 @@ package connectors
 import config.FrontendAppConfig
 import connectors.parsers.TransferParser.{GetAllTransfersHttpReads, GetAllTransfersType}
 import connectors.parsers.UserAnswersParser._
-import models.PstrNumber
+import models.{PstrNumber, QtNumber, QtStatus}
 import models.responses.{AllTransfersUnexpectedError, UserAnswersErrorResponse}
 import play.api.Logging
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -51,9 +51,9 @@ class TransferConnector @Inject() (
 
   def getSpecificTransfer(
       transferReference: Option[String],
-      qtNumber: Option[String]      = None,
-      pstrNumber: String,
-      qtStatus: String,
+      qtNumber: Option[QtNumber]    = None,
+      pstrNumber: PstrNumber,
+      qtStatus: QtStatus,
       versionNumber: Option[String] = None
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
@@ -66,7 +66,7 @@ class TransferConnector @Inject() (
       url"${appConfig.backendService}/get-transfer/$referenceId"
 
     val queryStringParams =
-      Seq("pstr" -> pstrNumber, "qtStatus" -> qtStatus) ++ versionNumber.toSeq.map("versionNumber" -> _)
+      Seq("pstr" -> pstrNumber.value, "qtStatus" -> qtStatus.toString) ++ versionNumber.toSeq.map("versionNumber" -> _)
 
     http.get(allTransfersUrl)
       .transform(_.addQueryStringParameters(queryStringParams: _*))

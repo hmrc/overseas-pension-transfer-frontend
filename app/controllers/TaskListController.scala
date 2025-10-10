@@ -19,6 +19,7 @@ package controllers
 import connectors.TransferConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
+import models.{PstrNumber, QtStatus}
 import models.dtos.UserAnswersDTO
 import org.apache.pekko.Done
 import play.api.i18n.I18nSupport
@@ -64,8 +65,8 @@ class TaskListController @Inject() (
     }
   }
 
-  def continueJourney(referenceId: String, pstr: String, qtStatus: String, versionNumber: Option[String]): Action[AnyContent] =
-    (identify andThen schemeData andThen getData).async { implicit request =>
+  def continueJourney(referenceId: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: Option[String]): Action[AnyContent] =
+    (identify andThen schemeData).async { implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
       transferConnector

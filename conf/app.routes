@@ -13,7 +13,7 @@ GET        /start                                                               
 GET        /dashboard                                                                             controllers.DashboardController.onPageLoad(page: Int ?= 1)
 
 GET        /task-list                                                                             controllers.TaskListController.onPageLoad()
-GET        /task-list/continue                                                                    controllers.TaskListController.continueJourney(referenceId: String, pstr: String, qtStatus: String, versionNumber: Option[String])
+GET        /task-list/continue                                                                    controllers.TaskListController.continueJourney(referenceId: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: Option[String])
 
 GET        /refresh-session                                                                       controllers.KeepAliveController.keepAlive()
 

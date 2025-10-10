@@ -19,22 +19,27 @@ package navigators
 import controllers.routes
 import models.AllTransfersItem
 import models.QtStatus.{Compiled, InProgress, Submitted}
+import play.api.Logging
 import play.api.mvc.Call
 
-object AllTransfersLinkNavigator {
+object AllTransfersLinkNavigator extends Logging {
 
   // TODO: Wire real destinations when pages/controllers exist.
   def linkFor(item: AllTransfersItem): Call =
     item.qtStatus match {
       case Some(InProgress)           =>
-        val id   = item.transferReference.getOrElse(throw new IllegalCallerException("In progress transfer must have transferReference id"))
-        val pstr = item.pstrNumber.map(_.value).getOrElse(throw new IllegalCallerException("In progress transfer must have pstrNumber"))
-        routes.TaskListController.continueJourney(
-          referenceId   = id,
-          pstr          = pstr,
-          qtStatus      = InProgress.toString,
-          versionNumber = None
-        )
+        (item.transferReference, item.pstrNumber) match {
+          case (Some(id), Some(pstr)) =>
+            routes.TaskListController.continueJourney(
+              referenceId   = id,
+              pstr          = pstr,
+              qtStatus      = InProgress,
+              versionNumber = None
+            )
+          case _ =>
+            logger.warn(s"InProgress item missing id or pstr. item=$item")
+            routes.JourneyRecoveryController.onPageLoad()
+        }
       case Some(Submitted | Compiled) => routes.JourneyRecoveryController.onPageLoad()
       case _                          => routes.JourneyRecoveryController.onPageLoad()
     }

@@ -50,8 +50,8 @@ class AllTransfersLinkNavigatorSpec extends AnyFreeSpec with SpecBase {
     AllTransfersLinkNavigator.linkFor(item).url mustBe
       routes.TaskListController.continueJourney(
         referenceId   = item.transferReference.get,
-        pstr          = item.pstrNumber.get.value,
-        qtStatus      = InProgress.toString,
+        pstr          = item.pstrNumber.get,
+        qtStatus      = InProgress,
         versionNumber = None
       ).url
   }
