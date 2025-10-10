@@ -36,7 +36,7 @@ object AllTransfersLinkNavigator extends Logging {
               qtStatus      = InProgress,
               versionNumber = None
             )
-          case _ =>
+          case _                      =>
             logger.warn(s"InProgress item missing id or pstr. item=$item")
             routes.JourneyRecoveryController.onPageLoad()
         }
