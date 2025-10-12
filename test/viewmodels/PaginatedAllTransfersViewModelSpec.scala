@@ -93,6 +93,7 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
 
       vm.pagination mustBe None
       vm.table.rows.size mustBe items.size
+      vm.lockWarning mustBe None
     }
 
     "must return pagination with correct items, current page marking, and prev/next links" in {
@@ -187,6 +188,21 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       actualPage2.head._1 mustBe "13 September 2025"
       actualPage1.last._2 mustBe "10:15am"
       actualPage2.head._2 mustBe "10:15am"
+    }
+
+    "must include lockWarning in the view model when provided" in {
+      val items = (1 to 3).map(i => mkItem(i, utc(2025, 10, i, 9)))
+      val lock  = Some("Record is locked by another user")
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items       = items,
+        page        = 1,
+        pageSize    = 10,
+        urlForPage  = urlFor,
+        lockWarning = lock
+      )
+
+      vm.lockWarning mustBe lock
     }
   }
 }
