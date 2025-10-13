@@ -17,6 +17,8 @@
 package controllers
 
 import controllers.actions.{IdentifierAction, SchemeDataAction}
+import models.audit.JourneyStartedType.StartNewTransfer
+import models.audit.ReportStartedAuditModel
 import models.{NormalMode, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import pages.WhatWillBeNeededPage
 import play.api.Logging
@@ -24,7 +26,8 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{AuditService, UserAnswersService}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WhatWillBeNeededView
 
@@ -40,7 +43,8 @@ class WhatWillBeNeededController @Inject() (
     schemeData: SchemeDataAction,
     view: WhatWillBeNeededView,
     sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService
+    userAnswersService: UserAnswersService,
+    auditService: AuditService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -62,6 +66,16 @@ class WhatWillBeNeededController @Inject() (
       _                  <- userAnswersService.setExternalUserAnswers(newUa)
     } yield {
       if (persisted) {
+        auditService.audit(
+          ReportStartedAuditModel(
+            sessionData.transferId,
+            request.authenticatedUser,
+            StartNewTransfer,
+            None,
+            None
+          )
+        )
+
         Ok(view(WhatWillBeNeededPage.nextPage(NormalMode, newUa).url))
       } else {
         logger.warn("SessionRepository.set returned false during SessionData initialisation")
