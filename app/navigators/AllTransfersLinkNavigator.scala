@@ -31,12 +31,12 @@ object AllTransfersLinkNavigator {
       case Some(Submitted | Compiled) =>
         val id            = item.qtReference.map(_.value).getOrElse(throw new IllegalArgumentException("Submitted transfer must have qtReference"))
         val pstr          = item.pstrNumber.map(_.value).getOrElse(throw new IllegalArgumentException("Submitted transfer must have pstrNumber"))
-        val version       = item.qtVersion.getOrElse(throw new IllegalArgumentException("Submitted transfer must have qtVersion"))
+        val versionNumber = item.qtVersion.getOrElse(throw new IllegalArgumentException("Submitted transfer must have qtVersion"))
         val dateSubmitted =
           item.submissionDate.map(inst => LocalDateTime.ofInstant(inst, ZoneOffset.UTC)).getOrElse(throw new IllegalArgumentException(
             "Submitted transfer must have dateSubmitted"
           ))
-        routes.ViewSubmittedController.onPageLoad(id, pstr, Submitted.toString, version, dateSubmitted.toString)
+        routes.ViewSubmittedController.onPageLoad(id, pstr, Submitted.toString, versionNumber, dateSubmitted.toString)
       case _                          => routes.JourneyRecoveryController.onPageLoad()
     }
 }

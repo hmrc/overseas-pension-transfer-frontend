@@ -78,8 +78,9 @@ class UserAnswersConnector @Inject() (
     def url: URL =
       url"${appConfig.backendService}/get-transfer/$referenceId"
 
-    val queryStringParams =
+    val queryStringParams = {
       Seq("pstr" -> pstrNumber.value, "qtStatus" -> qtStatus.toString) ++ versionNumber.toSeq.map("versionNumber" -> _)
+    }
 
     http.get(url)
       .transform(_.addQueryStringParameters(queryStringParams: _*))

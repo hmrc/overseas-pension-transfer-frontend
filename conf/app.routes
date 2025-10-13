@@ -20,7 +20,7 @@ GET        /what-will-be-needed                                                 
 
 GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
 
-GET        /view-submitted-transfer                                                               controllers.ViewSubmittedController.onPageLoad(qtNumber: String, pstr: String, qtStatus: String, version: String, dateSubmitted: String)
+GET        /view-submitted-transfer                                                               controllers.ViewSubmittedController.onPageLoad(qtNumber: String, pstr: String, qtStatus: String, versionNumber: String, dateSubmitted: String)
 
 GET        /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onPageLoad()
 POST       /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onSubmit()

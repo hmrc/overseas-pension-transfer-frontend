@@ -44,7 +44,7 @@ class ViewSubmittedController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 
-  def onPageLoad(qtNumber: String, pstr: String, status: String, version: String, dateSubmitted: String): Action[AnyContent] =
+  def onPageLoad(qtNumber: String, pstr: String, status: String, versionNumber: String, dateSubmitted: String): Action[AnyContent] =
     (identify andThen schemeData andThen getData) {
       implicit request =>
         val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(FinalCheckMode, "schemeName", request.dateTransferSubmitted))
