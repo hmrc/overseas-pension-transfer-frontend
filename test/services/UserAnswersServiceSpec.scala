@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import connectors.UserAnswersConnector
+import connectors.{PensionSchemeConnector, UserAnswersConnector}
 import models.UserAnswers
 import models.dtos.UserAnswersDTO
 import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse}
@@ -37,10 +37,11 @@ import scala.concurrent.Future
 
 class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val instant: Instant         = Instant.now
-  private val mockUserAnswersConnector = mock[UserAnswersConnector]
+  private val instant: Instant           = Instant.now
+  private val mockUserAnswersConnector   = mock[UserAnswersConnector]
+  private val mockPensionSchemeConnector = mock[PensionSchemeConnector]
 
-  val service: UserAnswersService = new UserAnswersService(mockUserAnswersConnector)
+  val service: UserAnswersService = new UserAnswersService(mockUserAnswersConnector, mockPensionSchemeConnector)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
