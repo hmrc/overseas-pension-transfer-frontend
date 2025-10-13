@@ -28,7 +28,7 @@ import java.time.LocalDateTime
 
 object DateOfSubmissionSummary {
 
-  def row(mode: Mode, dateSubmitted: LocalDateTime)(implicit messages: Messages): SummaryListRow = {
+  def row(mode: Mode, dateSubmitted: String)(implicit messages: Messages): SummaryListRow = {
     implicit val lang: Lang = messages.lang
     SummaryListRowViewModel(
       key   = "dateOfSubmission.label",

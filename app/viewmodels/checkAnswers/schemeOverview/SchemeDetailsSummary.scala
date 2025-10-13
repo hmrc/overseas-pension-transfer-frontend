@@ -24,7 +24,7 @@ import java.time.LocalDateTime
 
 case object SchemeDetailsSummary {
 
-  def rows(mode: Mode, schemeName: String, dateSubmitted: LocalDateTime)(implicit messages: Messages): Seq[SummaryListRow] = {
+  def rows(mode: Mode, schemeName: String, dateSubmitted: String)(implicit messages: Messages): Seq[SummaryListRow] = {
 
     val schemeNameRow       = SchemeNameSummary.row(mode, schemeName)
     val dateOfSubmissionRow = DateOfSubmissionSummary.row(mode, dateSubmitted)

@@ -27,14 +27,7 @@ object AllTransfersLinkNavigator {
 
   def linkFor(item: AllTransfersItem): Call =
     item.qtStatus match {
-      case Some(InProgress)           =>
-        val id   = item.transferReference.getOrElse(throw new IllegalArgumentException("In progress transfer must have transferReference id"))
-        val pstr = item.pstrNumber.map(_.value).getOrElse(throw new IllegalArgumentException("In progress transfer must have pstrNumber"))
-        routes.TaskListController.continueJourney(
-          referenceId = id,
-          pstr        = pstr,
-          qtStatus    = InProgress.toString
-        )
+      case Some(InProgress)           => routes.JourneyRecoveryController.onPageLoad()
       case Some(Submitted | Compiled) =>
         val id            = item.qtReference.map(_.value).getOrElse(throw new IllegalArgumentException("Submitted transfer must have qtReference"))
         val pstr          = item.pstrNumber.map(_.value).getOrElse(throw new IllegalArgumentException("Submitted transfer must have pstrNumber"))
