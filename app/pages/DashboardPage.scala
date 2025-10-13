@@ -17,17 +17,24 @@
 package pages
 
 import controllers.routes
-import models.DashboardData
+import models.{DashboardData, QtStatus}
 import play.api.mvc.Call
 import queries.PensionSchemeDetailsQuery
 
 object DashboardPage extends Page {
 
-  def nextPage(dd: DashboardData): Call =
-    dd.get(PensionSchemeDetailsQuery) match {
-      case Some(_) =>
-        routes.WhatWillBeNeededController.onPageLoad()
-      case _       =>
-        controllers.auth.routes.UnauthorisedController.onPageLoad()
+  def nextPage(dd: DashboardData, status: Option[QtStatus]): Call =
+    status match {
+      case Some(QtStatus.InProgress) => ??? // TODO: Replace with In-progress controller redirect
+
+      case Some(QtStatus.Compiled) | Some(QtStatus.Submitted) => ??? // TODO: Replace with Submitted controller redirect
+
+      case _ =>
+        dd.get(PensionSchemeDetailsQuery) match {
+          case Some(_) =>
+            routes.WhatWillBeNeededController.onPageLoad()
+          case _       =>
+            controllers.auth.routes.UnauthorisedController.onPageLoad()
+        }
     }
 }

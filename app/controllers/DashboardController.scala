@@ -87,14 +87,8 @@ class DashboardController @Inject() (
     lockRepository.takeLock(lockId, internalId, lockTtlSeconds.seconds).flatMap {
       case Some(_) =>
         logger.info(s"[DashboardController][onTransferClick] Lock acquired for $lockId by $internalId")
-        val redirectTarget = params.qtStatus match {
-          case Some(QtStatus.InProgress)                          =>
-            controllers.routes.JourneyRecoveryController.onPageLoad() // TODO Replace with In-progress controller redirect
-          case Some(QtStatus.Compiled) | Some(QtStatus.Submitted) =>
-            controllers.routes.JourneyRecoveryController.onPageLoad() // TODO Replace with Submitted controller redirect
-          case _                                                  =>
-            routes.DashboardController.onPageLoad(params.currentPage)
-        }
+        val dashboardData  = DashboardData.empty
+        val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus)
         Future.successful(Redirect(redirectTarget))
 
       case None =>
@@ -137,7 +131,7 @@ class DashboardController @Inject() (
             Ok(
               view(
                 schemeName    = pensionSchemeDetails.schemeName,
-                nextPage      = DashboardPage.nextPage(updatedData).url,
+                nextPage      = DashboardPage.nextPage(updatedData, None).url,
                 vm            = viewModel,
                 expiringItems = expiringItems
               )

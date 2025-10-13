@@ -94,7 +94,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val expectedHtml =
           view(
             schemeName    = pensionSchemeDetails.schemeName,
-            nextPage      = DashboardPage.nextPage(dd).url,
+            nextPage      = DashboardPage.nextPage(dd, None).url,
             vm            = vm,
             expiringItems = Seq.empty
           )(request, messages(application)).toString
