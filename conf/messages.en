@@ -713,7 +713,7 @@ pspDeclaration.correctAndComplete = to the best of my knowledge and belief the i
 pspDeclaration.error.required = Enter the authorising scheme administrator''s ID
 pspDeclaration.error.pattern = Enter the authorising scheme administrator''s ID in the correct format, like A1234567
 pspDeclaration.change.hidden = Psp Declaration
-pspDeclaration.error.notAssociated = PSA is not authorised for this scheme
+pspDeclaration.error.notAssociated = The authorising scheme administrator''s ID does not match any IDs we hold for your scheme
 
 psaDeclaration.title = Declaration
 psaDeclaration.heading = Declaration
