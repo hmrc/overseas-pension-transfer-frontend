@@ -44,10 +44,16 @@ class AllTransfersLinkNavigatorSpec extends AnyFreeSpec with SpecBase {
       controllers.routes.DashboardController.onPageLoad().url
   }
 
-  "in-progress routes to JourneyRecovery (placeholder)" in {
+  "in-progress routes to TaskList page when transferReference is present" in {
     val item = itemWith(Some(InProgress))
     AllTransfersLinkNavigator.linkFor(item).url mustBe
       controllers.routes.TaskListController.fromDashboard(item.transferReference.get).url
+  }
+
+  "in-progress routes to JourneyRecovery page when transferReference is None" in {
+    val item = itemWith(Some(InProgress))
+    AllTransfersLinkNavigator.linkFor(item.copy(transferReference = None)).url mustBe
+      controllers.routes.JourneyRecoveryController.onPageLoad().url
   }
 
   "submitted routes to JourneyRecovery (placeholder)" in {

@@ -26,7 +26,10 @@ object AllTransfersLinkNavigator {
   // TODO: Wire real destinations when pages/controllers exist.
   def linkFor(item: AllTransfersItem): Call =
     item.qtStatus match {
-      case Some(InProgress)           => routes.TaskListController.fromDashboard(item.transferReference.get)
+      case Some(InProgress)           =>
+        item.transferReference.fold(routes.JourneyRecoveryController.onPageLoad()) {
+          _ => routes.TaskListController.fromDashboard(item.transferReference.get)
+        }
       case Some(Submitted | Compiled) => routes.JourneyRecoveryController.onPageLoad()
       case _                          => routes.DashboardController.onPageLoad()
     }
