@@ -248,7 +248,8 @@ class TaskListControllerSpec
           val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard("transferId").url)
           val res = route(app, req).value
 
-          status(res) mustEqual SEE_OTHER
+          status(res) mustBe SEE_OTHER
+          redirectLocation(res) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
 
           verify(mockSessionRepository, times(1)).set(any())
         }
