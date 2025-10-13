@@ -50,7 +50,7 @@ class DataRetrievalActionImpl @Inject() (
           case Right(answers) =>
             val session = SessionData(
               request.authenticatedUser.internalId,
-              spec.transferReference.get,
+              spec.transferReference.orElse(spec.qtNumber.map(_.value)).get,
               request.authenticatedUser.pensionSchemeDetails.get,
               request.authenticatedUser,
               Json.toJsObject(answers)
