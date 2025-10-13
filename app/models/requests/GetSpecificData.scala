@@ -24,7 +24,7 @@ final case class GetSpecificData(
     qtNumber: Option[QtNumber],
     pstr: PstrNumber,
     qtStatus: QtStatus,
-    version: Option[String]
+    versionNumber: Option[String]
   )
 
 object GetSpecificDataParser {
@@ -35,7 +35,7 @@ object GetSpecificDataParser {
     val qt                = q.get("qtNumber").flatten.map(s => QtNumber(s))
     val pstr              = q.get("pstr").flatten.map(s => PstrNumber(s))
     val status            = q.get("qtStatus").flatten.flatMap(QtStatus.parse)
-    val version           = q.get("versionNumber").flatten
+    val versionNumber     = q.get("versionNumber").flatten
 
     val hasId = transferReference.isDefined || qt.isDefined
     if (!hasId) {
@@ -45,7 +45,7 @@ object GetSpecificDataParser {
         case (None, _)          => Left("Missing or invalid pstr")
         case (_, None)          => Left("Missing or invalid qtStatus")
         case (Some(p), Some(s)) =>
-          Right(Some(GetSpecificData(transferReference, qt, p, s, version)))
+          Right(Some(GetSpecificData(transferReference, qt, p, s, versionNumber)))
       }
     }
   }

@@ -50,7 +50,7 @@ class UserAnswersService @Inject() (
       qtNumber          = data.qtNumber,
       pstrNumber        = data.pstr,
       qtStatus          = data.qtStatus,
-      versionNumber     = data.version
+      versionNumber     = data.versionNumber
     ).map {
       case Right(dto)                        => Right(toUserAnswers(dto))
       case Left(UserAnswersNotFoundResponse) =>
