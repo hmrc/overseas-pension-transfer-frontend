@@ -17,7 +17,7 @@
 package viewmodels
 
 import base.SpecBase
-import models.{AllTransfersItem, QtStatus}
+import models.{AllTransfersItem, QtNumber, QtStatus}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
@@ -60,7 +60,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
     "renders headers, a member link, submitted status label, reference, and formatted submission date" in {
       val submitted = AllTransfersItem(
         transferReference = Some("TR-001"),
-        qtReference       = None,
+        qtReference       = Some(QtNumber("QT999")),
         qtVersion         = None,
         nino              = None,
         memberFirstName   = Some("Ada"),
@@ -72,7 +72,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
         qtDate            = None
       )
 
-      val table = AllTransfersTableViewModel.from(Seq(submitted))
+      val table = AllTransfersTableViewModel.from(Seq(submitted), 1)
 
       val heads = table.head.value
       heads.map(textOfHead) mustBe Seq(
@@ -88,11 +88,17 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
       all(row.map(_.classes)) must include("govuk-!-padding-bottom-5")
 
       val memberHtml = htmlOf(row.head)
-      memberHtml must include("""<a class="govuk-link""")
+      memberHtml must include("""<a href=""")
       memberHtml must include("Ada Lovelace")
 
+      memberHtml must include("transferReference=TR-001")
+      memberHtml must include("qtReference=QT999")
+      memberHtml must include("qtStatus=Submitted")
+      memberHtml must include("name=Ada+Lovelace")
+      memberHtml must include("currentPage=1")
+
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.submitted"
-      htmlOf(row(2)) mustBe "-"
+      htmlOf(row(2)) mustBe "QT999"
 
       val updatedHtml = htmlOf(row(3))
       extractDate(updatedHtml) mustBe "24 September 2025"
@@ -114,10 +120,12 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
         qtDate            = None
       )
 
-      val table = AllTransfersTableViewModel.from(Seq(inProgress))
+      val table = AllTransfersTableViewModel.from(Seq(inProgress), 2)
       val row   = table.rows.head
 
-      htmlOf(row.head) must include(">-</a>")
+      val memberHtml = htmlOf(row.head)
+      memberHtml must include(">-</a>")
+      memberHtml must include("currentPage=2")
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.inProgress"
       htmlOf(row(2)) mustBe "-"
 
@@ -128,8 +136,8 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "maps Compiled status to submitted label (same as Submitted)" in {
       val compiled = AllTransfersItem(
-        transferReference = None,
-        qtReference       = None,
+        transferReference = Some("TR-003"),
+        qtReference       = Some(QtNumber("QT333")),
         qtVersion         = None,
         nino              = None,
         memberFirstName   = Some("Jean"),
@@ -141,7 +149,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
         qtDate            = None
       )
 
-      val table = AllTransfersTableViewModel.from(Seq(compiled))
+      val table = AllTransfersTableViewModel.from(Seq(compiled), 3)
       val row   = table.rows.head
 
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.submitted"

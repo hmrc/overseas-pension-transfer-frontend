@@ -16,19 +16,18 @@
 
 package viewmodels
 
-import models.{AllTransfersItem, PensionSchemeDetails}
 import models.QtStatus.{Compiled, InProgress, Submitted}
-import models.requests.IdentifierRequest
-import navigators.AllTransfersLinkNavigator
+import models.{AllTransfersItem, TransferReportQueryParams}
 import play.api.i18n.Messages
-import play.api.mvc.AnyContent
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
 
-import java.time.{Instant, ZoneOffset}
 import java.time.format.DateTimeFormatter
+import java.time.{Instant, ZoneOffset}
+
+final case class AllTransfersTableViewModel(table: Table)
 
 object AllTransfersTableViewModel {
 
@@ -57,8 +56,7 @@ object AllTransfersTableViewModel {
       case None    => Text("-")
     }
 
-  def from(items: Seq[AllTransfersItem])(implicit messages: Messages): Table = {
-
+  def from(items: Seq[AllTransfersItem], currentPage: Int)(implicit messages: Messages): Table = {
     val head: Seq[HeadCell] = Seq(
       HeadCell(Text(messages("dashboard.allTransfers.head.member"))),
       HeadCell(Text(messages("dashboard.allTransfers.head.status"))),
@@ -67,14 +65,22 @@ object AllTransfersTableViewModel {
     )
 
     val rows: Seq[Seq[TableRow]] = items.map { it =>
-      val name     = memberName(it.memberFirstName, it.memberSurname)
-      val linkCall = AllTransfersLinkNavigator.linkFor(it)
-      val linkHtml = HtmlFormat.raw(s"""<a class="govuk-link" href="${linkCall.url}">$name</a>""")
-      val stat     = it.qtStatus.map {
+      val name = memberName(it.memberFirstName, it.memberSurname)
+      val stat = it.qtStatus.map {
         case Compiled | Submitted => messages("dashboard.allTransfers.status.submitted")
         case InProgress           => messages("dashboard.allTransfers.status.inProgress")
       }.getOrElse("-")
-      val ref      = it.qtReference.map(_.value).getOrElse("-")
+      val ref  = it.qtReference.map(_.value).getOrElse("-")
+
+      val params = TransferReportQueryParams(
+        transferReference = it.transferReference,
+        qtReference       = it.qtReference.map(_.value),
+        qtStatus          = it.qtStatus,
+        name              = name,
+        currentPage       = currentPage
+      )
+
+      val linkHtml = HtmlFormat.raw(s"""<a href="${TransferReportQueryParams.toUrl(params)}" class="govuk-link">$name</a>""")
 
       Seq(
         cell(content = HtmlContent(linkHtml)),

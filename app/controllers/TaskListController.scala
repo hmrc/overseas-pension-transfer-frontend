@@ -16,9 +16,9 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction, SchemeDataActionImpl}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
-import models.{PensionSchemeDetails, SessionData}
+import models.SessionData
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -37,7 +37,6 @@ class TaskListController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService,
     view: TaskListView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {

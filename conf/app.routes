@@ -10,6 +10,8 @@ GET        /start                                                               
 
 GET        /dashboard                                                                             controllers.DashboardController.onPageLoad(page: Int ?= 1)
 
+GET        /dashboard/transfer-report                                                             controllers.DashboardController.onTransferClick()
+
 GET        /refresh-session                                                                       controllers.KeepAliveController.keepAlive()
 
 GET        /there-is-a-problem                                                                    controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)

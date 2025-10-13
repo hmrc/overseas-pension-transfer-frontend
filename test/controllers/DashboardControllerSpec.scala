@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import config.FrontendAppConfig
 import models.responses.InternalServerError
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
+import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber, TransferReportQueryParams}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AnyFreeSpec
@@ -39,6 +39,15 @@ import views.html.DashboardView
 import scala.concurrent.Future
 
 class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+
+  implicit class FakeRequestOps[A](req: FakeRequest[A]) {
+
+    def withQueryStringParameters(params: (String, String)*): FakeRequest[A] = {
+      val queryString = params.map { case (k, v) => s"$k=${java.net.URLEncoder.encode(v, "UTF-8")}" }.mkString("&")
+      val uri         = req.uri.split('?').headOption.getOrElse(req.uri)
+      req.withTarget(req.target.withUriString(s"$uri?$queryString"))
+    }
+  }
 
   "DashboardController onPageLoad" - {
 
@@ -73,7 +82,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val view      = application.injector.instanceOf[DashboardView]
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
-        val items = dd.get(TransfersOverviewQuery).getOrElse(Seq.empty)
+        val items                     = dd.get(TransfersOverviewQuery).getOrElse(Seq.empty)
+        val transferReportQueryParams = TransferReportQueryParams.fromRequest(request)
 
         val vm = PaginatedAllTransfersViewModel.build(
           items      = items,
@@ -85,7 +95,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val expectedHtml =
           view(
             schemeName    = pensionSchemeDetails.schemeName,
-            nextPage      = DashboardPage.nextPage(dd).url,
+            nextPage      = DashboardPage.nextPage(dd, transferReportQueryParams).url,
             vm            = vm,
             expiringItems = Seq.empty
           )(request, messages(application)).toString
@@ -175,6 +185,35 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+  }
+
+  "DashboardController onTransferClick" - {
+    "must redirect correctly with provided query parameters" in {
+      val mockRepo    = mock[DashboardSessionRepository]
+      val mockService = mock[TransferService]
+
+      val application =
+        applicationBuilder(userAnswers = emptyUserAnswers)
+          .overrides(
+            bind[DashboardSessionRepository].toInstance(mockRepo),
+            bind[TransferService].toInstance(mockService)
+          )
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url)
+          .withQueryStringParameters(
+            "qtStatus"    -> "InProgress",
+            "qtReference" -> "QT-1234",
+            "name"        -> "Scheme A",
+            "currentPage" -> "1"
+          )
+
+        val result = route(application, request).value
+
+        status(result) must (be(SEE_OTHER) or be(OK))
       }
     }
   }

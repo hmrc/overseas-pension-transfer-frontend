@@ -24,6 +24,7 @@ import org.mongodb.scala.model._
 import play.api.libs.json.Format
 import uk.gov.hmrc.mdc.Mdc
 import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.lock.LockRepository
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
