@@ -61,7 +61,7 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with 
     JourneyStartedType.values.foreach {
       journey =>
         s"must send an event to the audit connector for $journey event type" in {
-          val eventModel = ReportStartedAuditModel(authenticatedUser, journey, None, None)
+          val eventModel = ReportStartedAuditModel.build("testID", authenticatedUser, journey, None, None)
 
           when(mockAppConfig.appName).thenReturn(appName)
           service.audit(eventModel)

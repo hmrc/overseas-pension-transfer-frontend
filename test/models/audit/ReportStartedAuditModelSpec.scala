@@ -59,7 +59,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
           "requesterIdentifier"       -> "21000005"
         )
 
-        val result = ReportStartedAuditModel.build(authenticatedPsa, journey, None)
+        val result = ReportStartedAuditModel.build("testID", authenticatedPsa, journey, None)
         result.auditType mustBe "OverseasPensionTransferReportStarted"
         result.detail mustBe expectedJson
     }
@@ -74,7 +74,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "requesterIdentifier"       -> "21000005"
     )
 
-    val result = ReportStartedAuditModel.build(authenticatedPsa, StartNewTransfer, None)
+    val result = ReportStartedAuditModel.build("testID", authenticatedPsa, StartNewTransfer, None)
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
   }
@@ -89,6 +89,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
     )
 
     val result = ReportStartedAuditModel.build(
+      "testID",
       authenticatedPsp.copy(affinityGroup = Organisation),
       StartNewTransfer,
       None
@@ -109,7 +110,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "requesterIdentifier"       -> "21000005"
     )
 
-    val result = ReportStartedAuditModel.build(user, StartNewTransfer, None)
+    val result = ReportStartedAuditModel.build("testID", user, StartNewTransfer, None)
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
@@ -137,7 +138,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "overseasPensionTransferReportReference" -> "QT123456"
     )
 
-    val result = ReportStartedAuditModel.build(user, StartNewTransfer, Some(item))
+    val result = ReportStartedAuditModel.build("testID", user, StartNewTransfer, Some(item))
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
@@ -163,7 +164,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "memberNino"                -> "testNino"
     )
 
-    val result = ReportStartedAuditModel.build(user, StartNewTransfer, Some(item))
+    val result = ReportStartedAuditModel.build("testID", user, StartNewTransfer, Some(item))
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
@@ -182,7 +183,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "requesterIdentifier"       -> "21000005"
     )
     val failure      = Some("503: Forbidden request")
-    val result       = ReportStartedAuditModel.build(user, StartNewTransfer, None, failure)
+    val result       = ReportStartedAuditModel.build("testID", user, StartNewTransfer, None, failure)
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson

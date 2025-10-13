@@ -21,16 +21,15 @@ import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
 import play.api.libs.json.{JsValue, Json}
 
 case class ReportStartedAuditModel(
+    internalTransferID: String,
     authenticatedUser: AuthenticatedUser,
     journey: JourneyStartedType,
     allTransfersItem: Option[AllTransfersItem],
     failure: Option[String]
   ) extends JsonAuditModel {
 
-  override val auditType: String        = "OverseasPensionTransferReportStarted"
-  // TODO UPDATE ID AFTER NICKS TICKET - remember its optional, wont exist for submitted reports.
-  private val internalReportReferenceId = "testID"
-  private val userRole                  = authenticatedUser.userType
+  override val auditType: String = "OverseasPensionTransferReportStarted"
+  private val userRole           = authenticatedUser.userType
 
   private val pensionSchemeName =
     authenticatedUser.pensionSchemeDetails
@@ -78,7 +77,7 @@ case class ReportStartedAuditModel(
 
   override val detail: JsValue = Json.obj(
     "journey"                   -> journey.toString,
-    "internalReportReferenceId" -> internalReportReferenceId,
+    "internalReportReferenceId" -> internalTransferID,
     "roleLoggedInAs"            -> userRole,
     "affinityGroup"             -> affinityGroup,
     "requesterIdentifier"       -> userId
@@ -88,10 +87,11 @@ case class ReportStartedAuditModel(
 object ReportStartedAuditModel {
 
   def build(
+      transferId: String,
       authenticatedUser: AuthenticatedUser,
       journey: JourneyStartedType,
       allTransfersItem: Option[AllTransfersItem],
       failure: Option[String] = None
     ): ReportStartedAuditModel =
-    ReportStartedAuditModel(authenticatedUser, journey, allTransfersItem, failure)
+    ReportStartedAuditModel(transferId, authenticatedUser, journey, allTransfersItem, failure)
 }
