@@ -16,17 +16,17 @@
 
 package controllers.actions
 
-import controllers.auth.routes
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import controllers.auth.routes
 import models.authentication.AuthenticatedUser
 import models.requests.IdentifierRequest
 import play.api.Logging
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, internalId}
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, internalId}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter

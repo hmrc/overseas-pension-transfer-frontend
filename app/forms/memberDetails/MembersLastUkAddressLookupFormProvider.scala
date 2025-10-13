@@ -26,11 +26,11 @@ class MembersLastUkAddressLookupFormProvider @Inject() extends Mappings with Reg
   def apply(): Form[String] =
     Form(
       "value" -> text("membersLastUkAddressLookup.error.required")
-        .verifying(regexp(postcodeRegex, "membersLastUkAddressLookup.error.pattern"))
         .transform[String](
           raw => formatPostcode(raw),
           formatted => formatted
         )
+        .verifying(regexp(postcodeRegex, "membersLastUkAddressLookup.error.pattern"))
     )
 
   private def formatPostcode(raw: String): String = {

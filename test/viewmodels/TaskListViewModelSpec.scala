@@ -41,7 +41,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
       running(application) {
 
-        val rows = TaskListViewModel.rows(emptyUserAnswers)
+        val rows = TaskListViewModel.rows(emptySessionData)
 
         rows must not be empty
         all(rows.map(_.href)) mustBe None
@@ -54,10 +54,10 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       val application = applicationBuilder().build()
       running(application) {
 
-        val ua = UserAnswers(userAnswersId, pstr)
+        val sd = emptySessionData
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
 
-        val rows      = TaskListViewModel.rows(ua)
+        val rows      = TaskListViewModel.rows(sd)
         val memberRow = findRowById(rows, TaskJourneyViewModels.MemberDetailsJourneyViewModel.id)
 
         memberRow.href.value mustEqual controllers.memberDetails.routes.MemberDetailsCYAController.onPageLoad().url
@@ -70,10 +70,10 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       val application = applicationBuilder().build()
       running(application) {
 
-        val ua = UserAnswers(userAnswersId, pstr)
+        val sd = emptySessionData
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.NotStarted).success.value
 
-        val rows      = TaskListViewModel.rows(ua)
+        val rows      = TaskListViewModel.rows(sd)
         val memberRow = findRowById(rows, TaskJourneyViewModels.MemberDetailsJourneyViewModel.id)
 
         memberRow.href.value mustEqual controllers.memberDetails.routes.MemberNameController.onPageLoad(models.NormalMode).url
@@ -85,10 +85,10 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       val application = applicationBuilder().build()
       running(application) {
 
-        val ua = UserAnswers(userAnswersId, pstr)
+        val sd = emptySessionData
           .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.InProgress).success.value
 
-        val rows     = TaskListViewModel.rows(ua)
+        val rows     = TaskListViewModel.rows(sd)
         val transfer = findRowById(rows, TaskJourneyViewModels.TransferDetailsJourneyViewModel.id)
 
         transfer.href.value mustEqual controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(models.NormalMode).url
@@ -100,7 +100,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       val application = applicationBuilder().build()
       running(application) {
 
-        val rows        = TaskListViewModel.rows(emptyUserAnswers)
+        val rows        = TaskListViewModel.rows(emptySessionData)
         val renderedIds = rows.map(_.status.tag.value.attributes("id").stripSuffix("-status"))
         val expectedIds = TaskJourneyViewModels.valuesWithoutSubmissionJourney.map(_.id)
 

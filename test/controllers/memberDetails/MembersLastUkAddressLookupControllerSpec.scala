@@ -21,7 +21,7 @@ import connectors.AddressLookupConnector
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.NormalMode
-import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse, UserAnswersErrorResponse}
+import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -152,7 +152,7 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual MembersLastUkAddressLookupPage.nextPageNoResults().url
+        redirectLocation(result).value mustEqual MembersLastUkAddressLookupPage.nextPageNoResults(NormalMode).url
       }
     }
 
@@ -191,22 +191,18 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
 
         val view = application.injector.instanceOf[AddressLookupDownView]
         contentAsString(result) mustEqual
-          view(MembersLastUkAddressLookupPage.recoveryModeReturnUrl, controllers.routes.IndexController.onPageLoad().url)(
+          view(MembersLastUkAddressLookupPage.recoveryModeReturnUrl, controllers.routes.DashboardController.onPageLoad().url)(
             fakeDisplayRequest(request),
             messages(application)
           ).toString
       }
     }
 
-    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
-      val mockUserAnswersService     = mock[UserAnswersService]
+    "must redirect to JourneyRecovery for a POST when sessionRepository returns false" in {
       val mockSessionRepository      = mock[SessionRepository]
       val mockAddressLookupConnector = mock[AddressLookupConnector]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(false)
 
       when(mockAddressLookupConnector.lookup(any())(any(), any()))
         .thenReturn(
@@ -218,7 +214,6 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
         )
         .build()

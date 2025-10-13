@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate}
 
 /** Exactly one of `submissionDate` or `lastUpdated` should be defined. Submitted/Compiled => submissionDate InProgress => lastUpdated
   */
@@ -26,26 +26,27 @@ case class AllTransfersItem(
     transferReference: Option[String],
     qtReference: Option[QtNumber],
     qtVersion: Option[String],
+    qtStatus: Option[QtStatus],
     nino: Option[String],
     memberFirstName: Option[String],
     memberSurname: Option[String],
-    submissionDate: Option[LocalDate],
-    lastUpdated: Option[LocalDate],
-    qtStatus: Option[QtStatus],
-    pstrNumber: Option[PstrNumber]
+    qtDate: Option[LocalDate],
+    lastUpdated: Option[Instant],
+    pstrNumber: Option[PstrNumber],
+    submissionDate: Option[Instant]
   ) {
 
   def isValid: Boolean =
     submissionDate.isDefined ^ lastUpdated.isDefined
 
-  def lastUpdatedDate: Option[LocalDate] = lastUpdated.orElse(submissionDate)
+  def lastUpdatedDate: Option[Instant] = lastUpdated.orElse(submissionDate)
 }
 
 object AllTransfersItem {
   implicit val format: OFormat[AllTransfersItem] = Json.format
 
   implicit val ordering: Ordering[AllTransfersItem] =
-    Ordering.by[AllTransfersItem, Option[LocalDate]](t => t.lastUpdatedDate)(
-      Ordering.Option(Ordering[LocalDate]).reverse
+    Ordering.by[AllTransfersItem, Option[Instant]](t => t.lastUpdatedDate)(
+      Ordering.Option(Ordering[Instant]).reverse
     )
 }

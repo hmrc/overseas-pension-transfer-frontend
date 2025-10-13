@@ -55,7 +55,7 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = userAnswersQtNumber.set(MoreUnquotedSharesDeclarationPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(MoreUnquotedSharesDeclarationPage, true).success.value
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
@@ -85,7 +85,7 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
 
       running(application) {
         val request =

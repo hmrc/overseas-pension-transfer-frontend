@@ -21,7 +21,7 @@ import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
-import models.UserAnswers
+import models.{SessionData, UserAnswers}
 import models.address._
 import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
@@ -103,7 +103,7 @@ class AddressService @Inject() (
   def findAddressById(records: Seq[AddressRecord], selectedId: String): Option[AddressRecord] =
     records.find(_.id == selectedId)
 
-  def clearAddressLookups(answers: UserAnswers): Future[UserAnswers] =
+  def clearAddressLookups(answers: SessionData): Future[SessionData] =
     Future.fromTry(
       answers
         .remove(MembersLastUkAddressLookupPage)

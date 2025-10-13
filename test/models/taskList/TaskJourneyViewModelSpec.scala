@@ -70,9 +70,9 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
     "routes to CYA when status is Completed" in {
       forAll(journeys) { (_, journey, category, _, expectedCya) =>
-        val ua   = UserAnswers(userAnswersId, pstr)
+        val sd   = emptySessionData
           .set(TaskStatusQuery(category), TaskStatus.Completed).success.value
-        val call = journey.entry(ua)
+        val call = journey.entry(sd)
 
         call.url mustEqual expectedCya().url
       }
@@ -83,8 +83,8 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
       forAll(journeys) { (_, journey, category, expectedStart, _) =>
         forAll(nonCompleted) { s =>
-          val ua   = UserAnswers(userAnswersId, pstr).set(TaskStatusQuery(category), s).success.value
-          val call = journey.entry(ua)
+          val sd   = emptySessionData.set(TaskStatusQuery(category), s).success.value
+          val call = journey.entry(sd)
 
           call.url mustEqual expectedStart(NormalMode).url
         }
@@ -94,9 +94,8 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
   "status(ua)" - {
     "returns CannotStart by default for every journey when not set" in {
-      val ua = UserAnswers(userAnswersId, pstr)
       forAll(journeys) { (_, journey, _, _, _) =>
-        journey.status(ua) mustBe TaskStatus.CannotStart
+        journey.status(emptySessionData) mustBe TaskStatus.CannotStart
       }
     }
   }

@@ -20,6 +20,8 @@ import base.SpecBase
 import models.QtNumber
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import pages.memberDetails.MemberNamePage
+import queries.{DateSubmittedQuery, QtNumberQuery}
 
 import java.time.format.{DateTimeFormatter, FormatStyle}
 
@@ -27,7 +29,7 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
 
   "memberFullName" - {
     "must return full name when one is present in user answers" in {
-      memberFullName(userAnswersMemberName) mustBe "User McUser"
+      memberFullName(emptyUserAnswers.set(MemberNamePage, testMemberName).success.value) mustBe "User McUser"
     }
 
     "must return Undefined Undefined when name not present in user answers" in {
@@ -37,22 +39,22 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
 
   "qtNumber" - {
     "must return QtNumber when one is present in user answers" in {
-      qtNumber(userAnswersQtNumber) mustBe QtNumber("QT123456")
+      qtNumber(emptySessionData.set(QtNumberQuery, testQtNumber).success.value) mustBe QtNumber("QT123456")
     }
 
     "must return QtNumber.empty when one is not present" in {
-      qtNumber(emptyUserAnswers) mustBe QtNumber.empty
+      qtNumber(emptySessionData) mustBe QtNumber.empty
     }
   }
 
   "dateTransferSubmitted" - {
     "must return date in String format when date is present" in {
-      dateTransferSubmitted(userAnswersMemberNameQtNumberTransferSubmitted) mustBe
+      dateTransferSubmitted(emptySessionData.set(DateSubmittedQuery, testDateTransferSubmitted).success.value) mustBe
         testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
     }
 
     "must return \'Transfer not submitted\' when date is not present" in {
-      dateTransferSubmitted(emptyUserAnswers) mustBe "Transfer not submitted"
+      dateTransferSubmitted(emptySessionData) mustBe "Transfer not submitted"
     }
   }
 }

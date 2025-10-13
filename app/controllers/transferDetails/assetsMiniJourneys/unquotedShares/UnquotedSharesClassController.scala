@@ -22,7 +22,7 @@ import models.Mode
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassView
 
@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UnquotedSharesClassController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
+    userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
@@ -60,9 +60,9 @@ class UnquotedSharesClassController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UnquotedSharesClassPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(UnquotedSharesClassPage(index).nextPage(mode, updatedAnswers))
+            updatedSession <- Future.fromTry(request.userAnswers.set(UnquotedSharesClassPage(index), value))
+            _              <- userAnswersService.setExternalUserAnswers(updatedSession)
+          } yield Redirect(UnquotedSharesClassPage(index).nextPage(mode, updatedSession))
       )
   }
 }

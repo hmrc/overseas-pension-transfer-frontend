@@ -16,7 +16,7 @@
 
 package models.dtos
 
-import models.UserAnswers
+import models.{SessionData, UserAnswers}
 import models.authentication._
 import play.api.libs.json._
 
@@ -30,18 +30,18 @@ sealed trait SubmissionDTO {
 
 object SubmissionDTO {
 
-  def fromRequest(authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, maybePsaId: Option[PsaId]): SubmissionDTO =
+  def fromRequest(authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, maybePsaId: Option[PsaId], sessionData: SessionData): SubmissionDTO =
     authenticatedUser match {
-      case PsaUser(psaId, internalId, _, _) =>
+      case PsaUser(psaId, _, _, _) =>
         PsaSubmissionDTO(
-          referenceId = internalId,
+          referenceId = sessionData.transferId,
           userId      = psaId,
           lastUpdated = userAnswers.lastUpdated
         )
 
-      case PspUser(pspId, internalId, _s, _) =>
+      case PspUser(pspId, _, _s, _) =>
         PspSubmissionDTO(
-          referenceId = internalId,
+          referenceId = sessionData.transferId,
           userId      = pspId,
           psaId       = maybePsaId.get,
           lastUpdated = userAnswers.lastUpdated

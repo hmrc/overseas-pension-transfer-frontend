@@ -46,7 +46,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, typeOfAssetRoute)
@@ -65,7 +65,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
       val values: Seq[TypeOfAsset] = TypeOfAsset.values
 
-      val userAnswers = userAnswersQtNumber.set(TypeOfAssetPage, values).success.value
+      val userAnswers = emptyUserAnswers.set(TypeOfAssetPage, values).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -109,7 +109,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =

@@ -25,31 +25,37 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
 
-import java.time.LocalDate
+import java.time.{Instant, ZoneOffset}
 import java.time.format.DateTimeFormatter
 
 final case class AllTransfersTableViewModel(table: Table)
 
 object AllTransfersTableViewModel {
 
-  private val dateFmt: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuuu")
+  private val dateFmt = DateTimeFormatter.ofPattern("d MMMM uuuu")
+  private val timeFmt = DateTimeFormatter.ofPattern("h:mma")
 
   private def dashIfEmpty(s: String): String =
     if (s.trim.isEmpty) "-" else s
 
-  private def fmtOpt[A](oa: Option[A])(f: A => String): String =
-    oa.map(f).filter(_.nonEmpty).getOrElse("-")
-
   private def memberName(first: Option[String], last: Option[String]): String =
     dashIfEmpty(Seq(first.getOrElse(""), last.getOrElse("")).map(_.trim).filter(_.nonEmpty).mkString(" "))
 
-  private def fmtLocalDate(od: Option[LocalDate]): String =
-    fmtOpt(od)(d => dateFmt.format(d))
+  private val rowPad                 = "govuk-!-padding-bottom-5"
+  private def cell(content: Content) = TableRow(content = content, classes = rowPad)
 
-  private val rowPad = "govuk-!-padding-bottom-5"
-
-  private def cell(content: Content) =
-    TableRow(content = content, classes = rowPad)
+  private def updatedCell(oi: Option[Instant]): Content =
+    oi match {
+      case Some(i) =>
+        val zdt     = i.atZone(ZoneOffset.UTC)
+        val dateStr = dateFmt.format(zdt)
+        val timeStr = timeFmt.format(zdt).toLowerCase
+        val html    = HtmlFormat.raw(
+          s"""<p class="govuk-body govuk-!-margin-bottom-0">$dateStr</p><p class="govuk-body-s govuk-!-margin-bottom-0">$timeStr</p>"""
+        )
+        HtmlContent(html)
+      case None    => Text("-")
+    }
 
   def from(items: Seq[AllTransfersItem])(implicit messages: Messages): Table = {
 
@@ -69,13 +75,12 @@ object AllTransfersTableViewModel {
         case InProgress           => messages("dashboard.allTransfers.status.inProgress")
       }.getOrElse("-")
       val ref      = it.qtReference.map(_.value).getOrElse("-")
-      val upd      = fmtLocalDate(it.lastUpdatedDate)
 
       Seq(
         cell(content = HtmlContent(linkHtml)),
         cell(content = Text(stat)),
         cell(content = Text(ref)),
-        cell(content = Text(upd))
+        cell(content = updatedCell(it.lastUpdatedDate))
       )
     }
 

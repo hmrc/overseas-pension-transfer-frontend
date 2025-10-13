@@ -24,7 +24,7 @@ import models.NormalMode
 import models.assets.{OtherAssetsMiniJourney, TypeOfAsset}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService}
+import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalView
 
@@ -37,6 +37,7 @@ class OtherAssetsConfirmRemovalController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     formProvider: OtherAssetsConfirmRemovalFormProvider,
+    userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
     assetThresholdHandler: AssetThresholdHandler,
@@ -70,7 +71,8 @@ class OtherAssetsConfirmRemovalController @Inject() (
         } else {
           (for {
             updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, TypeOfAsset.Other, completed = false)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.Other, completed = false)
           } yield Redirect(AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode = NormalMode)))
             .recover {
               case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())

@@ -14,9 +14,10 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewmodels.PaginatedAllTransfersViewModel
 @import views.ViewUtils.titleNoForm
+@import models.{AllTransfersItem, QtStatus}
 
 @this(
         layout: templates.Layout,
@@ -25,15 +26,56 @@
         govukPagination: GovukPagination
 )
 
-@(schemeName: String, nextPage: String, vm: PaginatedAllTransfersViewModel)(implicit request: Request[_], messages: Messages)
+@(schemeName: String,
+  nextPage: String,
+  vm: PaginatedAllTransfersViewModel,
+  expiringItems: Seq[AllTransfersItem] = Seq.empty
+)(implicit request: Request[_], messages: Messages)
+
+@messageFor(item: AllTransfersItem) = @{
+    val firstName = item.memberFirstName.getOrElse("").trim
+    val surname   = item.memberSurname.getOrElse("").trim
+    val fullName  = s"$firstName $surname".trim
+
+item.qtStatus match {
+    case Some(QtStatus.AmendInProgress) => messages("dashboard.banner.updateInProgress.text", fullName)
+    case Some(QtStatus.InProgress) => messages("dashboard.banner.inProgress.text", fullName)
+    case _ => ""
+  }
+}
 
 @layout(
-    pageTitle    = titleNoForm(messages("dashboard.title")),
-    showBackLink = false,
-    showPageFooter = false,
-    showBreadcrumbs = true,
-    fullWidth = true
+  pageTitle       = titleNoForm(messages("dashboard.title")),
+  showBackLink    = false,
+  showPageFooter  = false,
+  showBreadcrumbs = true,
+  fullWidth       = true
 ) {
+
+  @if(expiringItems.nonEmpty) {
+    <div class="govuk-notification-banner govuk-notification-banner--important"
+         role="region"
+         aria-labelledby="govuk-notification-banner-title"
+         data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+          @messages("dashboard.banner.title")
+        </h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        @for(item <- expiringItems) {
+          <p class="govuk-notification-banner__heading">
+            @{messageFor(item)}
+            <a class="govuk-notification-banner__link"
+               href=@{s"/transfer/${item.transferReference.getOrElse("")}"}>
+                @messages("dashboard.banner.linkText")
+            </a>.
+          </p>
+        }
+      </div>
+    </div>
+  }
+
     <span class="govuk-caption-l">@schemeName</span>
     <h1 class="govuk-heading-l">@messages("dashboard.heading")</h1>
 
@@ -52,5 +94,5 @@
         <p class="govuk-body">@messages("dashboard.allTransfers.empty")</p>
     }
 
-    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-padding-top-8">
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 }

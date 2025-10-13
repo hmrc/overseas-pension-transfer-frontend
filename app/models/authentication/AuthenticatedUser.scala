@@ -18,6 +18,7 @@ package models.authentication
 
 import models.PensionSchemeDetails
 import uk.gov.hmrc.auth.core.AffinityGroup
+import play.api.libs.json._
 
 sealed trait AuthenticatedUser {
   def internalId: String
@@ -25,6 +26,24 @@ sealed trait AuthenticatedUser {
   def pensionSchemeDetails: Option[PensionSchemeDetails]
 
   def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser
+}
+
+object AuthenticatedUser {
+
+  implicit val format: Format[AuthenticatedUser] = new Format[AuthenticatedUser] {
+
+    override def reads(json: JsValue): JsResult[AuthenticatedUser] =
+      (json.validate[PsaUser].isSuccess, json.validate[PspUser].isSuccess) match {
+        case (true, false) => PsaUser.format.reads(json)
+        case (false, true) => PspUser.format.reads(json)
+        case _             => JsError("Json not a valid AuthenticatedUser")
+      }
+
+    override def writes(o: AuthenticatedUser): JsValue = o match {
+      case psa: PsaUser => PsaUser.format.writes(psa)
+      case psp: PspUser => PspUser.format.writes(psp)
+    }
+  }
 }
 
 case class PsaUser(
@@ -38,6 +57,10 @@ case class PsaUser(
   override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
 }
 
+object PsaUser {
+  implicit val format: Format[PsaUser] = Json.format[PsaUser]
+}
+
 case class PspUser(
     pspId: PspId,
     internalId: String,
@@ -47,4 +70,8 @@ case class PspUser(
   override val userType: UserType = Psp
 
   override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
+}
+
+object PspUser {
+  implicit val format: Format[PspUser] = Json.format[PspUser]
 }

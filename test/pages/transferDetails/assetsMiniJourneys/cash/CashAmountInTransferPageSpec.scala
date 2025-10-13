@@ -33,17 +33,17 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
 
     "in Normal Mode" - {
       "must go to the cya page if no more assets" in {
-        CashAmountInTransferPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        CashAmountInTransferPage.nextPageWith(NormalMode, emptyAnswers, emptySessionData) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if more assets" in {
         val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val userAnswers                     = for {
-          ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
-          ua2 <- ua1.set(AssetCompletionFlag(Cash), true)
-        } yield ua2
+        val sessionData                     = for {
+          sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+          sd2 <- sd1.set(AssetCompletionFlag(Cash), true)
+        } yield sd2
 
-        val result = CashAmountInTransferPage.nextPage(NormalMode, userAnswers.success.value)
+        val result = CashAmountInTransferPage.nextPageWith(NormalMode, emptyAnswers, sessionData.success.value)
         result mustBe QuotedSharesMiniJourney.call
       }
     }
@@ -52,7 +52,7 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to Check Answers" in {
 
-        CashAmountInTransferPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        CashAmountInTransferPage.nextPageWith(CheckMode, emptyAnswers, emptySessionData) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
 

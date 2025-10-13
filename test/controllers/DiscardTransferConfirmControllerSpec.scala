@@ -103,7 +103,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.IndexController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.DashboardController.onPageLoad().url
 
         verify(mockSessionRepository, times(1)).clear(any())
         verify(mockUserAnswersService, times(1)).clearUserAnswers(any())(any())

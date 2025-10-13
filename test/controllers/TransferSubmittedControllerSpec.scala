@@ -28,7 +28,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
   "TransferSubmitted Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application  = applicationBuilder(userAnswers = userAnswersMemberNameQtNumberTransferSubmitted).build()
+      val application  = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = sessionDataQtNumberTransferSubmitted).build()
       val testMessages = messages(application)
 
       running(application) {

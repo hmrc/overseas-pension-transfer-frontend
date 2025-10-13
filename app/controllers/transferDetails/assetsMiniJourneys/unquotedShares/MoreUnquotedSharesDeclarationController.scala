@@ -63,15 +63,16 @@ class MoreUnquotedSharesDeclarationController @Inject() (
       mode match {
         case CheckMode =>
           for {
-            updatedAnswers <- Future.fromTry(
+            updatedSession <- Future.fromTry(
                                 AssetsMiniJourneyService.setAssetCompleted(
-                                  request.userAnswers,
+                                  request.sessionData,
                                   TypeOfAsset.UnquotedShares,
                                   completed = false
                                 )
                               )
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield renderView(updatedAnswers)
+
+            _ <- sessionRepository.set(updatedSession)
+          } yield renderView(request.userAnswers)
 
         case NormalMode =>
           Future.successful(renderView(request.userAnswers))
@@ -87,9 +88,10 @@ class MoreUnquotedSharesDeclarationController @Inject() (
         },
         continue => {
           for {
-            userAnswers                <- Future.fromTry(request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue))
-            userAnswersAfterCompletion <- moreAssetCompletionService.completeAsset(userAnswers, TypeOfAsset.UnquotedShares, completed = true, Some(continue))
-          } yield TypeOfAssetNavigator.getNextAssetRoute(userAnswersAfterCompletion) match {
+            sessionData            <- Future.fromTry(request.sessionData.set(MoreUnquotedSharesDeclarationPage, continue))
+            sessionAfterCompletion <-
+              moreAssetCompletionService.completeAsset(request.userAnswers, sessionData, TypeOfAsset.UnquotedShares, completed = true, Some(continue))
+          } yield TypeOfAssetNavigator.getNextAssetRoute(sessionAfterCompletion) match {
             case Some(route) => Redirect(route)
             case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
           }

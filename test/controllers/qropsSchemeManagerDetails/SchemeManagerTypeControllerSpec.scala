@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, SessionData, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -33,6 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
 
 import scala.concurrent.Future
@@ -48,7 +49,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, schemeManagerTypeRoute)
@@ -64,7 +65,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
+      val userAnswers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -87,16 +88,12 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val userAnswers = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.values.head).success.value
 
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -116,16 +113,12 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     "must redirect to next page in CheckMode if changed from 'Individual' to 'Organisation' in CheckMode" in {
       val previousAnswers        = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -143,22 +136,19 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     }
 
     "must remove previous data if SchemeManagerType changes" in {
-      val mngrName        = PersonName("FirstNameMngr", "LastNameMngr")
-      val previousAnswers = emptyUserAnswers
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      val mngrName                   = PersonName("FirstNameMngr", "LastNameMngr")
+      val previousAnswers            = emptyUserAnswers
         .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         .set(SchemeManagersNamePage, mngrName).success.value
 
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -174,7 +164,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(captor.capture())
+        verify(mockUserAnswersService).setExternalUserAnswers(captor.capture())(any)
 
         val updatedAnswers = captor.getValue
         updatedAnswers.get(SchemeManagersNamePage) mustBe None
@@ -183,7 +173,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =
@@ -203,16 +193,12 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

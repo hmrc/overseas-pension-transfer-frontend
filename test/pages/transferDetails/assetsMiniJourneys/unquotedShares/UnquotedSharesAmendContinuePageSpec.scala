@@ -39,6 +39,7 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         UnquotedSharesAmendContinuePage.nextPageWith(
           NormalMode,
           userAnswers,
+          emptySessionData,
           nextIndex
         ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
           NormalMode,
@@ -49,18 +50,24 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
       "must go to the cya page if no-continue selected and no more assets" in {
         val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinuePage, false).success.value
         val nextIndex   = 2
-        UnquotedSharesAmendContinuePage.nextPageWith(NormalMode, userAnswers, nextIndex) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        UnquotedSharesAmendContinuePage.nextPageWith(
+          NormalMode,
+          userAnswers,
+          emptySessionData,
+          nextIndex
+        ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if no-continue selected and more assets" in {
         val selectedTypes: Seq[TypeOfAsset] = Seq(UnquotedSharesMiniJourney.assetType, CashMiniJourney.assetType)
-        val userAnswers                     = for {
-          ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
-          ua2 <- ua1.set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true)
-          ua3 <- ua2.set(UnquotedSharesAmendContinuePage, false)
-        } yield ua3
+        val userAnswers                     = emptyUserAnswers.set(UnquotedSharesAmendContinuePage, false)
+        val sessionData                     =
+          for {
+            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true)
+          } yield sd2
 
-        val result = UnquotedSharesAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, 0)
+        val result = UnquotedSharesAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value, 0)
         result mustBe CashMiniJourney.call
       }
     }

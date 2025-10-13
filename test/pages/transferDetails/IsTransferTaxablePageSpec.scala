@@ -17,7 +17,10 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.ApplicableTaxExclusions.Occupational
+import models.WhyTransferIsNotTaxable.{IndividualIsEmployedPublicService, IndividualIsEmployeeOccupational}
+import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
+import models.{ApplicableTaxExclusions, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers, WhyTransferIsNotTaxable}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -42,10 +45,14 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers {
     }
 
     "in Check Mode" - {
+      "must go to why transfer is taxable page if user selects true" in {
+        val ua = emptyAnswers.set(IsTransferTaxablePage, true).success.value
+        IsTransferTaxablePage.nextPage(CheckMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(CheckMode)
+      }
 
-      "must go to Check Answers" in {
-
-        IsTransferTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+      "must go to why transfer is not taxable page if user selects false" in {
+        val ua = emptyAnswers.set(IsTransferTaxablePage, false).success.value
+        IsTransferTaxablePage.nextPage(CheckMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(CheckMode)
       }
     }
 
@@ -54,6 +61,52 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers {
         IsTransferTaxablePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
+    }
+  }
+
+  "cleanup" - {
+    "remove correct data when changing No to Yes" in {
+      val emptyUA = UserAnswers("id", PstrNumber("PSTR123"))
+        .set(OverseasTransferAllowancePage, BigDecimal(100)).success.value
+
+      val result =
+        IsTransferTaxablePage.cleanup(
+          Some(true),
+          emptyUA.set(WhyTransferIsNotTaxablePage, WhyTransferIsNotTaxable.values.toSet).success.value
+        ).success.value
+
+      result mustBe emptyUA
+    }
+
+    "remove correct data when changing Yes to No - Exceeds allowance" in {
+      val emptyUA = UserAnswers("id", PstrNumber("PSTR123"))
+        .set(OverseasTransferAllowancePage, BigDecimal(100)).success.value
+
+      val userAnswersWithYesJourney =
+        emptyUA
+          .set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+          .set(ApplicableTaxExclusionsPage, ApplicableTaxExclusions.values.toSet).success.value
+          .set(AmountOfTaxDeductedPage, BigDecimal(100)).success.value
+          .set(NetTransferAmountPage, BigDecimal(100)).success.value
+
+      val result = IsTransferTaxablePage.cleanup(Some(false), userAnswersWithYesJourney).success.value
+
+      result mustBe emptyUA
+    }
+
+    "remove correct data when changing Yes to No - No exclusions" in {
+      val emptyUA = UserAnswers("id", PstrNumber("PSTR123"))
+        .set(OverseasTransferAllowancePage, BigDecimal(100)).success.value
+
+      val userAnswersWithYesJourney =
+        emptyUA
+          .set(WhyTransferIsTaxablePage, NoExclusion).success.value
+          .set(AmountOfTaxDeductedPage, BigDecimal(100)).success.value
+          .set(NetTransferAmountPage, BigDecimal(100)).success.value
+
+      val result = IsTransferTaxablePage.cleanup(Some(false), userAnswersWithYesJourney).success.value
+
+      result mustBe emptyUA
     }
   }
 }

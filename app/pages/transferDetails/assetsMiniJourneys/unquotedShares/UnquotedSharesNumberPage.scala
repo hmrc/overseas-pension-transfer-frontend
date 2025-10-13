@@ -25,7 +25,7 @@ import play.api.mvc.Call
 
 case class UnquotedSharesNumberPage(index: Int) extends QuestionPage[Int] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.toString \ index \ toString
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
 
   override def toString: String = UnquotedSharesEntry.NumberOfShares
 

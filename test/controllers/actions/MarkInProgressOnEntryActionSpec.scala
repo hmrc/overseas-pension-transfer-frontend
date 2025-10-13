@@ -20,7 +20,7 @@ import base.SpecBase
 import models.requests.{DataRequest, DisplayRequest}
 import models.responses.UserAnswersErrorResponse
 import models.taskList.TaskStatus
-import models.{CheckMode, NormalMode, QtNumber, TaskCategory, UserAnswers}
+import models.{CheckMode, NormalMode, QtNumber, SessionData, TaskCategory, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -47,6 +47,7 @@ class MarkInProgressOnEntryActionSpec
       request               = FakeRequest(),
       authenticatedUser     = psaUser,
       userAnswers           = ua,
+      sessionData           = emptySessionData,
       memberName            = "Firstname Lastname",
       qtNumber              = QtNumber.empty,
       dateTransferSubmitted = "Transfer not submitted"
@@ -58,13 +59,10 @@ class MarkInProgressOnEntryActionSpec
       "and pass the updated DataRequest to the downstream request" in {
 
         val sessionRepo = mock[SessionRepository]
-        val uaService   = mock[UserAnswersService]
 
-        when(sessionRepo.set(any[UserAnswers])) thenReturn Future.successful(true)
-        when(uaService.setExternalUserAnswers(any[UserAnswers])(any()))
-          .thenReturn(Future.successful(Right(Done)))
+        when(sessionRepo.set(any[SessionData])) thenReturn Future.successful(true)
 
-        val action  = new MarkInProgressOnEntryActionImpl(sessionRepo, uaService)
+        val action  = new MarkInProgressOnEntryActionImpl(sessionRepo)
         val refiner = action.forCategoryAndMode(TaskCategory.MemberDetails, NormalMode)
 
         val req = mkDisplayRequest(emptyUserAnswers)
@@ -77,29 +75,20 @@ class MarkInProgressOnEntryActionSpec
 
         status(resultFuture) mustBe OK
 
-        val uaCaptor1 = ArgumentCaptor.forClass(classOf[UserAnswers])
+        val uaCaptor1 = ArgumentCaptor.forClass(classOf[SessionData])
         verify(sessionRepo).set(uaCaptor1.capture())
 
         val persistedUa = uaCaptor1.getValue
         persistedUa.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(TaskStatus.InProgress)
-
-        val uaCaptor2 = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(uaService).setExternalUserAnswers(uaCaptor2.capture())(any())
-
-        val externalUa = uaCaptor2.getValue
-        externalUa.get(TaskStatusQuery(TaskCategory.MemberDetails)) mustBe Some(TaskStatus.InProgress)
       }
 
     "in NormalMode must short-circuit with Redirect when external persistence returns Left" in {
 
       val sessionRepo = mock[SessionRepository]
-      val uaService   = mock[UserAnswersService]
 
-      when(sessionRepo.set(any[UserAnswers])) thenReturn Future.successful(true)
-      when(uaService.setExternalUserAnswers(any[UserAnswers])(any()))
-        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
+      when(sessionRepo.set(any[SessionData])) thenReturn Future.successful(false)
 
-      val action  = new MarkInProgressOnEntryActionImpl(sessionRepo, uaService)
+      val action  = new MarkInProgressOnEntryActionImpl(sessionRepo)
       val refiner = action.forCategoryAndMode(TaskCategory.MemberDetails, NormalMode)
 
       val req = mkDisplayRequest(emptyUserAnswers)
@@ -114,9 +103,8 @@ class MarkInProgressOnEntryActionSpec
     "in CheckMode must not persist and must pass the original DataRequest to the downstream block" in {
 
       val sessionRepo = mock[SessionRepository]
-      val uaService   = mock[UserAnswersService]
 
-      val action  = new MarkInProgressOnEntryActionImpl(sessionRepo, uaService)
+      val action  = new MarkInProgressOnEntryActionImpl(sessionRepo)
       val refiner = action.forCategoryAndMode(TaskCategory.MemberDetails, CheckMode)
 
       val req = mkDisplayRequest(emptyUserAnswers)
@@ -132,8 +120,7 @@ class MarkInProgressOnEntryActionSpec
 
       status(resultFuture) mustBe OK
 
-      verify(sessionRepo, never()).set(any[UserAnswers])
-      verify(uaService, never()).setExternalUserAnswers(any[UserAnswers])(any())
+      verify(sessionRepo, never()).set(any[SessionData])
     }
 
   }

@@ -44,6 +44,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
     None,
     None,
     None,
+    None,
     None
   )
 

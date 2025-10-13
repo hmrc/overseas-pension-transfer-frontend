@@ -39,6 +39,7 @@ class QuotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         QuotedSharesAmendContinuePage.nextPageWith(
           NormalMode,
           userAnswers,
+          emptySessionData,
           nextIndex
         ) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(
           NormalMode,
@@ -49,18 +50,24 @@ class QuotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
       "must go to the cya page if no-continue selected and no more assets" in {
         val userAnswers = emptyAnswers.set(QuotedSharesAmendContinuePage, false).success.value
         val nextIndex   = 2
-        QuotedSharesAmendContinuePage.nextPageWith(NormalMode, userAnswers, nextIndex) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        QuotedSharesAmendContinuePage.nextPageWith(
+          NormalMode,
+          userAnswers,
+          emptySessionData,
+          nextIndex
+        ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if no-continue selected and more assets" in {
         val selectedTypes: Seq[TypeOfAsset] = Seq(QuotedSharesMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
-        val userAnswers                     = for {
-          ua1 <- emptyUserAnswers.set(TypeOfAssetPage, selectedTypes)
-          ua2 <- ua1.set(AssetCompletionFlag(TypeOfAsset.QuotedShares), true)
-          ua3 <- ua2.set(QuotedSharesAmendContinuePage, false)
-        } yield ua3
+        val userAnswers                     = emptyAnswers.set(QuotedSharesAmendContinuePage, false)
+        val sessionData                     =
+          for {
+            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.QuotedShares), true)
+          } yield sd2
 
-        val result = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, 0)
+        val result = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value, 0)
         result mustBe UnquotedSharesMiniJourney.call
       }
     }

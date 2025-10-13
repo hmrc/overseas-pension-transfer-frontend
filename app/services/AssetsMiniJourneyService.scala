@@ -16,7 +16,7 @@
 
 package services
 
-import models.UserAnswers
+import models.{SessionData, UserAnswers}
 import models.assets.TypeOfAsset.Cash
 import models.assets._
 import play.api.libs.json._
@@ -62,6 +62,26 @@ object AssetsMiniJourneyService {
     }
   }
 
+  def removeAssetEntry[A <: AssetEntry: Format](
+      journey: RepeatingAssetsMiniJourney[A],
+      sessionData: SessionData,
+      index: Int
+    ): Try[SessionData] = {
+    val queryKey = journey.query
+
+    sessionData.get(queryKey) match {
+      case Some(currentList) if index >= 0 && index < currentList.size =>
+        val updatedList = currentList.patch(index, Nil, 1)
+        sessionData.set(queryKey, updatedList)
+
+      case Some(_) =>
+        Failure(new IndexOutOfBoundsException(s"Index $index out of bounds"))
+
+      case None =>
+        Failure(new NoSuchElementException(s"No entry found at query path ${queryKey.path}"))
+    }
+  }
+
   def removeAllAssetEntriesExceptCash(userAnswers: UserAnswers): Try[UserAnswers] = {
     val journeysWithoutCash = AssetsMiniJourneyRegistry.all.filterNot(_.assetType == Cash)
 
@@ -80,42 +100,41 @@ object AssetsMiniJourneyService {
     for {
       ua1 <- clearedData
       ua2 <- ua1.set(SelectedAssetTypes, Seq[TypeOfAsset](Cash))
-      ua3 <- clearAllAssetCompletionFlags(ua2)
-    } yield ua3
+    } yield ua2
   }
 
   // ----- Single-asset helpers (Cash) -----
 
   def getSingle[A <: AssetEntry: Reads](
       journey: SingleAssetsMiniJourney[A],
-      userAnswers: UserAnswers
+      sessionData: SessionData
     ): Option[A] =
-    userAnswers.get(journey.query)
+    sessionData.get(journey.query)
 
   def setSingle[A <: AssetEntry: Writes](
       journey: SingleAssetsMiniJourney[A],
-      userAnswers: UserAnswers,
+      sessionData: SessionData,
       value: A
-    ): Try[UserAnswers] =
-    userAnswers.set(journey.query, value)
+    ): Try[SessionData] =
+    sessionData.set(journey.query, value)
 
   def removeSingle[A <: AssetEntry](
       journey: SingleAssetsMiniJourney[A],
-      userAnswers: UserAnswers
-    ): Try[UserAnswers] =
-    userAnswers.remove(journey.query)
+      sessionData: SessionData
+    ): Try[SessionData] =
+    sessionData.remove(journey.query)
 
   // ----- Shared helpers -----
 
-  def setAssetCompleted(userAnswers: UserAnswers, assetType: TypeOfAsset, completed: Boolean): Try[UserAnswers] =
-    userAnswers.set(AssetCompletionFlag(assetType), completed)
+  def setAssetCompleted(sessionData: SessionData, assetType: TypeOfAsset, completed: Boolean): Try[SessionData] =
+    sessionData.set(AssetCompletionFlag(assetType), completed)
 
-  def setSelectedAssetsIncomplete(ua: UserAnswers, selectedAssets: Seq[TypeOfAsset]): Try[UserAnswers] =
-    selectedAssets.foldLeft(Try(ua)) {
+  def setSelectedAssetsIncomplete(sessionData: SessionData, selectedAssets: Seq[TypeOfAsset]): Try[SessionData] =
+    selectedAssets.foldLeft(Try(sessionData)) {
       case (Success(ua), assetType) =>
-        setAssetCompleted(ua, assetType, completed = false)
+        setAssetCompleted(sessionData, assetType, completed = false)
     }
 
-  def clearAllAssetCompletionFlags(userAnswers: UserAnswers): Try[UserAnswers] =
-    userAnswers.remove(AssetCompletionFlags)
+  def clearAllAssetCompletionFlags(sessionData: SessionData): Try[SessionData] =
+    sessionData.remove(AssetCompletionFlags)
 }

@@ -17,7 +17,8 @@
 package repositories
 
 import config.FrontendAppConfig
-import models.{PstrNumber, UserAnswers}
+import models.authentication.{PsaId, PsaUser}
+import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
 import org.scalactic.source.Position
@@ -29,6 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.MDC
 import uk.gov.hmrc.mdc.MdcExecutionContext
 import play.api.libs.json.Json
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.{Clock, Instant, ZoneId}
@@ -38,7 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SessionRepositoryISpec
     extends AnyFreeSpec
     with Matchers
-    with DefaultPlayMongoRepositorySupport[UserAnswers]
+    with DefaultPlayMongoRepositorySupport[SessionData]
     with ScalaFutures
     with IntegrationPatience
     with OptionValues
@@ -47,7 +49,23 @@ class SessionRepositoryISpec
   private val instant          = Instant.now.truncatedTo(ChronoUnit.MILLIS)
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
-  private val userAnswers = UserAnswers("id", PstrNumber("12345678AB"), Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
+  private val sessionData = SessionData(
+    "id",
+    "transferId",
+    PensionSchemeDetails(
+      SrnNumber("1234567890123"),
+      PstrNumber("12345678AB"),
+      "Scheme Name"
+    ),
+    PsaUser(
+      PsaId("A123456"),
+      "internalId",
+      None,
+      Individual
+    ),
+    Json.obj("foo" -> "bar"),
+    Instant.ofEpochSecond(1)
+  )
 
   private val mockAppConfig = mock[FrontendAppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1L
@@ -64,15 +82,15 @@ class SessionRepositoryISpec
 
     "must set the last updated time on the supplied user answers to `now`, and save them" in {
 
-      val expectedResult = userAnswers copy (lastUpdated = instant)
+      val expectedResult = sessionData copy (lastUpdated = instant)
 
-      repository.set(userAnswers).futureValue
-      val updatedRecord = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
+      repository.set(sessionData).futureValue
+      val updatedRecord = find(Filters.equal("_id", sessionData.sessionId)).futureValue.headOption.value
 
       updatedRecord mustEqual expectedResult
     }
 
-    mustPreserveMdc(repository.set(userAnswers))
+    mustPreserveMdc(repository.set(sessionData))
   }
 
   ".get" - {
@@ -81,10 +99,10 @@ class SessionRepositoryISpec
 
       "must update the lastUpdated time and get the record" in {
 
-        insert(userAnswers).futureValue
+        insert(sessionData).futureValue
 
-        val result         = repository.get(userAnswers.id).futureValue
-        val expectedResult = userAnswers copy (lastUpdated = instant)
+        val result         = repository.get(sessionData.sessionId).futureValue
+        val expectedResult = sessionData copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult
       }
@@ -98,18 +116,44 @@ class SessionRepositoryISpec
       }
     }
 
-    mustPreserveMdc(repository.get(userAnswers.id))
+    mustPreserveMdc(repository.get(sessionData.transferId))
+  }
+
+  ".getByTransferId" - {
+
+    "when there is a record for this id" - {
+
+      "must update the lastUpdated time and get the record" in {
+
+        insert(sessionData).futureValue
+
+        val result         = repository.getByTransferId(sessionData.transferId).futureValue
+        val expectedResult = sessionData copy (lastUpdated = instant)
+
+        result.value mustEqual expectedResult
+      }
+    }
+
+    "when there is no record for this id" - {
+
+      "must return None" in {
+
+        repository.getByTransferId("id that does not exist").futureValue must not be defined
+      }
+    }
+
+    mustPreserveMdc(repository.get(sessionData.transferId))
   }
 
   ".clear" - {
 
     "must remove a record" in {
 
-      insert(userAnswers).futureValue
+      insert(sessionData).futureValue
 
-      repository.clear(userAnswers.id).futureValue
+      repository.clear(sessionData.transferId).futureValue
 
-      repository.get(userAnswers.id).futureValue must not be defined
+      repository.get(sessionData.transferId).futureValue must not be defined
     }
 
     "must return true when there is no record to remove" in {
@@ -118,7 +162,7 @@ class SessionRepositoryISpec
       result mustEqual true
     }
 
-    mustPreserveMdc(repository.clear(userAnswers.id))
+    mustPreserveMdc(repository.clear(sessionData.transferId))
   }
 
   ".keepAlive" - {
@@ -127,13 +171,13 @@ class SessionRepositoryISpec
 
       "must update its lastUpdated to `now` and return true" in {
 
-        insert(userAnswers).futureValue
+        insert(sessionData).futureValue
 
-        repository.keepAlive(userAnswers.id).futureValue
+        val result = repository.keepAlive(sessionData.sessionId).futureValue
 
-        val expectedUpdatedAnswers = userAnswers copy (lastUpdated = instant)
+        val expectedUpdatedAnswers = sessionData copy (lastUpdated = instant)
 
-        val updatedAnswers = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
+        val updatedAnswers = find(Filters.equal("_id", sessionData.sessionId)).futureValue.headOption.value
         updatedAnswers mustEqual expectedUpdatedAnswers
       }
     }
@@ -146,7 +190,35 @@ class SessionRepositoryISpec
       }
     }
 
-    mustPreserveMdc(repository.keepAlive(userAnswers.id))
+    mustPreserveMdc(repository.keepAlive(sessionData.transferId))
+  }
+
+  ".keepAliveByTransferId" - {
+
+    "when there is a record for this id" - {
+
+      "must update its lastUpdated to `now` and return true" in {
+
+        insert(sessionData).futureValue
+
+        val result = repository.keepAliveByTransferId(sessionData.transferId).futureValue
+
+        val expectedUpdatedAnswers = sessionData copy (lastUpdated = instant)
+
+        val updatedAnswers = find(Filters.equal("transferId", sessionData.transferId)).futureValue.headOption.value
+        updatedAnswers mustEqual expectedUpdatedAnswers
+      }
+    }
+
+    "when there is no record for this id" - {
+
+      "must return true" in {
+
+        repository.keepAlive("id that does not exist").futureValue mustEqual true
+      }
+    }
+
+    mustPreserveMdc(repository.keepAlive(sessionData.transferId))
   }
 
   private def mustPreserveMdc[A](f: => Future[A])(implicit pos: Position): Unit =

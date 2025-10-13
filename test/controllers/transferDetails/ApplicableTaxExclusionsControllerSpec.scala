@@ -43,7 +43,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, applicableTaxExclusionsRoute)
@@ -60,7 +60,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = userAnswersQtNumber.set(ApplicableTaxExclusionsPage, ApplicableTaxExclusions.values.toSet).success.value
+      val userAnswers = emptyUserAnswers.set(ApplicableTaxExclusionsPage, ApplicableTaxExclusions.values.toSet).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -106,7 +106,7 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =

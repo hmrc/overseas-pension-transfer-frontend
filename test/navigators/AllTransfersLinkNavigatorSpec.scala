@@ -34,7 +34,8 @@ class AllTransfersLinkNavigatorSpec extends AnyFreeSpec with SpecBase {
       submissionDate    = None,
       lastUpdated       = None,
       qtStatus          = status,
-      pstrNumber        = None
+      pstrNumber        = None,
+      qtDate            = None
     )
 
   "fallback goes to dashboard page 1 (default route)" in {

@@ -22,7 +22,7 @@ import models.Mode
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionView
 
@@ -31,10 +31,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetsDescriptionController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
+    userAnswersService: UserAnswersService,
     formProvider: OtherAssetsDescriptionFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: OtherAssetsDescriptionView
@@ -61,7 +61,7 @@ class OtherAssetsDescriptionController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherAssetsDescriptionPage(index), value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield Redirect(OtherAssetsDescriptionPage(index).nextPage(mode, updatedAnswers))
       )
   }

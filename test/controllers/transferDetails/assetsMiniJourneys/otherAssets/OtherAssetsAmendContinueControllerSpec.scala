@@ -58,7 +58,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
   "OtherAssetsAmendContinue Controller" - {
 
     "must return OK and the correct view for a GET in NormalMode" in {
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request = FakeRequest(GET, otherAssetsAmendContinueRouteNormal)
@@ -71,7 +71,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must return OK and the form filled for a GET in NormalMode when answer exists" in {
-      val ua          = userAnswersQtNumber.set(OtherAssetsAmendContinuePage, true).success.value
+      val ua          = emptyUserAnswers.set(OtherAssetsAmendContinuePage, true).success.value
       val application = applicationBuilder(userAnswers = ua).build()
 
       running(application) {
@@ -120,7 +120,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
+        val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -146,7 +146,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, false).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, nextIndex).url
+        val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -172,7 +172,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinuePage.nextPageWith(CheckMode, ua2, nextIndex).url
+        val expected  = OtherAssetsAmendContinuePage.nextPageWith(CheckMode, ua2, emptySessionData, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -180,7 +180,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(userAnswers = userAnswersQtNumber).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request =
