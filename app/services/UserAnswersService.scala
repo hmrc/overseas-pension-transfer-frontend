@@ -18,11 +18,12 @@ package services
 
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
-import models.{SessionData, UserAnswers}
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
+import models.requests.GetSpecificData
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersError, UserAnswersNotFoundResponse}
+import models.{SessionData, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,11 +35,28 @@ class UserAnswersService @Inject() (
   )(implicit ec: ExecutionContext
   ) extends Logging {
 
+  // These two versions of getExternalUserAnswers are purposely similar to one another as it is recommended to combine them in a future refactor
   def getExternalUserAnswers(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
     connector.getAnswers(sessionData.transferId) map {
       case Right(userAnswersDTO)             => Right(toUserAnswers(userAnswersDTO))
       case Left(UserAnswersNotFoundResponse) => Right(UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber))
       case Left(error)                       => Left(error)
+    }
+  }
+
+  def getExternalUserAnswers(data: GetSpecificData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
+    connector.getAnswers(
+      transferReference = data.transferReference,
+      qtNumber          = data.qtNumber,
+      pstrNumber        = data.pstr,
+      qtStatus          = data.qtStatus,
+      versionNumber     = data.version
+    ).map {
+      case Right(dto)                        => Right(toUserAnswers(dto))
+      case Left(UserAnswersNotFoundResponse) =>
+        val id = data.transferReference.orElse(data.qtNumber.map(_.value)).getOrElse("unknown")
+        Right(UserAnswers(id, data.pstr))
+      case Left(err)                         => Left(err)
     }
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@
 package controllers.actions
 
 import base.SpecBase
-import models.authentication.{PsaId, PsaUser}
-import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
-import models.requests.{DataRequest, DisplayRequest, IdentifierRequest}
+import models.requests.{DisplayRequest, GetSpecificData, IdentifierRequest}
 import models.responses.UserAnswersErrorResponse
+import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status.SEE_OTHER
+import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
@@ -42,16 +41,16 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val sessionData = SessionData(
-    "sessionId",
-    "transferId",
-    PensionSchemeDetails(
+    sessionId         = "session-internal-id",
+    transferId        = "transferId-123",
+    schemeInformation = PensionSchemeDetails(
       SrnNumber("12345"),
       PstrNumber("12345678AB"),
       "Scheme Name"
     ),
-    psaUser,
-    Json.obj(),
-    Instant.now
+    user              = psaUser,
+    data              = Json.obj(),
+    lastUpdated       = Instant.now
   )
 
   class Harness(sessionRepository: SessionRepository, userAnswersService: UserAnswersService)
@@ -61,65 +60,135 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
   "Data Retrieval Action" - {
 
-    "when there is no session data in the cache" - {
-
+    "when there is no session data in the cache and no query params" - {
       "must redirect to JourneyRecovery" in {
-
         val sessionRepository  = mock[SessionRepository]
         val userAnswersService = mock[UserAnswersService]
 
-        when(sessionRepository.get(any())).thenReturn(Future.successful(None))
+        when(sessionRepository.get(any[String]())).thenReturn(Future.successful(None))
 
         val action = new Harness(sessionRepository, userAnswersService)
 
         val futureResult = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
 
-        futureResult.left.map {
-          result =>
-            result.header.status mustBe SEE_OTHER
-            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        futureResult.left.map { result =>
+          result.header.status mustBe SEE_OTHER
+          result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
         }
       }
     }
 
-    "when there is no data returned from user answers service" - {
-      "must redirect to JourneyRecovery" in {
-
+    "when GetSpecificDataParser yields an error (bad/missing params)" - {
+      "must return BadRequest" in {
         val sessionRepository  = mock[SessionRepository]
         val userAnswersService = mock[UserAnswersService]
 
-        when(sessionRepository.get(any())).thenReturn(Future.successful(Some(sessionData)))
-        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+        val req = FakeRequest("GET", "/some/path?transferReference=TR-1&qtStatus=Submitted")
 
         val action = new Harness(sessionRepository, userAnswersService)
+        val result = action.callRefine(IdentifierRequest(req, psaUser)).futureValue
 
-        val futureResult = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
-
-        futureResult.left.map {
-          result =>
-            result.header.status mustBe SEE_OTHER
-            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        result.left.map { r =>
+          r.header.status mustBe BAD_REQUEST
         }
       }
     }
 
-    "when there is data in the cache" - {
+    "when GetSpecificData is present via query params" - {
 
-      "must build a userAnswers, memberName, qtNumber and dateTransferSubmitted object and add it to the request" in {
-        val userAnswers = UserAnswers("id", PstrNumber("12345678AB"))
-
+      "and UA service returns Left -> must redirect to JourneyRecovery" in {
         val sessionRepository  = mock[SessionRepository]
         val userAnswersService = mock[UserAnswersService]
 
-        when(sessionRepository.get("id")) thenReturn Future(Some(sessionData))
-        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Right(userAnswers)))
+        val req = FakeRequest(
+          "GET",
+          "/some/path?transferReference=TR-123&pstr=12345678AB&qtStatus=Submitted"
+        )
+
+        when(userAnswersService.getExternalUserAnswers(any[GetSpecificData]())(any[HeaderCarrier]()))
+          .thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
+
         val action = new Harness(sessionRepository, userAnswersService)
+        val out    = action.callRefine(IdentifierRequest(req, psaUser)).futureValue
 
-        val result = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
+        out.left.map { result =>
+          result.header.status mustBe SEE_OTHER
+          result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        }
+      }
 
-        result.map {
-          displayRequest =>
-            displayRequest.userAnswers mustBe userAnswers
+      "and UA service returns Right -> must build DisplayRequest with answers" in {
+        val sessionRepository  = mock[SessionRepository]
+        val userAnswersService = mock[UserAnswersService]
+
+        val req = FakeRequest(
+          "GET",
+          "/some/path?transferReference=TR-123&pstr=12345678AB&qtStatus=Submitted&versionNumber=7"
+        )
+
+        val ua = UserAnswers(id = "TR-123", pstr = PstrNumber("12345678AB"))
+
+        when(userAnswersService.getExternalUserAnswers(any[GetSpecificData]())(any[HeaderCarrier]()))
+          .thenReturn(Future.successful(Right(ua)))
+
+        val userWithScheme = psaUser.copy(
+          pensionSchemeDetails = Some(
+            PensionSchemeDetails(
+              SrnNumber("12345"),
+              PstrNumber("12345678AB"),
+              "Scheme Name"
+            )
+          )
+        )
+
+        val action  = new Harness(sessionRepository, userAnswersService)
+        val outcome = action.callRefine(IdentifierRequest(req, userWithScheme)).futureValue
+
+        outcome.map { dr =>
+          dr.userAnswers mustBe ua
+          dr.memberName.nonEmpty mustBe true
+        }
+      }
+    }
+
+    "when there is no GetSpecificData (no query params) but there is data in the cache" - {
+
+      "and UA service returns Left -> must redirect to JourneyRecovery" in {
+        val sessionRepository  = mock[SessionRepository]
+        val userAnswersService = mock[UserAnswersService]
+
+        when(sessionRepository.get(any[String]()))
+          .thenReturn(Future.successful(Some(sessionData)))
+
+        when(userAnswersService.getExternalUserAnswers(any[SessionData]())(any[HeaderCarrier]()))
+          .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+
+        val action = new Harness(sessionRepository, userAnswersService)
+        val out    = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
+
+        out.left.map { result =>
+          result.header.status mustBe SEE_OTHER
+          result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        }
+      }
+
+      "and UA service returns Right -> must build DisplayRequest with answers" in {
+        val sessionRepository  = mock[SessionRepository]
+        val userAnswersService = mock[UserAnswersService]
+
+        val ua = UserAnswers(id = "transferId-123", pstr = PstrNumber("12345678AB"))
+
+        when(sessionRepository.get(any[String]()))
+          .thenReturn(Future.successful(Some(sessionData)))
+
+        when(userAnswersService.getExternalUserAnswers(any[SessionData]())(any[HeaderCarrier]()))
+          .thenReturn(Future.successful(Right(ua)))
+
+        val action  = new Harness(sessionRepository, userAnswersService)
+        val outcome = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
+
+        outcome.map { dr =>
+          dr.userAnswers mustBe ua
         }
       }
     }
