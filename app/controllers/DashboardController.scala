@@ -51,7 +51,7 @@ class DashboardController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  private val lockTtl = 15.minute
+  private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
 
   def onPageLoad(page: Int): Action[AnyContent] = identify.async { implicit request =>
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
@@ -84,7 +84,7 @@ class DashboardController @Inject() (
       .orElse(params.transferReference.filter(_.nonEmpty))
       .getOrElse("-")
 
-    lockRepository.takeLock(lockId, internalId, lockTtl).flatMap {
+    lockRepository.takeLock(lockId, internalId, lockTtlSeconds.seconds).flatMap {
       case Some(_) =>
         logger.info(s"[DashboardController][onTransferClick] Lock acquired for $lockId by $internalId")
         val redirectTarget = params.qtStatus match {
