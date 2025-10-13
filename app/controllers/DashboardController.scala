@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.{IdentifierAction, SchemeDataAction}
+import controllers.actions.IdentifierAction
 import models.{DashboardData, PensionSchemeDetails}
 import pages.DashboardPage
 import play.api.Logging
