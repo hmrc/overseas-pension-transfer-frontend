@@ -69,7 +69,26 @@ class DashboardController @Inject() (
             logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for $id")
             Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
           } { pensionSchemeDetails =>
-            renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+            dashboardData.get(TransfersOverviewQuery) match {
+              case None            =>
+                renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+              case Some(transfers) =>
+                transfers.map {
+                  transfer =>
+                    (transfer.transferReference, transfer.qtReference) match {
+                      case (Some(transferRef), None) =>
+                        logger.info(s"[DashboardController][onPageLoad] lock released for $transferRef")
+                        lockRepository.releaseLock(transferRef, request.authenticatedUser.internalId)
+                      case (None, Some(qtRefefence)) =>
+                        logger.info(s"[DashboardController][onPageLoad] lock released for $qtRefefence")
+                        lockRepository.releaseLock(qtRefefence.value, request.authenticatedUser.internalId)
+                      case (None, None)              => ()
+                    }
+                }
+
+                renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+            }
+
           }
       }
     }
