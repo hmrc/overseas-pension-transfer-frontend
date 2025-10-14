@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
+import models.{DashboardData, PensionSchemeDetails, PstrNumber, QtStatus, SrnNumber}
 import org.scalatest.TryValues._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -27,19 +27,37 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers {
 
   ".nextPage" - {
 
-    "must go to WhatWillBeNeeded when PensionSchemeDetails exists" in {
+    "must go to WhatWillBeNeeded when PensionSchemeDetails exists and no status provided" in {
       val dd = DashboardData("internal-id")
         .set(PensionSchemeDetailsQuery, PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
         .success
         .value
 
-      DashboardPage.nextPage(dd) mustEqual routes.WhatWillBeNeededController.onPageLoad()
+      DashboardPage.nextPage(dd, None) mustEqual routes.WhatWillBeNeededController.onPageLoad()
     }
 
-    "must go to Unauthorised when PensionSchemeDetails is missing" in {
+    "must go to Unauthorised when PensionSchemeDetails is missing and no status provided" in {
       val dd = DashboardData("internal-id")
 
-      DashboardPage.nextPage(dd) mustEqual controllers.auth.routes.UnauthorisedController.onPageLoad()
+      DashboardPage.nextPage(dd, None) mustEqual controllers.auth.routes.UnauthorisedController.onPageLoad()
     }
+
+//    "must go to TransferProgressController when status is InProgress" in {
+//      val dd = DashboardData("internal-id")
+//
+//      DashboardPage.nextPage(dd, Some(QtStatus.InProgress)) mustEqual ??? // TODO: Replace with In-progress controller redirect
+//    }
+//
+//    "must go to TransferSummaryController when status is Compiled" in {
+//      val dd = DashboardData("internal-id")
+//
+//      DashboardPage.nextPage(dd, Some(QtStatus.Compiled)) mustEqual ??? // TODO: Replace with Compiled controller redirect
+//    }
+//
+//    "must go to TransferSummaryController when status is Submitted" in {
+//      val dd = DashboardData("internal-id")
+//
+//      DashboardPage.nextPage(dd, Some(QtStatus.Submitted)) mustEqual ??? // TODO: Replace with Submitted controller redirect
+//    }
   }
 }

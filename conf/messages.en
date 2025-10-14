@@ -56,6 +56,9 @@ dashboard.banner.title = Important
 dashboard.banner.inProgress.text = The transfer for {0} will be deleted in 7 days if you do not work on it.
 dashboard.banner.updateInProgress.text = The update for {0} will be deleted in 7 days if you do not work on it.
 dashboard.banner.linkText = View transfer
+dashboard.lock.title = Important
+dashboard.lock.warning = Someone else is editing the transfer report for {0}, please try again later.
+dashboard.lock.hide = Hide message
 
 requiredInfo.title = What you will need
 requiredInfo.heading = What you will need

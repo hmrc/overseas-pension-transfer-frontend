@@ -1,0 +1,61 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package models
+
+import play.api.mvc.Request
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
+case class TransferReportQueryParams(
+    transferReference: Option[String],
+    qtReference: Option[String],
+    qtStatus: Option[QtStatus],
+    name: String,
+    currentPage: Int
+  )
+
+object TransferReportQueryParams {
+
+  def fromRequest(request: Request[_]): TransferReportQueryParams = {
+    TransferReportQueryParams(
+      transferReference = request.getQueryString("transferReference"),
+      qtReference       = request.getQueryString("qtReference"),
+      qtStatus          = request.getQueryString("qtStatus").flatMap(s => QtStatus.values.find(_.toString == s)),
+      name              = request.getQueryString("name").getOrElse("-"),
+      currentPage       = request.getQueryString("currentPage").flatMap(_.toIntOption).getOrElse(1)
+    )
+  }
+
+  /** Helper to URL-encode */
+  private def enc(v: String): String =
+    URLEncoder.encode(v, StandardCharsets.UTF_8.toString)
+
+  def toQueryString(p: TransferReportQueryParams): String = {
+    val params = Seq(
+      p.transferReference.map(tr => s"transferReference=${enc(tr)}"),
+      p.qtReference.map(qr => s"qtReference=${enc(qr)}"),
+      p.qtStatus.map(qs => s"qtStatus=${enc(qs.toString)}"),
+      Some(s"name=${enc(p.name)}"),
+      Some(s"currentPage=${p.currentPage}")
+    ).flatten.mkString("&")
+
+    s"?$params"
+  }
+
+  def toUrl(p: TransferReportQueryParams): String =
+    controllers.routes.DashboardController.onTransferClick().url + toQueryString(p)
+}

@@ -88,4 +88,10 @@ object DashboardData {
   }
 
   implicit val format: OFormat[DashboardData] = OFormat(reads, writes)
+
+  def empty: DashboardData = DashboardData(
+    id          = "unknown",
+    data        = Json.obj(),
+    lastUpdated = Instant.now()
+  )
 }
