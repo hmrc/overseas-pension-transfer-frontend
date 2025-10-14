@@ -89,25 +89,25 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
         val result = await(connector.getSchemeDetails(srn, psaUser))
         result match {
           case Left(PensionSchemeErrorResponse(msg, maybeDetails)) =>
-            msg.toLowerCase should include ("unable to parse json")
+            msg.toLowerCase          should include("unable to parse json")
             maybeDetails.isDefined shouldBe true
-          case _ =>
+          case _                                                   =>
             fail(s"Expected PensionSchemeErrorResponse (invalid JSON) but got: $result")
         }
       }
 
       "return Left(PensionSchemeErrorResponse) on 500 with JSON error body" in {
         PensionSchemeStub.getSchemeDetailsErrorForPsp(
-          srn   = srn,
-          status= INTERNAL_SERVER_ERROR,
-          body  = """{"error":"downstream boom"}"""
+          srn    = srn,
+          status = INTERNAL_SERVER_ERROR,
+          body   = """{"error":"downstream boom"}"""
         )
 
         val result = await(connector.getSchemeDetails(srn, pspUser))
         result match {
           case Left(PensionSchemeErrorResponse(msg, _)) =>
-            msg should include ("downstream boom")
-          case _ =>
+            msg should include("downstream boom")
+          case _                                        =>
             fail(s"Expected PensionSchemeErrorResponse (500) but got: $result")
         }
       }
@@ -119,10 +119,48 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
         result match {
           case Left(PensionSchemeErrorResponse(msg, _)) =>
             msg.nonEmpty shouldBe true
-          case _ =>
+          case _                                        =>
             fail(s"Expected PensionSchemeErrorResponse (fault) but got: $result")
         }
       }
     }
   }
+
+  // Inside your PensionSchemeConnectorISpec class...
+
+  "checkPsaAssociation" when {
+    "called with valid SRN and PSA ID" must {
+      "return true when downstream says PSA is associated" in {
+        // Stub the downstream endpoint to return true for PSA association
+        PensionSchemeStub.stubCheckPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId.value, true)
+
+        val result: Boolean = await(connector.checkPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId))
+
+        result shouldBe true
+      }
+
+      "return false when downstream says PSA is not associated" in {
+        // Stub the downstream endpoint to return false for PSA association
+        PensionSchemeStub.stubCheckPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId.value, false)
+
+        val result: Boolean = await(connector.checkPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId))
+
+        result shouldBe false
+      }
+    }
+
+    "handle failures gracefully" must {
+      "fail the Future if the downstream call fails" in {
+        // Stub the downstream endpoint to simulate failure (e.g. 500 error or network fault)
+        PensionSchemeStub.stubCheckPsaAssociationFailure(srn, psaUser.asInstanceOf[PsaUser].psaId.value)
+
+        val result = connector.checkPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId)
+
+        intercept[Exception] {
+          await(result)
+        }
+      }
+    }
+  }
+
 }

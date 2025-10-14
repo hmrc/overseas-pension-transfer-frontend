@@ -60,14 +60,23 @@ class PspDeclarationController @Inject() (
           Future.successful(BadRequest(view(formWithErrors))),
         psaIdString => {
           val psaId = PsaId(psaIdString)
-          userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId)).flatMap {
-            case Right(SubmissionResponse(qtNumber)) =>
-              for {
-                updatedSessionData <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
-                _                  <- sessionRepository.set(updatedSessionData)
-              } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
-            case _                                   => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-          }
+          userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId))
+            .flatMap {
+              case Right(SubmissionResponse(qtNumber)) =>
+                for {
+                  updatedSessionData <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
+                  _                  <- sessionRepository.set(updatedSessionData)
+                } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
+
+              case _ =>
+                Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+            }
+            .recoverWith {
+              case e: RuntimeException if e.getMessage == "PSA is not associated with the scheme" =>
+                val formWithError = form.withError("value", "pspDeclaration.error.notAssociated")
+                Future.successful(BadRequest(view(formWithError)))
+            }
+
         }
       )
   }

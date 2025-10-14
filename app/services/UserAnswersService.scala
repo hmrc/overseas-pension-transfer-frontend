@@ -17,12 +17,12 @@
 package services
 
 import com.google.inject.Inject
-import connectors.UserAnswersConnector
-import models.{SessionData, UserAnswers}
+import connectors.{PensionSchemeConnector, UserAnswersConnector}
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersError, UserAnswersNotFoundResponse}
+import models.{SessionData, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,7 +30,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersService @Inject() (
-    connector: UserAnswersConnector
+    connector: UserAnswersConnector,
+    pensionSchemeConnector: PensionSchemeConnector
   )(implicit ec: ExecutionContext
   ) extends Logging {
 
@@ -53,7 +54,21 @@ class UserAnswersService @Inject() (
       maybePsaId: Option[PsaId] = None
     )(implicit hc: HeaderCarrier
     ): Future[Either[SubmissionErrorResponse, SubmissionResponse]] = {
-    connector.postSubmission(SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId, sessionData))
+
+    val submissionDTO = SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId, sessionData)
+    maybePsaId match {
+      case Some(psaId) =>
+        pensionSchemeConnector.checkPsaAssociation(sessionData.schemeInformation.srnNumber.value, psaId).flatMap {
+          case true  => {
+            connector.postSubmission(submissionDTO)
+          }
+          case false => {
+            Future.failed(new RuntimeException("PSA is not associated with the scheme"))
+          }
+        }
+      case None        =>
+        connector.postSubmission(submissionDTO)
+    }
   }
 
   def clearUserAnswers(id: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
