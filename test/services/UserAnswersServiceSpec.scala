@@ -18,13 +18,15 @@ package services
 
 import base.SpecBase
 import connectors.{PensionSchemeConnector, UserAnswersConnector}
-import models.UserAnswers
+import models.authentication.{PsaId, PsaUser}
 import models.dtos.UserAnswersDTO
-import models.responses.{UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import models.responses.{SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import models.{QtNumber, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
+import org.scalatest.RecoverMethods.recoverToExceptionIf
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString}
@@ -119,6 +121,42 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       val setUserAnswers = await(service.clearUserAnswers(userAnswersId))
 
       setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
+    }
+  }
+
+  "submitDeclaration" - {
+
+    val testPsaId          = Some(PsaId("PSAID"))
+    val authenticatedUser  = PsaUser(testPsaId.get, "AutheticatedPSA")
+    val submissionResponse = Right(SubmissionResponse(QtNumber("qtNumber")))
+
+    "should post submission when PSA is associated with scheme" in {
+      when(mockPensionSchemeConnector.checkPsaAssociation(
+        eqTo(emptySessionData.schemeInformation.srnNumber.value),
+        eqTo(testPsaId.get)
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(true))
+
+      when(mockUserAnswersConnector.postSubmission(any())(any(), any()))
+        .thenReturn(Future.successful(submissionResponse))
+
+      val result = await(service.submitDeclaration(authenticatedUser, userAnswers, emptySessionData, testPsaId))
+
+      result mustBe submissionResponse
+    }
+
+    "should fail when PSA is not associated with scheme" in {
+      when(mockPensionSchemeConnector.checkPsaAssociation(
+        eqTo(emptySessionData.schemeInformation.srnNumber.value),
+        eqTo(testPsaId.get)
+      )(any[HeaderCarrier]))
+        .thenReturn(Future.successful(true))
+
+      val result = recoverToExceptionIf[RuntimeException] {
+        service.submitDeclaration(authenticatedUser, userAnswers, emptySessionData, testPsaId)
+      }
+
+      result.map(_.getMessage must include("PSA is not associated with the scheme"))
     }
   }
 }
