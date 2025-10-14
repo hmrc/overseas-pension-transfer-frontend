@@ -23,10 +23,10 @@ import queries.PensionSchemeDetailsQuery
 
 object DashboardPage extends Page {
 
-  def nextPage(dd: DashboardData, transferReportQueryParams: TransferReportQueryParams): Call =
-    transferReportQueryParams.qtStatus match {
+  def nextPage(dd: DashboardData, qtStatus: Option[QtStatus], transferReference: Option[String]): Call =
+    qtStatus match {
       case Some(QtStatus.InProgress) =>
-        transferReportQueryParams.transferReference.fold(routes.JourneyRecoveryController.onPageLoad()) {
+        transferReference.fold(routes.JourneyRecoveryController.onPageLoad()) {
           transferRef => routes.TaskListController.fromDashboard(transferRef)
         }
 

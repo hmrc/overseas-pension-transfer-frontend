@@ -52,21 +52,27 @@ item.qtStatus match {
   fullWidth       = true
 ) {
 
-    @vm.lockWarning.map { name =>
-      <div class="govuk-error-summary" data-module="govuk-error-summary">
-        <div role="alert">
-          <h2 class="govuk-error-summary__title">
-              @messages("dashboard.warning.title")
+  @vm.lockWarning.map { name =>
+      <div class="govuk-notification-banner govuk-notification-banner--important"
+           role="region"
+           aria-labelledby="govuk-notification-banner-title"
+           data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-lock-banner-title">
+            @messages("dashboard.lock.title")
           </h2>
-          <div class="govuk-error-summary__body">
-              <div class="govuk-!-margin-top-2">@messages("dashboard.warning.body", name)</div>
-              <div class="govuk-!-margin-top-2">
-                  <a href="#" class="govuk-link">Dismiss</a>
-              </div>
-          </div>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">
+            @messages("dashboard.lock.warning", name)
+            <a href="" onclick="location.reload(); return false;">@messages("dashboard.lock.hide")</a>.
+          </p>
         </div>
       </div>
-    }
+  }
+
+
+
 
   @if(expiringItems.nonEmpty) {
     <div class="govuk-notification-banner govuk-notification-banner--important"
@@ -82,10 +88,7 @@ item.qtStatus match {
         @for(item <- expiringItems) {
           <p class="govuk-notification-banner__heading">
             @{messageFor(item)}
-            <a class="govuk-notification-banner__link"
-               href=@{s"/transfer/${item.transferReference.getOrElse("")}"}>
-                @messages("dashboard.banner.linkText")
-            </a>.
+            <a class="govuk-notification-banner__link" href=@{s"/transfer/${item.transferReference.getOrElse("")}"}>@messages("dashboard.banner.linkText")</a>.
           </p>
         }
       </div>

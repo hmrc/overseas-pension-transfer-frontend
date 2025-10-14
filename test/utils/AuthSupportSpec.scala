@@ -22,6 +22,7 @@ import org.mockito.Mockito._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
 
 class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with AuthSupport {
@@ -31,6 +32,7 @@ class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with A
   private val psaIdKey       = "PSAID"
   private val pspIdKey       = "PSPID"
   private val internalId     = "internal-123"
+  private val affinityGroup  = Individual
 
   private val mockAppConfig = mock[FrontendAppConfig]
   private val psaConfig     = new mockAppConfig.EnrolmentConfig(psaServiceName, psaIdKey)
@@ -54,8 +56,8 @@ class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with A
       val enrolment  = Enrolment(psaServiceName, Seq(EnrolmentIdentifier(psaIdKey, psaId.value)), "Activated")
       val enrolments = Enrolments(Set(enrolment))
 
-      val result = extractUser(enrolments, mockAppConfig, internalId)
-      result mustBe PsaUser(psaId, internalId)
+      val result = extractUser(enrolments, mockAppConfig, internalId, affinityGroup)
+      result mustBe PsaUser(psaId, internalId, affinityGroup = affinityGroup)
     }
 
     "should return PspUser when PSP enrolment is present" in {
@@ -63,8 +65,8 @@ class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with A
       val enrolment  = Enrolment(pspServiceName, Seq(EnrolmentIdentifier(pspIdKey, pspId.value)), "Activated")
       val enrolments = Enrolments(Set(enrolment))
 
-      val result = extractUser(enrolments, mockAppConfig, internalId)
-      result mustBe PspUser(pspId, internalId)
+      val result = extractUser(enrolments, mockAppConfig, internalId, affinityGroup = affinityGroup)
+      result mustBe PspUser(pspId, internalId, affinityGroup = affinityGroup)
     }
 
     "should throw if no matching enrolment found" in {
@@ -72,7 +74,7 @@ class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with A
       val enrolments = Enrolments(Set(enrolment))
 
       val ex = intercept[RuntimeException] {
-        extractUser(enrolments, mockAppConfig, internalId)
+        extractUser(enrolments, mockAppConfig, internalId, affinityGroup = affinityGroup)
       }
       ex.getMessage must include("Unable to retrieve matching PSA or PSP enrolment")
     }
@@ -82,7 +84,7 @@ class AuthSupportSpec extends AnyFreeSpec with Matchers with MockitoSugar with A
       val enrolments = Enrolments(Set(enrolment))
 
       val ex = intercept[RuntimeException] {
-        extractUser(enrolments, mockAppConfig, internalId)
+        extractUser(enrolments, mockAppConfig, internalId, affinityGroup = affinityGroup)
       }
       ex.getMessage must include(s"Missing identifier for $psaServiceName")
     }

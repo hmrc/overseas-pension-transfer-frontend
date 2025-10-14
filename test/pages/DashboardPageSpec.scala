@@ -42,20 +42,27 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers {
         .success
         .value
 
-      DashboardPage.nextPage(dd, transferReportQueryParams) mustEqual routes.WhatWillBeNeededController.onPageLoad()
+      DashboardPage.nextPage(dd, None, None) mustEqual routes.WhatWillBeNeededController.onPageLoad()
     }
 
     "must go to Unauthorised when PensionSchemeDetails is missing and no status provided" in {
       val dd = DashboardData("internal-id")
 
-      DashboardPage.nextPage(dd, transferReportQueryParams) mustEqual controllers.auth.routes.UnauthorisedController.onPageLoad()
+      DashboardPage.nextPage(dd, None, None) mustEqual controllers.auth.routes.UnauthorisedController.onPageLoad()
     }
 
     "must go to TransferProgressController when status is InProgress" in {
       val dd = DashboardData("internal-id")
 
-      DashboardPage.nextPage(dd, transferReportQueryParams.copy(transferReference = Some("TR001"), qtStatus = Some(InProgress))) mustEqual
+      DashboardPage.nextPage(dd, Some(InProgress), Some("TR001")) mustEqual
         controllers.routes.TaskListController.fromDashboard("TR001")
+    }
+
+    "must go to JourneyRecovery when status is InProgress and no transferReference is found" in {
+      val dd = DashboardData("internal-id")
+
+      DashboardPage.nextPage(dd, Some(InProgress), None) mustEqual
+        controllers.routes.JourneyRecoveryController.onPageLoad()
     }
 //
 //    "must go to TransferSummaryController when status is Compiled" in {

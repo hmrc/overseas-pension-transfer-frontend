@@ -18,7 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
-import models.{DashboardData, PensionSchemeDetails, QtStatus, TransferReportQueryParams}
+import models.{DashboardData, PensionSchemeDetails, TransferReportQueryParams}
 import pages.DashboardPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -69,15 +69,36 @@ class DashboardController @Inject() (
             logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for $id")
             Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
           } { pensionSchemeDetails =>
-            renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+            dashboardData.get(TransfersOverviewQuery) match {
+              case None            =>
+                renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+              case Some(transfers) =>
+                transfers.map {
+                  transfer =>
+                    (transfer.transferReference, transfer.qtReference) match {
+                      case (Some(transferRef), None)              =>
+                        logger.info(s"[DashboardController][onPageLoad] lock released for $transferRef")
+                        lockRepository.releaseLock(transferRef, request.authenticatedUser.internalId)
+                      case (None, Some(qtRefefence))              =>
+                        logger.info(s"[DashboardController][onPageLoad] lock released for $qtRefefence")
+                        lockRepository.releaseLock(qtRefefence.value, request.authenticatedUser.internalId)
+                      case (Some(transferRef), Some(qtRefefence)) =>
+                        logger.info(s"lock released for $transferRef and $qtRefefence")
+                        lockRepository.releaseLock(transferRef, request.authenticatedUser.internalId)
+                        lockRepository.releaseLock(qtRefefence.value, request.authenticatedUser.internalId)
+                      case (None, None)                           => ()
+                    }
+                }
+
+                renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+            }
+
           }
       }
     }
   }
 
   def onTransferClick(): Action[AnyContent] = identify.async { implicit request =>
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
-
     val params     = TransferReportQueryParams.fromRequest(request)
     val internalId = request.authenticatedUser.internalId
     val lockId     = params.qtReference.filter(_.nonEmpty)
@@ -88,7 +109,7 @@ class DashboardController @Inject() (
       case Some(_) =>
         logger.info(s"[DashboardController][onTransferClick] Lock acquired for $lockId by $internalId")
         val dashboardData  = DashboardData.empty
-        val redirectTarget = DashboardPage.nextPage(dashboardData, params)
+        val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus, params.transferReference)
         Future.successful(Redirect(redirectTarget))
 
       case None =>
@@ -131,7 +152,7 @@ class DashboardController @Inject() (
             Ok(
               view(
                 schemeName    = pensionSchemeDetails.schemeName,
-                nextPage      = DashboardPage.nextPage(updatedData, TransferReportQueryParams.fromRequest(request)).url,
+                nextPage      = DashboardPage.nextPage(updatedData, None, None).url,
                 vm            = viewModel,
                 expiringItems = expiringItems
               )

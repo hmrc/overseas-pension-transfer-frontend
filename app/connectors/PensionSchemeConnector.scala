@@ -39,8 +39,8 @@ class PensionSchemeConnector @Inject() (
     val url        = url"${appConfig.pensionSchemeService}/is-psa-associated"
     val userHeader = {
       user match {
-        case PsaUser(psaId, _, _) => "psaId" -> psaId.value
-        case PspUser(pspId, _, _) => "pspId" -> pspId.value
+        case PsaUser(psaId, _, _, _) => "psaId" -> psaId.value
+        case PspUser(pspId, _, _, _) => "pspId" -> pspId.value
       }
     }
 
@@ -54,8 +54,8 @@ class PensionSchemeConnector @Inject() (
 
   def getSchemeDetails(srn: String, authenticatedUser: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[PensionSchemeDetailsType] = {
     val (url, headers) = authenticatedUser match {
-      case PsaUser(_, _, _) => (url"${appConfig.pensionSchemeService}/scheme/$srn", Seq("schemeIdType" -> "srn", "idNumber" -> srn))
-      case PspUser(_, _, _) => (url"${appConfig.pensionSchemeService}/psp-scheme/$srn", Seq("srn" -> srn))
+      case PsaUser(_, _, _, _) => (url"${appConfig.pensionSchemeService}/scheme/$srn", Seq("schemeIdType" -> "srn", "idNumber" -> srn))
+      case PspUser(_, _, _, _) => (url"${appConfig.pensionSchemeService}/psp-scheme/$srn", Seq("srn" -> srn))
     }
 
     http.get(url)

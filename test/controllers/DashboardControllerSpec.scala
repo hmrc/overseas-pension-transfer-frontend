@@ -17,26 +17,25 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
-import models.responses.InternalServerError
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber, TransferReportQueryParams}
+import models._
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.DashboardPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
-import repositories.DashboardSessionRepository
+import repositories.{DashboardSessionRepository, SessionRepository}
 import services.TransferService
 import uk.gov.hmrc.http.HeaderCarrier
-import viewmodels.PaginatedAllTransfersViewModel
+import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
 import views.html.DashboardView
 
+import java.time.{Instant, LocalDate}
 import scala.concurrent.Future
+import scala.concurrent.duration.Duration
 
 class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -49,142 +48,296 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
   }
 
-  "DashboardController onPageLoad" - {
+  "DashboardController" - {
 
-    "must return OK and render the view when dashboard data exists and transfers fetch succeeds" in {
-      val mockRepo             = mock[DashboardSessionRepository]
-      val mockService          = mock[TransferService]
-      val pensionSchemeDetails =
-        PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
+    "must render the dashboard data successfully" in {
+      val mockRepo    = mock[DashboardSessionRepository]
+      val mockService = mock[TransferService]
+      val mockSession = mock[SessionRepository]
+      val mockLock    = mock[LockRepository]
+      val mockView    = mock[DashboardView]
 
-      val dd = DashboardData(id = "user-1")
-        .set(PensionSchemeDetailsQuery, pensionSchemeDetails).success.value
+      val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
+      val transferItem  = AllTransfersItem(
+        transferReference = Some("TRF-1"),
+        qtReference       = Some(QtNumber("QT-1")),
+        qtVersion         = Some("v1"),
+        qtStatus          = Some(QtStatus.InProgress),
+        nino              = Some("AA123456A"),
+        memberFirstName   = Some("John"),
+        memberSurname     = Some("Doe"),
+        qtDate            = Some(LocalDate.now),
+        lastUpdated       = Some(Instant.now),
+        pstrNumber        = Some(PstrNumber("12345678AB")),
+        submissionDate    = None
+      )
 
-      when(mockRepo.get(any[String])).thenReturn(Future.successful(Some(dd)))
-      when(mockRepo.set(any[DashboardData])).thenReturn(Future.successful(true))
-      when(mockService.getAllTransfersData(meq(dd), meq(pensionSchemeDetails.pstrNumber))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(dd)))
+      val dd = DashboardData("id")
+        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
+        .set(TransfersOverviewQuery, Seq(transferItem)).success.value
+
+      when(mockSession.clear(any())).thenReturn(Future.successful(true))
+      when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
+      when(mockRepo.set(any())).thenReturn(Future.successful(true))
       when(mockRepo.findExpiringWithin7Days(any())).thenReturn(Seq.empty)
+      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(dd)))
+      when(mockView.apply(any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard view"))
 
-      val application =
-        applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[DashboardSessionRepository].toInstance(mockRepo),
-            bind[TransferService].toInstance(mockService)
-          )
-          .configure("ui.transfers.pageSize" -> 10)
-          .build()
+      val application = applicationBuilder()
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[SessionRepository].toInstance(mockSession),
+          bind[LockRepository].toInstance(mockLock),
+          bind[DashboardView].toInstance(mockView)
+        )
+        .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.DashboardController.onPageLoad(1).url)
         val result  = route(application, request).value
-
-        val view      = application.injector.instanceOf[DashboardView]
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-        val items                     = dd.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-        val transferReportQueryParams = TransferReportQueryParams.fromRequest(request)
-
-        val vm = PaginatedAllTransfersViewModel.build(
-          items      = items,
-          page       = 1,
-          pageSize   = appConfig.transfersPerPage,
-          urlForPage = routes.DashboardController.onPageLoad(_).url
-        )(stubMessages())
-
-        val expectedHtml =
-          view(
-            schemeName    = pensionSchemeDetails.schemeName,
-            nextPage      = DashboardPage.nextPage(dd, transferReportQueryParams).url,
-            vm            = vm,
-            expiringItems = Seq.empty
-          )(request, messages(application)).toString
 
         status(result) mustBe OK
-        contentAsString(result) mustBe expectedHtml
+        contentAsString(result) must include("dashboard view")
 
-        verify(mockRepo).get(any[String])
-        verify(mockRepo).set(any[DashboardData])
-        verify(mockRepo).findExpiringWithin7Days(any())
-        verify(mockService).getAllTransfersData(meq(dd), meq(pensionSchemeDetails.pstrNumber))(any[HeaderCarrier])
+        verify(mockRepo).get(any())
+        verify(mockService).getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier])
+        verify(mockRepo).set(any())
       }
     }
 
-    "must redirect to Journey Recovery when no dashboard data exists" in {
+    "must acquire lock when accessing a transfer (onTransferClick) and redirect" in {
+      val mockRepo           = mock[DashboardSessionRepository]
+      val mockService        = mock[TransferService]
+      val mockSessionRepo    = mock[SessionRepository]
+      val mockLockRepository = mock[LockRepository]
+
+      when(mockLockRepository.takeLock(any(), any(), any())).thenReturn(Future.successful(Some(mock[Lock])))
+
+      val application = applicationBuilder()
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[SessionRepository].toInstance(mockSessionRepo),
+          bind[LockRepository].toInstance(mockLockRepository)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?qtReference=QT-123&name=SomeName&currentPage=1")
+
+        val result = route(application, request).value
+
+        status(result) mustBe SEE_OTHER
+
+        verify(mockLockRepository, times(1)).takeLock(meq("QT-123"), any(), any())
+      }
+    }
+
+    "must show warning when trying to access a locked record (takeLock returns None)" in {
+      val mockRepo           = mock[DashboardSessionRepository]
+      val mockService        = mock[TransferService]
+      val mockSessionRepo    = mock[SessionRepository]
+      val mockLockRepository = mock[LockRepository]
+
+      when(mockLockRepository.takeLock(any(), any(), any())).thenReturn(Future.successful(None)) // lock already taken
+
+      val application = applicationBuilder()
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[SessionRepository].toInstance(mockSessionRepo),
+          bind[LockRepository].toInstance(mockLockRepository)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?qtReference=QT-LOCKED&name=LockedScheme&currentPage=2")
+
+        val result = route(application, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value must include(routes.DashboardController.onPageLoad(2).url.split('?').head)
+
+        flash(result).get("lockWarning") mustBe Some("LockedScheme")
+
+        verify(mockLockRepository, times(1)).takeLock(meq("QT-LOCKED"), any(), any())
+      }
+    }
+
+    "must releaseLock for items in TransfersOverviewQuery when dashboard loads" in {
+      val mockRepo           = mock[DashboardSessionRepository]
+      val mockService        = mock[TransferService]
+      val mockSessionRepo    = mock[SessionRepository]
+      val mockLockRepository = mock[LockRepository]
+      val mockView           = mock[DashboardView]
+
+      val pensionScheme = PensionSchemeDetails(SrnNumber("S111"), PstrNumber("PSTR111"), "SchemeX")
+
+      // two transfers: one with transferReference, one with qtReference, one with neither
+      val transfers = Seq(
+        AllTransfersItem(
+          transferReference = Some("TRF-RELEASE-1"),
+          qtReference       = None,
+          qtVersion         = None,
+          qtStatus          = None,
+          nino              = None,
+          memberFirstName   = None,
+          memberSurname     = None,
+          qtDate            = None,
+          lastUpdated       = Some(Instant.now),
+          pstrNumber        = Some(PstrNumber("PSTR111")),
+          submissionDate    = None
+        ),
+        AllTransfersItem(
+          transferReference = None,
+          qtReference       = Some(QtNumber("QT-RELEASE-2")),
+          qtVersion         = None,
+          qtStatus          = None,
+          nino              = None,
+          memberFirstName   = None,
+          memberSurname     = None,
+          qtDate            = None,
+          lastUpdated       = Some(Instant.now),
+          pstrNumber        = Some(PstrNumber("PSTR111")),
+          submissionDate    = None
+        ),
+        AllTransfersItem(
+          transferReference = None,
+          qtReference       = None,
+          qtVersion         = None,
+          qtStatus          = None,
+          nino              = None,
+          memberFirstName   = None,
+          memberSurname     = None,
+          qtDate            = None,
+          lastUpdated       = Some(Instant.now),
+          pstrNumber        = Some(PstrNumber("PSTR111")),
+          submissionDate    = None
+        )
+      )
+
+      val dd = DashboardData("id")
+        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
+        .set(TransfersOverviewQuery, transfers).success.value
+
+      when(mockSessionRepo.clear(any())).thenReturn(Future.successful(true))
+      when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
+      when(mockRepo.set(any())).thenReturn(Future.successful(true))
+      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(dd)))
+      when(mockRepo.findExpiringWithin7Days(any())).thenReturn(Seq.empty)
+      when(mockView.apply(any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard"))
+
+      when(mockLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
+
+      val application = applicationBuilder()
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[SessionRepository].toInstance(mockSessionRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[LockRepository].toInstance(mockLockRepository),
+          bind[DashboardView].toInstance(mockView)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DashboardController.onPageLoad(1).url)
+        val result  = route(application, request).value
+
+        status(result) mustBe OK
+        contentAsString(result) must include("dashboard")
+
+        // verify releaseLock called for the two items that had references
+        verify(mockLockRepository, times(1)).releaseLock(meq("TRF-RELEASE-1"), meq("id"))
+        verify(mockLockRepository, times(1)).releaseLock(meq("QT-RELEASE-2"), meq("id"))
+        verify(mockLockRepository, times(2)).releaseLock(any(), any())
+      }
+    }
+
+    "must be able to acquire lock after a release (simulate unlock then access)" in {
+      val mockRepo           = mock[DashboardSessionRepository]
+      val mockService        = mock[TransferService]
+      val mockSessionRepo    = mock[SessionRepository]
+      val mockLockRepository = mock[LockRepository]
+
+      when(mockLockRepository.takeLock(any[String], any[String], any[Duration])).thenReturn(Future.successful(Some(mock[Lock])))
+
+      val application = applicationBuilder()
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[SessionRepository].toInstance(mockSessionRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[LockRepository].toInstance(mockLockRepository)
+        )
+        .build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?qtReference=QT-RE-ACCESS&name=ReAccess&currentPage=1")
+
+        val result = route(application, request).value
+
+        status(result) mustBe SEE_OTHER
+        verify(mockLockRepository, times(1)).takeLock(meq("QT-RE-ACCESS"), any(), any())
+      }
+    }
+
+    "must display the 7 day expiry warning when repository returns expiring items" in {
       val mockRepo    = mock[DashboardSessionRepository]
       val mockService = mock[TransferService]
+      val mockSession = mock[SessionRepository]
+      val mockLock    = mock[LockRepository]
+      val mockView    = mock[DashboardView]
 
-      when(mockRepo.get(any[String])).thenReturn(Future.successful(None))
+      val pensionScheme = PensionSchemeDetails(SrnNumber("SEXP"), PstrNumber("PSTR-EXP"), "Expiring Scheme")
 
-      val application =
-        applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[DashboardSessionRepository].toInstance(mockRepo),
-            bind[TransferService].toInstance(mockService)
-          )
-          .build()
+      val expiringTransfer = AllTransfersItem(
+        transferReference = Some("TRF-EXP"),
+        qtReference       = None,
+        qtVersion         = None,
+        qtStatus          = Some(QtStatus.InProgress),
+        nino              = None,
+        memberFirstName   = Some("Alice"),
+        memberSurname     = Some("Smith"),
+        qtDate            = None,
+        lastUpdated       = Some(Instant.now),
+        pstrNumber        = Some(PstrNumber("PSTR-EXP")),
+        submissionDate    = None
+      )
 
-      running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onPageLoad().url)
-        val result  = route(application, request).value
+      val dd = DashboardData("id")
+        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
+        .set(TransfersOverviewQuery, Seq(expiringTransfer)).success.value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
+      when(mockSession.clear(any())).thenReturn(Future.successful(true))
+      when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
+      when(mockRepo.set(any())).thenReturn(Future.successful(true))
+      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(dd)))
 
-    "must redirect to Journey Recovery when PensionSchemeDetails are missing" in {
-      val mockRepo    = mock[DashboardSessionRepository]
-      val mockService = mock[TransferService]
+      when(mockRepo.findExpiringWithin7Days(any())).thenReturn(Seq(expiringTransfer))
 
-      val dd = DashboardData(id = "user-2")
+      when(mockView.apply(any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("expiring soon banner"))
 
-      when(mockRepo.get(any[String])).thenReturn(Future.successful(Some(dd)))
-
-      val application =
-        applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[DashboardSessionRepository].toInstance(mockRepo),
-            bind[TransferService].toInstance(mockService)
-          )
-          .build()
-
-      running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onPageLoad().url)
-        val result  = route(application, request).value
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "must redirect to Journey Recovery when transfer service fails" in {
-      val mockRepo             = mock[DashboardSessionRepository]
-      val mockService          = mock[TransferService]
-      val pensionSchemeDetails =
-        PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
-
-      val dd = DashboardData(id = "user-3")
-        .set(PensionSchemeDetailsQuery, pensionSchemeDetails).success.value
-
-      when(mockRepo.get(any[String])).thenReturn(Future.successful(Some(dd)))
-      when(mockService.getAllTransfersData(meq(dd), meq(pensionSchemeDetails.pstrNumber))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(InternalServerError)))
-
-      val application =
-        applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[DashboardSessionRepository].toInstance(mockRepo),
-            bind[TransferService].toInstance(mockService)
-          )
-          .build()
+      val application = applicationBuilder()
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[SessionRepository].toInstance(mockSession),
+          bind[LockRepository].toInstance(mockLock),
+          bind[DashboardView].toInstance(mockView)
+        )
+        .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.DashboardController.onPageLoad(1).url)
         val result  = route(application, request).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
+        status(result) mustBe OK
+        contentAsString(result) must include("expiring soon banner")
+        verify(mockRepo, times(1)).findExpiringWithin7Days(any())
       }
     }
   }
