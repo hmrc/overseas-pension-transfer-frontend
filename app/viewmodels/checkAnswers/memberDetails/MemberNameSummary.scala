@@ -27,18 +27,24 @@ import viewmodels.implicits._
 
 object MemberNameSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberNamePage).map {
       answer =>
         val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
 
-        SummaryListRowViewModel(
-          key     = "memberName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
+        val actions = if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", MemberNamePage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("memberName.change.hidden"))
           )
+        } else {
+          Seq.empty
+        }
+
+        SummaryListRowViewModel(
+          key     = "memberName.checkYourAnswersLabel",
+          value   = ValueViewModel(HtmlContent(value)),
+          actions = actions
         )
     }
 }

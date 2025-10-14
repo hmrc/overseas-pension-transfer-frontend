@@ -47,11 +47,13 @@ class ViewSubmittedController @Inject() (
   def onPageLoad(qtNumber: String, pstr: String, status: String, versionNumber: String, dateSubmitted: String): Action[AnyContent] =
     (identify andThen schemeData andThen getData) {
       implicit request =>
-        val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(FinalCheckMode, "schemeName", request.dateTransferSubmitted))
-        val memberDetailsSummaryList        = SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, request.userAnswers))
-        val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, request.userAnswers))
-        val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(FinalCheckMode, request.userAnswers))
-        val schemeManagerDetailsSummaryList = SummaryListViewModel(SchemeManagerDetailsSummary.rows(FinalCheckMode, request.userAnswers))
+        val schemeName                      = request.sessionData.schemeInformation.schemeName
+        val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(FinalCheckMode, schemeName, request.dateTransferSubmitted))
+        val memberDetailsSummaryList        = SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, request.userAnswers, showChangeLinks = false))
+        val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, request.userAnswers, showChangeLinks = false))
+        val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(FinalCheckMode, request.userAnswers, showChangeLinks = false))
+        val schemeManagerDetailsSummaryList =
+          SummaryListViewModel(SchemeManagerDetailsSummary.rows(FinalCheckMode, request.userAnswers, showChangeLinks = false))
 
         Ok(view(
           schemeSummaryList,

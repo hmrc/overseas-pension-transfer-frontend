@@ -33,8 +33,7 @@ object PropertyAmendContinueSummary {
   private val thresholdHandler = new AssetThresholdHandler()
   private val threshold        = 5
 
-  def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
-
+  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(PropertyQuery)
     val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.Property)
     val valueText    = messages("propertyAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
@@ -50,14 +49,19 @@ object PropertyAmendContinueSummary {
               .url
           }
 
+        val actions =
+          if (showChangeLink)
+            Seq(
+              ActionItemViewModel("site.change", changeUrl)
+                .withVisuallyHiddenText(messages("propertyAmendContinue.change.hidden"))
+            )
+          else Seq.empty
+
         Some(
           SummaryListRowViewModel(
             key     = "propertyAmendContinue.checkYourAnswersLabel",
             value   = ValueViewModel(valueText),
-            actions = Seq(
-              ActionItemViewModel("site.change", changeUrl)
-                .withVisuallyHiddenText(messages("propertyAmendContinue.change.hidden"))
-            )
+            actions = actions
           )
         )
       case _                                 => None

@@ -26,16 +26,22 @@ import viewmodels.implicits._
 
 object OverseasTransferAllowanceSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OverseasTransferAllowancePage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "overseasTransferAllowance.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
-          actions = Seq(
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(OverseasTransferAllowancePage).map { answer =>
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", OverseasTransferAllowancePage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("overseasTransferAllowance.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "overseasTransferAllowance.checkYourAnswersLabel",
+        value   = ValueViewModel(currencyFormat(answer)),
+        actions = actions
+      )
     }
 }

@@ -33,8 +33,7 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
   private val thresholdHandler = new AssetThresholdHandler()
   private val threshold        = 5
 
-  def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] = {
-
+  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(UnquotedSharesQuery)
     val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.UnquotedShares)
     val valueText    = messages("unquotedSharesAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
@@ -50,14 +49,19 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
               .url
           }
 
+        val actions =
+          if (showChangeLink)
+            Seq(
+              ActionItemViewModel("site.change", changeUrl)
+                .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
+            )
+          else Seq.empty
+
         Some(
           SummaryListRowViewModel(
             key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
             value   = ValueViewModel(valueText),
-            actions = Seq(
-              ActionItemViewModel("site.change", changeUrl)
-                .withVisuallyHiddenText(messages("unquotedSharesAmendContinue.change.hidden"))
-            )
+            actions = actions
           )
         )
       case _                                 => None
