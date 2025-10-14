@@ -60,15 +60,15 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
     "renders headers, a member link, submitted status label, reference, and formatted submission date" in {
       val submitted = AllTransfersItem(
         transferReference = Some("TR-001"),
-        qtReference       = None,
-        qtVersion         = None,
+        qtReference       = Some(testQtNumber),
+        qtVersion         = Some("001"),
         nino              = None,
         memberFirstName   = Some("Ada"),
         memberSurname     = Some("Lovelace"),
         submissionDate    = Some(utc(2025, 9, 24, 10, 15)),
         lastUpdated       = None,
         qtStatus          = Some(QtStatus.Submitted),
-        pstrNumber        = None,
+        pstrNumber        = Some(pstr),
         qtDate            = None
       )
 
@@ -92,7 +92,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
       memberHtml must include("Ada Lovelace")
 
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.submitted"
-      htmlOf(row(2)) mustBe "-"
+      htmlOf(row(2)) mustBe "QT123456"
 
       val updatedHtml = htmlOf(row(3))
       extractDate(updatedHtml) mustBe "24 September 2025"
@@ -128,16 +128,16 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "maps Compiled status to submitted label (same as Submitted)" in {
       val compiled = AllTransfersItem(
-        transferReference = None,
-        qtReference       = None,
-        qtVersion         = None,
+        transferReference = Some("TR-001"),
+        qtReference       = Some(testQtNumber),
+        qtVersion         = Some("001"),
         nino              = None,
-        memberFirstName   = Some("Jean"),
-        memberSurname     = Some("Jarvis"),
-        submissionDate    = Some(utc(2024, 12, 31, 0, 0)),
+        memberFirstName   = Some("Ada"),
+        memberSurname     = Some("Lovelace"),
+        submissionDate    = Some(utc(2025, 9, 24, 10, 15)),
         lastUpdated       = None,
-        qtStatus          = Some(QtStatus.Compiled),
-        pstrNumber        = None,
+        qtStatus          = Some(QtStatus.Submitted),
+        pstrNumber        = Some(pstr),
         qtDate            = None
       )
 
@@ -147,8 +147,8 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.submitted"
 
       val updatedHtml = htmlOf(row(3))
-      extractDate(updatedHtml) mustBe "31 December 2024"
-      extractTime(updatedHtml) mustBe "12:00am"
+      extractDate(updatedHtml) mustBe "24 September 2025"
+      extractTime(updatedHtml) mustBe "10:15am"
     }
   }
 }

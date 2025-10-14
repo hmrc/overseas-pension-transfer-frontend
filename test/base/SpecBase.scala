@@ -71,7 +71,7 @@ trait SpecBase
   val schemeDetails = PensionSchemeDetails(
     SrnNumber("S1234567"),
     PstrNumber("12345678AB"),
-    "Scheme Name"
+    "SchemeName"
   )
 
   val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
