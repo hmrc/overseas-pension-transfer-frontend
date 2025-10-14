@@ -31,6 +31,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.Instant
@@ -127,7 +128,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
   "submitDeclaration" - {
 
     val testPsaId          = Some(PsaId("PSAID"))
-    val authenticatedUser  = PsaUser(testPsaId.get, "AutheticatedPSA")
+    val authenticatedUser  = PsaUser(PsaId("psaId"), "internalId", None, affinityGroup = Individual)
     val submissionResponse = Right(SubmissionResponse(QtNumber("qtNumber")))
 
     "should post submission when PSA is associated with scheme" in {
