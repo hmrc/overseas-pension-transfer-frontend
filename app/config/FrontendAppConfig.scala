@@ -76,4 +76,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val pensionSchemeService: String = s"$pensionSchemeHost/pensions-scheme"
 
   val transfersPerPage: Int = configuration.get[Int]("pagination.transfersPerPage")
+
+  val dashboardLockTtl: Long = configuration.get[Long]("dashboard.lockTtlSeconds")
 }
