@@ -26,7 +26,7 @@ import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{allEnrolments, internalId}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, internalId}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -50,10 +50,10 @@ class IdentifierActionImpl @Inject() (
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised(predicate).retrieve(internalId and allEnrolments) {
-      case optInternalId ~ enrolments =>
+    authorised(predicate).retrieve(internalId and allEnrolments and affinityGroup) {
+      case optInternalId ~ enrolments ~ Some(affinityGroup) =>
         val internalId                           = getOrElseFailWithUnauthorised(optInternalId, "Unable to retrieve internalId")
-        val authenticatedUser: AuthenticatedUser = extractUser(enrolments, config, internalId)
+        val authenticatedUser: AuthenticatedUser = extractUser(enrolments, config, internalId, affinityGroup)
         block(IdentifierRequest(request, authenticatedUser))
     } recover handleAuthException
   }

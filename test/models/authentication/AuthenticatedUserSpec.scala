@@ -19,6 +19,7 @@ package models.authentication
 import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 class AuthenticatedUserSpec extends AnyFreeSpec with Matchers {
 
@@ -31,14 +32,14 @@ class AuthenticatedUserSpec extends AnyFreeSpec with Matchers {
   "PsaUser" - {
     "userType" - {
       "must return Psa" in {
-        PsaUser(PsaId("A0000001"), "id", None).userType mustBe Psa
+        PsaUser(PsaId("A0000001"), "id", None, affinityGroup = Individual).userType mustBe Psa
       }
     }
 
     "updatePensionSchemeDetails" - {
       "must add PensionSchemeDetails when PsaUser.pensionSchemeDetails = None" in {
-        PsaUser(PsaId("S1234567"), "id", None).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
-          PsaUser(PsaId("S1234567"), "id", Some(testPensionSchemeDetails))
+        PsaUser(PsaId("S1234567"), "id", None, affinityGroup = Individual).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
+          PsaUser(PsaId("S1234567"), "id", Some(testPensionSchemeDetails), affinityGroup = Individual)
       }
 
       "must update with PensionSchemeDetails PsaUser.pensionSchemeDetails = Some(details)" in {
@@ -48,8 +49,8 @@ class AuthenticatedUserSpec extends AnyFreeSpec with Matchers {
           "Pensions For Software Engineers"
         )
 
-        PsaUser(PsaId("S1234567"), "id", Some(existingDetails)).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
-          PsaUser(PsaId("S1234567"), "id", Some(testPensionSchemeDetails))
+        PsaUser(PsaId("S1234567"), "id", Some(existingDetails), affinityGroup = Individual).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
+          PsaUser(PsaId("S1234567"), "id", Some(testPensionSchemeDetails), affinityGroup = Individual)
       }
     }
   }
@@ -57,14 +58,14 @@ class AuthenticatedUserSpec extends AnyFreeSpec with Matchers {
   "PspUser" - {
     "userType" - {
       "must return Psp" in {
-        PspUser(PspId("A0000001"), "id", None).userType mustBe Psp
+        PspUser(PspId("A0000001"), "id", None, affinityGroup = Individual).userType mustBe Psp
       }
     }
 
     "updatePensionSchemeDetails" - {
       "must add PensionSchemeDetails when PsaUser.pensionSchemeDetails = None" in {
-        PspUser(PspId("S1234567"), "id", None).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
-          PspUser(PspId("S1234567"), "id", Some(testPensionSchemeDetails))
+        PspUser(PspId("S1234567"), "id", None, affinityGroup = Individual).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
+          PspUser(PspId("S1234567"), "id", Some(testPensionSchemeDetails), affinityGroup = Individual)
       }
 
       "must update with PensionSchemeDetails PsaUser.pensionSchemeDetails = Some(details)" in {
@@ -74,8 +75,8 @@ class AuthenticatedUserSpec extends AnyFreeSpec with Matchers {
           "Pensions For Software Engineers"
         )
 
-        PspUser(PspId("S1234567"), "id", Some(existingDetails)).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
-          PspUser(PspId("S1234567"), "id", Some(testPensionSchemeDetails))
+        PspUser(PspId("S1234567"), "id", Some(existingDetails), affinityGroup = Individual).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
+          PspUser(PspId("S1234567"), "id", Some(testPensionSchemeDetails), affinityGroup = Individual)
       }
     }
   }

@@ -17,6 +17,7 @@
 package models.authentication
 
 import models.PensionSchemeDetails
+import uk.gov.hmrc.auth.core.AffinityGroup
 import play.api.libs.json._
 
 sealed trait AuthenticatedUser {
@@ -45,7 +46,12 @@ object AuthenticatedUser {
   }
 }
 
-case class PsaUser(psaId: PsaId, internalId: String, pensionSchemeDetails: Option[PensionSchemeDetails] = None) extends AuthenticatedUser {
+case class PsaUser(
+    psaId: PsaId,
+    internalId: String,
+    pensionSchemeDetails: Option[PensionSchemeDetails] = None,
+    affinityGroup: AffinityGroup
+  ) extends AuthenticatedUser {
   override val userType: UserType = Psa
 
   override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
@@ -55,7 +61,12 @@ object PsaUser {
   implicit val format: Format[PsaUser] = Json.format[PsaUser]
 }
 
-case class PspUser(pspId: PspId, internalId: String, pensionSchemeDetails: Option[PensionSchemeDetails] = None) extends AuthenticatedUser {
+case class PspUser(
+    pspId: PspId,
+    internalId: String,
+    pensionSchemeDetails: Option[PensionSchemeDetails] = None,
+    affinityGroup: AffinityGroup
+  ) extends AuthenticatedUser {
   override val userType: UserType = Psp
 
   override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))

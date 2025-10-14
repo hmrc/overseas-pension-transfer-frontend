@@ -30,12 +30,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.MDC
 import uk.gov.hmrc.mdc.MdcExecutionContext
 import play.api.libs.json.Json
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.{Clock, Instant, ZoneId}
 import java.time.temporal.ChronoUnit
-import java.util.concurrent.Executors
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 class SessionRepositoryISpec
     extends AnyFreeSpec
@@ -60,7 +60,8 @@ class SessionRepositoryISpec
     PsaUser(
       PsaId("A123456"),
       "internalId",
-      None
+      None,
+      Individual
     ),
     Json.obj("foo" -> "bar"),
     Instant.ofEpochSecond(1)
@@ -83,7 +84,7 @@ class SessionRepositoryISpec
 
       val expectedResult = sessionData copy (lastUpdated = instant)
 
-      val setResult     = repository.set(sessionData).futureValue
+      repository.set(sessionData).futureValue
       val updatedRecord = find(Filters.equal("_id", sessionData.sessionId)).futureValue.headOption.value
 
       updatedRecord mustEqual expectedResult
@@ -150,7 +151,7 @@ class SessionRepositoryISpec
 
       insert(sessionData).futureValue
 
-      val result = repository.clear(sessionData.transferId).futureValue
+      repository.clear(sessionData.transferId).futureValue
 
       repository.get(sessionData.transferId).futureValue must not be defined
     }
