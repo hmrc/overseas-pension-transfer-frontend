@@ -99,8 +99,6 @@ class DashboardController @Inject() (
   }
 
   def onTransferClick(): Action[AnyContent] = identify.async { implicit request =>
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
-
     val params     = TransferReportQueryParams.fromRequest(request)
     val internalId = request.authenticatedUser.internalId
     val lockId     = params.qtReference.filter(_.nonEmpty)

@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationFormProvider
 import models.assets.TypeOfAsset
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -61,7 +61,7 @@ class MoreUnquotedSharesDeclarationController @Inject() (
       }
 
       mode match {
-        case CheckMode =>
+        case CheckMode | FinalCheckMode =>
           for {
             updatedSession <- Future.fromTry(
                                 AssetsMiniJourneyService.setAssetCompleted(
@@ -88,12 +88,12 @@ class MoreUnquotedSharesDeclarationController @Inject() (
         },
         continue => {
           for {
-            sessionData            <- Future.fromTry(request.sessionData.set(MoreUnquotedSharesDeclarationPage, continue))
+            userAnswers            <- Future.fromTry(request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue))
             sessionAfterCompletion <-
-              moreAssetCompletionService.completeAsset(request.userAnswers, sessionData, TypeOfAsset.UnquotedShares, completed = true, Some(continue))
+              moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.UnquotedShares, completed = true, Some(continue))
           } yield TypeOfAssetNavigator.getNextAssetRoute(sessionAfterCompletion) match {
             case Some(route) => Redirect(route)
-            case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
+            case None        => Redirect(MoreUnquotedSharesDeclarationPage.nextPage(mode, userAnswers))
           }
         }
       )

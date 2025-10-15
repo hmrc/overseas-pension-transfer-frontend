@@ -18,6 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.transferDetails.routes
 import models.UserAnswers
+import navigators.TypeOfAssetNavigator
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

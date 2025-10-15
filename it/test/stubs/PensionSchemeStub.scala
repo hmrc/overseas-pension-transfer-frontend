@@ -24,19 +24,19 @@ import play.api.test.Helpers._
 object PensionSchemeStub {
 
   private def stubGet(
-                       urlRegex: String,
-                       status: Int,
-                       responseBody: String,
-                       requiredHeaders: Seq[(String, String)] = Seq.empty,
-                       headerRegexes: Seq[(String, String)] = Seq.empty,
-                       absentHeaders: Seq[String] = Seq.empty
-                     ): StubMapping = {
+      urlRegex: String,
+      status: Int,
+      responseBody: String,
+      requiredHeaders: Seq[(String, String)] = Seq.empty,
+      headerRegexes: Seq[(String, String)]   = Seq.empty,
+      absentHeaders: Seq[String]             = Seq.empty
+    ): StubMapping = {
 
     val builder = get(urlPathMatching(urlRegex)).atPriority(1)
 
-    val withExactHeaders   = requiredHeaders.foldLeft(builder) { case (b, (k, v)) => b.withHeader(k, equalTo(v)) }
-    val withRegexHeaders   = headerRegexes.foldLeft(withExactHeaders) { case (b, (k, r)) => b.withHeader(k, matching(r)) }
-    val withAbsentHeaders  = absentHeaders.foldLeft(withRegexHeaders) { case (b, k) => b.withHeader(k, absent()) }
+    val withExactHeaders  = requiredHeaders.foldLeft(builder) { case (b, (k, v)) => b.withHeader(k, equalTo(v)) }
+    val withRegexHeaders  = headerRegexes.foldLeft(withExactHeaders) { case (b, (k, r)) => b.withHeader(k, matching(r)) }
+    val withAbsentHeaders = absentHeaders.foldLeft(withRegexHeaders) { case (b, k) => b.withHeader(k, absent()) }
 
     stubFor(
       withAbsentHeaders.willReturn(
@@ -48,7 +48,7 @@ object PensionSchemeStub {
     )
   }
 
-  private val AssocPathRegex        = ".*/pensions-scheme/is-psa-associated"
+  private val AssocPathRegex              = ".*/pensions-scheme/is-psa-associated"
   private def PsaDetailsPath(srn: String) = s".*/pensions-scheme/scheme/$srn"
   private def PspDetailsPath(srn: String) = s".*/pensions-scheme/psp-scheme/$srn"
 
@@ -72,10 +72,10 @@ object PensionSchemeStub {
       absentHeaders   = Seq("psaId")
     )
 
-  def checkAssociationPsaTrue(srn: String): Unit  = responseCheckAssociationPsa(srn)(OK,    "true")
-  def checkAssociationPsaFalse(srn: String): Unit = responseCheckAssociationPsa(srn)(OK,    "false")
-  def checkAssociationPspTrue(srn: String): Unit  = responseCheckAssociationPsp(srn)(OK,    "true")
-  def checkAssociationPspFalse(srn: String): Unit = responseCheckAssociationPsp(srn)(OK,    "false")
+  def checkAssociationPsaTrue(srn: String): Unit  = responseCheckAssociationPsa(srn)(OK, "true")
+  def checkAssociationPsaFalse(srn: String): Unit = responseCheckAssociationPsa(srn)(OK, "false")
+  def checkAssociationPspTrue(srn: String): Unit  = responseCheckAssociationPsp(srn)(OK, "true")
+  def checkAssociationPspFalse(srn: String): Unit = responseCheckAssociationPsp(srn)(OK, "false")
 
   def responseGetSchemeDetailsForPsa(srn: String)(status: Int, body: String): Unit =
     stubGet(
@@ -124,4 +124,25 @@ object PensionSchemeStub {
        |  "schemeName": "$schemeName"
        |}
        |""".stripMargin
+
+  def stubCheckPsaAssociation(srn: String, psaId: String, isAssociated: Boolean): Unit = {
+    stubGet(
+      urlRegex        = AssocPathRegex,
+      status          = OK,
+      responseBody    = isAssociated.toString,
+      requiredHeaders = Seq("schemeReferenceNumber" -> srn, "psaId" -> psaId),
+      absentHeaders   = Seq("pspId")
+    )
+  }
+
+  def stubCheckPsaAssociationFailure(srn: String, psaId: String): Unit = {
+    stubGet(
+      urlRegex        = AssocPathRegex,
+      status          = INTERNAL_SERVER_ERROR,
+      responseBody    = """{"error": "Internal Server Error"}""",
+      requiredHeaders = Seq("schemeReferenceNumber" -> srn, "psaId" -> psaId),
+      absentHeaders   = Seq("pspId")
+    )
+  }
+
 }

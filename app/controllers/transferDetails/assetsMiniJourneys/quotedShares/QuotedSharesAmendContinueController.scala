@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueFormProvider
 import models.assets.{QuotedSharesMiniJourney, TypeOfAsset}
-import models.{CheckMode, Mode, NormalMode}
+import models.{CheckMode, FinalCheckMode, Mode, NormalMode}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinuePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,7 +55,7 @@ class QuotedSharesAmendContinueController @Inject() (
         case Some(value) => form.fill(value)
       }
       mode match {
-        case CheckMode  =>
+        case CheckMode | FinalCheckMode =>
           for {
             updatedSession <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.QuotedShares, completed = true))
             _              <- sessionRepository.set(updatedSession)
@@ -63,7 +63,7 @@ class QuotedSharesAmendContinueController @Inject() (
             val shares = QuotedSharesAmendContinueSummary.rows(request.userAnswers)
             Ok(view(preparedForm, shares, mode))
           }
-        case NormalMode =>
+        case NormalMode                 =>
           val shares = QuotedSharesAmendContinueSummary.rows(request.userAnswers)
           Future.successful(Ok(view(preparedForm, shares, mode)))
       }

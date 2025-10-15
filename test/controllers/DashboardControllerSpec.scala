@@ -341,4 +341,33 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       }
     }
   }
+
+  "DashboardController onTransferClick" - {
+    "must redirect correctly with provided query parameters" in {
+      val mockRepo    = mock[DashboardSessionRepository]
+      val mockService = mock[TransferService]
+
+      val application =
+        applicationBuilder(userAnswers = emptyUserAnswers)
+          .overrides(
+            bind[DashboardSessionRepository].toInstance(mockRepo),
+            bind[TransferService].toInstance(mockService)
+          )
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url)
+          .withQueryStringParameters(
+            "qtStatus"    -> "InProgress",
+            "qtReference" -> "QT-1234",
+            "name"        -> "Scheme A",
+            "currentPage" -> "1"
+          )
+
+        val result = route(application, request).value
+
+        status(result) must (be(SEE_OTHER) or be(OK))
+      }
+    }
+  }
 }

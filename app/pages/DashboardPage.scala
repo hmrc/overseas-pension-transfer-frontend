@@ -19,15 +19,19 @@ package pages
 import controllers.routes
 import models.{DashboardData, QtStatus, TransferReportQueryParams}
 import play.api.Logging
+import models.{DashboardData, QtStatus, TransferReportQueryParams}
 import play.api.mvc.Call
 import queries.PensionSchemeDetailsQuery
 
-object DashboardPage extends Page with Logging {
+object DashboardPage extends Page {
 
   def nextPage(dd: DashboardData, qtStatus: Option[QtStatus], params: Option[TransferReportQueryParams]): Call =
     qtStatus match {
-      case Some(QtStatus.InProgress) => ??? // TODO: Replace with In-progress controller redirect
-
+      case Some(QtStatus.InProgress) =>
+        val data = params.getOrElse(throw new IllegalArgumentException("Submitted transfers require query params"))
+        data.transferReference.fold(routes.JourneyRecoveryController.onPageLoad()) {
+          transferRef => routes.TaskListController.fromDashboard(transferRef)
+        }
       case Some(QtStatus.Compiled) | Some(QtStatus.Submitted) =>
         val data = params.getOrElse(throw new IllegalArgumentException("Submitted transfers require query params"))
         controllers.routes.ViewSubmittedController.fromDashboard(

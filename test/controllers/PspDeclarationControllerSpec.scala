@@ -127,4 +127,37 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       }
     }
   }
+
+  import org.apache.commons.text.StringEscapeUtils
+
+  "must return Bad Request with association error when PSA is not associated with scheme" in {
+    val mockUserAnswersService = mock[UserAnswersService]
+
+    when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
+      .thenReturn(Future.failed(new RuntimeException("PSA is not associated with the scheme")))
+
+    val userAnswersWithPspDeclaration = emptyUserAnswers.set(PspDeclarationPage, "A1234567").success.value
+
+    val application = applicationBuilderPsp(userAnswersWithPspDeclaration)
+      .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
+      .build()
+
+    running(application) {
+      val fakePostRequestWithValue = FakeRequest(POST, pspDeclarationRoute)
+        .withFormUrlEncodedBody("value" -> "A1234567")
+
+      val resultOfRoute = route(application, fakePostRequestWithValue).value
+
+      status(resultOfRoute) mustBe BAD_REQUEST
+
+      val messagesApi          = messages(application)
+      val expectedErrorMessage = messagesApi("pspDeclaration.error.notAssociated")
+
+      val actualContent  = contentAsString(resultOfRoute)
+      val decodedContent = StringEscapeUtils.unescapeHtml4(actualContent)
+
+      decodedContent must include(expectedErrorMessage)
+    }
+  }
+
 }

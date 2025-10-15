@@ -19,14 +19,12 @@ package connectors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.parsers.PensionSchemeParser.{GetPensionSchemeDetailsHttpReads, PensionSchemeDetailsType}
-import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
+import models.authentication.{AuthenticatedUser, PsaId, PsaUser, PspUser}
 import models.responses.PensionSchemeErrorResponse
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import utils.DownstreamLogging
 
-import java.net.URL
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.{ExecutionContext, Future}
 
 class PensionSchemeConnector @Inject() (
@@ -44,6 +42,17 @@ class PensionSchemeConnector @Inject() (
       }
     }
 
+    http.get(url)
+      .setHeader(
+        "schemeReferenceNumber" -> srn,
+        userHeader
+      )
+      .execute[Boolean]
+  }
+
+  def checkPsaAssociation(srn: String, psaId: PsaId)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val url        = url"${appConfig.pensionSchemeService}/is-psa-associated"
+    val userHeader = "psaId" -> psaId.value
     http.get(url)
       .setHeader(
         "schemeReferenceNumber" -> srn,
