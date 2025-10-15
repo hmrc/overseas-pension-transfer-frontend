@@ -18,8 +18,6 @@ package pages
 
 import controllers.routes
 import models.{DashboardData, QtStatus, TransferReportQueryParams}
-import play.api.Logging
-import models.{DashboardData, QtStatus, TransferReportQueryParams}
 import play.api.mvc.Call
 import queries.PensionSchemeDetailsQuery
 
@@ -27,19 +25,19 @@ object DashboardPage extends Page {
 
   def nextPage(dd: DashboardData, qtStatus: Option[QtStatus], params: Option[TransferReportQueryParams]): Call =
     qtStatus match {
-      case Some(QtStatus.InProgress) =>
-        val data = params.getOrElse(throw new IllegalArgumentException("Submitted transfers require query params"))
-        data.transferReference.fold(routes.JourneyRecoveryController.onPageLoad()) {
-          transferRef => routes.TaskListController.fromDashboard(transferRef)
-        }
-      case Some(QtStatus.Compiled) | Some(QtStatus.Submitted) =>
-        val data = params.getOrElse(throw new IllegalArgumentException("Submitted transfers require query params"))
-        controllers.routes.ViewSubmittedController.fromDashboard(
-          data.qtReference.get,
-          data.pstr.get,
-          qtStatus.get,
-          data.versionNumber.get
-        )
+      case Some(QtStatus.InProgress)                          =>
+        params
+          .flatMap(_.transferReference)
+          .map(routes.TaskListController.fromDashboard)
+          .getOrElse(routes.JourneyRecoveryController.onPageLoad())
+      case Some(s @ (QtStatus.Compiled | QtStatus.Submitted)) =>
+        (for {
+          p    <- params
+          ref  <- p.qtReference
+          pstr <- p.pstr
+          ver  <- p.versionNumber
+        } yield controllers.routes.ViewSubmittedController.fromDashboard(ref, pstr, s, ver))
+          .getOrElse(routes.JourneyRecoveryController.onPageLoad())
       case _                                                  =>
         dd.get(PensionSchemeDetailsQuery) match {
           case Some(_) =>
