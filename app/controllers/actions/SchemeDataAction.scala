@@ -58,9 +58,8 @@ class SchemeDataActionImpl @Inject() (
                     Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad()))
                   }
               }
-            case None                                           => {
+            case None                                           =>
               Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
-            }
           }
         case None                => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
       }

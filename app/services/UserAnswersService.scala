@@ -21,9 +21,8 @@ import connectors.{PensionSchemeConnector, UserAnswersConnector}
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
-import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersError, UserAnswersNotFoundResponse}
-import models.{PstrNumber, QtStatus, SessionData, TransferReportQueryParams, UserAnswers}
-import models.{SessionData, UserAnswers}
+import models.responses._
+import models.{PstrNumber, QtStatus, SessionData, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -62,11 +61,10 @@ class UserAnswersService @Inject() (
     ).map {
       case Right(dto)                        => Right(toUserAnswers(dto))
       case Left(UserAnswersNotFoundResponse) =>
-        val id =
-          transferReference.orElse(qtReference).getOrElse(
-            throw new IllegalCallerException("User answers must contain either a qtReference or a transferReference")
-          )
-        Right(UserAnswers(id, pstr))
+        transferReference.orElse(qtReference) match {
+          case Some(id) => Right(UserAnswers(id, pstr))
+          case None     => Left(UserAnswersErrorResponse("User answers not found response missing id", None))
+        }
       case Left(err)                         => Left(err)
     }
   }

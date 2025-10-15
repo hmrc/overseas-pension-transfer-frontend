@@ -16,15 +16,11 @@
 
 package viewmodels.checkAnswers.schemeOverview
 
-import models.{Mode, UserAnswers}
-import pages.memberDetails.MemberDateOfBirthPage
+import models.Mode
 import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.DateTimeFormats.dateTimeFormat
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
-
-import java.time.LocalDateTime
 
 object DateOfSubmissionSummary {
 
@@ -32,7 +28,7 @@ object DateOfSubmissionSummary {
     implicit val lang: Lang = messages.lang
     SummaryListRowViewModel(
       key   = "dateOfSubmission.label",
-      value = ValueViewModel(dateSubmitted.format(dateTimeFormat()))
+      value = ValueViewModel(dateSubmitted)
     )
   }
 }
