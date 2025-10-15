@@ -45,24 +45,6 @@ object TransferReportQueryParams {
     )
   }
 
-  def optionalFromRequest[A](request: Request[A]): Option[TransferReportQueryParams] = {
-
-    val transferReference = request.getQueryString("transferReference")
-    val qtRef             = request.getQueryString("qtReference")
-    val status            = request.getQueryString("qtStatus").flatMap(s => QtStatus.values.find(_.toString == s))
-    val pstr              = request.getQueryString("pstr").map(PstrNumber(_))
-    val versionNumber     = request.getQueryString("versionNumber")
-    val memberName        = request.getQueryString("memberName").getOrElse("-")
-    val currentPage       = request.getQueryString("currentPage").flatMap(_.toIntOption).getOrElse(1)
-
-    val hasId = transferReference.isDefined || qtRef.isDefined
-    if (!hasId) {
-      None
-    } else {
-      Some(TransferReportQueryParams(transferReference, qtRef, status, pstr, versionNumber, memberName, currentPage))
-    }
-  }
-
   /** Helper to URL-encode */
   private def enc(v: String): String =
     URLEncoder.encode(v, StandardCharsets.UTF_8.toString)
