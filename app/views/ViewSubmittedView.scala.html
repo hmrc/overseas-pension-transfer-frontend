@@ -22,7 +22,7 @@
 @import viewmodels.govuk.all.ButtonViewModel
 @import views.ViewUtils.titleNoForm
 @import views.html.components.{CheckYourAnswersHeading, QTNumber}
-
+@import models.requests.IdentifierRequest
 
 @this(
         layout: templates.Layout,
@@ -34,12 +34,19 @@
         qtNumber: QTNumber
 )
 
-@(schemeDetails: SummaryList, memberDetails: SummaryList, transferDetails: SummaryList, qropsDetails: SummaryList, schemeManagerDetails: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
+@(
+        schemeDetails: SummaryList,
+        memberDetails: SummaryList,
+        transferDetails: SummaryList,
+        qropsDetails: SummaryList,
+        schemeManagerDetails: SummaryList,
+        qtNumber: String,
+        memberName: String)(implicit request: IdentifierRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true) {
 
- @qtNumber()
- @heading(messages("viewSubmitted.heading", request.memberName))
+ <span class="govuk-caption-l">@qtNumber</span>
+ @heading(messages("viewSubmitted.heading", memberName))
 
  @govukSummaryList(schemeDetails)
 

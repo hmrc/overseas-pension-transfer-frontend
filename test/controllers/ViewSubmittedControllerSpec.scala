@@ -2,7 +2,7 @@
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
@@ -17,12 +17,18 @@
 package controllers
 
 import base.SpecBase
-import models.FinalCheckMode
+import models.responses.UserAnswersErrorResponse
+import models.{FinalCheckMode, PstrNumber, QtStatus}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty, GET}
+import play.api.test.Helpers._
+import services.UserAnswersService
+import uk.gov.hmrc.http.HeaderCarrier
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
@@ -31,74 +37,91 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.SummaryListFluency
 import views.html.ViewSubmittedView
 
-class ViewSubmittedControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with SummaryListFluency {
+import scala.concurrent.Future
 
-  private val application =
-    applicationBuilder(
-      userAnswers = userAnswersMemberNameQtNumberTransferSubmitted,
-      sessionData = sessionDataQtNumberTransferSubmitted
-    ).build()
+class ViewSubmittedControllerSpec
+    extends AnyFreeSpec
+    with SpecBase
+    with MockitoSugar
+    with SummaryListFluency {
 
-  private lazy val submittedRoute = routes.ViewSubmittedController.onPageLoad(
-    qtNumber      = testQtNumber.value,
-    pstr          = pstr.value,
-    qtStatus      = "Submitted",
-    versionNumber = "7",
-    dateSubmitted = formattedTestDateTransferSubmitted
-  ).url
+  private val mockUserAnswersService = mock[UserAnswersService]
+  private val qtStatus               = QtStatus.Submitted
+  private val versionNumber          = "007"
 
-  private val schemeSummaryList =
+  private def schemeSummaryList =
     SummaryListViewModel(
       SchemeDetailsSummary.rows(
         FinalCheckMode,
         schemeDetails.schemeName,
-        formattedTestDateTransferSubmitted
-      )(messages(application))
+        // TODO: Fix as part of OAOTC-1594
+        "Transfer not submitted"
+      )(messages(applicationBuilder().build()))
     )
 
-  private val memberDetailsSummaryList =
+  private def memberDetailsSummaryList =
     SummaryListViewModel(
       MemberDetailsSummary.rows(
         FinalCheckMode,
         userAnswersMemberNameQtNumberTransferSubmitted,
         showChangeLinks = false
-      )(messages(application))
+      )(messages(applicationBuilder().build()))
     )
 
-  private val transferDetailsSummaryList =
+  private def transferDetailsSummaryList =
     SummaryListViewModel(
       TransferDetailsSummary.rows(
         FinalCheckMode,
         userAnswersMemberNameQtNumberTransferSubmitted,
         showChangeLinks = false
-      )(messages(application))
+      )(messages(applicationBuilder().build()))
     )
 
-  private val qropsDetailsSummaryList =
+  private def qropsDetailsSummaryList =
     SummaryListViewModel(
       QROPSDetailsSummary.rows(
         FinalCheckMode,
         userAnswersMemberNameQtNumberTransferSubmitted,
         showChangeLinks = false
-      )(messages(application))
+      )(messages(applicationBuilder().build()))
     )
 
-  private val schemeManagerDetailsSummaryList =
+  private def schemeManagerDetailsSummaryList =
     SummaryListViewModel(
       SchemeManagerDetailsSummary.rows(
         FinalCheckMode,
         userAnswersMemberNameQtNumberTransferSubmitted,
         showChangeLinks = false
-      )(messages(application))
+      )(messages(applicationBuilder().build()))
     )
 
   "ViewSubmittedController" - {
-    "onPageLoad" - {
-      "return Ok and render the expected view with five SummaryListViewModels" in {
-        val request = FakeRequest(GET, submittedRoute)
-        val result  = route(application, request).value
 
-        val view = application.injector.instanceOf[ViewSubmittedView]
+    "fromDashboard" - {
+
+      "return Ok and render expected view (uses sessionData.transferId and memberName)" in {
+        when(
+          mockUserAnswersService.getExternalUserAnswers(
+            any[Option[String]],
+            any[Option[String]],
+            any[PstrNumber],
+            any[QtStatus],
+            any[Option[String]]
+          )(any[HeaderCarrier])
+        ).thenReturn(Future.successful(Right(userAnswersMemberNameQtNumber)))
+
+        val app =
+          applicationBuilder(
+            userAnswers = userAnswersMemberNameQtNumber,
+            sessionData = sessionDataQtNumber
+          ).overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          ).build()
+
+        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber.value, pstr, qtStatus, versionNumber).url)
+        val result = route(app, req).value
+
+        val view = app.injector.instanceOf[ViewSubmittedView]
 
         status(result) mustBe OK
         contentAsString(result) mustBe view(
@@ -106,15 +129,45 @@ class ViewSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mockito
           memberDetailsSummaryList,
           transferDetailsSummaryList,
           qropsDetailsSummaryList,
-          schemeManagerDetailsSummaryList
+          schemeManagerDetailsSummaryList,
+          testQtNumber.value,
+          testMemberName.fullName
         )(
-          fakeDisplayRequest(
-            request,
-            userAnswersMemberNameQtNumberTransferSubmitted,
-            sessionDataQtNumberTransferSubmitted
+          fakeIdentifierRequest(
+            req
           ),
-          messages(application)
+          messages(app)
         ).toString
+
+        app.stop()
+      }
+
+      "redirect to JourneyRecovery when external answers lookup fails" in {
+        when(
+          mockUserAnswersService.getExternalUserAnswers(
+            any[Option[String]],
+            any[Option[String]],
+            any[PstrNumber],
+            any[QtStatus],
+            any[Option[String]]
+          )(any[HeaderCarrier])
+        ).thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
+
+        val app =
+          applicationBuilder(
+            userAnswers = emptyUserAnswers,
+            sessionData = sessionDataQtNumberTransferSubmitted
+          ).overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          ).build()
+
+        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber.value, pstr, qtStatus, versionNumber).url)
+        val result = route(app, req).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
+
+        app.stop()
       }
     }
   }
