@@ -37,8 +37,8 @@ class FooterLinkSpec extends AnyWordSpec with Matchers {
     "return only returnDashboardLink when showCYAFooter is true" in {
       val result = FooterLink.build(showCYAFooter = true)
 
-      result           should have length 2
-      result.map(_.id) should contain allOf ("discardReportLink", "returnTaskListLink")
+      result           should have length 1
+      result.head.id shouldBe "returnDashboardLink"
     }
 
     "return discardReportLink and returnDashboardLink when showTaskListFooter is true" in {
