@@ -94,7 +94,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
       memberHtml must include("transferReference=TR-001")
       memberHtml must include("qtReference=QT999")
       memberHtml must include("qtStatus=Submitted")
-      memberHtml must include("name=Ada+Lovelace")
+      memberHtml must include("memberName=Ada+Lovelace")
       memberHtml must include("currentPage=1")
 
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.submitted"
