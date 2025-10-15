@@ -20,16 +20,15 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
-
-
+@import viewmodels.LegendSize.Large
 
 @this(
-    layout: templates.Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
@@ -43,11 +42,13 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("isTransferCashOnly.heading")</h1>
 
         @govukRadios(
             RadiosViewModel.yesNo(
-                field = form("value")
+                field = form("value"),
+                legend = LegendViewModel(Text(messages("isTransferCashOnly.heading")))
+                    .asPageHeading(size = Large)
+                    .withCssClass("govuk-!-margin-bottom-6")
             )
         )
 
