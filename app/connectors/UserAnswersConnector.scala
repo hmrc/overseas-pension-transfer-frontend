@@ -64,14 +64,14 @@ class UserAnswersConnector @Inject() (
 
   def getAnswers(
       transferReference: Option[String],
-      qtNumber: Option[QtNumber]    = None,
+      qtNumber: Option[String]      = None,
       pstrNumber: PstrNumber,
       qtStatus: QtStatus,
       versionNumber: Option[String] = None
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
     ): Future[GetUserAnswersType] = {
-    val referenceId = transferReference.orElse(qtNumber.map(_.value)).getOrElse(throw new IllegalArgumentException(
+    val referenceId = transferReference.orElse(qtNumber).getOrElse(throw new IllegalArgumentException(
       "getSpecificTransfer must have one of either transferReference or qtNumber"
     ))
 

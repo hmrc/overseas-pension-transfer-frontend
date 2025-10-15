@@ -21,9 +21,8 @@ import connectors.UserAnswersConnector
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
-import models.requests.GetSpecificData
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersError, UserAnswersNotFoundResponse}
-import models.{SessionData, UserAnswers}
+import models.{PstrNumber, QtStatus, SessionData, TransferReportQueryParams, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,18 +43,28 @@ class UserAnswersService @Inject() (
     }
   }
 
-  def getExternalUserAnswers(data: GetSpecificData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
+  def getExternalUserAnswers(
+      transferReference: Option[String],
+      qtReference: Option[String],
+      pstr: PstrNumber,
+      qtStatus: QtStatus,
+      versionNumber: Option[String]
+    )(implicit hc: HeaderCarrier
+    ): Future[Either[UserAnswersError, UserAnswers]] = {
     connector.getAnswers(
-      transferReference = data.transferReference,
-      qtNumber          = data.qtNumber,
-      pstrNumber        = data.pstr,
-      qtStatus          = data.qtStatus,
-      versionNumber     = data.versionNumber
+      transferReference,
+      qtReference,
+      pstr,
+      qtStatus,
+      versionNumber
     ).map {
       case Right(dto)                        => Right(toUserAnswers(dto))
       case Left(UserAnswersNotFoundResponse) =>
-        val id = data.transferReference.orElse(data.qtNumber.map(_.value)).getOrElse("unknown")
-        Right(UserAnswers(id, data.pstr))
+        val id =
+          transferReference.orElse(qtReference).getOrElse(
+            throw new IllegalCallerException("User answers must contain either a qtReference or a transferReference")
+          )
+        Right(UserAnswers(id, pstr))
       case Left(err)                         => Left(err)
     }
   }

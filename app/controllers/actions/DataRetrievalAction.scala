@@ -17,8 +17,7 @@
 package controllers.actions
 
 import controllers.routes
-import models.requests.{DisplayRequest, GetSpecificData, GetSpecificDataParser, IdentifierRequest}
-import models.{SessionData, UserAnswers}
+import models.requests.{DisplayRequest, IdentifierRequest}
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.Results.{BadRequest, Redirect}
@@ -41,51 +40,25 @@ class DataRetrievalActionImpl @Inject() (
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
 
-    GetSpecificDataParser.fromRequest(request.request) match {
-      case Left(msg) =>
-        Future.successful(Left(BadRequest(msg)))
-
-      case Right(Some(spec: GetSpecificData)) =>
-        userAnswersService.getExternalUserAnswers(spec).map {
+    sessionRepository.get(request.authenticatedUser.internalId) flatMap {
+      case Some(value) =>
+        userAnswersService.getExternalUserAnswers(value) map {
           case Right(answers) =>
-            val session = SessionData(
-              request.authenticatedUser.internalId,
-              spec.transferReference.orElse(spec.qtNumber.map(_.value)).get,
-              request.authenticatedUser.pensionSchemeDetails.get,
+            Right(DisplayRequest(
+              request.request,
               request.authenticatedUser,
-              Json.toJsObject(answers)
-            )
-            Right(buildDisplayRequest(request, answers, session))
-          case Left(_)        =>
-            Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+              answers,
+              value,
+              memberFullName(answers),
+              qtNumber(value),
+              dateTransferSubmitted(value)
+            ))
+          case Left(_)        => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         }
-      case Right(None)                        =>
-        sessionRepository.get(request.authenticatedUser.internalId) flatMap {
-          case Some(session) =>
-            userAnswersService.getExternalUserAnswers(session) map {
-              case Right(answers) =>
-                Right(buildDisplayRequest(request, answers, session))
-              case Left(_)        => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-            }
-          case None          => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
-        }
+      case None        => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
     }
-  }
 
-  private def buildDisplayRequest[A](
-      request: IdentifierRequest[A],
-      answers: UserAnswers,
-      session: SessionData
-    ): DisplayRequest[A] =
-    DisplayRequest(
-      request.request,
-      request.authenticatedUser,
-      answers,
-      session,
-      memberFullName(answers),
-      qtNumber(session),
-      dateTransferSubmitted(session)
-    )
+  }
 }
 
 trait DataRetrievalAction extends ActionRefiner[IdentifierRequest, DisplayRequest]

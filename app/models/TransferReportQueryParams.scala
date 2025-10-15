@@ -16,7 +16,8 @@
 
 package models
 
-import play.api.mvc.Request
+import play.api.mvc.{Call, Request}
+
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -24,7 +25,9 @@ case class TransferReportQueryParams(
     transferReference: Option[String],
     qtReference: Option[String],
     qtStatus: Option[QtStatus],
-    name: String,
+    pstr: Option[PstrNumber],
+    versionNumber: Option[String],
+    memberName: String,
     currentPage: Int
   )
 
@@ -35,9 +38,29 @@ object TransferReportQueryParams {
       transferReference = request.getQueryString("transferReference"),
       qtReference       = request.getQueryString("qtReference"),
       qtStatus          = request.getQueryString("qtStatus").flatMap(s => QtStatus.values.find(_.toString == s)),
-      name              = request.getQueryString("name").getOrElse("-"),
+      pstr              = request.getQueryString("pstr").map(PstrNumber(_)),
+      versionNumber     = request.getQueryString("versionNumber"),
+      memberName        = request.getQueryString("memberName").getOrElse("-"),
       currentPage       = request.getQueryString("currentPage").flatMap(_.toIntOption).getOrElse(1)
     )
+  }
+
+  def optionalFromRequest[A](request: Request[A]): Option[TransferReportQueryParams] = {
+
+    val transferReference = request.getQueryString("transferReference")
+    val qtRef             = request.getQueryString("qtReference")
+    val status            = request.getQueryString("qtStatus").flatMap(s => QtStatus.values.find(_.toString == s))
+    val pstr              = request.getQueryString("pstr").map(PstrNumber(_))
+    val versionNumber     = request.getQueryString("versionNumber")
+    val memberName        = request.getQueryString("memberName").getOrElse("-")
+    val currentPage       = request.getQueryString("currentPage").flatMap(_.toIntOption).getOrElse(1)
+
+    val hasId = transferReference.isDefined || qtRef.isDefined
+    if (!hasId) {
+      None
+    } else {
+      Some(TransferReportQueryParams(transferReference, qtRef, status, pstr, versionNumber, memberName, currentPage))
+    }
   }
 
   /** Helper to URL-encode */
@@ -49,7 +72,9 @@ object TransferReportQueryParams {
       p.transferReference.map(tr => s"transferReference=${enc(tr)}"),
       p.qtReference.map(qr => s"qtReference=${enc(qr)}"),
       p.qtStatus.map(qs => s"qtStatus=${enc(qs.toString)}"),
-      Some(s"name=${enc(p.name)}"),
+      p.pstr.map(ps => s"pstr=${enc(ps.value)}"),
+      p.versionNumber.map(vn => s"versionNumber=${enc(vn)}"),
+      Some(s"memberName=${enc(p.memberName)}"),
       Some(s"currentPage=${p.currentPage}")
     ).flatten.mkString("&")
 

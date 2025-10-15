@@ -111,14 +111,14 @@ class DashboardController @Inject() (
       case Some(_) =>
         logger.info(s"[DashboardController][onTransferClick] Lock acquired for $lockId by $internalId")
         val dashboardData  = DashboardData.empty
-        val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus)
+        val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus, Some(params))
         Future.successful(Redirect(redirectTarget))
 
       case None =>
         logger.info(s"[DashboardController][onTransferClick] Lock already taken for $lockId")
         Future.successful(
           Redirect(routes.DashboardController.onPageLoad(params.currentPage))
-            .flashing("lockWarning" -> params.name)
+            .flashing("lockWarning" -> params.memberName)
         )
     }
   }
@@ -154,7 +154,7 @@ class DashboardController @Inject() (
             Ok(
               view(
                 schemeName    = pensionSchemeDetails.schemeName,
-                nextPage      = DashboardPage.nextPage(updatedData, None).url,
+                nextPage      = DashboardPage.nextPage(updatedData, None, None).url,
                 vm            = viewModel,
                 expiringItems = expiringItems
               )
