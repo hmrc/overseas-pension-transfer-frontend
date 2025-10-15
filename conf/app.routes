@@ -444,7 +444,7 @@ GET        /transfer-details/assets/more-property-declaration                   
 POST       /transfer-details/assets/more-property-declaration                                     controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = NormalMode)
 GET        /transfer-details/assets/change-more-property-declaration                              controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onPageLoad(mode: Mode = CheckMode)
 POST       /transfer-details/assets/change-more-property-declaration                              controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = CheckMode)
-GET        /transfer-details/assets/final-change-more-property-declaration                        controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/final-change-more-property-declaration                        controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-more-property-declaration                        controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = FinalCheckMode)
 
 GET        /transfer-details/assets/property-confirm-removal                                      controllers.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalController.onPageLoad(index: Int)

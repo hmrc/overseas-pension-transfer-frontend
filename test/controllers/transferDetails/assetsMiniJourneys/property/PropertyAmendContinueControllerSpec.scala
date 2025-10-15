@@ -20,7 +20,7 @@ import base.AddressBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
 import models.assets.{PropertyEntry, PropertyMiniJourney}
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -174,6 +174,32 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
         val expected  = PropertyAmendContinuePage.nextPageWith(CheckMode, ua2, emptySessionData, nextIndex).url
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual expected
+      }
+    }
+
+    "must redirect to Final CYA when valid data is submitted in FinalCheckMode" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      val userAnswers = uaWithProperties(3)
+      val application =
+        applicationBuilder(userAnswers = userAnswers)
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyAmendContinueController.onSubmit(FinalCheckMode).url)
+            .withFormUrlEncodedBody(("add-another", "Yes"))
+
+        val result = route(application, request).value
+
+        val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
+        val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
+        val expected  = PropertyAmendContinuePage.nextPageWith(FinalCheckMode, ua2, emptySessionData, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected

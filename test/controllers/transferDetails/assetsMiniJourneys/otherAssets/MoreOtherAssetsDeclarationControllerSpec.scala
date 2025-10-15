@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import base.SpecBase
 import controllers.routes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationFormProvider
-import models.NormalMode
+import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
@@ -35,6 +35,12 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
 
   private lazy val moreOtherAssetsDeclarationRoute =
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(NormalMode).url
+
+  private lazy val moreOtherAssetsDeclarationRouteCheckMode =
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(CheckMode).url
+
+  private lazy val moreOtherAssetsDeclarationRouteFinalCheckMode =
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(FinalCheckMode).url
 
   "MoreOtherAssetsDeclaration Controller" - {
 
@@ -81,6 +87,36 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
+      }
+    }
+
+    "must redirect to CYA page when mode = CheckMode" in {
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, moreOtherAssetsDeclarationRouteCheckMode)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Final CYA page when mode = FinalCheckMode" in {
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, moreOtherAssetsDeclarationRouteFinalCheckMode)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
       }
     }
 
