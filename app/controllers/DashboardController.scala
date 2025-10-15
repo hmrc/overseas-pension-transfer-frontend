@@ -99,8 +99,6 @@ class DashboardController @Inject() (
   }
 
   def onTransferClick(): Action[AnyContent] = identify.async { implicit request =>
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
-
     val params     = TransferReportQueryParams.fromRequest(request)
     val internalId = request.authenticatedUser.internalId
     val lockId     = params.qtReference.filter(_.nonEmpty)
@@ -111,7 +109,7 @@ class DashboardController @Inject() (
       case Some(_) =>
         logger.info(s"[DashboardController][onTransferClick] Lock acquired for $lockId by $internalId")
         val dashboardData  = DashboardData.empty
-        val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus)
+        val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus, params.transferReference)
         Future.successful(Redirect(redirectTarget))
 
       case None =>
@@ -154,7 +152,7 @@ class DashboardController @Inject() (
             Ok(
               view(
                 schemeName    = pensionSchemeDetails.schemeName,
-                nextPage      = DashboardPage.nextPage(updatedData, None).url,
+                nextPage      = DashboardPage.nextPage(updatedData, None, None).url,
                 vm            = viewModel,
                 expiringItems = expiringItems
               )

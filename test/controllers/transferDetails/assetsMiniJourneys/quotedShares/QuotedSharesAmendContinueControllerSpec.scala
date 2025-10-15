@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueFormProvider
 import models.assets.{QuotedSharesEntry, QuotedSharesMiniJourney}
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -167,6 +167,32 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, true).success.value
         val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
         val expected  = QuotedSharesAmendContinuePage.nextPageWith(CheckMode, ua2, emptySessionData, nextIndex).url
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual expected
+      }
+    }
+
+    "must redirect to Final CYA when valid data is submitted in FinalCheckMode" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      val userAnswers = uaWithQuotedShares(3)
+      val application =
+        applicationBuilder(userAnswers = userAnswers)
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onSubmit(FinalCheckMode).url)
+            .withFormUrlEncodedBody(("add-another", "Yes"))
+
+        val result = route(application, request).value
+
+        val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, true).success.value
+        val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
+        val expected  = QuotedSharesAmendContinuePage.nextPageWith(FinalCheckMode, ua2, emptySessionData, nextIndex).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected

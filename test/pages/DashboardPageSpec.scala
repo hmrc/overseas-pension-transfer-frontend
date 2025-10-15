@@ -17,13 +17,22 @@
 package pages
 
 import controllers.routes
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, QtStatus, SrnNumber}
+import models.QtStatus.InProgress
+import models.{DashboardData, PensionSchemeDetails, PstrNumber, QtStatus, SrnNumber, TransferReportQueryParams}
 import org.scalatest.TryValues._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import queries.PensionSchemeDetailsQuery
 
 class DashboardPageSpec extends AnyFreeSpec with Matchers {
+
+  val transferReportQueryParams = TransferReportQueryParams(
+    None,
+    None,
+    None,
+    "Name",
+    1
+  )
 
   ".nextPage" - {
 
@@ -33,20 +42,28 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers {
         .success
         .value
 
-      DashboardPage.nextPage(dd, None) mustEqual routes.WhatWillBeNeededController.onPageLoad()
+      DashboardPage.nextPage(dd, None, None) mustEqual routes.WhatWillBeNeededController.onPageLoad()
     }
 
     "must go to Unauthorised when PensionSchemeDetails is missing and no status provided" in {
       val dd = DashboardData("internal-id")
 
-      DashboardPage.nextPage(dd, None) mustEqual controllers.auth.routes.UnauthorisedController.onPageLoad()
+      DashboardPage.nextPage(dd, None, None) mustEqual controllers.auth.routes.UnauthorisedController.onPageLoad()
     }
 
-//    "must go to TransferProgressController when status is InProgress" in {
-//      val dd = DashboardData("internal-id")
-//
-//      DashboardPage.nextPage(dd, Some(QtStatus.InProgress)) mustEqual ??? // TODO: Replace with In-progress controller redirect
-//    }
+    "must go to TransferProgressController when status is InProgress" in {
+      val dd = DashboardData("internal-id")
+
+      DashboardPage.nextPage(dd, Some(InProgress), Some("TR001")) mustEqual
+        controllers.routes.TaskListController.fromDashboard("TR001")
+    }
+
+    "must go to JourneyRecovery when status is InProgress and no transferReference is found" in {
+      val dd = DashboardData("internal-id")
+
+      DashboardPage.nextPage(dd, Some(InProgress), None) mustEqual
+        controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
 //
 //    "must go to TransferSummaryController when status is Compiled" in {
 //      val dd = DashboardData("internal-id")

@@ -107,7 +107,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "renders in-progress label and uses lastUpdated (date+time)" in {
       val inProgress = AllTransfersItem(
-        transferReference = Some("TR-002"),
+        transferReference = Some("TR-001"),
         qtReference       = None,
         qtVersion         = None,
         nino              = None,

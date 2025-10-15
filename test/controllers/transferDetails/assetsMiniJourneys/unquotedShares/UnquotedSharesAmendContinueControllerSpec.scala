@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueFormProvider
 import models.assets.{UnquotedSharesEntry, UnquotedSharesMiniJourney}
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -45,6 +45,9 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
   private lazy val unquotedSharesAmendContinueRouteCheck =
     AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(CheckMode).url
+
+  private lazy val unquotedSharesAmendContinueRouteFinalCheck =
+    AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(FinalCheckMode).url
 
   private def uaWithUnquotedShares(n: Int): UserAnswers = {
     val entry = UnquotedSharesEntry(
@@ -98,6 +101,23 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val request = FakeRequest(GET, unquotedSharesAmendContinueRouteCheck)
+        val result  = route(application, request).value
+        status(result) mustEqual OK
+      }
+    }
+
+    "must return OK for a GET in FinalCheckMode and save completion" in {
+      val mockSessionRepository = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+      val userAnswers = uaWithUnquotedShares(1)
+      val application =
+        applicationBuilder(userAnswers = userAnswers)
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, unquotedSharesAmendContinueRouteFinalCheck)
         val result  = route(application, request).value
         status(result) mustEqual OK
       }

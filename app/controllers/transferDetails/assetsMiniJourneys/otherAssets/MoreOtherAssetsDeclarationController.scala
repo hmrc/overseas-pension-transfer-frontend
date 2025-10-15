@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationFormProvider
 import models.assets.TypeOfAsset
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.{CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -61,7 +61,7 @@ class MoreOtherAssetsDeclarationController @Inject() (
       }
 
       mode match {
-        case CheckMode =>
+        case CheckMode | FinalCheckMode =>
           for {
             updatedSessson <- Future.fromTry(
                                 AssetsMiniJourneyService.setAssetCompleted(
@@ -93,7 +93,7 @@ class MoreOtherAssetsDeclarationController @Inject() (
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.Other, completed = true, Some(continue))
           } yield TypeOfAssetNavigator.getNextAssetRoute(sessionAfterCompletion) match {
             case Some(route) => Redirect(route)
-            case None        => Redirect(controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad())
+            case None        => Redirect(MoreOtherAssetsDeclarationPage.nextPage(mode, userAnswers))
           }
         }
       )

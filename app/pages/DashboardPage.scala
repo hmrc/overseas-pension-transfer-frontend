@@ -17,19 +17,21 @@
 package pages
 
 import controllers.routes
-import models.{DashboardData, QtStatus}
+import models.{DashboardData, QtStatus, TransferReportQueryParams}
 import play.api.mvc.Call
 import queries.PensionSchemeDetailsQuery
 
 object DashboardPage extends Page {
 
-  def nextPage(dd: DashboardData, status: Option[QtStatus]): Call =
-    status match {
-      case Some(QtStatus.InProgress) => ??? // TODO: Replace with In-progress controller redirect
+  def nextPage(dd: DashboardData, qtStatus: Option[QtStatus], transferReference: Option[String]): Call =
+    qtStatus match {
+      case Some(QtStatus.InProgress) =>
+        transferReference.fold(routes.JourneyRecoveryController.onPageLoad()) {
+          transferRef => routes.TaskListController.fromDashboard(transferRef)
+        }
 
       case Some(QtStatus.Compiled) | Some(QtStatus.Submitted) => ??? // TODO: Replace with Submitted controller redirect
-
-      case _ =>
+      case _                                                  =>
         dd.get(PensionSchemeDetailsQuery) match {
           case Some(_) =>
             routes.WhatWillBeNeededController.onPageLoad()
