@@ -24,7 +24,7 @@ GET        /what-will-be-needed                                                 
 GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
 
 GET        /view-submitted-transfer                                                               controllers.ViewAmendSubmittedController.view(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
-GET        /amend-submitted-transfer                                                              controllers.ViewAmendSubmittedController.amend(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /amend-submitted-transfer                                                              controllers.ViewAmendSubmittedController.amend()
 
 GET        /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onPageLoad()
 POST       /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onSubmit()

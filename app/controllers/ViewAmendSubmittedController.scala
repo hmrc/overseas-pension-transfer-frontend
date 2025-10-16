@@ -69,24 +69,11 @@ class ViewAmendSubmittedController @Inject() (
           }
     }
 
-  def amend(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
-    (identify andThen schemeData).async {
-      implicit request =>
-        userAnswersService
-          .getExternalUserAnswers(None, Some(qtReference), pstr, qtStatus, Some(versionNumber))
-          .map {
-            case Right(userAnswers) =>
-              val sessionData = SessionData(
-                request.authenticatedUser.internalId,
-                qtReference,
-                request.authenticatedUser.pensionSchemeDetails.get,
-                request.authenticatedUser,
-                Json.toJsObject(userAnswers)
-              )
-              Ok(renderView(sessionData, userAnswers))
-            case Left(_)            =>
-              Redirect(routes.JourneyRecoveryController.onPageLoad())
-          }
+  def amend(): Action[AnyContent] =
+    (identify andThen schemeData andThen getData) { implicit dr =>
+      implicit val idReq: IdentifierRequest[_] =
+        IdentifierRequest(dr.request, dr.authenticatedUser)
+      Ok(renderView(dr.sessionData, dr.userAnswers, isAmend = true))
     }
 
   private def renderView(sessionData: SessionData, userAnswers: UserAnswers)(implicit request: IdentifierRequest[_]): HtmlFormat.Appendable = {
