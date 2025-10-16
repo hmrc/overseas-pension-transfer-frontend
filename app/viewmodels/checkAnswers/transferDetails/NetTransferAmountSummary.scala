@@ -26,16 +26,23 @@ import viewmodels.implicits._
 
 object NetTransferAmountSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(NetTransferAmountPage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "netTransferAmount.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
-          actions = Seq(
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(NetTransferAmountPage).map { answer =>
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", NetTransferAmountPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("netTransferAmount.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "netTransferAmount.checkYourAnswersLabel",
+        value   = ValueViewModel(currencyFormat(answer)),
+        actions = actions
+      )
     }
+
 }

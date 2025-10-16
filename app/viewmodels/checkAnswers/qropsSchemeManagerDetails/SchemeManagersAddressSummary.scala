@@ -28,18 +28,25 @@ import viewmodels.implicits._
 
 object SchemeManagersAddressSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeManagersAddressPage).map {
-      address =>
-        val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(SchemeManagersAddressPage).map { address =>
+      val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
 
-        SummaryListRowViewModel(
-          key     = "schemeManagersAddress.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", SchemeManagersAddressPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("schemeManagersAddress.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "schemeManagersAddress.checkYourAnswersLabel",
+        value   = ValueViewModel(HtmlContent(value)),
+        actions = actions
+      )
     }
+
 }

@@ -27,16 +27,23 @@ import viewmodels.implicits._
 
 object AmountOfTaxDeductedSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmountOfTaxDeductedPage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "amountOfTaxDeducted.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
-          actions = Seq(
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmountOfTaxDeductedPage).map { answer =>
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", routes.AmountOfTaxDeductedController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("amountOfTaxDeducted.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "amountOfTaxDeducted.checkYourAnswersLabel",
+        value   = ValueViewModel(currencyFormat(answer)),
+        actions = actions
+      )
     }
+
 }

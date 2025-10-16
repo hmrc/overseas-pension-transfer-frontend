@@ -20,49 +20,46 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 
 object TransferBackendStub {
 
-  private def url(pstr: String) = s"/overseas-pension-transfer-backend/get-all-transfers/$pstr"
+  private def allTransfersUrl(pstr: String) =
+    s"/overseas-pension-transfer-backend/get-all-transfers/$pstr"
 
-  def getAllTransfersOk(pstr: String): Unit = {
+  private def specificUrl(referenceId: String) =
+    s"/overseas-pension-transfer-backend/get-transfer/$referenceId"
+
+  // ----- get all -----
+
+  def getAllTransfersOk(pstr: String): Unit =
     stubFor(
-      get(urlEqualTo(url(pstr)))
-        .willReturn(
-          okJson(successJson(pstr))
-        )
+      get(urlEqualTo(allTransfersUrl(pstr)))
+        .willReturn(okJson(successJson(pstr)))
     )
-  }
 
-  def getAllTransfersOkWithInvalidItems(pstr: String): Unit = {
+  def getAllTransfersOkWithInvalidItems(pstr: String): Unit =
     stubFor(
-      get(urlEqualTo(url(pstr)))
-        .willReturn(
-          okJson(successJsonWithInvalidItem(pstr))
-        )
+      get(urlEqualTo(allTransfersUrl(pstr)))
+        .willReturn(okJson(successJsonWithInvalidItem(pstr)))
     )
-  }
 
-  def getAllTransfersNotFound(pstr: String): Unit = {
+  def getAllTransfersNotFound(pstr: String): Unit =
     stubFor(
-      get(urlEqualTo(url(pstr)))
+      get(urlEqualTo(allTransfersUrl(pstr)))
         .willReturn(notFound())
     )
-  }
 
-  def getAllTransfersServerError(pstr: String): Unit = {
+  def getAllTransfersServerError(pstr: String): Unit =
     stubFor(
-      get(urlEqualTo(url(pstr)))
+      get(urlEqualTo(allTransfersUrl(pstr)))
         .willReturn(serverError())
     )
-  }
 
   /** 200 but body isn’t a GetAllTransfersDTO -> triggers parser error branch */
-  def getAllTransfersMalformed(pstr: String): Unit = {
+  def getAllTransfersMalformed(pstr: String): Unit =
     stubFor(
-      get(urlEqualTo(url(pstr)))
+      get(urlEqualTo(allTransfersUrl(pstr)))
         .willReturn(okJson("""{ "this": "is-not-a-valid-dto" }"""))
     )
-  }
 
-  // ----- JSON fixtures -----
+  // ----- JSON fixtures (get all) -----
 
   private def successJson(pstr: String): String =
     s"""
@@ -96,9 +93,7 @@ object TransferBackendStub {
        |}
        |""".stripMargin
 
-  /**
-   * Three items: 2 valid, 1 invalid (has both dates -> should be dropped)
-   */
+  /** Three items: 2 valid, 1 invalid (has both dates -> should be dropped) */
   private def successJsonWithInvalidItem(pstr: String): String =
     s"""
        |{
@@ -133,4 +128,96 @@ object TransferBackendStub {
        |  ]
        |}
        |""".stripMargin
+
+
+  // ----- get specific -----
+
+  def getSpecificTransferOk(
+                             referenceId: String,
+                             pstr: String,
+                             qtStatus: String,
+                             dataJson: String,
+                             lastUpdatedIso: String,
+                             versionNumber: Option[String] = None
+                           ): Unit = {
+    val base =
+      get(urlPathEqualTo(specificUrl(referenceId)))
+        .withQueryParam("pstr", equalTo(pstr))
+        .withQueryParam("qtStatus", equalTo(qtStatus))
+
+    val withVersion =
+      versionNumber.fold(base)(v => base.withQueryParam("versionNumber", equalTo(v)))
+
+    stubFor(
+      withVersion.willReturn(
+        okJson(
+          s"""
+             |{
+             |  "referenceId": "$referenceId",
+             |  "pstr": "$pstr",
+             |  "data": $dataJson,
+             |  "lastUpdated": "$lastUpdatedIso"
+             |}
+             |""".stripMargin
+        )
+      )
+    )
+  }
+
+  def getSpecificTransferMalformed(
+                                    referenceId: String,
+                                    pstr: String,
+                                    qtStatus: String,
+                                    versionNumber: Option[String] = None
+                                  ): Unit = {
+    val base =
+      get(urlPathEqualTo(specificUrl(referenceId)))
+        .withQueryParam("pstr", equalTo(pstr))
+        .withQueryParam("qtStatus", equalTo(qtStatus))
+
+    val withVersion =
+      versionNumber.fold(base)(v => base.withQueryParam("versionNumber", equalTo(v)))
+
+    stubFor(
+      withVersion.willReturn(okJson("""{ "bad": "shape" }"""))
+    )
+  }
+
+  def getSpecificTransferNotFound(
+                                   referenceId: String,
+                                   pstr: String,
+                                   qtStatus: String,
+                                   versionNumber: Option[String] = None
+                                 ): Unit = {
+    val base =
+      get(urlPathEqualTo(specificUrl(referenceId)))
+        .withQueryParam("pstr", equalTo(pstr))
+        .withQueryParam("qtStatus", equalTo(qtStatus))
+
+    val withVersion =
+      versionNumber.fold(base)(v => base.withQueryParam("versionNumber", equalTo(v)))
+
+    stubFor(
+      withVersion.willReturn(notFound())
+    )
+  }
+
+  def getSpecificTransferServerError(
+                                      referenceId: String,
+                                      pstr: String,
+                                      qtStatus: String,
+                                      versionNumber: Option[String] = None
+                                    ): Unit = {
+    val base =
+      get(urlPathEqualTo(specificUrl(referenceId)))
+        .withQueryParam("pstr", equalTo(pstr))
+        .withQueryParam("qtStatus", equalTo(qtStatus))
+
+    val withVersion =
+      versionNumber.fold(base)(v => base.withQueryParam("versionNumber", equalTo(v)))
+
+    stubFor(
+      withVersion.willReturn(serverError())
+    )
+  }
 }

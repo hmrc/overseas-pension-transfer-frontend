@@ -17,10 +17,9 @@
 package controllers.actions
 
 import base.SpecBase
-import models.authentication.{PsaId, PsaUser}
-import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
-import models.requests.{DataRequest, DisplayRequest, IdentifierRequest}
+import models.requests.{DisplayRequest, IdentifierRequest}
 import models.responses.UserAnswersErrorResponse
+import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.freespec.AnyFreeSpec

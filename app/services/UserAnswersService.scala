@@ -18,11 +18,12 @@ package services
 
 import com.google.inject.Inject
 import connectors.{PensionSchemeConnector, UserAnswersConnector}
+import models.QtStatus._
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
-import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersError, UserAnswersNotFoundResponse}
-import models.{SessionData, UserAnswers}
+import models.responses._
+import models.{PstrNumber, QtStatus, SessionData, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,11 +36,40 @@ class UserAnswersService @Inject() (
   )(implicit ec: ExecutionContext
   ) extends Logging {
 
+  // These two versions of getExternalUserAnswers are purposely similar to one another as it is recommended to combine them in a future refactor
   def getExternalUserAnswers(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
     connector.getAnswers(sessionData.transferId) map {
       case Right(userAnswersDTO)             => Right(toUserAnswers(userAnswersDTO))
       case Left(UserAnswersNotFoundResponse) => Right(UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber))
       case Left(error)                       => Left(error)
+    }
+  }
+
+  def getExternalUserAnswers(
+      transferReference: Option[String],
+      qtReference: Option[String],
+      pstr: PstrNumber,
+      qtStatus: QtStatus,
+      versionNumber: Option[String]
+    )(implicit hc: HeaderCarrier
+    ): Future[Either[UserAnswersError, UserAnswers]] = {
+    connector.getAnswers(
+      transferReference,
+      qtReference,
+      pstr,
+      qtStatus,
+      versionNumber
+    ).map {
+      case Right(dto)                        => Right(toUserAnswers(dto))
+      case Left(UserAnswersNotFoundResponse) =>
+        transferReference.orElse(qtReference) match {
+          case Some(id) => qtStatus match {
+              case InProgress           => Right(UserAnswers(id, pstr))
+              case Submitted | Compiled => Left(UserAnswersNotFoundResponse)
+            }
+          case None     => Left(UserAnswersErrorResponse("User answers not found response missing id", None))
+        }
+      case Left(err)                         => Left(err)
     }
   }
 
@@ -59,12 +89,10 @@ class UserAnswersService @Inject() (
     maybePsaId match {
       case Some(psaId) =>
         pensionSchemeConnector.checkPsaAssociation(sessionData.schemeInformation.srnNumber.value, psaId).flatMap {
-          case true  => {
+          case true  =>
             connector.postSubmission(submissionDTO)
-          }
-          case false => {
+          case false =>
             Future.failed(new RuntimeException("PSA is not associated with the scheme"))
-          }
         }
       case None        =>
         connector.postSubmission(submissionDTO)

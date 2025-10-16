@@ -27,16 +27,23 @@ import viewmodels.implicits._
 
 object CashAmountInTransferSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(CashAmountInTransferPage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "cashAmountInTransfer.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
-          actions = Seq(
-            ActionItemViewModel("site.change", AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(mode).url)
-              .withVisuallyHiddenText(messages("cashAmountInTransfer.change.hidden"))
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(CashAmountInTransferPage).map { answer =>
+      val actions =
+        if (showChangeLink)
+          Seq(
+            ActionItemViewModel(
+              "site.change",
+              AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(mode).url
+            ).withVisuallyHiddenText(messages("cashAmountInTransfer.change.hidden"))
           )
-        )
+        else Seq.empty
+
+      SummaryListRowViewModel(
+        key     = "cashAmountInTransfer.checkYourAnswersLabel",
+        value   = ValueViewModel(currencyFormat(answer)),
+        actions = actions
+      )
     }
+
 }

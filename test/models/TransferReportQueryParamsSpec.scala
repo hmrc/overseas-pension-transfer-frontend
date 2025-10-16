@@ -28,7 +28,14 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
     "must correctly parse all parameters from query string" in {
       val request = FakeRequest(
         "GET",
-        "/report-transfer?transferReference=TR123&qtReference=QT456&qtStatus=Submitted&name=John+Doe&currentPage=3"
+        "/report-transfer" +
+          "?transferReference=TR123" +
+          "&qtReference=QT456" +
+          "&qtStatus=Submitted" +
+          "&pstr=12345678AB" +
+          "&versionNumber=7" +
+          "&memberName=John+Doe" +
+          "&currentPage=3"
       )
 
       val result = TransferReportQueryParams.fromRequest(request)
@@ -36,11 +43,13 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
       result.transferReference mustBe Some("TR123")
       result.qtReference mustBe Some("QT456")
       result.qtStatus mustBe Some(QtStatus.Submitted)
-      result.name mustBe "John Doe"
+      result.pstr mustBe Some(PstrNumber("12345678AB"))
+      result.versionNumber mustBe Some("7")
+      result.memberName mustBe "John Doe"
       result.currentPage mustBe 3
     }
 
-    "must default name to '-' and currentPage to 1 when not present" in {
+    "must default memberName to '-' and currentPage to 1 when not present" in {
       val request = FakeRequest("GET", "/report-transfer?transferReference=TR123")
 
       val result = TransferReportQueryParams.fromRequest(request)
@@ -48,7 +57,9 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
       result.transferReference mustBe Some("TR123")
       result.qtReference mustBe None
       result.qtStatus mustBe None
-      result.name mustBe "-"
+      result.pstr mustBe None
+      result.versionNumber mustBe None
+      result.memberName mustBe "-"
       result.currentPage mustBe 1
     }
 
@@ -63,36 +74,43 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
 
   "toQueryString" - {
 
-    "must correctly build encoded query string" in {
+    "must correctly build encoded query string (including pstr & versionNumber)" in {
       val params = TransferReportQueryParams(
         transferReference = Some("TR 123"),
         qtReference       = Some("QT/456"),
         qtStatus          = Some(QtStatus.Submitted),
-        name              = "John Doe",
+        pstr              = Some(PstrNumber("12345678AB")),
+        versionNumber     = Some("v 7"),
+        memberName        = "John Doe",
         currentPage       = 2
       )
 
       val result = TransferReportQueryParams.toQueryString(params)
 
+      result must startWith("?")
       result must include("transferReference=TR+123")
       result must include("qtReference=QT%2F456")
       result must include("qtStatus=Submitted")
-      result must include("name=John+Doe")
+      result must include("pstr=12345678AB")
+      result must include("versionNumber=v+7")
+      result must include("memberName=John+Doe")
       result must include("currentPage=2")
     }
 
-    "must omit missing optional fields" in {
+    "must omit missing optional fields but always include memberName and currentPage" in {
       val params = TransferReportQueryParams(
         transferReference = None,
         qtReference       = None,
         qtStatus          = None,
-        name              = "Jane",
+        pstr              = None,
+        versionNumber     = None,
+        memberName        = "Jane",
         currentPage       = 1
       )
 
       val result = TransferReportQueryParams.toQueryString(params)
 
-      result mustBe "?name=Jane&currentPage=1"
+      result mustBe "?memberName=Jane&currentPage=1"
     }
   }
 
@@ -103,7 +121,9 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
         transferReference = Some("TR001"),
         qtReference       = Some("QT002"),
         qtStatus          = Some(QtStatus.InProgress),
-        name              = "Malcolm Mendes",
+        pstr              = Some(PstrNumber("12345678AB")),
+        versionNumber     = Some("7"),
+        memberName        = "Malcolm Mendes",
         currentPage       = 4
       )
 
@@ -113,7 +133,9 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
       result must include("transferReference=TR001")
       result must include("qtReference=QT002")
       result must include("qtStatus=InProgress")
-      result must include("name=Malcolm+Mendes")
+      result must include("pstr=12345678AB")
+      result must include("versionNumber=7")
+      result must include("memberName=Malcolm+Mendes")
       result must include("currentPage=4")
     }
   }

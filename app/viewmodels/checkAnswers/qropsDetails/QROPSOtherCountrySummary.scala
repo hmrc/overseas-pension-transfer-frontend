@@ -27,16 +27,23 @@ import viewmodels.implicits._
 
 object QROPSOtherCountrySummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QROPSOtherCountryPage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "qropsOtherCountry.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(QROPSOtherCountryPage).map { answer =>
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", routes.QROPSOtherCountryController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("qropsOtherCountry.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "qropsOtherCountry.checkYourAnswersLabel",
+        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = actions
+      )
     }
+
 }
