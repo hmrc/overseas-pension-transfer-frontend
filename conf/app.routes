@@ -12,6 +12,8 @@ GET        /dashboard                                                           
 
 GET        /dashboard/transfer-report                                                             controllers.DashboardController.onTransferClick()
 
+GET        /submitted-transfer-summary                                                            controllers.SubmittedTransferSummaryController.onPageLoad()
+
 GET        /refresh-session                                                                       controllers.KeepAliveController.keepAlive()
 
 GET        /there-is-a-problem                                                                    controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)

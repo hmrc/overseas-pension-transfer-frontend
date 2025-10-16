@@ -743,3 +743,6 @@ transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
 transferSubmitted.memberName.key = Member name
 transferSubmitted.pensionScheme.key = Scheme
 transferSubmitted.dateSubmitted.key = Date submitted
+
+submittedVersionSummary.title = Reports for {0}
+submittedVersionSummary.heading = Reports for {0}
