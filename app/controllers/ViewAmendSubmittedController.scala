@@ -39,7 +39,7 @@ import views.html.ViewSubmittedView
 
 import scala.concurrent.ExecutionContext
 
-class ViewSubmittedController @Inject() (
+class ViewAmendSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     schemeData: SchemeDataAction,
@@ -49,7 +49,27 @@ class ViewSubmittedController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 
-  def fromDashboard(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
+  def view(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
+    (identify andThen schemeData).async {
+      implicit request =>
+        userAnswersService
+          .getExternalUserAnswers(None, Some(qtReference), pstr, qtStatus, Some(versionNumber))
+          .map {
+            case Right(userAnswers) =>
+              val sessionData = SessionData(
+                request.authenticatedUser.internalId,
+                qtReference,
+                request.authenticatedUser.pensionSchemeDetails.get,
+                request.authenticatedUser,
+                Json.toJsObject(userAnswers)
+              )
+              Ok(renderView(sessionData, userAnswers))
+            case Left(_)            =>
+              Redirect(routes.JourneyRecoveryController.onPageLoad())
+          }
+    }
+
+  def amend(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
     (identify andThen schemeData).async {
       implicit request =>
         userAnswersService

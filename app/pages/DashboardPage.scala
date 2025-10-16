@@ -36,7 +36,7 @@ object DashboardPage extends Page {
           ref  <- p.qtReference
           pstr <- p.pstr
           ver  <- p.versionNumber
-        } yield controllers.routes.ViewSubmittedController.fromDashboard(ref, pstr, s, ver))
+        } yield controllers.routes.ViewAmendSubmittedController.view(ref, pstr, s, ver))
           .getOrElse(routes.JourneyRecoveryController.onPageLoad())
       case _                                                  =>
         dd.get(PensionSchemeDetailsQuery) match {

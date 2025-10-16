@@ -23,7 +23,8 @@ GET        /what-will-be-needed                                                 
 
 GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
 
-GET        /view-submitted-transfer/from-dashboard                                                controllers.ViewSubmittedController.fromDashboard(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /view-submitted-transfer                                                               controllers.ViewAmendSubmittedController.view(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /amend-submitted-transfer                                                              controllers.ViewAmendSubmittedController.amend(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
 
 GET        /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onPageLoad()
 POST       /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onSubmit()
