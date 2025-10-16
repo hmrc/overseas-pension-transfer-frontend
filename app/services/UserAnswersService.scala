@@ -18,6 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.{PensionSchemeConnector, UserAnswersConnector}
+import models.QtStatus._
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
@@ -62,7 +63,10 @@ class UserAnswersService @Inject() (
       case Right(dto)                        => Right(toUserAnswers(dto))
       case Left(UserAnswersNotFoundResponse) =>
         transferReference.orElse(qtReference) match {
-          case Some(id) => Right(UserAnswers(id, pstr))
+          case Some(id) => qtStatus match {
+              case InProgress           => Right(UserAnswers(id, pstr))
+              case Submitted | Compiled => Left(UserAnswersNotFoundResponse)
+            }
           case None     => Left(UserAnswersErrorResponse("User answers not found response missing id", None))
         }
       case Left(err)                         => Left(err)
@@ -85,12 +89,10 @@ class UserAnswersService @Inject() (
     maybePsaId match {
       case Some(psaId) =>
         pensionSchemeConnector.checkPsaAssociation(sessionData.schemeInformation.srnNumber.value, psaId).flatMap {
-          case true  => {
+          case true  =>
             connector.postSubmission(submissionDTO)
-          }
-          case false => {
+          case false =>
             Future.failed(new RuntimeException("PSA is not associated with the scheme"))
-          }
         }
       case None        =>
         connector.postSubmission(submissionDTO)
