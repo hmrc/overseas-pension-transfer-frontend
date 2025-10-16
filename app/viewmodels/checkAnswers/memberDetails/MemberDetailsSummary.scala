@@ -45,4 +45,34 @@ case object MemberDetailsSummary {
       dolRow
     ).flatten
   }
+
+  def amendRows(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
+    // These rows need additional classes because the summary list contains a mixture of actions and no-actions
+    // for more info see: https://design-system.service.gov.uk/components/summary-list/#showing-rows-with-and-without-actions
+    val nameRow: Option[SummaryListRow]         =
+      MemberNameSummary.row(mode, userAnswers, showChangeLink = false, additionalClasses = Some("govuk-summary-list__row--no-actions"))
+    val ninoRow: Option[SummaryListRow]         =
+      MemberNinoSummary.row(mode, userAnswers, showChangeLink = false, additionalClasses = Some("govuk-summary-list__row--no-actions"))
+    val noNinoRow: Option[SummaryListRow]       =
+      MemberDoesNotHaveNinoSummary.row(mode, userAnswers, showChangeLink = false, additionalClasses = Some("govuk-summary-list__row--no-actions"))
+    val dobRow: Option[SummaryListRow]          =
+      MemberDateOfBirthSummary.row(mode, userAnswers, showChangeLink = false, additionalClasses = Some("govuk-summary-list__row--no-actions"))
+    val currentAddRow: Option[SummaryListRow]   = MembersCurrentAddressSummary.row(mode, userAnswers)
+    val isResidentRow: Option[SummaryListRow]   = MemberIsResidentUKSummary.row(mode, userAnswers)
+    val everResidentRow: Option[SummaryListRow] = MemberHasEverBeenResidentUKSummary.row(mode, userAnswers)
+    val lastAddRow: Option[SummaryListRow]      = MembersLastUKAddressSummary.row(mode, userAnswers)
+    val dolRow: Option[SummaryListRow]          = MemberDateOfLeavingUKSummary.row(mode, userAnswers)
+
+    Seq(
+      nameRow,
+      ninoRow,
+      noNinoRow,
+      dobRow,
+      currentAddRow,
+      isResidentRow,
+      everResidentRow,
+      lastAddRow,
+      dolRow
+    ).flatten
+  }
 }
