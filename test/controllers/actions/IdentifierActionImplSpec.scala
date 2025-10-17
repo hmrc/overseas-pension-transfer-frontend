@@ -123,5 +123,20 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
+
+    "must redirect to unauthorised page for users with Agent affinity group" in {
+      val expectedRetrieval = Some(internalIdValue) and Enrolments(Set(enrolment)) and Some(AffinityGroup.Agent)
+
+      when(mockAuthConnector.authorise[RetrievalResult](any(), any[Retrieval[RetrievalResult]])(any(), any()))
+        .thenReturn(Future.successful(expectedRetrieval))
+
+      val result = action.invokeBlock(
+        fakeRequest,
+        (_: IdentifierRequest[AnyContent]) => fail("Should not reach block")
+      )
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
+    }
   }
 }
