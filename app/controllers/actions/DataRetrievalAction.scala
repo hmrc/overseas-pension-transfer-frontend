@@ -53,9 +53,13 @@ class DataRetrievalActionImpl @Inject() (
               qtNumber(value),
               dateTransferSubmitted(value)
             ))
-          case Left(_)        => Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+          case Left(error)    =>
+            logger.error(s"[DataRetrievalAction][refine] Error receiving the UserAnswers from saveforlater: $error")
+            Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         }
-      case None        => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+      case None        =>
+        logger.error("[DataRetrievalAction][refine] No Session Data found")
+        Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
     }
 
   }

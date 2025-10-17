@@ -22,17 +22,17 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case object SchemeManagerDetailsSummary {
 
-  def rows(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val managersType: Option[SummaryListRow] = SchemeManagerTypeSummary.row(mode, userAnswers)
+  def rows(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean = true)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val managersType: Option[SummaryListRow] = SchemeManagerTypeSummary.row(mode, userAnswers, showChangeLinks)
 
-    val managersName: Option[SummaryListRow] = SchemeManagersNameSummary.row(mode, userAnswers)
+    val managersName: Option[SummaryListRow] = SchemeManagersNameSummary.row(mode, userAnswers, showChangeLinks)
 
-    val orgName: Option[SummaryListRow]       = SchemeManagerOrganisationNameSummary.row(mode, userAnswers)
-    val orgIndividual: Option[SummaryListRow] = SchemeManagerOrgIndividualNameSummary.row(mode, userAnswers)
+    val orgName: Option[SummaryListRow]       = SchemeManagerOrganisationNameSummary.row(mode, userAnswers, showChangeLinks)
+    val orgIndividual: Option[SummaryListRow] = SchemeManagerOrgIndividualNameSummary.row(mode, userAnswers, showChangeLinks)
 
-    val managerAddress: Option[SummaryListRow]  = SchemeManagersAddressSummary.row(mode, userAnswers)
-    val managersEmail: Option[SummaryListRow]   = SchemeManagersEmailSummary.row(mode, userAnswers)
-    val managersContact: Option[SummaryListRow] = SchemeManagersContactSummary.row(mode, userAnswers)
+    val managerAddress: Option[SummaryListRow]  = SchemeManagersAddressSummary.row(mode, userAnswers, showChangeLinks)
+    val managersEmail: Option[SummaryListRow]   = SchemeManagersEmailSummary.row(mode, userAnswers, showChangeLinks)
+    val managersContact: Option[SummaryListRow] = SchemeManagersContactSummary.row(mode, userAnswers, showChangeLinks)
 
     Seq(
       managersType,

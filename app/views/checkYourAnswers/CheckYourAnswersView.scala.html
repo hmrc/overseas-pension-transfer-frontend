@@ -37,19 +37,19 @@
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true) {
 
- @heading(messages("checkYourAnswers.heading"), Some(messages("checkYourAnswers.memberDetails.heading")))
+ @heading(messages("checkYourAnswers.heading"), Some(messages("common.memberDetails.heading")))
 
  @govukSummaryList(memberDetails)
 
- <h2 class="govuk-heading-m">@messages("checkYourAnswers.transferDetails.heading")</h2>
+ <h2 class="govuk-heading-m">@messages("common.transferDetails.heading")</h2>
 
  @govukSummaryList(transferDetails)
 
- <h2 class="govuk-heading-m">@messages("checkYourAnswers.qropsDetails.heading")</h2>
+ <h2 class="govuk-heading-m">@messages("common.qropsDetails.heading")</h2>
 
  @govukSummaryList(qropsDetails)
 
- <h2 class="govuk-heading-m">@messages("checkYourAnswers.qropsSchemeManagerDetails.heading")</h2>
+ <h2 class="govuk-heading-m">@messages("common.qropsSchemeManagerDetails.heading")</h2>
 
  @govukSummaryList(schemeManagerDetails)
 

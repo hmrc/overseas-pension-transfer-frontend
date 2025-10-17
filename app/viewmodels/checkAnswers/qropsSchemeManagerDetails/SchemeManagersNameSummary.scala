@@ -27,18 +27,25 @@ import viewmodels.implicits._
 
 object SchemeManagersNameSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeManagersNamePage).map {
-      answer =>
-        val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(SchemeManagersNamePage).map { answer =>
+      val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
 
-        SummaryListRowViewModel(
-          key     = "schemeManagersName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", SchemeManagersNamePage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("schemeManagersName.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "schemeManagersName.checkYourAnswersLabel",
+        value   = ValueViewModel(HtmlContent(value)),
+        actions = actions
+      )
     }
+
 }

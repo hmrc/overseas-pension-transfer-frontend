@@ -26,16 +26,23 @@ import viewmodels.implicits._
 
 object QROPSNameSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QROPSNamePage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "qropsName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(QROPSNamePage).map { answer =>
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", QROPSNamePage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("qropsName.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "qropsName.checkYourAnswersLabel",
+        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = actions
+      )
     }
+
 }

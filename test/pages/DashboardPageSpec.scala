@@ -17,64 +17,107 @@
 package pages
 
 import controllers.routes
-import models.QtStatus.InProgress
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, QtStatus, SrnNumber, TransferReportQueryParams}
+import models.QtStatus.{InProgress, Submitted}
+import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber, TransferReportQueryParams}
 import org.scalatest.TryValues._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import play.api.mvc.Call
 import queries.PensionSchemeDetailsQuery
 
 class DashboardPageSpec extends AnyFreeSpec with Matchers {
 
-  val transferReportQueryParams = TransferReportQueryParams(
-    None,
-    None,
-    None,
-    "Name",
-    1
-  )
+  private val pstr     = PstrNumber("12345678AB")
+  private val scheme   = PensionSchemeDetails(SrnNumber("S1234567"), pstr, "Scheme Name")
+  private val internal = "internal-id"
+
+  private def ddWithScheme: DashboardData =
+    DashboardData(internal).set(PensionSchemeDetailsQuery, scheme).success.value
+
+  private def ddEmpty: DashboardData =
+    DashboardData(internal)
+
+  private def inProgressParams(tr: String = "TR001"): TransferReportQueryParams =
+    TransferReportQueryParams(
+      transferReference = Some(tr),
+      qtReference       = None,
+      qtStatus          = Some(InProgress),
+      pstr              = None,
+      versionNumber     = None,
+      memberName        = "Name",
+      currentPage       = 1
+    )
+
+  private def submittedParams(qtRef: String = "QT123", ver: String = "007"): TransferReportQueryParams =
+    TransferReportQueryParams(
+      transferReference = None,
+      qtReference       = Some(qtRef),
+      qtStatus          = Some(Submitted),
+      pstr              = Some(pstr),
+      versionNumber     = Some(ver),
+      memberName        = "Name",
+      currentPage       = 1
+    )
 
   ".nextPage" - {
 
     "must go to WhatWillBeNeeded when PensionSchemeDetails exists and no status provided" in {
-      val dd = DashboardData("internal-id")
-        .set(PensionSchemeDetailsQuery, PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name"))
-        .success
-        .value
-
-      DashboardPage.nextPage(dd, None, None) mustEqual routes.WhatWillBeNeededController.onPageLoad()
+      DashboardPage.nextPage(ddWithScheme, None, None) mustEqual
+        routes.WhatWillBeNeededController.onPageLoad()
     }
 
     "must go to Unauthorised when PensionSchemeDetails is missing and no status provided" in {
-      val dd = DashboardData("internal-id")
-
-      DashboardPage.nextPage(dd, None, None) mustEqual controllers.auth.routes.UnauthorisedController.onPageLoad()
+      DashboardPage.nextPage(ddEmpty, None, None) mustEqual
+        controllers.auth.routes.UnauthorisedController.onPageLoad()
     }
 
-    "must go to TransferProgressController when status is InProgress" in {
-      val dd = DashboardData("internal-id")
+    "must go to TaskListController when status is InProgress and transferReference exists" in {
+      val call: Call =
+        DashboardPage.nextPage(ddEmpty, Some(InProgress), Some(inProgressParams("TR001")))
 
-      DashboardPage.nextPage(dd, Some(InProgress), Some("TR001")) mustEqual
-        controllers.routes.TaskListController.fromDashboard("TR001")
+      call mustEqual controllers.routes.TaskListController.fromDashboard("TR001")
     }
 
-    "must go to JourneyRecovery when status is InProgress and no transferReference is found" in {
-      val dd = DashboardData("internal-id")
+    "must go to JourneyRecovery when status is InProgress but transferReference is missing" in {
+      val paramsMissingRef = TransferReportQueryParams(
+        transferReference = None,
+        qtReference       = None,
+        qtStatus          = Some(InProgress),
+        pstr              = None,
+        versionNumber     = None,
+        memberName        = "Name",
+        currentPage       = 1
+      )
 
-      DashboardPage.nextPage(dd, Some(InProgress), None) mustEqual
+      DashboardPage.nextPage(ddEmpty, Some(InProgress), Some(paramsMissingRef)) mustEqual
         controllers.routes.JourneyRecoveryController.onPageLoad()
     }
-//
-//    "must go to TransferSummaryController when status is Compiled" in {
-//      val dd = DashboardData("internal-id")
-//
-//      DashboardPage.nextPage(dd, Some(QtStatus.Compiled)) mustEqual ??? // TODO: Replace with Compiled controller redirect
-//    }
-//
-//    "must go to TransferSummaryController when status is Submitted" in {
-//      val dd = DashboardData("internal-id")
-//
-//      DashboardPage.nextPage(dd, Some(QtStatus.Submitted)) mustEqual ??? // TODO: Replace with Submitted controller redirect
-//    }
+
+    "must go to ViewSubmittedController when status is Submitted and required params are present" in {
+      val p    = submittedParams("QT-123")
+      val call = DashboardPage.nextPage(ddEmpty, Some(Submitted), Some(p))
+
+      call mustEqual controllers.routes.ViewSubmittedController.fromDashboard(
+        "QT-123",
+        pstr,
+        Submitted,
+        "007"
+      )
+    }
+
+    "must go to JourneyRecovery when status is Submitted but any required param is missing" in {
+      val missingVer  = submittedParams("QT-123").copy(versionNumber = None)
+      val missingPstr = submittedParams("QT-123").copy(pstr = None)
+      val missingQt   = submittedParams("QT-123").copy(qtReference = None)
+
+      DashboardPage.nextPage(ddEmpty, Some(Submitted), Some(missingVer)) mustEqual
+        controllers.routes.JourneyRecoveryController.onPageLoad()
+
+      DashboardPage.nextPage(ddEmpty, Some(Submitted), Some(missingPstr)) mustEqual
+        controllers.routes.JourneyRecoveryController.onPageLoad()
+
+      DashboardPage.nextPage(ddEmpty, Some(Submitted), Some(missingQt)) mustEqual
+        controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
   }
 }

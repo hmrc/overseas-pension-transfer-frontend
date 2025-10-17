@@ -17,23 +17,43 @@
 package controllers
 
 import controllers.actions._
-import javax.inject.Inject
+import models.{PstrNumber, QtStatus, SessionData}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
+import services.CollectSubmittedVersionsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.SubmittedVersionSummaryView
+import viewmodels.SubmittedTransferSummaryViewModel
+import views.html.SubmittedTransferSummaryView
+
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class SubmittedTransferSummaryController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
-    getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
+    collectSubmittedVersionsService: CollectSubmittedVersionsService,
     val controllerComponents: MessagesControllerComponents,
-    view: SubmittedVersionSummaryView
+    view: SubmittedTransferSummaryView
+  )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen schemeData) {
+  def onPageLoad(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] = (identify andThen schemeData).async {
     implicit request =>
-      Ok(view())
+      // Table Builder - create row for each version
+      // From version number to 1 make request foreach
+      // build row
+      // pop on view
+      // Merry Boshmas
+      // Builder requires PSTR / QTREF / Version
+
+      collectSubmittedVersionsService.collectVersions(qtReference, pstr, qtStatus, versionNumber) map {
+        case (maybeDraft, userAnswers) =>
+          def createTableRows = SubmittedTransferSummaryViewModel.rows(maybeDraft, userAnswers, versionNumber)
+          Ok(view(createTableRows))
+      }
+
   }
 }

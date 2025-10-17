@@ -27,16 +27,22 @@ import viewmodels.implicits._
 
 object AmountOfTransferSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmountOfTransferPage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "amountOfTransfer.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
-          actions = Seq(
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmountOfTransferPage).map { answer =>
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", routes.AmountOfTransferController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("amountOfTransfer.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "amountOfTransfer.checkYourAnswersLabel",
+        value   = ValueViewModel(currencyFormat(answer)),
+        actions = actions
+      )
     }
 }

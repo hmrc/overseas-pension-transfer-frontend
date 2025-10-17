@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.titleNoForm
-@import models.requests.IdentifierRequest
-@import views.html.components.QTNumber
+package viewmodels.checkAnswers.schemeOverview
 
-@this(
-        layout: templates.Layout,
-        govukButton: GovukButton,
-        qtNumber: QTNumber
-)
+import models.Mode
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import viewmodels.govuk.summarylist._
+import viewmodels.implicits._
 
-@()(implicit request: IdentifierRequest[_], messages: Messages)
+object SchemeNameSummary {
 
-@layout(pageTitle = titleNoForm(messages("submittedVersionSummary.title", "Trixie Mattel"))) {
-    <h1 class="govuk-heading-l">@messages("submittedVersionSummary.heading", "Trixie Mattel")</h1>
+  def row(mode: Mode, schemeName: String)(implicit messages: Messages): SummaryListRow = {
+    SummaryListRowViewModel(
+      key   = "schemeName.label",
+      value = ValueViewModel(schemeName)
+    )
+  }
 }

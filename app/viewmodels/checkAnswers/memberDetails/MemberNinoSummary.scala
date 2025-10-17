@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.memberDetails
 
 import models.{Mode, UserAnswers}
-import pages.memberDetails.MemberNinoPage
+import pages.memberDetails.{MemberNamePage, MemberNinoPage}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -26,16 +26,21 @@ import viewmodels.implicits._
 
 object MemberNinoSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberNinoPage).map {
       answer =>
+        val actions = if (showChangeLink) {
+          Seq(
+            ActionItemViewModel("site.change", MemberNinoPage.changeLink(mode).url)
+              .withVisuallyHiddenText(messages("memberNino.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
         SummaryListRowViewModel(
           key     = "memberNino.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", MemberNinoPage.changeLink(mode).url) // TODO introduce something in page navigation
-              .withVisuallyHiddenText(messages("memberNino.change.hidden"))
-          )
+          actions = actions
         )
     }
 }

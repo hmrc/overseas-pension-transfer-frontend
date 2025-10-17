@@ -22,7 +22,7 @@
 @import viewmodels.govuk.all.ButtonViewModel
 @import views.ViewUtils.titleNoForm
 @import views.html.components.{CheckYourAnswersHeading, QTNumber}
-
+@import models.requests.IdentifierRequest
 
 @this(
         layout: templates.Layout,
@@ -34,18 +34,37 @@
         qtNumber: QTNumber
 )
 
-@(list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
+@(
+        schemeDetails: SummaryList,
+        memberDetails: SummaryList,
+        transferDetails: SummaryList,
+        qropsDetails: SummaryList,
+        schemeManagerDetails: SummaryList,
+        qtNumber: String,
+        memberName: String)(implicit request: IdentifierRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true) {
 
-    @qtNumber()
-    @heading(messages("checkYourAnswers.heading"), Some(messages("common.memberDetails.heading")))
+ <span class="govuk-caption-l">@qtNumber</span>
+ @heading(messages("viewSubmitted.heading", memberName))
 
-    @govukSummaryList(list)
+ @govukSummaryList(schemeDetails)
 
-    @formHelper(action = controllers.memberDetails.routes.MemberDetailsCYAController.onSubmit(), Symbol("autoComplete") -> "off") {
-        @govukButton(
-            ButtonViewModel(Text(messages("site.continue")))
-        )
-    }
+ <h2 class="govuk-heading-m">@messages("common.memberDetails.heading")</h2>
+
+ @govukSummaryList(memberDetails)
+
+ <h2 class="govuk-heading-m">@messages("common.transferDetails.heading")</h2>
+
+ @govukSummaryList(transferDetails)
+
+ <h2 class="govuk-heading-m">@messages("common.qropsDetails.heading")</h2>
+
+ @govukSummaryList(qropsDetails)
+
+ <h2 class="govuk-heading-m">@messages("common.qropsSchemeManagerDetails.heading")</h2>
+
+ @govukSummaryList(schemeManagerDetails)
+
+ <hr class="govuk-section-break govuk-section-break--l govuk-section-break--invisible">
 }

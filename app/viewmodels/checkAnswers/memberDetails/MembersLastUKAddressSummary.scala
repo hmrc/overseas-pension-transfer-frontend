@@ -27,18 +27,25 @@ import viewmodels.implicits._
 
 object MembersLastUKAddressSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MembersLastUKAddressPage).map {
-      address =>
-        val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = true)
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(MembersLastUKAddressPage).map { address =>
+      val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = true)
 
-        SummaryListRowViewModel(
-          key     = "membersLastUKAddress.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", MembersLastUKAddressPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("membersLastUKAddress.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "membersLastUKAddress.checkYourAnswersLabel",
+        value   = ValueViewModel(HtmlContent(value)),
+        actions = actions
+      )
     }
+
 }

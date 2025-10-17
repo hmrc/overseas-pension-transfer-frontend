@@ -153,7 +153,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?qtReference=QT-LOCKED&name=LockedScheme&currentPage=2")
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?qtReference=QT-LOCKED&memberName=LockedScheme&currentPage=2")
 
         val result = route(application, request).value
 

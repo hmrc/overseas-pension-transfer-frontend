@@ -27,27 +27,27 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
 case object TransferDetailsSummary {
 
-  def rows(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Seq[SummaryListRow] = {
-    val overseasTransferAllowance: Option[SummaryListRow] = OverseasTransferAllowanceSummary.row(mode, userAnswers)
-    val amountOfTransfer: Option[SummaryListRow]          = AmountOfTransferSummary.row(mode, userAnswers)
-    val isTransferTaxable: Option[SummaryListRow]         = IsTransferTaxableSummary.row(mode, userAnswers)
-    val whyTransferIsTaxable: Option[SummaryListRow]      = WhyTransferIsTaxableSummary.row(mode, userAnswers)
-    val whyTransferIsNotTaxable: Option[SummaryListRow]   = WhyTransferIsNotTaxableSummary.row(mode, userAnswers)
-    val applicableTaxExclusions: Option[SummaryListRow]   = ApplicableTaxExclusionsSummary.row(mode, userAnswers)
-    val amountOfTaxDeducted: Option[SummaryListRow]       = AmountOfTaxDeductedSummary.row(mode, userAnswers)
-    val netTransferAmount: Option[SummaryListRow]         = NetTransferAmountSummary.row(mode, userAnswers)
-    val dateOfTransfer: Option[SummaryListRow]            = DateOfTransferSummary.row(mode, userAnswers)
-    val isTransferCashOnly: Option[SummaryListRow]        = IsTransferCashOnlySummary.row(mode, userAnswers)
-    val typeOfAsset: Option[SummaryListRow]               = TypeOfAssetSummary.row(mode, userAnswers)
+  def rows(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean = true)(implicit messages: Messages): Seq[SummaryListRow] = {
+    val overseasTransferAllowance: Option[SummaryListRow] = OverseasTransferAllowanceSummary.row(mode, userAnswers, showChangeLinks)
+    val amountOfTransfer: Option[SummaryListRow]          = AmountOfTransferSummary.row(mode, userAnswers, showChangeLinks)
+    val isTransferTaxable: Option[SummaryListRow]         = IsTransferTaxableSummary.row(mode, userAnswers, showChangeLinks)
+    val whyTransferIsTaxable: Option[SummaryListRow]      = WhyTransferIsTaxableSummary.row(mode, userAnswers, showChangeLinks)
+    val whyTransferIsNotTaxable: Option[SummaryListRow]   = WhyTransferIsNotTaxableSummary.row(mode, userAnswers, showChangeLinks)
+    val applicableTaxExclusions: Option[SummaryListRow]   = ApplicableTaxExclusionsSummary.row(mode, userAnswers, showChangeLinks)
+    val amountOfTaxDeducted: Option[SummaryListRow]       = AmountOfTaxDeductedSummary.row(mode, userAnswers, showChangeLinks)
+    val netTransferAmount: Option[SummaryListRow]         = NetTransferAmountSummary.row(mode, userAnswers, showChangeLinks)
+    val dateOfTransfer: Option[SummaryListRow]            = DateOfTransferSummary.row(mode, userAnswers, showChangeLinks)
+    val isTransferCashOnly: Option[SummaryListRow]        = IsTransferCashOnlySummary.row(mode, userAnswers, showChangeLinks)
+    val typeOfAsset: Option[SummaryListRow]               = TypeOfAssetSummary.row(mode, userAnswers, showChangeLinks)
 
     val showCashAmount       = userAnswers.get(IsTransferCashOnlyPage).contains(false)
     val cashAmountInTransfer =
-      if (showCashAmount) CashAmountInTransferSummary.row(mode, userAnswers) else None
+      if (showCashAmount) CashAmountInTransferSummary.row(mode, userAnswers, showChangeLinks) else None
 
-    val totalUnquotedSharesRow: Option[SummaryListRow] = UnquotedSharesAmendContinueSummary.row(mode, userAnswers)
-    val totalQuotedSharesRow: Option[SummaryListRow]   = QuotedSharesAmendContinueSummary.row(mode, userAnswers)
-    val totalPropertiesRow: Option[SummaryListRow]     = PropertyAmendContinueSummary.row(mode, userAnswers)
-    val totalOtherAssetsRow: Option[SummaryListRow]    = OtherAssetsAmendContinueSummary.row(mode, userAnswers)
+    val totalUnquotedSharesRow: Option[SummaryListRow] = UnquotedSharesAmendContinueSummary.row(mode, userAnswers, showChangeLinks)
+    val totalQuotedSharesRow: Option[SummaryListRow]   = QuotedSharesAmendContinueSummary.row(mode, userAnswers, showChangeLinks)
+    val totalPropertiesRow: Option[SummaryListRow]     = PropertyAmendContinueSummary.row(mode, userAnswers, showChangeLinks)
+    val totalOtherAssetsRow: Option[SummaryListRow]    = OtherAssetsAmendContinueSummary.row(mode, userAnswers, showChangeLinks)
 
     Seq(
       overseasTransferAllowance,

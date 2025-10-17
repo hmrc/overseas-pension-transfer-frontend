@@ -28,25 +28,31 @@ import viewmodels.implicits._
 
 object ApplicableTaxExclusionsSummary {
 
-  def row(mode: Mode, userAnswers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(ApplicableTaxExclusionsPage).map {
-      answers =>
-        val value = ValueViewModel(
-          HtmlContent(
-            answers.map {
-              answer => HtmlFormat.escape(messages(s"applicableTaxExclusions.$answer")).toString
-            }
-              .mkString(",<br>")
-          )
+  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(ApplicableTaxExclusionsPage).map { selections =>
+      val value = ValueViewModel(
+        HtmlContent(
+          selections
+            .map(sel => HtmlFormat.escape(messages(s"applicableTaxExclusions.$sel")).toString)
+            .mkString(",<br>")
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "applicableTaxExclusions.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", ApplicableTaxExclusionsPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("applicableTaxExclusions.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "applicableTaxExclusions.checkYourAnswersLabel",
+        value   = value,
+        actions = actions
+      )
     }
+
 }

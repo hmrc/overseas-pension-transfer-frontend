@@ -17,9 +17,23 @@
 package models
 
 import play.api.libs.json._
+import play.api.mvc.QueryStringBindable
 
 case class PstrNumber(value: String)
 
 object PstrNumber {
   implicit val format: Format[PstrNumber] = Json.valueFormat[PstrNumber]
+
+  implicit val queryBindable: QueryStringBindable[PstrNumber] = new QueryStringBindable[PstrNumber] {
+
+    override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, PstrNumber]] =
+      params.get(key).flatMap(_.headOption).map { raw =>
+        val norm = raw.trim.toUpperCase
+        Right(PstrNumber(norm))
+      }
+
+    override def unbind(key: String, p: PstrNumber): String =
+      s"$key=${p.value}"
+  }
+
 }

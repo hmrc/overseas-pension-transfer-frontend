@@ -142,6 +142,11 @@ common.addressInput.error.postcode.pattern = Postcode must only include letters,
 common.addressInput.error.poBox.pattern = PO Box must only include letters, numbers or spaces
 common.addressInput.error.countryCode.required = Enter a country
 
+common.memberDetails.heading = The member''s details
+common.qropsDetails.heading = The QROPS details
+common.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
+common.transferDetails.heading = The transfer details
+
 common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
 
@@ -168,11 +173,6 @@ taskList.taskStatus.completed = Completed
 
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
-
-checkYourAnswers.memberDetails.heading = The member''s details
-checkYourAnswers.qropsDetails.heading = The QROPS details
-checkYourAnswers.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
-checkYourAnswers.transferDetails.heading = The transfer details
 
 discardTransferConfirm.title = Are you sure you want to discard this transfer?
 discardTransferConfirm.heading = Are you sure you want to discard this transfer?
@@ -743,6 +743,10 @@ transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
 transferSubmitted.memberName.key = Member name
 transferSubmitted.pensionScheme.key = Scheme
 transferSubmitted.dateSubmitted.key = Date submitted
+
+viewSubmitted.heading = Overseas transfer report for {0}
+schemeName.label = Scheme
+dateOfSubmission.label = Date submitted
 
 submittedVersionSummary.title = Reports for {0}
 submittedVersionSummary.heading = Reports for {0}

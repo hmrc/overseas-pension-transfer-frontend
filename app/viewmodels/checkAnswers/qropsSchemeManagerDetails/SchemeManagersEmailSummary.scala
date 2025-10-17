@@ -27,16 +27,23 @@ import viewmodels.implicits._
 
 object SchemeManagersEmailSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(SchemeManagersEmailPage).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "schemeManagersEmail.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(SchemeManagersEmailPage).map { answer =>
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", SchemeManagersEmailPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("schemeManagersEmail.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "schemeManagersEmail.checkYourAnswersLabel",
+        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = actions
+      )
     }
+
 }

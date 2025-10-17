@@ -16,7 +16,6 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.routes
 import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.IsTransferTaxablePage
 import play.api.i18n.Messages
@@ -26,18 +25,23 @@ import viewmodels.implicits._
 
 object IsTransferTaxableSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(IsTransferTaxablePage).map {
-      answer =>
-        val value = if (answer) "site.yes" else "site.no"
-
-        SummaryListRowViewModel(
-          key     = "isTransferTaxable.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(IsTransferTaxablePage).map { answer =>
+      val value   = if (answer) "site.yes" else "site.no"
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", IsTransferTaxablePage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("isTransferTaxable.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "isTransferTaxable.checkYourAnswersLabel",
+        value   = ValueViewModel(value),
+        actions = actions
+      )
     }
 }

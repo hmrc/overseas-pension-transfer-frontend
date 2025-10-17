@@ -27,18 +27,25 @@ import viewmodels.implicits._
 
 object QROPSAddressSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(QROPSAddressPage).map {
-      answer =>
-        val value = AddressViewModel.formatAddressWithLineBreaks(answer, ukMode = false)
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(QROPSAddressPage).map { answer =>
+      val value = AddressViewModel.formatAddressWithLineBreaks(answer, ukMode = false)
 
-        SummaryListRowViewModel(
-          key     = "qropsAddress.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = Seq(
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", QROPSAddressPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("qropsAddress.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "qropsAddress.checkYourAnswersLabel",
+        value   = ValueViewModel(HtmlContent(value)),
+        actions = actions
+      )
     }
+
 }
