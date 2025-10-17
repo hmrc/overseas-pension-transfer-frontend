@@ -38,7 +38,7 @@
 
 @memberName = @{request.memberName}
 
-@layout(pageTitle = title(form, messages("membersCurrentAddress.title", memberName))) {
+@layout(pageTitle = title(form, messages("membersCurrentAddress.title"))) {
 
     @formHelper(action = controllers.memberDetails.routes.MembersCurrentAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
