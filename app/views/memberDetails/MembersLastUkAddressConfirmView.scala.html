@@ -37,7 +37,7 @@
 @searchAgain = @{controllers.memberDetails.routes.MembersLastUkAddressSelectController.onPageLoad(mode).url}
 @manualEntry = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(mode).url}
 
-@layout(pageTitle = title(form, messages("memberConfirmLastUkAddress.title", memberName))) {
+@layout(pageTitle = title(form, messages("memberConfirmLastUkAddress.title"))) {
 
     @formHelper(action = controllers.memberDetails.routes.MembersLastUkAddressConfirmController.onSubmit(mode)) {
         @if(form.errors.nonEmpty) {
