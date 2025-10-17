@@ -18,13 +18,13 @@ package controllers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import models.requests.{DataRequest, IdentifierRequest}
-import models.{FinalCheckMode, PstrNumber, QtStatus, SessionData, UserAnswers}
+import models.requests.IdentifierRequest
+import models.{AmendCheckMode, PstrNumber, QtStatus, SessionData, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import repositories.SessionRepository
 import services.UserAnswersService
@@ -90,19 +90,19 @@ class ViewAmendSubmittedController @Inject() (
     )(implicit request: IdentifierRequest[_]
     ): HtmlFormat.Appendable = {
     val schemeName                      = sessionData.schemeInformation.schemeName
-    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(FinalCheckMode, schemeName, dateTransferSubmitted(sessionData)))
+    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(AmendCheckMode, schemeName, dateTransferSubmitted(sessionData)))
     val memberDetailsSummaryList        = if (isAmend) {
-      SummaryListViewModel(MemberDetailsSummary.amendRows(FinalCheckMode, userAnswers))
+      SummaryListViewModel(MemberDetailsSummary.amendRows(AmendCheckMode, userAnswers))
     } else {
-      SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, userAnswers, showChangeLinks = false))
+      SummaryListViewModel(MemberDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = false))
     }
-    val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, userAnswers, showChangeLinks = isAmend))
-    val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(FinalCheckMode, userAnswers, showChangeLinks = isAmend))
+    val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
+    val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
     val schemeManagerDetailsSummaryList =
-      SummaryListViewModel(SchemeManagerDetailsSummary.rows(FinalCheckMode, userAnswers, showChangeLinks = false))
+      SummaryListViewModel(SchemeManagerDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
 
     val memberName =
-      userAnswers.get(MemberNamePage).map(_.fullName).get
+      userAnswers.get(MemberNamePage).map(_.fullName).getOrElse("")
 
     view(
       schemeSummaryList,
