@@ -16,15 +16,16 @@
 
 package pages.memberDetails
 
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import controllers.{memberDetails, routes}
 import pages.QuestionPage
+import play.api.Logging
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case object MemberIsResidentUKPage extends QuestionPage[Boolean] {
+case object MemberIsResidentUKPage extends QuestionPage[Boolean] with Logging {
 
   override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
 
@@ -41,6 +42,13 @@ case object MemberIsResidentUKPage extends QuestionPage[Boolean] {
     answers.get(MemberIsResidentUKPage) match {
       case Some(false) => memberDetails.routes.MemberHasEverBeenResidentUKController.onPageLoad(CheckMode)
       case Some(true)  => memberDetails.routes.MemberDetailsCYAController.onPageLoad()
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    answers.get(MemberIsResidentUKPage) match {
+      case Some(false) => memberDetails.routes.MemberHasEverBeenResidentUKController.onPageLoad(AmendCheckMode)
+      case Some(true)  => super.nextPageAmendCheckMode(answers)
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
 
