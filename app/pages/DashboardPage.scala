@@ -23,14 +23,21 @@ import queries.PensionSchemeDetailsQuery
 
 object DashboardPage extends Page {
 
-  def nextPage(dd: DashboardData, qtStatus: Option[QtStatus], transferReference: Option[String]): Call =
+  def nextPage(dd: DashboardData, qtStatus: Option[QtStatus], params: Option[TransferReportQueryParams]): Call =
     qtStatus match {
-      case Some(QtStatus.InProgress) =>
-        transferReference.fold(routes.JourneyRecoveryController.onPageLoad()) {
-          transferRef => routes.TaskListController.fromDashboard(transferRef)
-        }
-
-      case Some(QtStatus.Compiled) | Some(QtStatus.Submitted) => ??? // TODO: Replace with Submitted controller redirect
+      case Some(QtStatus.InProgress)                          =>
+        params
+          .flatMap(_.transferReference)
+          .map(routes.TaskListController.fromDashboard)
+          .getOrElse(routes.JourneyRecoveryController.onPageLoad())
+      case Some(s @ (QtStatus.Compiled | QtStatus.Submitted)) =>
+        (for {
+          p    <- params
+          ref  <- p.qtReference
+          pstr <- p.pstr
+          ver  <- p.versionNumber
+        } yield controllers.routes.ViewSubmittedController.fromDashboard(ref, pstr, s, ver))
+          .getOrElse(routes.JourneyRecoveryController.onPageLoad())
       case _                                                  =>
         dd.get(PensionSchemeDetailsQuery) match {
           case Some(_) =>

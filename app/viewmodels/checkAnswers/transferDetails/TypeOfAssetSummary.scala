@@ -29,25 +29,35 @@ import viewmodels.implicits._
 
 object TypeOfAssetSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(TypeOfAssetPage).flatMap {
-      case Seq(Cash) => None
-      case answers   =>
+      case Seq(Cash)  => None
+      case selections =>
         val value = ValueViewModel(
           HtmlContent(
-            answers.map {
-              answer => HtmlFormat.escape(messages(s"typeOfAsset.$answer")).toString
-            }.mkString(",<br>")
+            selections
+              .map(sel => HtmlFormat.escape(messages(s"typeOfAsset.$sel")).toString)
+              .mkString(",<br>")
           )
         )
 
-        Some(SummaryListRowViewModel(
-          key     = "typeOfAsset.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", routes.TypeOfAssetController.onPageLoad(mode).url)
-              .withVisuallyHiddenText(messages("typeOfAsset.change.hidden"))
+        val actions =
+          if (showChangeLink) {
+            Seq(
+              ActionItemViewModel("site.change", routes.TypeOfAssetController.onPageLoad(mode).url)
+                .withVisuallyHiddenText(messages("typeOfAsset.change.hidden"))
+            )
+          } else {
+            Seq.empty
+          }
+
+        Some(
+          SummaryListRowViewModel(
+            key     = "typeOfAsset.checkYourAnswersLabel",
+            value   = value,
+            actions = actions
           )
-        ))
+        )
     }
+
 }

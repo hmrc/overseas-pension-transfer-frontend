@@ -26,16 +26,23 @@ import viewmodels.implicits._
 
 object MemberDoesNotHaveNinoSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberDoesNotHaveNinoPage).map {
+
+      val actions = if (showChangeLink) {
+        Seq(
+          ActionItemViewModel("site.change", MemberDoesNotHaveNinoPage.changeLink(mode).url)
+            .withVisuallyHiddenText(messages("memberDoesNotHaveNino.change.hidden"))
+        )
+      } else {
+        Seq.empty
+      }
+
       answer =>
         SummaryListRowViewModel(
           key     = "memberDoesNotHaveNino.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", MemberDoesNotHaveNinoPage.changeLink(mode).url)
-              .withVisuallyHiddenText(messages("memberDoesNotHaveNino.change.hidden"))
-          )
+          actions = actions
         )
     }
 }

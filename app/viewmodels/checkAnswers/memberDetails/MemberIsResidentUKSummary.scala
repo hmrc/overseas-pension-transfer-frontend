@@ -25,18 +25,25 @@ import viewmodels.implicits._
 
 object MemberIsResidentUKSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(MemberIsResidentUKPage).map {
-      answer =>
-        val value = if (answer) "site.yes" else "site.no"
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(MemberIsResidentUKPage).map { answer =>
+      val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
-          key     = "memberIsResidentUK.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", MemberIsResidentUKPage.changeLink(mode).url)
               .withVisuallyHiddenText(messages("memberIsResidentUK.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "memberIsResidentUK.checkYourAnswersLabel",
+        value   = ValueViewModel(value),
+        actions = actions
+      )
     }
+
 }

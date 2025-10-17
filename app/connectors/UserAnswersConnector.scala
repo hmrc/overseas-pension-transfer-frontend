@@ -28,12 +28,11 @@ import connectors.parsers.UserAnswersParser.{
 }
 import models.dtos.{SubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, UserAnswersErrorResponse}
+import models.{PstrNumber, QtNumber, QtStatus}
 import play.api.Logging
 import play.api.libs.json.Json
-import play.api.mvc.Result
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import utils.DownstreamLogging
 
 import java.net.URL
@@ -52,12 +51,43 @@ class UserAnswersConnector @Inject() (
   private def submissionUrl(id: String): URL =
     url"${appConfig.backendService}/submit-declaration/$id"
 
+  // These two versions of getAnswers are purposely similar to one another as it is recommended to combine these two in a future refactor
   def getAnswers(transferId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersType] = {
     http.get(userAnswersUrl(transferId))
       .execute[GetUserAnswersType]
       .recover {
         case e: Exception =>
           val errMsg = logNonHttpError("[UserAnswersConnector][getAnswers]", hc, e)
+          Left(UserAnswersErrorResponse(errMsg, None))
+      }
+  }
+
+  def getAnswers(
+      transferReference: Option[String],
+      qtNumber: Option[String]      = None,
+      pstrNumber: PstrNumber,
+      qtStatus: QtStatus,
+      versionNumber: Option[String] = None
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[GetUserAnswersType] = {
+    val referenceId = transferReference.orElse(qtNumber).getOrElse(throw new IllegalArgumentException(
+      "getSpecificTransfer must have one of either transferReference or qtNumber"
+    ))
+
+    def url: URL =
+      url"${appConfig.backendService}/get-transfer/$referenceId"
+
+    val queryStringParams = {
+      Seq("pstr" -> pstrNumber.value, "qtStatus" -> qtStatus.toString) ++ versionNumber.toSeq.map("versionNumber" -> _)
+    }
+
+    http.get(url)
+      .transform(_.addQueryStringParameters(queryStringParams: _*))
+      .execute[GetUserAnswersType]
+      .recover {
+        case e: Exception =>
+          val errMsg = logNonHttpError("[TransferConnector][getSpecificTransfer]", hc, e)
           Left(UserAnswersErrorResponse(errMsg, None))
       }
   }

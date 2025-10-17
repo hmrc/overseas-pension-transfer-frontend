@@ -76,7 +76,6 @@ class MemberNameController @Inject() (
               case Right(Done) => Redirect(MemberNamePage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
-
           }
       )
   }

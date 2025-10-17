@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.mvc.QueryStringBindable
 
 sealed trait QtStatus
 
@@ -35,4 +35,19 @@ object QtStatus extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[QtStatus] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
+  def parse(s: String): Option[QtStatus] =
+    values.find(_.toString.equalsIgnoreCase(s.trim))
+
+  implicit val queryBindable: QueryStringBindable[QtStatus] =
+    new QueryStringBindable[QtStatus] {
+
+      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, QtStatus]] =
+        params.get(key).flatMap(_.headOption).map { raw =>
+          parse(raw).toRight(s"Invalid QtStatus for '$key': '$raw'")
+        }
+
+      override def unbind(key: String, value: QtStatus): String =
+        s"$key=${value.toString}"
+    }
 }

@@ -18,6 +18,7 @@ package connectors
 
 import base.BaseISpec
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, delete, post, stubFor}
+import models.QtStatus.{InProgress, Submitted}
 import models.{PstrNumber, QtNumber}
 import models.authentication.{PsaId, Psp, PspId}
 import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
@@ -26,6 +27,7 @@ import org.apache.pekko.Done
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting
+import stubs.TransferBackendStub
 
 import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,7 +35,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
   private val instant        = Instant.now()
-  private val userAnswersDTO = UserAnswersDTO("testId", PstrNumber("12345678AB"), JsObject(Map("field" -> JsString("value"))), instant)
+  private val pstr = PstrNumber("12345678AB")
+  private val userAnswersDTO = UserAnswersDTO("testId", pstr, JsObject(Map("field" -> JsString("value"))), instant)
   private val submissionDTO  = PspSubmissionDTO("testId", Psp, PspId("X1234567"), PsaId("a1234567"), instant)
 
   val connector: UserAnswersConnector = inject[UserAnswersConnector]
@@ -106,6 +109,147 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
             Some("""{"field": "value"}""")
           )
         )
+      }
+    }
+  }
+
+
+  "getAnswers (getSpecific)" when {
+
+    val referenceId = "REF123"
+    val now         = Instant.parse("2025-09-24T10:00:00Z")
+
+    "the backend returns 200" must {
+
+      "return Right(UserAnswersDTO) when qtStatus is InProgress and body is valid" in {
+        TransferBackendStub.getSpecificTransferOk(
+          referenceId    = referenceId,
+          pstr           = pstr.value,
+          qtStatus       = InProgress.toString,
+          dataJson       = """{ "foo": "bar", "n": 1 }""",
+          lastUpdatedIso = now.toString
+        )
+
+        val result = await(
+          connector.getAnswers(
+            transferReference = Some(referenceId),
+            qtNumber          = None,
+            pstrNumber        = pstr,
+            qtStatus          = InProgress,
+            versionNumber     = None
+          )
+        )
+
+        result match {
+          case Right(dto) =>
+            dto.referenceId    shouldBe referenceId
+            dto.pstr.value     shouldBe pstr.value
+            dto.data.toString  should include ("foo")
+            dto.lastUpdated    shouldBe now
+          case Left(err)  =>
+            fail(s"Expected Right(UserAnswersDTO) but got $err")
+        }
+      }
+
+      "return Right(UserAnswersDTO) when qtStatus is Submitted and versionNumber provided" in {
+        TransferBackendStub.getSpecificTransferOk(
+          referenceId    = referenceId,
+          pstr           = pstr.value,
+          qtStatus       = Submitted.toString,
+          dataJson       = """{ "submitted": true, "hasVersion": true }""",
+          lastUpdatedIso = now.toString,
+          versionNumber  = Some("002")
+        )
+
+        val result = await(
+          connector.getAnswers(
+            transferReference = Some(referenceId),
+            qtNumber          = None,
+            pstrNumber        = pstr,
+            qtStatus          = Submitted,
+            versionNumber     = Some("002")
+          )
+        )
+
+        result match {
+          case Right(dto) =>
+            dto.referenceId   shouldBe referenceId
+            dto.data.toString should include ("hasVersion")
+          case Left(err)  =>
+            fail(s"Expected Right(UserAnswersDTO) but got $err")
+        }
+      }
+
+      "map to Left(UserAnswersErrorResponse) if body is malformed JSON" in {
+        TransferBackendStub.getSpecificTransferMalformed(
+          referenceId = referenceId,
+          pstr        = pstr.value,
+          qtStatus    = Submitted.toString
+        )
+
+        val result = await(
+          connector.getAnswers(
+            transferReference = Some(referenceId),
+            qtNumber          = None,
+            pstrNumber        = pstr,
+            qtStatus          = Submitted,
+            versionNumber     = None
+          )
+        )
+
+        result match {
+          case Left(_: UserAnswersErrorResponse) => succeed
+          case other                              => fail(s"Expected UserAnswersErrorResponse but got $other")
+        }
+      }
+    }
+
+    "the backend returns 404" must {
+
+      "map to Left(UserAnswersNotFoundResponse)" in {
+        TransferBackendStub.getSpecificTransferNotFound(
+          referenceId = referenceId,
+          pstr        = pstr.value,
+          qtStatus    = Submitted.toString
+        )
+
+        val result = await(
+          connector.getAnswers(
+            transferReference = Some(referenceId),
+            qtNumber          = None,
+            pstrNumber        = pstr,
+            qtStatus          = Submitted,
+            versionNumber     = None
+          )
+        )
+
+        result shouldBe Left(UserAnswersNotFoundResponse)
+      }
+    }
+
+    "the backend returns 500" must {
+
+      "map to Left(UserAnswersErrorResponse)" in {
+        TransferBackendStub.getSpecificTransferServerError(
+          referenceId = referenceId,
+          pstr        = pstr.value,
+          qtStatus    = InProgress.toString
+        )
+
+        val result = await(
+          connector.getAnswers(
+            transferReference = Some(referenceId),
+            qtNumber          = None,
+            pstrNumber        = pstr,
+            qtStatus          = InProgress,
+            versionNumber     = None
+          )
+        )
+
+        result match {
+          case Left(_: UserAnswersErrorResponse) => succeed
+          case other                             => fail(s"Expected Left(UserAnswersErrorResponse) but got $other")
+        }
       }
     }
   }

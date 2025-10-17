@@ -28,25 +28,31 @@ import viewmodels.implicits._
 
 object WhyTransferIsNotTaxableSummary {
 
-  def row(mode: Mode, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(WhyTransferIsNotTaxablePage).map {
-      answers =>
-        val value = ValueViewModel(
-          HtmlContent(
-            answers.map {
-              answer => HtmlFormat.escape(messages(s"whyTransferIsNotTaxable.$answer")).toString
-            }
-              .mkString(",<br>")
-          )
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(WhyTransferIsNotTaxablePage).map { selections =>
+      val value = ValueViewModel(
+        HtmlContent(
+          selections
+            .map(sel => HtmlFormat.escape(messages(s"whyTransferIsNotTaxable.$sel")).toString)
+            .mkString(",<br>")
         )
+      )
 
-        SummaryListRowViewModel(
-          key     = "whyTransferIsNotTaxable.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
+      val actions =
+        if (showChangeLink) {
+          Seq(
             ActionItemViewModel("site.change", routes.WhyTransferIsNotTaxableController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("whyTransferIsNotTaxable.change.hidden"))
           )
-        )
+        } else {
+          Seq.empty
+        }
+
+      SummaryListRowViewModel(
+        key     = "whyTransferIsNotTaxable.checkYourAnswersLabel",
+        value   = value,
+        actions = actions
+      )
     }
+
 }

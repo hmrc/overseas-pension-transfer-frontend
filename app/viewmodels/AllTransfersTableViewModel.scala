@@ -76,7 +76,9 @@ object AllTransfersTableViewModel {
         transferReference = it.transferReference,
         qtReference       = it.qtReference.map(_.value),
         qtStatus          = it.qtStatus,
-        name              = name,
+        pstr              = it.pstrNumber,
+        versionNumber     = it.qtVersion,
+        memberName        = name,
         currentPage       = currentPage
       )
 

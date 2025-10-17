@@ -18,8 +18,8 @@ package base
 
 import controllers.actions._
 import models.address.{Countries, PropertyAddress}
-import models.authentication.{PsaId, PsaUser, PspId, PspUser}
-import models.requests.DisplayRequest
+import models.authentication.{AuthenticatedUser, PsaId, PsaUser, PspId, PspUser}
+import models.requests.{DisplayRequest, IdentifierRequest}
 import models.{PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SessionData, SrnNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
@@ -72,7 +72,7 @@ trait SpecBase
   val schemeDetails = PensionSchemeDetails(
     SrnNumber("S1234567"),
     PstrNumber("12345678AB"),
-    "Scheme Name"
+    "SchemeName"
   )
 
   val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
@@ -122,6 +122,15 @@ trait SpecBase
         bind[MarkInProgressOnEntryAction].to[FakeMarkInProgressAction],
         bind[SchemeDataAction].to[FakeSchemeDataAction]
       )
+
+  def fakeIdentifierRequest[A](
+      fakeRequest: FakeRequest[A],
+      authenticatedUser: AuthenticatedUser = psaUser.updatePensionSchemeDetails(schemeDetails)
+    ): IdentifierRequest[A] =
+    IdentifierRequest(fakeRequest, authenticatedUser)
+
+  implicit val testIdentifierRequest: IdentifierRequest[_] =
+    IdentifierRequest(FakeRequest(), psaUser.updatePensionSchemeDetails(schemeDetails))
 
   def fakeDisplayRequest[A](
       fakeRequest: FakeRequest[A],
