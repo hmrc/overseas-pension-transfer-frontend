@@ -18,7 +18,7 @@ package pages.transferDetails
 
 import controllers.transferDetails.routes
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers, WhyTransferIsTaxable}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers, WhyTransferIsTaxable}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -31,19 +31,24 @@ case object WhyTransferIsTaxablePage extends QuestionPage[WhyTransferIsTaxable] 
 
   override def toString: String = "whyTaxableOT"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+  private def nextPage(answers: UserAnswers, mode: Mode): Call =
     answers.get(WhyTransferIsTaxablePage) match {
       case Some(TransferExceedsOTCAllowance) => routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode)
       case Some(NoExclusion)                 => routes.AmountOfTaxDeductedController.onPageLoad(NormalMode)
       case _                                 => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
 
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    nextPage(answers, NormalMode)
+
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    answers.get(WhyTransferIsTaxablePage) match {
-      case Some(TransferExceedsOTCAllowance) => routes.ApplicableTaxExclusionsController.onPageLoad(CheckMode)
-      case Some(NoExclusion)                 => routes.AmountOfTaxDeductedController.onPageLoad(CheckMode)
-      case _                                 => controllers.routes.JourneyRecoveryController.onPageLoad()
-    }
+    nextPage(answers, CheckMode)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    nextPage(answers, FinalCheckMode)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    nextPage(answers, AmendCheckMode)
 
   final def changeLink(mode: Mode): Call =
     routes.WhyTransferIsTaxableController.onPageLoad(mode)
