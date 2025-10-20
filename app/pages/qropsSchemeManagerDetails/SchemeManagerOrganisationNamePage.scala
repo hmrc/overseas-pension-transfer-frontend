@@ -17,7 +17,7 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -35,6 +35,20 @@ case object SchemeManagerOrganisationNamePage extends QuestionPage[String] {
     answers.get(SchemeManagerOrgIndividualNamePage) match {
       case Some(_) => routes.SchemeManagerDetailsCYAController.onPageLoad()
       case None    => routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
+    }
+  }
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+    answers.get(SchemeManagerOrgIndividualNamePage) match {
+      case Some(_) => controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      case None    => routes.SchemeManagerOrgIndividualNameController.onPageLoad(FinalCheckMode)
+    }
+  }
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+    answers.get(SchemeManagerOrgIndividualNamePage) match {
+      case Some(_) => controllers.routes.ViewAmendSubmittedController.amend()
+      case None    => routes.SchemeManagerOrgIndividualNameController.onPageLoad(AmendCheckMode)
     }
   }
 

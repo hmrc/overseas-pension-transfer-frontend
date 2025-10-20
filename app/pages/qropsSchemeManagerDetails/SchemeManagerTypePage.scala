@@ -17,7 +17,7 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, Mode, NormalMode, SchemeManagerType, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SchemeManagerType, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -30,19 +30,24 @@ case object SchemeManagerTypePage extends QuestionPage[SchemeManagerType] {
 
   override def toString: String = "schemeManagerType"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+  private def nextPage(answers: UserAnswers, mode: Mode): Call =
     answers.get(SchemeManagerTypePage) match {
-      case Some(SchemeManagerType.Individual)   => routes.SchemeManagersNameController.onPageLoad(NormalMode)
-      case Some(SchemeManagerType.Organisation) => routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode)
+      case Some(SchemeManagerType.Individual)   => routes.SchemeManagersNameController.onPageLoad(mode)
+      case Some(SchemeManagerType.Organisation) => routes.SchemeManagerOrganisationNameController.onPageLoad(mode)
       case _                                    => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
 
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    nextPage(answers, NormalMode)
+
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    answers.get(SchemeManagerTypePage) match {
-      case Some(SchemeManagerType.Individual)   => routes.SchemeManagersNameController.onPageLoad(CheckMode)
-      case Some(SchemeManagerType.Organisation) => routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode)
-      case _                                    => controllers.routes.JourneyRecoveryController.onPageLoad()
-    }
+    nextPage(answers, CheckMode)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    nextPage(answers, FinalCheckMode)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    nextPage(answers, AmendCheckMode)
 
   final def changeLink(mode: Mode): Call =
     routes.SchemeManagerTypeController.onPageLoad(mode)
