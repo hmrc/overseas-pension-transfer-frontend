@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.{memberDetails, routes}
-import models.{AmendCheckMode, CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -41,6 +41,13 @@ case object MemberHasEverBeenResidentUKPage extends QuestionPage[Boolean] {
     answers.get(MemberHasEverBeenResidentUKPage) match {
       case Some(true)  => memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(CheckMode)
       case Some(false) => memberDetails.routes.MemberDetailsCYAController.onPageLoad()
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    answers.get(MemberHasEverBeenResidentUKPage) match {
+      case Some(true)  => memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(FinalCheckMode)
+      case Some(false) => super.nextPageFinalCheckMode(answers)
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
 
