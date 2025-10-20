@@ -504,3 +504,6 @@ GET        /submit-to-hmrc                                                      
 POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit(mode: Mode = NormalMode)
 
 GET        /transfer-submitted                                                                     controllers.TransferSubmittedController.onPageLoad()
+
+GET        /view-amend                                                                                 controllers.ViewAmendSelectorController.onPageLoad(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+POST       /view-amend                                                                                 controllers.ViewAmendSelectorController.onSubmit(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)

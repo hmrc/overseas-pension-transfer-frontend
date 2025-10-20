@@ -746,3 +746,7 @@ transferSubmitted.dateSubmitted.key = Date submitted
 viewSubmitted.heading = Overseas transfer report for {0}
 schemeName.label = Scheme
 dateOfSubmission.label = Date submitted
+
+viewAmend.title = What would you like to do?
+viewAmend.radio1 = View this overseas pension transfer
+viewAmend.radio2 = Amend this overseas pension transfer
