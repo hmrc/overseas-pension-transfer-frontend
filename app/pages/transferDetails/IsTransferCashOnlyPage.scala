@@ -54,7 +54,7 @@ case object IsTransferCashOnlyPage extends QuestionPage[Boolean] {
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
     answers.get(IsTransferCashOnlyPage) match {
-      case Some(true)  => super.nextPageFinalCheckMode(answers)
+      case Some(true)  => super.nextPageAmendCheckMode(answers)
       case Some(false) => routes.TypeOfAssetController.onPageLoad(AmendCheckMode)
       case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }

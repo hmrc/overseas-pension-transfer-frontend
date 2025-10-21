@@ -18,7 +18,7 @@ package pages.transferDetails
 
 import controllers.transferDetails.routes
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -56,9 +56,28 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers {
     }
 
     "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        WhyTransferIsTaxablePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+
+      "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
+        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+        WhyTransferIsTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(FinalCheckMode)
+      }
+
+      "must go to amount of tax deducted page if NoExclusion selected" in {
+        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
+        WhyTransferIsTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(FinalCheckMode)
+      }
+    }
+
+    "in AmendCheckMode" - {
+
+      "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
+        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+        WhyTransferIsTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(AmendCheckMode)
+      }
+
+      "must go to amount of tax deducted page if NoExclusion selected" in {
+        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
+        WhyTransferIsTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(AmendCheckMode)
       }
     }
   }

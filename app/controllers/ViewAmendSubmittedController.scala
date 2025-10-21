@@ -66,11 +66,7 @@ class ViewAmendSubmittedController @Inject() (
                 request.authenticatedUser,
                 Json.toJsObject(userAnswers)
               )
-              // TODO: REMOVE
-              for {
-                _ <- sessionRepository.set(sessionData)
-                _ <- userAnswersService.setExternalUserAnswers(userAnswers)
-              } yield Ok(renderView(sessionData, userAnswers, isAmend = false))
+              Future.successful(Ok(renderView(sessionData, userAnswers, isAmend = false)))
             case Left(_)            =>
               Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
           }
