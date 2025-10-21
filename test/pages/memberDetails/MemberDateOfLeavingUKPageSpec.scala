@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -47,6 +47,13 @@ class MemberDateOfLeavingUKPageSpec extends AnyFreeSpec with Matchers {
       "must go to Final Check Answers page" in {
         MemberDateOfLeavingUKPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to Final Check Answers page" in {
+        MemberDateOfLeavingUKPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+          controllers.routes.ViewAmendSubmittedController.amend()
       }
     }
   }
