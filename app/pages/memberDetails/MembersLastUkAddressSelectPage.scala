@@ -29,20 +29,20 @@ case object MembersLastUkAddressSelectPage extends QuestionPage[MembersLookupLas
 
   override def toString: String = "memberSelectLastUkAddress"
 
-  private def nextPage(mode: Mode): Call =
+  private def nextPageBase(mode: Mode): Call =
     routes.MembersLastUkAddressConfirmController.onPageLoad(mode)
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    nextPage(mode = NormalMode)
+    nextPageBase(mode = NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    nextPage(mode = CheckMode)
+    nextPageBase(mode = CheckMode)
 
   override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    nextPage(mode = FinalCheckMode)
+    nextPageBase(mode = FinalCheckMode)
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    nextPage(mode = AmendCheckMode)
+    nextPageBase(mode = AmendCheckMode)
 
   val recoveryModeReturnUrl: String = routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
 }

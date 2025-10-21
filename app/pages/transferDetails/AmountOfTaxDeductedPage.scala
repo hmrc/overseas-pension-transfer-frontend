@@ -28,20 +28,20 @@ case object AmountOfTaxDeductedPage extends QuestionPage[BigDecimal] {
 
   override def toString: String = "amountTaxDeducted"
 
-  private def nextPage(mode: Mode): Call =
+  private def nextPageBase(mode: Mode): Call =
     routes.NetTransferAmountController.onPageLoad(mode)
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    nextPage(NormalMode)
+    nextPageBase(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    nextPage(CheckMode)
+    nextPageBase(CheckMode)
 
   override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    nextPage(FinalCheckMode)
+    nextPageBase(FinalCheckMode)
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    nextPage(AmendCheckMode)
+    nextPageBase(AmendCheckMode)
 
   final def changeLink(mode: Mode): Call =
     routes.AmountOfTaxDeductedController.onPageLoad(mode)

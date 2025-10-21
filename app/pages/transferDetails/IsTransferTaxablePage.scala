@@ -30,7 +30,7 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
 
   override def toString: String = "paymentTaxableOverseas"
 
-  private def nextPage(answers: UserAnswers, mode: Mode): Call =
+  private def nextPageBase(answers: UserAnswers, mode: Mode): Call =
     answers.get(IsTransferTaxablePage) match {
       case Some(true)  => routes.WhyTransferIsTaxableController.onPageLoad(mode)
       case Some(false) => routes.WhyTransferIsNotTaxableController.onPageLoad(mode)
@@ -38,16 +38,16 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
     }
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    nextPage(answers, NormalMode)
+    nextPageBase(answers, NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    nextPage(answers, CheckMode)
+    nextPageBase(answers, CheckMode)
 
   override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    nextPage(answers, FinalCheckMode)
+    nextPageBase(answers, FinalCheckMode)
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    nextPage(answers, AmendCheckMode)
+    nextPageBase(answers, AmendCheckMode)
 
   final def changeLink(mode: Mode): Call =
     routes.IsTransferTaxableController.onPageLoad(mode)
