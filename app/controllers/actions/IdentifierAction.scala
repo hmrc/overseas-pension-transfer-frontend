@@ -52,6 +52,9 @@ class IdentifierActionImpl @Inject() (
 
     authorised(predicate).retrieve(internalId and allEnrolments and affinityGroup) {
       case optInternalId ~ enrolments ~ Some(affinityGroup) =>
+        if (affinityGroup == AffinityGroup.Agent) {
+          throw AgentAffinityGroupNotAllowed
+        }
         val internalId                           = getOrElseFailWithUnauthorised(optInternalId, "Unable to retrieve internalId")
         val authenticatedUser: AuthenticatedUser = extractUser(enrolments, config, internalId, affinityGroup)
         block(IdentifierRequest(request, authenticatedUser))
@@ -61,8 +64,16 @@ class IdentifierActionImpl @Inject() (
   private def handleAuthException: PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
       Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-    case e                  =>
+
+    case AgentAffinityGroupNotAllowed =>
+      logger.warn("Agent users are not permitted to access this service")
+      Redirect(routes.UnauthorisedController.onPageLoad())
+
+    case e =>
       logger.error("Unexpected error during authorisation", e)
       Redirect(routes.UnauthorisedController.onPageLoad())
   }
+
+  private case object AgentAffinityGroupNotAllowed extends RuntimeException("Agent affinity group is not supported")
+
 }
