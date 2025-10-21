@@ -18,7 +18,7 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.memberDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -64,10 +64,41 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
       }
     }
 
-    "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        MemberIsResidentUKPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    "in FinalCheck Mode" - {
+
+      "must go to FinalCheck Answers page when 'true'" in {
+
+        MemberIsResidentUKPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
+        ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+
+      "must go to Member Has Ever Been Uk Resident in FinalCheck mode when 'false'" in {
+
+        MemberIsResidentUKPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers.set(MemberIsResidentUKPage, false).success.value
+        ) mustEqual routes.MemberHasEverBeenResidentUKController.onPageLoad(FinalCheckMode)
+      }
+    }
+
+    "in AmendCheck Mode" - {
+
+      "must go to AmendCheck Answers page when 'true'" in {
+
+        MemberIsResidentUKPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
+        ) mustEqual controllers.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to Member Has Ever Been Uk Resident in AmendCheck mode when 'false'" in {
+
+        MemberIsResidentUKPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers.set(MemberIsResidentUKPage, false).success.value
+        ) mustEqual routes.MemberHasEverBeenResidentUKController.onPageLoad(AmendCheckMode)
       }
     }
   }

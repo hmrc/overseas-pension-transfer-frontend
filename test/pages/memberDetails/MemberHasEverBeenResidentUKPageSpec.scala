@@ -18,7 +18,7 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.memberDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -66,10 +66,41 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
       }
     }
 
-    "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        MemberHasEverBeenResidentUKPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    "in FinalCheck Mode" - {
+
+      "must go to FinalCheck Answers page when answer is 'false'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
+        ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+
+      "must go to Member Last UK Address Lookup in FinalCheckMode when answer is 'true'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
+        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(FinalCheckMode)
+      }
+    }
+
+    "in AmendCheck Mode" - {
+
+      "must go to AmendCheck Answers page when answer is 'false'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
+        ) mustEqual controllers.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to Member Last UK Address Lookup in AmendCheckMode when answer is 'true'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
+        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(AmendCheckMode)
       }
     }
   }
