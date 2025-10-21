@@ -18,6 +18,7 @@ package services
 
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
+import models.QtStatus.Submitted
 import models.{PstrNumber, QtStatus, UserAnswers}
 import models.dtos.UserAnswersDTO.toUserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +45,7 @@ class CollectSubmittedVersionsService @Inject() (
 
     def collectVersions: Future[List[UserAnswers]] = {
       if (versionNumber == "001") {
-        userAnswersConnector.getAnswers(None, Some(qtReference), pstr, qtStatus, Some(versionNumber)) map {
+        userAnswersConnector.getAnswers(None, Some(qtReference), pstr, Submitted, Some(versionNumber)) map {
           case Right(dto) => List(toUserAnswers(dto))
           case Left(_)    => Nil
         }

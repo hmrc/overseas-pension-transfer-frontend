@@ -18,6 +18,7 @@ package viewmodels
 
 import models.QtStatus.Submitted
 import models.UserAnswers
+import play.api.i18n.Messages
 import play.twirl.api.Html
 import utils.DateTimeFormats.localDateTimeFormatter
 
@@ -25,8 +26,9 @@ import java.time.{Instant, LocalDateTime, ZoneId}
 
 case object SubmittedTransferSummaryViewModel {
 
-  def rows(maybeDraft: Option[UserAnswers], answers: List[UserAnswers], versionNumber: String): Html = {
-    def changeLinkText(isDraftDefined: Boolean) = if (isDraftDefined) "View" else "View or amend"
+  def rows(maybeDraft: Option[UserAnswers], answers: List[UserAnswers], versionNumber: String)(implicit messages: Messages): Html = {
+    def changeLinkText(isDraftDefined: Boolean) =
+      if (isDraftDefined) messages("submittedTransferSummary.view") else messages("submittedTransferSummary.viewOrAmend")
     def changeLinkHref(isDraftDefined: Boolean) =
       if (isDraftDefined) {
         controllers.routes.ViewSubmittedController.fromDashboard(answers.head.id, answers.head.pstr, Submitted, versionNumber).url
@@ -35,7 +37,7 @@ case object SubmittedTransferSummaryViewModel {
     val versions = versionNumber.toInt to 1 by -1
 
     val draftTableRow = maybeDraft.fold("") {
-      draft => buildRow(draft.lastUpdated, "Draft", "", "Review and submit")
+      draft => buildRow(draft.lastUpdated, messages("submittedTransferSummary.draft"), "", messages("submittedTransferSummary.reviewAndSubmit"))
     }
 
     val mostRecentSubmittedVersion = {
@@ -45,18 +47,24 @@ case object SubmittedTransferSummaryViewModel {
 
     val submittedRecords = answers.tail.zip(versions.tail).map {
       case (answer, version) =>
+        val stringifyVersion = version.toString.length match {
+          case 1 => s"00$version"
+          case 2 => s"0$version"
+          case _ => version.toString
+        }
+
         buildRow(
           answer.lastUpdated,
           version.toString,
-          controllers.routes.ViewSubmittedController.fromDashboard(answers.head.id, answers.head.pstr, Submitted, versionNumber).url,
-          "View"
+          controllers.routes.ViewSubmittedController.fromDashboard(answers.head.id, answers.head.pstr, Submitted, stringifyVersion).url,
+          messages("submittedTransferSummary.view")
         )
     }.mkString
 
     Html(draftTableRow + mostRecentSubmittedVersion + submittedRecords)
   }
 
-  def buildRow(date: Instant, version: String, href: String, linkText: String) =
+  private def buildRow(date: Instant, version: String, href: String, linkText: String): String =
     s""" <tr class="govuk-table__row">
        |            <th scope="row" class="govuk-table__header">$version</th>
        |            <td class="govuk-table__cell">${LocalDateTime.ofInstant(date, ZoneId.systemDefault()).format(localDateTimeFormatter)}</td>

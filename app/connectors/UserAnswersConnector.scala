@@ -45,15 +45,12 @@ class UserAnswersConnector @Inject() (
   )(implicit ec: ExecutionContext
   ) extends Logging with DownstreamLogging {
 
-  private def userAnswersUrl(id: String): URL =
-    url"${appConfig.backendService}/save-for-later/$id"
-
   private def submissionUrl(id: String): URL =
     url"${appConfig.backendService}/submit-declaration/$id"
 
   // These two versions of getAnswers are purposely similar to one another as it is recommended to combine these two in a future refactor
   def getAnswers(transferId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersType] = {
-    http.get(userAnswersUrl(transferId))
+    http.get(url"${appConfig.backendService}/save-for-later/$transferId")
       .execute[GetUserAnswersType]
       .recover {
         case e: Exception =>
@@ -97,7 +94,7 @@ class UserAnswersConnector @Inject() (
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
     ): Future[SetUserAnswersType] = {
-    http.post(userAnswersUrl(userAnswersDTO.referenceId))
+    http.post(url"${appConfig.backendService}/save-for-later")
       .withBody(Json.toJson(userAnswersDTO))
       .execute[SetUserAnswersType]
       .recover {

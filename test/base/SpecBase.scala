@@ -53,6 +53,8 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience {
 
+  val now = Instant.now
+
   val testMemberName: PersonName = PersonName("User", "McUser")
 
   val testQtNumber: QtNumber = QtNumber("QT123456")

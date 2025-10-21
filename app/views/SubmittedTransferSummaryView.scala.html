@@ -25,16 +25,17 @@
         qtNumber: QTNumber
 )
 
-@(tableRows: Html)(implicit request: IdentifierRequest[_], messages: Messages)
+@(memberName: String, qtNumber: String, tableRows: Html)(implicit request: IdentifierRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("submittedVersionSummary.title", "Trixie Mattel"))) {
-    <h1 class="govuk-heading-l">@messages("submittedVersionSummary.heading", "Trixie Mattel")</h1>
+@layout(pageTitle = titleNoForm(messages("submittedTransferSummary.title", memberName)), showPageFooter = false) {
+    <span class="govuk-caption-l">@qtNumber</span>
+    <h1 class="govuk-heading-l">@messages("submittedTransferSummary.heading", memberName)</h1>
 
     <table class="govuk-table">
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Submission</th>
-            <th scope="col" class="govuk-table__header">Status</th>
+            <th scope="col" class="govuk-table__header">@messages("submittedTransferSummary.submission")</th>
+            <th scope="col" class="govuk-table__header">@messages("submittedTransferSummary.status")</th>
             <th scope="col" class="govuk-table__header"></th>
         </tr>
         </thead>

@@ -748,5 +748,11 @@ viewSubmitted.heading = Overseas transfer report for {0}
 schemeName.label = Scheme
 dateOfSubmission.label = Date submitted
 
-submittedVersionSummary.title = Reports for {0}
-submittedVersionSummary.heading = Reports for {0}
+submittedTransferSummary.title = Reports for {0}
+submittedTransferSummary.heading = Reports for {0}
+submittedTransferSummary.submission = Submission
+submittedTransferSummary.status = Status
+submittedTransferSummary.view = View
+submittedTransferSummary.viewOrAmend = View or amend
+submittedTransferSummary.reviewAndSubmit = Review and submit
+submittedTransferSummary.draft = Draft

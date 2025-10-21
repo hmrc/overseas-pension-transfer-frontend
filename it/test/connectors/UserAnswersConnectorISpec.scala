@@ -256,7 +256,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
   "setAnswers" should {
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
-      stubFor(post("/overseas-pension-transfer-backend/save-for-later/testId")
+      stubFor(post("/overseas-pension-transfer-backend/save-for-later")
         .willReturn(
           aResponse()
             .withStatus(NO_CONTENT)
@@ -270,7 +270,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     "return UserAnswersErrorResponse" when {
       "400 is returned" in {
         stubPost(
-          "/overseas-pension-transfer-backend/save-for-later/testId",
+          "/overseas-pension-transfer-backend/save-for-later",
           """{"error": "Transformation failed", "details": "Payload received is invalid"}""",
           BAD_REQUEST
         )
@@ -282,7 +282,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       "500 is returned" in {
         stubPost(
-          "/overseas-pension-transfer-backend/save-for-later/testId",
+          "/overseas-pension-transfer-backend/save-for-later",
           """{"error": "Failed to save answers"}""",
           INTERNAL_SERVER_ERROR
         )

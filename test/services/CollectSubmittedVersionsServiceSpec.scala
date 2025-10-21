@@ -54,7 +54,7 @@ class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
 
       val result = await(service.collectVersions("QT123456", PstrNumber("12345678AB"), Submitted, "001"))
 
-      result mustBe List(userAnswers)
+      result mustBe (None, List(userAnswers))
     }
   }
 
@@ -66,10 +66,9 @@ class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
 
     val result = await(service.collectVersions("QT123456", PstrNumber("12345678AB"), Submitted, "001"))
 
-    result mustBe List(
-      userAnswers.copy(id = "Draft"),
+    result mustBe (Some(userAnswers.copy(id = "Draft")), List(
       userAnswers
-    )
+    ))
   }
 
   "Return a list of one Draft and multiple UserAnswers for versionNumber 003" in {
@@ -79,12 +78,11 @@ class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
 
     val result = await(service.collectVersions("QT123456", PstrNumber("12345678AB"), Submitted, "003"))
 
-    result mustBe List(
-      userAnswers.copy(id = "Draft"),
+    result mustBe (Some(userAnswers.copy(id = "Draft")), List(
       userAnswers,
       userAnswers,
       userAnswers
-    )
+    ))
   }
 
   List("010", "100") foreach {
@@ -96,7 +94,7 @@ class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
 
         val result = await(service.collectVersions("QT123456", PstrNumber("12345678AB"), Submitted, version))
 
-        result.length mustBe version.toInt
+        result._2.length mustBe version.toInt
       }
   }
 
