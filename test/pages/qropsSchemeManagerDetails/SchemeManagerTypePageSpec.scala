@@ -17,7 +17,7 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, SchemeManagerType, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PersonName, PstrNumber, SchemeManagerType, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -66,11 +66,78 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers {
       }
     }
 
-    "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        SchemeManagerTypePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    "in Final Check Mode" - {
+
+      "must go to Manger's name page in FinalCheckMode when the type is 'Individual'" in {
+
+        SchemeManagerTypePage.nextPage(
+          FinalCheckMode,
+          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+        ) mustEqual routes.SchemeManagersNameController.onPageLoad(FinalCheckMode)
       }
+
+      "must go to Organisation name page when the type is 'Organisation'" in {
+
+        SchemeManagerTypePage.nextPage(
+          FinalCheckMode,
+          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+        ) mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(FinalCheckMode)
+      }
+    }
+
+    "in Amend Check Mode" - {
+
+      "must go to Manger's name page in AmendCheckMode when the type is 'Individual'" in {
+
+        SchemeManagerTypePage.nextPage(
+          AmendCheckMode,
+          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+        ) mustEqual routes.SchemeManagersNameController.onPageLoad(AmendCheckMode)
+      }
+
+      "must go to Organisation name page when the type is 'Organisation'" in {
+
+        SchemeManagerTypePage.nextPage(
+          AmendCheckMode,
+          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+        ) mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(AmendCheckMode)
+      }
+    }
+  }
+
+  "cleanup" - {
+
+    val emptyAnswers   = UserAnswers("id", PstrNumber("12345678AB"))
+    val individualName = PersonName("Ada", "Lovelace")
+    val orgName        = "Analytical Engines Ltd"
+    val orgContact     = PersonName("Charles", "Babbage")
+
+    "must remove SchemeManagersNamePage when SchemeManagerType is Organisation" in {
+      val withBoth =
+        emptyAnswers
+          .set(SchemeManagersNamePage, individualName).success.value
+          .set(SchemeManagerOrganisationNamePage, orgName).success.value
+          .set(SchemeManagerOrgIndividualNamePage, orgContact).success.value
+
+      val cleaned = SchemeManagerTypePage.cleanup(Some(SchemeManagerType.Organisation), withBoth).success.value
+
+      cleaned.get(SchemeManagersNamePage) mustBe None
+      cleaned.get(SchemeManagerOrganisationNamePage) mustBe Some(orgName)
+      cleaned.get(SchemeManagerOrgIndividualNamePage) mustBe Some(orgContact)
+    }
+
+    "must remove SchemeManagerOrganisationNamePage and SchemeManagerOrgIndividualNamePage when SchemeManagerType is Individual" in {
+      val withBoth =
+        emptyAnswers
+          .set(SchemeManagersNamePage, individualName).success.value
+          .set(SchemeManagerOrganisationNamePage, orgName).success.value
+          .set(SchemeManagerOrgIndividualNamePage, orgContact).success.value
+
+      val cleaned = SchemeManagerTypePage.cleanup(Some(SchemeManagerType.Individual), withBoth).success.value
+
+      cleaned.get(SchemeManagerOrganisationNamePage) mustBe None
+      cleaned.get(SchemeManagerOrgIndividualNamePage) mustBe None
+      cleaned.get(SchemeManagersNamePage) mustBe Some(individualName)
     }
   }
 }
