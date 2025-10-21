@@ -33,8 +33,8 @@ case object WhyTransferIsTaxablePage extends QuestionPage[WhyTransferIsTaxable] 
 
   private def nextPageBase(answers: UserAnswers, mode: Mode): Call =
     answers.get(WhyTransferIsTaxablePage) match {
-      case Some(TransferExceedsOTCAllowance) => routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode)
-      case Some(NoExclusion)                 => routes.AmountOfTaxDeductedController.onPageLoad(NormalMode)
+      case Some(TransferExceedsOTCAllowance) => routes.ApplicableTaxExclusionsController.onPageLoad(mode)
+      case Some(NoExclusion)                 => routes.AmountOfTaxDeductedController.onPageLoad(mode)
       case _                                 => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
 
