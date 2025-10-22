@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios, ErrorMessage}
 
 @this(
   layout: templates.Layout,
@@ -26,7 +26,7 @@
 @(qtReference: String, pstr: models.PstrNumber, qtStatus: models.QtStatus, versionNumber: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("viewAmend.title")) {
-@formHelper(action = routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber)) {
+  @formHelper(action = routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber)) {
     @request.flash.get("lockWarning").map { name =>
       <div class="govuk-notification-banner govuk-notification-banner--important"
            role="region"
@@ -55,6 +55,9 @@
         ))
       )),
       name = "option",
+      errorMessage = request.flash.get("error").map { _ =>
+        ErrorMessage(content = Text(messages("viewAmend.error.required")))
+      },
       items = Seq(
         RadioItem(
           content = Text(messages("viewAmend.radio1")),

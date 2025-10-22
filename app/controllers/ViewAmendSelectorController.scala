@@ -24,6 +24,11 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.ViewAmendSelectorView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.mongo.lock.LockRepository
+import config.FrontendAppConfig
+import scala.concurrent.duration.DurationLong
+import pages.memberDetails.MemberNamePage
+import services.UserAnswersService
 
 class ViewAmendSelectorController @Inject() (
     override val messagesApi: MessagesApi,
@@ -31,9 +36,14 @@ class ViewAmendSelectorController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
-    view: ViewAmendSelectorView
+    view: ViewAmendSelectorView,
+    appConfig: FrontendAppConfig,
+    lockRepository: LockRepository,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
+
+  private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
 
   def onPageLoad(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
     (identify andThen schemeData andThen getData) { implicit request =>
@@ -50,19 +60,33 @@ class ViewAmendSelectorController @Inject() (
     (identify andThen schemeData andThen getData).async { implicit request =>
       for {
         formData <- Future.successful(
-          request.body.asFormUrlEncoded
-            .flatMap(_.get("option").flatMap(_.headOption))
-        )
+                      request.body.asFormUrlEncoded
+                        .flatMap(_.get("option").flatMap(_.headOption))
+                    )
         result   <- formData match {
-          case Some("view") =>
-            Future.successful(Redirect(routes.ViewSubmittedController.fromDashboard(qtReference, pstr, qtStatus, versionNumber)))
-//TODO - implement routing for amend functionality
-          case Some("amend") =>
-            Future.successful(Redirect(controllers.routes.TaskListController.onPageLoad()))
+                      case Some("view")  =>
+                        Future.successful(Redirect(routes.ViewSubmittedController.fromDashboard(qtReference, pstr, qtStatus, versionNumber)))
 
-          case _ =>
-            Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
-        }
+                      // TODO - implement routing for amend functionality
+                      case Some("amend") =>
+                        val internalId = request.authenticatedUser.internalId
+                        for {
+                          userAnswersResult <- userAnswersService.getExternalUserAnswers(None, Some(qtReference), pstr, qtStatus, Some(versionNumber))
+                          _                 <- Future.successful(lockRepository.releaseLock(qtReference, internalId))
+                          lockResult        <- lockRepository.takeLock(qtReference, internalId, lockTtlSeconds.seconds)
+                        } yield lockResult match {
+                          case Some(_) => Redirect(controllers.routes.TaskListController.onPageLoad())
+                          case None    => Redirect(routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
+                              .flashing("lockWarning" -> userAnswersResult.toOption.flatMap(_.get(MemberNamePage)).map(_.fullName).getOrElse(qtReference))
+                        }
+
+                      case Some("") | None =>
+                        Future.successful(Redirect(routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
+                          .flashing("error" -> "true"))
+
+                      case _ =>
+                        Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+                    }
       } yield result
     }
 }
