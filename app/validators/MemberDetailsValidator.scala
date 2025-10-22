@@ -16,10 +16,28 @@
 
 package validators
 
-import models.{UserAnswers, ValidationResult}
+import cats.implicits._
+import models.{DataMissingError, GenericError, PersonName, UserAnswers, ValidationResult}
 import models.transferJourneys.MemberDetails
+import pages.memberDetails._
 
 object MemberDetailsValidator extends Validator[MemberDetails] {
 
+  //Use for comprehension instead of one-stop-shop bigTuple.mapN
   override def fromUserAnswers(user: UserAnswers): ValidationResult[MemberDetails] = ???
+
+
+  private def validateMemberName(answers: UserAnswers): ValidationResult[PersonName] =
+    answers.get(MemberNamePage) match {
+      case Some(name) => name.validNec
+      case None => DataMissingError(MemberNamePage).invalidNec
+    }
+
+  private def validateMemberNino(answers: UserAnswers): ValidationResult[Option[String]] =
+    (answers.get(MemberNinoPage), answers.get(MemberDoesNotHaveNinoPage)) match {
+      case (Some(nino), None) => Some(nino).validNec
+      case (None, Some(_)) => None.validNec
+      case (Some(_), Some(_)) => GenericError("Cannot have valid payload with nino and reasonNoNINO").invalidNec
+      case (None, None) => DataMissingError(MemberNinoPage).invalidNec
+    }
 }
