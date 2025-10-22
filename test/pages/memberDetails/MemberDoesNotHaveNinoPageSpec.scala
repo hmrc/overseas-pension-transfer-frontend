@@ -18,10 +18,13 @@ package pages.memberDetails
 
 import controllers.memberDetails.routes
 import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
 class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers {
+
+  private val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
 
   ".nextPage" - {
 
@@ -48,6 +51,31 @@ class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers {
         MemberDoesNotHaveNinoPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
+    }
+  }
+
+  "cleanup" - {
+
+    "must remove MemberNinoPage when a 'no NINO' reason is supplied" in {
+      val withNinoUA = emptyAnswers
+        .set(MemberNinoPage, "AA123456A")
+        .success
+        .value
+
+      val cleaned = MemberDoesNotHaveNinoPage.cleanup(Some("no nino"), withNinoUA).success.value
+
+      cleaned.get(MemberNinoPage) mustBe None
+    }
+
+    "must not remove MemberNinoPage when a 'no NINO' reason is not supplied" in {
+      val withNinoUA = emptyAnswers
+        .set(MemberNinoPage, "AA123456A")
+        .success
+        .value
+
+      val cleaned = MemberDoesNotHaveNinoPage.cleanup(None, withNinoUA).success.value
+
+      cleaned.get(MemberNinoPage) mustBe Some("AA123456A")
     }
   }
 }

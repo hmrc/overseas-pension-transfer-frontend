@@ -20,7 +20,7 @@ import controllers.transferDetails.routes
 import models.ApplicableTaxExclusions.Occupational
 import models.WhyTransferIsNotTaxable.{IndividualIsEmployedPublicService, IndividualIsEmployeeOccupational}
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
-import models.{ApplicableTaxExclusions, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers, WhyTransferIsNotTaxable}
+import models.{AmendCheckMode, ApplicableTaxExclusions, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers, WhyTransferIsNotTaxable}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -57,11 +57,29 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers {
     }
 
     "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        IsTransferTaxablePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      "must go to why transfer is taxable page if user selects true" in {
+        val ua = emptyAnswers.set(IsTransferTaxablePage, true).success.value
+        IsTransferTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(FinalCheckMode)
+      }
+
+      "must go to why transfer is not taxable page if user selects false" in {
+        val ua = emptyAnswers.set(IsTransferTaxablePage, false).success.value
+        IsTransferTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(FinalCheckMode)
       }
     }
+
+    "in AmendCheckMode" - {
+      "must go to why transfer is taxable page if user selects true" in {
+        val ua = emptyAnswers.set(IsTransferTaxablePage, true).success.value
+        IsTransferTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(AmendCheckMode)
+      }
+
+      "must go to why transfer is not taxable page if user selects false" in {
+        val ua = emptyAnswers.set(IsTransferTaxablePage, false).success.value
+        IsTransferTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(AmendCheckMode)
+      }
+    }
+
   }
 
   "cleanup" - {

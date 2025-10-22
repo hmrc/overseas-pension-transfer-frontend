@@ -17,7 +17,7 @@
 package pages
 
 import controllers.checkYourAnswers.routes
-import models.{CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 
@@ -30,6 +30,7 @@ trait Page {
       case NormalMode     => nextPageNormalMode(answers)
       case CheckMode      => nextPageCheckMode(answers)
       case FinalCheckMode => nextPageFinalCheckMode(answers)
+      case AmendCheckMode => nextPageAmendCheckMode(answers)
     }
 
   protected def nextPageNormalMode(answers: UserAnswers): Call =
@@ -40,6 +41,9 @@ trait Page {
 
   protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
     routes.CheckYourAnswersController.onPageLoad()
+
+  protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    controllers.routes.ViewAmendSubmittedController.amend()
 
   def nextPageRecovery(returnUrl: Option[String] = None): Call =
     controllers.routes.JourneyRecoveryController.onPageLoad(

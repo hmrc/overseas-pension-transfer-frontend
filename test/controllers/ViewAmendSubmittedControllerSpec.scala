@@ -39,7 +39,7 @@ import views.html.ViewSubmittedView
 
 import scala.concurrent.Future
 
-class ViewSubmittedControllerSpec
+class ViewAmendSubmittedControllerSpec
     extends AnyFreeSpec
     with SpecBase
     with MockitoSugar
@@ -95,9 +95,9 @@ class ViewSubmittedControllerSpec
       )(messages(applicationBuilder().build()))
     )
 
-  "ViewSubmittedController" - {
+  "ViewAmendSubmittedController" - {
 
-    "fromDashboard" - {
+    "view" - {
 
       "return Ok and render expected view (uses sessionData.transferId and memberName)" in {
         when(
@@ -118,7 +118,7 @@ class ViewSubmittedControllerSpec
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           ).build()
 
-        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber.value, pstr, qtStatus, versionNumber).url)
+        val req    = FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber.value, pstr, qtStatus, versionNumber).url)
         val result = route(app, req).value
 
         val view = app.injector.instanceOf[ViewSubmittedView]
@@ -161,7 +161,7 @@ class ViewSubmittedControllerSpec
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           ).build()
 
-        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber.value, pstr, qtStatus, versionNumber).url)
+        val req    = FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber.value, pstr, qtStatus, versionNumber).url)
         val result = route(app, req).value
 
         status(result) mustBe SEE_OTHER

@@ -17,7 +17,7 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -43,6 +43,13 @@ class SchemeManagerOrgIndividualNamePageSpec extends AnyFreeSpec with Matchers {
       "must go to Final Check Answers page" in {
         SchemeManagerOrgIndividualNamePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to Final Check Answers page" in {
+        SchemeManagerOrgIndividualNamePage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+          controllers.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

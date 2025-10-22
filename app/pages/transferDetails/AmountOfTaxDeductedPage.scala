@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -28,11 +28,20 @@ case object AmountOfTaxDeductedPage extends QuestionPage[BigDecimal] {
 
   override def toString: String = "amountTaxDeducted"
 
+  private def nextPageBase(mode: Mode): Call =
+    routes.NetTransferAmountController.onPageLoad(mode)
+
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.NetTransferAmountController.onPageLoad(NormalMode)
+    nextPageBase(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.NetTransferAmountController.onPageLoad(CheckMode)
+    nextPageBase(CheckMode)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    nextPageBase(FinalCheckMode)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    nextPageBase(AmendCheckMode)
 
   final def changeLink(mode: Mode): Call =
     routes.AmountOfTaxDeductedController.onPageLoad(mode)

@@ -22,6 +22,8 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object MemberNinoPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TaskCategory.MemberDetails.toString \ toString
@@ -36,4 +38,12 @@ case object MemberNinoPage extends QuestionPage[String] {
 
   final def changeLink(mode: Mode): Call =
     routes.MemberNinoController.onPageLoad(mode)
+
+  override def cleanup(memberNinoPage: Option[String], userAnswers: UserAnswers): Try[UserAnswers] = {
+    memberNinoPage match {
+      case Some(_) => userAnswers
+          .remove(MemberDoesNotHaveNinoPage)
+      case _       => super.cleanup(memberNinoPage, userAnswers)
+    }
+  }
 }
