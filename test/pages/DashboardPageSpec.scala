@@ -16,18 +16,17 @@
 
 package pages
 
+import base.SpecBase
 import controllers.routes
 import models.QtStatus.{InProgress, Submitted}
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber, TransferReportQueryParams}
-import org.scalatest.TryValues._
+import models.{DashboardData, PensionSchemeDetails, QtNumber, SrnNumber, TransferReportQueryParams}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.mvc.Call
 import queries.PensionSchemeDetailsQuery
 
-class DashboardPageSpec extends AnyFreeSpec with Matchers {
+class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
-  private val pstr     = PstrNumber("12345678AB")
   private val scheme   = PensionSchemeDetails(SrnNumber("S1234567"), pstr, "Scheme Name")
   private val internal = "internal-id"
 
@@ -37,26 +36,24 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers {
   private def ddEmpty: DashboardData =
     DashboardData(internal)
 
-  private def inProgressParams(tr: String = "TR001"): TransferReportQueryParams =
+  private def inProgressParams(): TransferReportQueryParams =
     TransferReportQueryParams(
-      transferReference = Some(tr),
-      qtReference       = None,
-      qtStatus          = Some(InProgress),
-      pstr              = None,
-      versionNumber     = None,
-      memberName        = "Name",
-      currentPage       = 1
+      transferId    = Some(userAnswersTransferNumber),
+      qtStatus      = Some(InProgress),
+      pstr          = None,
+      versionNumber = None,
+      memberName    = "Name",
+      currentPage   = 1
     )
 
-  private def submittedParams(qtRef: String = "QT123", ver: String = "007"): TransferReportQueryParams =
+  private def submittedParams(qtRef: String = "QT123456", ver: String = "007"): TransferReportQueryParams =
     TransferReportQueryParams(
-      transferReference = None,
-      qtReference       = Some(qtRef),
-      qtStatus          = Some(Submitted),
-      pstr              = Some(pstr),
-      versionNumber     = Some(ver),
-      memberName        = "Name",
-      currentPage       = 1
+      transferId    = Some(QtNumber(qtRef)),
+      qtStatus      = Some(Submitted),
+      pstr          = Some(pstr),
+      versionNumber = Some(ver),
+      memberName    = "Name",
+      currentPage   = 1
     )
 
   ".nextPage" - {
@@ -73,20 +70,19 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers {
 
     "must go to TaskListController when status is InProgress and transferReference exists" in {
       val call: Call =
-        DashboardPage.nextPage(ddEmpty, Some(InProgress), Some(inProgressParams("TR001")))
+        DashboardPage.nextPage(ddEmpty, Some(InProgress), Some(inProgressParams()))
 
-      call mustEqual controllers.routes.TaskListController.fromDashboard("TR001")
+      call mustEqual controllers.routes.TaskListController.fromDashboard(userAnswersTransferNumber)
     }
 
     "must go to JourneyRecovery when status is InProgress but transferReference is missing" in {
       val paramsMissingRef = TransferReportQueryParams(
-        transferReference = None,
-        qtReference       = None,
-        qtStatus          = Some(InProgress),
-        pstr              = None,
-        versionNumber     = None,
-        memberName        = "Name",
-        currentPage       = 1
+        transferId    = None,
+        qtStatus      = Some(InProgress),
+        pstr          = None,
+        versionNumber = None,
+        memberName    = "Name",
+        currentPage   = 1
       )
 
       DashboardPage.nextPage(ddEmpty, Some(InProgress), Some(paramsMissingRef)) mustEqual
@@ -94,11 +90,11 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers {
     }
 
     "must go to ViewSubmittedController when status is Submitted and required params are present" in {
-      val p    = submittedParams("QT-123")
+      val p    = submittedParams("QT123654")
       val call = DashboardPage.nextPage(ddEmpty, Some(Submitted), Some(p))
 
       call mustEqual controllers.routes.SubmittedTransferSummaryController.onPageLoad(
-        "QT-123",
+        QtNumber("QT123654"),
         pstr,
         Submitted,
         "007"
@@ -106,9 +102,9 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers {
     }
 
     "must go to JourneyRecovery when status is Submitted but any required param is missing" in {
-      val missingVer  = submittedParams("QT-123").copy(versionNumber = None)
-      val missingPstr = submittedParams("QT-123").copy(pstr = None)
-      val missingQt   = submittedParams("QT-123").copy(qtReference = None)
+      val missingVer  = submittedParams("QT654321").copy(versionNumber = None)
+      val missingPstr = submittedParams("QT654321").copy(pstr = None)
+      val missingQt   = submittedParams("QT654321").copy(transferId = None)
 
       DashboardPage.nextPage(ddEmpty, Some(Submitted), Some(missingVer)) mustEqual
         controllers.routes.JourneyRecoveryController.onPageLoad()

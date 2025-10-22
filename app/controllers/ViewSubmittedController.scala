@@ -19,7 +19,7 @@ package controllers
 import com.google.inject.Inject
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.requests.IdentifierRequest
-import models.{FinalCheckMode, PstrNumber, QtStatus, SessionData, UserAnswers}
+import models.{FinalCheckMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,7 +37,7 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.ViewSubmittedView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ViewSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
@@ -49,24 +49,29 @@ class ViewSubmittedController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 
-  def fromDashboard(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
+  def fromDashboard(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
     (identify andThen schemeData).async {
       implicit request =>
-        userAnswersService
-          .getExternalUserAnswers(None, Some(qtReference), pstr, qtStatus, Some(versionNumber))
-          .map {
-            case Right(userAnswers) =>
-              val sessionData = SessionData(
-                request.authenticatedUser.internalId,
-                qtReference,
-                request.authenticatedUser.pensionSchemeDetails.get,
-                request.authenticatedUser,
-                Json.toJsObject(userAnswers)
-              )
-              Ok(renderView(sessionData, userAnswers))
-            case Left(_)            =>
-              Redirect(routes.JourneyRecoveryController.onPageLoad())
-          }
+        qtReference match {
+          case QtNumber(value) =>
+            userAnswersService
+              .getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber))
+              .map {
+                case Right(userAnswers) =>
+                  val sessionData = SessionData(
+                    request.authenticatedUser.internalId,
+                    qtReference,
+                    request.authenticatedUser.pensionSchemeDetails.get,
+                    request.authenticatedUser,
+                    Json.toJsObject(userAnswers)
+                  )
+                  Ok(renderView(sessionData, userAnswers))
+                case Left(_)            =>
+                  Redirect(routes.JourneyRecoveryController.onPageLoad())
+              }
+          case _               => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+        }
+
     }
 
   private def renderView(sessionData: SessionData, userAnswers: UserAnswers)(implicit request: IdentifierRequest[_]): HtmlFormat.Appendable = {
@@ -87,7 +92,7 @@ class ViewSubmittedController @Inject() (
       transferDetailsSummaryList,
       qropsDetailsSummaryList,
       schemeManagerDetailsSummaryList,
-      sessionData.transferId,
+      sessionData.transferId.value,
       memberName
     )
   }

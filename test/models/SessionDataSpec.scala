@@ -57,7 +57,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
     "should set expected default statuses" in {
       val sd = SessionData.initialise(emptySessionData).get
 
-      sd.transferId mustBe "id"
+      sd.transferId mustBe userAnswersTransferNumber
       sd.get(TaskStatusQuery(MemberDetails)) mustBe Some(TaskStatus.NotStarted)
       sd.get(TaskStatusQuery(QROPSDetails)) mustBe Some(TaskStatus.CannotStart)
       sd.get(TaskStatusQuery(SchemeManagerDetails)) mustBe Some(TaskStatus.CannotStart)

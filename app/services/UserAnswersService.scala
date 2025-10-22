@@ -23,7 +23,7 @@ import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
 import models.responses._
-import models.{PstrNumber, QtStatus, SessionData, UserAnswers}
+import models.{PstrNumber, QtStatus, SessionData, TransferId, TransferNumber, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -38,37 +38,27 @@ class UserAnswersService @Inject() (
 
   // These two versions of getExternalUserAnswers are purposely similar to one another as it is recommended to combine them in a future refactor
   def getExternalUserAnswers(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
-    connector.getAnswers(sessionData.transferId) map {
+    connector.getAnswers(sessionData.transferId.value) map {
       case Right(userAnswersDTO) => Right(toUserAnswers(userAnswersDTO))
       case Left(error)           => Left(error)
     }
   }
 
   def getExternalUserAnswers(
-      transferReference: Option[String],
-      qtReference: Option[String],
+      transferId: TransferId,
       pstr: PstrNumber,
       qtStatus: QtStatus,
       versionNumber: Option[String]
     )(implicit hc: HeaderCarrier
     ): Future[Either[UserAnswersError, UserAnswers]] = {
     connector.getAnswers(
-      transferReference,
-      qtReference,
+      transferId,
       pstr,
       qtStatus,
       versionNumber
     ).map {
-      case Right(dto)                        => Right(toUserAnswers(dto))
-      case Left(UserAnswersNotFoundResponse) =>
-        transferReference.orElse(qtReference) match {
-          case Some(id) => qtStatus match {
-              case InProgress           => Right(UserAnswers(id, pstr))
-              case Submitted | Compiled => Left(UserAnswersNotFoundResponse)
-            }
-          case None     => Left(UserAnswersErrorResponse("User answers not found response missing id", None))
-        }
-      case Left(err)                         => Left(err)
+      case Right(dto) => Right(toUserAnswers(dto))
+      case Left(err)  => Left(err)
     }
   }
 

@@ -23,13 +23,14 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import queries.{Gettable, Settable, TaskStatusQuery}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import uk.gov.hmrc.play.audit.model.TransactionFailure
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 case class SessionData(
     sessionId: String,
-    transferId: String,
+    transferId: TransferId,
     schemeInformation: PensionSchemeDetails,
     user: AuthenticatedUser,
     data: JsObject,
@@ -78,7 +79,7 @@ object SessionData {
 
   implicit val reads: Reads[SessionData] = (
     (__ \ "_id").read[String] and
-      (__ \ "transferId").read[String] and
+      (__ \ "transferId").read[TransferId] and
       (__ \ "schemeInformation").read[PensionSchemeDetails] and
       (__ \ "user").read[AuthenticatedUser] and
       (__ \ "data").read[JsObject] and
@@ -87,7 +88,7 @@ object SessionData {
 
   implicit val writes: Writes[SessionData] = (
     (__ \ "_id").write[String] and
-      (__ \ "transferId").write[String] and
+      (__ \ "transferId").write[TransferId] and
       (__ \ "schemeInformation").write[PensionSchemeDetails] and
       (__ \ "user").write[AuthenticatedUser] and
       (__ \ "data").write[JsObject] and

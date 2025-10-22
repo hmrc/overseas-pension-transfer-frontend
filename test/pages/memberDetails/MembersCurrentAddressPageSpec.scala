@@ -16,16 +16,17 @@
 
 package pages.memberDetails
 
+import base.SpecBase
 import controllers.memberDetails.routes
 import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class MembersCurrentAddressPageSpec extends AnyFreeSpec with Matchers {
+class MembersCurrentAddressPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
+    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
 

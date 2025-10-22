@@ -13,9 +13,9 @@ GET        /dashboard                                                           
 GET        /dashboard/transfer-report                                                             controllers.DashboardController.onTransferClick()
 
 GET        /task-list                                                                             controllers.TaskListController.onPageLoad()
-GET        /task-list/in-progress                                                                 controllers.TaskListController.fromDashboard(transferId: String)
+GET        /task-list/in-progress                                                                 controllers.TaskListController.fromDashboard(transferId: TransferId)
 
-GET        /submitted-transfer-summary                                                            controllers.SubmittedTransferSummaryController.onPageLoad(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /submitted-transfer-summary                                                            controllers.SubmittedTransferSummaryController.onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
 
 GET        /refresh-session                                                                       controllers.KeepAliveController.keepAlive()
 
@@ -25,7 +25,7 @@ GET        /what-will-be-needed                                                 
 
 GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
 
-GET        /view-submitted-transfer/from-dashboard                                                controllers.ViewSubmittedController.fromDashboard(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /view-submitted-transfer/from-dashboard                                                controllers.ViewSubmittedController.fromDashboard(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
 
 GET        /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onPageLoad()
 POST       /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onSubmit()

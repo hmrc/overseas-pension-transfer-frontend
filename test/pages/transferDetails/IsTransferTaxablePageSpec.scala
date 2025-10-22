@@ -16,6 +16,7 @@
 
 package pages.transferDetails
 
+import base.SpecBase
 import controllers.transferDetails.routes
 import models.ApplicableTaxExclusions.Occupational
 import models.WhyTransferIsNotTaxable.{IndividualIsEmployedPublicService, IndividualIsEmployeeOccupational}
@@ -25,11 +26,11 @@ import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers {
+class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
+    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
 
@@ -66,7 +67,7 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers {
 
   "cleanup" - {
     "remove correct data when changing No to Yes" in {
-      val emptyUA = UserAnswers("id", PstrNumber("PSTR123"))
+      val emptyUA = UserAnswers(userAnswersTransferNumber, PstrNumber("PSTR123"))
         .set(OverseasTransferAllowancePage, BigDecimal(100)).success.value
 
       val result =
@@ -79,7 +80,7 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers {
     }
 
     "remove correct data when changing Yes to No - Exceeds allowance" in {
-      val emptyUA = UserAnswers("id", PstrNumber("PSTR123"))
+      val emptyUA = UserAnswers(userAnswersTransferNumber, PstrNumber("PSTR123"))
         .set(OverseasTransferAllowancePage, BigDecimal(100)).success.value
 
       val userAnswersWithYesJourney =
@@ -95,7 +96,7 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers {
     }
 
     "remove correct data when changing Yes to No - No exclusions" in {
-      val emptyUA = UserAnswers("id", PstrNumber("PSTR123"))
+      val emptyUA = UserAnswers(userAnswersTransferNumber, PstrNumber("PSTR123"))
         .set(OverseasTransferAllowancePage, BigDecimal(100)).success.value
 
       val userAnswersWithYesJourney =

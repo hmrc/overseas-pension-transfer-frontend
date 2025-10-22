@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import models.responses.UserAnswersErrorResponse
-import models.{FinalCheckMode, PstrNumber, QtStatus}
+import models.{FinalCheckMode, PstrNumber, QtStatus, TransferId}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -102,8 +102,7 @@ class ViewSubmittedControllerSpec
       "return Ok and render expected view (uses sessionData.transferId and memberName)" in {
         when(
           mockUserAnswersService.getExternalUserAnswers(
-            any[Option[String]],
-            any[Option[String]],
+            any[TransferId],
             any[PstrNumber],
             any[QtStatus],
             any[Option[String]]
@@ -118,7 +117,7 @@ class ViewSubmittedControllerSpec
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           ).build()
 
-        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber.value, pstr, qtStatus, versionNumber).url)
+        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber, pstr, qtStatus, versionNumber).url)
         val result = route(app, req).value
 
         val view = app.injector.instanceOf[ViewSubmittedView]
@@ -145,8 +144,7 @@ class ViewSubmittedControllerSpec
       "redirect to JourneyRecovery when external answers lookup fails" in {
         when(
           mockUserAnswersService.getExternalUserAnswers(
-            any[Option[String]],
-            any[Option[String]],
+            any[TransferId],
             any[PstrNumber],
             any[QtStatus],
             any[Option[String]]
@@ -161,7 +159,7 @@ class ViewSubmittedControllerSpec
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           ).build()
 
-        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber.value, pstr, qtStatus, versionNumber).url)
+        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber, pstr, qtStatus, versionNumber).url)
         val result = route(app, req).value
 
         status(result) mustBe SEE_OTHER

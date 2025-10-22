@@ -16,9 +16,10 @@
 
 package repositories
 
+import base.SpecBase
 import config.FrontendAppConfig
 import models.authentication.{PsaId, PsaUser}
-import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
+import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber}
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
 import org.scalactic.source.Position
@@ -28,13 +29,13 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.MDC
-import uk.gov.hmrc.mdc.MdcExecutionContext
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import uk.gov.hmrc.mdc.MdcExecutionContext
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
-import java.time.{Clock, Instant, ZoneId}
 import java.time.temporal.ChronoUnit
+import java.time.{Clock, Instant, ZoneId}
 import scala.concurrent.{ExecutionContext, Future}
 
 class SessionRepositoryISpec
@@ -44,14 +45,15 @@ class SessionRepositoryISpec
     with ScalaFutures
     with IntegrationPatience
     with OptionValues
-    with MockitoSugar {
+    with MockitoSugar
+    with SpecBase {
 
   private val instant          = Instant.now.truncatedTo(ChronoUnit.MILLIS)
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
   private val sessionData = SessionData(
     "id",
-    "transferId",
+    userAnswersTransferNumber,
     PensionSchemeDetails(
       SrnNumber("1234567890123"),
       PstrNumber("12345678AB"),
@@ -116,7 +118,7 @@ class SessionRepositoryISpec
       }
     }
 
-    mustPreserveMdc(repository.get(sessionData.transferId))
+    mustPreserveMdc(repository.get(sessionData.transferId.value))
   }
 
   ".getByTransferId" - {
@@ -127,7 +129,7 @@ class SessionRepositoryISpec
 
         insert(sessionData).futureValue
 
-        val result         = repository.getByTransferId(sessionData.transferId).futureValue
+        val result         = repository.getByTransferId(sessionData.transferId.value).futureValue
         val expectedResult = sessionData copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult
@@ -142,7 +144,7 @@ class SessionRepositoryISpec
       }
     }
 
-    mustPreserveMdc(repository.get(sessionData.transferId))
+    mustPreserveMdc(repository.get(sessionData.transferId.value))
   }
 
   ".clear" - {
@@ -151,9 +153,9 @@ class SessionRepositoryISpec
 
       insert(sessionData).futureValue
 
-      repository.clear(sessionData.transferId).futureValue
+      repository.clear(sessionData.transferId.value).futureValue
 
-      repository.get(sessionData.transferId).futureValue must not be defined
+      repository.get(sessionData.transferId.value).futureValue must not be defined
     }
 
     "must return true when there is no record to remove" in {
@@ -162,7 +164,7 @@ class SessionRepositoryISpec
       result mustEqual true
     }
 
-    mustPreserveMdc(repository.clear(sessionData.transferId))
+    mustPreserveMdc(repository.clear(sessionData.transferId.value))
   }
 
   ".keepAlive" - {
@@ -190,7 +192,7 @@ class SessionRepositoryISpec
       }
     }
 
-    mustPreserveMdc(repository.keepAlive(sessionData.transferId))
+    mustPreserveMdc(repository.keepAlive(sessionData.transferId.value))
   }
 
   ".keepAliveByTransferId" - {
@@ -201,11 +203,11 @@ class SessionRepositoryISpec
 
         insert(sessionData).futureValue
 
-        val result = repository.keepAliveByTransferId(sessionData.transferId).futureValue
+        val result = repository.keepAliveByTransferId(sessionData.transferId.value).futureValue
 
         val expectedUpdatedAnswers = sessionData copy (lastUpdated = instant)
 
-        val updatedAnswers = find(Filters.equal("transferId", sessionData.transferId)).futureValue.headOption.value
+        val updatedAnswers = find(Filters.equal("transferId", sessionData.transferId.value)).futureValue.headOption.value
         updatedAnswers mustEqual expectedUpdatedAnswers
       }
     }
@@ -218,7 +220,7 @@ class SessionRepositoryISpec
       }
     }
 
-    mustPreserveMdc(repository.keepAlive(sessionData.transferId))
+    mustPreserveMdc(repository.keepAlive(sessionData.transferId.value))
   }
 
   private def mustPreserveMdc[A](f: => Future[A])(implicit pos: Position): Unit =

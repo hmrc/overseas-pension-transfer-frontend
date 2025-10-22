@@ -50,7 +50,7 @@ class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
         .thenReturn(Future.successful(None, List(emptyUserAnswers)))
 
       running(application) {
-        val request = FakeRequest(GET, routes.SubmittedTransferSummaryController.onPageLoad(testQtNumber.value, PstrNumber("12345678AB"), Submitted, "001").url)
+        val request = FakeRequest(GET, routes.SubmittedTransferSummaryController.onPageLoad(testQtNumber, PstrNumber("12345678AB"), Submitted, "001").url)
 
         val result = route(application, request).value
 

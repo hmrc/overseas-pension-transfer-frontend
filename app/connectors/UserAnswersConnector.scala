@@ -28,7 +28,7 @@ import connectors.parsers.UserAnswersParser.{
 }
 import models.dtos.{SubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, UserAnswersErrorResponse}
-import models.{PstrNumber, QtNumber, QtStatus}
+import models.{PstrNumber, QtNumber, QtStatus, TransferId}
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -60,20 +60,16 @@ class UserAnswersConnector @Inject() (
   }
 
   def getAnswers(
-      transferReference: Option[String],
-      qtNumber: Option[String]      = None,
+      transferId: TransferId,
       pstrNumber: PstrNumber,
       qtStatus: QtStatus,
       versionNumber: Option[String] = None
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
     ): Future[GetUserAnswersType] = {
-    val referenceId = transferReference.orElse(qtNumber).getOrElse(throw new IllegalArgumentException(
-      "getSpecificTransfer must have one of either transferReference or qtNumber"
-    ))
 
     def url: URL =
-      url"${appConfig.backendService}/get-transfer/$referenceId"
+      url"${appConfig.backendService}/get-transfer/${transferId.value}"
 
     val queryStringParams = {
       Seq("pstr" -> pstrNumber.value, "qtStatus" -> qtStatus.toString) ++ versionNumber.toSeq.map("versionNumber" -> _)
@@ -105,7 +101,7 @@ class UserAnswersConnector @Inject() (
   }
 
   def postSubmission(submissionDTO: SubmissionDTO)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionType] =
-    http.post(submissionUrl(submissionDTO.referenceId))
+    http.post(submissionUrl(submissionDTO.referenceId.value))
       .withBody(Json.toJson(submissionDTO))
       .execute[SubmissionType]
       .recover {

@@ -50,7 +50,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       val existingDataUpdatedAt = Instant.parse("2025-09-01T12:00:00Z")
       val startDd               = DashboardData(id = "id")
         .set(TransfersDataUpdatedAtQuery, existingDataUpdatedAt).success.value
-        .set(TransfersOverviewQuery, Seq(AllTransfersItem(None, None, None, None, None, None, None, None, None, None, None))).success.value
+        .set(TransfersOverviewQuery, Seq(AllTransfersItem(userAnswersTransferNumber, None, None, None, None, None, None, None, None, None))).success.value
 
       when(mockConnector.getAllTransfers(meq(pstr))(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Left(NoTransfersFound)))
@@ -74,17 +74,16 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
 
       val dtoTransfers: Seq[AllTransfersItem] = Seq(
         AllTransfersItem(
-          transferReference = Some("TR-1"),
-          qtReference       = None,
-          qtVersion         = None,
-          nino              = None,
-          memberFirstName   = Some("Ada"),
-          memberSurname     = Some("Lovelace"),
-          submissionDate    = None,
-          lastUpdated       = None,
-          qtStatus          = None,
-          pstrNumber        = None,
-          qtDate            = None
+          transferId      = userAnswersTransferNumber,
+          qtVersion       = None,
+          nino            = None,
+          memberFirstName = Some("Ada"),
+          memberSurname   = Some("Lovelace"),
+          submissionDate  = None,
+          lastUpdated     = None,
+          qtStatus        = None,
+          pstrNumber      = None,
+          qtDate          = None
         )
       )
       val dtoLastUpdated                      = Instant.parse("2025-09-24T08:00:00Z")
