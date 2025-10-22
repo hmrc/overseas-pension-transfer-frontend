@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
+import models.authentication.{Psa, PsaUser, Psp, PspUser}
 import models.{DashboardData, PensionSchemeDetails, TransferReportQueryParams}
 import pages.DashboardPage
 import play.api.Logging
@@ -99,15 +100,18 @@ class DashboardController @Inject() (
   }
 
   def onTransferClick(): Action[AnyContent] = identify.async { implicit request =>
-    val params     = TransferReportQueryParams.fromRequest(request)
-    val internalId = request.authenticatedUser.internalId
-    val lockId     = params.qtReference.filter(_.nonEmpty)
+    val params = TransferReportQueryParams.fromRequest(request)
+    val owner  = request.authenticatedUser match {
+      case PsaUser(psaId, _, _, _) => psaId.value
+      case PspUser(pspId, _, _, _) => pspId.value
+    }
+    val lockId = params.qtReference.filter(_.nonEmpty)
       .orElse(params.transferReference.filter(_.nonEmpty))
       .getOrElse("-")
 
-    lockRepository.takeLock(lockId, internalId, lockTtlSeconds.seconds).flatMap {
+    lockRepository.takeLock(lockId, owner, lockTtlSeconds.seconds).flatMap {
       case Some(_) =>
-        logger.info(s"[DashboardController][onTransferClick] Lock acquired for $lockId by $internalId")
+        logger.info(s"[DashboardController][onTransferClick] Lock acquired for $lockId by $owner")
         val dashboardData  = DashboardData.empty
         val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus, Some(params))
         Future.successful(Redirect(redirectTarget))

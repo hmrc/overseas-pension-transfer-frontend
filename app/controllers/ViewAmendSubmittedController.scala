@@ -17,15 +17,16 @@
 package controllers
 
 import com.google.inject.Inject
-import controllers.actions.{IdentifierAction, SchemeDataAction}
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import models.requests.IdentifierRequest
-import models.{FinalCheckMode, PstrNumber, QtStatus, SessionData, UserAnswers}
+import models.{AmendCheckMode, PstrNumber, QtStatus, SessionData, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
+import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -37,24 +38,26 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.ViewSubmittedView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-class ViewSubmittedController @Inject() (
+class ViewAmendSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     schemeData: SchemeDataAction,
     userAnswersService: UserAnswersService,
+    getData: DataRetrievalAction,
+    sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     view: ViewSubmittedView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 
-  def fromDashboard(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
+  def view(qtReference: String, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
     (identify andThen schemeData).async {
       implicit request =>
         userAnswersService
           .getExternalUserAnswers(None, Some(qtReference), pstr, qtStatus, Some(versionNumber))
-          .map {
+          .flatMap {
             case Right(userAnswers) =>
               val sessionData = SessionData(
                 request.authenticatedUser.internalId,
@@ -63,23 +66,39 @@ class ViewSubmittedController @Inject() (
                 request.authenticatedUser,
                 Json.toJsObject(userAnswers)
               )
-              Ok(renderView(sessionData, userAnswers))
+              Future.successful(Ok(renderView(sessionData, userAnswers, isAmend = false)))
             case Left(_)            =>
-              Redirect(routes.JourneyRecoveryController.onPageLoad())
+              Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
           }
     }
 
-  private def renderView(sessionData: SessionData, userAnswers: UserAnswers)(implicit request: IdentifierRequest[_]): HtmlFormat.Appendable = {
+  def amend(): Action[AnyContent] =
+    (identify andThen schemeData andThen getData) { implicit dr =>
+      implicit val idReq: IdentifierRequest[_] =
+        IdentifierRequest(dr.request, dr.authenticatedUser)
+      Ok(renderView(dr.sessionData, dr.userAnswers, isAmend = true))
+    }
+
+  private def renderView(
+      sessionData: SessionData,
+      userAnswers: UserAnswers,
+      isAmend: Boolean
+    )(implicit request: IdentifierRequest[_]
+    ): HtmlFormat.Appendable = {
     val schemeName                      = sessionData.schemeInformation.schemeName
-    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(FinalCheckMode, schemeName, dateTransferSubmitted(sessionData)))
-    val memberDetailsSummaryList        = SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, userAnswers, showChangeLinks = false))
-    val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, userAnswers, showChangeLinks = false))
-    val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(FinalCheckMode, userAnswers, showChangeLinks = false))
+    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(AmendCheckMode, schemeName, dateTransferSubmitted(sessionData)))
+    val memberDetailsSummaryList        = if (isAmend) {
+      SummaryListViewModel(MemberDetailsSummary.amendRows(AmendCheckMode, userAnswers))
+    } else {
+      SummaryListViewModel(MemberDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = false))
+    }
+    val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
+    val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
     val schemeManagerDetailsSummaryList =
-      SummaryListViewModel(SchemeManagerDetailsSummary.rows(FinalCheckMode, userAnswers, showChangeLinks = false))
+      SummaryListViewModel(SchemeManagerDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
 
     val memberName =
-      userAnswers.get(MemberNamePage).map(_.fullName).get
+      userAnswers.get(MemberNamePage).map(_.fullName).getOrElse("")
 
     view(
       schemeSummaryList,

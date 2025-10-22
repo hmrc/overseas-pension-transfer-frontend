@@ -17,7 +17,7 @@
 package pages.transferDetails
 
 import controllers.transferDetails.routes
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -30,20 +30,24 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
 
   override def toString: String = "paymentTaxableOverseas"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call = {
+  private def nextPageBase(answers: UserAnswers, mode: Mode): Call =
     answers.get(IsTransferTaxablePage) match {
-      case Some(true)  => routes.WhyTransferIsTaxableController.onPageLoad(NormalMode)
-      case Some(false) => routes.WhyTransferIsNotTaxableController.onPageLoad(NormalMode)
+      case Some(true)  => routes.WhyTransferIsTaxableController.onPageLoad(mode)
+      case Some(false) => routes.WhyTransferIsNotTaxableController.onPageLoad(mode)
       case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
-  }
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    nextPageBase(answers, NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    answers.get(IsTransferTaxablePage) match {
-      case Some(true)  => routes.WhyTransferIsTaxableController.onPageLoad(CheckMode)
-      case Some(false) => routes.WhyTransferIsNotTaxableController.onPageLoad(CheckMode)
-      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
-    }
+    nextPageBase(answers, CheckMode)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    nextPageBase(answers, FinalCheckMode)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    nextPageBase(answers, AmendCheckMode)
 
   final def changeLink(mode: Mode): Call =
     routes.IsTransferTaxableController.onPageLoad(mode)

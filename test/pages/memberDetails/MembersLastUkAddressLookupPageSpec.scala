@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -40,17 +40,27 @@ class MembersLastUkAddressLookupPageSpec extends AnyFreeSpec with Matchers {
     "in Check Mode" - {
 
       "must go to Check Answers" in {
-
         MembersLastUkAddressLookupPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
           CheckMode
         )
       }
     }
 
-    "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        MembersLastUkAddressLookupPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    "in FinalCheck Mode" - {
+
+      "must go to FinalCheck Answers" in {
+        MembersLastUkAddressLookupPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
+          FinalCheckMode
+        )
+      }
+    }
+
+    "in AmendCheck Mode" - {
+
+      "must go to AmendCheck Answers" in {
+        MembersLastUkAddressLookupPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
+          AmendCheckMode
+        )
       }
     }
   }
