@@ -36,7 +36,7 @@
 
 @manualEntry = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(mode).url}
 
-@layout(pageTitle = title(form, messages("membersLastUkAddressLookup.title", memberName))) {
+@layout(pageTitle = title(form, messages("membersLastUkAddressLookup.title"))) {
 
     @formHelper(action = controllers.memberDetails.routes.MembersLastUkAddressLookupController.onSubmit(mode)) {
 

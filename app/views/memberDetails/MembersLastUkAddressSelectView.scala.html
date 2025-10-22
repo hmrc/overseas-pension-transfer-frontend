@@ -41,7 +41,7 @@
 
 @addressLength = @{addressRadios.length}
 
-@layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title", memberName))) {
+@layout(pageTitle = title(form, messages("memberSelectLastUkAddress.title"))) {
 
     @formHelper(action = controllers.memberDetails.routes.MembersLastUkAddressSelectController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
