@@ -33,7 +33,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
 class ViewAmendSelectorControllerSpec
-  extends AnyFreeSpec
+    extends AnyFreeSpec
     with SpecBase
     with MockitoSugar {
 
@@ -42,8 +42,8 @@ class ViewAmendSelectorControllerSpec
   private val mockSessionRepository  = mock[SessionRepository]
 
   private val qtReference   = "QU112233"
-  override val pstr        = PstrNumber("87654321AB")
-  private val qtStatus     = QtStatus.Submitted
+  override val pstr         = PstrNumber("87654321AB")
+  private val qtStatus      = QtStatus.Submitted
   private val versionNumber = "1"
 
   private def buildApp = applicationBuilder(userAnswers = emptyUserAnswers)
@@ -59,7 +59,7 @@ class ViewAmendSelectorControllerSpec
         when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
 
-        val app = buildApp
+        val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
           .withFormUrlEncodedBody("option" -> "view")
 
@@ -79,7 +79,7 @@ class ViewAmendSelectorControllerSpec
           .thenReturn(Future.successful(Some(mock[Lock])))
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-        val app = buildApp
+        val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
           .withFormUrlEncodedBody("option" -> "amend")
 
@@ -96,7 +96,7 @@ class ViewAmendSelectorControllerSpec
         when(mockLockRepository.takeLock(any[String], any[String], any[FiniteDuration]))
           .thenReturn(Future.successful(None))
 
-        val app = buildApp
+        val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
           .withFormUrlEncodedBody("option" -> "amend")
 
@@ -111,7 +111,7 @@ class ViewAmendSelectorControllerSpec
 
     "when no option is selected on view-amend page" - {
       "must show error message" in {
-        val app = buildApp
+        val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
           .withFormUrlEncodedBody("option" -> "")
 
