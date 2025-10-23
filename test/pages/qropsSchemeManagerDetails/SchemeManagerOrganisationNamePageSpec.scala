@@ -76,7 +76,7 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers wi
 
       "must go to Amend if Organisation individual name exists in mongo" in {
         val ua = emptyAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("Bill", "Withers")).success.value
-        SchemeManagerOrganisationNamePage.nextPage(AmendCheckMode, ua) mustEqual controllers.routes.ViewAmendSubmittedController.amend()
+        SchemeManagerOrganisationNamePage.nextPage(AmendCheckMode, ua) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

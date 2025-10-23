@@ -106,7 +106,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       }
     }
 
-    "must acquire lock when accessing a transfer (onTransferClick) and redirect" in {
+    "must acquire lock when accessing an InProgress transfer (onTransferClick) and redirect" in {
       val mockRepo           = mock[DashboardSessionRepository]
       val mockService        = mock[TransferService]
       val mockSessionRepo    = mock[SessionRepository]
@@ -124,7 +124,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT123456&name=SomeName&currentPage=1")
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&name=SomeName&currentPage=1")
 
         val result = route(application, request).value
 
@@ -152,7 +152,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT123456&memberName=LockedScheme&currentPage=2")
+        val request =
+          FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&memberName=LockedScheme&currentPage=2")
 
         val result = route(application, request).value
 
@@ -246,9 +247,9 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         contentAsString(result) must include("dashboard")
 
         // verify releaseLock called for the two items that had references
-        verify(mockLockRepository, times(1)).releaseLock(meq(userAnswersTransferNumber.value), meq("id"))
-        verify(mockLockRepository, times(1)).releaseLock(meq(testQtNumber.value), meq("id"))
-        verify(mockLockRepository, times(1)).releaseLock(meq("QT987654"), meq("id"))
+        verify(mockLockRepository, times(1)).releaseLock(meq(userAnswersTransferNumber.value), meq("A123456"))
+        verify(mockLockRepository, times(1)).releaseLock(meq(testQtNumber.value), meq("A123456"))
+        verify(mockLockRepository, times(1)).releaseLock(meq("QT987654"), meq("A123456"))
         verify(mockLockRepository, times(3)).releaseLock(any(), any())
       }
     }
@@ -272,7 +273,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT654321&name=ReAccess&currentPage=1")
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT654321&qtStatus=InProgress&name=ReAccess&currentPage=1")
 
         val result = route(application, request).value
 

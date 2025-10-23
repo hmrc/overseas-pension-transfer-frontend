@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.viewandamend
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
+import controllers.viewandamend.routes
 import models.authentication.{PsaUser, PspUser}
 import models.requests.IdentifierRequest
 import models.{AmendCheckMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
@@ -38,7 +39,7 @@ import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSum
 import viewmodels.checkAnswers.schemeOverview.SchemeDetailsSummary
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
-import views.html.ViewSubmittedView
+import views.html.viewandamend.ViewSubmittedView
 
 import scala.concurrent.duration.DurationLong
 import scala.concurrent.{ExecutionContext, Future}
@@ -60,7 +61,7 @@ class ViewAmendSubmittedController @Inject() (
     (identify andThen schemeData).async {
       implicit request =>
         qtReference match {
-          case QtNumber(value) =>
+          case QtNumber(_) =>
             userAnswersService
               .getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber))
               .map {
@@ -74,9 +75,9 @@ class ViewAmendSubmittedController @Inject() (
                   )
                   Ok(renderView(sessionData, userAnswers, isAmend = false))
                 case Left(_)            =>
-                  Redirect(routes.JourneyRecoveryController.onPageLoad())
+                  Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
               }
-          case _               => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+          case _           => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
         }
 
     }
@@ -101,13 +102,13 @@ class ViewAmendSubmittedController @Inject() (
                     request.authenticatedUser,
                     Json.toJsObject(userAnswers)
                   )
-                  Redirect(controllers.routes.ViewAmendSubmittedController.view(qtReference, pstr, qtStatus, versionNumber))
+                  Redirect(routes.ViewAmendSubmittedController.view(qtReference, pstr, qtStatus, versionNumber))
                 case Left(_)            =>
-                  Redirect(routes.JourneyRecoveryController.onPageLoad())
+                  Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
               }
           case None    =>
             Future.successful(
-              Redirect(controllers.routes.SubmittedTransferSummaryController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
+              Redirect(routes.SubmittedTransferSummaryController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
                 .flashing("lockWarning" -> "")
             )
 

@@ -54,7 +54,7 @@ class SchemeManagersEmailPageSpec extends AnyFreeSpec with Matchers with SpecBas
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
         SchemeManagersEmailPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
-          controllers.routes.ViewAmendSubmittedController.amend()
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

@@ -27,7 +27,7 @@
 
 @(memberName: String, qtNumber: String, tableRows: Html)(implicit request: IdentifierRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("submittedTransferSummary.title", memberName)), showPageFooter = false) {
+@layout(pageTitle = titleNoForm(messages("submittedTransferSummary.title", memberName)), showCYAFooter = true, showPageFooter = false) {
     @request.flash.get("lockWarning").map { _ =>
         <div class="govuk-notification-banner govuk-notification-banner--important"
              role="region"

@@ -54,7 +54,7 @@ class MemberDateOfLeavingUKPageSpec extends AnyFreeSpec with Matchers with SpecB
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
         MemberDateOfLeavingUKPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
-          controllers.routes.ViewAmendSubmittedController.amend()
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

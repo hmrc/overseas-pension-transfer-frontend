@@ -54,7 +54,7 @@ class MembersCurrentAddressPageSpec extends AnyFreeSpec with Matchers with SpecB
     "in AmendCheckMode" - {
       "must go to Amend Answers page" in {
         MembersCurrentAddressPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
-          controllers.routes.ViewAmendSubmittedController.amend()
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

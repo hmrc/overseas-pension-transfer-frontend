@@ -70,7 +70,7 @@ class IsTransferCashOnlyPageSpec extends AnyFreeSpec with Matchers with SpecBase
     "in AmendCheckMode" - {
       "must go to amend cya page if true is selected" in {
         val ua = emptyAnswers.set(IsTransferCashOnlyPage, true).success.value
-        IsTransferCashOnlyPage.nextPage(AmendCheckMode, ua) mustBe controllers.routes.ViewAmendSubmittedController.amend()
+        IsTransferCashOnlyPage.nextPage(AmendCheckMode, ua) mustBe controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
       "must go to type of asset page if false is selected" in {

@@ -53,7 +53,7 @@ class OverseasTransferAllowancePageSpec extends AnyFreeSpec with Matchers with S
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
         OverseasTransferAllowancePage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
-          controllers.routes.ViewAmendSubmittedController.amend()
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

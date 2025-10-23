@@ -54,7 +54,7 @@ class WhyTransferIsNotTaxablePageSpec extends AnyFreeSpec with Matchers with Spe
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
         WhyTransferIsNotTaxablePage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
-          controllers.routes.ViewAmendSubmittedController.amend()
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

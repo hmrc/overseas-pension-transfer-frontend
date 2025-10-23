@@ -67,7 +67,7 @@ class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
       "must go to AmendCheck Answers if Members Date of Leaving UK present" in {
         val ua = emptyAnswers.set(MemberDateOfLeavingUKPage, LocalDate.now()).success.value
-        MembersLastUKAddressPage.nextPage(AmendCheckMode, ua) mustEqual controllers.routes.ViewAmendSubmittedController.amend()
+        MembersLastUKAddressPage.nextPage(AmendCheckMode, ua) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
       "must go to Members Date of Leaving UK in AmendCheckMode if not present" in {

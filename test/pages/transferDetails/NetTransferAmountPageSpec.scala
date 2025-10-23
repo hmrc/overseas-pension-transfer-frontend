@@ -53,7 +53,7 @@ class NetTransferAmountPageSpec extends AnyFreeSpec with Matchers with SpecBase 
     "in AmendCheckMode" - {
       "must go to Amend Check Answers page" in {
         NetTransferAmountPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
-          controllers.routes.ViewAmendSubmittedController.amend()
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

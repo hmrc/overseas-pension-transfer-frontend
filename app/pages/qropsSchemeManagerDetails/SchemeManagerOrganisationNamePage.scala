@@ -47,7 +47,7 @@ case object SchemeManagerOrganisationNamePage extends QuestionPage[String] {
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
     answers.get(SchemeManagerOrgIndividualNamePage) match {
-      case Some(_) => controllers.routes.ViewAmendSubmittedController.amend()
+      case Some(_) => controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       case None    => routes.SchemeManagerOrgIndividualNameController.onPageLoad(AmendCheckMode)
     }
   }

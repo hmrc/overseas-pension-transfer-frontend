@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.viewandamend
 
-import controllers.actions._
-import models.{PstrNumber, QtStatus, SessionData, TransferId}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.ViewAmendSelectorView
-import repositories.SessionRepository
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.mongo.lock.LockRepository
 import config.FrontendAppConfig
+import controllers.actions._
+import controllers.viewandamend.routes
 import models.QtStatus.AmendInProgress
 import models.authentication.{PsaUser, PspUser}
-
-import scala.concurrent.duration.DurationLong
+import models.{PstrNumber, QtStatus, SessionData, TransferId}
 import pages.memberDetails.MemberNamePage
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import services.UserAnswersService
+import uk.gov.hmrc.mongo.lock.LockRepository
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.viewandamend.ViewAmendSelectorView
+
+import javax.inject.Inject
+import scala.concurrent.duration.DurationLong
+import scala.concurrent.{ExecutionContext, Future}
 
 class ViewAmendSelectorController @Inject() (
     override val messagesApi: MessagesApi,
@@ -83,12 +83,12 @@ class ViewAmendSelectorController @Inject() (
 
                       case Some("amend") =>
                         val owner = request.authenticatedUser match {
-                          case PsaUser(psaId, _, _, _) => psaId
-                          case PspUser(pspId, _, _, _) => pspId
+                          case PsaUser(psaId, _, _, _) => psaId.value
+                          case PspUser(pspId, _, _, _) => pspId.value
                         }
                         for {
                           userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
-                          lockResult        <- lockRepository.takeLock(qtReference.value, owner.toString, lockTtlSeconds.seconds)
+                          lockResult        <- lockRepository.takeLock(qtReference.value, owner, lockTtlSeconds.seconds)
                         } yield (userAnswersResult, lockResult) match {
                           case (Right(answers), Some(_)) =>
                             val sessionData = SessionData(
@@ -112,7 +112,7 @@ class ViewAmendSelectorController @Inject() (
                               .flashing("lockWarning" -> memberName)
 
                           case _ =>
-                            Redirect(routes.JourneyRecoveryController.onPageLoad())
+                            Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
                         }
                     }
       } yield result

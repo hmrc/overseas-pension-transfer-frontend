@@ -96,7 +96,7 @@ class QROPSCountryPageSpec extends AnyFreeSpec with Matchers with SpecBase {
       "must go to AmendCheck Answers when a valid country is given" in {
         val country = emptyAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
 
-        QROPSCountryPage.nextPage(AmendCheckMode, country) mustEqual controllers.routes.ViewAmendSubmittedController.amend()
+        QROPSCountryPage.nextPage(AmendCheckMode, country) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
       "must go to Qrops Other Established Country Page when 'Other' is supplied" in {

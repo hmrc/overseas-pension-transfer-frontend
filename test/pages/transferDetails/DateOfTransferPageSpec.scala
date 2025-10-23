@@ -53,7 +53,7 @@ class DateOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
         DateOfTransferPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
-          controllers.routes.ViewAmendSubmittedController.amend()
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

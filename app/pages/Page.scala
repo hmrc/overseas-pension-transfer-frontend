@@ -43,7 +43,7 @@ trait Page {
     routes.CheckYourAnswersController.onPageLoad()
 
   protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    controllers.routes.ViewAmendSubmittedController.amend()
+    controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
 
   def nextPageRecovery(returnUrl: Option[String] = None): Call =
     controllers.routes.JourneyRecoveryController.onPageLoad(

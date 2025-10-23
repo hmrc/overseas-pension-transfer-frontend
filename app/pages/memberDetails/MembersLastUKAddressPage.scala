@@ -48,7 +48,7 @@ case object MembersLastUKAddressPage extends QuestionPage[MembersLastUKAddress] 
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
     answers.get(MemberDateOfLeavingUKPage) match {
-      case Some(_) => controllers.routes.ViewAmendSubmittedController.amend()
+      case Some(_) => controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       case None    => routes.MemberDateOfLeavingUKController.onPageLoad(AmendCheckMode)
       case _       => controllers.routes.JourneyRecoveryController.onPageLoad()
     }

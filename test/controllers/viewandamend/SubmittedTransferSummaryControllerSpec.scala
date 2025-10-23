@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.viewandamend
 
 import base.SpecBase
+import controllers.viewandamend.routes
 import models.PstrNumber
 import models.QtStatus.Submitted
 import org.mockito.ArgumentMatchers.any
@@ -29,7 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CollectSubmittedVersionsService
 import viewmodels.SubmittedTransferSummaryViewModel
-import views.html.SubmittedTransferSummaryView
+import views.html.viewandamend.SubmittedTransferSummaryView
 
 import scala.concurrent.Future
 

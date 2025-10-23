@@ -54,7 +54,7 @@ class QROPSNamePageSpec extends AnyFreeSpec with Matchers with SpecBase {
     "in AmendCheckMode" - {
       "must go to Amend Check Answers" in {
         QROPSNamePage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
-          controllers.routes.ViewAmendSubmittedController.amend()
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

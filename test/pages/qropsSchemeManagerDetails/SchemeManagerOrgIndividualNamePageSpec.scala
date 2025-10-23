@@ -50,7 +50,7 @@ class SchemeManagerOrgIndividualNamePageSpec extends AnyFreeSpec with Matchers w
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
         SchemeManagerOrgIndividualNamePage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
-          controllers.routes.ViewAmendSubmittedController.amend()
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

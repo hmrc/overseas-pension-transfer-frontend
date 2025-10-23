@@ -36,7 +36,7 @@ object DashboardPage extends Page {
           ref  <- p.transferId
           pstr <- p.pstr
           ver  <- p.versionNumber
-        } yield controllers.routes.SubmittedTransferSummaryController.onPageLoad(ref, pstr, s, ver))
+        } yield controllers.viewandamend.routes.SubmittedTransferSummaryController.onPageLoad(ref, pstr, s, ver))
           .getOrElse(routes.JourneyRecoveryController.onPageLoad())
       case _                                                                             =>
         dd.get(PensionSchemeDetailsQuery) match {

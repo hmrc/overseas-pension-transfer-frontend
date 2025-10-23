@@ -93,7 +93,7 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
         MemberIsResidentUKPage.nextPage(
           AmendCheckMode,
           emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
-        ) mustEqual controllers.routes.ViewAmendSubmittedController.amend()
+        ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
       "must go to Member Has Ever Been Uk Resident in AmendCheck mode when 'false'" in {

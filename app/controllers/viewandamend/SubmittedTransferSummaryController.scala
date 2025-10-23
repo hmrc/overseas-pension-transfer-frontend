@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.viewandamend
 
 import controllers.actions._
 import models.{PstrNumber, QtNumber, QtStatus, TransferId}
@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.CollectSubmittedVersionsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.SubmittedTransferSummaryViewModel
-import views.html.SubmittedTransferSummaryView
+import views.html.viewandamend.SubmittedTransferSummaryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

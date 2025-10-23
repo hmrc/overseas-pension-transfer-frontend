@@ -15,7 +15,7 @@ GET        /dashboard/transfer-report                                           
 GET        /task-list                                                                             controllers.TaskListController.onPageLoad()
 GET        /task-list/in-progress                                                                 controllers.TaskListController.fromDashboard(transferId: TransferId)
 
-GET        /submitted-transfer-summary                                                            controllers.SubmittedTransferSummaryController.onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /submitted-transfer-summary                                                            controllers.viewandamend.SubmittedTransferSummaryController.onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
 
 GET        /refresh-session                                                                       controllers.KeepAliveController.keepAlive()
 
@@ -26,9 +26,9 @@ GET        /what-will-be-needed                                                 
 GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
 
 
-GET        /view-submitted-transfer                                                               controllers.ViewAmendSubmittedController.view(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
-GET        /amend-submitted-transfer                                                              controllers.ViewAmendSubmittedController.amend()
-GET        /amend-in-progress-draft                                                               controllers.ViewAmendSubmittedController.fromDraft(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /view-submitted-transfer                                                               controllers.viewandamend.ViewAmendSubmittedController.view(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /amend-submitted-transfer                                                              controllers.viewandamend.ViewAmendSubmittedController.amend()
+GET        /amend-in-progress-draft                                                               controllers.viewandamend.ViewAmendSubmittedController.fromDraft(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
 
 GET        /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onPageLoad()
 POST       /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onSubmit()
@@ -616,5 +616,5 @@ POST       /submit-to-hmrc                                                      
 
 GET        /transfer-submitted                                                                    controllers.TransferSubmittedController.onPageLoad()
 
-GET        /view-amend                                                                            controllers.ViewAmendSelectorController.onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
-POST       /view-amend                                                                            controllers.ViewAmendSelectorController.onSubmit(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /view-amend                                                                            controllers.viewandamend.ViewAmendSelectorController.onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+POST       /view-amend                                                                            controllers.viewandamend.ViewAmendSelectorController.onSubmit(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)

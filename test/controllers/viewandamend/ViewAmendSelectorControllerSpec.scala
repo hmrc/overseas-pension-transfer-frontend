@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.viewandamend
 
 import base.SpecBase
-import models.{PstrNumber, QtStatus}
+import controllers.viewandamend.routes
+import models.{PstrNumber, QtNumber, QtStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -29,6 +30,7 @@ import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
+
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
@@ -41,7 +43,7 @@ class ViewAmendSelectorControllerSpec
   private val mockLockRepository     = mock[LockRepository]
   private val mockSessionRepository  = mock[SessionRepository]
 
-  private val qtReference   = "QU112233"
+  private val qtReference   = QtNumber("QT112233")
   override val pstr         = PstrNumber("87654321AB")
   private val qtStatus      = QtStatus.Submitted
   private val versionNumber = "1"
@@ -56,7 +58,7 @@ class ViewAmendSelectorControllerSpec
   "onSubmit" - {
     "when 'View this overseas pension transfer' is selected on radio page" - {
       "user must be redirected to /view-submitted-transfer page" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
 
         val app     = buildApp
@@ -73,7 +75,7 @@ class ViewAmendSelectorControllerSpec
 
     "when 'Amend this overseas pension transfer' is selected on radio page" - {
       "user must be redirected to /amend-submitted-transfer page" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
         when(mockLockRepository.takeLock(any[String], any[String], any[FiniteDuration]))
           .thenReturn(Future.successful(Some(mock[Lock])))
@@ -91,7 +93,7 @@ class ViewAmendSelectorControllerSpec
       }
 
       "must redirect with lock warning when lock cannot be acquired" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
         when(mockLockRepository.takeLock(any[String], any[String], any[FiniteDuration]))
           .thenReturn(Future.successful(None))

@@ -108,7 +108,7 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
   "cleanup" - {
 
-    val emptyAnswers   = UserAnswers("id", PstrNumber("12345678AB"))
+    val emptyAnswers   = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
     val individualName = PersonName("Ada", "Lovelace")
     val orgName        = "Analytical Engines Ltd"
     val orgContact     = PersonName("Charles", "Babbage")

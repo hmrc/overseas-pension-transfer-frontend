@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.viewandamend
 
 import base.SpecBase
+import controllers.viewandamend.routes
 import models.responses.UserAnswersErrorResponse
 import models.{FinalCheckMode, PstrNumber, QtStatus, TransferId}
 import org.mockito.ArgumentMatchers.any
@@ -35,7 +36,7 @@ import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSum
 import viewmodels.checkAnswers.schemeOverview.SchemeDetailsSummary
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.SummaryListFluency
-import views.html.ViewSubmittedView
+import views.html.viewandamend.ViewSubmittedView
 
 import scala.concurrent.Future
 
@@ -163,7 +164,7 @@ class ViewAmendSubmittedControllerSpec
         val result = route(app, req).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url
 
         app.stop()
       }

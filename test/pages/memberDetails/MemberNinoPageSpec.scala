@@ -25,7 +25,7 @@ import org.scalatest.matchers.must.Matchers
 
 class MemberNinoPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
-  private val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
+  private val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
   ".nextPage" - {
 

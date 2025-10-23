@@ -93,7 +93,7 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
       val p    = submittedParams("QT123654")
       val call = DashboardPage.nextPage(ddEmpty, Some(Submitted), Some(p))
 
-      call mustEqual controllers.routes.SubmittedTransferSummaryController.onPageLoad(
+      call mustEqual controllers.viewandamend.routes.SubmittedTransferSummaryController.onPageLoad(
         QtNumber("QT123654"),
         pstr,
         Submitted,

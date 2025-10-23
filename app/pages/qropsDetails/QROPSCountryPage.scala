@@ -57,7 +57,7 @@ case object QROPSCountryPage extends QuestionPage[Country] {
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
     answers.get(QROPSCountryPage) match {
       case Some(Country("ZZ", "Other")) => routes.QROPSOtherCountryController.onPageLoad(AmendCheckMode)
-      case Some(Country(_, _))          => controllers.routes.ViewAmendSubmittedController.amend()
+      case Some(Country(_, _))          => controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       case _                            => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
   }
