@@ -17,27 +17,121 @@
 package validators
 
 import cats.implicits._
+import models.address.{MembersCurrentAddress, MembersLastUKAddress}
 import models.{DataMissingError, GenericError, PersonName, UserAnswers, ValidationResult}
 import models.transferJourneys.MemberDetails
 import pages.memberDetails._
 
+import java.time.LocalDate
+
 object MemberDetailsValidator extends Validator[MemberDetails] {
 
-  //Use for comprehension instead of one-stop-shop bigTuple.mapN
-  override def fromUserAnswers(user: UserAnswers): ValidationResult[MemberDetails] = ???
-
+  override def fromUserAnswers(userAnswers: UserAnswers): ValidationResult[MemberDetails] =
+    (
+      validateMemberName(userAnswers),
+      validateMemberNino(userAnswers),
+      validateReasonNoNINO(userAnswers),
+      validateMemberDateOfBirth(userAnswers),
+      validateMemberCurrentAddress(userAnswers),
+      validateMemberIsUkResident(userAnswers),
+      validateMemberHasEverBeenUkResident(userAnswers),
+      validateLastPrincipalUkAddress(userAnswers),
+      validateMemberDateLeftUk(userAnswers)
+    ).mapN(
+      (
+          name,
+          nino,
+          reasonNoNino,
+          dateOfBirth,
+          currentAddress,
+          isUkResident,
+          hasEverBeenUkResident,
+          lastUkAddress,
+          dateLeftUk
+      ) =>
+        MemberDetails(
+          name,
+          nino,
+          reasonNoNino,
+          dateOfBirth,
+          currentAddress,
+          isUkResident,
+          hasEverBeenUkResident,
+          lastUkAddress,
+          dateLeftUk
+        )
+    )
 
   private def validateMemberName(answers: UserAnswers): ValidationResult[PersonName] =
     answers.get(MemberNamePage) match {
       case Some(name) => name.validNec
-      case None => DataMissingError(MemberNamePage).invalidNec
+      case None       => DataMissingError(MemberNamePage).invalidNec
     }
 
   private def validateMemberNino(answers: UserAnswers): ValidationResult[Option[String]] =
     (answers.get(MemberNinoPage), answers.get(MemberDoesNotHaveNinoPage)) match {
       case (Some(nino), None) => Some(nino).validNec
-      case (None, Some(_)) => None.validNec
+      case (None, Some(_))    => None.validNec
       case (Some(_), Some(_)) => GenericError("Cannot have valid payload with nino and reasonNoNINO").invalidNec
-      case (None, None) => DataMissingError(MemberNinoPage).invalidNec
+      case (None, None)       => DataMissingError(MemberNinoPage).invalidNec
+    }
+
+  private def validateReasonNoNINO(answers: UserAnswers): ValidationResult[Option[String]] =
+    (answers.get(MemberDoesNotHaveNinoPage), answers.get(MemberNinoPage)) match {
+      case (Some(nino), None) => Some(nino).validNec
+      case (None, Some(_))    => None.validNec
+      case (Some(_), Some(_)) => GenericError("Cannot have valid payload with nino and reasonNoNINO").invalidNec
+      case (None, None)       => DataMissingError(MemberDoesNotHaveNinoPage).invalidNec
+    }
+
+  private def validateMemberDateOfBirth(answers: UserAnswers): ValidationResult[LocalDate] =
+    answers.get(MemberDateOfBirthPage) match {
+      case Some(date) => date.validNec
+      case None       => DataMissingError(MemberDateOfBirthPage).invalidNec
+    }
+
+  private def validateMemberCurrentAddress(answers: UserAnswers): ValidationResult[MembersCurrentAddress] =
+    answers.get(MembersCurrentAddressPage) match {
+      case Some(address) => address.validNec
+      case None          => DataMissingError(MembersCurrentAddressPage).invalidNec
+    }
+
+  private def validateMemberIsUkResident(answers: UserAnswers): ValidationResult[Boolean] =
+    answers.get(MemberIsResidentUKPage) match {
+      case Some(isUkResident) => isUkResident.validNec
+      case None               => DataMissingError(MemberIsResidentUKPage).invalidNec
+    }
+
+  private def validateMemberHasEverBeenUkResident(answers: UserAnswers): ValidationResult[Option[Boolean]] =
+    (answers.get(MemberHasEverBeenResidentUKPage), answers.get(MemberIsResidentUKPage)) match {
+      case (None, Some(true))                         => None.validNec
+      case (None, Some(false))                        => DataMissingError(MemberHasEverBeenResidentUKPage).invalidNec
+      case (Some(hasEverBeenUkResident), Some(false)) => Some(hasEverBeenUkResident).validNec
+      case (Some(_), Some(true))                      => GenericError("Cannot have valid payload with isUkResident = true and hasEverBeenUkResident").invalidNec
+      case (None, None)                               => DataMissingError(MemberHasEverBeenResidentUKPage).invalidNec
+    }
+
+  private def validateLastPrincipalUkAddress(answers: UserAnswers): ValidationResult[Option[MembersLastUKAddress]] =
+    (answers.get(MemberIsResidentUKPage), answers.get(MemberHasEverBeenResidentUKPage)) match {
+      case (Some(true), _)            => None.validNec
+      case (Some(false), Some(false)) => None.validNec
+      case (Some(false), Some(true))  =>
+        answers.get(MembersLastUKAddressPage) match {
+          case Some(date) => Some(date).validNec
+          case None       => DataMissingError(MembersLastUKAddressPage).invalidNec
+        }
+      case _                          => DataMissingError(MembersLastUKAddressPage).invalidNec
+    }
+
+  private def validateMemberDateLeftUk(answers: UserAnswers): ValidationResult[Option[LocalDate]] =
+    (answers.get(MemberIsResidentUKPage), answers.get(MemberHasEverBeenResidentUKPage)) match {
+      case (Some(true), _)            => None.validNec
+      case (Some(false), Some(false)) => None.validNec
+      case (Some(false), Some(true))  =>
+        answers.get(MemberDateOfLeavingUKPage) match {
+          case Some(date) => Some(date).validNec
+          case None       => DataMissingError(MemberDateOfLeavingUKPage).invalidNec
+        }
+      case (_, None)                  => DataMissingError(MemberDateOfLeavingUKPage).invalidNec
     }
 }
