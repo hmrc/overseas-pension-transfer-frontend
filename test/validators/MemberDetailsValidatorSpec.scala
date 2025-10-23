@@ -206,6 +206,29 @@ class MemberDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
             )
           )
       }
+
+      "isUkResident = false, hasEverBeenUkResident = true and rest of journey is none" in {
+        val invalidJson = Json.obj("memberDetails" -> Json.obj(
+          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+          "nino"                   -> "AA000000A",
+          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+          "principalResAddDetails" -> Json.obj(
+            "addressLine1" -> "line1",
+            "addressLine2" -> "line2",
+            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+          ),
+          "memUkResident"          -> false,
+          "memEverUkResident"      -> true
+        ))
+
+        MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = invalidJson)) mustBe
+          Invalid(
+            Chain(
+              DataMissingError(MembersLastUKAddressPage),
+              DataMissingError(MemberDateOfLeavingUKPage)
+            )
+          )
+      }
     }
   }
 }
