@@ -32,7 +32,7 @@ object QROPSOtherCountrySummary {
       val actions =
         if (showChangeLink) {
           Seq(
-            ActionItemViewModel("site.change", routes.QROPSOtherCountryController.onPageLoad(mode).url)
+            ActionItemViewModel("site.change", routes.QROPSCountryController.onPageLoad(mode).url)
               .withVisuallyHiddenText(messages("qropsOtherCountry.change.hidden"))
           )
         } else {

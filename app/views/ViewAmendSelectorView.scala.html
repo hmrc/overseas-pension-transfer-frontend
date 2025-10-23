@@ -1,0 +1,77 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios, ErrorMessage}
+
+@this(
+  layout: templates.Layout,
+  formHelper: FormWithCSRF,
+  govukButton: GovukButton,
+  govukRadios: GovukRadios
+)
+
+@(qtReference: TransferId, pstr: models.PstrNumber, qtStatus: models.QtStatus, versionNumber: String)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = messages("viewAmend.title")) {
+  @formHelper(action = routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber)) {
+    @request.flash.get("lockWarning").map { name =>
+      <div class="govuk-notification-banner govuk-notification-banner--important"
+           role="region"
+           aria-labelledby="govuk-notification-banner-title"
+           data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-lock-banner-title">
+            @messages("dashboard.lock.title")
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">
+            @messages("dashboard.lock.warning", name)
+            <a href="" onclick="location.reload(); return false;">@messages("dashboard.lock.hide")</a>.
+          </p>
+        </div>
+      </div>
+    }
+
+    @govukRadios(Radios(
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+          content = Text(messages("viewAmend.title")),
+          classes = "govuk-fieldset__legend--xl",
+          isPageHeading = true
+        ))
+      )),
+      name = "option",
+      errorMessage = request.flash.get("error").map { _ =>
+        ErrorMessage(content = Text(messages("viewAmend.error.required")))
+      },
+      items = Seq(
+        RadioItem(
+          content = Text(messages("viewAmend.radio1")),
+          value = Some("view")
+        ),
+        RadioItem(
+          content = Text(messages("viewAmend.radio2")),
+          value = Some("amend")
+        )
+      )
+    ))
+
+    @govukButton(Button(
+      content = Text(messages("site.continue"))
+    ))
+  }
+}

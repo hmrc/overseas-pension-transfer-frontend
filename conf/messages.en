@@ -757,3 +757,8 @@ submittedTransferSummary.view = View
 submittedTransferSummary.viewOrAmend = View or amend
 submittedTransferSummary.reviewAndSubmit = Review and submit
 submittedTransferSummary.draft = Draft
+
+viewAmend.title = What would you like to do?
+viewAmend.radio1 = View this overseas pension transfer
+viewAmend.radio2 = Amend this overseas pension transfer
+viewAmend.error.required = Select whether you want to view or amend this transfer

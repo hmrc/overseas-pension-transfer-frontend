@@ -18,7 +18,7 @@ package pages.transferDetails
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -47,6 +47,13 @@ class NetTransferAmountPageSpec extends AnyFreeSpec with Matchers with SpecBase 
       "must go to Final Check Answers page" in {
         NetTransferAmountPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to Amend Check Answers page" in {
+        NetTransferAmountPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+          controllers.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

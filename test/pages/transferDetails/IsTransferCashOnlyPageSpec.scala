@@ -18,7 +18,7 @@ package pages.transferDetails
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -64,6 +64,18 @@ class IsTransferCashOnlyPageSpec extends AnyFreeSpec with Matchers with SpecBase
       "must go to type of asset page if false is selected" in {
         val ua = emptyAnswers.set(IsTransferCashOnlyPage, false).success.value
         IsTransferCashOnlyPage.nextPage(FinalCheckMode, ua) mustEqual routes.TypeOfAssetController.onPageLoad(FinalCheckMode)
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to amend cya page if true is selected" in {
+        val ua = emptyAnswers.set(IsTransferCashOnlyPage, true).success.value
+        IsTransferCashOnlyPage.nextPage(AmendCheckMode, ua) mustBe controllers.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to type of asset page if false is selected" in {
+        val ua = emptyAnswers.set(IsTransferCashOnlyPage, false).success.value
+        IsTransferCashOnlyPage.nextPage(AmendCheckMode, ua) mustEqual routes.TypeOfAssetController.onPageLoad(AmendCheckMode)
       }
     }
   }

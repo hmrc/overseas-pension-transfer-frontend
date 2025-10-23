@@ -18,7 +18,7 @@ package pages.transferDetails
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -46,8 +46,13 @@ class ApplicableTaxExclusionsPageSpec extends AnyFreeSpec with Matchers with Spe
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        ApplicableTaxExclusionsPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+        ApplicableTaxExclusionsPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(FinalCheckMode)
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to Final Check Answers page" in {
+        ApplicableTaxExclusionsPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(AmendCheckMode)
       }
     }
   }

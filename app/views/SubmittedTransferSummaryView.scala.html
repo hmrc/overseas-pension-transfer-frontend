@@ -28,6 +28,25 @@
 @(memberName: String, qtNumber: String, tableRows: Html)(implicit request: IdentifierRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("submittedTransferSummary.title", memberName)), showPageFooter = false) {
+    @request.flash.get("lockWarning").map { _ =>
+        <div class="govuk-notification-banner govuk-notification-banner--important"
+             role="region"
+             aria-labelledby="govuk-notification-banner-title"
+             data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-lock-banner-title">
+                    @messages("dashboard.lock.title")
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    @messages("dashboard.lock.warning", memberName)
+                    <a href="" onclick="location.reload(); return false;">@messages("dashboard.lock.hide")</a>.
+                </p>
+            </div>
+        </div>
+    }
+
     <span class="govuk-caption-l">@qtNumber</span>
     <h1 class="govuk-heading-l">@messages("submittedTransferSummary.heading", memberName)</h1>
 

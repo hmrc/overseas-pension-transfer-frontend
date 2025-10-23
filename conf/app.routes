@@ -25,7 +25,10 @@ GET        /what-will-be-needed                                                 
 
 GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
 
-GET        /view-submitted-transfer/from-dashboard                                                controllers.ViewSubmittedController.fromDashboard(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+
+GET        /view-submitted-transfer                                                               controllers.ViewAmendSubmittedController.view(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+GET        /amend-submitted-transfer                                                              controllers.ViewAmendSubmittedController.amend()
+GET        /amend-in-progress-draft                                                               controllers.ViewAmendSubmittedController.fromDraft(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
 
 GET        /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onPageLoad()
 POST       /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onSubmit()
@@ -56,6 +59,8 @@ GET        /member-details/change-member-date-of-leaving-uk                     
 POST       /member-details/change-member-date-of-leaving-uk                                       controllers.memberDetails.MemberDateOfLeavingUKController.onSubmit(mode: Mode = CheckMode)
 GET        /member-details/final-change-member-date-of-leaving-uk                                 controllers.memberDetails.MemberDateOfLeavingUKController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /member-details/final-change-member-date-of-leaving-uk                                 controllers.memberDetails.MemberDateOfLeavingUKController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /member-details/amend-change-member-date-of-leaving-uk                                 controllers.memberDetails.MemberDateOfLeavingUKController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /member-details/amend-change-member-date-of-leaving-uk                                 controllers.memberDetails.MemberDateOfLeavingUKController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /member-details/member-date-of-birth                                                   controllers.memberDetails.MemberDateOfBirthController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/member-date-of-birth                                                   controllers.memberDetails.MemberDateOfBirthController.onSubmit(mode: Mode = NormalMode)
@@ -77,6 +82,8 @@ GET        /member-details/change-member-is-resident-uk                         
 POST       /member-details/change-member-is-resident-uk                                           controllers.memberDetails.MemberIsResidentUKController.onSubmit(mode: Mode = CheckMode)
 GET        /member-details/final-change-member-is-resident-uk                                     controllers.memberDetails.MemberIsResidentUKController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /member-details/final-change-member-is-resident-uk                                     controllers.memberDetails.MemberIsResidentUKController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /member-details/amend-change-member-is-resident-uk                                     controllers.memberDetails.MemberIsResidentUKController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /member-details/amend-change-member-is-resident-uk                                     controllers.memberDetails.MemberIsResidentUKController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /member-details/member-has-ever-been-resident-uk                                       controllers.memberDetails.MemberHasEverBeenResidentUKController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/member-has-ever-been-resident-uk                                       controllers.memberDetails.MemberHasEverBeenResidentUKController.onSubmit(mode: Mode = NormalMode)
@@ -84,6 +91,8 @@ GET        /member-details/change-member-has-ever-been-resident-uk              
 POST       /member-details/change-member-has-ever-been-resident-uk                                controllers.memberDetails.MemberHasEverBeenResidentUKController.onSubmit(mode: Mode = CheckMode)
 GET        /member-details/final-change-member-has-ever-been-resident-uk                          controllers.memberDetails.MemberHasEverBeenResidentUKController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /member-details/final-change-member-has-ever-been-resident-uk                          controllers.memberDetails.MemberHasEverBeenResidentUKController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /member-details/amend-change-member-has-ever-been-resident-uk                          controllers.memberDetails.MemberHasEverBeenResidentUKController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /member-details/amend-change-member-has-ever-been-resident-uk                          controllers.memberDetails.MemberHasEverBeenResidentUKController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /member-details/members-current-address                                                controllers.memberDetails.MembersCurrentAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/members-current-address                                                controllers.memberDetails.MembersCurrentAddressController.onSubmit(mode: Mode = NormalMode)
@@ -91,6 +100,8 @@ GET        /member-details/change-members-current-address                       
 POST       /member-details/change-members-current-address                                         controllers.memberDetails.MembersCurrentAddressController.onSubmit(mode: Mode = CheckMode)
 GET        /member-details/final-change-members-current-address                                   controllers.memberDetails.MembersCurrentAddressController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /member-details/final-change-members-current-address                                   controllers.memberDetails.MembersCurrentAddressController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /member-details/amend-change-members-current-address                                   controllers.memberDetails.MembersCurrentAddressController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /member-details/amend-change-members-current-address                                   controllers.memberDetails.MembersCurrentAddressController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /member-details/members-last-uk-address                                                controllers.memberDetails.MembersLastUKAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/members-last-uk-address                                                controllers.memberDetails.MembersLastUKAddressController.onSubmit(mode: Mode = NormalMode)
@@ -98,6 +109,8 @@ GET        /member-details/change-members-last-uk-address                       
 POST       /member-details/change-members-last-uk-address                                         controllers.memberDetails.MembersLastUKAddressController.onSubmit(mode: Mode = CheckMode)
 GET        /member-details/final-change-members-last-uk-address                                   controllers.memberDetails.MembersLastUKAddressController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /member-details/final-change-members-last-uk-address                                   controllers.memberDetails.MembersLastUKAddressController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /member-details/amend-change-members-last-uk-address                                   controllers.memberDetails.MembersLastUKAddressController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /member-details/amend-change-members-last-uk-address                                   controllers.memberDetails.MembersLastUKAddressController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /member-details/members-last-uk-address-lookup                                         controllers.memberDetails.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/members-last-uk-address-lookup                                         controllers.memberDetails.MembersLastUkAddressLookupController.onSubmit(mode: Mode = NormalMode)
@@ -105,6 +118,8 @@ GET        /member-details/change-members-last-uk-address-lookup                
 POST       /member-details/change-members-last-uk-address-lookup                                  controllers.memberDetails.MembersLastUkAddressLookupController.onSubmit(mode: Mode = CheckMode)
 GET        /member-details/final-change-members-last-uk-address-lookup                            controllers.memberDetails.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /member-details/final-change-members-last-uk-address-lookup                            controllers.memberDetails.MembersLastUkAddressLookupController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /member-details/amend-change-members-last-uk-address-lookup                            controllers.memberDetails.MembersLastUkAddressLookupController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /member-details/amend-change-members-last-uk-address-lookup                            controllers.memberDetails.MembersLastUkAddressLookupController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /member-details/member-select-last-uk-address                                          controllers.memberDetails.MembersLastUkAddressSelectController.onPageLoad(mode: Mode = NormalMode)
 POST       /member-details/member-select-last-uk-address                                          controllers.memberDetails.MembersLastUkAddressSelectController.onSubmit(mode: Mode = NormalMode)
@@ -112,6 +127,8 @@ GET        /member-details/change-member-select-last-uk-address                 
 POST       /member-details/change-member-select-last-uk-address                                   controllers.memberDetails.MembersLastUkAddressSelectController.onSubmit(mode: Mode = CheckMode)
 GET        /member-details/final-change-member-select-last-uk-address                             controllers.memberDetails.MembersLastUkAddressSelectController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /member-details/final-change-member-select-last-uk-address                             controllers.memberDetails.MembersLastUkAddressSelectController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /member-details/amend-change-member-select-last-uk-address                             controllers.memberDetails.MembersLastUkAddressSelectController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /member-details/amend-change-member-select-last-uk-address                             controllers.memberDetails.MembersLastUkAddressSelectController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /member-details/member-last-uk-address-not-found                                       controllers.memberDetails.MembersLastUkAddressNotFoundController.onPageLoad(mode: Mode = NormalMode)
 GET        /member-details/change-member-last-uk-address-not-found                                controllers.memberDetails.MembersLastUkAddressNotFoundController.onPageLoad(mode: Mode = CheckMode)
@@ -122,6 +139,8 @@ GET        /member-details/change-member-confirm-last-uk-address                
 POST       /member-details/change-member-confirm-last-uk-address                                  controllers.memberDetails.MembersLastUkAddressConfirmController.onSubmit(mode: Mode = CheckMode)
 GET        /member-details/final-change-member-confirm-last-uk-address                            controllers.memberDetails.MembersLastUkAddressConfirmController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /member-details/final-change-member-confirm-last-uk-address                            controllers.memberDetails.MembersLastUkAddressConfirmController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /member-details/amend-change-member-confirm-last-uk-address                            controllers.memberDetails.MembersLastUkAddressConfirmController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /member-details/amend-change-member-confirm-last-uk-address                            controllers.memberDetails.MembersLastUkAddressConfirmController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /member-details/check-your-answers                                                     controllers.memberDetails.MemberDetailsCYAController.onPageLoad()
 POST       /member-details/check-your-answers                                                     controllers.memberDetails.MemberDetailsCYAController.onSubmit()
@@ -132,6 +151,8 @@ GET        /qrops-details/change-qrops-name                                     
 POST       /qrops-details/change-qrops-name                                                       controllers.qropsDetails.QROPSNameController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-details/final-change-qrops-name                                                 controllers.qropsDetails.QROPSNameController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-details/final-change-qrops-name                                                 controllers.qropsDetails.QROPSNameController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-details/amend-change-qrops-name                                                 controllers.qropsDetails.QROPSNameController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-details/amend-change-qrops-name                                                 controllers.qropsDetails.QROPSNameController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-details/qrops-reference                                                         controllers.qropsDetails.QROPSReferenceController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-details/qrops-reference                                                         controllers.qropsDetails.QROPSReferenceController.onSubmit(mode: Mode = NormalMode)
@@ -139,6 +160,8 @@ GET        /qrops-details/change-qrops-reference                                
 POST       /qrops-details/change-qrops-reference                                                  controllers.qropsDetails.QROPSReferenceController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-details/final-change-qrops-reference                                            controllers.qropsDetails.QROPSReferenceController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-details/final-change-qrops-reference                                            controllers.qropsDetails.QROPSReferenceController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-details/amend-change-qrops-reference                                            controllers.qropsDetails.QROPSReferenceController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-details/amend-change-qrops-reference                                            controllers.qropsDetails.QROPSReferenceController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-details/qrops-address                                                           controllers.qropsDetails.QROPSAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-details/qrops-address                                                           controllers.qropsDetails.QROPSAddressController.onSubmit(mode: Mode = NormalMode)
@@ -146,6 +169,8 @@ GET        /qrops-details/change-qrops-address                                  
 POST       /qrops-details/change-qrops-address                                                    controllers.qropsDetails.QROPSAddressController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-details/final-change-qrops-address                                              controllers.qropsDetails.QROPSAddressController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-details/final-change-qrops-address                                              controllers.qropsDetails.QROPSAddressController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-details/amend-change-qrops-address                                              controllers.qropsDetails.QROPSAddressController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-details/amend-change-qrops-address                                              controllers.qropsDetails.QROPSAddressController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-details/qrops-country                                                           controllers.qropsDetails.QROPSCountryController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-details/qrops-country                                                           controllers.qropsDetails.QROPSCountryController.onSubmit(mode: Mode = NormalMode)
@@ -153,6 +178,8 @@ GET        /qrops-details/change-qrops-country                                  
 POST       /qrops-details/change-qrops-country                                                    controllers.qropsDetails.QROPSCountryController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-details/final-change-qrops-country                                              controllers.qropsDetails.QROPSCountryController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-details/final-change-qrops-country                                              controllers.qropsDetails.QROPSCountryController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-details/amend-change-qrops-country                                              controllers.qropsDetails.QROPSCountryController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-details/amend-change-qrops-country                                              controllers.qropsDetails.QROPSCountryController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-details/qrops-other-country                                                     controllers.qropsDetails.QROPSOtherCountryController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-details/qrops-other-country                                                     controllers.qropsDetails.QROPSOtherCountryController.onSubmit(mode: Mode = NormalMode)
@@ -160,6 +187,8 @@ GET        /qrops-details/change-qrops-other-country                            
 POST       /qrops-details/change-qrops-other-country                                              controllers.qropsDetails.QROPSOtherCountryController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-details/final-change-qrops-other-country                                        controllers.qropsDetails.QROPSOtherCountryController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-details/final-change-qrops-other-country                                        controllers.qropsDetails.QROPSOtherCountryController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-details/amend-change-qrops-other-country                                        controllers.qropsDetails.QROPSOtherCountryController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-details/amend-change-qrops-other-country                                        controllers.qropsDetails.QROPSOtherCountryController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-details/check-your-answers                                                      controllers.qropsDetails.QROPSDetailsCYAController.onPageLoad()
 POST       /qrops-details/check-your-answers                                                      controllers.qropsDetails.QROPSDetailsCYAController.onSubmit()
@@ -170,6 +199,8 @@ GET        /qrops-scheme-manager-details/change-scheme-manager-type             
 POST       /qrops-scheme-manager-details/change-scheme-manager-type                               controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-scheme-manager-details/final-change-scheme-manager-type                         controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-scheme-manager-details/final-change-scheme-manager-type                         controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-scheme-manager-details/amend-change-scheme-manager-type                         controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-scheme-manager-details/amend-change-scheme-manager-type                         controllers.qropsSchemeManagerDetails.SchemeManagerTypeController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-scheme-manager-details/scheme-managers-name                                     controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-scheme-manager-details/scheme-managers-name                                     controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onSubmit(mode: Mode = NormalMode)
@@ -177,6 +208,8 @@ GET        /qrops-scheme-manager-details/change-scheme-managers-name            
 POST       /qrops-scheme-manager-details/change-scheme-managers-name                              controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-scheme-manager-details/final-change-scheme-managers-name                        controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-scheme-manager-details/final-change-scheme-managers-name                        controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-scheme-manager-details/amend-change-scheme-managers-name                        controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-scheme-manager-details/amend-change-scheme-managers-name                        controllers.qropsSchemeManagerDetails.SchemeManagersNameController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-scheme-manager-details/organisation-name                                        controllers.qropsSchemeManagerDetails.SchemeManagerOrganisationNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-scheme-manager-details/organisation-name                                        controllers.qropsSchemeManagerDetails.SchemeManagerOrganisationNameController.onSubmit(mode: Mode = NormalMode)
@@ -184,6 +217,8 @@ GET        /qrops-scheme-manager-details/change-organisation-name               
 POST       /qrops-scheme-manager-details/change-organisation-name                                 controllers.qropsSchemeManagerDetails.SchemeManagerOrganisationNameController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-scheme-manager-details/final-change-organisation-name                           controllers.qropsSchemeManagerDetails.SchemeManagerOrganisationNameController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-scheme-manager-details/final-change-organisation-name                           controllers.qropsSchemeManagerDetails.SchemeManagerOrganisationNameController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-scheme-manager-details/amend-change-organisation-name                           controllers.qropsSchemeManagerDetails.SchemeManagerOrganisationNameController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-scheme-manager-details/amend-change-organisation-name                           controllers.qropsSchemeManagerDetails.SchemeManagerOrganisationNameController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-scheme-manager-details/organisation-individual-name                             controllers.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNameController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-scheme-manager-details/organisation-individual-name                             controllers.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNameController.onSubmit(mode: Mode = NormalMode)
@@ -191,6 +226,8 @@ GET        /qrops-scheme-manager-details/change-organisation-individual-name    
 POST       /qrops-scheme-manager-details/change-organisation-individual-name                      controllers.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNameController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-scheme-manager-details/final-change-organisation-individual-name                controllers.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNameController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-scheme-manager-details/final-change-organisation-individual-name                controllers.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNameController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-scheme-manager-details/amend-change-organisation-individual-name                controllers.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNameController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-scheme-manager-details/amend-change-organisation-individual-name                controllers.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNameController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-scheme-manager-details/scheme-managers-address                                  controllers.qropsSchemeManagerDetails.SchemeManagersAddressController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-scheme-manager-details/scheme-managers-address                                  controllers.qropsSchemeManagerDetails.SchemeManagersAddressController.onSubmit(mode: Mode = NormalMode)
@@ -198,6 +235,8 @@ GET        /qrops-scheme-manager-details/change-scheme-managers-address         
 POST       /qrops-scheme-manager-details/change-scheme-managers-address                           controllers.qropsSchemeManagerDetails.SchemeManagersAddressController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-scheme-manager-details/final-change-scheme-managers-address                     controllers.qropsSchemeManagerDetails.SchemeManagersAddressController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-scheme-manager-details/final-change-scheme-managers-address                     controllers.qropsSchemeManagerDetails.SchemeManagersAddressController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-scheme-manager-details/amend-change-scheme-managers-address                     controllers.qropsSchemeManagerDetails.SchemeManagersAddressController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-scheme-manager-details/amend-change-scheme-managers-address                     controllers.qropsSchemeManagerDetails.SchemeManagersAddressController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-scheme-manager-details/scheme-managers-email                                    controllers.qropsSchemeManagerDetails.SchemeManagersEmailController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-scheme-manager-details/scheme-managers-email                                    controllers.qropsSchemeManagerDetails.SchemeManagersEmailController.onSubmit(mode: Mode = NormalMode)
@@ -205,6 +244,8 @@ GET        /qrops-scheme-manager-details/change-scheme-managers-email           
 POST       /qrops-scheme-manager-details/change-scheme-managers-email                             controllers.qropsSchemeManagerDetails.SchemeManagersEmailController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-scheme-manager-details/final-change-scheme-managers-email                       controllers.qropsSchemeManagerDetails.SchemeManagersEmailController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-scheme-manager-details/final-change-scheme-managers-email                       controllers.qropsSchemeManagerDetails.SchemeManagersEmailController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-scheme-manager-details/amend-change-scheme-managers-email                       controllers.qropsSchemeManagerDetails.SchemeManagersEmailController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-scheme-manager-details/amend-change-scheme-managers-email                       controllers.qropsSchemeManagerDetails.SchemeManagersEmailController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-scheme-manager-details/scheme-managers-contact                                  controllers.qropsSchemeManagerDetails.SchemeManagersContactController.onPageLoad(mode: Mode = NormalMode)
 POST       /qrops-scheme-manager-details/scheme-managers-contact                                  controllers.qropsSchemeManagerDetails.SchemeManagersContactController.onSubmit(mode: Mode = NormalMode)
@@ -212,6 +253,8 @@ GET        /qrops-scheme-manager-details/change-scheme-managers-contact         
 POST       /qrops-scheme-manager-details/change-scheme-managers-contact                           controllers.qropsSchemeManagerDetails.SchemeManagersContactController.onSubmit(mode: Mode = CheckMode)
 GET        /qrops-scheme-manager-details/final-change-scheme-managers-contact                     controllers.qropsSchemeManagerDetails.SchemeManagersContactController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /qrops-scheme-manager-details/final-change-scheme-managers-contact                     controllers.qropsSchemeManagerDetails.SchemeManagersContactController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /qrops-scheme-manager-details/amend-change-scheme-managers-contact                     controllers.qropsSchemeManagerDetails.SchemeManagersContactController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /qrops-scheme-manager-details/amend-change-scheme-managers-contact                     controllers.qropsSchemeManagerDetails.SchemeManagersContactController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /qrops-scheme-manager-details/check-your-answers                                       controllers.qropsSchemeManagerDetails.SchemeManagerDetailsCYAController.onPageLoad()
 POST       /qrops-scheme-manager-details/check-your-answers                                       controllers.qropsSchemeManagerDetails.SchemeManagerDetailsCYAController.onSubmit()
@@ -222,6 +265,8 @@ GET        /transfer-details/change-why-transfer-is-taxable                     
 POST       /transfer-details/change-why-transfer-is-taxable                                       controllers.transferDetails.WhyTransferIsTaxableController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/final-change-why-transfer-is-taxable                                 controllers.transferDetails.WhyTransferIsTaxableController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/final-change-why-transfer-is-taxable                                 controllers.transferDetails.WhyTransferIsTaxableController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/amend-change-why-transfer-is-taxable                                 controllers.transferDetails.WhyTransferIsTaxableController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/amend-change-why-transfer-is-taxable                                 controllers.transferDetails.WhyTransferIsTaxableController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/overseas-transfer-allowance                                          controllers.transferDetails.OverseasTransferAllowanceController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/overseas-transfer-allowance                                          controllers.transferDetails.OverseasTransferAllowanceController.onSubmit(mode: Mode = NormalMode)
@@ -229,6 +274,8 @@ GET        /transfer-details/change-overseas-transfer-allowance                 
 POST       /transfer-details/change-overseas-transfer-allowance                                   controllers.transferDetails.OverseasTransferAllowanceController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/final-change-overseas-transfer-allowance                             controllers.transferDetails.OverseasTransferAllowanceController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/final-change-overseas-transfer-allowance                             controllers.transferDetails.OverseasTransferAllowanceController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/amend-change-overseas-transfer-allowance                             controllers.transferDetails.OverseasTransferAllowanceController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/amend-change-overseas-transfer-allowance                             controllers.transferDetails.OverseasTransferAllowanceController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/is-transfer-taxable                                                  controllers.transferDetails.IsTransferTaxableController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/is-transfer-taxable                                                  controllers.transferDetails.IsTransferTaxableController.onSubmit(mode: Mode = NormalMode)
@@ -236,6 +283,8 @@ GET        /transfer-details/change-is-transfer-taxable                         
 POST       /transfer-details/change-is-transfer-taxable                                           controllers.transferDetails.IsTransferTaxableController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/final-change-is-transfer-taxable                                     controllers.transferDetails.IsTransferTaxableController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/final-change-is-transfer-taxable                                     controllers.transferDetails.IsTransferTaxableController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/amend-change-is-transfer-taxable                                     controllers.transferDetails.IsTransferTaxableController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/amend-change-is-transfer-taxable                                     controllers.transferDetails.IsTransferTaxableController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/date-of-transfer                                                     controllers.transferDetails.DateOfTransferController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/date-of-transfer                                                     controllers.transferDetails.DateOfTransferController.onSubmit(mode: Mode = NormalMode)
@@ -243,6 +292,8 @@ GET        /transfer-details/change-date-of-transfer                            
 POST       /transfer-details/change-date-of-transfer                                              controllers.transferDetails.DateOfTransferController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/final-change-date-of-transfer                                        controllers.transferDetails.DateOfTransferController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/final-change-date-of-transfer                                        controllers.transferDetails.DateOfTransferController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/amend-change-date-of-transfer                                        controllers.transferDetails.DateOfTransferController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/amend-change-date-of-transfer                                        controllers.transferDetails.DateOfTransferController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/applicable-tax-exclusions                                            controllers.transferDetails.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/applicable-tax-exclusions                                            controllers.transferDetails.ApplicableTaxExclusionsController.onSubmit(mode: Mode = NormalMode)
@@ -250,6 +301,8 @@ GET        /transfer-details/change-applicable-tax-exclusions                   
 POST       /transfer-details/change-applicable-tax-exclusions                                     controllers.transferDetails.ApplicableTaxExclusionsController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/final-change-applicable-tax-exclusions                               controllers.transferDetails.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/final-change-applicable-tax-exclusions                               controllers.transferDetails.ApplicableTaxExclusionsController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/amend-change-applicable-tax-exclusions                               controllers.transferDetails.ApplicableTaxExclusionsController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/amend-change-applicable-tax-exclusions                               controllers.transferDetails.ApplicableTaxExclusionsController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/amount-of-transfer                                                   controllers.transferDetails.AmountOfTransferController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/amount-of-transfer                                                   controllers.transferDetails.AmountOfTransferController.onSubmit(mode: Mode = NormalMode)
@@ -257,6 +310,8 @@ GET        /transfer-details/change-amount-of-transfer                          
 POST       /transfer-details/change-amount-of-transfer                                            controllers.transferDetails.AmountOfTransferController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/final-change-amount-of-transfer                                      controllers.transferDetails.AmountOfTransferController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/final-change-amount-of-transfer                                      controllers.transferDetails.AmountOfTransferController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/amend-change-amount-of-transfer                                      controllers.transferDetails.AmountOfTransferController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/amend-change-amount-of-transfer                                      controllers.transferDetails.AmountOfTransferController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/net-transfer-amount                                                  controllers.transferDetails.NetTransferAmountController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/net-transfer-amount                                                  controllers.transferDetails.NetTransferAmountController.onSubmit(mode: Mode = NormalMode)
@@ -264,6 +319,8 @@ GET        /transfer-details/change-net-transfer-amount                         
 POST       /transfer-details/change-net-transfer-amount                                           controllers.transferDetails.NetTransferAmountController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/final-change-net-transfer-amount                                     controllers.transferDetails.NetTransferAmountController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/final-change-net-transfer-amount                                     controllers.transferDetails.NetTransferAmountController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/amend-change-net-transfer-amount                                     controllers.transferDetails.NetTransferAmountController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/amend-change-net-transfer-amount                                     controllers.transferDetails.NetTransferAmountController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/amount-of-tax-deducted                                               controllers.transferDetails.AmountOfTaxDeductedController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/amount-of-tax-deducted                                               controllers.transferDetails.AmountOfTaxDeductedController.onSubmit(mode: Mode = NormalMode)
@@ -271,6 +328,8 @@ GET        /transfer-details/change-amount-of-tax-deducted                      
 POST       /transfer-details/change-amount-of-tax-deducted                                        controllers.transferDetails.AmountOfTaxDeductedController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/final-change-amount-of-tax-deducted                                  controllers.transferDetails.AmountOfTaxDeductedController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/final-change-amount-of-tax-deducted                                  controllers.transferDetails.AmountOfTaxDeductedController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/amend-change-amount-of-tax-deducted                                  controllers.transferDetails.AmountOfTaxDeductedController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/amend-change-amount-of-tax-deducted                                  controllers.transferDetails.AmountOfTaxDeductedController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/why-transfer-is-not-taxable                                          controllers.transferDetails.WhyTransferIsNotTaxableController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/why-transfer-is-not-taxable                                          controllers.transferDetails.WhyTransferIsNotTaxableController.onSubmit(mode: Mode = NormalMode)
@@ -278,6 +337,8 @@ GET        /transfer-details/change-why-transfer-is-not-taxable                 
 POST       /transfer-details/change-why-transfer-is-not-taxable                                   controllers.transferDetails.WhyTransferIsNotTaxableController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/final-change-why-transfer-is-not-taxable                             controllers.transferDetails.WhyTransferIsNotTaxableController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/final-change-why-transfer-is-not-taxable                             controllers.transferDetails.WhyTransferIsNotTaxableController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/amend-change-why-transfer-is-not-taxable                             controllers.transferDetails.WhyTransferIsNotTaxableController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/amend-change-why-transfer-is-not-taxable                             controllers.transferDetails.WhyTransferIsNotTaxableController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/check-your-answers                                                   controllers.transferDetails.TransferDetailsCYAController.onPageLoad()
 POST       /transfer-details/check-your-answers                                                   controllers.transferDetails.TransferDetailsCYAController.onSubmit()
@@ -290,6 +351,8 @@ GET        /transfer-details/assets/change-is-transfer-cash-only                
 POST       /transfer-details/assets/change-is-transfer-cash-only                                  controllers.transferDetails.IsTransferCashOnlyController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-is-transfer-cash-only                            controllers.transferDetails.IsTransferCashOnlyController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-is-transfer-cash-only                            controllers.transferDetails.IsTransferCashOnlyController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-is-transfer-cash-only                            controllers.transferDetails.IsTransferCashOnlyController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-is-transfer-cash-only                            controllers.transferDetails.IsTransferCashOnlyController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/type-of-asset                                                 controllers.transferDetails.TypeOfAssetController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/type-of-asset                                                 controllers.transferDetails.TypeOfAssetController.onSubmit(mode: Mode = NormalMode)
@@ -297,6 +360,8 @@ GET        /transfer-details/assets/change-type-of-asset                        
 POST       /transfer-details/assets/change-type-of-asset                                          controllers.transferDetails.TypeOfAssetController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-type-of-asset                                    controllers.transferDetails.TypeOfAssetController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-type-of-asset                                    controllers.transferDetails.TypeOfAssetController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-type-of-asset                                    controllers.transferDetails.TypeOfAssetController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-type-of-asset                                    controllers.transferDetails.TypeOfAssetController.onSubmit(mode: Mode = AmendCheckMode)
 
 # ----- CASH -----
 
@@ -307,6 +372,8 @@ GET        /transfer-details/assets/change-cash-amount-in-transfer              
 POST       /transfer-details/assets/change-cash-amount-in-transfer                                controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-cash-amount-in-transfer                          controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-cash-amount-in-transfer                          controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-cash-amount-in-transfer                          controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-cash-amount-in-transfer                          controllers.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferController.onSubmit(mode: Mode = AmendCheckMode)
 
 # ----- UNQUOTED -----
 
@@ -318,6 +385,8 @@ GET        /transfer-details/assets/change-unquoted-shares-company-name         
 POST       /transfer-details/assets/change-unquoted-shares-company-name                           controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-unquoted-shares-company-name                     controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-unquoted-shares-company-name                     controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-unquoted-shares-company-name                     controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-unquoted-shares-company-name                     controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/unquoted-shares-value                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/unquoted-shares-value                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -325,6 +394,8 @@ GET        /transfer-details/assets/change-unquoted-shares-value                
 POST       /transfer-details/assets/change-unquoted-shares-value                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-unquoted-shares-value                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-unquoted-shares-value                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-unquoted-shares-value                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-unquoted-shares-value                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/unquoted-shares-number                                        controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/unquoted-shares-number                                        controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -332,13 +403,17 @@ GET        /transfer-details/assets/change-unquoted-shares-number               
 POST       /transfer-details/assets/change-unquoted-shares-number                                 controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-unquoted-shares-number                           controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-unquoted-shares-number                           controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-unquoted-shares-number                           controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-unquoted-shares-number                           controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/unquoted-shares-class                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/unquoted-shares-class                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onSubmit(mode: Mode = NormalMode, index: Int)
 GET        /transfer-details/assets/change-unquoted-shares-class                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onPageLoad(mode: Mode = CheckMode, index: Int)
 POST       /transfer-details/assets/change-unquoted-shares-class                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onSubmit(mode: Mode = CheckMode, index: Int)
-GET        /transfer-details/assets/final-change-unquoted-shares-class                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
-POST       /transfer-details/assets/final-change-unquoted-shares-class                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/final-change-unquoted-shares-class                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
+POST       /transfer-details/assets/final-change-unquoted-shares-class                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-unquoted-shares-class                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-unquoted-shares-class                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onPageLoad(index: Int)
 POST       /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onSubmit(index: Int)
@@ -349,6 +424,8 @@ GET        /transfer-details/assets/change-unquoted-shares-amend-continue       
 POST       /transfer-details/assets/change-unquoted-shares-amend-continue                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-unquoted-shares-amend-continue                   controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-unquoted-shares-amend-continue                   controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-unquoted-shares-amend-continue                   controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-unquoted-shares-amend-continue                   controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/more-unquoted-shares-declaration                              controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/more-unquoted-shares-declaration                              controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onSubmit(mode: Mode = NormalMode)
@@ -356,6 +433,8 @@ GET        /transfer-details/assets/change-more-unquoted-shares-declaration     
 POST       /transfer-details/assets/change-more-unquoted-shares-declaration                       controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-more-unquoted-shares-declaration                 controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-more-unquoted-shares-declaration                 controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-more-unquoted-shares-declaration                 controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-more-unquoted-shares-declaration                 controllers.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/unquoted-shares-confirm-removal                               controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/unquoted-shares-confirm-removal                               controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalController.onSubmit(index: Int)
@@ -370,6 +449,8 @@ GET        /transfer-details/assets/change-quoted-shares-company-name           
 POST       /transfer-details/assets/change-quoted-shares-company-name                             controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-quoted-shares-company-name                       controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-quoted-shares-company-name                       controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-quoted-shares-company-name                       controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-quoted-shares-company-name                       controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/quoted-shares-value                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/quoted-shares-value                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -377,6 +458,8 @@ GET        /transfer-details/assets/change-quoted-shares-value                  
 POST       /transfer-details/assets/change-quoted-shares-value                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-quoted-shares-value                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-quoted-shares-value                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-quoted-shares-value                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-quoted-shares-value                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/quoted-shares-number                                          controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/quoted-shares-number                                          controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -384,6 +467,8 @@ GET        /transfer-details/assets/change-quoted-shares-number                 
 POST       /transfer-details/assets/change-quoted-shares-number                                   controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-quoted-shares-number                             controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-quoted-shares-number                             controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-quoted-shares-number                             controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-quoted-shares-number                             controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/quoted-shares-class                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/quoted-shares-class                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -391,6 +476,8 @@ GET        /transfer-details/assets/change-quoted-shares-class                  
 POST       /transfer-details/assets/change-quoted-shares-class                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-quoted-shares-class                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-quoted-shares-class                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-quoted-shares-class                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-quoted-shares-class                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onPageLoad(index: Int)
 POST       /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onSubmit(index: Int)
@@ -401,6 +488,8 @@ GET        /transfer-details/assets/change-quoted-shares-amend-continue         
 POST       /transfer-details/assets/change-quoted-shares-amend-continue                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-quoted-shares-amend-continue                     controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-quoted-shares-amend-continue                     controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-quoted-shares-amend-continue                     controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-quoted-shares-amend-continue                     controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/more-quoted-shares-declaration                                controllers.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/more-quoted-shares-declaration                                controllers.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationController.onSubmit(mode: Mode = NormalMode)
@@ -408,6 +497,8 @@ GET        /transfer-details/assets/change-more-quoted-shares-declaration       
 POST       /transfer-details/assets/change-more-quoted-shares-declaration                         controllers.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-more-quoted-shares-declaration                   controllers.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-more-quoted-shares-declaration                   controllers.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-more-quoted-shares-declaration                   controllers.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-more-quoted-shares-declaration                   controllers.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/quoted-shares-confirm-removal                                 controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/quoted-shares-confirm-removal                                 controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesConfirmRemovalController.onSubmit(index: Int)
@@ -422,6 +513,8 @@ GET        /transfer-details/assets/change-property-address                     
 POST       /transfer-details/assets/change-property-address                                       controllers.transferDetails.assetsMiniJourneys.property.PropertyAddressController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-property-address                                 controllers.transferDetails.assetsMiniJourneys.property.PropertyAddressController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-property-address                                 controllers.transferDetails.assetsMiniJourneys.property.PropertyAddressController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-property-address                                 controllers.transferDetails.assetsMiniJourneys.property.PropertyAddressController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-property-address                                 controllers.transferDetails.assetsMiniJourneys.property.PropertyAddressController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/property-value                                                controllers.transferDetails.assetsMiniJourneys.property.PropertyValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/property-value                                                controllers.transferDetails.assetsMiniJourneys.property.PropertyValueController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -429,13 +522,17 @@ GET        /transfer-details/assets/change-property-value                       
 POST       /transfer-details/assets/change-property-value                                         controllers.transferDetails.assetsMiniJourneys.property.PropertyValueController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-property-value                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyValueController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-property-value                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyValueController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-property-value                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyValueController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-property-value                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyValueController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/property-description                                          controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/property-description                                          controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int)
 GET        /transfer-details/assets/change-property-description                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onPageLoad(mode: Mode = CheckMode, index: Int)
 POST       /transfer-details/assets/change-property-description                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onSubmit(mode: Mode = CheckMode, index: Int)
-GET        /transfer-details/assets/final-change-property-description                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
-POST       /transfer-details/assets/final-change-property-description                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/final-change-property-description                             controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
+POST       /transfer-details/assets/final-change-property-description                             controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-property-description                             controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-property-description                             controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/property-check-your-answers                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onPageLoad(index: Int)
 POST       /transfer-details/assets/property-check-your-answers                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onSubmit(index: Int)
@@ -446,6 +543,8 @@ GET        /transfer-details/assets/change-property-amend-continue              
 POST       /transfer-details/assets/change-property-amend-continue                                controllers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-property-amend-continue                          controllers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-property-amend-continue                          controllers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-property-amend-continue                          controllers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-property-amend-continue                          controllers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/more-property-declaration                                     controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/more-property-declaration                                     controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = NormalMode)
@@ -453,6 +552,8 @@ GET        /transfer-details/assets/change-more-property-declaration            
 POST       /transfer-details/assets/change-more-property-declaration                              controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-more-property-declaration                        controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-more-property-declaration                        controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-more-property-declaration                        controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-more-property-declaration                        controllers.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/property-confirm-removal                                      controllers.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/property-confirm-removal                                      controllers.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalController.onSubmit(index: Int)
@@ -468,6 +569,8 @@ GET        /transfer-details/assets/change-other-assets-description             
 POST       /transfer-details/assets/change-other-assets-description                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-other-assets-description                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-other-assets-description                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-other-assets-description                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-other-assets-description                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/other-assets-value                                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/other-assets-value                                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -475,6 +578,8 @@ GET        /transfer-details/assets/change-other-assets-value                   
 POST       /transfer-details/assets/change-other-assets-value                                     controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onSubmit(mode: Mode = CheckMode, index: Int)
 GET        /transfer-details/assets/final-change-other-assets-value                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
 POST       /transfer-details/assets/final-change-other-assets-value                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-other-assets-value                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-other-assets-value                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(index: Int)
 POST       /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(index: Int)
@@ -485,6 +590,8 @@ GET        /transfer-details/assets/change-other-assets-amend-continue          
 POST       /transfer-details/assets/change-other-assets-amend-continue                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-other-assets-amend-continue                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-other-assets-amend-continue                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-other-assets-amend-continue                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-other-assets-amend-continue                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/more-other-assets-declaration                                 controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/more-other-assets-declaration                                 controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onSubmit(mode: Mode = NormalMode)
@@ -492,6 +599,8 @@ GET        /transfer-details/assets/change-more-other-assets-declaration        
 POST       /transfer-details/assets/change-more-other-assets-declaration                          controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onSubmit(mode: Mode = CheckMode)
 GET        /transfer-details/assets/final-change-more-other-assets-declaration                    controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onPageLoad(mode: Mode = FinalCheckMode)
 POST       /transfer-details/assets/final-change-more-other-assets-declaration                    controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onSubmit(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-more-other-assets-declaration                    controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /transfer-details/assets/amend-change-more-other-assets-declaration                    controllers.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onPageLoad(index: Int)
 POST       /transfer-details/assets/other-assets-confirm-removal                                  controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalController.onSubmit(index: Int)
@@ -505,4 +614,7 @@ POST       /psa-declaration                                                     
 GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad(mode: Mode = NormalMode)
 POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit(mode: Mode = NormalMode)
 
-GET        /transfer-submitted                                                                     controllers.TransferSubmittedController.onPageLoad()
+GET        /transfer-submitted                                                                    controllers.TransferSubmittedController.onPageLoad()
+
+GET        /view-amend                                                                            controllers.ViewAmendSelectorController.onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+POST       /view-amend                                                                            controllers.ViewAmendSelectorController.onSubmit(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)

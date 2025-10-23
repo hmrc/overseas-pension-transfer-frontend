@@ -18,7 +18,7 @@ package pages.qropsSchemeManagerDetails
 
 import base.SpecBase
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PersonName, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PersonName, PstrNumber, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -51,9 +51,32 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers wi
     }
 
     "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        SchemeManagerOrganisationNamePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+
+      "must go to Organisation individual name page in FinalCheckMode" in {
+
+        SchemeManagerOrganisationNamePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(
+          FinalCheckMode
+        )
+      }
+
+      "must go to CYA if Organisation individual name exists in mongo" in {
+        val ua = emptyAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("Bill", "Withers")).success.value
+        SchemeManagerOrganisationNamePage.nextPage(FinalCheckMode, ua) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+    }
+
+    "in AmendCheckMode" - {
+
+      "must go to Organisation individual name page in AmendCheckMode" in {
+
+        SchemeManagerOrganisationNamePage.nextPage(AmendCheckMode, emptyAnswers) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(
+          AmendCheckMode
+        )
+      }
+
+      "must go to Amend if Organisation individual name exists in mongo" in {
+        val ua = emptyAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("Bill", "Withers")).success.value
+        SchemeManagerOrganisationNamePage.nextPage(AmendCheckMode, ua) mustEqual controllers.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

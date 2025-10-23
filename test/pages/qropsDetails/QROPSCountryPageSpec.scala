@@ -19,7 +19,7 @@ package pages.qropsDetails
 import base.SpecBase
 import controllers.qropsDetails.routes
 import models.address.Country
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -53,7 +53,7 @@ class QROPSCountryPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in Check Mode" - {
 
-      "must go to Check Answers when a valid country i s given" in {
+      "must go to Check Answers when a valid country is given" in {
         val country = emptyAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
 
         QROPSCountryPage.nextPage(CheckMode, country) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
@@ -63,7 +63,7 @@ class QROPSCountryPageSpec extends AnyFreeSpec with Matchers with SpecBase {
         val otherCountry = emptyAnswers.set(QROPSCountryPage, Country("ZZ", "Other")).success.value
 
         QROPSCountryPage.nextPage(CheckMode, otherCountry) mustEqual
-          routes.QROPSOtherCountryController.onPageLoad(NormalMode)
+          routes.QROPSOtherCountryController.onPageLoad(CheckMode)
       }
 
       "must go to /there-is-a-problem page when no country present in user answers" in {
@@ -71,10 +71,43 @@ class QROPSCountryPageSpec extends AnyFreeSpec with Matchers with SpecBase {
       }
     }
 
-    "in FinalCheckMode" - {
-      "must got to Final Check Answers page" in {
-        QROPSCountryPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    "in FinalCheck Mode" - {
+
+      "must go to FinalCheck Answers when a valid country is given" in {
+        val country = emptyAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+
+        QROPSCountryPage.nextPage(FinalCheckMode, country) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+
+      "must go to Qrops Other Established Country Page when 'Other' is supplied" in {
+        val otherCountry = emptyAnswers.set(QROPSCountryPage, Country("ZZ", "Other")).success.value
+
+        QROPSCountryPage.nextPage(FinalCheckMode, otherCountry) mustEqual
+          routes.QROPSOtherCountryController.onPageLoad(FinalCheckMode)
+      }
+
+      "must go to /there-is-a-problem page when no country present in user answers" in {
+        QROPSCountryPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual controllers.routes.JourneyRecoveryController.onPageLoad()
+      }
+    }
+
+    "in AmendCheck Mode" - {
+
+      "must go to AmendCheck Answers when a valid country is given" in {
+        val country = emptyAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+
+        QROPSCountryPage.nextPage(AmendCheckMode, country) mustEqual controllers.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to Qrops Other Established Country Page when 'Other' is supplied" in {
+        val otherCountry = emptyAnswers.set(QROPSCountryPage, Country("ZZ", "Other")).success.value
+
+        QROPSCountryPage.nextPage(AmendCheckMode, otherCountry) mustEqual
+          routes.QROPSOtherCountryController.onPageLoad(AmendCheckMode)
+      }
+
+      "must go to /there-is-a-problem page when no country present in user answers" in {
+        QROPSCountryPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual controllers.routes.JourneyRecoveryController.onPageLoad()
       }
     }
   }

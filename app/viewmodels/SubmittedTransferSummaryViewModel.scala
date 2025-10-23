@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.QtStatus.Submitted
+import models.QtStatus.{AmendInProgress, Submitted}
 import models.UserAnswers
 import play.api.i18n.Messages
 import play.twirl.api.Html
@@ -31,13 +31,19 @@ case object SubmittedTransferSummaryViewModel {
       if (isDraftDefined) messages("submittedTransferSummary.view") else messages("submittedTransferSummary.viewOrAmend")
     def changeLinkHref(isDraftDefined: Boolean) =
       if (isDraftDefined) {
-        controllers.routes.ViewSubmittedController.fromDashboard(answers.head.id, answers.head.pstr, Submitted, versionNumber).url
-      } else ""
+        controllers.routes.ViewAmendSubmittedController.view(answers.head.id, answers.head.pstr, Submitted, versionNumber).url
+      } else controllers.routes.ViewAmendSelectorController.onPageLoad(answers.head.id, answers.head.pstr, Submitted, versionNumber).url
 
     val versions = versionNumber.toInt to 1 by -1
 
     val draftTableRow = maybeDraft.fold("") {
-      draft => buildRow(draft.lastUpdated, messages("submittedTransferSummary.draft"), "", messages("submittedTransferSummary.reviewAndSubmit"))
+      draft =>
+        buildRow(
+          draft.lastUpdated,
+          messages("submittedTransferSummary.draft"),
+          controllers.routes.ViewAmendSubmittedController.fromDraft(draft.id, draft.pstr, AmendInProgress, versionNumber).url,
+          messages("submittedTransferSummary.reviewAndSubmit")
+        )
     }
 
     val mostRecentSubmittedVersion = {
@@ -56,7 +62,7 @@ case object SubmittedTransferSummaryViewModel {
         buildRow(
           answer.lastUpdated,
           version.toString,
-          controllers.routes.ViewSubmittedController.fromDashboard(answers.head.id, answers.head.pstr, Submitted, stringifyVersion).url,
+          controllers.routes.ViewAmendSubmittedController.view(answers.head.id, answers.head.pstr, Submitted, stringifyVersion).url,
           messages("submittedTransferSummary.view")
         )
     }.mkString

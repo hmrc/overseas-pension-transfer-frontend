@@ -26,7 +26,13 @@ import viewmodels.implicits._
 
 object MemberNinoSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(
+      mode: Mode,
+      answers: UserAnswers,
+      showChangeLink: Boolean           = true,
+      additionalClasses: Option[String] = None
+    )(implicit messages: Messages
+    ): Option[SummaryListRow] =
     answers.get(MemberNinoPage).map {
       answer =>
         val actions = if (showChangeLink) {
@@ -41,6 +47,6 @@ object MemberNinoSummary {
           key     = "memberNino.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = actions
-        )
+        ).withCssClass(additionalClasses.getOrElse(""))
     }
 }
