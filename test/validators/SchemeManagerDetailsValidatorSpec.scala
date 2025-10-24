@@ -19,6 +19,7 @@ package validators
 import base.AddressBase
 import cats.data.Validated.{Invalid, Valid}
 import models._
+import models.transferJourneys.SchemeManagerDetails
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -38,38 +39,133 @@ final class SchemeManagerDetailsValidatorSpec
 
   private val V = SchemeManagerDetailsValidator
 
-  "validateSchemeManagerType" - {
+  "fromUserAnswers" - {
 
-    "must succeed with Individual when provided" in {
+    "must succeed for Individual path (name present, org fields absent)" in {
+      val ua =
+        emptyUserAnswers
+          .withSchemeManagerType(SchemeManagerType.Individual)
+          .withSchemeManagersName(person)
+          .withAddress(schemeManagersAddress)
+          .withSchemeManagersEmail(email)
+          .withSchemeManagersPhoneNo(phoneNo)
+
+      V.fromUserAnswers(ua) match {
+        case Valid(details) =>
+          details mustBe SchemeManagerDetails(
+            schemeManagerType     = SchemeManagerType.Individual,
+            schemeManagersName    = Some(person),
+            schemeManagerOrgName  = None,
+            schemeOrgContact      = None,
+            schemeManagersAddress = schemeManagersAddress,
+            schemeManagersEmail   = email,
+            schemeManagersPhoneNo = phoneNo
+          )
+        case Invalid(err)   =>
+          fail(s"Expected Valid(Individual details), got Invalid: ${err.toNonEmptyList.toList}")
+      }
+    }
+
+    "must succeed for Organisation path (org name + contact present, individual name absent)" in {
+      val ua =
+        emptyUserAnswers
+          .withSchemeManagerType(SchemeManagerType.Organisation)
+          .withSchemeManagerOrganisationName(orgName)
+          .withSchemeManagerOrgContact(orgContact)
+          .withAddress(schemeManagersAddress)
+          .withSchemeManagersEmail(email)
+          .withSchemeManagersPhoneNo(phoneNo)
+
+      V.fromUserAnswers(ua) match {
+        case Valid(details) =>
+          details mustBe SchemeManagerDetails(
+            schemeManagerType     = SchemeManagerType.Organisation,
+            schemeManagersName    = None,
+            schemeManagerOrgName  = Some(orgName),
+            schemeOrgContact      = Some(orgContact),
+            schemeManagersAddress = schemeManagersAddress,
+            schemeManagersEmail   = email,
+            schemeManagersPhoneNo = phoneNo
+          )
+        case Invalid(err)   =>
+          fail(s"Expected Valid(Organisation details), got Invalid: ${err.toNonEmptyList.toList}")
+      }
+    }
+
+    "must aggregate errors when mandatory Individual fields are missing" in {
       val ua =
         emptyUserAnswers
           .withSchemeManagerType(SchemeManagerType.Individual)
 
-      V.validateSchemeManagerType(ua) match {
-        case Valid(res)   => res mustBe SchemeManagerType.Individual
-        case Invalid(err) => fail(s"Expected Valid(Individual), got Invalid: $err")
+      V.fromUserAnswers(ua) match {
+        case Invalid(nec) =>
+          val errs = nec.toNonEmptyList.toList
+          errs must contain(DataMissingError(SchemeManagersNamePage))
+          errs must not contain GenericError("Org name must be absent when manager type is individual")
+          errs must not contain GenericError("Org contact must be absent when manager type is individual")
+        case Valid(v)     => fail(s"Expected Invalid for missing individual name, got Valid: $v")
       }
     }
 
-    "must succeed with Organisation when provided" in {
+    "must produce exclusivity errors when Individual has org fields present" in {
+      val ua =
+        emptyUserAnswers
+          .withSchemeManagerType(SchemeManagerType.Individual)
+          .withSchemeManagersName(person)
+          .withSchemeManagerOrganisationName(orgName)
+          .withSchemeManagerOrgContact(orgContact)
+
+      V.fromUserAnswers(ua) match {
+        case Invalid(nec) =>
+          val errs = nec.toNonEmptyList.toList
+          errs must contain(GenericError("Org name must be absent when manager type is individual"))
+          errs must contain(GenericError("Org contact must be absent when manager type is individual"))
+        case Valid(v)     => fail(s"Expected Invalid exclusivity errors, got Valid: $v")
+      }
+    }
+
+    "must aggregate errors when mandatory Organisation fields are missing" in {
+
       val ua =
         emptyUserAnswers
           .withSchemeManagerType(SchemeManagerType.Organisation)
 
-      V.validateSchemeManagerType(ua) match {
-        case Valid(res)   => res mustBe SchemeManagerType.Organisation
-        case Invalid(err) => fail(s"Expected Valid(Organisation), got Invalid: $err")
+      V.fromUserAnswers(ua) match {
+        case Invalid(nec) =>
+          val errs = nec.toNonEmptyList.toList
+          errs must contain(DataMissingError(SchemeManagerOrganisationNamePage))
+          errs must contain(DataMissingError(SchemeManagerOrgIndividualNamePage))
+        case Valid(v)     => fail(s"Expected Invalid for missing org fields, got Valid: $v")
       }
     }
 
-    "must fail with DataMissingError(SchemeManagerTypePage) when the type is missing" in {
+    "must return exclusivity error when Organisation has individual name present" in {
+      val ua =
+        emptyUserAnswers
+          .withSchemeManagerType(SchemeManagerType.Organisation)
+          .withSchemeManagersName(person)
+
+      V.fromUserAnswers(ua) match {
+        case Invalid(nec) =>
+          val errs = nec.toNonEmptyList.toList
+          errs must contain(GenericError("Individual name must be absent when manager type is org"))
+        case Valid(v)     => fail(s"Expected Invalid exclusivity error, got Valid: $v")
+      }
+    }
+
+    "must collect all relevant missing-field errors when type is absent" in {
       val ua = emptyUserAnswers
 
-      V.validateSchemeManagerType(ua) match {
+      V.fromUserAnswers(ua) match {
         case Invalid(nec) =>
-          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagerTypePage)
+          val errs = nec.toNonEmptyList.toList
+
+          errs must contain(DataMissingError(SchemeManagerTypePage))
+          errs must contain(DataMissingError(SchemeManagersAddressPage))
+          errs must contain(DataMissingError(SchemeManagersEmailPage))
+          errs must contain(DataMissingError(SchemeManagersContactPage))
         case Valid(v)     =>
-          fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
+          fail(s"Expected Invalid for missing type and comms, got Valid: $v")
       }
     }
   }
@@ -299,56 +395,6 @@ final class SchemeManagerDetailsValidatorSpec
       V.validateSchemeManagersAddress(ua) match {
         case Invalid(nec) =>
           nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagersAddressPage)
-        case Valid(v)     =>
-          fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
-      }
-    }
-  }
-
-  "validateSchemeManagerEmail" - {
-
-    "must succeed with email when provided" in {
-      val ua =
-        emptyUserAnswers
-          .withSchemeManagersEmail(email)
-
-      V.validateSchemeManagersEmail(ua) match {
-        case Valid(res)   => res mustBe email
-        case Invalid(err) => fail(s"Expected Valid(email), got Invalid: $err")
-      }
-    }
-
-    "must fail with DataMissingError(SchemeManagerTypePage) when the type is missing" in {
-      val ua = emptyUserAnswers
-
-      V.validateSchemeManagersEmail(ua) match {
-        case Invalid(nec) =>
-          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagersEmailPage)
-        case Valid(v)     =>
-          fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
-      }
-    }
-  }
-
-  "validateSchemeManagersPhoneNo" - {
-
-    "must succeed with phone no when provided" in {
-      val ua =
-        emptyUserAnswers
-          .withSchemeManagersPhoneNo(phoneNo)
-
-      V.validateSchemeManagersPhoneNo(ua) match {
-        case Valid(res)   => res mustBe phoneNo
-        case Invalid(err) => fail(s"Expected Valid(phoneNo), got Invalid: $err")
-      }
-    }
-
-    "must fail with DataMissingError(SchemeManagerTypePage) when the type is missing" in {
-      val ua = emptyUserAnswers
-
-      V.validateSchemeManagersPhoneNo(ua) match {
-        case Invalid(nec) =>
-          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagersContactPage)
         case Valid(v)     =>
           fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
       }

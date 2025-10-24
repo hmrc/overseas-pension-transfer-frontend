@@ -16,7 +16,7 @@
 
 package validators
 
-import cats.implicits.catsSyntaxValidatedIdBinCompat0
+import cats.implicits.{catsSyntaxTuple7Semigroupal, catsSyntaxValidatedIdBinCompat0}
 import models.address.SchemeManagersAddress
 import models.transferJourneys.SchemeManagerDetails
 import models.{DataMissingError, GenericError, PersonName, SchemeManagerType, UserAnswers, ValidationResult}
@@ -24,7 +24,15 @@ import pages.qropsSchemeManagerDetails._
 
 object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
 
-  override def fromUserAnswers(user: UserAnswers): ValidationResult[SchemeManagerDetails] = ???
+  override def fromUserAnswers(user: UserAnswers): ValidationResult[SchemeManagerDetails] = (
+    validateSchemeManagerType(user),
+    validateSchemeManagersName(user),
+    validateSchemeManagersOrgName(user),
+    validateSchemeOrgContact(user),
+    validateSchemeManagersAddress(user),
+    validateSchemeManagersEmail(user),
+    validateSchemeManagersPhoneNo(user)
+  ).mapN(SchemeManagerDetails)
 
   def validateSchemeManagerType(answers: UserAnswers): ValidationResult[SchemeManagerType] =
     answers.get(SchemeManagerTypePage) match {
