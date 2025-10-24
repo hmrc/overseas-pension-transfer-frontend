@@ -16,4 +16,51 @@
 
 package models.transferJourneys
 
-case class TransferDetails()
+import models.address.PropertyAddress
+import models.assets.TypeOfAsset
+import models.{ApplicableTaxExclusions, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
+import java.time.LocalDate
+
+case class TransferDetails(
+    allowanceBeforeTransfer: BigDecimal,
+    transferAmount: BigDecimal,
+    isTransferTaxable: Boolean,
+    whyTaxable: WhyTransferIsTaxable,
+    whyNotTaxable: Set[WhyTransferIsNotTaxable],
+    applicableTaxExclusions: Set[ApplicableTaxExclusions],
+    amountOfTaxDeducted: BigDecimal,
+    netTransferAmount: BigDecimal,
+    dateOfTransfer: LocalDate,
+    isTransferCashOnly: Boolean,
+    typeOfAsset: Seq[TypeOfAsset],
+    cashAmountInTransfer: Option[BigDecimal],
+    otherAssets: List[OtherAssetsDetails]         = Nil,
+    propertyDetails: Option[PropertyDetails]      = None,
+    unquotedShares: Option[UnquotedSharesDetails] = None,
+    quotedShares: Option[QuotedSharesDetails]     = None
+  )
+
+case class UnquotedSharesDetails(
+    unquotedCompanyName: String,
+    unquotedShareValue: BigDecimal,
+    unquotedNumberOfShares: Int,
+    unquotedShareClass: String
+  )
+
+case class QuotedSharesDetails(
+    quotedCompanyName: String,
+    quotedShareValue: BigDecimal,
+    quotedNumberOfShares: Int,
+    quotedShareClass: String
+  )
+
+case class PropertyDetails(
+    propertyAddress: PropertyAddress,
+    propertyValue: BigDecimal,
+    propertyDescription: String
+  )
+
+case class OtherAssetsDetails(
+    otherAssetsDescription: String,
+    otherAssetsValue: BigDecimal
+  )
