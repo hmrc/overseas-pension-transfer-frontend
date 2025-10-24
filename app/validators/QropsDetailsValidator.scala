@@ -16,10 +16,57 @@
 
 package validators
 
-import models.{UserAnswers, ValidationResult}
+import cats.implicits.{catsSyntaxTuple5Semigroupal, catsSyntaxValidatedIdBinCompat0}
+import models.address.{Country, QROPSAddress}
 import models.transferJourneys.QropsDetails
+import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
+import pages.qropsDetails._
 
 object QropsDetailsValidator extends Validator[QropsDetails] {
 
-  override def fromUserAnswers(user: UserAnswers): ValidationResult[QropsDetails] = ???
+  override def fromUserAnswers(user: UserAnswers): ValidationResult[QropsDetails] =
+    (
+      validateQropsName(user),
+      validateQropsReference(user),
+      validateQropsAddress(user),
+      validateQropsCountry(user),
+      validateQropsOtherCountry(user)
+    ).mapN(
+      QropsDetails
+    )
+
+  private def validateQropsName(answers: UserAnswers): ValidationResult[String] =
+    answers.get(QROPSNamePage) match {
+      case Some(name) => name.validNec
+      case None       => DataMissingError(QROPSNamePage).invalidNec
+    }
+
+  private def validateQropsReference(answers: UserAnswers): ValidationResult[String] =
+    answers.get(QROPSReferencePage) match {
+      case Some(name) => name.validNec
+      case None       => DataMissingError(QROPSReferencePage).invalidNec
+    }
+
+  private def validateQropsAddress(answers: UserAnswers): ValidationResult[QROPSAddress] =
+    answers.get(QROPSAddressPage) match {
+      case Some(name) => name.validNec
+      case None       => DataMissingError(QROPSAddressPage).invalidNec
+    }
+
+  private def validateQropsCountry(answers: UserAnswers): ValidationResult[Option[Country]] =
+    (answers.get(QROPSCountryPage), answers.get(QROPSOtherCountryPage)) match {
+      case (Some(country), None) => Some(country).validNec
+      case (None, Some(_))       => None.validNec
+      case (Some(_), Some(_))    => GenericError("Cannot have valid payload with selected country and other country").invalidNec
+      case (None, None)          => DataMissingError(QROPSCountryPage).invalidNec
+    }
+
+  private def validateQropsOtherCountry(answers: UserAnswers): ValidationResult[Option[String]] =
+    (answers.get(QROPSOtherCountryPage), answers.get(QROPSCountryPage)) match {
+      case (Some(oCountry), None) => Some(oCountry).validNec
+      case (None, Some(_))        => None.validNec
+      case (Some(_), Some(_))     => GenericError("Cannot have valid payload with other country and selected country").invalidNec
+      case (None, None)           => DataMissingError(QROPSOtherCountryPage).invalidNec
+    }
+
 }
