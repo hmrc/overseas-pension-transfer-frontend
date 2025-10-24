@@ -16,11 +16,11 @@
 
 package validators
 
-import base.SpecBase
-import org.scalatest.freespec.AnyFreeSpec
+import base.AddressBase
 import cats.data.Validated.{Invalid, Valid}
 import models._
 import org.scalatest.OptionValues
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.qropsSchemeManagerDetails._
 import uaOps.UAOps.SchemeManagerAnswersOps
@@ -28,17 +28,19 @@ import uaOps.UAOps.SchemeManagerAnswersOps
 final class SchemeManagerDetailsValidatorSpec
     extends AnyFreeSpec
     with Matchers
-    with OptionValues with SpecBase {
+    with OptionValues with AddressBase {
 
   private val person: PersonName     = PersonName("Jane", "Doe")
   private val orgName: String        = "Acme Pensions Ltd"
   private val orgContact: PersonName = PersonName("Alex", "Smith")
+  private val email: String          = "blah@blah.com"
+  private val phoneNo: String        = "0123456789"
 
   private val V = SchemeManagerDetailsValidator
 
   "validateSchemeManagerType" - {
 
-    "must succeed with Individual when the type is present as Individual" in {
+    "must succeed with Individual when provided" in {
       val ua =
         emptyUserAnswers
           .withSchemeManagerType(SchemeManagerType.Individual)
@@ -49,7 +51,7 @@ final class SchemeManagerDetailsValidatorSpec
       }
     }
 
-    "must succeed with Organisation when the type is present as Organisation" in {
+    "must succeed with Organisation when provided" in {
       val ua =
         emptyUserAnswers
           .withSchemeManagerType(SchemeManagerType.Organisation)
@@ -210,7 +212,6 @@ final class SchemeManagerDetailsValidatorSpec
 
       }
     }
-
   }
 
   "validateSchemeOrgContact" - {
@@ -276,6 +277,80 @@ final class SchemeManagerDetailsValidatorSpec
           )
         case Valid(v)     =>
           fail(s"Expected Invalid(must be absent), got Valid: $v")
+      }
+    }
+  }
+  "validateSchemeManagerAddress" - {
+
+    "must succeed with address when provided" in {
+      val ua =
+        emptyUserAnswers
+          .withAddress(schemeManagersAddress)
+
+      V.validateSchemeManagersAddress(ua) match {
+        case Valid(res)   => res mustBe schemeManagersAddress
+        case Invalid(err) => fail(s"Expected Valid(address), got Invalid: $err")
+      }
+    }
+
+    "must fail with DataMissingError(SchemeManagerTypePage) when the type is missing" in {
+      val ua = emptyUserAnswers
+
+      V.validateSchemeManagersAddress(ua) match {
+        case Invalid(nec) =>
+          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagersAddressPage)
+        case Valid(v)     =>
+          fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
+      }
+    }
+  }
+
+  "validateSchemeManagerEmail" - {
+
+    "must succeed with email when provided" in {
+      val ua =
+        emptyUserAnswers
+          .withSchemeManagersEmail(email)
+
+      V.validateSchemeManagersEmail(ua) match {
+        case Valid(res)   => res mustBe email
+        case Invalid(err) => fail(s"Expected Valid(email), got Invalid: $err")
+      }
+    }
+
+    "must fail with DataMissingError(SchemeManagerTypePage) when the type is missing" in {
+      val ua = emptyUserAnswers
+
+      V.validateSchemeManagersEmail(ua) match {
+        case Invalid(nec) =>
+          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagersEmailPage)
+        case Valid(v)     =>
+          fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
+      }
+    }
+  }
+
+  "validateSchemeManagersPhoneNo" - {
+
+    "must succeed with phone no when provided" in {
+      val ua =
+        emptyUserAnswers
+          .withSchemeManagersPhoneNo(phoneNo)
+
+      V.validateSchemeManagersPhoneNo(ua) match {
+        case Valid(res)   => res mustBe phoneNo
+        case Invalid(err) => fail(s"Expected Valid(phoneNo), got Invalid: $err")
+      }
+    }
+
+    "must fail with DataMissingError(SchemeManagerTypePage) when the type is missing" in {
+      val ua = emptyUserAnswers
+
+      V.validateSchemeManagersPhoneNo(ua) match {
+        case Invalid(nec) =>
+          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagersContactPage)
+        case Valid(v)     =>
+          fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
       }
     }
   }

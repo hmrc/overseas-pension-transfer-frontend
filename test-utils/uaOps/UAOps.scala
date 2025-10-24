@@ -17,7 +17,7 @@
 package uaOps
 
 import pages.qropsDetails._
-import models.address.{Country, QROPSAddress}
+import models.address.{Country, QROPSAddress, SchemeManagersAddress}
 import models.{PersonName, SchemeManagerType, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import pages.qropsSchemeManagerDetails._
@@ -55,5 +55,14 @@ object UAOps {
 
     def withSchemeManagerOrgContact(value: PersonName): UserAnswers =
       ua.set(SchemeManagerOrgIndividualNamePage, value).success.value
+
+    def withAddress(value: SchemeManagersAddress): UserAnswers =
+      ua.set(SchemeManagersAddressPage, value).success.value
+
+    def withSchemeManagersEmail(value: String): UserAnswers =
+      ua.set(SchemeManagersEmailPage, value).success.value
+
+    def withSchemeManagersPhoneNo(value: String): UserAnswers =
+      ua.set(SchemeManagersContactPage, value).success.value
   }
 }

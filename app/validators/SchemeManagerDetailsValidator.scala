@@ -17,9 +17,9 @@
 package validators
 
 import cats.implicits.catsSyntaxValidatedIdBinCompat0
-import models.{DataMissingError, GenericError, PersonName, SchemeManagerType, UserAnswers, ValidationResult}
+import models.address.SchemeManagersAddress
 import models.transferJourneys.SchemeManagerDetails
-import pages.memberDetails.{MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
+import models.{DataMissingError, GenericError, PersonName, SchemeManagerType, UserAnswers, ValidationResult}
 import pages.qropsSchemeManagerDetails._
 
 object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
@@ -97,4 +97,22 @@ object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
         }
     }
   }
+
+  def validateSchemeManagersAddress(answers: UserAnswers): ValidationResult[SchemeManagersAddress] =
+    answers.get(SchemeManagersAddressPage) match {
+      case Some(smAdd) => smAdd.validNec
+      case None        => DataMissingError(SchemeManagersAddressPage).invalidNec
+    }
+
+  def validateSchemeManagersEmail(answers: UserAnswers): ValidationResult[String] =
+    answers.get(SchemeManagersEmailPage) match {
+      case Some(smE) => smE.validNec
+      case None      => DataMissingError(SchemeManagersEmailPage).invalidNec
+    }
+
+  def validateSchemeManagersPhoneNo(answers: UserAnswers): ValidationResult[String] =
+    answers.get(SchemeManagersContactPage) match {
+      case Some(smC) => smC.validNec
+      case None      => DataMissingError(SchemeManagersContactPage).invalidNec
+    }
 }
