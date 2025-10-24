@@ -36,6 +36,42 @@ final class SchemeManagerDetailsValidatorSpec
 
   private val V = SchemeManagerDetailsValidator
 
+  "validateSchemeManagerType" - {
+
+    "must succeed with Individual when the type is present as Individual" in {
+      val ua =
+        emptyUserAnswers
+          .withSchemeManagerType(SchemeManagerType.Individual)
+
+      V.validateSchemeManagerType(ua) match {
+        case Valid(res)   => res mustBe SchemeManagerType.Individual
+        case Invalid(err) => fail(s"Expected Valid(Individual), got Invalid: $err")
+      }
+    }
+
+    "must succeed with Organisation when the type is present as Organisation" in {
+      val ua =
+        emptyUserAnswers
+          .withSchemeManagerType(SchemeManagerType.Organisation)
+
+      V.validateSchemeManagerType(ua) match {
+        case Valid(res)   => res mustBe SchemeManagerType.Organisation
+        case Invalid(err) => fail(s"Expected Valid(Organisation), got Invalid: $err")
+      }
+    }
+
+    "must fail with DataMissingError(SchemeManagerTypePage) when the type is missing" in {
+      val ua = emptyUserAnswers
+
+      V.validateSchemeManagerType(ua) match {
+        case Invalid(nec) =>
+          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagerTypePage)
+        case Valid(v)     =>
+          fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
+      }
+    }
+  }
+
   "validateSchemeManagersName" - {
 
     "must fail with DataMissingError(SchemeManagerTypePage) when type is missing" in {
