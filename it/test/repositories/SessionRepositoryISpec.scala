@@ -30,6 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.MDC
 import uk.gov.hmrc.mdc.MdcExecutionContext
 import play.api.libs.json.Json
+import services.EncryptionService
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
@@ -72,10 +73,13 @@ class SessionRepositoryISpec
 
   implicit val productionLikeTestMdcExecutionContext: ExecutionContext = MdcExecutionContext()
 
+  private val encryptionService = new EncryptionService("test-master-key")
+
   override protected val repository: SessionRepository = new SessionRepository(
-    mongoComponent = mongoComponent,
-    appConfig      = mockAppConfig,
-    clock          = stubClock
+    mongoComponent    = mongoComponent,
+    encryptionService = encryptionService,
+    appConfig         = mockAppConfig,
+    clock             = stubClock
   )
 
   ".set" - {
@@ -219,6 +223,26 @@ class SessionRepositoryISpec
     }
 
     mustPreserveMdc(repository.keepAlive(sessionData.transferId))
+  }
+
+  "EncryptionService" - {
+    "must correctly encrypt and decrypt data" in {
+      val service   = new EncryptionService("encryption-test-key")
+      val plainText = "sensitive data 123"
+
+      val encrypted = service.encrypt(plainText)
+      encrypted must not be plainText
+
+      val decrypted = service.decrypt(encrypted)
+      decrypted mustEqual Right(plainText)
+    }
+
+    "must return Left when decrypting invalid cipher text" in {
+      val service       = new EncryptionService("another-key")
+      val invalidCipher = "invalid-data-123"
+      val result        = service.decrypt(invalidCipher)
+      result.isLeft mustBe true
+    }
   }
 
   private def mustPreserveMdc[A](f: => Future[A])(implicit pos: Position): Unit =
