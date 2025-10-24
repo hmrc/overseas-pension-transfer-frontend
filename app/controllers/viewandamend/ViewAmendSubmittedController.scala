@@ -29,6 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
+import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.mongo.lock.LockRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -53,6 +54,7 @@ class ViewAmendSubmittedController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: ViewSubmittedView,
     lockRepository: LockRepository,
+    sessionRepository: SessionRepository,
     appConfig: FrontendAppConfig
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
@@ -93,7 +95,7 @@ class ViewAmendSubmittedController @Inject() (
         lockRepository.takeLock(qtReference.value, owner, appConfig.dashboardLockTtl.seconds) flatMap {
           case Some(_) =>
             userAnswersService.getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber))
-              .map {
+              .flatMap {
                 case Right(userAnswers) =>
                   val sessionData = SessionData(
                     request.authenticatedUser.internalId,
@@ -102,9 +104,12 @@ class ViewAmendSubmittedController @Inject() (
                     request.authenticatedUser,
                     Json.toJsObject(userAnswers)
                   )
-                  Redirect(routes.ViewAmendSubmittedController.view(qtReference, pstr, qtStatus, versionNumber))
+
+                  sessionRepository.set(sessionData) map {
+                    _ => Redirect(routes.ViewAmendSubmittedController.amend())
+                  }
                 case Left(_)            =>
-                  Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                  Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
               }
           case None    =>
             Future.successful(
