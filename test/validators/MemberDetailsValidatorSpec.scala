@@ -229,6 +229,37 @@ class MemberDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
             )
           )
       }
+
+      "GenericError for having both memUkResident = true and rest of journey present" in {
+        val invalidJson = Json.obj("memberDetails" -> Json.obj(
+          "name"                    -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+          "nino"                    -> "AA000000A",
+          "dateOfBirth"             -> LocalDate.of(1993, 11, 11),
+          "principalResAddDetails"  -> Json.obj(
+            "addressLine1" -> "line1",
+            "addressLine2" -> "line2",
+            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+          ),
+          "memUkResident"           -> true,
+          "memEverUkResident"       -> true,
+          "lastPrincipalAddDetails" -> Json.obj(
+            "addressLine1" -> "line1",
+            "addressLine2" -> "line2",
+            "ukPostCode"   -> "AA11 1AA"
+          ),
+          "dateMemberLeftUk"        -> LocalDate.of(2023, 6, 27)
+        ))
+
+        MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = invalidJson)) mustBe
+          Invalid(
+            Chain(
+              GenericError("Cannot have valid payload with isUkResident = true and hasEverBeenUkResident"),
+              GenericError("Cannot have valid payload with isUkResident = true and lastUkPrincipalAddress"),
+              GenericError("Cannot have valid payload with isUkResident = true and memberDateLeftUk")
+            )
+          )
+      }
+
     }
   }
 }
