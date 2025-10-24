@@ -26,58 +26,75 @@ object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
 
   override def fromUserAnswers(user: UserAnswers): ValidationResult[SchemeManagerDetails] = ???
 
-  private def validateSchemeManagerType(answers: UserAnswers): ValidationResult[SchemeManagerType] =
+  def validateSchemeManagerType(answers: UserAnswers): ValidationResult[SchemeManagerType] =
     answers.get(SchemeManagerTypePage) match {
       case Some(smType) => smType.validNec
       case None         => DataMissingError(SchemeManagerTypePage).invalidNec
     }
 
-  private def validateSchemeManagersName(answers: UserAnswers): ValidationResult[Option[PersonName]] =
-    (
-      answers.get(SchemeManagersNamePage),
-      answers.get(SchemeManagerTypePage),
-      answers.get(SchemeManagerOrganisationNamePage),
-      answers.get(SchemeManagerOrgIndividualNamePage)
-    ) match {
-      case (Some(smName), Some(SchemeManagerType.Individual), None, None)  => Some(smName).validNec
-      case (None, Some(SchemeManagerType.Organisation), Some(_), Some(_))  => None.validNec
-      case (None, Some(SchemeManagerType.Individual), None, None)          => DataMissingError(SchemeManagersNamePage).invalidNec
-      case (Some(_), Some(SchemeManagerType.Individual), Some(_), Some(_)) =>
-        GenericError("Cannot have valid payload with both (scheme managers name) and (scheme org name, scheme org contact)").invalidNec
-      case _                                                               =>
-        GenericError("Something went wrong with scheme manager name").invalidNec
-    }
+  def validateSchemeManagersName(answers: UserAnswers): ValidationResult[Option[PersonName]] = {
+    val smName = answers.get(SchemeManagersNamePage)
+    val smType = answers.get(SchemeManagerTypePage)
 
-  private def validateSchemeManagersOrgName(answers: UserAnswers): ValidationResult[Option[String]] =
-    (
-      answers.get(SchemeManagersNamePage),
-      answers.get(SchemeManagerTypePage),
-      answers.get(SchemeManagerOrganisationNamePage),
-      answers.get(SchemeManagerOrgIndividualNamePage)
-    ) match {
-      case (None, Some(SchemeManagerType.Organisation), Some(smOrgName), Some(_))  => Some(smOrgName).validNec
-      case (Some(_), Some(SchemeManagerType.Individual), None, None)  => None.validNec
-      case (None, Some(SchemeManagerType.Organisation), None, None)          => DataMissingError(SchemeManagerOrganisationNamePage).invalidNec
-      case (Some(_), Some(SchemeManagerType.Organisation), Some(_), Some(_)) =>
-        GenericError("Cannot have valid payload with both (scheme managers name) and (scheme org name, scheme org contact)").invalidNec
-            case _                                                               =>
-        GenericError("Something went wrong with scheme manager org name").invalidNec
-    }
+    smType match {
+      case None =>
+        DataMissingError(SchemeManagerTypePage).invalidNec
 
-  private def validateSchemeOrgContact(answers: UserAnswers): ValidationResult[Option[PersonName]] =
-    (
-      answers.get(SchemeManagersNamePage),
-      answers.get(SchemeManagerTypePage),
-      answers.get(SchemeManagerOrganisationNamePage),
-      answers.get(SchemeManagerOrgIndividualNamePage)
-    ) match {
-      case (None, Some(SchemeManagerType.Organisation), Some(_), Some(smOrgC))  => Some(smOrgC).validNec
-      case (Some(_), Some(SchemeManagerType.Individual), None, None)  => None.validNec
-      case (None, Some(SchemeManagerType.Organisation), None, None)          => DataMissingError(SchemeManagerOrgIndividualNamePage).invalidNec
-      case (Some(_), Some(SchemeManagerType.Organisation), Some(_), Some(_)) =>
-        GenericError("Cannot have valid payload with both (scheme managers name) and (scheme org name, scheme org contact)").invalidNec
-      case _                                                               =>
-        GenericError("Something went wrong with scheme org contact name").invalidNec
-    }
+      case Some(SchemeManagerType.Individual) =>
+        smName match {
+          case Some(n) => Some(n).validNec
+          case None    => DataMissingError(SchemeManagersNamePage).invalidNec
+        }
 
+      case Some(SchemeManagerType.Organisation) =>
+        smName match {
+          case None    => None.validNec
+          case Some(_) => GenericError("Individual name must be absent when manager type is org").invalidNec
+        }
+    }
+  }
+
+  def validateSchemeManagersOrgName(answers: UserAnswers): ValidationResult[Option[String]] = {
+    val orgName = answers.get(SchemeManagerOrganisationNamePage)
+    val smType  = answers.get(SchemeManagerTypePage)
+
+    smType match {
+      case None =>
+        DataMissingError(SchemeManagerTypePage).invalidNec
+
+      case Some(SchemeManagerType.Organisation) =>
+        orgName match {
+          case Some(n) => Some(n).validNec
+          case None    => DataMissingError(SchemeManagerOrganisationNamePage).invalidNec
+        }
+
+      case Some(SchemeManagerType.Individual) =>
+        orgName match {
+          case None    => None.validNec
+          case Some(_) => GenericError("Org name must be absent when manager type is individual").invalidNec
+        }
+    }
+  }
+
+  def validateSchemeOrgContact(answers: UserAnswers): ValidationResult[Option[PersonName]] = {
+    val contact = answers.get(SchemeManagerOrgIndividualNamePage)
+    val smType  = answers.get(SchemeManagerTypePage)
+
+    smType match {
+      case None =>
+        DataMissingError(SchemeManagerTypePage).invalidNec
+
+      case Some(SchemeManagerType.Organisation) =>
+        contact match {
+          case Some(c) => Some(c).validNec
+          case None    => DataMissingError(SchemeManagerOrgIndividualNamePage).invalidNec
+        }
+
+      case Some(SchemeManagerType.Individual) =>
+        contact match {
+          case None    => None.validNec
+          case Some(_) => GenericError("Org contact must be absent when manager type is individual").invalidNec
+        }
+    }
+  }
 }
