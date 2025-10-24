@@ -16,11 +16,12 @@
 
 package viewmodels
 
+import cats.data.Validated.{Invalid, Valid}
 import models.taskList.TaskStatus
-import models.taskList.TaskStatus.CannotStart
-import models.{Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
+import models.taskList.TaskStatus._
+import models.{Mode, NormalMode, TaskCategory, UserAnswers}
 import play.api.mvc.Call
-import queries.TaskStatusQuery
+import validators._
 
 trait TaskJourneyViewModel {
   def category: TaskCategory
@@ -31,11 +32,10 @@ trait TaskJourneyViewModel {
   def start(mode: Mode): Call
   def cya(): Call
 
-  final def status(sd: SessionData): TaskStatus =
-    sd.get(TaskStatusQuery(category)).getOrElse(CannotStart)
+  def status(userAnswers: UserAnswers): TaskStatus
 
-  final def entry(sd: SessionData): Call =
-    status(sd) match {
+  final def entry(userAnswers: UserAnswers): Call =
+    status(userAnswers) match {
       case TaskStatus.Completed => cya()
       case _                    => start(NormalMode)
     }
@@ -50,6 +50,17 @@ object TaskJourneyViewModels {
 
     def start(m: Mode): Call = controllers.memberDetails.routes.MemberNameController.onPageLoad(m)
     def cya(): Call          = controllers.memberDetails.routes.MemberDetailsCYAController.onPageLoad()
+
+    override def status(userAnswers: UserAnswers): TaskStatus =
+      MemberDetailsValidator.fromUserAnswers(userAnswers) match {
+        case Valid(_)               => Completed
+        case Invalid(nonEmptyChain) =>
+          if (nonEmptyChain == MemberDetailsValidator.notStarted) {
+            NotStarted
+          } else {
+            InProgress
+          }
+      }
   }
 
   case object TransferDetailsJourneyViewModel extends TaskJourneyViewModel {
@@ -59,6 +70,12 @@ object TaskJourneyViewModels {
 
     def start(m: Mode): Call = controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(m)
     def cya(): Call          = controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+
+    override def status(userAnswers: UserAnswers): TaskStatus =
+      TransferDetailsValidator.fromUserAnswers(userAnswers) match {
+        case Valid(_) => Completed
+        case _        => CannotStart
+      }
   }
 
   case object QropsDetailsJourneyViewModel extends TaskJourneyViewModel {
@@ -68,6 +85,12 @@ object TaskJourneyViewModels {
 
     def start(m: Mode): Call = controllers.qropsDetails.routes.QROPSNameController.onPageLoad(m)
     def cya(): Call          = controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
+
+    override def status(userAnswers: UserAnswers): TaskStatus =
+      QropsDetailsValidator.fromUserAnswers(userAnswers) match {
+        case Valid(_) => Completed
+        case _        => CannotStart
+      }
   }
 
   case object SchemeManagerDetailsJourneyViewModel extends TaskJourneyViewModel {
@@ -76,6 +99,12 @@ object TaskJourneyViewModels {
     val linkTextKey          = "taskList.schemeManagerDetails.linkText"
     def start(m: Mode): Call = controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(m)
     def cya(): Call          = controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
+
+    override def status(userAnswers: UserAnswers): TaskStatus =
+      SchemeManagerDetailsValidator.fromUserAnswers(userAnswers) match {
+        case Valid(_) => Completed
+        case _        => CannotStart
+      }
   }
 
   case object SubmissionDetailsJourneyViewModel extends TaskJourneyViewModel {
@@ -85,6 +114,17 @@ object TaskJourneyViewModels {
     // TODO: These will need to be updated with the actual submission pages when they are completed
     def start(m: Mode): Call = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
     def cya(): Call          = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+
+    override def status(userAnswers: UserAnswers): TaskStatus =
+      (
+        MemberDetailsJourneyViewModel.status(userAnswers),
+        TransferDetailsJourneyViewModel.status(userAnswers),
+        QropsDetailsJourneyViewModel.status(userAnswers),
+        SchemeManagerDetailsJourneyViewModel.status(userAnswers)
+      ) match {
+        case (Completed, Completed, Completed, Completed) => NotStarted
+        case _                                            => CannotStart
+      }
   }
 
   val values: Seq[TaskJourneyViewModel] = Seq(

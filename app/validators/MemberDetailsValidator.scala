@@ -16,6 +16,7 @@
 
 package validators
 
+import cats.data.{Chain, NonEmptyChain}
 import cats.implicits._
 import models.address.{MembersCurrentAddress, MembersLastUKAddress}
 import models.{DataMissingError, GenericError, PersonName, UserAnswers, ValidationResult}
@@ -136,4 +137,16 @@ object MemberDetailsValidator extends Validator[MemberDetails] {
         }
       case _                          => DataMissingError(MemberDateOfLeavingUKPage).invalidNec
     }
+
+  val notStarted: Chain[DataMissingError] = Chain(
+    DataMissingError(MemberNamePage),
+    DataMissingError(MemberNinoPage),
+    DataMissingError(MemberDoesNotHaveNinoPage),
+    DataMissingError(MemberDateOfBirthPage),
+    DataMissingError(MembersCurrentAddressPage),
+    DataMissingError(MemberIsResidentUKPage),
+    DataMissingError(MemberHasEverBeenResidentUKPage),
+    DataMissingError(MembersLastUKAddressPage),
+    DataMissingError(MemberDateOfLeavingUKPage)
+  )
 }
