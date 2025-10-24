@@ -16,15 +16,14 @@
 
 package repositories
 
-import com.mongodb.client.model
 import config.FrontendAppConfig
 import models.SessionData
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model._
 import play.api.libs.json.Format
+import services.EncryptionService
 import uk.gov.hmrc.mdc.Mdc
 import uk.gov.hmrc.mongo.MongoComponent
-import uk.gov.hmrc.mongo.lock.LockRepository
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
@@ -36,13 +35,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SessionRepository @Inject() (
     mongoComponent: MongoComponent,
+    encryptionService: EncryptionService,
     appConfig: FrontendAppConfig,
     clock: Clock
   )(implicit ec: ExecutionContext
   ) extends PlayMongoRepository[SessionData](
       collectionName = "session-data",
       mongoComponent = mongoComponent,
-      domainFormat   = SessionData.format,
+      domainFormat   = SessionData.encryptedFormat(encryptionService),
       indexes        = Seq(
         IndexModel(
           Indexes.ascending("lastUpdated"),
