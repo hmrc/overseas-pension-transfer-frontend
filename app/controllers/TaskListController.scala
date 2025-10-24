@@ -53,7 +53,7 @@ class TaskListController @Inject() (
         }
     } yield {
       if (sessionUpdated) {
-        Ok(view(TaskListViewModel.rows(sd2), TaskListViewModel.submissionRow(sd2)))
+        Ok(view(TaskListViewModel.rows(request.userAnswers), TaskListViewModel.submissionRow(request.userAnswers)))
       } else {
         onFailureRedirect("Session Repository unable to update Task List")
       }
