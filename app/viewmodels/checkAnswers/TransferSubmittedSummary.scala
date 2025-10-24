@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers
 
-import models.requests.DisplayRequest
+import models.requests.{DisplayRequest, IdentifierRequest}
 import play.api.i18n.Messages
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -26,11 +26,11 @@ import viewmodels.implicits._
 
 case object TransferSubmittedSummary {
 
-  def rows(implicit request: DisplayRequest[AnyContent], messages: Messages): SummaryList = {
+  def rows(memberName: String, dateTransferSubmitted: String)(implicit request: IdentifierRequest[AnyContent], messages: Messages): SummaryList = {
     val memberNameRow: SummaryListRow =
       SummaryListRowViewModel(
         key   = "transferSubmitted.memberName.key",
-        value = ValueViewModel(HtmlContent(request.memberName))
+        value = ValueViewModel(HtmlContent(memberName))
       )
 
     val schemeName: String =
@@ -45,7 +45,7 @@ case object TransferSubmittedSummary {
     val timeSubmittedRow: SummaryListRow =
       SummaryListRowViewModel(
         key   = "transferSubmitted.dateSubmitted.key",
-        value = ValueViewModel(HtmlContent(request.dateTransferSubmitted))
+        value = ValueViewModel(HtmlContent(dateTransferSubmitted))
       )
 
     SummaryList(

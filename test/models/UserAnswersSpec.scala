@@ -83,7 +83,7 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
         )
       )
 
-      val original = UserAnswers("id", PstrNumber("12345678AB"), fullData, instant)
+      val original = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"), fullData, instant)
 
       val result = UserAnswers.buildMinimal(original, UnquotedSharesQuery)
 
@@ -100,7 +100,7 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
     }
 
     "must return Failure if the original UserAnswers does not contain the query value" in {
-      val empty = UserAnswers("id", PstrNumber("12345678AB"), Json.obj(), instant)
+      val empty = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"), Json.obj(), instant)
 
       val result = UserAnswers.buildMinimal(empty, QuotedSharesQuery)
 

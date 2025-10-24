@@ -19,7 +19,7 @@ package connectors
 import base.BaseISpec
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, delete, post, stubFor}
 import models.QtStatus.{InProgress, Submitted}
-import models.{PstrNumber, QtNumber}
+import models.{PstrNumber, QtNumber, TransferNumber}
 import models.authentication.{PsaId, Psp, PspId}
 import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
@@ -30,14 +30,16 @@ import play.api.test.Injecting
 import stubs.TransferBackendStub
 
 import java.time.Instant
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
+  private val transferId = TransferNumber(UUID.randomUUID().toString)
   private val instant        = Instant.now()
   private val pstr = PstrNumber("12345678AB")
-  private val userAnswersDTO = UserAnswersDTO("testId", pstr, JsObject(Map("field" -> JsString("value"))), instant)
-  private val submissionDTO  = PspSubmissionDTO("testId", Psp, PspId("X1234567"), PsaId("a1234567"), instant)
+  private val userAnswersDTO = UserAnswersDTO(QtNumber("QT975310"), pstr, JsObject(Map("field" -> JsString("value"))), instant)
+  private val submissionDTO  = PspSubmissionDTO(transferId, Psp, PspId("X1234567"), PsaId("a1234567"), instant)
 
   val connector: UserAnswersConnector = inject[UserAnswersConnector]
 
@@ -91,7 +93,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val getAnswers = await(connector.getAnswers("testId"))
 
-        getAnswers shouldBe Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some("/pstr | /data | /lastUpdated | /referenceId")))
+        getAnswers shouldBe Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some("/pstr | /transferId | /data | /lastUpdated")))
       }
 
       "500 returned with invalid payload" in {
@@ -116,14 +118,14 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
   "getAnswers (getSpecific)" when {
 
-    val referenceId = "REF123"
+    val referenceId = QtNumber("QT123456")
     val now         = Instant.parse("2025-09-24T10:00:00Z")
 
     "the backend returns 200" must {
 
       "return Right(UserAnswersDTO) when qtStatus is InProgress and body is valid" in {
         TransferBackendStub.getSpecificTransferOk(
-          referenceId    = referenceId,
+          referenceId    = referenceId.value,
           pstr           = pstr.value,
           qtStatus       = InProgress.toString,
           dataJson       = """{ "foo": "bar", "n": 1 }""",
@@ -132,8 +134,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val result = await(
           connector.getAnswers(
-            transferReference = Some(referenceId),
-            qtNumber          = None,
+            transferId = referenceId,
             pstrNumber        = pstr,
             qtStatus          = InProgress,
             versionNumber     = None
@@ -153,7 +154,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       "return Right(UserAnswersDTO) when qtStatus is Submitted and versionNumber provided" in {
         TransferBackendStub.getSpecificTransferOk(
-          referenceId    = referenceId,
+          referenceId    = referenceId.value,
           pstr           = pstr.value,
           qtStatus       = Submitted.toString,
           dataJson       = """{ "submitted": true, "hasVersion": true }""",
@@ -163,8 +164,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val result = await(
           connector.getAnswers(
-            transferReference = Some(referenceId),
-            qtNumber          = None,
+            transferId = referenceId,
             pstrNumber        = pstr,
             qtStatus          = Submitted,
             versionNumber     = Some("002")
@@ -182,15 +182,14 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       "map to Left(UserAnswersErrorResponse) if body is malformed JSON" in {
         TransferBackendStub.getSpecificTransferMalformed(
-          referenceId = referenceId,
+          referenceId = referenceId.value,
           pstr        = pstr.value,
           qtStatus    = Submitted.toString
         )
 
         val result = await(
           connector.getAnswers(
-            transferReference = Some(referenceId),
-            qtNumber          = None,
+            transferId = referenceId,
             pstrNumber        = pstr,
             qtStatus          = Submitted,
             versionNumber     = None
@@ -208,15 +207,14 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       "map to Left(UserAnswersNotFoundResponse)" in {
         TransferBackendStub.getSpecificTransferNotFound(
-          referenceId = referenceId,
+          referenceId = referenceId.value,
           pstr        = pstr.value,
           qtStatus    = Submitted.toString
         )
 
         val result = await(
           connector.getAnswers(
-            transferReference = Some(referenceId),
-            qtNumber          = None,
+            transferId = referenceId,
             pstrNumber        = pstr,
             qtStatus          = Submitted,
             versionNumber     = None
@@ -231,15 +229,14 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       "map to Left(UserAnswersErrorResponse)" in {
         TransferBackendStub.getSpecificTransferServerError(
-          referenceId = referenceId,
+          referenceId = referenceId.value,
           pstr        = pstr.value,
           qtStatus    = InProgress.toString
         )
 
         val result = await(
           connector.getAnswers(
-            transferReference = Some(referenceId),
-            qtNumber          = None,
+            transferId = referenceId,
             pstrNumber        = pstr,
             qtStatus          = InProgress,
             versionNumber     = None
@@ -256,7 +253,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
   "setAnswers" should {
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
-      stubFor(post("/overseas-pension-transfer-backend/save-for-later/testId")
+      stubFor(post("/overseas-pension-transfer-backend/save-for-later")
         .willReturn(
           aResponse()
             .withStatus(NO_CONTENT)
@@ -270,7 +267,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     "return UserAnswersErrorResponse" when {
       "400 is returned" in {
         stubPost(
-          "/overseas-pension-transfer-backend/save-for-later/testId",
+          "/overseas-pension-transfer-backend/save-for-later",
           """{"error": "Transformation failed", "details": "Payload received is invalid"}""",
           BAD_REQUEST
         )
@@ -282,7 +279,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       "500 is returned" in {
         stubPost(
-          "/overseas-pension-transfer-backend/save-for-later/testId",
+          "/overseas-pension-transfer-backend/save-for-later",
           """{"error": "Failed to save answers"}""",
           INTERNAL_SERVER_ERROR
         )
@@ -297,7 +294,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
   "postSubmission" should {
 
     "return SubmissionResponse when 200 is returned" in {
-      stubFor(post("/overseas-pension-transfer-backend/submit-declaration/testId")
+      stubFor(post(s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}")
         .willReturn(
           aResponse()
             .withStatus(OK)
@@ -314,7 +311,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       "400 is returned" in {
         stubPost(
-          "/overseas-pension-transfer-backend/submit-declaration/testId",
+          s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}",
           """{ "error": "Transformation failed", "details": "Payload received is invalid" }""",
           BAD_REQUEST
         )
@@ -326,7 +323,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
       "500 is returned" in {
         stubPost(
-          "/overseas-pension-transfer-backend/submit-declaration/testId",
+          s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}",
           """{ "error": "Failed to save answers" }""",
           INTERNAL_SERVER_ERROR
         )
@@ -340,7 +337,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
   "deleteAnswers" should {
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
-      stubFor(delete("/overseas-pension-transfer-backend/save-for-later/testId")
+      stubFor(delete(s"/overseas-pension-transfer-backend/save-for-later/testId")
         .willReturn(
           aResponse()
             .withStatus(NO_CONTENT)

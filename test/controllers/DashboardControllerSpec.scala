@@ -59,17 +59,16 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
       val transferItem  = AllTransfersItem(
-        transferReference = Some("TRF-1"),
-        qtReference       = Some(QtNumber("QT-1")),
-        qtVersion         = Some("v1"),
-        qtStatus          = Some(QtStatus.InProgress),
-        nino              = Some("AA123456A"),
-        memberFirstName   = Some("John"),
-        memberSurname     = Some("Doe"),
-        qtDate            = Some(LocalDate.now),
-        lastUpdated       = Some(Instant.now),
-        pstrNumber        = Some(PstrNumber("12345678AB")),
-        submissionDate    = None
+        transferId      = userAnswersTransferNumber,
+        qtVersion       = Some("v1"),
+        qtStatus        = Some(QtStatus.InProgress),
+        nino            = Some("AA123456A"),
+        memberFirstName = Some("John"),
+        memberSurname   = Some("Doe"),
+        qtDate          = Some(LocalDate.now),
+        lastUpdated     = Some(Instant.now),
+        pstrNumber      = Some(PstrNumber("12345678AB")),
+        submissionDate  = None
       )
 
       val dd = DashboardData("id")
@@ -107,7 +106,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       }
     }
 
-    "must acquire lock when accessing a transfer (onTransferClick) and redirect" in {
+    "must acquire lock when accessing an InProgress transfer (onTransferClick) and redirect" in {
       val mockRepo           = mock[DashboardSessionRepository]
       val mockService        = mock[TransferService]
       val mockSessionRepo    = mock[SessionRepository]
@@ -125,13 +124,13 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?qtReference=QT-123&name=SomeName&currentPage=1")
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&name=SomeName&currentPage=1")
 
         val result = route(application, request).value
 
         status(result) mustBe SEE_OTHER
 
-        verify(mockLockRepository, times(1)).takeLock(meq("QT-123"), any(), any())
+        verify(mockLockRepository, times(1)).takeLock(meq("QT123456"), any(), any())
       }
     }
 
@@ -153,7 +152,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?qtReference=QT-LOCKED&memberName=LockedScheme&currentPage=2")
+        val request =
+          FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&memberName=LockedScheme&currentPage=2")
 
         val result = route(application, request).value
 
@@ -162,7 +162,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         flash(result).get("lockWarning") mustBe Some("LockedScheme")
 
-        verify(mockLockRepository, times(1)).takeLock(meq("QT-LOCKED"), any(), any())
+        verify(mockLockRepository, times(1)).takeLock(meq("QT123456"), any(), any())
       }
     }
 
@@ -178,43 +178,40 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       // two transfers: one with transferReference, one with qtReference, one with neither
       val transfers = Seq(
         AllTransfersItem(
-          transferReference = Some("TRF-RELEASE-1"),
-          qtReference       = None,
-          qtVersion         = None,
-          qtStatus          = None,
-          nino              = None,
-          memberFirstName   = None,
-          memberSurname     = None,
-          qtDate            = None,
-          lastUpdated       = Some(Instant.now),
-          pstrNumber        = Some(PstrNumber("PSTR111")),
-          submissionDate    = None
+          transferId      = userAnswersTransferNumber,
+          qtVersion       = None,
+          qtStatus        = None,
+          nino            = None,
+          memberFirstName = None,
+          memberSurname   = None,
+          qtDate          = None,
+          lastUpdated     = Some(Instant.now),
+          pstrNumber      = Some(PstrNumber("PSTR111")),
+          submissionDate  = None
         ),
         AllTransfersItem(
-          transferReference = None,
-          qtReference       = Some(QtNumber("QT-RELEASE-2")),
-          qtVersion         = None,
-          qtStatus          = None,
-          nino              = None,
-          memberFirstName   = None,
-          memberSurname     = None,
-          qtDate            = None,
-          lastUpdated       = Some(Instant.now),
-          pstrNumber        = Some(PstrNumber("PSTR111")),
-          submissionDate    = None
+          transferId      = testQtNumber,
+          qtVersion       = None,
+          qtStatus        = None,
+          nino            = None,
+          memberFirstName = None,
+          memberSurname   = None,
+          qtDate          = None,
+          lastUpdated     = Some(Instant.now),
+          pstrNumber      = Some(PstrNumber("PSTR111")),
+          submissionDate  = None
         ),
         AllTransfersItem(
-          transferReference = None,
-          qtReference       = None,
-          qtVersion         = None,
-          qtStatus          = None,
-          nino              = None,
-          memberFirstName   = None,
-          memberSurname     = None,
-          qtDate            = None,
-          lastUpdated       = Some(Instant.now),
-          pstrNumber        = Some(PstrNumber("PSTR111")),
-          submissionDate    = None
+          transferId      = QtNumber("QT987654"),
+          qtVersion       = None,
+          qtStatus        = None,
+          nino            = None,
+          memberFirstName = None,
+          memberSurname   = None,
+          qtDate          = None,
+          lastUpdated     = Some(Instant.now),
+          pstrNumber      = Some(PstrNumber("PSTR111")),
+          submissionDate  = None
         )
       )
 
@@ -250,9 +247,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         contentAsString(result) must include("dashboard")
 
         // verify releaseLock called for the two items that had references
-        verify(mockLockRepository, times(1)).releaseLock(meq("TRF-RELEASE-1"), meq("id"))
-        verify(mockLockRepository, times(1)).releaseLock(meq("QT-RELEASE-2"), meq("id"))
-        verify(mockLockRepository, times(2)).releaseLock(any(), any())
+        verify(mockLockRepository, times(1)).releaseLock(meq(userAnswersTransferNumber.value), meq("A123456"))
+        verify(mockLockRepository, times(1)).releaseLock(meq(testQtNumber.value), meq("A123456"))
+        verify(mockLockRepository, times(1)).releaseLock(meq("QT987654"), meq("A123456"))
+        verify(mockLockRepository, times(3)).releaseLock(any(), any())
       }
     }
 
@@ -275,12 +273,12 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?qtReference=QT-RE-ACCESS&name=ReAccess&currentPage=1")
+        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT654321&qtStatus=InProgress&name=ReAccess&currentPage=1")
 
         val result = route(application, request).value
 
         status(result) mustBe SEE_OTHER
-        verify(mockLockRepository, times(1)).takeLock(meq("QT-RE-ACCESS"), any(), any())
+        verify(mockLockRepository, times(1)).takeLock(meq("QT654321"), any(), any())
       }
     }
 
@@ -294,17 +292,16 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val pensionScheme = PensionSchemeDetails(SrnNumber("SEXP"), PstrNumber("PSTR-EXP"), "Expiring Scheme")
 
       val expiringTransfer = AllTransfersItem(
-        transferReference = Some("TRF-EXP"),
-        qtReference       = None,
-        qtVersion         = None,
-        qtStatus          = Some(QtStatus.InProgress),
-        nino              = None,
-        memberFirstName   = Some("Alice"),
-        memberSurname     = Some("Smith"),
-        qtDate            = None,
-        lastUpdated       = Some(Instant.now),
-        pstrNumber        = Some(PstrNumber("PSTR-EXP")),
-        submissionDate    = None
+        transferId      = userAnswersTransferNumber,
+        qtVersion       = None,
+        qtStatus        = Some(QtStatus.InProgress),
+        nino            = None,
+        memberFirstName = Some("Alice"),
+        memberSurname   = Some("Smith"),
+        qtDate          = None,
+        lastUpdated     = Some(Instant.now),
+        pstrNumber      = Some(PstrNumber("PSTR-EXP")),
+        submissionDate  = None
       )
 
       val dd = DashboardData("id")
@@ -359,7 +356,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url)
           .withQueryStringParameters(
             "qtStatus"    -> "InProgress",
-            "qtReference" -> "QT-1234",
+            "transferId"  -> "QT456321",
             "name"        -> "Scheme A",
             "currentPage" -> "1"
           )

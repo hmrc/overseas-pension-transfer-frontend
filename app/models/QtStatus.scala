@@ -16,6 +16,7 @@
 
 package models
 
+import models.QtStatus.AmendInProgress
 import play.api.mvc.QueryStringBindable
 
 sealed trait QtStatus
@@ -30,7 +31,8 @@ object QtStatus extends Enumerable.Implicits {
   val values: Seq[QtStatus] = Seq(
     Compiled,
     Submitted,
-    InProgress
+    InProgress,
+    AmendInProgress
   )
 
   implicit val enumerable: Enumerable[QtStatus] =

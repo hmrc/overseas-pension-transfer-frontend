@@ -41,8 +41,8 @@ class KeepAliveController @Inject() (
   def keepAlive(): Action[AnyContent] = (identify andThen getScheme andThen getData).async {
     implicit request =>
       for {
-        _         <- lockRepository.refreshExpiry(request.authenticatedUser.internalId, request.sessionData.transferId, appConfig.dashboardLockTtl.seconds)
-        keepAlive <- sessionRepository.keepAlive(request.userAnswers.id).map(_ => Ok)
+        _         <- lockRepository.refreshExpiry(request.authenticatedUser.internalId, request.sessionData.transferId.value, appConfig.dashboardLockTtl.seconds)
+        keepAlive <- sessionRepository.keepAlive(request.userAnswers.id.value).map(_ => Ok)
       } yield keepAlive
   }
 }

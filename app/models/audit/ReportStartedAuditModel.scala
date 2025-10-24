@@ -16,12 +16,12 @@
 
 package models.audit
 
-import models.AllTransfersItem
+import models.{AllTransfersItem, TransferId}
 import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
 import play.api.libs.json.{JsValue, Json}
 
 case class ReportStartedAuditModel(
-    internalTransferID: String,
+    internalTransferID: TransferId,
     authenticatedUser: AuthenticatedUser,
     journey: JourneyStartedType,
     allTransfersItem: Option[AllTransfersItem],
@@ -67,11 +67,6 @@ case class ReportStartedAuditModel(
         Json.obj("memberNino" -> nino)
       }).getOrElse(Json.obj())
 
-  private val qtNumber =
-    allTransfersItem.flatMap(_.qtReference)
-      .map(qt => Json.obj("overseasPensionTransferReportReference" -> qt.value))
-      .getOrElse(Json.obj())
-
   private val failureReason =
     failure.map(reason => { Json.obj("reasonForFailure" -> reason) }).getOrElse(Json.obj())
 
@@ -81,13 +76,13 @@ case class ReportStartedAuditModel(
     "roleLoggedInAs"            -> userRole,
     "affinityGroup"             -> affinityGroup,
     "requesterIdentifier"       -> userId
-  ) ++ pensionSchemeName ++ pstr ++ memberFirstName ++ memberSurname ++ memberNino ++ qtNumber ++ failureReason
+  ) ++ pensionSchemeName ++ pstr ++ memberFirstName ++ memberSurname ++ memberNino ++ failureReason
 }
 
 object ReportStartedAuditModel {
 
   def build(
-      transferId: String,
+      transferId: TransferId,
       authenticatedUser: AuthenticatedUser,
       journey: JourneyStartedType,
       allTransfersItem: Option[AllTransfersItem],

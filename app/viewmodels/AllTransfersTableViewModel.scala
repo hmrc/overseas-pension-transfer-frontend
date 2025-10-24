@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.QtStatus.{Compiled, InProgress, Submitted}
+import models.QtStatus.{AmendInProgress, Compiled, InProgress, Submitted}
 import models.{AllTransfersItem, TransferReportQueryParams}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -69,17 +69,17 @@ object AllTransfersTableViewModel {
       val stat = it.qtStatus.map {
         case Compiled | Submitted => messages("dashboard.allTransfers.status.submitted")
         case InProgress           => messages("dashboard.allTransfers.status.inProgress")
+        case AmendInProgress      => messages("dashboard.allTransfers.status.amendInProgress")
       }.getOrElse("-")
-      val ref  = it.qtReference.map(_.value).getOrElse("-")
+      val ref  = it.transferId
 
       val params = TransferReportQueryParams(
-        transferReference = it.transferReference,
-        qtReference       = it.qtReference.map(_.value),
-        qtStatus          = it.qtStatus,
-        pstr              = it.pstrNumber,
-        versionNumber     = it.qtVersion,
-        memberName        = name,
-        currentPage       = currentPage
+        transferId    = Some(ref),
+        qtStatus      = it.qtStatus,
+        pstr          = it.pstrNumber,
+        versionNumber = it.qtVersion,
+        memberName    = name,
+        currentPage   = currentPage
       )
 
       val linkHtml = HtmlFormat.raw(s"""<a href="${TransferReportQueryParams.toUrl(params)}" class="govuk-link">$name</a>""")
@@ -87,7 +87,7 @@ object AllTransfersTableViewModel {
       Seq(
         cell(content = HtmlContent(linkHtml)),
         cell(content = Text(stat)),
-        cell(content = Text(ref)),
+        cell(content = Text(ref.value)),
         cell(content = updatedCell(it.lastUpdatedDate))
       )
     }

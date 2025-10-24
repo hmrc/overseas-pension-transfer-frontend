@@ -37,7 +37,7 @@ class QROPSOtherCountrySummarySpec extends AnyFreeSpec with SpecBase {
       result.get.key.content mustBe Text(messages("qropsOtherCountry.checkYourAnswersLabel"))
       result.get.value.content mustBe Text("Other Country")
       result.get.actions.get.items.head.href mustBe
-        controllers.qropsDetails.routes.QROPSOtherCountryController.onPageLoad(CheckMode).url
+        controllers.qropsDetails.routes.QROPSCountryController.onPageLoad(CheckMode).url
     }
   }
 }

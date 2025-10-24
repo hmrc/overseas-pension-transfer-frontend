@@ -245,7 +245,7 @@ class TaskListControllerSpec
             .build()
 
         running(app) {
-          val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard("transferId").url)
+          val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard(userAnswersTransferNumber).url)
           val res = route(app, req).value
 
           status(res) mustBe SEE_OTHER

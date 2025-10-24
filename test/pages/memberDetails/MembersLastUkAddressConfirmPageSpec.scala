@@ -16,19 +16,20 @@
 
 package pages.memberDetails
 
+import base.SpecBase
 import controllers.memberDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
 import java.time.LocalDate
 
-class MembersLastUkAddressConfirmPageSpec extends AnyFreeSpec with Matchers {
+class MembersLastUkAddressConfirmPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
+    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
 
@@ -45,15 +46,32 @@ class MembersLastUkAddressConfirmPageSpec extends AnyFreeSpec with Matchers {
         MembersLastUkAddressConfirmPage.nextPage(CheckMode, ua) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
 
-      "must go to Members Date of Leaving UK in NormalMode if not present" in {
-        MembersLastUkAddressConfirmPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
+      "must go to Members Date of Leaving UK in CheckMode if not present" in {
+        MembersLastUkAddressConfirmPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode)
       }
     }
 
-    "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        MembersLastUkAddressConfirmPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    "in FinalCheck Mode" - {
+
+      "must go to FinalCheck Answers if Members Date of Leaving UK present" in {
+        val ua = emptyAnswers.set(MemberDateOfLeavingUKPage, LocalDate.now()).success.value
+        MembersLastUkAddressConfirmPage.nextPage(FinalCheckMode, ua) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+
+      "must go to Members Date of Leaving UK in FinalCheckMode if not present" in {
+        MembersLastUkAddressConfirmPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(FinalCheckMode)
+      }
+    }
+
+    "in AmendCheck Mode" - {
+
+      "must go to AmendCheck Answers if Members Date of Leaving UK present" in {
+        val ua = emptyAnswers.set(MemberDateOfLeavingUKPage, LocalDate.now()).success.value
+        MembersLastUkAddressConfirmPage.nextPage(AmendCheckMode, ua) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to Members Date of Leaving UK in AmendCheckMode if not present" in {
+        MembersLastUkAddressConfirmPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(AmendCheckMode)
       }
     }
   }

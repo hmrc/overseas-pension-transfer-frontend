@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import models.address._
 import pages.QuestionPage
 import play.api.libs.json.JsPath
@@ -33,7 +33,25 @@ case object MembersLastUKAddressPage extends QuestionPage[MembersLastUKAddress] 
     routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.MemberDetailsCYAController.onPageLoad()
+    answers.get(MemberDateOfLeavingUKPage) match {
+      case Some(_) => routes.MemberDetailsCYAController.onPageLoad()
+      case None    => routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode)
+      case _       => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    answers.get(MemberDateOfLeavingUKPage) match {
+      case Some(_) => controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      case None    => routes.MemberDateOfLeavingUKController.onPageLoad(FinalCheckMode)
+      case _       => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    answers.get(MemberDateOfLeavingUKPage) match {
+      case Some(_) => controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+      case None    => routes.MemberDateOfLeavingUKController.onPageLoad(AmendCheckMode)
+      case _       => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
 
   final def changeLink(mode: Mode): Call =
     routes.MembersLastUKAddressController.onPageLoad(mode)

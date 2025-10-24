@@ -16,14 +16,14 @@
 
 package models.dtos
 
-import models.{SessionData, UserAnswers}
+import models.{SessionData, TransferId, UserAnswers}
 import models.authentication._
 import play.api.libs.json._
 
 import java.time.Instant
 
 sealed trait SubmissionDTO {
-  def referenceId: String
+  def referenceId: TransferId
   def userType: UserType
   def lastUpdated: Instant
 }
@@ -69,14 +69,14 @@ object SubmissionDTO {
 }
 
 case class PsaSubmissionDTO(
-    referenceId: String,
+    referenceId: TransferId,
     userType: UserType = Psa,
     userId: PsaId,
     lastUpdated: Instant
   ) extends SubmissionDTO
 
 case class PspSubmissionDTO(
-    referenceId: String,
+    referenceId: TransferId,
     userType: UserType = Psp,
     userId: PspId,
     psaId: PsaId,

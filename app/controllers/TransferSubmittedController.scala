@@ -19,26 +19,34 @@ package controllers
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.AppUtils
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import views.html.TransferSubmittedView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class TransferSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
-    getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
-    view: TransferSubmittedView
-  ) extends FrontendBaseController with I18nSupport {
+    view: TransferSubmittedView,
+    sessionRepository: SessionRepository
+  )(implicit ec: ExecutionContext
+  ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen schemeData andThen getData) {
+  def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async {
     implicit request =>
-      val summaryList = TransferSubmittedSummary.rows
+      sessionRepository.get(request.authenticatedUser.internalId) map {
+        case Some(sessionData) =>
+          val summaryList = TransferSubmittedSummary.rows(memberFullName(sessionData), dateTransferSubmitted(sessionData))
 
-      Ok(view(request.qtNumber.value, summaryList))
+          Ok(view(qtNumber(sessionData).value, summaryList))
+        case None              =>
+          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+      }
   }
 }
