@@ -153,8 +153,8 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           "nino"                   -> "JZ667788C",
           "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
           "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "12 The Stables",
-            "addressLine2" -> "Stables",
+            "addressLine1" -> "line1",
+            "addressLine2" -> "line2",
             "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
           ),
           "memUkResident"          -> true
