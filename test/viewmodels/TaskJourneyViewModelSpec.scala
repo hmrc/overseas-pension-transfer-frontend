@@ -80,7 +80,15 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           "memUkResident"          -> true
         ))
 
-        MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetailsJson))
+        MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetailsJson)) mustBe
+          controllers.memberDetails.routes.MemberDetailsCYAController.onPageLoad()
+      }
+
+      "route to member name page when status is not started" in {
+        val validMemberDetailsJson = Json.obj("memberDetails" -> Json.obj())
+
+        MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetailsJson)) mustBe
+          controllers.memberDetails.routes.MemberNameController.onPageLoad(NormalMode)
       }
     }
   }
