@@ -54,13 +54,8 @@ class MemberDetailsCYAController @Inject() (
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      for {
-        sd <- Future.fromTry(request.sessionData.set(TaskStatusQuery(MemberDetails), Completed))
-        _  <- sessionRepository.set(sd)
-      } yield {
-        Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
-      }
+      Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
   }
 }

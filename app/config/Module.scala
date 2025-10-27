@@ -28,7 +28,6 @@ class Module extends AbstractModule {
     bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
     bind(classOf[IdentifierAction]).to(classOf[IdentifierActionImpl]).asEagerSingleton()
     bind(classOf[SchemeDataAction]).to(classOf[SchemeDataActionImpl]).asEagerSingleton()
-    bind(classOf[MarkInProgressOnEntryAction]).to(classOf[MarkInProgressOnEntryActionImpl]).asEagerSingleton()
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
   }
 }

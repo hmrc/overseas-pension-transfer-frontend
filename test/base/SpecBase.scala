@@ -119,7 +119,6 @@ trait SpecBase
       .overrides(
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
-        bind[MarkInProgressOnEntryAction].to[FakeMarkInProgressAction],
         bind[SchemeDataAction].to[FakeSchemeDataAction]
       )
 

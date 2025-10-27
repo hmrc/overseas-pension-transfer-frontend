@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberNameFormProvider
 import models.Mode
-import models.TaskCategory.MemberDetails
 import org.apache.pekko.Done
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
@@ -40,7 +39,6 @@ class MemberNameController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
-    markInProgress: MarkInProgressOnEntryAction,
     formProvider: MemberNameFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MemberNameView,
@@ -51,7 +49,7 @@ class MemberNameController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData andThen markInProgress.forCategoryAndMode(MemberDetails, mode)) {
+    (identify andThen schemeData andThen getData) {
       implicit request =>
         val preparedForm = request.userAnswers.get(MemberNamePage) match {
           case None        => form

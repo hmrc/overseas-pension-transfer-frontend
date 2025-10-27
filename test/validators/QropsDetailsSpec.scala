@@ -85,7 +85,8 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
       res match {
         case Invalid(nec) =>
           nec.toNonEmptyList.toList must have size 2
-          all(nec.toNonEmptyList.toList) mustBe GenericError("Cannot have valid payload with country and other country")
+          nec.toNonEmptyList.toList.head mustBe GenericError("Cannot have valid payload with selected country and other country")
+          nec.toNonEmptyList.toList(1) mustBe GenericError("Cannot have valid payload with other country and selected country")
 
         case Valid(v) =>
           fail(s"Expected Invalid with 2 GenericErrors, but got Valid: $v")

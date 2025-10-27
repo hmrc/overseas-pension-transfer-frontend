@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.Mode
-import models.TaskCategory.SchemeManagerDetails
 import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,7 +36,6 @@ class SchemeManagerTypeController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
-    markInProgress: MarkInProgressOnEntryAction,
     formProvider: SchemeManagerTypeFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: SchemeManagerTypeView,
@@ -48,7 +46,7 @@ class SchemeManagerTypeController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData andThen markInProgress.forCategoryAndMode(SchemeManagerDetails, mode)) {
+    (identify andThen schemeData andThen getData) {
       implicit request =>
         val preparedForm = request.userAnswers.get(SchemeManagerTypePage) match {
           case None        => form

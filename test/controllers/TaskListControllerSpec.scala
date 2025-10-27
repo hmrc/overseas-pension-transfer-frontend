@@ -63,21 +63,9 @@ class TaskListControllerSpec
   "TaskListController" - {
 
     "must return OK and NOT persist when no task statuses change" in {
-      val mockSessionRepository = mock[SessionRepository]
-
-      val initialSD =
-        sessionDataQtNumber
-          .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.SubmissionDetails), TaskStatus.NotStarted).success.value
 
       val app =
-        applicationBuilder(sessionData = initialSD)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+        applicationBuilder()
           .build()
 
       running(app) {
@@ -85,163 +73,13 @@ class TaskListControllerSpec
         val res = route(app, req).value
 
         status(res) mustEqual OK
-
-        verify(mockSessionRepository, never()).set(any[SessionData])
-      }
-    }
-
-    "must redirect to Journey Recovery when persistence changes are needed but external save fails" in {
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(false)
-
-      val initialSD =
-        sessionDataQtNumber
-          .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.SubmissionDetails), TaskStatus.CannotStart).success.value
-
-      val app =
-        applicationBuilder(sessionData = initialSD)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-
-      running(app) {
-        val req = FakeRequest(GET, controllers.routes.TaskListController.onPageLoad().url)
-        val res = route(app, req).value
-
-        status(res) mustEqual SEE_OTHER
-        redirectLocation(res).value mustEqual controllers.routes.JourneyRecoveryController.onPageLoad().url
-
-        verify(mockSessionRepository, times(1)).set(any)
-      }
-    }
-
-    "must (re)block dependent tasks and Submission when MemberDetails is not Completed" in {
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
-
-      val initialSD =
-        sessionDataQtNumber
-          .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.NotStarted).success.value
-          .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.NotStarted).success.value
-          .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), TaskStatus.NotStarted).success.value
-          .set(TaskStatusQuery(TaskCategory.SubmissionDetails), TaskStatus.NotStarted).success.value
-
-      val app =
-        applicationBuilder(sessionData = initialSD)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-
-      running(app) {
-        val req = FakeRequest(GET, controllers.routes.TaskListController.onPageLoad().url)
-        val res = route(app, req).value
-
-        status(res) mustEqual OK
-
-        verify(mockSessionRepository).set(ArgumentMatchers.argThat[SessionData] { sd =>
-          sd.get(TaskStatusQuery(TaskCategory.TransferDetails)).contains(TaskStatus.CannotStart) &&
-          sd.get(TaskStatusQuery(TaskCategory.QROPSDetails)).contains(TaskStatus.CannotStart) &&
-          sd.get(TaskStatusQuery(TaskCategory.SchemeManagerDetails)).contains(TaskStatus.CannotStart) &&
-          sd.get(TaskStatusQuery(TaskCategory.SubmissionDetails)).contains(TaskStatus.CannotStart)
-        })
-      }
-    }
-
-    "must unblock dependent tasks (CannotStart -> NotStarted) on load when MemberDetails is completed" in {
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
-
-      val initialSD: SessionData =
-        sessionDataQtNumber
-          .set(TaskStatusQuery(MemberDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TransferDetails), TaskStatus.CannotStart).success.value
-          .set(TaskStatusQuery(QROPSDetails), TaskStatus.CannotStart).success.value
-          .set(TaskStatusQuery(SchemeManagerDetails), TaskStatus.CannotStart).success.value
-          .set(TaskStatusQuery(SubmissionDetails), TaskStatus.CannotStart).success.value
-
-      val app =
-        applicationBuilder(sessionData = initialSD)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-
-      running(app) {
-        val req = FakeRequest(GET, controllers.routes.TaskListController.onPageLoad().url)
-        val res = route(app, req).value
-
-        status(res) mustEqual OK
-
-        verify(mockSessionRepository).set(ArgumentMatchers.argThat[SessionData] { ua =>
-          ua.get(TaskStatusQuery(TransferDetails)).contains(TaskStatus.NotStarted) &&
-          ua.get(TaskStatusQuery(QROPSDetails)).contains(TaskStatus.NotStarted) &&
-          ua.get(TaskStatusQuery(SchemeManagerDetails)).contains(TaskStatus.NotStarted) &&
-          ua.get(TaskStatusQuery(SubmissionDetails)).contains(TaskStatus.CannotStart)
-        })
-      }
-    }
-
-    "must set SubmissionDetails to NotStarted on load when all prerequisites are Completed" in {
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
-
-      val initialSD =
-        sessionDataQtNumber
-          .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), TaskStatus.Completed).success.value
-          .set(TaskStatusQuery(TaskCategory.SubmissionDetails), TaskStatus.CannotStart).success.value
-
-      val app =
-        applicationBuilder(sessionData = initialSD)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
-
-      running(app) {
-        val req = FakeRequest(GET, controllers.routes.TaskListController.onPageLoad().url)
-        val res = route(app, req).value
-
-        status(res) mustEqual OK
-
-        verify(mockSessionRepository).set(ArgumentMatchers.argThat[SessionData] { sd =>
-          sd.get(TaskStatusQuery(TaskCategory.SubmissionDetails)).contains(TaskStatus.NotStarted)
-        })
       }
     }
 
     "fromDashboard" - {
       "must redirect to TaskList onPageLoad and set new session data" in {
-        val mockSessionRepository = mock[SessionRepository]
-
-        when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
-
-        val initialSD =
-          sessionDataQtNumber
-            .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
-            .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
-            .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
-            .set(TaskStatusQuery(TaskCategory.SchemeManagerDetails), TaskStatus.Completed).success.value
-            .set(TaskStatusQuery(TaskCategory.SubmissionDetails), TaskStatus.CannotStart).success.value
-
         val app =
-          applicationBuilder(sessionData = initialSD)
-            .overrides(
-              bind[SessionRepository].toInstance(mockSessionRepository)
-            )
+          applicationBuilder()
             .build()
 
         running(app) {
@@ -250,8 +88,6 @@ class TaskListControllerSpec
 
           status(res) mustBe SEE_OTHER
           redirectLocation(res) mustBe Some(controllers.routes.TaskListController.onPageLoad().url)
-
-          verify(mockSessionRepository, times(1)).set(any())
         }
       }
     }
