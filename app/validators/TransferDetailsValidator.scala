@@ -16,6 +16,7 @@
 
 package validators
 
+import cats.data.Chain
 import cats.implicits._
 import models.address.PropertyAddress
 import models.assets.TypeOfAsset
@@ -32,6 +33,7 @@ import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
   UnquotedSharesNumberPage,
   UnquotedSharesValuePage
 }
+
 import java.time.LocalDate
 
 object TransferDetailsValidator extends Validator[TransferDetails] {
@@ -343,4 +345,17 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
         DataMissingError(TypeOfAssetPage).invalidNec
     }
   }
+
+  val notStarted: Chain[DataMissingError] = Chain(
+    DataMissingError(OverseasTransferAllowancePage),
+    DataMissingError(AmountOfTransferPage),
+    DataMissingError(IsTransferTaxablePage),
+    DataMissingError(IsTransferTaxablePage),
+    DataMissingError(IsTransferTaxablePage),
+    DataMissingError(AmountOfTaxDeductedPage),
+    DataMissingError(NetTransferAmountPage),
+    DataMissingError(DateOfTransferPage),
+    DataMissingError(IsTransferCashOnlyPage),
+    DataMissingError(TypeOfAssetPage)
+  )
 }

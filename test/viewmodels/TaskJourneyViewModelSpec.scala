@@ -80,7 +80,7 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           "memUkResident"          -> true
         ))
 
-        MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy())
+        MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetailsJson))
       }
     }
   }

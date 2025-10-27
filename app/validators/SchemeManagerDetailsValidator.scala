@@ -16,7 +16,9 @@
 
 package validators
 
+import cats.data.Chain
 import cats.implicits.{catsSyntaxTuple7Semigroupal, catsSyntaxValidatedIdBinCompat0}
+import models.SchemeManagerType.{Individual, Organisation}
 import models.address.SchemeManagersAddress
 import models.transferJourneys.SchemeManagerDetails
 import models.{DataMissingError, GenericError, PersonName, SchemeManagerType, UserAnswers, ValidationResult}
@@ -44,21 +46,12 @@ object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
     val smName = answers.get(SchemeManagersNamePage)
     val smType = answers.get(SchemeManagerTypePage)
 
-    smType match {
-      case None =>
-        DataMissingError(SchemeManagerTypePage).invalidNec
-
-      case Some(SchemeManagerType.Individual) =>
-        smName match {
-          case Some(n) => Some(n).validNec
-          case None    => DataMissingError(SchemeManagersNamePage).invalidNec
-        }
-
-      case Some(SchemeManagerType.Organisation) =>
-        smName match {
-          case None    => None.validNec
-          case Some(_) => GenericError("Individual name must be absent when manager type is org").invalidNec
-        }
+    (smType, smName) match {
+      case (Some(Individual), Some(name)) => Some(name).validNec
+      case (Some(Individual), None)       => DataMissingError(SchemeManagersNamePage).invalidNec
+      case (Some(Organisation), None)     => None.validNec
+      case (Some(Organisation), Some(_))  => GenericError("Individual name must be absent when manager type is org").invalidNec
+      case _                              => DataMissingError(SchemeManagersNamePage).invalidNec
     }
   }
 
@@ -66,21 +59,12 @@ object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
     val orgName = answers.get(SchemeManagerOrganisationNamePage)
     val smType  = answers.get(SchemeManagerTypePage)
 
-    smType match {
-      case None =>
-        DataMissingError(SchemeManagerTypePage).invalidNec
-
-      case Some(SchemeManagerType.Organisation) =>
-        orgName match {
-          case Some(n) => Some(n).validNec
-          case None    => DataMissingError(SchemeManagerOrganisationNamePage).invalidNec
-        }
-
-      case Some(SchemeManagerType.Individual) =>
-        orgName match {
-          case None    => None.validNec
-          case Some(_) => GenericError("Org name must be absent when manager type is individual").invalidNec
-        }
+    (smType, orgName) match {
+      case (Some(Organisation), Some(name)) => Some(name).validNec
+      case (Some(Organisation), None)       => DataMissingError(SchemeManagerOrganisationNamePage).invalidNec
+      case (Some(Individual), None)         => None.validNec
+      case (Some(Individual), Some(_))      => GenericError("Org name must be absent when manager type is individual").invalidNec
+      case _                                => DataMissingError(SchemeManagerOrganisationNamePage).invalidNec
     }
   }
 
@@ -88,21 +72,12 @@ object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
     val contact = answers.get(SchemeManagerOrgIndividualNamePage)
     val smType  = answers.get(SchemeManagerTypePage)
 
-    smType match {
-      case None =>
-        DataMissingError(SchemeManagerTypePage).invalidNec
-
-      case Some(SchemeManagerType.Organisation) =>
-        contact match {
-          case Some(c) => Some(c).validNec
-          case None    => DataMissingError(SchemeManagerOrgIndividualNamePage).invalidNec
-        }
-
-      case Some(SchemeManagerType.Individual) =>
-        contact match {
-          case None    => None.validNec
-          case Some(_) => GenericError("Org contact must be absent when manager type is individual").invalidNec
-        }
+    (smType, contact) match {
+      case (Some(Organisation), Some(contactName)) => Some(contactName).validNec
+      case (Some(Organisation), None)              => DataMissingError(SchemeManagerOrgIndividualNamePage).invalidNec
+      case (Some(Individual), None)                => None.validNec
+      case (Some(Individual), Some(_))             => GenericError("Org contact must be absent when manager type is individual").invalidNec
+      case _                                       => DataMissingError(SchemeManagerOrgIndividualNamePage).invalidNec
     }
   }
 
@@ -123,4 +98,14 @@ object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
       case Some(smC) => smC.validNec
       case None      => DataMissingError(SchemeManagersContactPage).invalidNec
     }
+
+  val notStarted: Chain[DataMissingError] = Chain(
+    DataMissingError(SchemeManagerTypePage),
+    DataMissingError(SchemeManagersNamePage),
+    DataMissingError(SchemeManagerOrganisationNamePage),
+    DataMissingError(SchemeManagerOrgIndividualNamePage),
+    DataMissingError(SchemeManagersAddressPage),
+    DataMissingError(SchemeManagersEmailPage),
+    DataMissingError(SchemeManagersContactPage)
+  )
 }

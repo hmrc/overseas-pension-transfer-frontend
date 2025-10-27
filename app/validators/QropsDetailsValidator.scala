@@ -16,6 +16,7 @@
 
 package validators
 
+import cats.data.Chain
 import cats.implicits.{catsSyntaxTuple5Semigroupal, catsSyntaxValidatedIdBinCompat0}
 import models.address.{Country, QROPSAddress}
 import models.transferJourneys.QropsDetails
@@ -69,4 +70,11 @@ object QropsDetailsValidator extends Validator[QropsDetails] {
       case (None, None)           => DataMissingError(QROPSOtherCountryPage).invalidNec
     }
 
+  val notStarted: Chain[DataMissingError] = Chain(
+    DataMissingError(QROPSNamePage),
+    DataMissingError(QROPSReferencePage),
+    DataMissingError(QROPSAddressPage),
+    DataMissingError(QROPSCountryPage),
+    DataMissingError(QROPSOtherCountryPage)
+  )
 }

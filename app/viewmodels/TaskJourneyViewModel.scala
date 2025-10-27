@@ -71,11 +71,21 @@ object TaskJourneyViewModels {
     def start(m: Mode): Call = controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(m)
     def cya(): Call          = controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
 
-    override def status(userAnswers: UserAnswers): TaskStatus =
-      TransferDetailsValidator.fromUserAnswers(userAnswers) match {
-        case Valid(_) => Completed
-        case _        => CannotStart
+    override def status(userAnswers: UserAnswers): TaskStatus = {
+      MemberDetailsJourneyViewModel.status(userAnswers) match {
+        case Completed =>
+          TransferDetailsValidator.fromUserAnswers(userAnswers) match {
+            case Valid(_)     => Completed
+            case Invalid(nec) =>
+              if (nec == TransferDetailsValidator.notStarted) {
+                NotStarted
+              } else {
+                InProgress
+              }
+          }
+        case _         => CannotStart
       }
+    }
   }
 
   case object QropsDetailsJourneyViewModel extends TaskJourneyViewModel {
@@ -87,9 +97,18 @@ object TaskJourneyViewModels {
     def cya(): Call          = controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
 
     override def status(userAnswers: UserAnswers): TaskStatus =
-      QropsDetailsValidator.fromUserAnswers(userAnswers) match {
-        case Valid(_) => Completed
-        case _        => CannotStart
+      MemberDetailsJourneyViewModel.status(userAnswers) match {
+        case Completed =>
+          QropsDetailsValidator.fromUserAnswers(userAnswers) match {
+            case Valid(_)     => Completed
+            case Invalid(nec) =>
+              if (nec == QropsDetailsValidator.notStarted) {
+                NotStarted
+              } else {
+                InProgress
+              }
+          }
+        case _         => CannotStart
       }
   }
 
@@ -101,9 +120,18 @@ object TaskJourneyViewModels {
     def cya(): Call          = controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
 
     override def status(userAnswers: UserAnswers): TaskStatus =
-      SchemeManagerDetailsValidator.fromUserAnswers(userAnswers) match {
-        case Valid(_) => Completed
-        case _        => CannotStart
+      MemberDetailsJourneyViewModel.status(userAnswers) match {
+        case Completed =>
+          SchemeManagerDetailsValidator.fromUserAnswers(userAnswers) match {
+            case Valid(_)     => Completed
+            case Invalid(nec) =>
+              if (nec == SchemeManagerDetailsValidator.notStarted) {
+                NotStarted
+              } else {
+                InProgress
+              }
+          }
+        case _         => CannotStart
       }
   }
 
