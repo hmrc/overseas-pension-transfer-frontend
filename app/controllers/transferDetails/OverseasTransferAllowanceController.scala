@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.OverseasTransferAllowanceFormProvider
 import models.Mode
-import models.TaskCategory.TransferDetails
 import org.apache.pekko.Done
 import pages.transferDetails.OverseasTransferAllowancePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -37,7 +36,6 @@ class OverseasTransferAllowanceController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
-    markInProgress: MarkInProgressOnEntryAction,
     formProvider: OverseasTransferAllowanceFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: OverseasTransferAllowanceView,
@@ -48,7 +46,7 @@ class OverseasTransferAllowanceController @Inject() (
   val form = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData andThen markInProgress.forCategoryAndMode(TransferDetails, mode)) {
+    (identify andThen schemeData andThen getData) {
       implicit request =>
         val preparedForm = request.userAnswers.get(OverseasTransferAllowancePage) match {
           case None        => form

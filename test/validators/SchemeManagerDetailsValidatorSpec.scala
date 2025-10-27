@@ -172,12 +172,12 @@ final class SchemeManagerDetailsValidatorSpec
 
   "validateSchemeManagersName" - {
 
-    "must fail with DataMissingError(SchemeManagerTypePage) when type is missing" in {
+    "must fail with DataMissingError(SchemeManagersNamePage) when type is missing" in {
       val ua = emptyUserAnswers
 
       V.validateSchemeManagersName(ua) match {
         case Invalid(nec) =>
-          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagerTypePage)
+          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagersNamePage)
         case Valid(v)     =>
           fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
       }
@@ -244,12 +244,12 @@ final class SchemeManagerDetailsValidatorSpec
 
   "validateSchemeManagersOrgName" - {
 
-    "must fail with DataMissingError(SchemeManagerTypePage) when type is missing" in {
+    "must fail with DataMissingError(SchemeManagerOrganisationNamePage) when type is missing" in {
       val ua = emptyUserAnswers
 
       V.validateSchemeManagersOrgName(ua) match {
         case Invalid(nec) =>
-          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagerTypePage)
+          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagerOrganisationNamePage)
         case Valid(v)     =>
           fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
       }
@@ -312,12 +312,12 @@ final class SchemeManagerDetailsValidatorSpec
 
   "validateSchemeOrgContact" - {
 
-    "must fail with DataMissingError(SchemeManagerTypePage) when type is missing" in {
+    "must fail with DataMissingError(SchemeManagerOrgIndividualNamePage) when type is missing" in {
       val ua = emptyUserAnswers
 
       V.validateSchemeOrgContact(ua) match {
         case Invalid(nec) =>
-          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagerTypePage)
+          nec.toNonEmptyList.toList must contain only DataMissingError(SchemeManagerOrgIndividualNamePage)
         case Valid(v)     =>
           fail(s"Expected Invalid(DataMissingError type), got Valid: $v")
       }

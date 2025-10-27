@@ -52,13 +52,8 @@ class TransferDetailsCYAController @Inject() (
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      for {
-        sd <- Future.fromTry(request.sessionData.set(TaskStatusQuery(TransferDetails), Completed))
-        _  <- sessionRepository.set(sd)
-      } yield {
-        Redirect(TransferDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
-      }
+      Redirect(TransferDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
   }
 }
