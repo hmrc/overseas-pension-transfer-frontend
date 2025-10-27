@@ -62,7 +62,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = emptyUserAnswers.set(MoreQuotedSharesDeclarationPage, true).success.value
-      val application = applicationBuilder(userAnswers = userAnswers, sessionData = sessionDataQtNumber).build()
+      val application = applicationBuilder(userAnswers = userAnswers, sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, moreQuotedSharesDeclarationRoute)
@@ -121,7 +121,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
         val request =

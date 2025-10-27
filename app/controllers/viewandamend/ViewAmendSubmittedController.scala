@@ -44,6 +44,7 @@ import views.html.viewandamend.ViewSubmittedView
 
 import scala.concurrent.duration.DurationLong
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 class ViewAmendSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
@@ -73,9 +74,15 @@ class ViewAmendSubmittedController @Inject() (
                     qtReference,
                     request.authenticatedUser.pensionSchemeDetails.get,
                     request.authenticatedUser,
-                    Json.toJsObject(userAnswers)
+                    Json.obj()
                   )
-                  Ok(renderView(sessionData, userAnswers, isAmend = false))
+
+                  val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) {
+                    name =>
+                      sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+                  }
+
+                  Ok(renderView(sessionDataWithMemberName, userAnswers, isAmend = false))
                 case Left(_)            =>
                   Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
               }
@@ -102,10 +109,15 @@ class ViewAmendSubmittedController @Inject() (
                     qtReference,
                     request.authenticatedUser.pensionSchemeDetails.get,
                     request.authenticatedUser,
-                    Json.toJsObject(userAnswers)
+                    Json.obj()
                   )
 
-                  sessionRepository.set(sessionData) map {
+                  val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) {
+                    name =>
+                      sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+                  }
+
+                  sessionRepository.set(sessionDataWithMemberName) map {
                     _ => Redirect(routes.ViewAmendSubmittedController.amend())
                   }
                 case Left(_)            =>
@@ -134,6 +146,7 @@ class ViewAmendSubmittedController @Inject() (
       isAmend: Boolean
     )(implicit request: IdentifierRequest[_]
     ): HtmlFormat.Appendable = {
+
     val schemeName                      = sessionData.schemeInformation.schemeName
     val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(AmendCheckMode, schemeName, dateTransferSubmitted(sessionData)))
     val memberDetailsSummaryList        = if (isAmend) {
@@ -147,7 +160,7 @@ class ViewAmendSubmittedController @Inject() (
       SummaryListViewModel(SchemeManagerDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
 
     val memberName =
-      userAnswers.get(MemberNamePage).map(_.fullName).getOrElse("")
+      sessionData.get(MemberNamePage).map(_.fullName).getOrElse("")
 
     view(
       schemeSummaryList,

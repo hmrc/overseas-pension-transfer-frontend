@@ -27,7 +27,7 @@ import java.time.{LocalDateTime, ZoneId}
 class SubmittedTransferSummaryViewModelSpec extends AnyFreeSpec with SpecBase {
 
   implicit val messages: Messages = messages(applicationBuilder().build())
-  val userAnswers                 = userAnswersMemberName.copy(id = testQtNumber)
+  val userAnswers                 = emptyUserAnswers.copy(id = testQtNumber)
 
   ".rows" - {
     "return a row with View or amend changeLink as the first row when draft is None" in {

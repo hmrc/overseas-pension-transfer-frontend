@@ -17,19 +17,35 @@
 package controllers
 
 import base.SpecBase
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatestplus.mockito.MockitoSugar.mock
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import views.html.TransferSubmittedView
 
+import java.time.format.{DateTimeFormatter, FormatStyle}
+import scala.concurrent.Future
+
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
+
+  private val mockSessionRepository = mock[SessionRepository]
 
   "TransferSubmitted Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application  = applicationBuilder(sessionData = sessionDataQtNumberTransferSubmitted).build()
+      val application  = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository)
+        )
+        .build()
       val testMessages = messages(application)
+
+      when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(sessionDataMemberNameQtNumberTransferSubmitted)))
 
       running(application) {
         val request = FakeRequest(GET, routes.TransferSubmittedController.onPageLoad().url)
@@ -39,13 +55,35 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
         val view = application.injector.instanceOf[TransferSubmittedView]
 
         val summaryList =
-          TransferSubmittedSummary.rows("Undefined Undefined", testDateTransferSubmitted.toString)(
+          TransferSubmittedSummary.rows(
+            "User McUser",
+            testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
+          )(
             fakeIdentifierRequest(request),
             testMessages
           )
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view("QT123456", summaryList)(fakeIdentifierRequest(request), testMessages).toString
+      }
+    }
+
+    "redirect to JourneyRecovery page when the sessionRepo is empty" in {
+      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository)
+        )
+        .build()
+
+      when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
+
+      running(application) {
+        val request = FakeRequest(GET, routes.TransferSubmittedController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
       }
     }
   }

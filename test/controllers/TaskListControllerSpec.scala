@@ -66,7 +66,7 @@ class TaskListControllerSpec
       val mockSessionRepository = mock[SessionRepository]
 
       val initialSD =
-        sessionDataQtNumber
+        sessionDataMemberNameQtNumber
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
           .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
           .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
@@ -96,7 +96,7 @@ class TaskListControllerSpec
       when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(false)
 
       val initialSD =
-        sessionDataQtNumber
+        sessionDataMemberNameQtNumber
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
           .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
           .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
@@ -127,7 +127,7 @@ class TaskListControllerSpec
       when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
 
       val initialSD =
-        sessionDataQtNumber
+        sessionDataMemberNameQtNumber
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.NotStarted).success.value
           .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.NotStarted).success.value
           .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
@@ -162,7 +162,7 @@ class TaskListControllerSpec
       when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
 
       val initialSD: SessionData =
-        sessionDataQtNumber
+        sessionDataMemberNameQtNumber
           .set(TaskStatusQuery(MemberDetails), TaskStatus.Completed).success.value
           .set(TaskStatusQuery(TransferDetails), TaskStatus.CannotStart).success.value
           .set(TaskStatusQuery(QROPSDetails), TaskStatus.CannotStart).success.value
@@ -197,7 +197,7 @@ class TaskListControllerSpec
       when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
 
       val initialSD =
-        sessionDataQtNumber
+        sessionDataMemberNameQtNumber
           .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
           .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
           .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value
@@ -230,7 +230,7 @@ class TaskListControllerSpec
         when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
 
         val initialSD =
-          sessionDataQtNumber
+          sessionDataMemberNameQtNumber
             .set(TaskStatusQuery(TaskCategory.MemberDetails), TaskStatus.Completed).success.value
             .set(TaskStatusQuery(TaskCategory.TransferDetails), TaskStatus.Completed).success.value
             .set(TaskStatusQuery(TaskCategory.QROPSDetails), TaskStatus.Completed).success.value

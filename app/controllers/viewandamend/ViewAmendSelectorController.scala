@@ -18,7 +18,6 @@ package controllers.viewandamend
 
 import config.FrontendAppConfig
 import controllers.actions._
-import controllers.viewandamend.routes
 import models.QtStatus.AmendInProgress
 import models.authentication.{PsaUser, PspUser}
 import models.{PstrNumber, QtStatus, SessionData, TransferId}
@@ -96,9 +95,15 @@ class ViewAmendSelectorController @Inject() (
                               qtReference,
                               request.authenticatedUser.pensionSchemeDetails.get,
                               request.authenticatedUser,
-                              Json.toJsObject(answers)
+                              Json.obj()
                             )
-                            sessionRepository.set(sessionData)
+
+                            val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {
+                              name =>
+                                sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+                            }
+
+                            sessionRepository.set(sessionDataWithMemberName)
                             Redirect(routes.ViewAmendSubmittedController.amend())
                               .withSession(request.session + ("isAmend" -> "true"))
 

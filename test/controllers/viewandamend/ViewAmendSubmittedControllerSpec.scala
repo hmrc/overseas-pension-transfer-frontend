@@ -113,7 +113,7 @@ class ViewAmendSubmittedControllerSpec
         val app =
           applicationBuilder(
             userAnswers = userAnswersMemberNameQtNumber,
-            sessionData = sessionDataQtNumber
+            sessionData = sessionDataMemberNameQtNumber
           ).overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           ).build()
@@ -155,7 +155,7 @@ class ViewAmendSubmittedControllerSpec
         val app =
           applicationBuilder(
             userAnswers = emptyUserAnswers,
-            sessionData = sessionDataQtNumberTransferSubmitted
+            sessionData = sessionDataMemberNameQtNumberTransferSubmitted
           ).overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           ).build()

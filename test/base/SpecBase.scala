@@ -101,13 +101,14 @@ trait SpecBase
   )
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
+  def sessionDataMemberName: SessionData = emptySessionData.set(MemberNamePage, testMemberName).success.value
 
-  def sessionDataQtNumber: SessionData = emptySessionData.set(QtNumberQuery, testQtNumber).success.value
+  def sessionDataMemberNameQtNumber: SessionData = sessionDataMemberName.set(QtNumberQuery, testQtNumber).success.value
 
   def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
 
-  def sessionDataQtNumberTransferSubmitted: SessionData =
-    sessionDataQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
+  def sessionDataMemberNameQtNumberTransferSubmitted: SessionData =
+    sessionDataMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
 
   def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
     userAnswersMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
@@ -116,7 +117,7 @@ trait SpecBase
 
   protected def applicationBuilder(
       userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB")),
-      sessionData: SessionData = sessionDataQtNumber
+      sessionData: SessionData = sessionDataMemberNameQtNumber
     ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(

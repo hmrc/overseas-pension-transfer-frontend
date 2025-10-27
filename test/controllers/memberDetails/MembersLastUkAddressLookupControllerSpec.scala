@@ -59,7 +59,10 @@ class MembersLastUkAddressLookupControllerSpec extends AnyFreeSpec with SpecBase
         val view = application.injector.instanceOf[MembersLastUkAddressLookupView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request, sessionData = sessionDataMemberName),
+          messages(application)
+        ).toString
       }
     }
 

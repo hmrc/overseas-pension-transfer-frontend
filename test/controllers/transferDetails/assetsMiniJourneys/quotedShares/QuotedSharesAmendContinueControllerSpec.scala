@@ -51,7 +51,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
   "QuotedSharesAmendContinue Controller" - {
 
     "must return OK and the correct view for a GET in NormalMode" in {
-      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, quotedSharesAmendContinueRouteNormal)
@@ -200,7 +200,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
         val request =

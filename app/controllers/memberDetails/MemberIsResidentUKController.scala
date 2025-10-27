@@ -68,7 +68,6 @@ class MemberIsResidentUKController @Inject() (
             ua1           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
             savedForLater <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
-            logger.info(Json.prettyPrint(Json.toJson(ua1)))
             savedForLater match {
               case Right(Done) => Redirect(MemberIsResidentUKPage.nextPage(mode, ua1))
               case Left(err)   => onFailureRedirect(err)

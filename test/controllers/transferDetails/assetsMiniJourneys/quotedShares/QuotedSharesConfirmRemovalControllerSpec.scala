@@ -37,7 +37,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(1).url)
@@ -71,7 +71,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
         val request =
