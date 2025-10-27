@@ -17,16 +17,12 @@
 package viewmodels
 
 import base.SpecBase
-import models.taskList.TaskStatus
-import models.{Mode, NormalMode, TaskCategory}
+import controllers.checkYourAnswers.routes.CheckYourAnswersController
 import models.taskList.TaskStatus.{Completed, InProgress, NotStarted}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.prop.TableDrivenPropertyChecks.forAll
 import play.api.libs.json.Json
-import queries.TaskStatusQuery
-import org.scalatest.prop.TableDrivenPropertyChecks._
-import viewmodels.TaskJourneyViewModels.MemberDetailsJourneyViewModel
+import viewmodels.TaskJourneyViewModels.{MemberDetailsJourneyViewModel, TransferDetailsJourneyViewModel}
 
 import java.time.LocalDate
 
@@ -89,6 +85,91 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 
         MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetailsJson)) mustBe
           controllers.memberDetails.routes.MemberNameController.onPageLoad(NormalMode)
+      }
+    }
+
+    "TransferDetailsJourneyViewModel" - {
+      "status" - {
+        "must return Completed TaskStatus when Valid TransferDetails returned from Validator" in {
+          val validMemberDetails = Json.obj(
+            "memberDetails" -> Json.obj(
+              "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+              "nino"                   -> "AA000000A",
+              "dateOfBirth"            -> "1993-11-11",
+              "principalResAddDetails" -> Json.obj(
+                "addressLine1" -> "line1",
+                "addressLine2" -> "line2",
+                "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+              ),
+              "memUkResident"          -> true
+            )
+          )
+
+          val validTransferDetails = Json.obj(
+            "allowanceBeforeTransfer" -> 1000.25,
+            "transferAmount"          -> 2000.88,
+            "isTransferTaxable"       -> true,
+            "paymentTaxableOverseas"  -> true,
+            "whyTaxable"              -> "transferExceedsOTCAllowance",
+            "whyTaxableOT"            -> "transferExceedsOTCAllowance",
+            "applicableExclusion"     -> Set("occupational"),
+            "amountTaxDeducted"       -> 100.33,
+            "transferMinusTax"        -> 1900.99,
+            "dateMemberTransferred"   -> "2025-04-01",
+            "cashOnlyTransfer"        -> true,
+            "typeOfAsset"             -> Seq("cashAssets"),
+            "cashValue"               -> 2000.88
+          )
+
+          val userAnswers = emptyUserAnswers.copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
+          MemberDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+          TransferDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+        }
+      }
+
+      "must return NotStarted when an empty UserAnswers" in {
+        TransferDetailsJourneyViewModel.status(emptyUserAnswers) mustBe NotStarted //failing
+      }
+
+      "must return InProgress when partial data is present" in {
+        val validMemberDetailsJson = Json.obj("memberDetails" -> Json.obj(
+          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+          "nino"                   -> "AA000000A",
+          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+          "principalResAddDetails" -> Json.obj(
+            "addressLine1" -> "line1",
+            "addressLine2" -> "line2",
+            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+          ),
+          "memUkResident"          -> true
+        ))
+
+        val partialTransferDetailsJson = validMemberDetailsJson ++ Json.obj("transferDetails" -> Json.obj(
+          "allowanceBeforeTransfer" -> 1000.25,
+          "transferAmount"          -> 2000.88,
+          "isTransferTaxable"       -> true
+        ))
+
+        TransferDetailsJourneyViewModel.status(emptyUserAnswers.copy(data = partialTransferDetailsJson)) mustBe InProgress
+      }
+    }
+
+    "entry" - {
+      "must route to CYA when status is Completed" in {
+        val validMemberDetailsJson = Json.obj("memberDetails" -> Json.obj(
+          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+          "nino"                   -> "JZ667788C",
+          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+          "principalResAddDetails" -> Json.obj(
+            "addressLine1" -> "line1",
+            "addressLine2" -> "line2",
+            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+          ),
+          "memUkResident"          -> true
+        ))
+
+        val result = MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetailsJson))
+        result mustBe CheckYourAnswersController.onPageLoad()
       }
     }
   }
