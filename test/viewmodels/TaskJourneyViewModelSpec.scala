@@ -17,33 +17,48 @@
 package viewmodels
 
 import base.SpecBase
-import controllers.checkYourAnswers.routes.CheckYourAnswersController
-import models.taskList.TaskStatus.{Completed, InProgress, NotStarted}
+import models.NormalMode
+import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.Json
 import viewmodels.TaskJourneyViewModels.{MemberDetailsJourneyViewModel, TransferDetailsJourneyViewModel}
 
-import java.time.LocalDate
-
 class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
+
+  private val validMemberDetails = Json.obj("memberDetails" -> Json.obj(
+    "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+    "nino"                   -> "AA000000A",
+    "dateOfBirth"            -> "1993-11-11",
+    "principalResAddDetails" -> Json.obj(
+      "addressLine1" -> "line1",
+      "addressLine2" -> "line2",
+      "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+    ),
+    "memUkResident"          -> true
+  ))
+
+  private val validTransferDetails = Json.obj(
+    "allowanceBeforeTransfer" -> 1000.25,
+    "transferAmount"          -> 2000.88,
+    "isTransferTaxable"       -> true,
+    "paymentTaxableOverseas"  -> true,
+    "whyTaxable"              -> "transferExceedsOTCAllowance",
+    "whyTaxableOT"            -> "transferExceedsOTCAllowance",
+    "applicableExclusion"     -> Set("occupational"),
+    "amountTaxDeducted"       -> 100.33,
+    "transferMinusTax"        -> 1900.99,
+    "dateMemberTransferred"   -> "2025-04-01",
+    "cashOnlyTransfer"        -> true,
+    "typeOfAsset"             -> Seq("cashAssets"),
+    "cashValue"               -> 2000.88
+  )
 
   "MemberDetailsJourneyViewModel" - {
     "status" - {
       "must return Completed TaskStatus when Valid MemberDetails returned from Validator" in {
-        val validMemberDetailsJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "AA000000A",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> true
-        ))
 
-        MemberDetailsJourneyViewModel.status(emptyUserAnswers.copy(data = validMemberDetailsJson)) mustBe
+        MemberDetailsJourneyViewModel.status(emptyUserAnswers.copy(data = validMemberDetails)) mustBe
           Completed
       }
 
@@ -64,19 +79,8 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "entry" - {
       "route to CYA when status is Completed" in {
-        val validMemberDetailsJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "AA000000A",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> true
-        ))
 
-        MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetailsJson)) mustBe
+        MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetails)) mustBe
           controllers.memberDetails.routes.MemberDetailsCYAController.onPageLoad()
       }
 
@@ -90,86 +94,60 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "TransferDetailsJourneyViewModel" - {
       "status" - {
-        "must return Completed TaskStatus when Valid TransferDetails returned from Validator" in {
-          val validMemberDetails = Json.obj(
-            "memberDetails" -> Json.obj(
-              "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-              "nino"                   -> "AA000000A",
-              "dateOfBirth"            -> "1993-11-11",
-              "principalResAddDetails" -> Json.obj(
-                "addressLine1" -> "line1",
-                "addressLine2" -> "line2",
-                "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-              ),
-              "memUkResident"          -> true
-            )
+        "must return Completed when valid TransferDetails is present" in {
+
+          val userAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
           )
 
-          val validTransferDetails = Json.obj(
+          TransferDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+        }
+
+        "must return CannotStart when MemberDetails is not completed" in {
+          TransferDetailsJourneyViewModel.status(emptyUserAnswers) mustBe CannotStart
+        }
+
+        "must return NotStarted when MemberDetails is completed but TransferDetails is empty" in {
+
+          val userAnswers = emptyUserAnswers.copy(data = validMemberDetails)
+
+          TransferDetailsJourneyViewModel.status(userAnswers) mustBe NotStarted
+        }
+
+        "must return InProgress when partial TransferDetails are present" in {
+
+          val partialTransferDetails = Json.obj(
             "allowanceBeforeTransfer" -> 1000.25,
             "transferAmount"          -> 2000.88,
-            "isTransferTaxable"       -> true,
-            "paymentTaxableOverseas"  -> true,
-            "whyTaxable"              -> "transferExceedsOTCAllowance",
-            "whyTaxableOT"            -> "transferExceedsOTCAllowance",
-            "applicableExclusion"     -> Set("occupational"),
-            "amountTaxDeducted"       -> 100.33,
-            "transferMinusTax"        -> 1900.99,
-            "dateMemberTransferred"   -> "2025-04-01",
-            "cashOnlyTransfer"        -> true,
-            "typeOfAsset"             -> Seq("cashAssets"),
-            "cashValue"               -> 2000.88
+            "isTransferTaxable"       -> true
           )
 
-          val userAnswers = emptyUserAnswers.copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
-          MemberDetailsJourneyViewModel.status(userAnswers) mustBe Completed
-          TransferDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+          val userAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> partialTransferDetails)
+          )
+
+          TransferDetailsJourneyViewModel.status(userAnswers) mustBe InProgress
         }
       }
 
-      "must return NotStarted when an empty UserAnswers" in {
-        TransferDetailsJourneyViewModel.status(emptyUserAnswers) mustBe NotStarted //failing
-      }
+      "entry" - {
+        "must route to TransferDetails CYA when status is Completed" in {
 
-      "must return InProgress when partial data is present" in {
-        val validMemberDetailsJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "AA000000A",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> true
-        ))
+          val userAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
 
-        val partialTransferDetailsJson = validMemberDetailsJson ++ Json.obj("transferDetails" -> Json.obj(
-          "allowanceBeforeTransfer" -> 1000.25,
-          "transferAmount"          -> 2000.88,
-          "isTransferTaxable"       -> true
-        ))
+          TransferDetailsJourneyViewModel.entry(userAnswers) mustBe
+            controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+        }
 
-        TransferDetailsJourneyViewModel.status(emptyUserAnswers.copy(data = partialTransferDetailsJson)) mustBe InProgress
-      }
-    }
+        "must route to OverseasTransferAllowance page when status is NotStarted" in {
 
-    "entry" - {
-      "must route to CYA when status is Completed" in {
-        val validMemberDetailsJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "JZ667788C",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> true
-        ))
+          val userAnswers = emptyUserAnswers.copy(data = validMemberDetails)
 
-        val result = MemberDetailsJourneyViewModel.entry(emptyUserAnswers.copy(data = validMemberDetailsJson))
-        result mustBe CheckYourAnswersController.onPageLoad()
+          TransferDetailsJourneyViewModel.entry(userAnswers) mustBe
+            controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(NormalMode)
+        }
       }
     }
   }
