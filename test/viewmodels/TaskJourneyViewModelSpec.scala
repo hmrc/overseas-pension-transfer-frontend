@@ -17,12 +17,29 @@
 package viewmodels
 
 import base.SpecBase
-import models.NormalMode
+import models.{NormalMode, PersonName, SchemeManagerType}
+import models.address.{Country, QROPSAddress, SchemeManagersAddress}
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import pages.qropsDetails.{QROPSAddressPage, QROPSCountryPage, QROPSNamePage, QROPSReferencePage}
+import pages.qropsSchemeManagerDetails.{
+  SchemeManagerOrgIndividualNamePage,
+  SchemeManagerOrganisationNamePage,
+  SchemeManagerTypePage,
+  SchemeManagersAddressPage,
+  SchemeManagersContactPage,
+  SchemeManagersEmailPage,
+  SchemeManagersNamePage
+}
 import play.api.libs.json.Json
-import viewmodels.TaskJourneyViewModels.{MemberDetailsJourneyViewModel, TransferDetailsJourneyViewModel}
+import viewmodels.TaskJourneyViewModels.{
+  MemberDetailsJourneyViewModel,
+  QropsDetailsJourneyViewModel,
+  SchemeManagerDetailsJourneyViewModel,
+  SubmissionDetailsJourneyViewModel,
+  TransferDetailsJourneyViewModel
+}
 
 class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 
@@ -147,6 +164,327 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 
           TransferDetailsJourneyViewModel.entry(userAnswers) mustBe
             controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(NormalMode)
+        }
+      }
+    }
+
+    "QropsDetailsJourneyViewModel" - {
+      "status" - {
+        "must return Completed when valid QROPS details are present" in {
+          val baseAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+
+          val userAnswers = baseAnswers
+            .set(QROPSNamePage, "Test QROPS").success.value
+            .set(QROPSReferencePage, "Q123456").success.value
+            .set(
+              QROPSAddressPage,
+              QROPSAddress(
+                addressLine1 = "line1",
+                addressLine2 = "line2",
+                addressLine3 = None,
+                addressLine4 = None,
+                addressLine5 = None,
+                country      = Country("GB", "United Kingdom")
+              )
+            ).success.value
+            .set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+
+          QropsDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+        }
+
+        "must return CannotStart when MemberDetails are not completed" in {
+          QropsDetailsJourneyViewModel.status(emptyUserAnswers) mustBe CannotStart
+        }
+
+        "must return NotStarted when MemberDetails is completed but QROPS details are empty" in {
+          val userAnswers = emptyUserAnswers.copy(data = validMemberDetails)
+          QropsDetailsJourneyViewModel.status(userAnswers) mustBe NotStarted
+        }
+
+        "must return InProgress when partial QROPS details are present and MemberDetails is completed" in {
+          val userAnswers = emptyUserAnswers
+            .copy(data = validMemberDetails)
+            .set(QROPSNamePage, "Test QROPS").success.value
+            .set(QROPSReferencePage, "Q123456").success.value
+
+          QropsDetailsJourneyViewModel.status(userAnswers) mustBe InProgress
+        }
+
+        "entry" - {
+          "must route to QROPS CYA when status is Completed" in {
+            val userAnswers = emptyUserAnswers
+              .copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
+              .set(QROPSNamePage, "Test QROPS").success.value
+              .set(QROPSReferencePage, "Q123456").success.value
+              .set(
+                QROPSAddressPage,
+                QROPSAddress(
+                  addressLine1 = "line1",
+                  addressLine2 = "line2",
+                  addressLine3 = None,
+                  addressLine4 = None,
+                  addressLine5 = None,
+                  country      = Country("GB", "United Kingdom")
+                )
+              ).success.value
+              .set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+
+            QropsDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+            QropsDetailsJourneyViewModel.entry(userAnswers) mustBe
+              controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
+          }
+
+          "must route to QROPS name page when status is NotStarted" in {
+            val userAnswers = emptyUserAnswers.copy(
+              data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+            )
+            QropsDetailsJourneyViewModel.entry(userAnswers) mustBe
+              controllers.qropsDetails.routes.QROPSNameController.onPageLoad(NormalMode)
+          }
+        }
+      }
+    }
+
+    "SchemeManagerDetailsJourneyViewModel" - {
+      "status" - {
+        "must return Completed when valid Scheme Manager details are present (Individual)" in {
+          val baseAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+
+          val userAnswers = baseAnswers
+            .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+            .set(SchemeManagersNamePage, PersonName("John", "Doe")).success.value
+            .set(
+              SchemeManagersAddressPage,
+              SchemeManagersAddress(
+                addressLine1 = "line1",
+                addressLine2 = "line2",
+                addressLine3 = None,
+                addressLine4 = None,
+                addressLine5 = None,
+                country      = Country("GB", "United Kingdom")
+              )
+            ).success.value
+            .set(SchemeManagersEmailPage, "test@gmail.co.uk").success.value
+            .set(SchemeManagersContactPage, "0121456789").success.value
+
+          SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+        }
+
+        "must return Completed when valid Scheme Manager details are present (Organisation)" in {
+          val baseAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+
+          val userAnswers = baseAnswers
+            .set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+            .set(SchemeManagerOrganisationNamePage, "Test Org").success.value
+            .set(SchemeManagerOrgIndividualNamePage, PersonName("Contact", "Person")).success.value
+            .set(
+              SchemeManagersAddressPage,
+              SchemeManagersAddress(
+                addressLine1 = "line1",
+                addressLine2 = "line2",
+                addressLine3 = None,
+                addressLine4 = None,
+                addressLine5 = None,
+                country      = Country("GB", "United Kingdom")
+              )
+            ).success.value
+            .set(SchemeManagersEmailPage, "org@gmail.co.uk").success.value
+            .set(SchemeManagersContactPage, "0787654321").success.value
+
+          SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+        }
+
+        "must return CannotStart when MemberDetails is not completed" in {
+          SchemeManagerDetailsJourneyViewModel.status(emptyUserAnswers) mustBe CannotStart
+        }
+
+        "must return NotStarted when required previous sections are completed but no Scheme Manager details" in {
+          val userAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+          SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe NotStarted
+        }
+
+        "must return InProgress when partial Scheme Manager details are present (Individual)" in {
+          val baseAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+
+          val userAnswers = baseAnswers
+            .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+            .set(SchemeManagersNamePage, PersonName("John", "Doe")).success.value
+            .set(SchemeManagersEmailPage, "test@example.com").success.value
+
+          SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe InProgress
+        }
+
+        "must return InProgress when partial Scheme Manager details are present (Organisation)" in {
+          val baseAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+
+          val userAnswers = baseAnswers
+            .set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+            .set(SchemeManagerOrganisationNamePage, "Test Org").success.value
+            .set(SchemeManagerOrgIndividualNamePage, PersonName("Contact", "Person")).success.value
+
+          SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe InProgress
+        }
+      }
+
+      "entry" - {
+        "must route to Scheme Manager CYA when status is Completed (Individual)" in {
+          val userAnswers = emptyUserAnswers
+            .copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
+            .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+            .set(SchemeManagersNamePage, PersonName("John", "Doe")).success.value
+            .set(
+              SchemeManagersAddressPage,
+              SchemeManagersAddress(
+                addressLine1 = "line1",
+                addressLine2 = "line2",
+                addressLine3 = None,
+                addressLine4 = None,
+                addressLine5 = None,
+                country      = Country("GB", "United Kingdom")
+              )
+            ).success.value
+            .set(SchemeManagersEmailPage, "test@example.com").success.value
+            .set(SchemeManagersContactPage, "0121456789").success.value
+
+          SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+          SchemeManagerDetailsJourneyViewModel.entry(userAnswers) mustBe
+            controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
+        }
+
+        "must route to Scheme Manager CYA when status is Completed (Organisation)" in {
+          val userAnswers = emptyUserAnswers
+            .copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
+            .set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+            .set(SchemeManagerOrganisationNamePage, "Test Org").success.value
+            .set(SchemeManagerOrgIndividualNamePage, PersonName("Contact", "Person")).success.value
+            .set(
+              SchemeManagersAddressPage,
+              SchemeManagersAddress(
+                addressLine1 = "line1",
+                addressLine2 = "line2",
+                addressLine3 = None,
+                addressLine4 = None,
+                addressLine5 = None,
+                country      = Country("GB", "United Kingdom")
+              )
+            ).success.value
+            .set(SchemeManagersEmailPage, "org@gmail.co.uk").success.value
+            .set(SchemeManagersContactPage, "0787654321").success.value
+
+          SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
+          SchemeManagerDetailsJourneyViewModel.entry(userAnswers) mustBe
+            controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
+        }
+
+        "must route to Scheme Manager Type page when status is NotStarted" in {
+          val userAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+
+          SchemeManagerDetailsJourneyViewModel.entry(userAnswers) mustBe
+            controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(NormalMode)
+        }
+      }
+    }
+
+    "SubmissionDetailsJourneyViewModel" - {
+      "status" - {
+        "must return NotStarted when all required sections are completed" in {
+          val baseAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+
+          val userAnswers = baseAnswers
+            .set(QROPSNamePage, "Test QROPS").success.value
+            .set(QROPSReferencePage, "Q123456").success.value
+            .set(
+              QROPSAddressPage,
+              QROPSAddress(
+                addressLine1 = "line1",
+                addressLine2 = "line2",
+                addressLine3 = None,
+                addressLine4 = None,
+                addressLine5 = None,
+                country      = Country("GB", "United Kingdom")
+              )
+            ).success.value
+            .set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+            .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+            .set(SchemeManagersNamePage, PersonName("John", "Doe")).success.value
+            .set(
+              SchemeManagersAddressPage,
+              SchemeManagersAddress(
+                addressLine1 = "line1",
+                addressLine2 = "line2",
+                addressLine3 = None,
+                addressLine4 = None,
+                addressLine5 = None,
+                country      = Country("GB", "United Kingdom")
+              )
+            ).success.value
+            .set(SchemeManagersEmailPage, "test@gmail.co.uk").success.value
+            .set(SchemeManagersContactPage, "0121456789").success.value
+
+          SubmissionDetailsJourneyViewModel.status(userAnswers) mustBe NotStarted
+        }
+
+        "must return CannotStart when MemberDetails is not completed" in {
+          val userAnswers = emptyUserAnswers
+          SubmissionDetailsJourneyViewModel.status(userAnswers) mustBe CannotStart
+        }
+
+        "must return CannotStart when TransferDetails is not completed" in {
+          val userAnswers = emptyUserAnswers.copy(data = validMemberDetails)
+          SubmissionDetailsJourneyViewModel.status(userAnswers) mustBe CannotStart
+        }
+
+        "must return CannotStart when QropsDetails is not completed" in {
+          val userAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+          SubmissionDetailsJourneyViewModel.status(userAnswers) mustBe CannotStart
+        }
+
+        "must return CannotStart when SchemeManagerDetails is not completed" in {
+          val baseAnswers = emptyUserAnswers.copy(
+            data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails)
+          )
+
+          val userAnswers = baseAnswers
+            .set(QROPSNamePage, "Test QROPS").success.value
+            .set(QROPSReferencePage, "Q123456").success.value
+            .set(
+              QROPSAddressPage,
+              QROPSAddress(
+                addressLine1 = "line1",
+                addressLine2 = "line2",
+                addressLine3 = None,
+                addressLine4 = None,
+                addressLine5 = None,
+                country      = Country("GB", "United Kingdom")
+              )
+            ).success.value
+            .set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+
+          SubmissionDetailsJourneyViewModel.status(userAnswers) mustBe CannotStart
+        }
+        "entry" - {
+          "must route to Check Your Answers page" in {
+            SubmissionDetailsJourneyViewModel.entry(emptyUserAnswers) mustBe
+              controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+          }
         }
       }
     }

@@ -317,7 +317,7 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
   private def validateOtherAssetsDetails(answers: UserAnswers): ValidationResult[List[OtherAssetsDetails]] = {
     answers.get(TypeOfAssetPage) match {
       case Some(assets) if assets.contains(TypeOfAsset.Other) =>
-        val assetIndices = (0 until 5).filter { index =>
+        val assetIndices = (0 until 4).filter { index =>
           answers.get(OtherAssetsDescriptionPage(index)).isDefined ||
           answers.get(OtherAssetsValuePage(index)).isDefined
         }.toSet
