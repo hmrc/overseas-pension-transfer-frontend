@@ -23,7 +23,7 @@ import pages.PsaDeclarationPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.QtNumberQuery
+import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -52,12 +52,13 @@ class PsaDeclarationController @Inject() (
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData).flatMap {
-        case Right(SubmissionResponse(qtNumber)) =>
+        case Right(SubmissionResponse(qtNumber, receiptDate)) =>
           for {
-            updatedSessionData <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
-            _                  <- sessionRepository.set(updatedSessionData)
+            updatedSessionData    <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
+            updateWithReceiptDate <- Future.fromTry(updatedSessionData.set(DateSubmittedQuery, receiptDate))
+            _                     <- sessionRepository.set(updateWithReceiptDate)
           } yield Redirect(PsaDeclarationPage.nextPage(mode, request.userAnswers))
-        case _                                   => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+        case _                                                => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
       }
   }
 }

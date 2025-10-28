@@ -21,6 +21,8 @@ import pages.memberDetails.MemberNamePage
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import utils.DateTimeFormats.localDateTimeFormatter
 
+import java.time.ZoneId
+
 trait AppUtils {
 
   def memberFullName(sessionData: SessionData): String = {
@@ -33,8 +35,9 @@ trait AppUtils {
   }
 
   def dateTransferSubmitted(sessionData: SessionData): String = {
-    sessionData.get(DateSubmittedQuery).fold("Transfer not submitted") {
-      date => date.format(localDateTimeFormatter)
+    sessionData.get(DateSubmittedQuery).fold("Transfer not submitted") { instant =>
+      val dateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime
+      dateTime.format(localDateTimeFormatter)
     }
   }
 }

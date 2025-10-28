@@ -19,7 +19,9 @@ package models.responses
 import models.QtNumber
 import play.api.libs.json.{Json, OFormat}
 
-case class SubmissionResponse(qtNumber: QtNumber)
+import java.time.Instant
+
+case class SubmissionResponse(qtNumber: QtNumber, receiptDate: Instant)
 
 object SubmissionResponse {
   implicit val format: OFormat[SubmissionResponse] = Json.format[SubmissionResponse]

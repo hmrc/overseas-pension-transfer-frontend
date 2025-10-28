@@ -23,6 +23,7 @@ import org.scalatest.matchers.must.Matchers
 import pages.memberDetails.MemberNamePage
 import queries.{DateSubmittedQuery, QtNumberQuery}
 
+import java.time.ZoneId
 import java.time.format.{DateTimeFormatter, FormatStyle}
 
 class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils {
@@ -49,12 +50,17 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
 
   "dateTransferSubmitted" - {
     "must return date in String format when date is present" in {
-      dateTransferSubmitted(emptySessionData.set(DateSubmittedQuery, testDateTransferSubmitted).success.value) mustBe
-        testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
+      dateTransferSubmitted(
+        emptySessionData.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
+      ) mustBe
+        DateTimeFormatter
+          .ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+          .withZone(ZoneId.systemDefault()) // or ZoneOffset.UTC
+          .format(testDateTransferSubmitted)
     }
+  }
 
-    "must return \'Transfer not submitted\' when date is not present" in {
-      dateTransferSubmitted(emptySessionData) mustBe "Transfer not submitted"
-    }
+  "must return \'Transfer not submitted\' when date is not present" in {
+    dateTransferSubmitted(emptySessionData) mustBe "Transfer not submitted"
   }
 }
