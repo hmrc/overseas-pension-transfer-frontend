@@ -24,7 +24,7 @@ import uk.gov.hmrc.mongo.test.CleanMongoCollectionSupport
 import base.SpecBase
 import config.TestAppConfig
 import services.EncryptionService
-import models.{AllTransfersItem, DashboardData, QtStatus}
+import models.{AllTransfersItem, DashboardData, QtNumber, QtStatus}
 
 import java.time.{Clock, Instant, ZoneOffset}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -43,10 +43,10 @@ class DashboardSessionRepositorySpec
 
   override val databaseName: String = "test-dashboard"
 
-  private val now        = Instant.parse("2025-01-01T00:00:00Z")
-  private val fixedClock = Clock.fixed(now, ZoneOffset.UTC)
-  private val encryption = new EncryptionService("test-master-key")
-  private val appConfig  = new TestAppConfig
+  override val now: Instant = Instant.parse("2025-01-01T00:00:00Z")
+  private val fixedClock    = Clock.fixed(now, ZoneOffset.UTC)
+  private val encryption    = new EncryptionService("test-master-key")
+  private val appConfig     = new TestAppConfig
 
   private val repository = new DashboardSessionRepository(
     mongoComponent    = mongoComponent,
@@ -87,17 +87,16 @@ class DashboardSessionRepositorySpec
     "must find expiring transfers within 7 days" in {
       def makeTransfer(status: Option[QtStatus], lastUpdated: Option[Instant]) =
         AllTransfersItem(
-          transferReference = None,
-          qtReference       = None,
-          qtVersion         = None,
-          qtStatus          = status,
-          nino              = None,
-          memberFirstName   = None,
-          memberSurname     = None,
-          qtDate            = None,
-          lastUpdated       = lastUpdated,
-          pstrNumber        = None,
-          submissionDate    = None
+          transferId      = QtNumber("QT123456"),
+          qtVersion       = None,
+          qtStatus        = status,
+          nino            = None,
+          memberFirstName = None,
+          memberSurname   = None,
+          qtDate          = None,
+          lastUpdated     = lastUpdated,
+          pstrNumber      = None,
+          submissionDate  = None
         )
 
       val inProgress  = makeTransfer(Some(QtStatus.InProgress), Some(now.minusMillis(3 * 24 * 60 * 60 * 1000)))

@@ -34,7 +34,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   private val sessionData = SessionData(
     sessionId         = "Int-8d355b23-d997-4ea4-b766-c547334f313a",
-    transferId        = "5772e197-70ff-4767-8409-44f18774eb75",
+    transferId        = TransferNumber("5772e197-70ff-4767-8409-44f18774eb75"),
     schemeInformation = schemeDetails,
     user              = psaUser.updatePensionSchemeDetails(schemeDetails),
     data              = Json.obj("memberDetails" -> Json.obj("status" -> "inProgress")),

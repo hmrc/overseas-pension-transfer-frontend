@@ -123,7 +123,7 @@ object SessionData {
 
     val reads: Reads[SessionData] = (
       (__ \ "_id").read[String] and
-        (__ \ "transferId").read[String] and
+        (__ \ "transferId").read[TransferId] and
         (__ \ "schemeInformation").read[PensionSchemeDetails] and
         (__ \ "user").read[AuthenticatedUser] and
         (__ \ "data").read[String].map { enc =>
