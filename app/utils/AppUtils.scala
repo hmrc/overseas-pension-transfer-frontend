@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{QtNumber, SessionData, UserAnswers}
+import models.{QtNumber, SessionData}
 import pages.memberDetails.MemberNamePage
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import utils.DateTimeFormats.localDateTimeFormatter
@@ -25,8 +25,8 @@ import java.time.ZoneId
 
 trait AppUtils {
 
-  def memberFullName(userAnswers: UserAnswers): String = {
-    userAnswers.get(MemberNamePage).fold("Undefined Undefined")(_.fullName)
+  def memberFullName(sessionData: SessionData): String = {
+    sessionData.get(MemberNamePage).fold("Undefined Undefined")(_.fullName)
   }
 
   def qtNumber(sessionData: SessionData): QtNumber = {

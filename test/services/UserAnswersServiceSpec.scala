@@ -48,13 +48,13 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val userAnswersDTO: UserAnswersDTO = UserAnswersDTO("id", pstr, JsObject(Map("field" -> JsString("value"))), instant)
-  private val userAnswers: UserAnswers       = UserAnswers("id", pstr, JsObject(Map("field" -> JsString("value"))), instant)
+  private val userAnswersDTO: UserAnswersDTO = UserAnswersDTO(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), instant)
+  private val userAnswers: UserAnswers       = UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), instant)
 
   "getUserAnswers" - {
     "return prepopulated Right(UserAnswers) when Left(GetUserAnswersSuccessResponse) is returned" in {
 
-      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value))(any(), any()))
         .thenReturn(Future.successful(Right(userAnswersDTO)))
 
       val getUserAnswers = service.getExternalUserAnswers(emptySessionData)
@@ -63,20 +63,20 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
     }
 
     "return Right(UserAnswers) with default userId when Left(GetUserAnswersNotFoundResponse) is returned" in {
-      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersNotFoundResponse)))
 
       val getUserAnswers = await(service.getExternalUserAnswers(emptySessionData))
 
       getUserAnswers map {
         ua =>
-          ua.id mustBe userAnswersId
+          ua.id mustBe userAnswersTransferNumber
           ua.data mustBe JsObject.empty
       }
     }
 
     "return Left(GetUserAnswersErrorResponse) when Left(GetUserErrorResponse) is returned from connector" in {
-      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+      when(mockUserAnswersConnector.getAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error message", None))))
 
       val getUserAnswers = await(service.getExternalUserAnswers(emptySessionData))
@@ -107,19 +107,19 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
   "clearUserAnswers" - {
     "return a Right(Done) status when Right(Done) is received from the connector" in {
-      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value))(any(), any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val setUserAnswers = await(service.clearUserAnswers(userAnswersId))
+      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value))
 
       setUserAnswers mustBe Right(Done)
     }
 
     "Return Left(error) when Left(error) is received from the connector" in {
-      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersId))(any(), any()))
+      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value))(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error Message", None))))
 
-      val setUserAnswers = await(service.clearUserAnswers(userAnswersId))
+      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value))
 
       setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
     }

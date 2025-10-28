@@ -30,7 +30,7 @@ class QuotedSharesStartControllerSpec extends AnyFreeSpec with SpecBase {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
         val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.QuotedSharesStartController.onPageLoad().url)

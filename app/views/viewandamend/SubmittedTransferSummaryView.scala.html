@@ -1,0 +1,66 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.ViewUtils.titleNoForm
+@import models.requests.IdentifierRequest
+@import views.html.components.QTNumber
+
+@this(
+        layout: templates.Layout,
+        govukButton: GovukButton,
+        qtNumber: QTNumber
+)
+
+@(memberName: String, qtNumber: String, tableRows: Html)(implicit request: IdentifierRequest[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm(messages("submittedTransferSummary.title", memberName)), showCYAFooter = true, showPageFooter = false) {
+    @request.flash.get("lockWarning").map { _ =>
+        <div class="govuk-notification-banner govuk-notification-banner--important"
+             role="region"
+             aria-labelledby="govuk-notification-banner-title"
+             data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-lock-banner-title">
+                    @messages("dashboard.lock.title")
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    @messages("dashboard.lock.warning", memberName)
+                    <a href="" onclick="location.reload(); return false;">@messages("dashboard.lock.hide")</a>.
+                </p>
+            </div>
+        </div>
+    }
+
+    <span class="govuk-caption-l">@qtNumber</span>
+    <h1 class="govuk-heading-l">@messages("submittedTransferSummary.heading", memberName)</h1>
+
+    <table class="govuk-table">
+        <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">@messages("submittedTransferSummary.submission")</th>
+            <th scope="col" class="govuk-table__header">@messages("submittedTransferSummary.status")</th>
+            <th scope="col" class="govuk-table__header"></th>
+        </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+            @tableRows
+        </tbody>
+    </table>
+
+}

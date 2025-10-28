@@ -50,7 +50,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressFoundSessionData).build()
+      val application = applicationBuilder(sessionData = addressFoundSessionData).build()
 
       running(application) {
         val request = FakeRequest(GET, memberSelectLastUkAddressRoute)
@@ -82,7 +82,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressFoundSessionData)
+      val application = applicationBuilder(sessionData = addressFoundSessionData)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -103,7 +103,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressFoundSessionData).build()
+      val application = applicationBuilder(sessionData = addressFoundSessionData).build()
 
       running(application) {
         val request =
@@ -130,7 +130,7 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(false)
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = addressFoundSessionData)
+      val application = applicationBuilder(sessionData = addressFoundSessionData)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository)
         )

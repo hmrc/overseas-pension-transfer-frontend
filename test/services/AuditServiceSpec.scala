@@ -17,11 +17,12 @@
 package services
 
 import config.FrontendAppConfig
+import models.TransferNumber
 import models.audit.{JourneyStartedType, ReportStartedAuditModel}
 import models.authentication.{PsaId, PsaUser}
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -32,6 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
@@ -40,6 +42,7 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with 
   private val mockAppConfig                         = mock[FrontendAppConfig]
   implicit private val headerCarrier: HeaderCarrier = HeaderCarrier()
   private val appName                               = "audit-source"
+  private val transferNumber                        = TransferNumber(UUID.randomUUID().toString)
 
   private val service = new AuditService(mockAppConfig, mockAuditConnector)
 
@@ -61,7 +64,7 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with 
     JourneyStartedType.values.foreach {
       journey =>
         s"must send an event to the audit connector for $journey event type" in {
-          val eventModel = ReportStartedAuditModel.build("testID", authenticatedUser, journey, None, None)
+          val eventModel = ReportStartedAuditModel.build(transferNumber, authenticatedUser, journey, None, None)
 
           when(mockAppConfig.appName).thenReturn(appName)
           service.audit(eventModel)
@@ -71,7 +74,7 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with 
 
           val expectedJson = Json.obj(
             "journey"                   -> journey.toString,
-            "internalReportReferenceId" -> "testID",
+            "internalReportReferenceId" -> transferNumber.value,
             "roleLoggedInAs"            -> "Psa",
             "affinityGroup"             -> "Individual",
             "requesterIdentifier"       -> "21000005"

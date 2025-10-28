@@ -67,8 +67,8 @@ class DiscardTransferConfirmController @Inject() (
             answers =>
               if (value) {
                 for {
-                  _                  <- sessionRepository.clear(answers.id)
-                  clearedUserAnswers <- userAnswersService.clearUserAnswers(answers.id)
+                  _                  <- sessionRepository.clear(answers.id.value)
+                  clearedUserAnswers <- userAnswersService.clearUserAnswers(answers.id.value)
                 } yield {
                   clearedUserAnswers match {
                     case Right(Done) => Redirect(DiscardTransferConfirmPage.nextPage(NormalMode, answers))

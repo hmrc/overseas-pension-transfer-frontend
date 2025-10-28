@@ -23,6 +23,7 @@ sealed trait Mode
 case object CheckMode      extends Mode
 case object NormalMode     extends Mode
 case object FinalCheckMode extends Mode
+case object AmendCheckMode extends Mode
 
 object Mode {
 
@@ -32,6 +33,7 @@ object Mode {
       case NormalMode     => "NormalMode"
       case CheckMode      => "CheckMode"
       case FinalCheckMode => "FinalCheckMode"
+      case AmendCheckMode => "AmendCheckMode"
     }
   }
 }

@@ -21,6 +21,7 @@ import models.{AllTransfersItem, DashboardData, QtStatus}
 import org.mongodb.scala.bson.conversions.Bson
 import org.mongodb.scala.model._
 import play.api.libs.json.Format
+import services.EncryptionService
 import uk.gov.hmrc.mdc.Mdc
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
@@ -34,13 +35,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DashboardSessionRepository @Inject() (
     mongoComponent: MongoComponent,
+    encryptionService: EncryptionService,
     appConfig: FrontendAppConfig,
     clock: Clock
   )(implicit ec: ExecutionContext
   ) extends PlayMongoRepository[DashboardData](
       collectionName = "dashboard-data",
       mongoComponent = mongoComponent,
-      domainFormat   = DashboardData.format,
+      domainFormat   = DashboardData.encryptedFormat(encryptionService),
       indexes        = Seq(
         IndexModel(
           Indexes.ascending("lastUpdated"),

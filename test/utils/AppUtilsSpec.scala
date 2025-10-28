@@ -30,11 +30,11 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
 
   "memberFullName" - {
     "must return full name when one is present in user answers" in {
-      memberFullName(emptyUserAnswers.set(MemberNamePage, testMemberName).success.value) mustBe "User McUser"
+      memberFullName(emptySessionData.set(MemberNamePage, testMemberName).success.value) mustBe "User McUser"
     }
 
     "must return Undefined Undefined when name not present in user answers" in {
-      memberFullName(emptyUserAnswers) mustBe "Undefined Undefined"
+      memberFullName(emptySessionData) mustBe "Undefined Undefined"
     }
   }
 

@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
-import models.SessionData
+import models.{SessionData, TransferId}
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -60,7 +60,7 @@ class TaskListController @Inject() (
     }
   }
 
-  def fromDashboard(transferId: String): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
+  def fromDashboard(transferId: TransferId): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     val newSession = SessionData(
       request.authenticatedUser.internalId,
       transferId,

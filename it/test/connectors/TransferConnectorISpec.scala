@@ -46,8 +46,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
             dto.pstr.value         shouldBe pstr.value
             dto.transfers.nonEmpty shouldBe true
             val first = dto.transfers.head
-            first.transferReference.value shouldBe "TR-001"
-            first.qtReference.value       shouldBe QtNumber("QT564321")
+            first.transferId shouldBe QtNumber("QT564321")
             first.qtVersion.value         shouldBe "001"
             first.memberFirstName.value   shouldBe "David"
             first.memberSurname.value     shouldBe "Warne"
