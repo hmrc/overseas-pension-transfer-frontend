@@ -86,7 +86,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(sessionData = sessionDataQtNumber).build()
+      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
         val request =

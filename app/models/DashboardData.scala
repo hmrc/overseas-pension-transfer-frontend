@@ -16,9 +16,11 @@
 
 package models
 
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import services.EncryptionService
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
@@ -88,6 +90,51 @@ object DashboardData {
   }
 
   implicit val format: OFormat[DashboardData] = OFormat(reads, writes)
+
+  sealed trait DashboardDataWrapper
+
+  final case class EncryptedDashboardData(encryptedString: String) extends DashboardDataWrapper {
+
+    def decrypt(implicit encryptionService: EncryptionService): Either[Throwable, JsObject] =
+      encryptionService.decrypt(encryptedString).map(json => Json.parse(json).as[JsObject])
+  }
+
+  final case class DecryptedDashboardData(data: JsObject) extends DashboardDataWrapper {
+
+    def encrypt(implicit encryptionService: EncryptionService): EncryptedDashboardData =
+      EncryptedDashboardData(encryptionService.encrypt(Json.stringify(data)))
+  }
+
+  object DashboardDataWrapper {
+    implicit val encryptedFormat: OFormat[EncryptedDashboardData] = Json.format[EncryptedDashboardData]
+    implicit val decryptedFormat: OFormat[DecryptedDashboardData] = Json.format[DecryptedDashboardData]
+  }
+
+  def encryptedFormat(encryptionService: EncryptionService): OFormat[DashboardData] = {
+
+    val reads: Reads[DashboardData] = (
+      (__ \ "_id").read[String] and
+        (__ \ "data").read[String].map { enc =>
+          EncryptedDashboardData(enc).decrypt(encryptionService) match {
+            case Right(decryptedJs) => decryptedJs
+            case Left(err)          => throw new RuntimeException(s"Decryption failed: ${err.getMessage}", err)
+          }
+        } and
+        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
+    )(DashboardData.apply _)
+
+    val writes: OWrites[DashboardData] = OWrites { dd =>
+      implicit val es: EncryptionService    = encryptionService
+      val encrypted: EncryptedDashboardData = DecryptedDashboardData(dd.data).encrypt
+      Json.obj(
+        "_id"         -> dd.id,
+        "data"        -> encrypted.encryptedString,
+        "lastUpdated" -> MongoJavatimeFormats.instantFormat.writes(dd.lastUpdated)
+      )
+    }
+
+    OFormat(reads, writes)
+  }
 
   def empty: DashboardData = DashboardData(
     id          = "unknown",

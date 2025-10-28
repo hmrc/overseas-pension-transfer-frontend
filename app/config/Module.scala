@@ -16,8 +16,10 @@
 
 package config
 
-import com.google.inject.AbstractModule
+import com.google.inject.{AbstractModule, Provides, Singleton}
 import controllers.actions._
+import play.api.Configuration
+import services.EncryptionService
 
 import java.time.{Clock, ZoneOffset}
 
@@ -30,4 +32,13 @@ class Module extends AbstractModule {
     bind(classOf[SchemeDataAction]).to(classOf[SchemeDataActionImpl]).asEagerSingleton()
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
   }
+
+  @Provides
+  @Singleton
+  def provideEncryptionService(config: Configuration): EncryptionService = {
+    val master = config.getOptional[String]("encryption.masterKey")
+      .getOrElse(throw new IllegalStateException("encryption.masterKey missing"))
+    new EncryptionService(master)
+  }
+
 }

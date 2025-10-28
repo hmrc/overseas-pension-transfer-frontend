@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.viewandamend
 
 import base.SpecBase
+import controllers.viewandamend.routes
 import models.responses.UserAnswersErrorResponse
-import models.{FinalCheckMode, PstrNumber, QtStatus}
+import models.{FinalCheckMode, PstrNumber, QtStatus, TransferId}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -35,11 +36,11 @@ import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSum
 import viewmodels.checkAnswers.schemeOverview.SchemeDetailsSummary
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.SummaryListFluency
-import views.html.ViewSubmittedView
+import views.html.viewandamend.ViewSubmittedView
 
 import scala.concurrent.Future
 
-class ViewSubmittedControllerSpec
+class ViewAmendSubmittedControllerSpec
     extends AnyFreeSpec
     with SpecBase
     with MockitoSugar
@@ -95,15 +96,14 @@ class ViewSubmittedControllerSpec
       )(messages(applicationBuilder().build()))
     )
 
-  "ViewSubmittedController" - {
+  "ViewAmendSubmittedController" - {
 
-    "fromDashboard" - {
+    "view" - {
 
       "return Ok and render expected view (uses sessionData.transferId and memberName)" in {
         when(
           mockUserAnswersService.getExternalUserAnswers(
-            any[Option[String]],
-            any[Option[String]],
+            any[TransferId],
             any[PstrNumber],
             any[QtStatus],
             any[Option[String]]
@@ -113,12 +113,12 @@ class ViewSubmittedControllerSpec
         val app =
           applicationBuilder(
             userAnswers = userAnswersMemberNameQtNumber,
-            sessionData = sessionDataQtNumber
+            sessionData = sessionDataMemberNameQtNumber
           ).overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           ).build()
 
-        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber.value, pstr, qtStatus, versionNumber).url)
+        val req    = FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber, pstr, qtStatus, versionNumber).url)
         val result = route(app, req).value
 
         val view = app.injector.instanceOf[ViewSubmittedView]
@@ -145,8 +145,7 @@ class ViewSubmittedControllerSpec
       "redirect to JourneyRecovery when external answers lookup fails" in {
         when(
           mockUserAnswersService.getExternalUserAnswers(
-            any[Option[String]],
-            any[Option[String]],
+            any[TransferId],
             any[PstrNumber],
             any[QtStatus],
             any[Option[String]]
@@ -156,16 +155,16 @@ class ViewSubmittedControllerSpec
         val app =
           applicationBuilder(
             userAnswers = emptyUserAnswers,
-            sessionData = sessionDataQtNumberTransferSubmitted
+            sessionData = sessionDataMemberNameQtNumberTransferSubmitted
           ).overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           ).build()
 
-        val req    = FakeRequest(GET, routes.ViewSubmittedController.fromDashboard(testQtNumber.value, pstr, qtStatus, versionNumber).url)
+        val req    = FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber, pstr, qtStatus, versionNumber).url)
         val result = route(app, req).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url
 
         app.stop()
       }

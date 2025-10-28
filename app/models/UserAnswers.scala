@@ -28,7 +28,7 @@ import scala.util.{Failure, Success, Try}
 class DeserialisationException(message: String) extends RuntimeException(message)
 
 final case class UserAnswers(
-    id: String,
+    id: TransferId,
     pstr: PstrNumber,
     data: JsObject       = Json.obj(),
     lastUpdated: Instant = Instant.now
@@ -118,7 +118,7 @@ object UserAnswers {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "_id").read[String] and
+      (__ \ "_id").read[TransferId] and
         (__ \ "pstr").read[String].map(PstrNumber.apply) and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
@@ -130,7 +130,7 @@ object UserAnswers {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "_id").write[String] and
+      (__ \ "_id").write[TransferId] and
         (__ \ "pstr").write[PstrNumber] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)

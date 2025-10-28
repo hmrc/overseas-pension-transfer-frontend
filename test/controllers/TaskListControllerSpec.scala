@@ -64,6 +64,7 @@ class TaskListControllerSpec
 
     "must return OK and NOT persist when no task statuses change" in {
 
+
       val app =
         applicationBuilder()
           .build()
@@ -78,12 +79,13 @@ class TaskListControllerSpec
 
     "fromDashboard" - {
       "must redirect to TaskList onPageLoad and set new session data" in {
+
         val app =
           applicationBuilder()
             .build()
 
         running(app) {
-          val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard("transferId").url)
+          val req = FakeRequest(GET, controllers.routes.TaskListController.fromDashboard(userAnswersTransferNumber).url)
           val res = route(app, req).value
 
           status(res) mustBe SEE_OTHER

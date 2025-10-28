@@ -29,7 +29,7 @@ class MembersLastUkAddressNotFoundControllerSpec extends AnyFreeSpec with SpecBa
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = noAddressFoundSessionData).build()
+      val application = applicationBuilder(sessionData = noAddressFoundSessionData).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.MembersLastUkAddressNotFoundController.onPageLoad(NormalMode).url)
@@ -45,7 +45,7 @@ class MembersLastUkAddressNotFoundControllerSpec extends AnyFreeSpec with SpecBa
 
     "must return OK and the correct view for a GET in CheckMode" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberName, sessionData = noAddressFoundSessionData).build()
+      val application = applicationBuilder(sessionData = noAddressFoundSessionData).build()
 
       running(application) {
         val request = FakeRequest(GET, routes.MembersLastUkAddressNotFoundController.onPageLoad(CheckMode).url)
@@ -55,7 +55,10 @@ class MembersLastUkAddressNotFoundControllerSpec extends AnyFreeSpec with SpecBa
         val view = application.injector.instanceOf[MembersLastUkAddressNotFoundView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(noAddressFound.postcode, CheckMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(noAddressFound.postcode, CheckMode)(
+          fakeDisplayRequest(request, sessionData = sessionDataMemberName),
+          messages(application)
+        ).toString
       }
     }
   }

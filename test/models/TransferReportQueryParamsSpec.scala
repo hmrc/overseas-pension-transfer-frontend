@@ -16,12 +16,13 @@
 
 package models
 
+import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.test.FakeRequest
 import controllers.routes
 
-class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
+class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "fromRequest" - {
 
@@ -29,8 +30,7 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
       val request = FakeRequest(
         "GET",
         "/report-transfer" +
-          "?transferReference=TR123" +
-          "&qtReference=QT456" +
+          "?transferId=QT456321" +
           "&qtStatus=Submitted" +
           "&pstr=12345678AB" +
           "&versionNumber=7" +
@@ -40,8 +40,7 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
 
       val result = TransferReportQueryParams.fromRequest(request)
 
-      result.transferReference mustBe Some("TR123")
-      result.qtReference mustBe Some("QT456")
+      result.transferId mustBe Some(QtNumber("QT456321"))
       result.qtStatus mustBe Some(QtStatus.Submitted)
       result.pstr mustBe Some(PstrNumber("12345678AB"))
       result.versionNumber mustBe Some("7")
@@ -50,12 +49,11 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
     }
 
     "must default memberName to '-' and currentPage to 1 when not present" in {
-      val request = FakeRequest("GET", "/report-transfer?transferReference=TR123")
+      val request = FakeRequest("GET", s"/report-transfer?transferId=${userAnswersTransferNumber.value}")
 
       val result = TransferReportQueryParams.fromRequest(request)
 
-      result.transferReference mustBe Some("TR123")
-      result.qtReference mustBe None
+      result.transferId mustBe Some(userAnswersTransferNumber)
       result.qtStatus mustBe None
       result.pstr mustBe None
       result.versionNumber mustBe None
@@ -76,20 +74,18 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
 
     "must correctly build encoded query string (including pstr & versionNumber)" in {
       val params = TransferReportQueryParams(
-        transferReference = Some("TR 123"),
-        qtReference       = Some("QT/456"),
-        qtStatus          = Some(QtStatus.Submitted),
-        pstr              = Some(PstrNumber("12345678AB")),
-        versionNumber     = Some("v 7"),
-        memberName        = "John Doe",
-        currentPage       = 2
+        transferId    = Some(QtNumber("QT123456")),
+        qtStatus      = Some(QtStatus.Submitted),
+        pstr          = Some(PstrNumber("12345678AB")),
+        versionNumber = Some("v 7"),
+        memberName    = "John Doe",
+        currentPage   = 2
       )
 
       val result = TransferReportQueryParams.toQueryString(params)
 
       result must startWith("?")
-      result must include("transferReference=TR+123")
-      result must include("qtReference=QT%2F456")
+      result must include("transferId=QT123456")
       result must include("qtStatus=Submitted")
       result must include("pstr=12345678AB")
       result must include("versionNumber=v+7")
@@ -99,13 +95,12 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
 
     "must omit missing optional fields but always include memberName and currentPage" in {
       val params = TransferReportQueryParams(
-        transferReference = None,
-        qtReference       = None,
-        qtStatus          = None,
-        pstr              = None,
-        versionNumber     = None,
-        memberName        = "Jane",
-        currentPage       = 1
+        transferId    = None,
+        qtStatus      = None,
+        pstr          = None,
+        versionNumber = None,
+        memberName    = "Jane",
+        currentPage   = 1
       )
 
       val result = TransferReportQueryParams.toQueryString(params)
@@ -118,21 +113,19 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers {
 
     "must build full URL to DashboardController.onTransferClick with query params" in {
       val params = TransferReportQueryParams(
-        transferReference = Some("TR001"),
-        qtReference       = Some("QT002"),
-        qtStatus          = Some(QtStatus.InProgress),
-        pstr              = Some(PstrNumber("12345678AB")),
-        versionNumber     = Some("7"),
-        memberName        = "Malcolm Mendes",
-        currentPage       = 4
+        transferId    = Some(QtNumber("QT002007")),
+        qtStatus      = Some(QtStatus.AmendInProgress),
+        pstr          = Some(PstrNumber("12345678AB")),
+        versionNumber = Some("7"),
+        memberName    = "Malcolm Mendes",
+        currentPage   = 4
       )
 
       val result = TransferReportQueryParams.toUrl(params)
 
       result must startWith(routes.DashboardController.onTransferClick().url)
-      result must include("transferReference=TR001")
-      result must include("qtReference=QT002")
-      result must include("qtStatus=InProgress")
+      result must include("transferId=QT002007")
+      result must include("qtStatus=AmendInProgress")
       result must include("pstr=12345678AB")
       result must include("versionNumber=7")
       result must include("memberName=Malcolm+Mendes")

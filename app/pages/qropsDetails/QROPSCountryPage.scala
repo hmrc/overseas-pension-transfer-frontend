@@ -18,7 +18,7 @@ package pages.qropsDetails
 
 import controllers.qropsDetails.routes
 import models.address.Country
-import models.{Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -40,7 +40,27 @@ case object QROPSCountryPage extends QuestionPage[Country] {
   }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    nextPageNormalMode(answers)
+    answers.get(QROPSCountryPage) match {
+      case Some(Country("ZZ", "Other")) => routes.QROPSOtherCountryController.onPageLoad(CheckMode)
+      case Some(Country(_, _))          => routes.QROPSDetailsCYAController.onPageLoad()
+      case _                            => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+    answers.get(QROPSCountryPage) match {
+      case Some(Country("ZZ", "Other")) => routes.QROPSOtherCountryController.onPageLoad(FinalCheckMode)
+      case Some(Country(_, _))          => controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      case _                            => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+    answers.get(QROPSCountryPage) match {
+      case Some(Country("ZZ", "Other")) => routes.QROPSOtherCountryController.onPageLoad(AmendCheckMode)
+      case Some(Country(_, _))          => controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+      case _                            => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     routes.QROPSCountryController.onPageLoad(mode)

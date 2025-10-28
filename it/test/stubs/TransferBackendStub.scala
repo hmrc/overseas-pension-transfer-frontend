@@ -17,8 +17,13 @@
 package stubs
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import models.TransferNumber
+
+import java.util.UUID
 
 object TransferBackendStub {
+
+  val transferNumber: TransferNumber = TransferNumber(UUID.randomUUID().toString)
 
   private def allTransfersUrl(pstr: String) =
     s"/overseas-pension-transfer-backend/get-all-transfers/$pstr"
@@ -68,8 +73,7 @@ object TransferBackendStub {
        |  "lastUpdated": "2025-09-24T10:00:00Z",
        |  "transfers": [
        |    {
-       |      "transferReference": "TR-001",
-       |      "qtReference": "QT564321",
+       |      "transferId": "QT564321",
        |      "qtVersion": "001",
        |      "nino": "AA000000A",
        |      "memberFirstName": "David",
@@ -79,8 +83,7 @@ object TransferBackendStub {
        |      "pstrNumber": "$pstr"
        |    },
        |    {
-       |      "transferReference": "TR-002",
-       |      "qtReference": "QT564322",
+       |      "transferId": "QT564322",
        |      "qtVersion": "003",
        |      "nino": "AA000001A",
        |      "memberFirstName": "Edith",
@@ -101,7 +104,7 @@ object TransferBackendStub {
        |  "lastUpdated": "2025-09-24T10:00:00Z",
        |  "transfers": [
        |    {
-       |      "transferReference": "TR-VALID-1",
+       |      "transferId": "${transferNumber.value}",
        |      "memberFirstName": "Alice",
        |      "memberSurname": "Adams",
        |      "submissionDate": "2025-01-10T00:00:00Z",
@@ -109,7 +112,7 @@ object TransferBackendStub {
        |      "pstrNumber": "$pstr"
        |    },
        |    {
-       |      "transferReference": "TR-VALID-2",
+       |      "transferId": "${transferNumber.value}",
        |      "memberFirstName": "Bob",
        |      "memberSurname": "Brown",
        |      "lastUpdated": "2025-02-11T00:00:00Z",
@@ -117,7 +120,7 @@ object TransferBackendStub {
        |      "pstrNumber": "$pstr"
        |    },
        |    {
-       |      "transferReference": "TR-INVALID-BOTH",
+       |      "transferId": "${transferNumber.value}",
        |      "memberFirstName": "Charlie",
        |      "memberSurname": "Clark",
        |      "submissionDate": "2025-03-12T00:00:00Z",
@@ -153,7 +156,7 @@ object TransferBackendStub {
         okJson(
           s"""
              |{
-             |  "referenceId": "$referenceId",
+             |  "transferId": "$referenceId",
              |  "pstr": "$pstr",
              |  "data": $dataJson,
              |  "lastUpdated": "$lastUpdatedIso"

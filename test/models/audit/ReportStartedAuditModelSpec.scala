@@ -16,6 +16,7 @@
 
 package models.audit
 
+import base.SpecBase
 import models.audit.JourneyStartedType.StartNewTransfer
 import models.{AllTransfersItem, PensionSchemeDetails, PstrNumber, QtNumber, SrnNumber}
 import org.scalatest.freespec.AnyFreeSpec
@@ -24,7 +25,7 @@ import models.authentication.{PsaId, PsaUser, PspId, PspUser}
 import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 
-class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
+class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   private val pensionSchemeDetails = PensionSchemeDetails(
     SrnNumber("SRN123"),
@@ -35,8 +36,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
   private val authenticatedPsp     = PspUser(PspId("21000005"), "internalId", None, Individual)
 
   private val allTransfersItem = AllTransfersItem(
-    None,
-    None,
+    userAnswersTransferNumber,
     None,
     None,
     None,
@@ -53,13 +53,13 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       journey =>
         val expectedJson = Json.obj(
           "journey"                   -> journey.toString,
-          "internalReportReferenceId" -> "testID",
+          "internalReportReferenceId" -> userAnswersTransferNumber.value,
           "roleLoggedInAs"            -> "Psa",
           "affinityGroup"             -> "Individual",
           "requesterIdentifier"       -> "21000005"
         )
 
-        val result = ReportStartedAuditModel.build("testID", authenticatedPsa, journey, None)
+        val result = ReportStartedAuditModel.build(userAnswersTransferNumber, authenticatedPsa, journey, None)
         result.auditType mustBe "OverseasPensionTransferReportStarted"
         result.detail mustBe expectedJson
     }
@@ -68,13 +68,13 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
   "must create correct minimal json for Individual and PSA" in {
     val expectedJson = Json.obj(
       "journey"                   -> "startNewTransferReport",
-      "internalReportReferenceId" -> "testID",
+      "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "roleLoggedInAs"            -> "Psa",
       "affinityGroup"             -> "Individual",
       "requesterIdentifier"       -> "21000005"
     )
 
-    val result = ReportStartedAuditModel.build("testID", authenticatedPsa, StartNewTransfer, None)
+    val result = ReportStartedAuditModel.build(userAnswersTransferNumber, authenticatedPsa, StartNewTransfer, None)
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
   }
@@ -82,14 +82,14 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
   "must create correct minimal json for Organisation and PSP" in {
     val expectedJson = Json.obj(
       "journey"                   -> "startNewTransferReport",
-      "internalReportReferenceId" -> "testID",
+      "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "roleLoggedInAs"            -> "Psp",
       "affinityGroup"             -> "Organisation",
       "requesterIdentifier"       -> "21000005"
     )
 
     val result = ReportStartedAuditModel.build(
-      "testID",
+      userAnswersTransferNumber,
       authenticatedPsp.copy(affinityGroup = Organisation),
       StartNewTransfer,
       None
@@ -102,7 +102,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
     val user         = authenticatedPsp.copy(affinityGroup = Organisation, pensionSchemeDetails = Some(pensionSchemeDetails))
     val expectedJson = Json.obj(
       "journey"                   -> "startNewTransferReport",
-      "internalReportReferenceId" -> "testID",
+      "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "pensionSchemeName"         -> "Pension Scheme A",
       "pensionSchemeTaxReference" -> "PSTR123",
       "roleLoggedInAs"            -> "Psp",
@@ -110,7 +110,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "requesterIdentifier"       -> "21000005"
     )
 
-    val result = ReportStartedAuditModel.build("testID", user, StartNewTransfer, None)
+    val result = ReportStartedAuditModel.build(userAnswersTransferNumber, user, StartNewTransfer, None)
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
@@ -122,23 +122,22 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       nino            = Some("testNino"),
       memberFirstName = Some("Rob"),
       memberSurname   = Some("Darby"),
-      qtReference     = Some(QtNumber("QT123456"))
+      transferId      = QtNumber("QT123456")
     )
     val expectedJson = Json.obj(
-      "journey"                                -> "startNewTransferReport",
-      "internalReportReferenceId"              -> "testID",
-      "pensionSchemeName"                      -> "Pension Scheme A",
-      "pensionSchemeTaxReference"              -> "PSTR123",
-      "roleLoggedInAs"                         -> "Psp",
-      "affinityGroup"                          -> "Organisation",
-      "requesterIdentifier"                    -> "21000005",
-      "memberFirstName"                        -> "Rob",
-      "memberSurname"                          -> "Darby",
-      "memberNino"                             -> "testNino",
-      "overseasPensionTransferReportReference" -> "QT123456"
+      "journey"                   -> "startNewTransferReport",
+      "internalReportReferenceId" -> "QT123456",
+      "pensionSchemeName"         -> "Pension Scheme A",
+      "pensionSchemeTaxReference" -> "PSTR123",
+      "roleLoggedInAs"            -> "Psp",
+      "affinityGroup"             -> "Organisation",
+      "requesterIdentifier"       -> "21000005",
+      "memberFirstName"           -> "Rob",
+      "memberSurname"             -> "Darby",
+      "memberNino"                -> "testNino"
     )
 
-    val result = ReportStartedAuditModel.build("testID", user, StartNewTransfer, Some(item))
+    val result = ReportStartedAuditModel.build(QtNumber("QT123456"), user, StartNewTransfer, Some(item))
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
@@ -153,7 +152,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
     )
     val expectedJson = Json.obj(
       "journey"                   -> "startNewTransferReport",
-      "internalReportReferenceId" -> "testID",
+      "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "pensionSchemeName"         -> "Pension Scheme A",
       "pensionSchemeTaxReference" -> "PSTR123",
       "roleLoggedInAs"            -> "Psp",
@@ -164,7 +163,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "memberNino"                -> "testNino"
     )
 
-    val result = ReportStartedAuditModel.build("testID", user, StartNewTransfer, Some(item))
+    val result = ReportStartedAuditModel.build(userAnswersTransferNumber, user, StartNewTransfer, Some(item))
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson
@@ -174,7 +173,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
     val user         = authenticatedPsp.copy(affinityGroup = Organisation, pensionSchemeDetails = Some(pensionSchemeDetails))
     val expectedJson = Json.obj(
       "journey"                   -> "startNewTransferReport",
-      "internalReportReferenceId" -> "testID",
+      "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "reasonForFailure"          -> "503: Forbidden request",
       "pensionSchemeName"         -> "Pension Scheme A",
       "pensionSchemeTaxReference" -> "PSTR123",
@@ -183,7 +182,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers {
       "requesterIdentifier"       -> "21000005"
     )
     val failure      = Some("503: Forbidden request")
-    val result       = ReportStartedAuditModel.build("testID", user, StartNewTransfer, None, failure)
+    val result       = ReportStartedAuditModel.build(userAnswersTransferNumber, user, StartNewTransfer, None, failure)
 
     result.auditType mustBe "OverseasPensionTransferReportStarted"
     result.detail mustBe expectedJson

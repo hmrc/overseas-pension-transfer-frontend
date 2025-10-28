@@ -23,8 +23,7 @@ import java.time.{Instant, LocalDate}
 /** Exactly one of `submissionDate` or `lastUpdated` should be defined. Submitted/Compiled => submissionDate InProgress => lastUpdated
   */
 case class AllTransfersItem(
-    transferReference: Option[String],
-    qtReference: Option[QtNumber],
+    transferId: TransferId,
     qtVersion: Option[String],
     qtStatus: Option[QtStatus],
     nino: Option[String],
@@ -43,7 +42,7 @@ case class AllTransfersItem(
 }
 
 object AllTransfersItem {
-  implicit val format: OFormat[AllTransfersItem] = Json.format
+  implicit val format: OFormat[AllTransfersItem] = Json.format[AllTransfersItem]
 
   implicit val ordering: Ordering[AllTransfersItem] =
     Ordering.by[AllTransfersItem, Option[Instant]](t => t.lastUpdatedDate)(

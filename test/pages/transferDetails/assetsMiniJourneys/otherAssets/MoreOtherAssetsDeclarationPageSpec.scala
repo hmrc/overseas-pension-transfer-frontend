@@ -16,16 +16,17 @@
 
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
+import base.SpecBase
 import controllers.transferDetails.routes
 import models.{CheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers {
+class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers("id", PstrNumber("12345678AB"))
+    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
 

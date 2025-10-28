@@ -55,7 +55,7 @@ trait AddressBase extends SpecBase {
   val selectedRecord: AddressRecord = addressRecordList.head
 
   val addressFoundSessionData: SessionData =
-    sessionDataQtNumber
+    sessionDataMemberNameQtNumber
       .set(MembersLastUkAddressLookupPage, addressRecords).success.value
 
   val addressSelectedSessionData: SessionData =
@@ -65,7 +65,7 @@ trait AddressBase extends SpecBase {
   val noAddressFound: NoAddressFound = NoAddressFound(postcode = "AB1 1CD")
 
   val noAddressFoundSessionData: SessionData =
-    sessionDataQtNumber
+    sessionDataMemberNameQtNumber
       .set(MembersLastUkAddressLookupPage, noAddressFound).success.value
 
   val membersCurrentAddress: MembersCurrentAddress = MembersCurrentAddress(
