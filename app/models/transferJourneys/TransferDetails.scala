@@ -16,9 +16,9 @@
 
 package models.transferJourneys
 
-import models.address.PropertyAddress
-import models.assets.TypeOfAsset
+import models.assets._
 import models.{ApplicableTaxExclusions, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
+
 import java.time.LocalDate
 
 case class TransferDetails(
@@ -34,33 +34,12 @@ case class TransferDetails(
     isTransferCashOnly: Boolean,
     typeOfAsset: Seq[TypeOfAsset],
     cashAmountInTransfer: Option[BigDecimal],
-    otherAssets: List[OtherAssetsDetails]         = Nil,
-    propertyDetails: Option[PropertyDetails]      = None,
-    unquotedShares: Option[UnquotedSharesDetails] = None,
-    quotedShares: Option[QuotedSharesDetails]     = None
-  )
-
-case class UnquotedSharesDetails(
-    unquotedCompanyName: String,
-    unquotedShareValue: BigDecimal,
-    unquotedNumberOfShares: Int,
-    unquotedShareClass: String
-  )
-
-case class QuotedSharesDetails(
-    quotedCompanyName: String,
-    quotedShareValue: BigDecimal,
-    quotedNumberOfShares: Int,
-    quotedShareClass: String
-  )
-
-case class PropertyDetails(
-    propertyAddress: PropertyAddress,
-    propertyValue: BigDecimal,
-    propertyDescription: String
-  )
-
-case class OtherAssetsDetails(
-    otherAssetsDescription: String,
-    otherAssetsValue: BigDecimal
+    unquotedShares: Option[List[UnquotedSharesEntry]],
+    moreThan5Unquoted: Option[Boolean],
+    quotedShares: Option[List[QuotedSharesEntry]],
+    moreThan5Quoted: Option[Boolean],
+    propertyDetails: Option[List[PropertyEntry]],
+    moreThan5Property: Option[Boolean],
+    otherAssets: Option[List[OtherAssetsEntry]],
+    moreThan5OtherAssets: Option[Boolean]
   )

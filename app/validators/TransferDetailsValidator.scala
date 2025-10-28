@@ -18,29 +18,24 @@ package validators
 
 import cats.data.Chain
 import cats.implicits._
-import models.address.PropertyAddress
 import models.assets.TypeOfAsset
-import models.transferJourneys.{OtherAssetsDetails, PropertyDetails, QuotedSharesDetails, TransferDetails, UnquotedSharesDetails}
-import models.{ApplicableTaxExclusions, DataMissingError, UserAnswers, ValidationResult, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
+import models.assets.TypeOfAsset._
+import models.transferJourneys._
+import models.{ApplicableTaxExclusions, DataMissingError, GenericError, UserAnswers, ValidationResult, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
 import pages.transferDetails._
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
-import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
-import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
-  UnquotedSharesClassPage,
-  UnquotedSharesCompanyNamePage,
-  UnquotedSharesNumberPage,
-  UnquotedSharesValuePage
-}
+import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
+import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
+import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
+import queries.assets._
+import validators.assetsValidators.{OtherAssetsValidator, PropertyValidator, QuotedSharesValidator, UnquotedSharesValidator}
 
 import java.time.LocalDate
 
 object TransferDetailsValidator extends Validator[TransferDetails] {
 
   override def fromUserAnswers(userAnswers: UserAnswers): ValidationResult[TransferDetails] = {
-    val selectedAssets = userAnswers.get(TypeOfAssetPage).getOrElse(Seq.empty)
-
     (
       validateAllowanceBeforeTransfer(userAnswers),
       validateTransferAmount(userAnswers),
@@ -53,31 +48,15 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
       validateDateOfTransfer(userAnswers),
       validateIsTransferCashOnly(userAnswers),
       validateTypeOfAsset(userAnswers),
-      validateCashAmountInTransfer(userAnswers), {
-        if (selectedAssets.contains(TypeOfAsset.Other)) {
-          validateOtherAssetsDetails(userAnswers)
-        } else {
-          List.empty[OtherAssetsDetails].validNec
-        }
-      }, {
-        if (selectedAssets.contains(TypeOfAsset.Property)) {
-          validatePropertyDetails(userAnswers)
-        } else {
-          None.validNec
-        }
-      }, {
-        if (selectedAssets.contains(TypeOfAsset.UnquotedShares)) {
-          validateUnquotedShares(userAnswers)
-        } else {
-          None.validNec
-        }
-      }, {
-        if (selectedAssets.contains(TypeOfAsset.QuotedShares)) {
-          validateQuotedShares(userAnswers)
-        } else {
-          None.validNec
-        }
-      }
+      validateCashAmountInTransfer(userAnswers),
+      UnquotedSharesValidator.validateUnquotedShares(userAnswers),
+      validateMoreThan5Unquoted(userAnswers),
+      QuotedSharesValidator.validateQuotedShares(userAnswers),
+      validateMoreThan5Quoted(userAnswers),
+      PropertyValidator.validatePropertyDetails(userAnswers),
+      validateMoreThan5Property(userAnswers),
+      OtherAssetsValidator.validateOtherAssetsDetails(userAnswers),
+      validateMoreThan5Other(userAnswers)
     ).mapN(TransferDetails.apply)
   }
 
@@ -174,177 +153,62 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
           case Some(cashAmountInTransfer) if cashAmountInTransfer > 0 => Some(cashAmountInTransfer).validNec
           case _                                                      => DataMissingError(CashAmountInTransferPage).invalidNec
         }
-      case _                                                 => None.validNec
+      case Some(_)                                           => None.validNec
+      case None                                              => DataMissingError(CashAmountInTransferPage).invalidNec
     }
   }
 
-  private def validateUnquotedSharesCompanyName(answers: UserAnswers, index: Int = 0): ValidationResult[String] =
-    answers.get(UnquotedSharesCompanyNamePage(index)) match {
-      case Some(unquotedCompanyName) => unquotedCompanyName.validNec
-      case None                      => DataMissingError(UnquotedSharesCompanyNamePage(index)).invalidNec
-    }
-
-  private def validateUnquotedSharesValue(answers: UserAnswers, index: Int = 0): ValidationResult[BigDecimal] =
-    answers.get(UnquotedSharesValuePage(index)) match {
-      case Some(unquotedShareValue) => unquotedShareValue.validNec
-      case None                     => DataMissingError(UnquotedSharesValuePage(index)).invalidNec
-    }
-
-  private def validateUnquotedSharesNumber(answers: UserAnswers, index: Int = 0): ValidationResult[Int] =
-    answers.get(UnquotedSharesNumberPage(index)) match {
-      case Some(unquotedNumberOfShares) => unquotedNumberOfShares.validNec
-      case None                         => DataMissingError(UnquotedSharesNumberPage(index)).invalidNec
-    }
-
-  private def validateUnquotedSharesClass(answers: UserAnswers, index: Int = 0): ValidationResult[String] =
-    answers.get(UnquotedSharesClassPage(index)) match {
-      case Some(unquotedShareClass) => unquotedShareClass.validNec
-      case None                     => DataMissingError(UnquotedSharesClassPage(index)).invalidNec
-    }
-
-  private def validateUnquotedShares(answers: UserAnswers, index: Int = 0): ValidationResult[Option[UnquotedSharesDetails]] = {
+  private def validateMoreThan5Unquoted(answers: UserAnswers): ValidationResult[Option[Boolean]] =
     answers.get(TypeOfAssetPage) match {
-      case Some(assets) if assets.contains(TypeOfAsset.UnquotedShares) =>
-        (
-          validateUnquotedSharesCompanyName(answers, index),
-          validateUnquotedSharesValue(answers, index),
-          validateUnquotedSharesNumber(answers, index),
-          validateUnquotedSharesClass(answers, index)
-        ).mapN { case (companyName, value, numberOfShares, shareClass) =>
-          Some(UnquotedSharesDetails(
-            unquotedCompanyName    = companyName,
-            unquotedShareValue     = value,
-            unquotedNumberOfShares = numberOfShares,
-            unquotedShareClass     = shareClass
-          ))
+      case Some(assets) if assets.contains(UnquotedShares) =>
+        (answers.get(UnquotedSharesQuery), answers.get(MoreUnquotedSharesDeclarationPage)) match {
+          case (Some(shares), Some(value)) if shares.length == 5 => Some(value).validNec
+          case (Some(shares), None) if shares.length == 5        => DataMissingError(MoreUnquotedSharesDeclarationPage).invalidNec
+          case (None, Some(_))                                   => GenericError("moreUnquoted cannot be populated when no unquoted shares are present").invalidNec
+          case _                                                 => None.validNec
         }
-      case _                                                           => None.validNec
-    }
-  }
-
-  private def validateQuotedSharesCompanyName(answers: UserAnswers, index: Int = 0): ValidationResult[String] =
-    answers.get(QuotedSharesCompanyNamePage(index)) match {
-      case Some(quotedCompanyName) => quotedCompanyName.validNec
-      case None                    => DataMissingError(QuotedSharesCompanyNamePage(index)).invalidNec
+      case Some(_)                                         => None.validNec
+      case None                                            => DataMissingError(MoreUnquotedSharesDeclarationPage).invalidNec
     }
 
-  private def validateQuotedSharesValue(answers: UserAnswers, index: Int = 0): ValidationResult[BigDecimal] =
-    answers.get(QuotedSharesValuePage(index)) match {
-      case Some(quotedShareValue) => quotedShareValue.validNec
-      case None                   => DataMissingError(QuotedSharesValuePage(index)).invalidNec
-    }
-
-  private def validateQuotedSharesNumber(answers: UserAnswers, index: Int = 0): ValidationResult[Int] =
-    answers.get(QuotedSharesNumberPage(index)) match {
-      case Some(quotedNumberOfShares) => quotedNumberOfShares.validNec
-      case None                       => DataMissingError(QuotedSharesNumberPage(index)).invalidNec
-    }
-
-  private def validateQuotedSharesClass(answers: UserAnswers, index: Int = 0): ValidationResult[String] =
-    answers.get(QuotedSharesClassPage(index)) match {
-      case Some(quotedShareClass) => quotedShareClass.validNec
-      case None                   => DataMissingError(QuotedSharesClassPage(index)).invalidNec
-    }
-
-  private def validateQuotedShares(answers: UserAnswers, index: Int = 0): ValidationResult[Option[QuotedSharesDetails]] = {
+  private def validateMoreThan5Quoted(answers: UserAnswers): ValidationResult[Option[Boolean]] =
     answers.get(TypeOfAssetPage) match {
-      case Some(assets) if assets.contains(TypeOfAsset.QuotedShares) =>
-        (
-          validateQuotedSharesCompanyName(answers, index),
-          validateQuotedSharesValue(answers, index),
-          validateQuotedSharesNumber(answers, index),
-          validateQuotedSharesClass(answers, index)
-        ).mapN { case (companyName, value, numberOfShares, shareClass) =>
-          Some(QuotedSharesDetails(
-            quotedCompanyName    = companyName,
-            quotedShareValue     = value,
-            quotedNumberOfShares = numberOfShares,
-            quotedShareClass     = shareClass
-          ))
+      case Some(assets) if assets.contains(QuotedShares) =>
+        (answers.get(QuotedSharesQuery), answers.get(MoreQuotedSharesDeclarationPage)) match {
+          case (Some(shares), Some(value)) if shares.length == 5 => Some(value).validNec
+          case (Some(shares), None) if shares.length == 5        => DataMissingError(MoreQuotedSharesDeclarationPage).invalidNec
+          case (None, Some(_))                                   => GenericError("moreQuoted cannot be populated when no quoted shares are present").invalidNec
+          case _                                                 => None.validNec
         }
-      case _                                                         => None.validNec
-    }
-  }
-
-  private def validatePropertyAddress(answers: UserAnswers, index: Int = 0): ValidationResult[PropertyAddress] =
-    answers.get(PropertyAddressPage(index)) match {
-      case Some(propertyAddress) => propertyAddress.validNec
-      case None                  => DataMissingError(PropertyAddressPage(index)).invalidNec
+      case Some(_)                                       => None.validNec
+      case None                                          => DataMissingError(MoreQuotedSharesDeclarationPage).invalidNec
     }
 
-  private def validatePropertyValue(answers: UserAnswers, index: Int = 0): ValidationResult[BigDecimal] =
-    answers.get(PropertyValuePage(index)) match {
-      case Some(propertyValue) => propertyValue.validNec
-      case None                => DataMissingError(PropertyValuePage(index)).invalidNec
-    }
-
-  private def validatePropertyDescription(answers: UserAnswers, index: Int = 0): ValidationResult[String] =
-    answers.get(PropertyDescriptionPage(index)) match {
-      case Some(propertyDescription) => propertyDescription.validNec
-      case None                      => DataMissingError(PropertyDescriptionPage(index)).invalidNec
-    }
-
-  private def validatePropertyDetails(answers: UserAnswers, index: Int = 0): ValidationResult[Option[PropertyDetails]] = {
+  private def validateMoreThan5Property(answers: UserAnswers): ValidationResult[Option[Boolean]] =
     answers.get(TypeOfAssetPage) match {
-      case Some(assets) if assets.contains(TypeOfAsset.Property) =>
-        (
-          validatePropertyAddress(answers, index),
-          validatePropertyValue(answers, index),
-          validatePropertyDescription(answers, index)
-        ).mapN { case (address, value, description) =>
-          Some(PropertyDetails(
-            propertyAddress     = address,
-            propertyValue       = value,
-            propertyDescription = description
-          ))
+      case Some(assets) if assets.contains(Property) =>
+        (answers.get(PropertyQuery), answers.get(MorePropertyDeclarationPage)) match {
+          case (Some(shares), Some(value)) if shares.length == 5 => Some(value).validNec
+          case (Some(shares), None) if shares.length == 5        => DataMissingError(MorePropertyDeclarationPage).invalidNec
+          case (None, Some(_))                                   => GenericError("moreProp cannot be populated when no properties are present").invalidNec
+          case _                                                 => None.validNec
         }
-      case _                                                     => None.validNec
-    }
-  }
-
-  private def validateOtherAssetsDescription(answers: UserAnswers, index: Int = 0): ValidationResult[String] =
-    answers.get(OtherAssetsDescriptionPage(index)) match {
-      case Some(otherAssetsDescription) => otherAssetsDescription.validNec
-      case None                         => DataMissingError(OtherAssetsDescriptionPage(index)).invalidNec
+      case Some(_)                                   => None.validNec
+      case None                                      => DataMissingError(MorePropertyDeclarationPage).invalidNec
     }
 
-  private def validateOtherAssetsValue(answers: UserAnswers, index: Int = 0): ValidationResult[BigDecimal] =
-    answers.get(OtherAssetsValuePage(index)) match {
-      case Some(otherAssetsValue) => otherAssetsValue.validNec
-      case None                   => DataMissingError(OtherAssetsValuePage(index)).invalidNec
-    }
-
-  private def validateOtherAssetsDetails(answers: UserAnswers): ValidationResult[List[OtherAssetsDetails]] = {
+  private def validateMoreThan5Other(answers: UserAnswers): ValidationResult[Option[Boolean]] =
     answers.get(TypeOfAssetPage) match {
-      case Some(assets) if assets.contains(TypeOfAsset.Other) =>
-        val assetIndices = (0 until 4).filter { index =>
-          answers.get(OtherAssetsDescriptionPage(index)).isDefined ||
-          answers.get(OtherAssetsValuePage(index)).isDefined
-        }.toSet
-
-        val validatedAssets = assetIndices.toList.traverse { index =>
-          (
-            validateOtherAssetsDescription(answers, index),
-            validateOtherAssetsValue(answers, index)
-          ).mapN { case (description, value) =>
-            OtherAssetsDetails(
-              otherAssetsDescription = description,
-              otherAssetsValue       = value
-            )
-          }
+      case Some(assets) if assets.contains(Other) =>
+        (answers.get(OtherAssetsQuery), answers.get(MoreOtherAssetsDeclarationPage)) match {
+          case (Some(shares), Some(value)) if shares.length == 5 => Some(value).validNec
+          case (Some(shares), None) if shares.length == 5        => DataMissingError(MoreOtherAssetsDeclarationPage).invalidNec
+          case (None, Some(_))                                   => GenericError("moreQuoted cannot be populated when no unquoted shares are present").invalidNec
+          case _                                                 => None.validNec
         }
-
-        validatedAssets.andThen { assets =>
-          if (assets.nonEmpty) {
-            assets.validNec
-          } else {
-            DataMissingError(OtherAssetsDescriptionPage(0)).invalidNec
-          }
-        }
-      case _                                                  =>
-        DataMissingError(TypeOfAssetPage).invalidNec
+      case Some(_)                                => None.validNec
+      case None                                   => DataMissingError(MoreOtherAssetsDeclarationPage).invalidNec
     }
-  }
 
   val notStarted: Chain[DataMissingError] = Chain(
     DataMissingError(OverseasTransferAllowancePage),
@@ -356,6 +220,15 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
     DataMissingError(NetTransferAmountPage),
     DataMissingError(DateOfTransferPage),
     DataMissingError(IsTransferCashOnlyPage),
-    DataMissingError(TypeOfAssetPage)
+    DataMissingError(TypeOfAssetPage),
+    DataMissingError(CashAmountInTransferPage),
+    DataMissingError(UnquotedSharesQuery),
+    DataMissingError(MoreUnquotedSharesDeclarationPage),
+    DataMissingError(QuotedSharesQuery),
+    DataMissingError(MoreQuotedSharesDeclarationPage),
+    DataMissingError(PropertyQuery),
+    DataMissingError(MorePropertyDeclarationPage),
+    DataMissingError(OtherAssetsQuery),
+    DataMissingError(MoreOtherAssetsDeclarationPage)
   )
 }

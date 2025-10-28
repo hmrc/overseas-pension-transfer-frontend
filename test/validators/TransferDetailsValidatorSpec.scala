@@ -19,7 +19,7 @@ package validators
 import base.SpecBase
 import cats.data.Chain
 import cats.data.Validated.{Invalid, Valid}
-import models.assets.TypeOfAsset
+import models.assets.{OtherAssetsEntry, QuotedSharesEntry, TypeOfAsset, UnquotedSharesEntry}
 import models.transferJourneys._
 import models.{ApplicableTaxExclusions, DataMissingError, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
 import org.scalatest.freespec.AnyFreeSpec
@@ -29,11 +29,13 @@ import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescript
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
+  MoreUnquotedSharesDeclarationPage,
   UnquotedSharesClassPage,
   UnquotedSharesCompanyNamePage,
   UnquotedSharesNumberPage,
   UnquotedSharesValuePage
 }
+import queries.assets.{OtherAssetsQuery, PropertyQuery, QuotedSharesQuery, UnquotedSharesQuery}
 
 import java.time.LocalDate
 
@@ -69,10 +71,14 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
     isTransferCashOnly      = false,
     typeOfAsset             = Seq.empty,
     cashAmountInTransfer    = None,
-    otherAssets             = Nil,
-    propertyDetails         = None,
     unquotedShares          = None,
-    quotedShares            = None
+    moreThan5Unquoted       = None,
+    quotedShares            = None,
+    moreThan5Quoted         = None,
+    propertyDetails         = None,
+    moreThan5Property       = None,
+    otherAssets             = None,
+    moreThan5OtherAssets    = None
   )
 
   private def buildBaseUserAnswers = emptyUserAnswers
@@ -125,12 +131,12 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
           val expected = baseTransferDetails.copy(
             typeOfAsset             = Seq(TypeOfAsset.UnquotedShares),
-            unquotedShares          = Some(UnquotedSharesDetails(
-              unquotedCompanyName    = testCompanyName1,
-              unquotedShareValue     = testUnquotedShareValue,
-              unquotedNumberOfShares = testUnquotedShareCount,
-              unquotedShareClass     = testShareClass1
-            )),
+            unquotedShares          = Some(List(UnquotedSharesEntry(
+              testCompanyName1,
+              testUnquotedShareValue,
+              testUnquotedShareCount,
+              testShareClass1
+            ))),
             applicableTaxExclusions = Set(ApplicableTaxExclusions.Occupational)
           )
 
@@ -149,12 +155,12 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
           val expected = baseTransferDetails.copy(
             typeOfAsset             = Seq(TypeOfAsset.QuotedShares),
-            quotedShares            = Some(QuotedSharesDetails(
-              quotedCompanyName    = testCompanyName2,
-              quotedShareValue     = testQuotedShareValue,
-              quotedNumberOfShares = testQuotedShareCount,
-              quotedShareClass     = testShareClass2
-            )),
+            quotedShares            = Some(List(QuotedSharesEntry(
+              testCompanyName2,
+              testQuotedShareValue,
+              testQuotedShareCount,
+              testShareClass2
+            ))),
             applicableTaxExclusions = Set(ApplicableTaxExclusions.Occupational)
           )
 
@@ -173,16 +179,16 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
           val expected = baseTransferDetails.copy(
             typeOfAsset             = Seq(TypeOfAsset.Other),
-            otherAssets             = List(
-              OtherAssetsDetails(
-                otherAssetsDescription = testAssetDesc1,
-                otherAssetsValue       = testAssetValue1
+            otherAssets             = Some(List(
+              OtherAssetsEntry(
+                testAssetDesc1,
+                testAssetValue1
               ),
-              OtherAssetsDetails(
-                otherAssetsDescription = testAssetDesc2,
-                otherAssetsValue       = testAssetValue2
+              OtherAssetsEntry(
+                testAssetDesc2,
+                testAssetValue2
               )
-            ),
+            )),
             applicableTaxExclusions = Set(ApplicableTaxExclusions.Occupational)
           )
 
@@ -195,18 +201,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
       "when required fields are missing" in {
         val result = validator.fromUserAnswers(emptyUserAnswers)
 
-        result mustBe Invalid(Chain(
-          DataMissingError(OverseasTransferAllowancePage),
-          DataMissingError(AmountOfTransferPage),
-          DataMissingError(IsTransferTaxablePage),
-          DataMissingError(IsTransferTaxablePage),
-          DataMissingError(IsTransferTaxablePage),
-          DataMissingError(AmountOfTaxDeductedPage),
-          DataMissingError(NetTransferAmountPage),
-          DataMissingError(DateOfTransferPage),
-          DataMissingError(IsTransferCashOnlyPage),
-          DataMissingError(TypeOfAssetPage)
-        ))
+        result mustBe Invalid(TransferDetailsValidator.notStarted)
       }
 
       "when a cash asset is selected but the amount is missing" in {
@@ -227,9 +222,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
         val result = validator.fromUserAnswers(userAnswers)
 
         result mustBe Invalid(Chain(
-          DataMissingError(PropertyAddressPage(0)),
-          DataMissingError(PropertyValuePage(0)),
-          DataMissingError(PropertyDescriptionPage(0))
+          DataMissingError(PropertyQuery)
         ))
       }
 
@@ -240,10 +233,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
         val result = validator.fromUserAnswers(userAnswers)
 
         result mustBe Invalid(Chain(
-          DataMissingError(UnquotedSharesCompanyNamePage(0)),
-          DataMissingError(UnquotedSharesValuePage(0)),
-          DataMissingError(UnquotedSharesNumberPage(0)),
-          DataMissingError(UnquotedSharesClassPage(0))
+          DataMissingError(UnquotedSharesQuery)
         ))
       }
 
@@ -254,10 +244,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
         val result = validator.fromUserAnswers(userAnswers)
 
         result mustBe Invalid(Chain(
-          DataMissingError(QuotedSharesCompanyNamePage(0)),
-          DataMissingError(QuotedSharesValuePage(0)),
-          DataMissingError(QuotedSharesNumberPage(0)),
-          DataMissingError(QuotedSharesClassPage(0))
+          DataMissingError(QuotedSharesQuery)
         ))
       }
 
@@ -268,7 +255,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
         val result = validator.fromUserAnswers(userAnswers)
 
         result mustBe Invalid(Chain(
-          DataMissingError(OtherAssetsDescriptionPage(0))
+          DataMissingError(OtherAssetsQuery)
         ))
       }
     }
