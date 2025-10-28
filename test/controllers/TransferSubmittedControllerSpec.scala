@@ -25,9 +25,11 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import utils.DateTimeFormats.localDateTimeFormatter
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import views.html.TransferSubmittedView
 
+import java.time.ZoneId
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import scala.concurrent.Future
 
@@ -54,10 +56,15 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
         val view = application.injector.instanceOf[TransferSubmittedView]
 
+        val formattedInstant = {
+          val dateTime = testDateTransferSubmitted.atZone(ZoneId.systemDefault()).toLocalDateTime
+          dateTime.format(localDateTimeFormatter)
+        }
+
         val summaryList =
           TransferSubmittedSummary.rows(
             "User McUser",
-            testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
+            formattedInstant
           )(
             fakeIdentifierRequest(request),
             testMessages

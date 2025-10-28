@@ -25,11 +25,14 @@ import play.api.{Application, Environment, Mode}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
+import java.time.Instant
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable}
 
 trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with OptionValues with BeforeAndAfterAll with BeforeAndAfterEach
     with GuiceOneServerPerSuite {
+
+  val now = Instant.now
 
   def servicesConfig: Map[String, String] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token"            -> "nocheck",

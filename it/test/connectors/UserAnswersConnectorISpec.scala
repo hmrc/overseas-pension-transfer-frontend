@@ -299,12 +299,12 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
           aResponse()
             .withStatus(OK)
             .withHeader("Content-Type", "application/json")
-            .withBody("""{ "qtNumber": "QT123456" }""")
+            .withBody(s"""{ "qtNumber": "QT123456", "receiptDate": "${now.toString}" }""")
         ))
 
       val response = await(connector.postSubmission(submissionDTO))
 
-      response shouldBe Right(SubmissionResponse(QtNumber("QT123456")))
+      response shouldBe Right(SubmissionResponse(QtNumber("QT123456"), now))
     }
 
     "return SubmissionErrorResponse" when {
