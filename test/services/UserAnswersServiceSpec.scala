@@ -129,7 +129,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
     val testPsaId          = Some(PsaId("PSAID"))
     val authenticatedUser  = PsaUser(PsaId("psaId"), "internalId", None, affinityGroup = Individual)
-    val submissionResponse = Right(SubmissionResponse(QtNumber("qtNumber")))
+    val submissionResponse = Right(SubmissionResponse(QtNumber("qtNumber"), Instant.now))
 
     "should post submission when PSA is associated with scheme" in {
       when(mockPensionSchemeConnector.checkPsaAssociation(

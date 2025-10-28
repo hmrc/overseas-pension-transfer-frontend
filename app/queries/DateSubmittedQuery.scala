@@ -18,8 +18,8 @@ package queries
 
 import play.api.libs.json.JsPath
 
-import java.time.LocalDateTime
+import java.time.Instant
 
-case object DateSubmittedQuery extends Gettable[LocalDateTime] with Settable[LocalDateTime] {
+case object DateSubmittedQuery extends Gettable[Instant] with Settable[Instant] {
   override def path: JsPath = JsPath \ "receiptDate"
 }

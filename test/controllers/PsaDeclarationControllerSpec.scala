@@ -32,6 +32,7 @@ import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PsaDeclarationView
 
+import java.time.Instant
 import scala.concurrent.Future
 
 class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
@@ -62,7 +63,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockSessionRepository  = mock[SessionRepository]
 
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456")))))
+        .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456"), Instant.now))))
 
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))

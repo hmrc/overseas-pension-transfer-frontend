@@ -18,7 +18,7 @@ package base
 
 import controllers.actions._
 import models.address.{Countries, PropertyAddress}
-import models.authentication.{AuthenticatedUser, PsaId, PsaUser, PspId, PspUser}
+import models.authentication._
 import models.requests.{DisplayRequest, IdentifierRequest}
 import models.{PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SessionData, SrnNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -43,8 +43,8 @@ import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
-import java.time.{Instant, LocalDateTime}
 import java.time.format.{DateTimeFormatter, FormatStyle}
+import java.time.{Instant, ZoneId}
 
 trait SpecBase
     extends Matchers
@@ -75,8 +75,10 @@ trait SpecBase
     "SchemeName"
   )
 
-  val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
-  val formattedTestDateTransferSubmitted: String = testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
+  val testDateTransferSubmitted: Instant = Instant.now
+
+  val formattedTestDateTransferSubmitted: String =
+    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT).withZone(ZoneId.systemDefault()).format(testDateTransferSubmitted)
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId, pstr)
 

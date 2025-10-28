@@ -24,7 +24,7 @@ import models.responses.SubmissionResponse
 import pages.PspDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.QtNumberQuery
+import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -62,10 +62,11 @@ class PspDeclarationController @Inject() (
           val psaId = PsaId(psaIdString)
           userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId))
             .flatMap {
-              case Right(SubmissionResponse(qtNumber)) =>
+              case Right(SubmissionResponse(qtNumber, receiptDate)) =>
                 for {
-                  updatedSessionData <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
-                  _                  <- sessionRepository.set(updatedSessionData)
+                  updatedSessionData    <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
+                  updateWithReceiptDate <- Future.fromTry(updatedSessionData.set(DateSubmittedQuery, receiptDate))
+                  _                     <- sessionRepository.set(updateWithReceiptDate)
                 } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
 
               case _ =>
