@@ -64,7 +64,6 @@ class TaskListControllerSpec
 
     "must return OK and NOT persist when no task statuses change" in {
 
-
       val app =
         applicationBuilder()
           .build()
