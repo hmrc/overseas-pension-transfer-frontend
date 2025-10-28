@@ -20,7 +20,7 @@ import controllers.actions._
 import models.address.{Countries, PropertyAddress}
 import models.authentication.{AuthenticatedUser, PsaId, PsaUser, PspId, PspUser}
 import models.requests.{DisplayRequest, IdentifierRequest}
-import models.{PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SessionData, SrnNumber, UserAnswers}
+import models.{PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SessionData, SrnNumber, TransferNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -45,6 +45,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 import java.time.{Instant, LocalDateTime}
 import java.time.format.{DateTimeFormatter, FormatStyle}
+import java.util.UUID
 
 trait SpecBase
     extends Matchers
@@ -53,21 +54,23 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience {
 
+  val now = Instant.now
+
   val testMemberName: PersonName = PersonName("User", "McUser")
 
   val testQtNumber: QtNumber = QtNumber("QT123456")
 
-  val userAnswersId: String = "id"
+  val userAnswersTransferNumber: TransferNumber = TransferNumber(UUID.randomUUID().toString)
 
   val pstr: PstrNumber = PstrNumber("12345678AB")
 
   val psaId: PsaId = PsaId("A123456")
 
-  val psaUser: PsaUser = PsaUser(psaId, internalId = userAnswersId, affinityGroup = Individual)
+  val psaUser: PsaUser = PsaUser(psaId, internalId = "id", affinityGroup = Individual)
 
   val pspId = PspId("X7654321")
 
-  val pspUser: PspUser = PspUser(pspId, internalId = userAnswersId, affinityGroup = Individual)
+  val pspUser: PspUser = PspUser(pspId, internalId = "id", affinityGroup = Individual)
 
   val schemeDetails = PensionSchemeDetails(
     SrnNumber("S1234567"),
@@ -78,11 +81,11 @@ trait SpecBase
   val testDateTransferSubmitted: LocalDateTime   = LocalDateTime.now
   val formattedTestDateTransferSubmitted: String = testDateTransferSubmitted.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId, pstr)
+  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr)
 
   val emptySessionData: SessionData = SessionData(
     "sessionId",
-    "id",
+    userAnswersTransferNumber,
     PensionSchemeDetails(
       SrnNumber("1234567890"),
       PstrNumber("12345678AB"),
@@ -98,13 +101,14 @@ trait SpecBase
   )
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
+  def sessionDataMemberName: SessionData = emptySessionData.set(MemberNamePage, testMemberName).success.value
 
-  def sessionDataQtNumber: SessionData = emptySessionData.set(QtNumberQuery, testQtNumber).success.value
+  def sessionDataMemberNameQtNumber: SessionData = sessionDataMemberName.set(QtNumberQuery, testQtNumber).success.value
 
   def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
 
-  def sessionDataQtNumberTransferSubmitted: SessionData =
-    sessionDataQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
+  def sessionDataMemberNameQtNumberTransferSubmitted: SessionData =
+    sessionDataMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
 
   def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
     userAnswersMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
@@ -112,8 +116,8 @@ trait SpecBase
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   protected def applicationBuilder(
-      userAnswers: UserAnswers = UserAnswers("id", PstrNumber("12345678AB")),
-      sessionData: SessionData = sessionDataQtNumber
+      userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB")),
+      sessionData: SessionData = sessionDataMemberNameQtNumber
     ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(

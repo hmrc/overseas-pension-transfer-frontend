@@ -18,9 +18,12 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.memberDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode}
+import models.address.MembersLastUKAddress
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+
+import java.time.LocalDate
 
 class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers {
 
@@ -66,11 +69,87 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
       }
     }
 
-    "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        MemberHasEverBeenResidentUKPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    "in FinalCheck Mode" - {
+
+      "must go to FinalCheck Answers page when answer is 'false'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
+        ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
+
+      "must go to Member Last UK Address Lookup in FinalCheckMode when answer is 'true'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
+        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(FinalCheckMode)
+      }
+    }
+
+    "in AmendCheck Mode" - {
+
+      "must go to AmendCheck Answers page when answer is 'false'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, false).success.value
+        ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to Member Last UK Address Lookup in AmendCheckMode when answer is 'true'" in {
+
+        MemberHasEverBeenResidentUKPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
+        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(AmendCheckMode)
+      }
+    }
+  }
+
+  "cleanup" - {
+
+    "must remove MembersLastUKAddressPage and MemberDateOfLeavingUKPage when answer is 'false'" in {
+      val uaWithDeps =
+        emptyUserAnswers
+          .set(
+            MembersLastUKAddressPage,
+            MembersLastUKAddress(
+              addressLine1 = "1 Test Street",
+              addressLine2 = "Test District",
+              addressLine3 = None,
+              addressLine4 = None,
+              ukPostCode   = "BB1 1BB"
+            )
+          ).success.value
+          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2)).success.value
+
+      val cleaned = MemberHasEverBeenResidentUKPage.cleanup(Some(false), uaWithDeps).success.value
+
+      cleaned.get(MembersLastUKAddressPage) mustBe None
+      cleaned.get(MemberDateOfLeavingUKPage) mustBe None
+    }
+
+    "must not remove dependent pages when answer is 'true'" in {
+      val uaWithDeps =
+        emptyUserAnswers
+          .set(
+            MembersLastUKAddressPage,
+            MembersLastUKAddress(
+              addressLine1 = "1 Test Street",
+              addressLine2 = "Test District",
+              addressLine3 = None,
+              addressLine4 = None,
+              ukPostCode   = "BB1 1BB"
+            )
+          ).success.value
+          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2)).success.value
+
+      val cleaned = MemberHasEverBeenResidentUKPage.cleanup(Some(true), uaWithDeps).success.value
+
+      cleaned.get(MembersLastUKAddressPage).isDefined mustBe true
+      cleaned.get(MemberDateOfLeavingUKPage) mustBe Some(LocalDate.of(2020, 1, 2))
     }
   }
 }

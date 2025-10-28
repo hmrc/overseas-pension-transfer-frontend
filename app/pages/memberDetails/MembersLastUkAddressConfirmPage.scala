@@ -17,7 +17,7 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
@@ -33,7 +33,23 @@ case object MembersLastUkAddressConfirmPage extends Page {
   override protected def nextPageCheckMode(answers: UserAnswers): Call = {
     answers.get(MemberDateOfLeavingUKPage) match {
       case Some(_) => routes.MemberDetailsCYAController.onPageLoad()
-      case None    => routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
+      case None    => routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode)
+      case _       => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+    answers.get(MemberDateOfLeavingUKPage) match {
+      case Some(_) => super.nextPageFinalCheckMode(answers)
+      case None    => routes.MemberDateOfLeavingUKController.onPageLoad(FinalCheckMode)
+      case _       => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+    answers.get(MemberDateOfLeavingUKPage) match {
+      case Some(_) => super.nextPageAmendCheckMode(answers)
+      case None    => routes.MemberDateOfLeavingUKController.onPageLoad(AmendCheckMode)
       case _       => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
   }

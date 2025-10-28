@@ -34,17 +34,16 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
 
   private def mkItem(idx: Int, when: Instant): AllTransfersItem =
     AllTransfersItem(
-      transferReference = Some(s"TR-$idx"),
-      qtReference       = None,
-      qtVersion         = None,
-      nino              = None,
-      memberFirstName   = Some(s"Name$idx"),
-      memberSurname     = Some("McUser"),
-      submissionDate    = None,
-      lastUpdated       = Some(when),
-      qtStatus          = None,
-      pstrNumber        = None,
-      qtDate            = None
+      transferId      = userAnswersTransferNumber,
+      qtVersion       = None,
+      nino            = None,
+      memberFirstName = Some(s"Name$idx"),
+      memberSurname   = Some("McUser"),
+      submissionDate  = None,
+      lastUpdated     = Some(when),
+      qtStatus        = None,
+      pstrNumber      = None,
+      qtDate          = None
     )
 
   private def utc(y: Int, m: Int, d: Int, hh: Int = 0, mm: Int = 0): Instant =

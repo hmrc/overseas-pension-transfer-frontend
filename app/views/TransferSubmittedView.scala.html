@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.titleNoForm
-@import models.requests.DisplayRequest
+@import models.requests.IdentifierRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 @import views.html.components.AppFooter
@@ -27,7 +27,7 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(qtNumber: String, list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
+@(qtNumber: String, list: SummaryList)(implicit request: IdentifierRequest[_], messages: Messages)
 @schemeName = @{request.authenticatedUser.pensionSchemeDetails.map(_.schemeName).getOrElse("Scheme name not found")}
 
 @layout(pageTitle = titleNoForm(messages("transferSubmitted.title")), showPageFooter = false) {

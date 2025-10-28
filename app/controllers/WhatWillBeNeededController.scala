@@ -19,7 +19,7 @@ package controllers
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.audit.JourneyStartedType.StartNewTransfer
 import models.audit.ReportStartedAuditModel
-import models.{NormalMode, PstrNumber, SessionData, SrnNumber, UserAnswers}
+import models.{NormalMode, PstrNumber, SessionData, SrnNumber, TransferNumber, UserAnswers}
 import pages.WhatWillBeNeededPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -52,7 +52,7 @@ class WhatWillBeNeededController @Inject() (
     // TODO remove .get
     val sessionData = SessionData(
       request.authenticatedUser.internalId,
-      transferId = UUID.randomUUID().toString,
+      transferId = TransferNumber(UUID.randomUUID().toString),
       request.authenticatedUser.pensionSchemeDetails.get,
       request.authenticatedUser,
       Json.obj()

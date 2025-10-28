@@ -51,6 +51,7 @@ dashboard.allTransfers.head.reference = Transfer reference
 dashboard.allTransfers.head.updated = Last updated
 dashboard.allTransfers.status.submitted = Submitted to HMRC
 dashboard.allTransfers.status.inProgress = In progress
+dashboard.allTransfers.status.amendInProgress = Amendment in progress
 dashboard.allTransfers.empty = This scheme does not currently have any overseas pension transfer reports.
 dashboard.banner.title = Important
 dashboard.banner.inProgress.text = The transfer for {0} will be deleted in 7 days if you do not work on it.
@@ -141,6 +142,7 @@ common.addressInput.error.addressLine5.pattern = Address line 5 must only includ
 common.addressInput.error.postcode.pattern = Postcode must only include letters, numbers or spaces
 common.addressInput.error.poBox.pattern = PO Box must only include letters, numbers or spaces
 common.addressInput.error.countryCode.required = Enter a country
+
 common.memberDetails.heading = The member''s details
 common.qropsDetails.heading = The QROPS details
 common.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
@@ -746,3 +748,17 @@ transferSubmitted.dateSubmitted.key = Date submitted
 viewSubmitted.heading = Overseas transfer report for {0}
 schemeName.label = Scheme
 dateOfSubmission.label = Date submitted
+
+submittedTransferSummary.title = Reports for {0}
+submittedTransferSummary.heading = Reports for {0}
+submittedTransferSummary.submission = Submission
+submittedTransferSummary.status = Status
+submittedTransferSummary.view = View
+submittedTransferSummary.viewOrAmend = View or amend
+submittedTransferSummary.reviewAndSubmit = Review and submit
+submittedTransferSummary.draft = Draft
+
+viewAmend.title = What would you like to do?
+viewAmend.radio1 = View this overseas pension transfer
+viewAmend.radio2 = Amend this overseas pension transfer
+viewAmend.error.required = Select whether you want to view or amend this transfer

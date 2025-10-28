@@ -32,7 +32,7 @@ class FakeDataRetrievalAction(answers: UserAnswers, sessionData: SessionData) ex
       request.authenticatedUser,
       answers,
       sessionData,
-      memberFullName(answers),
+      memberFullName(sessionData),
       qtNumber(sessionData),
       dateTransferSubmitted(sessionData)
     )))

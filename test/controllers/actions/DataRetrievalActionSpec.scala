@@ -42,7 +42,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
   private val sessionData = SessionData(
     "sessionId",
-    "transferId",
+    userAnswersTransferNumber,
     PensionSchemeDetails(
       SrnNumber("12345"),
       PstrNumber("12345678AB"),
@@ -105,7 +105,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "when there is data in the cache" - {
 
       "must build a userAnswers, memberName, qtNumber and dateTransferSubmitted object and add it to the request" in {
-        val userAnswers = UserAnswers("id", PstrNumber("12345678AB"))
+        val userAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
         val sessionRepository  = mock[SessionRepository]
         val userAnswersService = mock[UserAnswersService]
