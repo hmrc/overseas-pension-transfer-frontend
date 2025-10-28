@@ -52,14 +52,8 @@ class SchemeManagerDetailsCYAController @Inject() (
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      for {
-        sd <- Future.fromTry(request.sessionData.set(TaskStatusQuery(SchemeManagerDetails), Completed))
-        _  <- sessionRepository.set(sd)
-      } yield {
-        Redirect(SchemeManagerDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
-
-      }
+      Redirect(SchemeManagerDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
   }
 }

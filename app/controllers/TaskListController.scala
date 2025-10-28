@@ -41,23 +41,8 @@ class TaskListController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData).async { implicit request =>
-    for {
-      sd1            <- Future.fromTry(TaskService.updateTaskStatusesOnMemberDetailsComplete(request.sessionData))
-      sd2            <- Future.fromTry(TaskService.updateSubmissionTaskStatus(sd1))
-      sessionUpdated <-
-        if (sd2 == request.sessionData) {
-          Future.successful(true)
-        } else {
-          sessionRepository.set(sd2)
-        }
-    } yield {
-      if (sessionUpdated) {
-        Ok(view(TaskListViewModel.rows(sd2), TaskListViewModel.submissionRow(sd2)))
-      } else {
-        onFailureRedirect("Session Repository unable to update Task List")
-      }
-    }
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    Ok(view(TaskListViewModel.rows(request.userAnswers), TaskListViewModel.submissionRow(request.userAnswers)))
   }
 
   def fromDashboard(transferId: TransferId): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>

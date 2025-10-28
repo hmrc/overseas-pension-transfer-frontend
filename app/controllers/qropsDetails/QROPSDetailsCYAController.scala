@@ -52,13 +52,8 @@ class QROPSDetailsCYAController @Inject() (
       Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      for {
-        sd <- Future.fromTry(request.sessionData.set(TaskStatusQuery(QROPSDetails), Completed))
-        _  <- sessionRepository.set(sd)
-      } yield {
-        Redirect(QROPSDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
-      }
+      Redirect(QROPSDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
   }
 }

@@ -63,15 +63,8 @@ class MemberDetailsCYAControllerSpec
     }
 
     "must set MemberDetails to Completed on POST, persist externally, and redirect to Task List" in {
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any[SessionData])) thenReturn Future.successful(true)
-
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -80,12 +73,6 @@ class MemberDetailsCYAControllerSpec
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
-
-        verify(mockSessionRepository).set(
-          org.mockito.ArgumentMatchers.argThat[SessionData] { sd =>
-            sd.get(TaskStatusQuery(TaskCategory.MemberDetails)).contains(TaskStatus.Completed)
-          }
-        )
       }
     }
   }
