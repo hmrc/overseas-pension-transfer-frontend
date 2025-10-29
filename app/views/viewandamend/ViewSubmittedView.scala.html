@@ -35,6 +35,7 @@
         qtNumber: QTNumber,
 )
 @(
+        mode: Mode,
         schemeDetails: SummaryList,
         memberDetails: SummaryList,
         transferDetails: SummaryList,
@@ -47,11 +48,14 @@
 
 @headingStr = @{if(isAmend) messages("viewSubmitted.amendHeading") else messages("viewSubmitted.heading", memberName)}
 
-@submitButton = @{if(isAmend)    form(action = ???) {
-    govukButton(
-        ButtonViewModel(Text(messages("site.continue"))).preventingDoubleClick()
-    )
-}}
+@continueButton = @{
+    if (isAmend) {
+        govukButton(
+            ButtonViewModel(messages("site.continue"))
+            .asLink(routes.SubmitToHMRCController.onPageLoad(mode).url)
+        )
+    }
+}
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true, showDiscardAmendmentFooter = true) {
 
@@ -78,6 +82,6 @@
 
  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--invisible">
 
-  @submitButton
+  @continueButton
 
 }

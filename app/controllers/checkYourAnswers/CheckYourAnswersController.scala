@@ -18,7 +18,7 @@ package controllers.checkYourAnswers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import models.FinalCheckMode
+import models.{FinalCheckMode, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -38,13 +38,13 @@ class CheckYourAnswersController @Inject() (
     view: CheckYourAnswersView
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
       val memberDetailsSummaryList        = SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, request.userAnswers))
       val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, request.userAnswers))
       val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(FinalCheckMode, request.userAnswers))
       val schemeManagerDetailsSummaryList = SummaryListViewModel(SchemeManagerDetailsSummary.rows(FinalCheckMode, request.userAnswers))
 
-      Ok(view(memberDetailsSummaryList, transferDetailsSummaryList, qropsDetailsSummaryList, schemeManagerDetailsSummaryList))
+      Ok(view(memberDetailsSummaryList, transferDetailsSummaryList, qropsDetailsSummaryList, schemeManagerDetailsSummaryList, mode))
   }
 }

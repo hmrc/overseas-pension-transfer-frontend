@@ -163,6 +163,7 @@ class ViewAmendSubmittedController @Inject() (
       sessionData.get(MemberNamePage).map(_.fullName).getOrElse("")
 
     view(
+      mode = AmendCheckMode,
       schemeSummaryList,
       memberDetailsSummaryList,
       transferDetailsSummaryList,
