@@ -169,7 +169,8 @@ class ViewAmendSubmittedController @Inject() (
       qropsDetailsSummaryList,
       schemeManagerDetailsSummaryList,
       sessionData.transferId.value,
-      memberName
+      memberName,
+      isAmend
     )
   }
 }

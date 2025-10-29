@@ -23,6 +23,7 @@
 @import views.ViewUtils.titleNoForm
 @import views.html.components.{CheckYourAnswersHeading, QTNumber}
 @import models.requests.IdentifierRequest
+@import views.html.helper.form
 
 @this(
         layout: templates.Layout,
@@ -31,9 +32,8 @@
         govukButton: GovukButton,
         govukInsetText : GovukInsetText,
         heading: CheckYourAnswersHeading,
-        qtNumber: QTNumber
+        qtNumber: QTNumber,
 )
-
 @(
         schemeDetails: SummaryList,
         memberDetails: SummaryList,
@@ -41,12 +41,22 @@
         qropsDetails: SummaryList,
         schemeManagerDetails: SummaryList,
         qtNumber: String,
-        memberName: String)(implicit request: IdentifierRequest[_], messages: Messages)
+        memberName: String,
+        isAmend: Boolean
+)(implicit request: IdentifierRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true) {
+@headingStr = @{if(isAmend) messages("viewSubmitted.amendHeading") else messages("viewSubmitted.heading", memberName)}
+
+@submitButton = @{if(isAmend)    form(action = ???) {
+    govukButton(
+        ButtonViewModel(Text(messages("site.continue"))).preventingDoubleClick()
+    )
+}}
+
+@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true, showDiscardAmendmentFooter = true) {
 
  <span class="govuk-caption-l">@qtNumber</span>
- @heading(messages("viewSubmitted.heading", memberName))
+ @heading(headingStr)
 
  @govukSummaryList(schemeDetails)
 
@@ -67,4 +77,7 @@
  @govukSummaryList(schemeManagerDetails)
 
  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--invisible">
+
+  @submitButton
+
 }

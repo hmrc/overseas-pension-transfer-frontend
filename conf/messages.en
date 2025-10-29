@@ -38,6 +38,7 @@ error.prefix = Error
 error.summary.title = There is a problem
 
 footer.link.text.discard.report = Discard transfer report
+footer.link.text.discard.amendment = Discard amendments to submission
 footer.link.text.dashboard = Return to Report a transfer to a QROPS dashboard
 footer.link.text.tasklist = Return to task list
 
@@ -746,6 +747,7 @@ transferSubmitted.pensionScheme.key = Scheme
 transferSubmitted.dateSubmitted.key = Date submitted
 
 viewSubmitted.heading = Overseas transfer report for {0}
+viewSubmitted.amendHeading = Amend your submission
 schemeName.label = Scheme
 dateOfSubmission.label = Date submitted
 
