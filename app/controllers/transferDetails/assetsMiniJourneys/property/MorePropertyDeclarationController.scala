@@ -25,7 +25,7 @@ import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclaration
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService}
+import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationView
@@ -42,7 +42,8 @@ class MorePropertyDeclarationController @Inject() (
     formProvider: MorePropertyDeclarationFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MorePropertyDeclarationView,
-    moreAssetCompletionService: MoreAssetCompletionService
+    moreAssetCompletionService: MoreAssetCompletionService,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -88,6 +89,7 @@ class MorePropertyDeclarationController @Inject() (
         continue => {
           for {
             userAnswers            <- Future.fromTry(request.userAnswers.set(MorePropertyDeclarationPage, continue))
+            _                      <- userAnswersService.setExternalUserAnswers(userAnswers)
             sessionAfterCompletion <-
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.Property, completed = true, Some(continue))
           } yield TypeOfAssetNavigator.getNextAssetRoute(sessionAfterCompletion) match {

@@ -25,7 +25,7 @@ import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedShare
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService}
+import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationView
@@ -42,7 +42,8 @@ class MoreUnquotedSharesDeclarationController @Inject() (
     formProvider: MoreUnquotedSharesDeclarationFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MoreUnquotedSharesDeclarationView,
-    moreAssetCompletionService: MoreAssetCompletionService
+    moreAssetCompletionService: MoreAssetCompletionService,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -89,6 +90,7 @@ class MoreUnquotedSharesDeclarationController @Inject() (
         continue => {
           for {
             userAnswers            <- Future.fromTry(request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue))
+            _                      <- userAnswersService.setExternalUserAnswers(userAnswers)
             sessionAfterCompletion <-
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.UnquotedShares, completed = true, Some(continue))
           } yield TypeOfAssetNavigator.getNextAssetRoute(sessionAfterCompletion) match {

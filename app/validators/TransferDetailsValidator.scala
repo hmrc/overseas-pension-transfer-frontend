@@ -18,6 +18,7 @@ package validators
 
 import cats.data.Chain
 import cats.implicits._
+import models.WhyTransferIsTaxable.NoExclusion
 import models.assets.TypeOfAsset
 import models.assets.TypeOfAsset._
 import models.transferJourneys._
@@ -78,52 +79,72 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
       case None            => DataMissingError(IsTransferTaxablePage).invalidNec
     }
 
-  private def validateWhyIsTransferTaxable(answers: UserAnswers): ValidationResult[WhyTransferIsTaxable] =
+  private def validateWhyIsTransferTaxable(answers: UserAnswers): ValidationResult[Option[WhyTransferIsTaxable]] =
     answers.get(IsTransferTaxablePage) match {
       case Some(true)  =>
         answers.get(WhyTransferIsTaxablePage) match {
-          case Some(whyTaxable) => whyTaxable.validNec
+          case Some(whyTaxable) => Some(whyTaxable).validNec
           case None             => DataMissingError(WhyTransferIsTaxablePage).invalidNec
         }
       case Some(false) =>
-        DataMissingError(WhyTransferIsTaxablePage).invalidNec
+        answers.get(WhyTransferIsTaxablePage) match {
+          case Some(_) => GenericError("cannot have why is transfer taxable value when is transfer taxable is false").invalidNec
+          case None    => None.validNec
+        }
       case None        =>
-        DataMissingError(IsTransferTaxablePage).invalidNec
+        DataMissingError(WhyTransferIsTaxablePage).invalidNec
     }
 
-  private def validateWhyIsTransferNotTaxable(answers: UserAnswers): ValidationResult[Set[WhyTransferIsNotTaxable]] =
+  private def validateWhyIsTransferNotTaxable(answers: UserAnswers): ValidationResult[Option[Set[WhyTransferIsNotTaxable]]] =
     answers.get(IsTransferTaxablePage) match {
       case Some(false) =>
         answers.get(WhyTransferIsNotTaxablePage) match {
-          case Some(whyNotTaxable) if whyNotTaxable.nonEmpty => whyNotTaxable.validNec
+          case Some(whyNotTaxable) if whyNotTaxable.nonEmpty => Some(whyNotTaxable).validNec
           case _                                             => DataMissingError(WhyTransferIsNotTaxablePage).invalidNec
         }
       case Some(true)  =>
-        Set.empty[WhyTransferIsNotTaxable].validNec
+        answers.get(WhyTransferIsNotTaxablePage) match {
+          case Some(_) => GenericError("cannot have why transfer is not taxable value when is transfr taxable is true").invalidNec
+          case None    => None.validNec
+        }
       case None        =>
-        DataMissingError(IsTransferTaxablePage).invalidNec
+        DataMissingError(WhyTransferIsNotTaxablePage).invalidNec
     }
 
-  private def validateApplicableTaxExclusions(answers: UserAnswers): ValidationResult[Set[ApplicableTaxExclusions]] =
+  private def validateApplicableTaxExclusions(answers: UserAnswers): ValidationResult[Option[Set[ApplicableTaxExclusions]]] =
     (answers.get(IsTransferTaxablePage), answers.get(WhyTransferIsTaxablePage)) match {
       case (Some(true), Some(WhyTransferIsTaxable.TransferExceedsOTCAllowance)) =>
         answers.get(ApplicableTaxExclusionsPage) match {
-          case Some(exclusions) if exclusions.nonEmpty => exclusions.validNec
-          case _                                       => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
+          case Some(exclusions) => Some(exclusions).validNec
+          case _                => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
         }
-      case _                                                                    => Set.empty[ApplicableTaxExclusions].validNec
+      case (Some(false), None)                                                  =>
+        answers.get(ApplicableTaxExclusionsPage) match {
+          case Some(_) => GenericError("exclusions can not be present when is transfer taxable is false").invalidNec
+          case None    => None.validNec
+        }
+      case _                                                                    => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
     }
 
-  private def validateAmountOfTaxDeducted(answers: UserAnswers): ValidationResult[BigDecimal] =
-    answers.get(AmountOfTaxDeductedPage) match {
-      case Some(amountOfTaxDeducted) => amountOfTaxDeducted.validNec
-      case None                      => DataMissingError(AmountOfTaxDeductedPage).invalidNec
+  private def validateAmountOfTaxDeducted(answers: UserAnswers): ValidationResult[Option[BigDecimal]] = {
+    answers.get(IsTransferTaxablePage) match {
+      case Some(true) => answers.get(AmountOfTaxDeductedPage) match {
+          case Some(amountOfTaxDeducted) => Some(amountOfTaxDeducted).validNec
+          case None                      => DataMissingError(AmountOfTaxDeductedPage).invalidNec
+        }
+      case Some(_)    => None.validNec
+      case _          => DataMissingError(AmountOfTaxDeductedPage).invalidNec
     }
+  }
 
-  private def validateNetTransferAmount(answers: UserAnswers): ValidationResult[BigDecimal] =
-    answers.get(NetTransferAmountPage) match {
-      case Some(netTransferAmount) => netTransferAmount.validNec
-      case None                    => DataMissingError(NetTransferAmountPage).invalidNec
+  private def validateNetTransferAmount(answers: UserAnswers): ValidationResult[Option[BigDecimal]] =
+    answers.get(IsTransferTaxablePage) match {
+      case Some(true) => answers.get(NetTransferAmountPage) match {
+          case Some(netAmount) => Some(netAmount).validNec
+          case None            => DataMissingError(NetTransferAmountPage).invalidNec
+        }
+      case Some(_)    => None.validNec
+      case _          => DataMissingError(NetTransferAmountPage).invalidNec
     }
 
   private def validateDateOfTransfer(answers: UserAnswers): ValidationResult[LocalDate] =
@@ -214,8 +235,9 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
     DataMissingError(OverseasTransferAllowancePage),
     DataMissingError(AmountOfTransferPage),
     DataMissingError(IsTransferTaxablePage),
-    DataMissingError(IsTransferTaxablePage),
-    DataMissingError(IsTransferTaxablePage),
+    DataMissingError(WhyTransferIsTaxablePage),
+    DataMissingError(WhyTransferIsNotTaxablePage),
+    DataMissingError(ApplicableTaxExclusionsPage),
     DataMissingError(AmountOfTaxDeductedPage),
     DataMissingError(NetTransferAmountPage),
     DataMissingError(DateOfTransferPage),

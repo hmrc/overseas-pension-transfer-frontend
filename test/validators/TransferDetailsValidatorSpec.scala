@@ -25,7 +25,7 @@ import models.{ApplicableTaxExclusions, DataMissingError, WhyTransferIsNotTaxabl
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails._
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
+import pages.transferDetails.assetsMiniJourneys.otherAssets.{MoreOtherAssetsDeclarationPage, OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
@@ -62,11 +62,11 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
     allowanceBeforeTransfer = 1000.25,
     transferAmount          = 2000.88,
     isTransferTaxable       = true,
-    whyTaxable              = WhyTransferIsTaxable.TransferExceedsOTCAllowance,
-    whyNotTaxable           = Set.empty[WhyTransferIsNotTaxable],
-    applicableTaxExclusions = Set.empty[ApplicableTaxExclusions],
-    amountOfTaxDeducted     = 100.33,
-    netTransferAmount       = 1900.99,
+    whyTaxable              = Some(WhyTransferIsTaxable.TransferExceedsOTCAllowance),
+    whyNotTaxable           = None,
+    applicableTaxExclusions = None,
+    amountOfTaxDeducted     = Some(100.33),
+    netTransferAmount       = Some(1900.99),
     dateOfTransfer          = today,
     isTransferCashOnly      = false,
     typeOfAsset             = Seq.empty,
@@ -100,7 +100,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
         validator.fromUserAnswers(userAnswers) mustBe
           Valid(baseTransferDetails.copy(
-            applicableTaxExclusions = Set(ApplicableTaxExclusions.Occupational)
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
           ))
       }
 
@@ -113,7 +113,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
           val expected = baseTransferDetails.copy(
             typeOfAsset             = Seq(TypeOfAsset.Cash),
             cashAmountInTransfer    = Some(testCashAmount),
-            applicableTaxExclusions = Set(ApplicableTaxExclusions.Occupational)
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
           )
 
           validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
@@ -137,7 +137,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
               testUnquotedShareCount,
               testShareClass1
             ))),
-            applicableTaxExclusions = Set(ApplicableTaxExclusions.Occupational)
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
           )
 
           validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
@@ -161,7 +161,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
               testQuotedShareCount,
               testShareClass2
             ))),
-            applicableTaxExclusions = Set(ApplicableTaxExclusions.Occupational)
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
           )
 
           validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
@@ -189,11 +189,41 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
                 testAssetValue2
               )
             )),
-            applicableTaxExclusions = Set(ApplicableTaxExclusions.Occupational)
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
           )
 
           validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
         }
+      }
+
+      "when a transfer has 5 added assets and more then 5 value" in {
+        val otherAssetList = List(
+          OtherAssetsEntry(testAssetDesc1, testAssetValue1),
+          OtherAssetsEntry(testAssetDesc2, testAssetValue2),
+          OtherAssetsEntry(testAssetDesc1, testAssetValue2),
+          OtherAssetsEntry(testAssetDesc2, testAssetValue1),
+          OtherAssetsEntry(testAssetDesc2, testAssetValue2)
+        )
+
+        val userAnswers = buildBaseUserAnswers
+          .set(TypeOfAssetPage, Seq(TypeOfAsset.Other)).success.value
+          .set(OtherAssetsQuery, otherAssetList).success.value
+          .set(MoreOtherAssetsDeclarationPage, true).success.value
+
+        val expected = baseTransferDetails.copy(
+          typeOfAsset             = Seq(TypeOfAsset.Other),
+          otherAssets             = Some(List(
+            OtherAssetsEntry(testAssetDesc1, testAssetValue1),
+            OtherAssetsEntry(testAssetDesc2, testAssetValue2),
+            OtherAssetsEntry(testAssetDesc1, testAssetValue2),
+            OtherAssetsEntry(testAssetDesc2, testAssetValue1),
+            OtherAssetsEntry(testAssetDesc2, testAssetValue2)
+          )),
+          moreThan5OtherAssets    = Some(true),
+          applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
+        )
+
+        validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
       }
     }
 
