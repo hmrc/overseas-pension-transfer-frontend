@@ -50,7 +50,7 @@ object TransferId {
 
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, TransferId]] =
       params.get(key).flatMap(_.headOption).map { raw =>
-        val norm = raw.trim.toUpperCase
+        val norm = raw.trim
         Try(QtNumber(norm)) match {
           case Success(qtNumber) => Right(qtNumber)
           case _                 =>
