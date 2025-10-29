@@ -45,7 +45,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val pspDeclarationRoute = routes.PspDeclarationController.onPageLoad().url
+  private lazy val pspDeclarationRoute = routes.PspDeclarationController.onPageLoad(NormalMode).url
 
   val cc = stubControllerComponents()
 
@@ -72,7 +72,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val view = application.injector.instanceOf[PspDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -124,7 +124,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
   }
