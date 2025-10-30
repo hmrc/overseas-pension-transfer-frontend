@@ -84,7 +84,7 @@ class DashboardSessionRepositorySpec
       repository.get("id-clear").futureValue mustBe None
     }
 
-    "must find expiring transfers within 7 days" in {
+    "must find expiring transfers within 2 days" in {
       def makeTransfer(status: Option[QtStatus], lastUpdated: Option[Instant]) =
         AllTransfersItem(
           transferId      = QtNumber("QT123456"),
@@ -99,13 +99,13 @@ class DashboardSessionRepositorySpec
           submissionDate  = None
         )
 
-      val inProgress  = makeTransfer(Some(QtStatus.InProgress), Some(now.minusMillis(3 * 24 * 60 * 60 * 1000)))
-      val amendInProg = makeTransfer(Some(QtStatus.AmendInProgress), Some(now.minusMillis(2 * 24 * 60 * 60 * 1000)))
+      val inProgress  = makeTransfer(Some(QtStatus.InProgress), Some(now.minusMillis(24 * 24 * 60 * 60 * 1000)))
+      val amendInProg = makeTransfer(Some(QtStatus.AmendInProgress), Some(now.minusMillis((23 * 24 * 60 * 60 * 1000) + (23 * 60 * 60 * 1000))))
       val oldTransfer = makeTransfer(Some(QtStatus.InProgress), Some(now.minusMillis(10 * 24 * 60 * 60 * 1000)))
       val complete    = makeTransfer(Some(QtStatus.Compiled), Some(now.minusMillis(1 * 24 * 60 * 60 * 1000)))
 
       val allTransfers = Seq(inProgress, amendInProg, oldTransfer, complete)
-      val expiring     = repository.findExpiringWithin7Days(allTransfers)
+      val expiring     = repository.findExpiringWithin2Days(allTransfers)
 
       expiring must contain(inProgress)
       expiring must contain(amendInProg)

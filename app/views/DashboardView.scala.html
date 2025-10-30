@@ -36,10 +36,14 @@
     val firstName = item.memberFirstName.getOrElse("").trim
     val surname   = item.memberSurname.getOrElse("").trim
     val fullName  = s"$firstName $surname".trim
+    val expiryDate = item.lastUpdatedDate
+        .map(_.atZone(java.time.ZoneId.systemDefault()).toLocalDate().plusDays(25))
+        .map(java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy").format(_))
+        .getOrElse("")
 
 item.qtStatus match {
-    case Some(QtStatus.AmendInProgress) => messages("dashboard.banner.updateInProgress.text", fullName)
-    case Some(QtStatus.InProgress) => messages("dashboard.banner.inProgress.text", fullName)
+    case Some(QtStatus.AmendInProgress) => messages("dashboard.banner.updateInProgress.text", fullName, expiryDate)
+    case Some(QtStatus.InProgress) => messages("dashboard.banner.inProgress.text", fullName, expiryDate)
     case _ => ""
   }
 }
