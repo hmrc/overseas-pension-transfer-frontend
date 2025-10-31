@@ -56,14 +56,13 @@ class PropertyCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
+    val updatedUserAnswers = assetThresholdHandler.handle(request.userAnswers, TypeOfAsset.Property, userSelection = None)
     for {
-      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, PropertyQuery))
-      updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.Property, userSelection = None)
-      saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
+      saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
     } yield {
       saved match {
         case Right(Done) =>
-          val propertyCount = assetThresholdHandler.getAssetCount(minimalUserAnswers, TypeOfAsset.Property)
+          val propertyCount = assetThresholdHandler.getAssetCount(updatedUserAnswers, TypeOfAsset.Property)
           if (propertyCount >= 5) {
             Redirect(
               controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController.onPageLoad(mode = NormalMode)

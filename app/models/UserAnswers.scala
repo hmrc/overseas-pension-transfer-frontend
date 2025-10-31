@@ -99,20 +99,6 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  def buildMinimal[A](
-      original: UserAnswers,
-      page: Settable[A] with Gettable[A]
-    )(implicit reads: Reads[A],
-      writes: Writes[A],
-      mf: Manifest[A]
-    ): Try[UserAnswers] =
-    original.getWithLogging(page) match {
-      case Right(value) =>
-        original.copy(data = Json.obj()).set(page, value)
-      case Left(error)  =>
-        Failure(error)
-    }
-
   val reads: Reads[UserAnswers] = {
 
     import play.api.libs.functional.syntax._
