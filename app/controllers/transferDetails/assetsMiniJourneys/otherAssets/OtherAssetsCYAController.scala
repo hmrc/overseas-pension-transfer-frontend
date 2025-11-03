@@ -21,11 +21,10 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAct
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode}
 import org.apache.pekko.Done
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.OtherAssetsQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -33,7 +32,7 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.Ot
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class OtherAssetsCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -56,15 +55,15 @@ class OtherAssetsCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
+    val updatedUserAnswers = assetThresholdHandler.handle(request.userAnswers, TypeOfAsset.Other, userSelection = None)
+
     for {
-      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, OtherAssetsQuery))
-      updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.Other, userSelection = None)
-      saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
+      saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
 
     } yield {
       saved match {
         case Right(Done) =>
-          val otherAssetsCount = assetThresholdHandler.getAssetCount(minimalUserAnswers, TypeOfAsset.Other)
+          val otherAssetsCount = assetThresholdHandler.getAssetCount(updatedUserAnswers, TypeOfAsset.Other)
           if (otherAssetsCount >= 5) {
             Redirect(
               controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController.onPageLoad(mode = NormalMode)

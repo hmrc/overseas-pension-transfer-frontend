@@ -17,7 +17,7 @@
 package controllers.checkYourAnswers
 
 import base.SpecBase
-import models.FinalCheckMode
+import models.{FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
@@ -53,7 +53,8 @@ class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with Mock
           memberDetailsSummaryList,
           transferDetailsSummaryList,
           qropsDetailsSummaryList,
-          schemeManagerDetailsSummaryList
+          schemeManagerDetailsSummaryList,
+          NormalMode
         )(
           fakeDisplayRequest(request),
           messages(application)

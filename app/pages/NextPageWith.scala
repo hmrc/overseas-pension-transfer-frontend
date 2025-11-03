@@ -16,7 +16,7 @@
 
 package pages
 
-import models.{CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 
 /** Mix this into a Page when you need extra, args to decide navigation (e.g. AuthenticatedUser).
@@ -31,10 +31,17 @@ trait NextPageWith[C] { self: Page =>
   protected def nextPageCheckModeWith(answers: UserAnswers, context: C): Call =
     nextPageCheckMode(answers)
 
+  protected def nextPageFinalCheckMode(answers: UserAnswers, context: C): Call =
+    nextPageAmendCheckMode(answers)
+
+  protected def nextPageAmendCheckMode(answers: UserAnswers, context: C): Call =
+    nextPageAmendCheckMode(answers)
+
   final def nextPageWith(mode: Mode, answers: UserAnswers, context: C): Call =
     mode match {
       case NormalMode     => nextPageWith(answers, context)
       case CheckMode      => nextPageCheckModeWith(answers, context)
-      case FinalCheckMode => this.nextPage(FinalCheckMode, answers)
+      case FinalCheckMode => nextPageFinalCheckMode(answers, context)
+      case AmendCheckMode => nextPageAmendCheckMode(answers, context)
     }
 }

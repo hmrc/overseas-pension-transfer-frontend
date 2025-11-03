@@ -20,35 +20,40 @@ import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import utils.DateTimeFormats.localDateTimeFormatter
 
-import java.time.{LocalDateTime, ZoneId}
+import java.time.format.{DateTimeFormatter, FormatStyle}
+import java.time.{Instant, LocalDateTime, ZoneId}
 
 class SubmittedTransferSummaryViewModelSpec extends AnyFreeSpec with SpecBase {
 
   implicit val messages: Messages = messages(applicationBuilder().build())
   val userAnswers                 = emptyUserAnswers.copy(id = testQtNumber)
 
+  private val localDateTimeFormatterSubmitted = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+
+  private def formattedDate(instant: Instant): String =
+    LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(localDateTimeFormatterSubmitted)
+
   ".rows" - {
     "return a row with View or amend changeLink as the first row when draft is None" in {
       SubmittedTransferSummaryViewModel.rows(None, List(userAnswers.copy(lastUpdated = now)), "001") mustBe
         Html(s""" <tr class="govuk-table__row">
-                |            <th scope="row" class="govuk-table__header">1</th>
-                |            <td class="govuk-table__cell">${LocalDateTime.ofInstant(now, ZoneId.systemDefault()).format(localDateTimeFormatter)}</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-amend?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link">View or amend</a></td>
+                |            <td class="govuk-table__cell">1</th>
+                |            <td class="govuk-table__cell">Submitted on ${formattedDate(now)}</td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-amend?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">View or amend</a></td>
                 |        </tr>""".stripMargin)
     }
 
     "return 2 rows with draft and View changeLink as the first row when draft is defined" in {
       SubmittedTransferSummaryViewModel.rows(Some(userAnswers.copy(lastUpdated = now)), List(userAnswers.copy(lastUpdated = now)), "001") mustBe
         Html(s""" <tr class="govuk-table__row">
-                |            <th scope="row" class="govuk-table__header">Draft</th>
-                |            <td class="govuk-table__cell">${LocalDateTime.ofInstant(now, ZoneId.systemDefault()).format(localDateTimeFormatter)}</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/amend-in-progress-draft?qtReference=QT123456&pstr=12345678AB&qtStatus=AmendInProgress&versionNumber=001 class="govuk-link">Review and submit</a></td>
+                |            <td class="govuk-table__cell">Draft</th>
+                |            <td class="govuk-table__cell">In progress</td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/amend-in-progress-draft?qtReference=QT123456&pstr=12345678AB&qtStatus=AmendInProgress&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">Review and submit</a></td>
                 |        </tr> <tr class="govuk-table__row">
-                |            <th scope="row" class="govuk-table__header">1</th>
-                |            <td class="govuk-table__cell">${LocalDateTime.ofInstant(now, ZoneId.systemDefault()).format(localDateTimeFormatter)}</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-submitted-transfer?qtReference=${testQtNumber.value}&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link">View</a></td>
+                |            <td class="govuk-table__cell">1</th>
+                |            <td class="govuk-table__cell">Submitted on ${formattedDate(now)}</td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-submitted-transfer?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">View</a></td>
                 |        </tr>""".stripMargin)
     }
 
@@ -59,13 +64,13 @@ class SubmittedTransferSummaryViewModelSpec extends AnyFreeSpec with SpecBase {
         "002"
       ) mustBe
         Html(s""" <tr class="govuk-table__row">
-                |            <th scope="row" class="govuk-table__header">2</th>
-                |            <td class="govuk-table__cell">${LocalDateTime.ofInstant(now, ZoneId.systemDefault()).format(localDateTimeFormatter)}</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-amend?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=002 class="govuk-link">View or amend</a></td>
+                |            <td class="govuk-table__cell">2</th>
+                |            <td class="govuk-table__cell">Submitted on ${formattedDate(now)}</td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-amend?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=002 class="govuk-link govuk-!-font-weight-bold">View or amend</a></td>
                 |        </tr> <tr class="govuk-table__row">
-                |            <th scope="row" class="govuk-table__header">1</th>
-                |            <td class="govuk-table__cell">${LocalDateTime.ofInstant(now, ZoneId.systemDefault()).format(localDateTimeFormatter)}</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-submitted-transfer?qtReference=${testQtNumber.value}&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link">View</a></td>
+                |            <td class="govuk-table__cell">1</th>
+                |            <td class="govuk-table__cell">Submitted on ${formattedDate(now)}</td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-submitted-transfer?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">View</a></td>
                 |        </tr>""".stripMargin)
     }
   }
