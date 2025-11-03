@@ -23,6 +23,7 @@ import pages.SubmitToHMRCPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SubmitToHMRCView
 
@@ -34,6 +35,7 @@ class SubmitToHMRCController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
+    userAnswersService: UserAnswersService,
     formProvider: SubmitToHMRCFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: SubmitToHMRCView
@@ -60,6 +62,7 @@ class SubmitToHMRCController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SubmitToHMRCPage, value))
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield Redirect(SubmitToHMRCPage.nextPageWith(mode, updatedAnswers, request.authenticatedUser))
       )
   }
