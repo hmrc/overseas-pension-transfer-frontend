@@ -80,9 +80,8 @@ class QROPSCountryController @Inject() (
               )
             case Some(country) =>
               for {
-                removeQropsOtherCountry <- Future.fromTry(QROPSCountryPage.cleanup(Some(country), request.userAnswers))
-                updatedAnswers          <- Future.fromTry(removeQropsOtherCountry.set(QROPSCountryPage, country))
-                savedForLater           <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
+                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))

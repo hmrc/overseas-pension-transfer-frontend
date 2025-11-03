@@ -29,4 +29,7 @@ case object PspDeclarationPage extends QuestionPage[String] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     controllers.routes.TransferSubmittedController.onPageLoad()
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    controllers.routes.TransferSubmittedController.onPageLoad()
 }

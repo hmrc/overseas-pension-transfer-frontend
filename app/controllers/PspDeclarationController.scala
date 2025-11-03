@@ -50,14 +50,14 @@ class PspDeclarationController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      Ok(view(form))
+      Ok(view(form, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         psaIdString => {
           val psaId = PsaId(psaIdString)
           userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId))
@@ -75,7 +75,7 @@ class PspDeclarationController @Inject() (
             .recoverWith {
               case e: RuntimeException if e.getMessage == "PSA is not associated with the scheme" =>
                 val formWithError = form.withError("value", "pspDeclaration.error.notAssociated")
-                Future.successful(BadRequest(view(formWithError)))
+                Future.successful(BadRequest(view(formWithError, mode)))
             }
 
         }

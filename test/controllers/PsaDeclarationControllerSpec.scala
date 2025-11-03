@@ -39,7 +39,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val psaDeclarationRoute = routes.PsaDeclarationController.onPageLoad().url
+  private lazy val psaDeclarationRoute = routes.PsaDeclarationController.onPageLoad(NormalMode).url
 
   "PsaDeclaration Controller" - {
 
@@ -54,7 +54,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val view = application.injector.instanceOf[PsaDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 

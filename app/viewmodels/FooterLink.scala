@@ -29,10 +29,11 @@ case class FooterLink(id: String, href: String, text: String)
 object FooterLink {
 
   def build(
-      showCYAFooter: Boolean      = false,
-      showStartFooter: Boolean    = false,
-      showPageFooter: Boolean     = true,
-      showTaskListFooter: Boolean = false
+      showCYAFooter: Boolean              = false,
+      showStartFooter: Boolean            = false,
+      showPageFooter: Boolean             = true,
+      showTaskListFooter: Boolean         = false,
+      showDiscardAmendmentFooter: Boolean = false
     )(implicit messages: Messages
     ): Seq[FooterLink] = {
 
@@ -45,7 +46,7 @@ object FooterLink {
     val discardReportLink = FooterLink(
       id   = "discardReportLink",
       href = routes.DiscardTransferConfirmController.onPageLoad().url,
-      text = messages("footer.link.text.discard.report")
+      text = if (showDiscardAmendmentFooter) messages("footer.link.text.discard.amendment") else messages("footer.link.text.discard.report")
     )
 
     val taskListLink = FooterLink(
@@ -54,11 +55,12 @@ object FooterLink {
       text = messages("footer.link.text.tasklist")
     )
 
-    (showStartFooter, showCYAFooter, showTaskListFooter, showPageFooter) match {
-      case (true, _, _, _) | (_, true, _, _) => Seq(dashboardLink)
-      case (_, _, true, _)                   => Seq(discardReportLink, dashboardLink)
-      case (_, _, _, true)                   => Seq(taskListLink)
-      case _                                 => Seq.empty
+    (showStartFooter, showCYAFooter, showTaskListFooter, showPageFooter, showDiscardAmendmentFooter) match {
+      case (_, true, _, _, true)                      => Seq(discardReportLink, dashboardLink)
+      case (true, _, _, _, _) | (_, true, _, _, _)    => Seq(dashboardLink)
+      case (_, _, true, _, _) | (_, true, _, _, true) => Seq(discardReportLink, dashboardLink)
+      case (_, _, _, true, _)                         => Seq(taskListLink)
+      case _                                          => Seq.empty
     }
   }
 }
