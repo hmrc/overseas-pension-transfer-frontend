@@ -73,7 +73,7 @@ object TaskJourneyViewModels {
 
     override def status(userAnswers: UserAnswers): TaskStatus = {
       MemberDetailsJourneyViewModel.status(userAnswers) match {
-        case Completed =>
+        case InProgress | Completed =>
           TransferDetailsValidator.fromUserAnswers(userAnswers) match {
             case Valid(_)     => Completed
             case Invalid(nec) =>
@@ -83,7 +83,7 @@ object TaskJourneyViewModels {
                 InProgress
               }
           }
-        case _         => CannotStart
+        case _                      => CannotStart
       }
     }
   }
