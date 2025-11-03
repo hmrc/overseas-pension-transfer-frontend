@@ -27,7 +27,7 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
-import java.time.{Clock, Instant}
+import java.time.{Clock, Instant, Period}
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -57,11 +57,11 @@ class DashboardSessionRepository @Inject() (
 
   private val TtlDays          = 25
   private val WarningDays      = 2
-  private val WarningThreshold = (TtlDays - WarningDays) * 24 * 60 * 60 * 1000
+  private val WarningThreshold = Period.ofDays(TtlDays - WarningDays)
 
   def findExpiringWithin2Days(allTransfers: Seq[AllTransfersItem]): Seq[AllTransfersItem] = {
     val now               = Instant.now(clock)
-    val warningThreshold  = now.minusMillis(WarningThreshold)
+    val warningThreshold  = now.minus(WarningThreshold)
     val expirableStatuses = Seq(QtStatus.InProgress, QtStatus.AmendInProgress)
 
     allTransfers.filter { t =>
