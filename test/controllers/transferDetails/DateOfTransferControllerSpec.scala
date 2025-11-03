@@ -138,7 +138,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must return a Bad Request when amending with a date after the original submission date" in {
       val originalDate = LocalDate.of(2025, 1, 25)
-      val newDate = originalDate.plusDays(1)
+      val newDate      = originalDate.plusDays(1)
 
       val originalSubmission = emptyUserAnswers
         .set(DateOfTransferPage, originalDate).success.value
@@ -150,7 +150,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
         .thenReturn(Future.successful(Right(originalSubmission)))
 
-      val application = applicationBuilder(userAnswers =emptyUserAnswers)
+      val application = applicationBuilder(userAnswers = emptyUserAnswers)
         .overrides(
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
