@@ -113,12 +113,12 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
 
   private def validateApplicableTaxExclusions(answers: UserAnswers): ValidationResult[Option[Set[ApplicableTaxExclusions]]] =
     answers.get(IsTransferTaxablePage) match {
-      case Some(false) =>
+      case Some(true) =>
         answers.get(ApplicableTaxExclusionsPage) match {
           case Some(exclusions) => Some(exclusions).validNec
           case _                => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
         }
-      case Some(true)  =>
+      case Some(false)  =>
         answers.get(ApplicableTaxExclusionsPage) match {
           case Some(_) => GenericError("exclusions can not be present when is transfer taxable is false").invalidNec
           case None    => None.validNec
