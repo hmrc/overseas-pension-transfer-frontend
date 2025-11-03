@@ -57,14 +57,13 @@ class UnquotedSharesCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
+    val updatedUserAnswers = assetThresholdHandler.handle(request.userAnswers, TypeOfAsset.UnquotedShares, userSelection = None)
     for {
-      minimalUserAnswers <- Future.fromTry(UserAnswers.buildMinimal(request.userAnswers, UnquotedSharesQuery))
-      updatedUserAnswers  = assetThresholdHandler.handle(minimalUserAnswers, TypeOfAsset.UnquotedShares, userSelection = None)
-      saved              <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
+      saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
     } yield {
       saved match {
         case Right(Done) =>
-          val unquotedSharesCount = assetThresholdHandler.getAssetCount(minimalUserAnswers, TypeOfAsset.UnquotedShares)
+          val unquotedSharesCount = assetThresholdHandler.getAssetCount(updatedUserAnswers, TypeOfAsset.UnquotedShares)
           if (unquotedSharesCount >= 5) {
             Redirect(
               controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController.onPageLoad(mode = NormalMode)

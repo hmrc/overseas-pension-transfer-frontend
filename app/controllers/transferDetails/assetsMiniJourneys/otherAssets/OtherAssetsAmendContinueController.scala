@@ -24,7 +24,7 @@ import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendCont
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.AssetsMiniJourneyService
+import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
@@ -41,7 +41,8 @@ class OtherAssetsAmendContinueController @Inject() (
     sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
-    view: OtherAssetsAmendContinueView
+    view: OtherAssetsAmendContinueView,
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -80,6 +81,7 @@ class OtherAssetsAmendContinueController @Inject() (
             sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Other, completed = true))
             _   <- sessionRepository.set(sd)
             ua1 <- Future.fromTry(request.userAnswers.set(OtherAssetsAmendContinuePage, continue))
+            _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
             Redirect(OtherAssetsAmendContinuePage.nextPageWith(mode, ua1, sd, nextIndex))

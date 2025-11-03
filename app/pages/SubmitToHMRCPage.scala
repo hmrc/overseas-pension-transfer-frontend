@@ -18,23 +18,38 @@ package pages
 
 import controllers.routes
 import models.authentication.{AuthenticatedUser, Psa, Psp}
-import models.{NormalMode, UserAnswers}
+import models.{AmendCheckMode, NormalMode, UserAnswers}
+import play.api.Logging
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object SubmitToHMRCPage
     extends QuestionPage[Boolean]
-    with NextPageWith[AuthenticatedUser] {
+    with NextPageWith[AuthenticatedUser] with Logging {
 
   override def path: JsPath     = JsPath \ toString
   override def toString: String = "submitToHMRC"
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call = {
+    answers.get(SubmitToHMRCPage) match {
+      case Some(true)  =>
+        authenticatedUser.userType match {
+          case Psa => routes.PsaDeclarationController.onPageLoad(AmendCheckMode)
+          case Psp => routes.PspDeclarationController.onPageLoad(AmendCheckMode)
+          case _   => routes.JourneyRecoveryController.onPageLoad()
+        }
+      case Some(false) =>
+        routes.DashboardController.onPageLoad()
+      case _           => routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 
   override protected def nextPageWith(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call = {
     answers.get(SubmitToHMRCPage) match {
       case Some(true)  =>
         authenticatedUser.userType match {
-          case Psa => routes.PsaDeclarationController.onPageLoad()
-          case Psp => routes.PspDeclarationController.onPageLoad()
+          case Psa => routes.PsaDeclarationController.onPageLoad(NormalMode)
+          case Psp => routes.PspDeclarationController.onPageLoad(NormalMode)
           case _   => routes.JourneyRecoveryController.onPageLoad()
         }
       case Some(false) =>

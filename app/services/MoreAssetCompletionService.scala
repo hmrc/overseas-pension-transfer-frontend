@@ -54,36 +54,9 @@ class MoreAssetCompletionService @Inject() (
       // Step 3: enrich with threshold flags
       enrichedAnswers = assetThresholdHandler.handle(userAnswers, assetType, userSelection)
 
-      // Step 4: build minimal model for Save For Later
-      minimalAnswers = buildMinimal(enrichedAnswers, sessionData, assetType)
-
-      // Step 5: persist minimal model SaveForLater + enriched full copy Session
-      _ <- userAnswersService.setExternalUserAnswers(assetThresholdHandler.handle(minimalAnswers, assetType, userSelection))
+      // Step 4: persist model SaveForLater + enriched full copy Session
+      _ <- userAnswersService.setExternalUserAnswers(assetThresholdHandler.handle(userAnswers, assetType, userSelection))
 
     } yield updatedSession
-  }
-
-  /** Choose correct query for the given asset type and build minimal model */
-  private def buildMinimal(userAnswers: UserAnswers, sessionData: SessionData, assetType: TypeOfAsset): UserAnswers = {
-    assetType match {
-      case TypeOfAsset.Property =>
-        UserAnswers.buildMinimal(userAnswers, PropertyQuery)
-          .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
-
-      case TypeOfAsset.Other =>
-        UserAnswers.buildMinimal(userAnswers, OtherAssetsQuery)
-          .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
-
-      case TypeOfAsset.QuotedShares =>
-        UserAnswers.buildMinimal(userAnswers, QuotedSharesQuery)
-          .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
-
-      case TypeOfAsset.UnquotedShares =>
-        UserAnswers.buildMinimal(userAnswers, UnquotedSharesQuery)
-          .getOrElse(throw new IllegalStateException(s"Could not build minimal user answers for $assetType"))
-
-      case TypeOfAsset.Cash =>
-        throw new IllegalArgumentException("Cash assets not supported for threshold handling")
-    }
   }
 }

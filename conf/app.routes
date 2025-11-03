@@ -23,7 +23,7 @@ GET        /there-is-a-problem                                                  
 
 GET        /what-will-be-needed                                                                   controllers.WhatWillBeNeededController.onPageLoad()
 
-GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
+GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
 
 
 GET        /view-submitted-transfer                                                               controllers.viewandamend.ViewAmendSubmittedController.view(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
@@ -607,12 +607,18 @@ POST       /transfer-details/assets/other-assets-confirm-removal                
 
 GET        /psp-declaration                                                                       controllers.PspDeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /psp-declaration                                                                       controllers.PspDeclarationController.onSubmit(mode: Mode = NormalMode)
+GET        /psp-declaration-amendment                                                             controllers.PspDeclarationController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /psp-declaration-amendment                                                             controllers.PspDeclarationController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /psa-declaration                                                                       controllers.PsaDeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /psa-declaration                                                                       controllers.PsaDeclarationController.onSubmit(mode: Mode = NormalMode)
+GET        /psa-declaration-amendment                                                             controllers.PsaDeclarationController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /psa-declaration-amendment                                                             controllers.PsaDeclarationController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onPageLoad(mode: Mode = NormalMode)
 POST       /submit-to-hmrc                                                                        controllers.SubmitToHMRCController.onSubmit(mode: Mode = NormalMode)
+GET        /submit-amendment-to-hmrc                                                              controllers.SubmitToHMRCController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /submit-amendment-to-hmrc                                                              controllers.SubmitToHMRCController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-submitted                                                                    controllers.TransferSubmittedController.onPageLoad()
 
