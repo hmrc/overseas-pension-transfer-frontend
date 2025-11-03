@@ -34,7 +34,7 @@ class TestOnlyController @Inject() (
 
   def resetDatabase: Action[AnyContent] = Action.async {
     implicit request =>
-      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       sessionRepository.clear flatMap {
         _ =>
           userAnswersConnector.resetDatabase map {

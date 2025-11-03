@@ -39,7 +39,7 @@ class SchemeDataActionImpl @Inject() (
   ) extends SchemeDataAction with AppUtils with Logging {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     if (request.authenticatedUser.pensionSchemeDetails.isEmpty) {
       dashboardSessionRepository.get(request.authenticatedUser.internalId) flatMap {
         case Some(dashboardData) =>
