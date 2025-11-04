@@ -65,7 +65,7 @@ class MoreAssetCompletionServiceSpec
     "completeAsset" - {
 
       forAll(supportedAssets) { assetType =>
-        s"should mark $assetType completed, enrich, persist, and return updated UserAnswers" in {
+        s"should mark $assetType completed, enrich (twice), persist enriched answers, and return updated SessionData" in {
 
           val userAnswers: UserAnswers = userAnswersWithAssets(assetsCount = 5)
 
@@ -84,15 +84,15 @@ class MoreAssetCompletionServiceSpec
           service.completeAsset(userAnswers, emptySessionData, assetType, completed = true, userSelection = Some(true)).map { result =>
             result mustBe updated
 
-            verify(mockAssetThresholdHandler).handle(userAnswers, assetType, Some(true))
-            verify(mockUserAnswersService).setExternalUserAnswers(userAnswers)
-            verify(mockSessionRepository).set(updated)
+            verify(mockAssetThresholdHandler, times(2)).handle(userAnswers, assetType, Some(true))
+            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(userAnswers)
+            verify(mockSessionRepository, times(1)).set(updated)
 
             succeed
           }
         }
 
-        s"should handle case when userSelection is None for $assetType" in {
+        s"should handle case when userSelection is None for $assetType (enrich twice)" in {
           val userAnswers          = userAnswersWithAssets()
           val updated: SessionData =
             AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
@@ -106,9 +106,11 @@ class MoreAssetCompletionServiceSpec
           when(mockSessionRepository.set(any()))
             .thenReturn(Future.successful(true))
 
-          service.completeAsset(userAnswers, updated, assetType, completed = true).map { result =>
+          service.completeAsset(userAnswers, emptySessionData, assetType, completed = true).map { result =>
             result mustBe updated
-            verify(mockAssetThresholdHandler).handle(userAnswers, assetType, None)
+            verify(mockAssetThresholdHandler, times(2)).handle(userAnswers, assetType, None)
+            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(userAnswers)
+            verify(mockSessionRepository, times(1)).set(updated)
             succeed
           }
         }
@@ -130,23 +132,11 @@ class MoreAssetCompletionServiceSpec
           ex.getMessage mustBe "boom"
           verify(mockUserAnswersService, never()).setExternalUserAnswers(any())(any[HeaderCarrier])
           verify(mockSessionRepository, times(1)).set(any())
+          verify(mockAssetThresholdHandler, times(1)).handle(userAnswers, asset, None)
           succeed
         }
       }
 
-      "should throw IllegalArgumentException for unsupported asset type Cash" in {
-        val userAnswers = emptyUserAnswers
-        val asset       = TypeOfAsset.Cash
-
-        when(mockSessionRepository.set(any()))
-          .thenReturn(Future.successful(true))
-
-        recoverToExceptionIf[IllegalArgumentException] {
-          service.completeAsset(userAnswers, emptySessionData, asset, completed = true)
-        } map { ex =>
-          ex.getMessage mustBe "Cash assets not supported for threshold handling"
-        }
-      }
     }
   }
 }

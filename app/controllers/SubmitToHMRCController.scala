@@ -20,9 +20,11 @@ import controllers.actions._
 import forms.SubmitToHMRCFormProvider
 import models.Mode
 import pages.SubmitToHMRCPage
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.SubmitToHMRCView
 
@@ -34,11 +36,12 @@ class SubmitToHMRCController @Inject() (
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
+    userAnswersService: UserAnswersService,
     formProvider: SubmitToHMRCFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: SubmitToHMRCView
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   val form: Form[Boolean] = formProvider()
 
@@ -49,17 +52,18 @@ class SubmitToHMRCController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SubmitToHMRCPage, value))
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield Redirect(SubmitToHMRCPage.nextPageWith(mode, updatedAnswers, request.authenticatedUser))
       )
   }

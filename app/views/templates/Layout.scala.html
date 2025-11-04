@@ -53,6 +53,7 @@
         showStartFooter: Boolean = false,
         showCYAFooter: Boolean = false,
         showTasklistFooter: Boolean = false,
+        showDiscardAmendmentFooter: Boolean = false,
         fullWidth: Boolean = false,
         showBreadcrumbs: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
 
@@ -87,7 +88,7 @@
 
 @content = {
     @contentBlock
-    @appFooter()(FooterLink.build(showCYAFooter, showStartFooter, showPageFooter, showTasklistFooter))
+    @appFooter()(FooterLink.build(showCYAFooter, showStartFooter, showPageFooter, showTasklistFooter, showDiscardAmendmentFooter))
     @hmrcReportTechnicalIssueHelper()
 }
 

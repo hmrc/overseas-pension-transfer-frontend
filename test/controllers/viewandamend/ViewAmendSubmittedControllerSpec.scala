@@ -19,7 +19,7 @@ package controllers.viewandamend
 import base.SpecBase
 import controllers.viewandamend.routes
 import models.responses.UserAnswersErrorResponse
-import models.{FinalCheckMode, PstrNumber, QtStatus, TransferId}
+import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, TransferId}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -125,13 +125,15 @@ class ViewAmendSubmittedControllerSpec
 
         status(result) mustBe OK
         contentAsString(result) mustBe view(
+          AmendCheckMode,
           schemeSummaryList,
           memberDetailsSummaryList,
           transferDetailsSummaryList,
           qropsDetailsSummaryList,
           schemeManagerDetailsSummaryList,
           testQtNumber.value,
-          testMemberName.fullName
+          testMemberName.fullName,
+          isAmend = false
         )(
           fakeIdentifierRequest(
             req

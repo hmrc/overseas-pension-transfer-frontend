@@ -29,7 +29,7 @@
         form: FormWithCSRF
 )
 
-@()(implicit request: DisplayRequest[_], messages: Messages)
+@(mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("psaDeclaration.title"))) {
 
@@ -42,7 +42,7 @@
         <li>@messages("psaDeclaration.correctAndComplete")</li>
     </ul>
 
-    @form(action = routes.PsaDeclarationController.onSubmit()) {
+    @form(action = routes.PsaDeclarationController.onSubmit(mode)) {
         @govukButton(
             ButtonViewModel(Text(messages("site.agreeAndSubmit"))).preventingDoubleClick()
         )

@@ -34,11 +34,15 @@
         qtNumber: QTNumber
 )
 
-@(form: Form[_])(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+
+@heading = @{if(mode == AmendCheckMode) messages("submitToHMRC.amendHeading") else messages("submitToHMRC.heading")}
+@hintTextYes = @{if (mode != AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.hintYes")))) else None}
+@hintTextNo = @{if (mode == AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.amendHintNo")))) else Some(HintViewModel(Text(messages("submitToHMRC.hintNo"))))}
 
 @layout(pageTitle = title(form, messages("submitToHMRC.title"))) {
 
-    @formHelper(action = routes.SubmitToHMRCController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.SubmitToHMRCController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -49,10 +53,10 @@
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
-                hintYes = Some(HintViewModel(Text(messages("submitToHMRC.hintYes")))),
-                hintNo = Some(HintViewModel(Text(messages("submitToHMRC.hintNo"))))
+                hintYes = hintTextYes,
+                hintNo = hintTextNo)
             )
-        )
+
 
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
