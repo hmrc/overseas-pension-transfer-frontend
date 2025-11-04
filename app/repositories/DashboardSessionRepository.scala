@@ -27,7 +27,7 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
-import java.time.{Clock, Instant}
+import java.time.{Clock, Instant, Period}
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,17 +55,18 @@ class DashboardSessionRepository @Inject() (
 
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
-  private val SevenDaysMillis: Long = 7L * 24 * 60 * 60 * 1000
+  private val TtlDays          = 25
+  private val WarningDays      = 2
+  private val WarningThreshold = Period.ofDays(TtlDays - WarningDays)
 
-  def findExpiringWithin7Days(allTransfers: Seq[AllTransfersItem]): Seq[AllTransfersItem] = {
-    val now          = Instant.now(clock)
-    val sevenDaysAgo = now.minusMillis(SevenDaysMillis)
-
+  def findExpiringWithin2Days(allTransfers: Seq[AllTransfersItem]): Seq[AllTransfersItem] = {
+    val now               = Instant.now(clock)
+    val warningThreshold  = now.minus(WarningThreshold)
     val expirableStatuses = Seq(QtStatus.InProgress, QtStatus.AmendInProgress)
 
     allTransfers.filter { t =>
       t.qtStatus.exists(expirableStatuses.contains) &&
-      t.lastUpdated.exists(updated => !updated.isBefore(sevenDaysAgo) && !updated.isAfter(now))
+      t.lastUpdated.exists(_.isBefore(warningThreshold))
     }
   }
 

@@ -73,7 +73,7 @@ object TaskJourneyViewModels {
 
     override def status(userAnswers: UserAnswers): TaskStatus = {
       MemberDetailsJourneyViewModel.status(userAnswers) match {
-        case InProgress | Completed =>
+        case Completed | InProgress =>
           TransferDetailsValidator.fromUserAnswers(userAnswers) match {
             case Valid(_)     => Completed
             case Invalid(nec) =>
@@ -98,7 +98,7 @@ object TaskJourneyViewModels {
 
     override def status(userAnswers: UserAnswers): TaskStatus =
       MemberDetailsJourneyViewModel.status(userAnswers) match {
-        case Completed =>
+        case Completed | InProgress =>
           QropsDetailsValidator.fromUserAnswers(userAnswers) match {
             case Valid(_)     => Completed
             case Invalid(nec) =>
@@ -108,7 +108,7 @@ object TaskJourneyViewModels {
                 InProgress
               }
           }
-        case _         => CannotStart
+        case _                      => CannotStart
       }
   }
 
@@ -121,7 +121,7 @@ object TaskJourneyViewModels {
 
     override def status(userAnswers: UserAnswers): TaskStatus =
       MemberDetailsJourneyViewModel.status(userAnswers) match {
-        case Completed =>
+        case Completed | InProgress =>
           SchemeManagerDetailsValidator.fromUserAnswers(userAnswers) match {
             case Valid(_)     => Completed
             case Invalid(nec) =>
@@ -131,7 +131,7 @@ object TaskJourneyViewModels {
                 InProgress
               }
           }
-        case _         => CannotStart
+        case _                      => CannotStart
       }
   }
 
