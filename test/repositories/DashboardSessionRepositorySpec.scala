@@ -26,7 +26,7 @@ import config.TestAppConfig
 import services.EncryptionService
 import models.{AllTransfersItem, DashboardData, QtNumber, QtStatus}
 
-import java.time.{Clock, Instant, ZoneOffset}
+import java.time.{Clock, Duration, Instant, Period, ZoneOffset}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
@@ -84,7 +84,7 @@ class DashboardSessionRepositorySpec
       repository.get("id-clear").futureValue mustBe None
     }
 
-    "must find expiring transfers within 7 days" in {
+    "must find expiring transfers within 2 days" in {
       def makeTransfer(status: Option[QtStatus], lastUpdated: Option[Instant]) =
         AllTransfersItem(
           transferId      = QtNumber("QT123456"),
@@ -99,13 +99,12 @@ class DashboardSessionRepositorySpec
           submissionDate  = None
         )
 
-      val inProgress  = makeTransfer(Some(QtStatus.InProgress), Some(now.minusMillis(3 * 24 * 60 * 60 * 1000)))
-      val amendInProg = makeTransfer(Some(QtStatus.AmendInProgress), Some(now.minusMillis(2 * 24 * 60 * 60 * 1000)))
-      val oldTransfer = makeTransfer(Some(QtStatus.InProgress), Some(now.minusMillis(10 * 24 * 60 * 60 * 1000)))
-      val complete    = makeTransfer(Some(QtStatus.Compiled), Some(now.minusMillis(1 * 24 * 60 * 60 * 1000)))
-
+      val inProgress   = makeTransfer(Some(QtStatus.InProgress), Some(now.minus(Period.ofDays(24))))
+      val amendInProg  = makeTransfer(Some(QtStatus.AmendInProgress), Some(now.minus(Period.ofDays(23)).minus(Duration.ofHours(23))))
+      val oldTransfer  = makeTransfer(Some(QtStatus.InProgress), Some(now.minus(Period.ofDays(10))))
+      val complete     = makeTransfer(Some(QtStatus.Compiled), Some(now.minus(Period.ofDays(1))))
       val allTransfers = Seq(inProgress, amendInProg, oldTransfer, complete)
-      val expiring     = repository.findExpiringWithin7Days(allTransfers)
+      val expiring     = repository.findExpiringWithin2Days(allTransfers)
 
       expiring must contain(inProgress)
       expiring must contain(amendInProg)
