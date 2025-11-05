@@ -148,7 +148,9 @@ class ViewAmendSubmittedController @Inject() (
     ): HtmlFormat.Appendable = {
 
     val schemeName                      = sessionData.schemeInformation.schemeName
-    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(AmendCheckMode, schemeName, dateTransferSubmitted(sessionData)))
+    val schemeSummaryList               = SummaryListViewModel(
+      SchemeDetailsSummary.rows(AmendCheckMode, schemeName, dateTransferSubmitted(sessionData, Some(userAnswers)))
+    )
     val memberDetailsSummaryList        = if (isAmend) {
       SummaryListViewModel(MemberDetailsSummary.amendRows(AmendCheckMode, userAnswers))
     } else {

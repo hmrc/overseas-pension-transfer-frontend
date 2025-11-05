@@ -16,12 +16,13 @@
 
 package utils
 
-import models.{QtNumber, SessionData}
+import models.{QtNumber, SessionData, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import queries.{DateSubmittedQuery, QtNumberQuery}
-import utils.DateTimeFormats.localDateTimeFormatter
 
-import java.time.ZoneId
+import java.time.{Instant, ZoneId}
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 trait AppUtils {
 
@@ -34,10 +35,19 @@ trait AppUtils {
       .getOrElse(QtNumber.empty)
   }
 
-  def dateTransferSubmitted(sessionData: SessionData): String = {
-    sessionData.get(DateSubmittedQuery).fold("Transfer not submitted") { instant =>
-      val dateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime
-      dateTime.format(localDateTimeFormatter)
+  def dateTransferSubmitted(sessionData: SessionData, userAnswers: Option[UserAnswers] = None): String = {
+    def formatDate(instant: Instant): String = {
+      DateTimeFormatter
+        .ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+        .withZone(ZoneId.systemDefault())
+        .format(instant)
     }
+    sessionData.get(DateSubmittedQuery)
+      .orElse(userAnswers.flatMap(ua =>
+        (ua.data \ "transferDetails" \ "dateMemberTransferred").asOpt[String].map { dateStr =>
+          java.time.LocalDate.parse(dateStr).atStartOfDay(ZoneId.systemDefault).toInstant
+        }
+      ))
+      .fold("Transfer not submitted")(formatDate)
   }
 }
