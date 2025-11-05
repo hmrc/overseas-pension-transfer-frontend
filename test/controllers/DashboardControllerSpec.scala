@@ -78,7 +78,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockSession.clear(any())).thenReturn(Future.successful(true))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
-      when(mockRepo.findExpiringWithin7Days(any())).thenReturn(Seq.empty)
+      when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
       when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
       when(mockView.apply(any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard view"))
@@ -224,7 +224,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
       when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
-      when(mockRepo.findExpiringWithin7Days(any())).thenReturn(Seq.empty)
+      when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
       when(mockView.apply(any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard"))
 
       when(mockLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
@@ -282,7 +282,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       }
     }
 
-    "must display the 7 day expiry warning when repository returns expiring items" in {
+    "must display the 2 day expiry warning when repository returns expiring items" in {
       val mockRepo    = mock[DashboardSessionRepository]
       val mockService = mock[TransferService]
       val mockSession = mock[SessionRepository]
@@ -314,7 +314,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
 
-      when(mockRepo.findExpiringWithin7Days(any())).thenReturn(Seq(expiringTransfer))
+      when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq(expiringTransfer))
 
       when(mockView.apply(any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("expiring soon banner"))
 
@@ -334,7 +334,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         status(result) mustBe OK
         contentAsString(result) must include("expiring soon banner")
-        verify(mockRepo, times(1)).findExpiringWithin7Days(any())
+        verify(mockRepo, times(1)).findExpiringWithin2Days(any())
       }
     }
   }

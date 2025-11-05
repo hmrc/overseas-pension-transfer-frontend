@@ -21,7 +21,7 @@ import cats.data.Chain
 import cats.data.Validated.{Invalid, Valid}
 import models.assets.{OtherAssetsEntry, QuotedSharesEntry, TypeOfAsset, UnquotedSharesEntry}
 import models.transferJourneys._
-import models.{ApplicableTaxExclusions, DataMissingError, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
+import models.{ApplicableTaxExclusions, DataMissingError, GenericError, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails._
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
@@ -70,7 +70,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
     dateOfTransfer          = today,
     isTransferCashOnly      = false,
     typeOfAsset             = Seq.empty,
-    cashAmountInTransfer    = None,
+    cashAmountInTransfer    = Some(BigDecimal(2000.88)),
     unquotedShares          = None,
     moreThan5Unquoted       = None,
     quotedShares            = None,
@@ -91,6 +91,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
     .set(NetTransferAmountPage, BigDecimal(1900.99)).success.value
     .set(DateOfTransferPage, today).success.value
     .set(IsTransferCashOnlyPage, false).success.value
+    .set(CashAmountInTransferPage, BigDecimal(2000.88)).success.value
 
   "fromUserAnswers" - {
     "must return valid TransferDetails" - {
@@ -112,6 +113,24 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
           val expected = baseTransferDetails.copy(
             typeOfAsset             = Seq(TypeOfAsset.Cash),
+            cashAmountInTransfer    = Some(testCashAmount),
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
+          )
+
+          validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
+        }
+
+        "with cash only and cash amount equals transfer amount" in {
+          val userAnswers = buildBaseUserAnswers
+            .set(TypeOfAssetPage, Seq(TypeOfAsset.Cash)).success.value
+            .set(AmountOfTransferPage, testCashAmount).success.value
+            .set(IsTransferCashOnlyPage, true).success.value
+            .set(CashAmountInTransferPage, testCashAmount).success.value
+
+          val expected = baseTransferDetails.copy(
+            typeOfAsset             = Seq(TypeOfAsset.Cash),
+            transferAmount          = testCashAmount,
+            isTransferCashOnly      = true,
             cashAmountInTransfer    = Some(testCashAmount),
             applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
           )
@@ -237,11 +256,25 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
       "when a cash asset is selected but the amount is missing" in {
         val userAnswers = buildBaseUserAnswers
           .set(TypeOfAssetPage, Seq(TypeOfAsset.Cash)).success.value
+          .remove(CashAmountInTransferPage).success.value
 
         val result = validator.fromUserAnswers(userAnswers)
 
         result mustBe Invalid(Chain(
           DataMissingError(CashAmountInTransferPage)
+        ))
+      }
+
+      "when cash only is selected but the cash amount doesn't equal the transfer amount" in {
+        val userAnswers = buildBaseUserAnswers
+          .set(TypeOfAssetPage, Seq(TypeOfAsset.Cash)).success.value
+          .set(IsTransferCashOnlyPage, true).success.value
+          .set(CashAmountInTransferPage, BigDecimal(0.01)).success.value
+
+        val result = validator.fromUserAnswers(userAnswers)
+
+        result mustBe Invalid(Chain(
+          GenericError("Cash amount must equal amount of transfer if transfer is cash only")
         ))
       }
 
