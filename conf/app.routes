@@ -23,7 +23,8 @@ GET        /there-is-a-problem                                                  
 
 GET        /what-will-be-needed                                                                   controllers.WhatWillBeNeededController.onPageLoad()
 
-GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
+GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
+POST       /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onSubmit()
 
 
 GET        /view-submitted-transfer                                                               controllers.viewandamend.ViewAmendSubmittedController.view(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)

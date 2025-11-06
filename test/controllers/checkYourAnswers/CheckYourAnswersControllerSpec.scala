@@ -20,9 +20,9 @@ import base.SpecBase
 import models.{FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status.OK
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty, GET}
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty, GET, POST}
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.SummaryListFluency
 import viewmodels.govuk.all.SummaryListViewModel
@@ -53,14 +53,22 @@ class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with Mock
           memberDetailsSummaryList,
           transferDetailsSummaryList,
           qropsDetailsSummaryList,
-          schemeManagerDetailsSummaryList,
-          NormalMode
+          schemeManagerDetailsSummaryList
         )(
           fakeDisplayRequest(request),
           messages(application)
         ).toString
       }
     }
-  }
 
+    "onSubmit" - {
+      "Redirect to Submit to HMRC page" in {
+        val request = FakeRequest(POST, checkYourAnswersRoute)
+        val result  = route(application, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SubmitToHMRCController.onPageLoad(NormalMode).url)
+      }
+    }
+  }
 }
