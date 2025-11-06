@@ -17,33 +17,20 @@
 package pages.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import controllers.transferDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
+import models.{Mode, UserAnswers}
 import navigators.TypeOfAssetNavigator
-import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePage
-import pages.{MiniJourneyNextPage, NextPageWith, QuestionPage}
+import pages.transferDetails.assetsMiniJourneys.AmendContinueContext
+import pages.{MiniJourneyNextPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QuotedSharesAmendContinuePage extends QuestionPage[Boolean] with NextPageWith[(SessionData, Int)] {
+case object QuotedSharesAmendContinuePage extends QuestionPage[Boolean] with MiniJourneyNextPage {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "quotedSharesAmendContinue"
 
-  override protected def nextPageWith(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int)): Call =
-    decideNextPage(answers, sessionDataWithIndex, NormalMode, routes.TransferDetailsCYAController.onPageLoad())
-
-  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int)): Call =
-    decideNextPage(answers, sessionDataWithIndex, CheckMode, routes.TransferDetailsCYAController.onPageLoad())
-
-  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int)): Call =
-    decideNextPage(answers, sessionDataWithIndex, FinalCheckMode, super.nextPageFinalCheckMode(answers))
-
-  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int)): Call =
-    decideNextPage(answers, sessionDataWithIndex, AmendCheckMode, super.nextPageAmendCheckMode(answers))
-
-  private def decideNextPage(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int), mode: Mode, modeCall: Call): Call = {
+  override def decideNextPage(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext, mode: Mode, modeCall: Call): Call = {
     val (sessionData, nextIndex) = sessionDataWithIndex
     answers.get(QuotedSharesAmendContinuePage) match {
       case Some(true)  => AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(mode, nextIndex)

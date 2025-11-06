@@ -16,22 +16,25 @@
 
 package pages
 
-import models.{CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
+import controllers.transferDetails.routes
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.AmendContinueContext
 import play.api.mvc.Call
 
-trait MiniJourneyNextPage { self: Page =>
+trait MiniJourneyNextPage extends NextPageWith[AmendContinueContext] { self: Page =>
 
-  protected def nextPageWith(answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call =
-    nextPageNormalMode(answers)
+  protected def decideNextPage(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext, mode: Mode, modeCall: Call): Call
 
-  protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call =
-    nextPageCheckMode(answers)
+  override protected def nextPageWith(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext): Call =
+    decideNextPage(answers, sessionDataWithIndex, NormalMode, routes.TransferDetailsCYAController.onPageLoad())
 
-  final def nextPageWith(mode: Mode, answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call =
-    mode match {
-      case NormalMode     => nextPageWith(answers, sessionData, nextIndex)
-      case CheckMode      => nextPageCheckModeWith(answers, sessionData, nextIndex)
-      case FinalCheckMode => this.nextPage(FinalCheckMode, answers)
-    }
+  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext): Call =
+    decideNextPage(answers, sessionDataWithIndex, CheckMode, routes.TransferDetailsCYAController.onPageLoad())
+
+  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext): Call =
+    decideNextPage(answers, sessionDataWithIndex, FinalCheckMode, self.nextPageFinalCheckMode(answers))
+
+  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext): Call =
+    decideNextPage(answers, sessionDataWithIndex, AmendCheckMode, self.nextPageAmendCheckMode(answers))
 
 }
