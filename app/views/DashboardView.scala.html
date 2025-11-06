@@ -92,7 +92,7 @@ item.qtStatus match {
         @for(item <- expiringItems) {
           <p class="govuk-notification-banner__heading">
             @{messageFor(item)}
-            <a class="govuk-notification-banner__link" href=@{s"/transfer/${item.transferId}"}>@messages("dashboard.banner.linkText")</a>.
+            <a class="govuk-notification-banner__link" href=@{s"/report-transfer-qualified-recognised-overseas-pension-scheme/dashboard/transfer-report?transferId=${item.transferId.value}&qtStatus=${item.qtStatus.getOrElse("")}"}>@messages("dashboard.banner.linkText")</a>.
           </p>
         }
       </div>
