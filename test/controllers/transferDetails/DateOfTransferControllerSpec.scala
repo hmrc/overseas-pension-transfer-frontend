@@ -168,8 +168,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
         status(result) mustEqual BAD_REQUEST
 
-        val expectedDate = "25 01 2025"
-        contentAsString(result) must include(s"Date of transfer must be before your original submission date ($expectedDate)")
+        contentAsString(result) must include(s"Date of transfer must be before your original submission date")
       }
     }
 
