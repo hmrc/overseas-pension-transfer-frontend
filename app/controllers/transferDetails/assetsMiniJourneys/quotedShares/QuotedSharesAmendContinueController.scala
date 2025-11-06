@@ -84,7 +84,7 @@ class QuotedSharesAmendContinueController @Inject() (
             _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(QuotedSharesAmendContinuePage.nextPageWith(mode, ua1, sd, nextIndex))
+            Redirect(QuotedSharesAmendContinuePage.nextPageWith(mode, ua1, (sd, nextIndex)))
           }
         }
       )

@@ -114,7 +114,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, true).success.value
         val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
-        val expected  = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
+        val expected  = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -140,7 +140,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, false).success.value
         val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
-        val expected  = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
+        val expected  = QuotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -166,7 +166,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, true).success.value
         val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
-        val expected  = QuotedSharesAmendContinuePage.nextPageWith(CheckMode, ua2, emptySessionData, nextIndex).url
+        val expected  = QuotedSharesAmendContinuePage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -192,7 +192,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinuePage, true).success.value
         val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
-        val expected  = QuotedSharesAmendContinuePage.nextPageWith(FinalCheckMode, ua2, emptySessionData, nextIndex).url
+        val expected  = QuotedSharesAmendContinuePage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
