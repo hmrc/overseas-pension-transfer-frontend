@@ -95,7 +95,9 @@ class ViewAmendSelectorController @Inject() (
                               qtReference,
                               request.authenticatedUser.pensionSchemeDetails.get,
                               request.authenticatedUser,
-                              Json.obj()
+                              Json.obj(
+                                "receiptDate" -> answers.lastUpdated
+                              )
                             )
 
                             val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {

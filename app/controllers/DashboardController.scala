@@ -143,7 +143,7 @@ class DashboardController @Inject() (
         },
         updatedData => {
           val allTransfers  = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-          val expiringItems = repo.findExpiringWithin7Days(allTransfers)
+          val expiringItems = repo.findExpiringWithin2Days(allTransfers)
 
           val viewModel = PaginatedAllTransfersViewModel.build(
             items       = allTransfers,

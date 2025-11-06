@@ -112,18 +112,18 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
     }
 
   private def validateApplicableTaxExclusions(answers: UserAnswers): ValidationResult[Option[Set[ApplicableTaxExclusions]]] =
-    (answers.get(IsTransferTaxablePage), answers.get(WhyTransferIsTaxablePage)) match {
-      case (Some(true), Some(WhyTransferIsTaxable.TransferExceedsOTCAllowance)) =>
+    answers.get(IsTransferTaxablePage) match {
+      case Some(true)  =>
         answers.get(ApplicableTaxExclusionsPage) match {
           case Some(exclusions) => Some(exclusions).validNec
           case _                => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
         }
-      case (Some(false), None)                                                  =>
+      case Some(false) =>
         answers.get(ApplicableTaxExclusionsPage) match {
           case Some(_) => GenericError("exclusions can not be present when is transfer taxable is false").invalidNec
           case None    => None.validNec
         }
-      case _                                                                    => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
+      case _           => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
     }
 
   private def validateAmountOfTaxDeducted(answers: UserAnswers): ValidationResult[Option[BigDecimal]] = {
@@ -155,7 +155,16 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
 
   private def validateIsTransferCashOnly(answers: UserAnswers): ValidationResult[Boolean] =
     answers.get(IsTransferCashOnlyPage) match {
-      case Some(isTransferCashOnly) => isTransferCashOnly.validNec
+      case Some(isTransferCashOnly) =>
+        if (isTransferCashOnly) {
+          (answers.get(AmountOfTransferPage), answers.get(CashAmountInTransferPage)) match {
+            case (Some(transferAmount), Some(cashAmount)) if transferAmount == cashAmount => isTransferCashOnly.validNec
+
+            case _ => GenericError("Cash amount must equal amount of transfer if transfer is cash only").invalidNec
+          }
+        } else {
+          isTransferCashOnly.validNec
+        }
       case None                     => DataMissingError(IsTransferCashOnlyPage).invalidNec
     }
 
@@ -168,14 +177,13 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
   private def validateCashAmountInTransfer(
       answers: UserAnswers
     ): ValidationResult[Option[BigDecimal]] = {
-    answers.get(TypeOfAssetPage) match {
-      case Some(assets) if assets.contains(TypeOfAsset.Cash) =>
+    answers.get(IsTransferCashOnlyPage) match {
+      case Some(_) =>
         answers.get(CashAmountInTransferPage) match {
           case Some(cashAmountInTransfer) if cashAmountInTransfer > 0 => Some(cashAmountInTransfer).validNec
           case _                                                      => DataMissingError(CashAmountInTransferPage).invalidNec
         }
-      case Some(_)                                           => None.validNec
-      case None                                              => DataMissingError(CashAmountInTransferPage).invalidNec
+      case None    => DataMissingError(CashAmountInTransferPage).invalidNec
     }
   }
 
