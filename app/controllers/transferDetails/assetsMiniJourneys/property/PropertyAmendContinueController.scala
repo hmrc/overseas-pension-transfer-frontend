@@ -84,7 +84,7 @@ class PropertyAmendContinueController @Inject() (
             _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(PropertyAmendContinuePage.nextPageWith(mode, ua1, sd, nextIndex))
+            Redirect(PropertyAmendContinuePage.nextPageWith(mode, ua1, (sd, nextIndex)))
           }
         }
       )

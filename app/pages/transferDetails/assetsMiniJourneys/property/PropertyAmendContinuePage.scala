@@ -18,38 +18,38 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.{NormalMode, SessionData, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
 import navigators.TypeOfAssetNavigator
-import pages.{MiniJourneyNextPage, QuestionPage}
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinuePage
+import pages.{MiniJourneyNextPage, NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PropertyAmendContinuePage extends QuestionPage[Boolean] with MiniJourneyNextPage {
+case object PropertyAmendContinuePage extends QuestionPage[Boolean] with NextPageWith[(SessionData, Int)] {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "propertyAmendContinue"
 
-  override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call = {
+  override protected def nextPageWith(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int)): Call =
+    decideNextPage(answers, sessionDataWithIndex, NormalMode, routes.TransferDetailsCYAController.onPageLoad())
+
+  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int)): Call =
+    decideNextPage(answers, sessionDataWithIndex, CheckMode, routes.TransferDetailsCYAController.onPageLoad())
+
+  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int)): Call =
+    decideNextPage(answers, sessionDataWithIndex, FinalCheckMode, super.nextPageFinalCheckMode(answers))
+
+  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int)): Call =
+    decideNextPage(answers, sessionDataWithIndex, AmendCheckMode, super.nextPageAmendCheckMode(answers))
+
+  private def decideNextPage(answers: UserAnswers, sessionDataWithIndex: (SessionData, Int), mode: Mode, modeCall: Call): Call = {
+    val (sessionData, nextIndex) = sessionDataWithIndex
     answers.get(PropertyAmendContinuePage) match {
-      case Some(true)  => AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, nextIndex)
+      case Some(true)  => AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(mode, nextIndex)
       case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
           case Some(route) => route
-          case None        => routes.TransferDetailsCYAController.onPageLoad()
-        }
-      case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
-    }
-  }
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
-
-  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call = {
-    answers.get(PropertyAmendContinuePage) match {
-      case Some(true)  => AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, nextIndex)
-      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
-          case Some(route) => route
-          case None        => routes.TransferDetailsCYAController.onPageLoad()
+          case None        => modeCall
         }
       case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }

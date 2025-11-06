@@ -121,7 +121,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
-        val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
+        val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -147,7 +147,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         val ua2       = userAnswers.set(PropertyAmendContinuePage, false).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
-        val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
+        val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -173,7 +173,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
-        val expected  = PropertyAmendContinuePage.nextPageWith(CheckMode, ua2, emptySessionData, nextIndex).url
+        val expected  = PropertyAmendContinuePage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -199,7 +199,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
-        val expected  = PropertyAmendContinuePage.nextPageWith(FinalCheckMode, ua2, emptySessionData, nextIndex).url
+        val expected  = PropertyAmendContinuePage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
