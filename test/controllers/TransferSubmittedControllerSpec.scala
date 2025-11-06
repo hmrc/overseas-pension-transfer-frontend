@@ -66,12 +66,12 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
             "User McUser",
             formattedInstant
           )(
-            fakeIdentifierRequest(request),
+            fakeSchemeRequest(request),
             testMessages
           )
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("QT123456", summaryList)(fakeIdentifierRequest(request), testMessages).toString
+        contentAsString(result) mustEqual view("QT123456", summaryList)(fakeSchemeRequest(request), testMessages).toString
       }
     }
 

@@ -18,9 +18,10 @@ package controllers.actions
 
 import base.SpecBase
 import connectors.PensionSchemeConnector
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, QtNumber, SrnNumber, UserAnswers}
+import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
 import models.authentication.{PsaId, PsaUser}
-import models.requests.{DataRequest, DisplayRequest, IdentifierRequest}
+import models.requests.{IdentifierRequest, SchemeRequest}
+import models.responses.PensionSchemeErrorResponse
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -42,11 +43,11 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
 
   class Harness(pensionSchemeConnector: PensionSchemeConnector, sessionRepository: DashboardSessionRepository)
       extends SchemeDataActionImpl(pensionSchemeConnector, sessionRepository) {
-    def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = refine(request)
+    def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, SchemeRequest[A]]] = refine(request)
   }
 
   "refine" - {
-    "return Right of Identifier request" - {
+    "return Right of SchemeData request" - {
       "when authenticatedUser has NO existing pensionSchemeDetails and checkAssociation returns true" in {
         val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj("srnNumber" -> "S1234567", "pstrNumber" -> "12345678AB", "schemeName" -> "Scheme Name"))
 
@@ -58,7 +59,6 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           PsaUser(
             PsaId("psaId"),
             "internalId",
-            None,
             affinityGroup = Individual
           )
         )
@@ -71,8 +71,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
               PsaUser(
                 PsaId("psaId"),
                 "internalId",
-                Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")),
                 affinityGroup = Individual
+              )
+
+            request.schemeDetails mustBe
+              PensionSchemeDetails(
+                SrnNumber("S1234567"),
+                PstrNumber("12345678AB"),
+                "Scheme Name"
               )
         }
       }
@@ -84,7 +90,6 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           PsaUser(
             PsaId("psaId"),
             "internalId",
-            Some(PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")),
             affinityGroup = Individual
           )
         )
@@ -97,6 +102,47 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
               identifierRequest.authenticatedUser
         }
       }
+
+      "when dashboard data returns none but On Ramp request provides Srn and completes isAssociated and GetSchemeDetails" in {
+        val schemeDetails = PensionSchemeDetails(
+          SrnNumber("S1234567"),
+          PstrNumber("12345678AB"),
+          "Scheme Name"
+        )
+
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
+        when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
+        when(mockPensionSchemeConnector.getSchemeDetails(any(), any())(any())) thenReturn Future.successful(Right(schemeDetails))
+
+        val identifierRequest = IdentifierRequest(
+          FakeRequest("GET", "/start?srn=S1234567"),
+          PsaUser(
+            PsaId("psaId"),
+            "internalId",
+            affinityGroup = Individual
+          )
+        )
+
+        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+
+        refine.map {
+          request =>
+            request.authenticatedUser mustBe
+              PsaUser(
+                PsaId("psaId"),
+                "internalId",
+                affinityGroup = Individual
+              )
+
+            request.schemeDetails mustBe
+              PensionSchemeDetails(
+                SrnNumber("S1234567"),
+                PstrNumber("12345678AB"),
+                "Scheme Name"
+              )
+        }
+      }
+
     }
 
     "return Left Redirect to Unauthorised when checkAssociation returns false" in {
@@ -110,7 +156,6 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
         PsaUser(
           PsaId("psaId"),
           "internalId",
-          None,
           affinityGroup = Individual
         )
       )
@@ -135,7 +180,6 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           PsaUser(
             PsaId("psaId"),
             "internalId",
-            None,
             affinityGroup = Individual
           )
         )
@@ -149,7 +193,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
         }
       }
 
-      "when there is no dashboard data returned" - {
+      "when there is no dashboard data returned and no srn is provided by on ramp request" - {
         when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
 
         val identifierRequest =
@@ -158,10 +202,54 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
             PsaUser(
               PsaId("psaId"),
               "internalId",
-              None,
               affinityGroup = Individual
             )
           )
+
+        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+
+        refine.left.map {
+          result =>
+            result.header.status mustBe SEE_OTHER
+            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        }
+      }
+
+      "when dashboard data returns none but On Ramp request provides Srn and isAssociated returns false" in {
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
+        when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(false)
+
+        val identifierRequest = IdentifierRequest(
+          FakeRequest("GET", "/start?srn=S1234567"),
+          PsaUser(
+            PsaId("psaId"),
+            "internalId",
+            affinityGroup = Individual
+          )
+        )
+
+        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+
+        refine.left.map {
+          result =>
+            result.header.status mustBe SEE_OTHER
+            result.header.headers.get("Location") mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
+        }
+      }
+
+      "when dashboard data returns none but On Ramp request provides Srn and isAssociated returns true and getSchemeDetails returns a Left" in {
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
+        when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
+        when(mockPensionSchemeConnector.getSchemeDetails(any(), any())(any())) thenReturn Future.successful(Left(PensionSchemeErrorResponse("Error", None)))
+
+        val identifierRequest = IdentifierRequest(
+          FakeRequest("GET", "/start?srn=S1234567"),
+          PsaUser(
+            PsaId("psaId"),
+            "internalId",
+            affinityGroup = Individual
+          )
+        )
 
         val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 

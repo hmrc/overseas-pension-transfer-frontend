@@ -23,34 +23,10 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 class AuthenticatedUserSpec extends AnyFreeSpec with Matchers {
 
-  private val testPensionSchemeDetails: PensionSchemeDetails = PensionSchemeDetails(
-    SrnNumber("S1234567"),
-    PstrNumber("1202383AB"),
-    "Scheme Name"
-  )
-
   "PsaUser" - {
     "userType" - {
       "must return Psa" in {
-        PsaUser(PsaId("A0000001"), "id", None, affinityGroup = Individual).userType mustBe Psa
-      }
-    }
-
-    "updatePensionSchemeDetails" - {
-      "must add PensionSchemeDetails when PsaUser.pensionSchemeDetails = None" in {
-        PsaUser(PsaId("S1234567"), "id", None, affinityGroup = Individual).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
-          PsaUser(PsaId("S1234567"), "id", Some(testPensionSchemeDetails), affinityGroup = Individual)
-      }
-
-      "must update with PensionSchemeDetails PsaUser.pensionSchemeDetails = Some(details)" in {
-        val existingDetails = PensionSchemeDetails(
-          SrnNumber("S7654321"),
-          PstrNumber("111111111ZY"),
-          "Pensions For Software Engineers"
-        )
-
-        PsaUser(PsaId("S1234567"), "id", Some(existingDetails), affinityGroup = Individual).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
-          PsaUser(PsaId("S1234567"), "id", Some(testPensionSchemeDetails), affinityGroup = Individual)
+        PsaUser(PsaId("A0000001"), "id", affinityGroup = Individual).userType mustBe Psa
       }
     }
   }
@@ -58,25 +34,7 @@ class AuthenticatedUserSpec extends AnyFreeSpec with Matchers {
   "PspUser" - {
     "userType" - {
       "must return Psp" in {
-        PspUser(PspId("A0000001"), "id", None, affinityGroup = Individual).userType mustBe Psp
-      }
-    }
-
-    "updatePensionSchemeDetails" - {
-      "must add PensionSchemeDetails when PsaUser.pensionSchemeDetails = None" in {
-        PspUser(PspId("S1234567"), "id", None, affinityGroup = Individual).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
-          PspUser(PspId("S1234567"), "id", Some(testPensionSchemeDetails), affinityGroup = Individual)
-      }
-
-      "must update with PensionSchemeDetails PsaUser.pensionSchemeDetails = Some(details)" in {
-        val existingDetails = PensionSchemeDetails(
-          SrnNumber("S7654321"),
-          PstrNumber("111111111ZY"),
-          "Pensions For Software Engineers"
-        )
-
-        PspUser(PspId("S1234567"), "id", Some(existingDetails), affinityGroup = Individual).updatePensionSchemeDetails(testPensionSchemeDetails) mustBe
-          PspUser(PspId("S1234567"), "id", Some(testPensionSchemeDetails), affinityGroup = Individual)
+        PspUser(PspId("A0000001"), "id", affinityGroup = Individual).userType mustBe Psp
       }
     }
   }

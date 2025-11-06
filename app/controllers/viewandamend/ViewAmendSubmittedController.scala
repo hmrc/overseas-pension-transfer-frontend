@@ -19,15 +19,13 @@ package controllers.viewandamend
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import controllers.viewandamend.routes
 import models.authentication.{PsaUser, PspUser}
-import models.requests.IdentifierRequest
 import models.{AmendCheckMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
 import repositories.SessionRepository
 import services.UserAnswersService
@@ -44,7 +42,6 @@ import views.html.viewandamend.ViewSubmittedView
 
 import scala.concurrent.duration.DurationLong
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
 
 class ViewAmendSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
@@ -72,7 +69,7 @@ class ViewAmendSubmittedController @Inject() (
                   val sessionData = SessionData(
                     request.authenticatedUser.internalId,
                     qtReference,
-                    request.authenticatedUser.pensionSchemeDetails.get,
+                    request.schemeDetails,
                     request.authenticatedUser,
                     Json.obj()
                   )
@@ -95,8 +92,8 @@ class ViewAmendSubmittedController @Inject() (
     (identify andThen schemeData).async {
       implicit request =>
         val owner = request.authenticatedUser match {
-          case PsaUser(psaId, _, _, _) => psaId.value
-          case PspUser(pspId, _, _, _) => pspId.value
+          case PsaUser(psaId, _, _) => psaId.value
+          case PspUser(pspId, _, _) => pspId.value
         }
 
         lockRepository.takeLock(qtReference.value, owner, appConfig.dashboardLockTtl.seconds) flatMap {
@@ -107,7 +104,7 @@ class ViewAmendSubmittedController @Inject() (
                   val sessionData = SessionData(
                     request.authenticatedUser.internalId,
                     qtReference,
-                    request.authenticatedUser.pensionSchemeDetails.get,
+                    request.schemeDetails,
                     request.authenticatedUser,
                     Json.obj()
                   )
@@ -135,8 +132,6 @@ class ViewAmendSubmittedController @Inject() (
 
   def amend(): Action[AnyContent] =
     (identify andThen schemeData andThen getData) { implicit dr =>
-      implicit val idReq: IdentifierRequest[_] =
-        IdentifierRequest(dr.request, dr.authenticatedUser)
       Ok(renderView(dr.sessionData, dr.userAnswers, isAmend = true))
     }
 
@@ -144,7 +139,7 @@ class ViewAmendSubmittedController @Inject() (
       sessionData: SessionData,
       userAnswers: UserAnswers,
       isAmend: Boolean
-    )(implicit request: IdentifierRequest[_]
+    )(implicit request: Request[_]
     ): HtmlFormat.Appendable = {
 
     val schemeName                      = sessionData.schemeInformation.schemeName
