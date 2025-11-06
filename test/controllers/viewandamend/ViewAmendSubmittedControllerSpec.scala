@@ -55,8 +55,7 @@ class ViewAmendSubmittedControllerSpec
       SchemeDetailsSummary.rows(
         FinalCheckMode,
         schemeDetails.schemeName,
-        // TODO: Fix as part of OAOTC-1594
-        "Transfer not submitted"
+        formattedTestDateTransferSubmitted
       )(messages(applicationBuilder().build()))
     )
 

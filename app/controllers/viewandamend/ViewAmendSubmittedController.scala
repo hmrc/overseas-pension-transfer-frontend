@@ -19,7 +19,6 @@ package controllers.viewandamend
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import controllers.viewandamend.routes
 import models.authentication.{PsaUser, PspUser}
 import models.requests.IdentifierRequest
 import models.{AmendCheckMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
@@ -44,7 +43,6 @@ import views.html.viewandamend.ViewSubmittedView
 
 import scala.concurrent.duration.DurationLong
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
 
 class ViewAmendSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
@@ -74,7 +72,9 @@ class ViewAmendSubmittedController @Inject() (
                     qtReference,
                     request.authenticatedUser.pensionSchemeDetails.get,
                     request.authenticatedUser,
-                    Json.obj()
+                    Json.obj(
+                      "receiptDate" -> userAnswers.lastUpdated
+                    )
                   )
 
                   val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) {
@@ -109,7 +109,9 @@ class ViewAmendSubmittedController @Inject() (
                     qtReference,
                     request.authenticatedUser.pensionSchemeDetails.get,
                     request.authenticatedUser,
-                    Json.obj()
+                    Json.obj(
+                      "receiptDate" -> userAnswers.lastUpdated
+                    )
                   )
 
                   val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) {
