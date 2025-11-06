@@ -41,7 +41,8 @@ class DateOfTransferController @Inject() (
     formProvider: DateOfTransferFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: DateOfTransferView,
-    userAnswersService: UserAnswersService
+    userAnswersService: UserAnswersService,
+    amendDateOfTransferFormProvider: AmendDateOfTransferFormProvider
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
@@ -104,7 +105,7 @@ class DateOfTransferController @Inject() (
           case Right(originalSubmission) =>
             val originalDate = originalSubmission.get(DateOfTransferPage)
               .getOrElse(throw new IllegalStateException("Original submission date has not been found"))
-            val form         = new AmendDateOfTransferFormProvider()(originalDate)
+            val form         = amendDateOfTransferFormProvider(originalDate)
             handleSubmission(form, mode, request.userAnswers)
           case _                         =>
             handleSubmission(formProvider(), mode, request.userAnswers)
