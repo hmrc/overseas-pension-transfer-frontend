@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.transferDetails.routes
 import models.assets.TypeOfAsset.Cash
 import models.assets.{CashMiniJourney, QuotedSharesMiniJourney, TypeOfAsset}
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
 import queries.assets.AssetCompletionFlag
@@ -49,17 +49,61 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
     }
 
     "in Check Mode" - {
-
-      "must go to Check Answers" in {
-
+      "must go to the cya page if no more assets" in {
         CashAmountInTransferPage.nextPageWith(CheckMode, emptyAnswers, emptySessionData) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if more assets" in {
+        val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
+        val sessionData                     = for {
+          sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+          sd2 <- sd1.set(AssetCompletionFlag(Cash), true)
+        } yield sd2
+
+        val result = CashAmountInTransferPage.nextPageWith(CheckMode, emptyAnswers, sessionData.success.value)
+        result mustBe QuotedSharesMiniJourney.call
       }
     }
 
-    "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        CashAmountInTransferPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    "in Final Check Mode" - {
+      "must go to the cya page if no more assets" in {
+        CashAmountInTransferPage.nextPageWith(
+          FinalCheckMode,
+          emptyAnswers,
+          emptySessionData
+        ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+
+      "must go to the next asset page if more assets" in {
+        val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
+        val sessionData                     = for {
+          sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+          sd2 <- sd1.set(AssetCompletionFlag(Cash), true)
+        } yield sd2
+
+        val result = CashAmountInTransferPage.nextPageWith(FinalCheckMode, emptyAnswers, sessionData.success.value)
+        result mustBe QuotedSharesMiniJourney.call
+      }
+    }
+
+    "in Amend Check Mode" - {
+      "must go to the cya page if no more assets" in {
+        CashAmountInTransferPage.nextPageWith(
+          AmendCheckMode,
+          emptyAnswers,
+          emptySessionData
+        ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to the next asset page if more assets" in {
+        val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
+        val sessionData                     = for {
+          sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+          sd2 <- sd1.set(AssetCompletionFlag(Cash), true)
+        } yield sd2
+
+        val result = CashAmountInTransferPage.nextPageWith(AmendCheckMode, emptyAnswers, sessionData.success.value)
+        result mustBe QuotedSharesMiniJourney.call
       }
     }
   }

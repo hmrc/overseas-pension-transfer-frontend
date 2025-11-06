@@ -34,11 +34,23 @@ case object CashAmountInTransferPage extends QuestionPage[BigDecimal] with NextP
   override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call =
     TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
       case Some(route) => route
-      case None        => controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+      case None        => routes.TransferDetailsCYAController.onPageLoad()
     }
 
   override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+    nextPageWith(answers, sessionData)
+
+  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+      case Some(route) => route
+      case None        => super.nextPageFinalCheckMode(answers)
+    }
+
+  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+      case Some(route) => route
+      case None        => super.nextPageAmendCheckMode(answers)
+    }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(mode)
