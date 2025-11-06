@@ -83,7 +83,7 @@ class DateOfTransferController @Inject() (
           case Right(originalSubmission) =>
             val originalDate = originalSubmission.get(DateOfTransferPage)
               .getOrElse(throw new IllegalStateException("Original submission date has not been found"))
-            val form         = new AmendDateOfTransferFormProvider()(originalDate)
+            val form         = amendDateOfTransferFormProvider(originalDate)
             Ok(view(prepareForm(form, request.userAnswers), mode, isAmend = true))
           case _                         =>
             Ok(view(prepareForm(formProvider(), request.userAnswers), mode))
