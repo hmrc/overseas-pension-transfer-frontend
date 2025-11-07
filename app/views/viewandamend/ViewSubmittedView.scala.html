@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.requests.DisplayRequest
+@import play.api.mvc.Request
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukInsetText, GovukSummaryList}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
@@ -22,7 +22,6 @@
 @import viewmodels.govuk.all.ButtonViewModel
 @import views.ViewUtils.titleNoForm
 @import views.html.components.{CheckYourAnswersHeading, QTNumber}
-@import models.requests.IdentifierRequest
 @import views.html.helper.form
 
 @this(
@@ -44,7 +43,7 @@
         qtNumber: String,
         memberName: String,
         isAmend: Boolean
-)(implicit request: IdentifierRequest[_], messages: Messages)
+)(implicit request: Request[_], messages: Messages)
 
 @headingStr = @{if(isAmend) messages("viewSubmitted.amendHeading") else messages("viewSubmitted.heading", memberName)}
 

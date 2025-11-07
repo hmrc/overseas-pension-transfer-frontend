@@ -16,10 +16,8 @@
 
 package models
 
-import models.TaskCategory._
-import models.taskList.TaskStatus._
 import play.api.libs.json._
-import queries.{Gettable, Settable, TaskStatusQuery}
+import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant

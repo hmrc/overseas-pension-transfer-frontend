@@ -61,7 +61,7 @@ class SessionRepositorySpec
       sessionId         = sessionId,
       transferId        = transferId,
       schemeInformation = schemeDetails,
-      user              = psaUser.updatePensionSchemeDetails(schemeDetails),
+      user              = psaUser,
       data              = Json.obj(),
       lastUpdated       = now
     )

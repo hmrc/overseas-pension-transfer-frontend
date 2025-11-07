@@ -61,7 +61,7 @@ class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
           SubmittedTransferSummaryViewModel.rows(None, List(emptyUserAnswers), "001")(testMessages)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("", testQtNumber.value, summaryList)(fakeIdentifierRequest(request), testMessages).toString
+        contentAsString(result) mustEqual view("", testQtNumber.value, summaryList)(fakeSchemeRequest(request), testMessages).toString
       }
     }
   }
