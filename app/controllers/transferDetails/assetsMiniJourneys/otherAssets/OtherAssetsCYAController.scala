@@ -21,8 +21,9 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAct
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
-import models.{CheckMode, NormalMode}
+import models.{CheckMode, Mode, NormalMode}
 import org.apache.pekko.Done
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
@@ -47,31 +48,21 @@ class OtherAssetsCYAController @Inject() (
 
   private val actions = (identify andThen schemeData andThen getData)
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = actions { implicit request =>
     val list = SummaryListViewModel(OtherAssetsSummary.rows(CheckMode, request.userAnswers, index))
 
-    Ok(view(list, index))
+    Ok(view(list, mode, index))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = actions.async { implicit request =>
     val updatedUserAnswers = AssetThresholdHandler.handle(request.userAnswers, TypeOfAsset.Other, userSelection = None)
 
     for {
       saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
-
     } yield {
       saved match {
         case Right(Done) =>
-          val otherAssetsCount = AssetThresholdHandler.getAssetCount(updatedUserAnswers, TypeOfAsset.Other)
-          if (otherAssetsCount >= 5) {
-            Redirect(
-              controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController.onPageLoad(mode = NormalMode)
-            )
-          } else {
-            Redirect(
-              AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode = NormalMode)
-            )
-          }
+          Redirect(OtherAssetsCYAPage(index).nextPage(mode, request.userAnswers))
         case _           =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }

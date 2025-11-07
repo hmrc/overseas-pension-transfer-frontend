@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationFormProvider
 import models.assets.TypeOfAsset
-import models.{CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -57,12 +57,12 @@ class MoreOtherAssetsDeclarationController @Inject() (
       }
 
       def renderView(answers: UserAnswers): Result = {
-        val assets = OtherAssetsAmendContinueSummary.rows(answers)
+        val assets = OtherAssetsAmendContinueSummary.rows(mode, answers)
         Ok(view(preparedForm, assets, mode))
       }
 
       mode match {
-        case CheckMode | FinalCheckMode =>
+        case CheckMode | FinalCheckMode | AmendCheckMode =>
           for {
             updatedSessson <- Future.fromTry(
                                 AssetsMiniJourneyService.setAssetCompleted(
@@ -84,7 +84,7 @@ class MoreOtherAssetsDeclarationController @Inject() (
     (identify andThen schemeData andThen getData).async { implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val assets = OtherAssetsAmendContinueSummary.rows(request.userAnswers)
+          val assets = OtherAssetsAmendContinueSummary.rows(mode, request.userAnswers)
           Future.successful(BadRequest(view(formWithErrors, assets, mode)))
         },
         continue => {
@@ -93,10 +93,7 @@ class MoreOtherAssetsDeclarationController @Inject() (
             _                      <- userAnswersService.setExternalUserAnswers(userAnswers)
             sessionAfterCompletion <-
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.Other, completed = true, Some(continue))
-          } yield TypeOfAssetNavigator.getNextAssetRoute(sessionAfterCompletion) match {
-            case Some(route) => Redirect(route)
-            case None        => Redirect(MoreOtherAssetsDeclarationPage.nextPage(mode, userAnswers))
-          }
+          } yield Redirect(MoreOtherAssetsDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
         }
       )
     }

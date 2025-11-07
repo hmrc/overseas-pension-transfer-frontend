@@ -17,30 +17,35 @@
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.assets.{OtherAssetsEntry, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import handlers.AssetThresholdHandler
+import models.assets.TypeOfAsset
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
 
-case class OtherAssetsDescriptionPage(index: Int) extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Other.entryName \ index \ toString
-
-  override def toString: String = OtherAssetsEntry.AssetDescription
+case class OtherAssetsCYAPage(index: Int) extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index)
+    decideNextPage(answers, NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(CheckMode, index)
+    decideNextPage(answers, CheckMode)
 
   override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(FinalCheckMode, index)
+    decideNextPage(answers, FinalCheckMode)
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(AmendCheckMode, index)
+    decideNextPage(answers, AmendCheckMode)
+
+  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+    val otherAssetsCount = AssetThresholdHandler.getAssetCount(answers, TypeOfAsset.Other)
+    if (otherAssetsCount >= 5) {
+      controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController.onPageLoad(mode)
+    } else {
+      AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(mode, index)
+    AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(mode, index)
 }

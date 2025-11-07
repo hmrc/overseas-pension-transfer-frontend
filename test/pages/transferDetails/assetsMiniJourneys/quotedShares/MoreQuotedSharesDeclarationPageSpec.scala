@@ -67,7 +67,7 @@ class MoreQuotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers with
           } yield sd2
 
         val result = MoreQuotedSharesDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
-        //TODO: The next call should be in check mode too
+        // TODO: The next call should be in check mode too
         result mustBe UnquotedSharesMiniJourney.call
       }
     }

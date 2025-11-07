@@ -40,7 +40,7 @@ import scala.concurrent.Future
 class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val otherAssetsCyaRoute =
-    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController.onPageLoad(0).url
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController.onPageLoad(NormalMode, 0).url
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]
@@ -70,7 +70,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(SummaryList(rows = list), 0)(fakeDisplayRequest(request, ua), msgs).toString
+          view(SummaryList(rows = list), NormalMode, 0)(fakeDisplayRequest(request, ua), msgs).toString
       }
     }
 

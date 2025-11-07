@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -31,7 +31,7 @@ class OtherAssetsValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        OtherAssetsValuePage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
+        OtherAssetsValuePage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(NormalMode, index)
       }
     }
 
@@ -39,14 +39,25 @@ class OtherAssetsValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Check Answers" in {
 
-        OtherAssetsValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
+        OtherAssetsValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(CheckMode, index)
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        OtherAssetsValuePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+        OtherAssetsValuePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(
+          FinalCheckMode,
+          index
+        )
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to Final Check Answers page" in {
+        OtherAssetsValuePage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(
+          AmendCheckMode,
+          index
+        )
       }
     }
   }

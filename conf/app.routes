@@ -587,8 +587,14 @@ POST       /transfer-details/assets/final-change-other-assets-value             
 GET        /transfer-details/assets/amend-change-other-assets-value                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
 POST       /transfer-details/assets/amend-change-other-assets-value                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
-GET        /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(index: Int)
-POST       /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(index: Int)
+GET        /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-other-assets-check-your-answers                        controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-other-assets-check-your-answers                        controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/assets/final-other-assets-check-your-answers                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
+POST       /transfer-details/assets/final-other-assets-check-your-answers                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-other-assets-check-your-answers                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-other-assets-check-your-answers                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/other-assets-amend-continue                                   controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/other-assets-amend-continue                                   controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onSubmit(mode: Mode = NormalMode)

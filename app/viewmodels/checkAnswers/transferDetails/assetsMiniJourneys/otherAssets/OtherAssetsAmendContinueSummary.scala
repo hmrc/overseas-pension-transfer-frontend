@@ -67,13 +67,13 @@ object OtherAssetsAmendContinueSummary extends AppUtils {
     }
   }
 
-  def rows(answers: UserAnswers): Seq[ListItem] = {
+  def rows(mode: Mode, answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(OtherAssetsQuery)
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(
           name      = entry.assetDescription,
-          changeUrl = AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index).url,
+          changeUrl = AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(mode, index).url,
           removeUrl = AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(index).url
         )
     }
