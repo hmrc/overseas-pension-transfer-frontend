@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationFormProvider
 import models.assets.TypeOfAsset
-import models.{CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -62,7 +62,7 @@ class MoreQuotedSharesDeclarationController @Inject() (
       }
 
       mode match {
-        case CheckMode | FinalCheckMode =>
+        case CheckMode | FinalCheckMode | AmendCheckMode =>
           for {
             updatedSession <- Future.fromTry(
                                 AssetsMiniJourneyService.setAssetCompleted(
@@ -92,10 +92,7 @@ class MoreQuotedSharesDeclarationController @Inject() (
             _                      <- userAnswersService.setExternalUserAnswers(userAnswers)
             sessionAfterCompletion <-
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.QuotedShares, completed = true, Some(continue))
-          } yield TypeOfAssetNavigator.getNextAssetRoute(sessionAfterCompletion) match {
-            case Some(route) => Redirect(route)
-            case None        => Redirect(MoreQuotedSharesDeclarationPage.nextPage(mode, userAnswers))
-          }
+          } yield Redirect(MoreQuotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
         }
       )
     }
