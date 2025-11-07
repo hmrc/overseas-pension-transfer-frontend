@@ -40,7 +40,6 @@ class OtherAssetsCYAController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     userAnswersService: UserAnswersService,
-    assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
     view: OtherAssetsCYAView
   )(implicit ec: ExecutionContext
@@ -55,7 +54,7 @@ class OtherAssetsCYAController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
-    val updatedUserAnswers = assetThresholdHandler.handle(request.userAnswers, TypeOfAsset.Other, userSelection = None)
+    val updatedUserAnswers = AssetThresholdHandler.handle(request.userAnswers, TypeOfAsset.Other, userSelection = None)
 
     for {
       saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
@@ -63,7 +62,7 @@ class OtherAssetsCYAController @Inject() (
     } yield {
       saved match {
         case Right(Done) =>
-          val otherAssetsCount = assetThresholdHandler.getAssetCount(updatedUserAnswers, TypeOfAsset.Other)
+          val otherAssetsCount = AssetThresholdHandler.getAssetCount(updatedUserAnswers, TypeOfAsset.Other)
           if (otherAssetsCount >= 5) {
             Redirect(
               controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController.onPageLoad(mode = NormalMode)

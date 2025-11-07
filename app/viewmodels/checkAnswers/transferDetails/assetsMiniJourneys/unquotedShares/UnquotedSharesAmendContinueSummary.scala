@@ -30,12 +30,11 @@ import viewmodels.implicits._
 
 object UnquotedSharesAmendContinueSummary extends AppUtils {
 
-  private val thresholdHandler = new AssetThresholdHandler()
-  private val threshold        = 5
+  private val threshold = 5
 
   def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(UnquotedSharesQuery)
-    val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.UnquotedShares)
+    val count        = AssetThresholdHandler.getAssetCount(userAnswers, TypeOfAsset.UnquotedShares)
     val valueText    = messages("unquotedSharesAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
 
     maybeEntries match {

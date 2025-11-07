@@ -29,13 +29,11 @@ import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object QuotedSharesAmendContinueSummary extends AppUtils {
-
-  private val thresholdHandler = new AssetThresholdHandler()
   private val threshold        = 5
 
   def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(QuotedSharesQuery)
-    val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.QuotedShares)
+    val count        = AssetThresholdHandler.getAssetCount(userAnswers, TypeOfAsset.QuotedShares)
     val valueText    = messages("quotedSharesAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
 
     maybeEntries match {
