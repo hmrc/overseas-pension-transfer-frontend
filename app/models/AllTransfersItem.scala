@@ -39,6 +39,19 @@ case class AllTransfersItem(
     submissionDate.isDefined ^ lastUpdated.isDefined
 
   def lastUpdatedDate: Option[Instant] = lastUpdated.orElse(submissionDate)
+
+  def viewExpiringTransferUrl: String = {
+    val baseUrl = "/report-transfer-qualified-recognised-overseas-pension-scheme/dashboard/transfer-report"
+    val params  = TransferReportQueryParams(
+      transferId    = Some(transferId),
+      qtStatus      = qtStatus,
+      pstr          = pstrNumber,
+      versionNumber = qtVersion,
+      memberName    = s"${memberFirstName.getOrElse("")} ${memberSurname.getOrElse("")}".trim,
+      currentPage   = 1
+    )
+    s"$baseUrl?${TransferReportQueryParams.toQueryString(params).drop(1)}"
+  }
 }
 
 object AllTransfersItem {
