@@ -28,12 +28,7 @@ import pages.memberDetails.MemberNamePage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
-  UnquotedSharesClassPage,
-  UnquotedSharesCompanyNamePage,
-  UnquotedSharesNumberPage,
-  UnquotedSharesValuePage
-}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
@@ -96,7 +91,6 @@ trait SpecBase
     PsaUser(
       PsaId("A123456"),
       "internalId",
-      None,
       Individual
     ),
     Json.obj()
@@ -130,12 +124,19 @@ trait SpecBase
 
   def fakeIdentifierRequest[A](
       fakeRequest: FakeRequest[A],
-      authenticatedUser: AuthenticatedUser = psaUser.updatePensionSchemeDetails(schemeDetails)
+      authenticatedUser: AuthenticatedUser = psaUser
     ): IdentifierRequest[A] =
     IdentifierRequest(fakeRequest, authenticatedUser)
 
   implicit val testIdentifierRequest: IdentifierRequest[_] =
-    IdentifierRequest(FakeRequest(), psaUser.updatePensionSchemeDetails(schemeDetails))
+    IdentifierRequest(FakeRequest(), psaUser)
+
+  def fakeSchemeRequest[A](
+      fakeRequest: FakeRequest[A],
+      authenticatedUser: AuthenticatedUser = psaUser,
+      schemeDetails: PensionSchemeDetails  = schemeDetails
+    ): SchemeRequest[A] =
+    SchemeRequest(fakeRequest, authenticatedUser, schemeDetails)
 
   def fakeDisplayRequest[A](
       fakeRequest: FakeRequest[A],
@@ -144,7 +145,7 @@ trait SpecBase
     ): DisplayRequest[A] =
     DisplayRequest(
       request               = fakeRequest,
-      authenticatedUser     = psaUser.updatePensionSchemeDetails(schemeDetails),
+      authenticatedUser     = psaUser,
       userAnswers           = userAnswers,
       sessionData           = sessionData,
       memberName            = testMemberName.fullName,
@@ -155,7 +156,7 @@ trait SpecBase
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
       request               = FakeRequest(),
-      authenticatedUser     = psaUser.updatePensionSchemeDetails(schemeDetails),
+      authenticatedUser     = psaUser,
       userAnswers           = emptyUserAnswers,
       sessionData           = emptySessionData,
       memberName            = testMemberName.fullName,

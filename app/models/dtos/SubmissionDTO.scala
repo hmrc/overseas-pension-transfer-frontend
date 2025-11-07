@@ -16,8 +16,8 @@
 
 package models.dtos
 
-import models.{SessionData, TransferId, UserAnswers}
 import models.authentication._
+import models.{SessionData, TransferId, UserAnswers}
 import play.api.libs.json._
 
 import java.time.Instant
@@ -32,14 +32,14 @@ object SubmissionDTO {
 
   def fromRequest(authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, maybePsaId: Option[PsaId], sessionData: SessionData): SubmissionDTO =
     authenticatedUser match {
-      case PsaUser(psaId, _, _, _) =>
+      case PsaUser(psaId, _, _) =>
         PsaSubmissionDTO(
           referenceId = sessionData.transferId,
           userId      = psaId,
           lastUpdated = userAnswers.lastUpdated
         )
 
-      case PspUser(pspId, _, _s, _) =>
+      case PspUser(pspId, _, _s) =>
         PspSubmissionDTO(
           referenceId = sessionData.transferId,
           userId      = pspId,

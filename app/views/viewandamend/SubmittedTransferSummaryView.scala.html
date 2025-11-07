@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.titleNoForm
-@import models.requests.IdentifierRequest
+@import models.requests.SchemeRequest
 @import views.html.components.QTNumber
 
 @this(
@@ -25,7 +25,7 @@
         qtNumber: QTNumber
 )
 
-@(memberName: String, qtNumber: String, tableRows: Html)(implicit request: IdentifierRequest[_], messages: Messages)
+@(memberName: String, qtNumber: String, tableRows: Html)(implicit request: SchemeRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("submittedTransferSummary.title", memberName)), showCYAFooter = true, showPageFooter = false) {
     @request.flash.get("lockWarning").map { _ =>

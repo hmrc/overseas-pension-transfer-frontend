@@ -33,8 +33,8 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
   val pstr: String     = "24000040IN"
   val schemeNm: String = "Open Scheme Overview API Test"
 
-  val psaUser: AuthenticatedUser = PsaUser(PsaId("A2100005"), "ext-psa", None, Individual)
-  val pspUser: AuthenticatedUser = PspUser(PspId("21000005"), "ext-psp", None, Individual)
+  val psaUser: AuthenticatedUser = PsaUser(PsaId("A2100005"), "ext-psa", Individual)
+  val pspUser: AuthenticatedUser = PspUser(PspId("21000005"), "ext-psp", Individual)
 
   "PensionSchemeConnector.checkAssociation" when {
     "checking association status" must {

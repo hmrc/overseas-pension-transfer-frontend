@@ -77,8 +77,8 @@ class DashboardController @Inject() (
                 transfers.map {
                   val owner =
                     request.authenticatedUser match {
-                      case PsaUser(psaId, _, _, _) => psaId.value
-                      case PspUser(pspId, _, _, _) => pspId.value
+                      case PsaUser(psaId, _, _) => psaId.value
+                      case PspUser(pspId, _, _) => pspId.value
                     }
 
                   transfer =>
@@ -101,10 +101,10 @@ class DashboardController @Inject() (
   }
 
   def onTransferClick(): Action[AnyContent] = identify.async { implicit request =>
-    val params     = TransferReportQueryParams.fromRequest(request)
-    val owner      = request.authenticatedUser match {
-      case PsaUser(psaId, _, _, _) => psaId.value
-      case PspUser(pspId, _, _, _) => pspId.value
+    val params = TransferReportQueryParams.fromRequest(request)
+    val owner  = request.authenticatedUser match {
+      case PsaUser(psaId, _, _) => psaId.value
+      case PspUser(pspId, _, _) => pspId.value
     }
     val transferId = params.transferId.getOrElse(TransferId("-"))
     val pstr       = params.pstr.getOrElse {

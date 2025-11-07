@@ -33,7 +33,7 @@
         heading: CheckYourAnswersHeading
 )
 
-@(memberDetails: SummaryList, transferDetails: SummaryList, qropsDetails: SummaryList, schemeManagerDetails: SummaryList, mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(memberDetails: SummaryList, transferDetails: SummaryList, qropsDetails: SummaryList, schemeManagerDetails: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true) {
 
@@ -53,7 +53,7 @@
 
  @govukSummaryList(schemeManagerDetails)
 
- @formHelper(action = controllers.routes.SubmitToHMRCController.onPageLoad(mode), Symbol("autoComplete") -> "off") {
+ @formHelper(action = controllers.checkYourAnswers.routes.CheckYourAnswersController.onSubmit(), Symbol("autoComplete") -> "off") {
   @govukButton(
    ButtonViewModel(Text(messages("site.continue")))
   )

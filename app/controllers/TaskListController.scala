@@ -48,7 +48,7 @@ class TaskListController @Inject() (
     val newSession = SessionData(
       request.authenticatedUser.internalId,
       transferId,
-      request.authenticatedUser.pensionSchemeDetails.get,
+      request.schemeDetails,
       request.authenticatedUser,
       data = Json.obj()
     )

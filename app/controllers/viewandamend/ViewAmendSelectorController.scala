@@ -80,8 +80,8 @@ class ViewAmendSelectorController @Inject() (
 
                       case Some("amend") =>
                         val owner = request.authenticatedUser match {
-                          case PsaUser(psaId, _, _, _) => psaId.value
-                          case PspUser(pspId, _, _, _) => pspId.value
+                          case PsaUser(psaId, _, _) => psaId.value
+                          case PspUser(pspId, _, _) => pspId.value
                         }
                         for {
                           userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
@@ -100,7 +100,7 @@ class ViewAmendSelectorController @Inject() (
                             val sessionData = SessionData(
                               request.authenticatedUser.internalId,
                               qtReference,
-                              request.authenticatedUser.pensionSchemeDetails.get,
+                              request.schemeDetails,
                               request.authenticatedUser,
                               Json.obj(
                                 "receiptDate" -> answers.lastUpdated
