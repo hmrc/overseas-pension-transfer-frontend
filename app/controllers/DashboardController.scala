@@ -28,10 +28,8 @@ import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, SessionRepository}
 import services.TransferService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.lock.LockRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import viewmodels.PaginatedAllTransfersViewModel
 import views.html.DashboardView
 
@@ -55,9 +53,8 @@ class DashboardController @Inject() (
   private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
 
   def onPageLoad(page: Int): Action[AnyContent] = identify.async { implicit request =>
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
-    val id                         = request.authenticatedUser.internalId
-    val lockWarning                = request.flash.get("lockWarning") // flash for warning
+    val id          = request.authenticatedUser.internalId
+    val lockWarning = request.flash.get("lockWarning") // flash for warning
 
     sessionRepository.clear(id) flatMap { _ =>
       repo.get(id).flatMap {
@@ -135,8 +132,7 @@ class DashboardController @Inject() (
       dashboardData: DashboardData,
       pensionSchemeDetails: PensionSchemeDetails,
       lockWarning: Option[String]
-    )(implicit request: Request[_],
-      hc: HeaderCarrier
+    )(implicit request: Request[_]
     ): Future[Result] = {
 
     transferService.getAllTransfersData(dashboardData, pensionSchemeDetails.pstrNumber).flatMap {
