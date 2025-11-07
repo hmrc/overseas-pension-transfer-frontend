@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.{QuotedSharesEntry, TypeOfAsset}
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -33,7 +33,13 @@ case class QuotedSharesNumberPage(index: Int) extends QuestionPage[Int] {
     AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(index)
+    AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(CheckMode, index)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(FinalCheckMode, index)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(AmendCheckMode, index)
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(mode, index)
