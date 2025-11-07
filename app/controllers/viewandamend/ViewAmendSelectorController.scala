@@ -38,7 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class ViewAmendSelectorController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
-    getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: ViewAmendSelectorView,
@@ -82,8 +81,8 @@ class ViewAmendSelectorController @Inject() (
 
                       case Some("amend") =>
                         val owner = request.authenticatedUser match {
-                          case PsaUser(psaId, _, _, _) => psaId.value
-                          case PspUser(pspId, _, _, _) => pspId.value
+                          case PsaUser(psaId, _, _) => psaId.value
+                          case PspUser(pspId, _, _) => pspId.value
                         }
                         for {
                           userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
@@ -93,9 +92,11 @@ class ViewAmendSelectorController @Inject() (
                             val sessionData = SessionData(
                               request.authenticatedUser.internalId,
                               qtReference,
-                              request.authenticatedUser.pensionSchemeDetails.get,
+                              request.schemeDetails,
                               request.authenticatedUser,
-                              Json.obj()
+                              Json.obj(
+                                "receiptDate" -> answers.lastUpdated
+                              )
                             )
 
                             val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {

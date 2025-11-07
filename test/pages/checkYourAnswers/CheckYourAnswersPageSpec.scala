@@ -14,29 +14,20 @@
  * limitations under the License.
  */
 
-package models.authentication
+package pages.checkYourAnswers
 
-import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
+import base.SpecBase
+import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
-class AuthenticatedUserSpec extends AnyFreeSpec with Matchers {
+class CheckYourAnswersPageSpec extends AnyFreeSpec with SpecBase {
 
-  "PsaUser" - {
-    "userType" - {
-      "must return Psa" in {
-        PsaUser(PsaId("A0000001"), "id", affinityGroup = Individual).userType mustBe Psa
+  "CheckYourAnswersPage" - {
+    "nextPage" - {
+      "Must redirect to submit to HMRC page" in {
+        CheckYourAnswersPage.nextPage(NormalMode, emptyUserAnswers) mustBe
+          controllers.routes.SubmitToHMRCController.onPageLoad(NormalMode)
       }
     }
   }
-
-  "PspUser" - {
-    "userType" - {
-      "must return Psp" in {
-        PspUser(PspId("A0000001"), "id", affinityGroup = Individual).userType mustBe Psp
-      }
-    }
-  }
-
 }

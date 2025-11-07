@@ -18,8 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
-import models.authentication.{Psa, PsaUser, Psp, PspUser}
-import models.taskList.TaskStatus.InProgress
+import models.authentication.{PsaUser, PspUser}
 import models.{DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferNumber, TransferReportQueryParams}
 import pages.DashboardPage
 import play.api.Logging
@@ -78,8 +77,8 @@ class DashboardController @Inject() (
                 transfers.map {
                   val owner =
                     request.authenticatedUser match {
-                      case PsaUser(psaId, _, _, _) => psaId.value
-                      case PspUser(pspId, _, _, _) => pspId.value
+                      case PsaUser(psaId, _, _) => psaId.value
+                      case PspUser(pspId, _, _) => pspId.value
                     }
 
                   transfer =>
@@ -104,8 +103,8 @@ class DashboardController @Inject() (
   def onTransferClick(): Action[AnyContent] = identify.async { implicit request =>
     val params = TransferReportQueryParams.fromRequest(request)
     val owner  = request.authenticatedUser match {
-      case PsaUser(psaId, _, _, _) => psaId.value
-      case PspUser(pspId, _, _, _) => pspId.value
+      case PsaUser(psaId, _, _) => psaId.value
+      case PspUser(pspId, _, _) => pspId.value
     }
     val lockId = params.transferId.map(_.value).getOrElse("-")
 
@@ -148,7 +147,7 @@ class DashboardController @Inject() (
         },
         updatedData => {
           val allTransfers  = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-          val expiringItems = repo.findExpiringWithin7Days(allTransfers)
+          val expiringItems = repo.findExpiringWithin2Days(allTransfers)
 
           val viewModel = PaginatedAllTransfersViewModel.build(
             items       = allTransfers,
