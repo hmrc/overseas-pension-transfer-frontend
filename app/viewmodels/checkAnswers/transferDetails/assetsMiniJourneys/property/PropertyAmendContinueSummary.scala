@@ -67,14 +67,14 @@ object PropertyAmendContinueSummary {
     }
   }
 
-  def rows(answers: UserAnswers): Seq[ListItem] = {
+  def rows(mode: Mode, answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(PropertyQuery)
 
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) => {
         ListItem(
           name      = AddressViewModel.formatAddressAsString(entry.propertyAddress),
-          changeUrl = AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index).url,
+          changeUrl = AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(mode, index).url,
           removeUrl = AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onPageLoad(index).url
         )
       }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.transferDetails.assetsMiniJourneys.quotedShares
+package pages.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
@@ -22,7 +22,7 @@ import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-class QuotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class PropertyCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val index = 0
 
   ".nextPage" - {
@@ -31,18 +31,16 @@ class QuotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in Normal Mode" - {
       "must go to AmendContinue" in {
-        QuotedSharesCYAPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(
+        PropertyCYAPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(
           NormalMode
         )
       }
-
       // TODO: must go to 5 or more controller if 5 assets
-
     }
 
     "in CheckMode" - {
       "must go to AmendContinue" in {
-        QuotedSharesCYAPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(
+        PropertyCYAPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(
           CheckMode
         )
       }
@@ -50,7 +48,7 @@ class QuotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in FinalCheckMode" - {
       "must go to AmendContinue" in {
-        QuotedSharesCYAPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(
+        PropertyCYAPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(
           FinalCheckMode
         )
       }
@@ -58,7 +56,7 @@ class QuotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in AmendCheckMode" - {
       "must go to AmendContinue" in {
-        QuotedSharesCYAPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(
+        PropertyCYAPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(
           AmendCheckMode
         )
       }

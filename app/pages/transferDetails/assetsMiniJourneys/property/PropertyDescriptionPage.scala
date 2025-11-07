@@ -19,7 +19,7 @@ package pages.transferDetails.assetsMiniJourneys.property
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{CheckMode, Mode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -31,10 +31,16 @@ case class PropertyDescriptionPage(index: Int) extends QuestionPage[String] {
   override def toString: String = PropertyEntry.PropDescription
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
+    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
+    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(CheckMode, index)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(FinalCheckMode, index)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(AmendCheckMode, index)
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(mode, index)

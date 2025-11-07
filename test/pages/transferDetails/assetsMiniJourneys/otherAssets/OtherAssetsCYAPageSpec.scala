@@ -35,6 +35,7 @@ class OtherAssetsCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
           NormalMode
         )
       }
+      // TODO: must go to 5 or more controller if 5 assets
     }
 
     "in CheckMode" - {

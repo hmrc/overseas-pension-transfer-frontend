@@ -17,32 +17,35 @@
 package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import controllers.transferDetails.routes
-import models.address._
-import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import handlers.AssetThresholdHandler
+import models.assets.TypeOfAsset
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
 
-case class PropertyAddressPage(index: Int) extends QuestionPage[PropertyAddress] {
-
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.entryName \ index \ toString
-
-  override def toString: String = PropertyEntry.PropertyAddress
+case class PropertyCYAPage(index: Int) extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index)
+    decideNextPage(answers, NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode, index)
+    decideNextPage(answers, CheckMode)
 
   override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(FinalCheckMode, index)
+    decideNextPage(answers, FinalCheckMode)
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(AmendCheckMode, index)
+    decideNextPage(answers, AmendCheckMode)
+
+  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+    val propertyCount = AssetThresholdHandler.getAssetCount(answers, TypeOfAsset.Property)
+    if (propertyCount >= 5) {
+      controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController.onPageLoad(mode)
+    } else {
+      AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
-    AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(mode, index)
+    AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(mode, index)
 }

@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -33,7 +33,13 @@ case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] {
     AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
+    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode, index)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(FinalCheckMode, index)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(AmendCheckMode, index)
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(mode, index)
