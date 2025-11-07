@@ -42,12 +42,10 @@ class MoreAssetCompletionServiceSpec
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val mockAssetThresholdHandler = mock[AssetThresholdHandler]
   private val mockSessionRepository     = mock[SessionRepository]
   private val mockUserAnswersService    = mock[UserAnswersService]
 
   private val service = new MoreAssetCompletionService(
-    mockAssetThresholdHandler,
     mockSessionRepository,
     mockUserAnswersService
   )
@@ -57,7 +55,7 @@ class MoreAssetCompletionServiceSpec
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAssetThresholdHandler, mockUserAnswersService, mockSessionRepository)
+    reset(mockUserAnswersService, mockSessionRepository)
   }
 
   "MoreAssetCompletionService" - {
@@ -72,7 +70,7 @@ class MoreAssetCompletionServiceSpec
           val updated: SessionData =
             AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
 
-          when(mockAssetThresholdHandler.handle(any(), any(), any()))
+          when(AssetThresholdHandler.handle(any(), any(), any()))
             .thenReturn(userAnswers)
 
           when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
@@ -84,7 +82,7 @@ class MoreAssetCompletionServiceSpec
           service.completeAsset(userAnswers, emptySessionData, assetType, completed = true, userSelection = Some(true)).map { result =>
             result mustBe updated
 
-            verify(mockAssetThresholdHandler, times(2)).handle(userAnswers, assetType, Some(true))
+            verify(AssetThresholdHandler, times(2)).handle(userAnswers, assetType, Some(true))
             verify(mockUserAnswersService, times(1)).setExternalUserAnswers(userAnswers)
             verify(mockSessionRepository, times(1)).set(updated)
 
@@ -97,7 +95,7 @@ class MoreAssetCompletionServiceSpec
           val updated: SessionData =
             AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
 
-          when(mockAssetThresholdHandler.handle(any(), any(), any()))
+          when(AssetThresholdHandler.handle(any(), any(), any()))
             .thenReturn(userAnswers)
 
           when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
@@ -108,7 +106,7 @@ class MoreAssetCompletionServiceSpec
 
           service.completeAsset(userAnswers, emptySessionData, assetType, completed = true).map { result =>
             result mustBe updated
-            verify(mockAssetThresholdHandler, times(2)).handle(userAnswers, assetType, None)
+            verify(AssetThresholdHandler, times(2)).handle(userAnswers, assetType, None)
             verify(mockUserAnswersService, times(1)).setExternalUserAnswers(userAnswers)
             verify(mockSessionRepository, times(1)).set(updated)
             succeed
@@ -123,7 +121,7 @@ class MoreAssetCompletionServiceSpec
         when(mockSessionRepository.set(any()))
           .thenReturn(Future.successful(true))
 
-        when(mockAssetThresholdHandler.handle(any(), any(), any()))
+        when(AssetThresholdHandler.handle(any(), any(), any()))
           .thenThrow(new RuntimeException("boom"))
 
         val completed = service.completeAsset(userAnswers, emptySessionData, asset, completed = true)
@@ -132,7 +130,7 @@ class MoreAssetCompletionServiceSpec
           ex.getMessage mustBe "boom"
           verify(mockUserAnswersService, never()).setExternalUserAnswers(any())(any[HeaderCarrier])
           verify(mockSessionRepository, times(1)).set(any())
-          verify(mockAssetThresholdHandler, times(1)).handle(userAnswers, asset, None)
+          verify(AssetThresholdHandler, times(1)).handle(userAnswers, asset, None)
           succeed
         }
       }
