@@ -19,7 +19,7 @@ package services
 import models.audit.JourneyStartedType.StartJourneyFailed
 import models.audit.{JourneyStartedType, ReportStartedAuditModel}
 import models.authentication.AuthenticatedUser
-import models.{AllTransfersItem, TransferId}
+import models.{AllTransfersItem, PensionSchemeDetails, TransferId}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.lock.LockRepository
@@ -40,6 +40,7 @@ class LockService @Inject() (
       owner: String,
       ttlSeconds: Long,
       authenticatedUser: AuthenticatedUser,
+      schemeDetails: PensionSchemeDetails,
       journeyType: JourneyStartedType,
       allTransfersItem: Option[AllTransfersItem]
     )(implicit hc: HeaderCarrier
@@ -52,6 +53,7 @@ class LockService @Inject() (
           ReportStartedAuditModel.build(
             transferId,
             authenticatedUser,
+            schemeDetails,
             journeyType,
             allTransfersItem,
             None
@@ -65,6 +67,7 @@ class LockService @Inject() (
           ReportStartedAuditModel.build(
             transferId,
             authenticatedUser,
+            schemeDetails,
             StartJourneyFailed,
             allTransfersItem,
             Some("Transfer is locked by someone else")

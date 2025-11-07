@@ -19,7 +19,7 @@ package base
 import controllers.actions._
 import models.address.{Countries, PropertyAddress}
 import models.authentication._
-import models.requests.{DisplayRequest, IdentifierRequest}
+import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import models.{AllTransfersItem, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
@@ -28,7 +28,12 @@ import pages.memberDetails.MemberNamePage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
+  UnquotedSharesClassPage,
+  UnquotedSharesCompanyNamePage,
+  UnquotedSharesNumberPage,
+  UnquotedSharesValuePage
+}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind

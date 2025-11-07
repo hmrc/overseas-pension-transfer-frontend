@@ -16,6 +16,7 @@
 
 package services
 
+import base.SpecBase
 import models.audit.JourneyStartedType.{StartJourneyFailed, StartNewTransfer}
 import models.audit.ReportStartedAuditModel
 import models.authentication.{PsaId, PsaUser}
@@ -35,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-class LockServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
+class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 
@@ -47,7 +48,7 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with B
   private val transferId        = TransferId("QT123456")
   private val owner             = "test-owner"
   private val ttlSeconds        = 120L
-  private val authenticatedUser = PsaUser(PsaId("A1234567"), "internal-123", None, AffinityGroup.Organisation)
+  private val authenticatedUser = PsaUser(PsaId("A1234567"), "internal-123", AffinityGroup.Organisation)
 
   private val allTransfersItem = Some(
     AllTransfersItem(
@@ -76,7 +77,7 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with B
         .thenReturn(Future.successful(Some(fakeLock)))
 
       val result = await(
-        service.takeLockWithAudit(transferId, owner, ttlSeconds, authenticatedUser, StartNewTransfer, allTransfersItem)
+        service.takeLockWithAudit(transferId, owner, ttlSeconds, authenticatedUser, schemeDetails, StartNewTransfer, allTransfersItem)
       )
 
       result mustBe true
@@ -90,7 +91,7 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with B
         .thenReturn(Future.successful(None))
 
       val result = await(
-        service.takeLockWithAudit(transferId, owner, ttlSeconds, authenticatedUser, StartNewTransfer, allTransfersItem)
+        service.takeLockWithAudit(transferId, owner, ttlSeconds, authenticatedUser, schemeDetails, StartNewTransfer, allTransfersItem)
       )
 
       result mustBe false

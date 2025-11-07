@@ -105,6 +105,7 @@ class ViewAmendSubmittedController @Inject() (
                                  owner,
                                  appConfig.dashboardLockTtl,
                                  request.authenticatedUser,
+                                 request.schemeDetails,
                                  ContinueAmendmentOfTransfer,
                                  allTransfersItem
                                )

@@ -92,6 +92,7 @@ class ViewAmendSelectorController @Inject() (
                               owner,
                               lockTtlSeconds,
                               request.authenticatedUser,
+                              request.schemeDetails,
                               StartAmendmentOfTransfer,
                               allTransfersItem
                             )

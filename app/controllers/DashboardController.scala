@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.IdentifierAction
+import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.audit.JourneyStartedType.ContinueTransfer
 import models.authentication.{PsaUser, PspUser}
 import models.{DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams}
@@ -44,6 +44,7 @@ class DashboardController @Inject() (
     repo: DashboardSessionRepository,
     sessionRepository: SessionRepository,
     identify: IdentifierAction,
+    schemeData: SchemeDataAction,
     transferService: TransferService,
     view: DashboardView,
     appConfig: FrontendAppConfig,
@@ -100,9 +101,9 @@ class DashboardController @Inject() (
     }
   }
 
-  def onTransferClick(): Action[AnyContent] = identify.async { implicit request =>
-    val params = TransferReportQueryParams.fromRequest(request)
-    val owner  = request.authenticatedUser match {
+  def onTransferClick(): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
+    val params     = TransferReportQueryParams.fromRequest(request)
+    val owner      = request.authenticatedUser match {
       case PsaUser(psaId, _, _) => psaId.value
       case PspUser(pspId, _, _) => pspId.value
     }
@@ -120,6 +121,7 @@ class DashboardController @Inject() (
                                owner,
                                lockTtlSeconds,
                                request.authenticatedUser,
+                               request.schemeDetails,
                                ContinueTransfer,
                                allTransfersItem
                              )

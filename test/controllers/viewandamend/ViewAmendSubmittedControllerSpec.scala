@@ -174,7 +174,7 @@ class ViewAmendSubmittedControllerSpec
         when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(userAnswersMemberNameQtNumber)))
         when(mockUserAnswersService.toAllTransfersItem(any())).thenReturn(transferItem)
-        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
+        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(true))
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -198,7 +198,7 @@ class ViewAmendSubmittedControllerSpec
         when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(userAnswersMemberNameQtNumber)))
         when(mockUserAnswersService.toAllTransfersItem(any())).thenReturn(transferItem)
-        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
+        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(false))
 
         val app = applicationBuilder()
@@ -222,7 +222,7 @@ class ViewAmendSubmittedControllerSpec
       "redirect to JourneyRecovery when user answers retrieval fails" in {
         when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
-        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
+        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(true))
 
         val app = applicationBuilder()

@@ -379,6 +379,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         any(),
         any(),
         any(),
+        any(),
         any()
       )(any())).thenReturn(Future.successful(true))
 
@@ -406,6 +407,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         verify(mockLockService, times(1)).takeLockWithAudit(
           meq(transferId),
           meq(owner),
+          any(),
           any(),
           any(),
           meq(ContinueTransfer),
