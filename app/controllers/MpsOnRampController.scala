@@ -17,7 +17,7 @@
 package controllers
 
 import connectors.PensionSchemeConnector
-import controllers.actions.IdentifierAction
+import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.DashboardData
 import pages.MpsOnRampPage
 import play.api.Logging
@@ -35,28 +35,22 @@ class MpsOnRampController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     dashboardRepo: DashboardSessionRepository,
     identify: IdentifierAction,
-    pensionSchemeConnector: PensionSchemeConnector
+    schemeData: SchemeDataAction
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onRamp(srn: String): Action[AnyContent] = identify.async { implicit request =>
+  def onRamp(srn: String): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     val dashboardData = DashboardData(request.authenticatedUser.internalId)
 
-    pensionSchemeConnector.getSchemeDetails(srn, request.authenticatedUser).flatMap {
-      case Right(psd) =>
-        Future.fromTry(dashboardData.set(PensionSchemeDetailsQuery, psd)).flatMap { dd1 =>
-          dashboardRepo.set(dd1).map { persisted =>
-            if (persisted) {
-              Redirect(MpsOnRampPage.nextPage(dd1))
-            } else {
-              logger.warn("[MpsOnRampController][onRamp] dashboardRepo.set returned false")
-              Redirect(routes.JourneyRecoveryController.onPageLoad())
-            }
-          }
+    Future.fromTry(dashboardData.set(PensionSchemeDetailsQuery, request.schemeDetails)).flatMap { dd1 =>
+      dashboardRepo.set(dd1).map { persisted =>
+        if (persisted) {
+          Redirect(MpsOnRampPage.nextPage(dd1))
+        } else {
+          logger.warn("[MpsOnRampController][onRamp] dashboardRepo.set returned false")
+          Redirect(routes.JourneyRecoveryController.onPageLoad())
         }
-      case Left(err)  =>
-        logger.warn(s"[MpsOnRampController][onRamp] Downstream error while fetching scheme details for $srn: $err")
-        Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+      }
     }.recover { case t =>
       logger.error("[MpsOnRampController][onRamp] Failed while setting/persisting dashboard data", t)
       Redirect(routes.JourneyRecoveryController.onPageLoad())

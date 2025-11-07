@@ -17,9 +17,10 @@
 package controllers
 
 import controllers.actions._
-import models.Mode
+import models.{Mode, PersonName}
 import models.responses.SubmissionResponse
 import pages.PsaDeclarationPage
+import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,10 +54,20 @@ class PsaDeclarationController @Inject() (
     implicit request =>
       userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData).flatMap {
         case Right(SubmissionResponse(qtNumber, receiptDate)) =>
+          val name = request.sessionData.get(MemberNamePage) match {
+            case Some(value) => value
+            case None        =>
+              request.userAnswers.get(MemberNamePage) match {
+                case Some(value) => value
+                case None        => PersonName("Undefined", "Undefined")
+              }
+          }
+
           for {
             updatedSessionData    <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
             updateWithReceiptDate <- Future.fromTry(updatedSessionData.set(DateSubmittedQuery, receiptDate))
-            _                     <- sessionRepository.set(updateWithReceiptDate)
+            updateWithMemberName  <- Future.fromTry(updateWithReceiptDate.set(MemberNamePage, name))
+            _                     <- sessionRepository.set(updateWithMemberName)
           } yield Redirect(PsaDeclarationPage.nextPage(mode, request.userAnswers))
         case _                                                => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
       }

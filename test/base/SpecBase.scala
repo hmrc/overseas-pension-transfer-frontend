@@ -19,7 +19,7 @@ package base
 import controllers.actions._
 import models.address.{Countries, PropertyAddress}
 import models.authentication._
-import models.requests.{DisplayRequest, IdentifierRequest}
+import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import models.{PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SessionData, SrnNumber, TransferNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
@@ -96,7 +96,6 @@ trait SpecBase
     PsaUser(
       PsaId("A123456"),
       "internalId",
-      None,
       Individual
     ),
     Json.obj()
@@ -130,12 +129,19 @@ trait SpecBase
 
   def fakeIdentifierRequest[A](
       fakeRequest: FakeRequest[A],
-      authenticatedUser: AuthenticatedUser = psaUser.updatePensionSchemeDetails(schemeDetails)
+      authenticatedUser: AuthenticatedUser = psaUser
     ): IdentifierRequest[A] =
     IdentifierRequest(fakeRequest, authenticatedUser)
 
   implicit val testIdentifierRequest: IdentifierRequest[_] =
-    IdentifierRequest(FakeRequest(), psaUser.updatePensionSchemeDetails(schemeDetails))
+    IdentifierRequest(FakeRequest(), psaUser)
+
+  def fakeSchemeRequest[A](
+      fakeRequest: FakeRequest[A],
+      authenticatedUser: AuthenticatedUser = psaUser,
+      schemeDetails: PensionSchemeDetails  = schemeDetails
+    ): SchemeRequest[A] =
+    SchemeRequest(fakeRequest, authenticatedUser, schemeDetails)
 
   def fakeDisplayRequest[A](
       fakeRequest: FakeRequest[A],
@@ -144,7 +150,7 @@ trait SpecBase
     ): DisplayRequest[A] =
     DisplayRequest(
       request               = fakeRequest,
-      authenticatedUser     = psaUser.updatePensionSchemeDetails(schemeDetails),
+      authenticatedUser     = psaUser,
       userAnswers           = userAnswers,
       sessionData           = sessionData,
       memberName            = testMemberName.fullName,
@@ -155,7 +161,7 @@ trait SpecBase
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
       request               = FakeRequest(),
-      authenticatedUser     = psaUser.updatePensionSchemeDetails(schemeDetails),
+      authenticatedUser     = psaUser,
       userAnswers           = emptyUserAnswers,
       sessionData           = emptySessionData,
       memberName            = testMemberName.fullName,

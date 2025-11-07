@@ -19,7 +19,7 @@ package controllers.actions
 import connectors.PensionSchemeConnector
 import controllers.routes
 import models.PensionSchemeDetails
-import models.requests.IdentifierRequest
+import models.requests.{IdentifierRequest, SchemeRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -38,35 +38,63 @@ class SchemeDataActionImpl @Inject() (
   )(implicit val executionContext: ExecutionContext
   ) extends SchemeDataAction with AppUtils with Logging {
 
-  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
-    if (request.authenticatedUser.pensionSchemeDetails.isEmpty) {
-      dashboardSessionRepository.get(request.authenticatedUser.internalId) flatMap {
-        case Some(dashboardData) =>
-          dashboardData.get(PensionSchemeDetailsQuery) match {
-            case Some(scheme @ PensionSchemeDetails(srn, _, _)) =>
-              pensionSchemeConnector.checkAssociation(srn.value, request.authenticatedUser) map {
-                isAssociated =>
-                  if (isAssociated) {
-                    Right(
-                      IdentifierRequest(
-                        request.request,
-                        request.authenticatedUser.updatePensionSchemeDetails(scheme)
-                      )
-                    )
-                  } else {
-                    Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad()))
-                  }
-              }
-            case None                                           => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
-          }
-        case None                => Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SchemeRequest[A]]] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-      }
-    } else {
-      Future.successful(Right(request))
+    dashboardSessionRepository.get(request.authenticatedUser.internalId) flatMap {
+      case Some(dashboardData) =>
+        dashboardData.get(PensionSchemeDetailsQuery) match {
+          case Some(scheme @ PensionSchemeDetails(srn, _, _)) =>
+            pensionSchemeConnector.checkAssociation(srn.value, request.authenticatedUser) map {
+              isAssociated =>
+                if (isAssociated) {
+                  Right(
+                    SchemeRequest(
+                      request           = request,
+                      authenticatedUser = request.authenticatedUser,
+                      schemeDetails     = scheme
+                    )
+                  )
+                } else {
+                  Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad()))
+                }
+            }
+          case None                                           =>
+            logger.error(s"[SchemeDataAction][refine]: Dashboard Data requires PensionSchemeDetails")
+            Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
+
+        }
+      case None                =>
+        request.getQueryString("srn") match {
+          case Some(value) =>
+            pensionSchemeConnector.checkAssociation(value, request.authenticatedUser) flatMap {
+              isAssociated =>
+                if (isAssociated) {
+                  pensionSchemeConnector.getSchemeDetails(value, request.authenticatedUser) map {
+                    case Right(scheme) =>
+                      Right(
+                        SchemeRequest(
+                          request           = request,
+                          authenticatedUser = request.authenticatedUser,
+                          schemeDetails     = scheme
+                        )
+                      )
+                    case Left(err)     =>
+                      logger.error(s"[SchemeDataAction][refine]: Error has occurred during request of scheme details: $err")
+                      Left(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+                  }
+                } else {
+                  logger.error(s"[SchemeDataAction][refine]: User isn't associated to a scheme")
+                  Future.successful(Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad())))
+                }
+            }
+          case None        =>
+            logger.error(s"[SchemeDataAction][refine]: No Srn supplied as part of request")
+            Future.successful(Left(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())))
+        }
+
     }
   }
 }
 
-trait SchemeDataAction extends ActionRefiner[IdentifierRequest, IdentifierRequest]
+trait SchemeDataAction extends ActionRefiner[IdentifierRequest, SchemeRequest]

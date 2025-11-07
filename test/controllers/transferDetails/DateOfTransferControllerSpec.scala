@@ -136,6 +136,42 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       }
     }
 
+    "must return a Bad Request when amending with a date after the original submission date" in {
+      val originalDate = LocalDate.of(2025, 1, 25)
+      val newDate      = originalDate.plusDays(1)
+
+      val originalSubmission = emptyUserAnswers
+        .set(DateOfTransferPage, originalDate).success.value
+
+      val mockUserAnswersService = mock[UserAnswersService]
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful(Right(originalSubmission)))
+
+      val application = applicationBuilder(userAnswers = emptyUserAnswers)
+        .overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.DateOfTransferController.onSubmit(models.AmendCheckMode).url)
+            .withFormUrlEncodedBody(
+              "value.day"   -> newDate.getDayOfMonth.toString,
+              "value.month" -> newDate.getMonthValue.toString,
+              "value.year"  -> newDate.getYear.toString
+            )
+
+        val result = route(application, request).value
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) must include(s"Date of transfer must be before your original submission date")
+      }
+    }
+
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
