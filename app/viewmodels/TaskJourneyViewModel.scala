@@ -80,6 +80,7 @@ object TaskJourneyViewModels {
               if (nec == TransferDetailsValidator.notStarted) {
                 NotStarted
               } else {
+                println("\n----\nnec = " + nec + "\n----\n")
                 InProgress
               }
           }
@@ -139,7 +140,6 @@ object TaskJourneyViewModels {
     val category             = TaskCategory.SubmissionDetails
     val id                   = "submit"
     val linkTextKey          = "taskList.submit.linkText"
-    // TODO: These will need to be updated with the actual submission pages when they are completed
     def start(m: Mode): Call = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
     def cya(): Call          = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
 
