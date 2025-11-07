@@ -18,16 +18,18 @@ package controllers.transferDetails
 
 import controllers.actions._
 import controllers.helpers.ErrorHandling
-import forms.transferDetails.DateOfTransferFormProvider
-import models.Mode
+import forms.transferDetails.{AmendDateOfTransferFormProvider, DateOfTransferFormProvider}
+import models.requests.DisplayRequest
+import models.{Mode, UserAnswers}
 import org.apache.pekko.Done
 import pages.transferDetails.DateOfTransferPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.DateOfTransferView
-
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,39 +41,77 @@ class DateOfTransferController @Inject() (
     formProvider: DateOfTransferFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: DateOfTransferView,
-    userAnswersService: UserAnswersService
+    userAnswersService: UserAnswersService,
+    amendDateOfTransferFormProvider: AmendDateOfTransferFormProvider
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
+  private def isAmend(mode: Mode): Boolean =
+    mode == models.CheckMode || mode == models.AmendCheckMode
+
+  private def prepareForm(form: Form[LocalDate], userAnswers: UserAnswers): Form[LocalDate] =
+    userAnswers.get(DateOfTransferPage).fold(form)(form.fill)
+
+  private def handleSubmission(
+      form: Form[LocalDate],
+      mode: Mode,
+      userAnswers: UserAnswers
+    )(implicit request: DisplayRequest[_]
+    ) = {
+    form.bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAmend(mode)))),
+      value =>
+        for {
+          updatedAnswers <- Future.fromTry(userAnswers.set(DateOfTransferPage, value))
+          savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+        } yield savedForLater match {
+          case Right(Done) => Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers))
+          case Left(err)   => onFailureRedirect(err)
+        }
+    )
+  }
+
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      val form = formProvider()
-
-      val preparedForm = request.userAnswers.get(DateOfTransferPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      if (isAmend(mode)) {
+        userAnswersService.getExternalUserAnswers(
+          request.userAnswers.id,
+          request.userAnswers.pstr,
+          models.QtStatus.Submitted,
+          Some("001")
+        ).map {
+          case Right(originalSubmission) =>
+            val originalDate = originalSubmission.get(DateOfTransferPage)
+              .getOrElse(throw new IllegalStateException("Original submission date has not been found"))
+            val form         = amendDateOfTransferFormProvider(originalDate)
+            Ok(view(prepareForm(form, request.userAnswers), mode, isAmend = true))
+          case _                         =>
+            Ok(view(prepareForm(formProvider(), request.userAnswers), mode))
+        }
+      } else {
+        Future.successful(Ok(view(prepareForm(formProvider(), request.userAnswers), mode)))
       }
-
-      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      val form = formProvider()
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfTransferPage, value))
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
-          } yield {
-            savedForLater match {
-              case Right(Done) => Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers))
-              case Left(err)   => onFailureRedirect(err)
-            }
-          }
-      )
+      if (isAmend(mode)) {
+        userAnswersService.getExternalUserAnswers(
+          request.userAnswers.id,
+          request.userAnswers.pstr,
+          models.QtStatus.Submitted,
+          Some("001")
+        ).flatMap {
+          case Right(originalSubmission) =>
+            val originalDate = originalSubmission.get(DateOfTransferPage)
+              .getOrElse(throw new IllegalStateException("Original submission date has not been found"))
+            val form         = amendDateOfTransferFormProvider(originalDate)
+            handleSubmission(form, mode, request.userAnswers)
+          case _                         =>
+            handleSubmission(formProvider(), mode, request.userAnswers)
+        }
+      } else {
+        handleSubmission(formProvider(), mode, request.userAnswers)
+      }
   }
 }
