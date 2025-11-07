@@ -41,11 +41,8 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val mockRepo      = mock[DashboardSessionRepository]
       val mockConnector = mock[PensionSchemeConnector]
 
-      val srn = "S2400000040"
-      val psd = PensionSchemeDetails(SrnNumber(srn), PstrNumber("24000040IN"), "Open Scheme Overview API Test")
-
-      when(mockConnector.getSchemeDetails(eqTo(srn), any())(any()))
-        .thenReturn(Future.successful(Right(psd)))
+      val srn = "S1234567"
+      val psd = PensionSchemeDetails(SrnNumber(srn), PstrNumber("12345678AB"), "SchemeName")
 
       when(mockRepo.set(any[DashboardData]))
         .thenReturn(Future.successful(true))
@@ -71,34 +68,6 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         saved.get(PensionSchemeDetailsQuery) mustBe Some(psd)
 
         redirectLocation(result).value mustBe pages.MpsOnRampPage.nextPage(saved).url
-      }
-    }
-
-    "must redirect to Journey Recovery when the connector returns an error" in {
-      val mockRepo      = mock[DashboardSessionRepository]
-      val mockConnector = mock[PensionSchemeConnector]
-
-      val srn = "S2400000040"
-
-      when(mockConnector.getSchemeDetails(eqTo(srn), any())(any()))
-        .thenReturn(Future.successful(Left(PensionSchemeErrorResponse("BOOM", Some("bad json")))))
-
-      val application =
-        applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[DashboardSessionRepository].toInstance(mockRepo),
-            bind[PensionSchemeConnector].toInstance(mockConnector)
-          )
-          .build()
-
-      running(application) {
-        val request = FakeRequest(GET, routes.MpsOnRampController.onRamp(srn).url)
-        val result  = route(application, request).value
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.JourneyRecoveryController.onPageLoad().url
-
-        verify(mockRepo, never()).set(any[DashboardData])
       }
     }
 

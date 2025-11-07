@@ -53,7 +53,7 @@ class WhatWillBeNeededController @Inject() (
     val sessionData = SessionData(
       request.authenticatedUser.internalId,
       transferId = TransferNumber(UUID.randomUUID().toString),
-      request.authenticatedUser.pensionSchemeDetails.get,
+      request.schemeDetails,
       request.authenticatedUser,
       Json.obj()
     )
@@ -70,6 +70,7 @@ class WhatWillBeNeededController @Inject() (
           ReportStartedAuditModel(
             sessionData.transferId,
             request.authenticatedUser,
+            request.schemeDetails,
             StartNewTransfer,
             None,
             None

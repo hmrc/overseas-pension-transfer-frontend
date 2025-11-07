@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import models.requests.{DisplayRequest, IdentifierRequest}
+import models.requests.{DisplayRequest, SchemeRequest}
 import models.{SessionData, UserAnswers}
 import play.api.mvc.Result
 import utils.AppUtils
@@ -25,7 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class FakeDataRetrievalAction(answers: UserAnswers, sessionData: SessionData) extends DataRetrievalAction with AppUtils {
 
-  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
+  override protected def refine[A](request: SchemeRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
 
     Future(Right(DisplayRequest(
       request.request,

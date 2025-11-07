@@ -17,7 +17,7 @@
 package controllers.actions
 
 import controllers.routes
-import models.requests.{DisplayRequest, IdentifierRequest}
+import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -38,6 +38,7 @@ class DataRetrievalActionImpl @Inject() (
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
 
     sessionRepository.get(request.authenticatedUser.internalId) flatMap {
       case Some(value) =>
@@ -64,4 +65,4 @@ class DataRetrievalActionImpl @Inject() (
   }
 }
 
-trait DataRetrievalAction extends ActionRefiner[IdentifierRequest, DisplayRequest]
+trait DataRetrievalAction extends ActionRefiner[SchemeRequest, DisplayRequest]

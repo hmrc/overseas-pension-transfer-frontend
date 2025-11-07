@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import models.requests.IdentifierRequest
+import models.requests.{IdentifierRequest, SchemeRequest}
 import play.api.mvc.Result
 import utils.AppUtils
 
@@ -29,13 +29,12 @@ class FakeSchemeDataAction()
   implicit override protected val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
 
-  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] =
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SchemeRequest[A]]] =
     Future.successful(Right(
-      IdentifierRequest(
+      SchemeRequest(
         request.request,
-        request.authenticatedUser.updatePensionSchemeDetails(
-          schemeDetails
-        )
+        request.authenticatedUser,
+        schemeDetails
       )
     ))
 }
