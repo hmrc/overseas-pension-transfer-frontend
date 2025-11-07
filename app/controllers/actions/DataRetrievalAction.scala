@@ -36,9 +36,8 @@ class DataRetrievalActionImpl @Inject() (
   )(implicit val executionContext: ExecutionContext
   ) extends DataRetrievalAction with AppUtils with Logging {
 
-  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
+  override protected def refine[A](request: SchemeRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-
 
     sessionRepository.get(request.authenticatedUser.internalId) flatMap {
       case Some(value) =>
