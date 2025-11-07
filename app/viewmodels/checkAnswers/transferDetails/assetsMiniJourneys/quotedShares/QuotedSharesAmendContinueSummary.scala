@@ -29,7 +29,7 @@ import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
 
 object QuotedSharesAmendContinueSummary extends AppUtils {
-  private val threshold        = 5
+  private val threshold = 5
 
   def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(QuotedSharesQuery)
@@ -66,13 +66,13 @@ object QuotedSharesAmendContinueSummary extends AppUtils {
     }
   }
 
-  def rows(answers: UserAnswers): Seq[ListItem] = {
+  def rows(mode: Mode, answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(QuotedSharesQuery)
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(
           name      = entry.companyName,
-          changeUrl = AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(index).url,
+          changeUrl = AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(mode, index).url,
           removeUrl = AssetsMiniJourneysRoutes.QuotedSharesConfirmRemovalController.onPageLoad(index).url
         )
     }
