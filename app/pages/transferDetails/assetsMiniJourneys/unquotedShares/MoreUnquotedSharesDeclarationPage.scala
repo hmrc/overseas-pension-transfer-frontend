@@ -17,19 +17,36 @@
 package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.transferDetails.routes
-import models.UserAnswers
-import pages.QuestionPage
+import models.{SessionData, UserAnswers}
+import navigators.TypeOfAssetNavigator
+import pages.{NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MoreUnquotedSharesDeclarationPage extends QuestionPage[Boolean] {
+case object MoreUnquotedSharesDeclarationPage extends QuestionPage[Boolean] with NextPageWith[SessionData] {
 
   override def path: JsPath =
     JsPath \ "transferDetails" \ "moreUnquoted"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+  override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call =
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+      case Some(route) => route
+      case None        => routes.TransferDetailsCYAController.onPageLoad()
+    }
+
+  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
+    nextPageWith(answers, sessionData)
+
+  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+      case Some(route) => route
+      case None        => super.nextPageFinalCheckMode(answers)
+    }
+
+  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+      case Some(route) => route
+      case None        => super.nextPageFinalCheckMode(answers)
+    }
 }

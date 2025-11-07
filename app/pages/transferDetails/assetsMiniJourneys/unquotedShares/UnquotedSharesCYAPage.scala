@@ -17,30 +17,35 @@
 package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.assets.{TypeOfAsset, UnquotedSharesEntry}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import handlers.AssetThresholdHandler
+import models.assets.TypeOfAsset
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
 
-case class UnquotedSharesClassPage(index: Int) extends QuestionPage[String] {
-
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
-
-  override def toString: String = UnquotedSharesEntry.ClassOfShares
+case class UnquotedSharesCYAPage(index: Int) extends Page {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(NormalMode, index)
+    decideNextPage(answers, NormalMode)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(CheckMode,index)
+    decideNextPage(answers, CheckMode)
 
   override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(FinalCheckMode, index)
+    decideNextPage(answers, FinalCheckMode)
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(AmendCheckMode, index)
+    decideNextPage(answers, AmendCheckMode)
+
+  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+    val unquotedSharesCount = AssetThresholdHandler.getAssetCount(answers, TypeOfAsset.UnquotedShares)
+    if (unquotedSharesCount >= 5) {
+      controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController.onPageLoad(mode = mode)
+    } else {
+      AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = mode)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(mode, index)
+    AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(mode, index)
 }
