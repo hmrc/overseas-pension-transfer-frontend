@@ -19,6 +19,7 @@ package controllers.viewandamend
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
+import models.audit.JourneyStartedType.ContinueAmendmentOfTransfer
 import models.authentication.{PsaUser, PspUser}
 import models.requests.IdentifierRequest
 import models.{AmendCheckMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
@@ -29,8 +30,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import repositories.SessionRepository
-import services.UserAnswersService
-import uk.gov.hmrc.mongo.lock.LockRepository
+import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
@@ -41,7 +41,6 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.viewandamend.ViewSubmittedView
 
-import scala.concurrent.duration.DurationLong
 import scala.concurrent.{ExecutionContext, Future}
 
 class ViewAmendSubmittedController @Inject() (
@@ -52,7 +51,7 @@ class ViewAmendSubmittedController @Inject() (
     getData: DataRetrievalAction,
     val controllerComponents: MessagesControllerComponents,
     view: ViewSubmittedView,
-    lockRepository: LockRepository,
+    lockService: LockService,
     sessionRepository: SessionRepository,
     appConfig: FrontendAppConfig
   )(implicit ec: ExecutionContext
@@ -99,40 +98,52 @@ class ViewAmendSubmittedController @Inject() (
           case PspUser(pspId, _, _, _) => pspId.value
         }
 
-        lockRepository.takeLock(qtReference.value, owner, appConfig.dashboardLockTtl.seconds) flatMap {
-          case Some(_) =>
-            userAnswersService.getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber))
-              .flatMap {
-                case Right(userAnswers) =>
-                  val sessionData = SessionData(
-                    request.authenticatedUser.internalId,
-                    qtReference,
-                    request.authenticatedUser.pensionSchemeDetails.get,
-                    request.authenticatedUser,
-                    Json.obj(
-                      "receiptDate" -> userAnswers.lastUpdated
-                    )
-                  )
+        for {
+          userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber))
+          allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
+          lockAcquired      <- lockService.takeLockWithAudit(
+                                 qtReference,
+                                 owner,
+                                 appConfig.dashboardLockTtl,
+                                 request.authenticatedUser,
+                                 ContinueAmendmentOfTransfer,
+                                 allTransfersItem
+                               )
+          result            <- (userAnswersResult, lockAcquired) match {
+                                 case (Right(userAnswers), true) =>
+                                   val sessionData = SessionData(
+                                     request.authenticatedUser.internalId,
+                                     qtReference,
+                                     request.authenticatedUser.pensionSchemeDetails.get,
+                                     request.authenticatedUser,
+                                     Json.obj("receiptDate" -> userAnswers.lastUpdated)
+                                   )
 
-                  val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) {
-                    name =>
-                      sessionData.set(MemberNamePage, name).getOrElse(sessionData)
-                  }
+                                   val sessionDataWithMemberName: SessionData =
+                                     userAnswers.get(MemberNamePage).fold(sessionData) { name =>
+                                       sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+                                     }
 
-                  sessionRepository.set(sessionDataWithMemberName) map {
-                    _ => Redirect(routes.ViewAmendSubmittedController.amend())
-                  }
-                case Left(_)            =>
-                  Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-              }
-          case None    =>
-            Future.successful(
-              Redirect(routes.SubmittedTransferSummaryController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
-                .flashing("lockWarning" -> "")
-            )
+                                   sessionRepository.set(sessionDataWithMemberName).map { _ =>
+                                     Redirect(routes.ViewAmendSubmittedController.amend())
+                                   }
 
-        }
+                                 case (_, false) =>
+                                   Future.successful(
+                                     Redirect(
+                                       routes.SubmittedTransferSummaryController.onPageLoad(
+                                         qtReference,
+                                         pstr,
+                                         qtStatus,
+                                         versionNumber
+                                       )
+                                     ).flashing("lockWarning" -> "")
+                                   )
 
+                                 case _ =>
+                                   Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+                               }
+        } yield result
     }
 
   def amend(): Action[AnyContent] =

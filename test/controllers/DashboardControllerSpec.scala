@@ -18,17 +18,19 @@ package controllers
 
 import base.SpecBase
 import models._
+import models.audit.JourneyStartedType.ContinueTransfer
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, SessionRepository}
-import services.TransferService
+import services.{AuditService, LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
 import views.html.DashboardView
@@ -124,7 +126,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&name=SomeName&currentPage=1")
+        val request = FakeRequest(
+          GET,
+          routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&name=SomeName&currentPage=1&pstr=PSTR123456"
+        )
 
         val result = route(application, request).value
 
@@ -153,7 +158,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       running(application) {
         val request =
-          FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&memberName=LockedScheme&currentPage=2")
+          FakeRequest(
+            GET,
+            routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&memberName=LockedScheme&currentPage=2&pstr=PSTR123456"
+          )
 
         val result = route(application, request).value
 
@@ -273,7 +281,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       running(application) {
 
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url + "?transferId=QT654321&qtStatus=InProgress&name=ReAccess&currentPage=1")
+        val request = FakeRequest(
+          GET,
+          routes.DashboardController.onTransferClick().url + "?transferId=QT654321&qtStatus=InProgress&name=ReAccess&currentPage=1&pstr=PSTR123456"
+        )
 
         val result = route(application, request).value
 
@@ -339,31 +350,67 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
   }
 
-  "DashboardController onTransferClick" - {
-    "must redirect correctly with provided query parameters" in {
-      val mockRepo    = mock[DashboardSessionRepository]
-      val mockService = mock[TransferService]
+  "onTransferClick with InProgress transfer" - {
+    "must acquire lock, audit, and redirect when successful" in {
 
-      val application =
-        applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[DashboardSessionRepository].toInstance(mockRepo),
-            bind[TransferService].toInstance(mockService)
-          )
-          .build()
+      val mockRepo           = mock[DashboardSessionRepository]
+      val mockService        = mock[TransferService]
+      val mockSessionRepo    = mock[SessionRepository]
+      val mockLockService    = mock[LockService]
+      val mockUserAnswersSvc = mock[UserAnswersService]
+      val mockAuditService   = mock[AuditService]
+
+      val transferId = TransferId("QT654321")
+      val owner      = "A123456"
+
+      val emptyUserAnswers = UserAnswers(
+        id          = transferId,
+        pstr        = PstrNumber("PSTR000"),
+        lastUpdated = Instant.now(),
+        data        = Json.obj()
+      )
+
+      when(mockUserAnswersSvc.getExternalUserAnswers(any(), any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(emptyUserAnswers)))
+
+      when(mockLockService.takeLockWithAudit(
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )(any())).thenReturn(Future.successful(true))
+
+      val application = applicationBuilder()
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[SessionRepository].toInstance(mockSessionRepo),
+          bind[LockService].toInstance(mockLockService),
+          bind[UserAnswersService].toInstance(mockUserAnswersSvc),
+          bind[AuditService].toInstance(mockAuditService)
+        ).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onTransferClick().url)
-          .withQueryStringParameters(
-            "qtStatus"    -> "InProgress",
-            "transferId"  -> "QT456321",
-            "name"        -> "Scheme A",
-            "currentPage" -> "1"
-          )
+        val request = FakeRequest(
+          GET,
+          routes.DashboardController.onTransferClick().url +
+            "?transferId=QT654321&qtStatus=InProgress&name=SchemeX&currentPage=1&pstr=PSTR123456"
+        )
 
         val result = route(application, request).value
 
-        status(result) must (be(SEE_OTHER) or be(OK))
+        status(result) mustBe SEE_OTHER
+
+        verify(mockLockService, times(1)).takeLockWithAudit(
+          meq(transferId),
+          meq(owner),
+          any(),
+          any(),
+          meq(ContinueTransfer),
+          any()
+        )(any())
       }
     }
   }

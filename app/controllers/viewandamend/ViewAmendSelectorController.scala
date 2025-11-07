@@ -19,6 +19,7 @@ package controllers.viewandamend
 import config.FrontendAppConfig
 import controllers.actions._
 import models.QtStatus.AmendInProgress
+import models.audit.JourneyStartedType.StartAmendmentOfTransfer
 import models.authentication.{PsaUser, PspUser}
 import models.{PstrNumber, QtStatus, SessionData, TransferId}
 import pages.memberDetails.MemberNamePage
@@ -26,24 +27,21 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UserAnswersService
-import uk.gov.hmrc.mongo.lock.LockRepository
+import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.viewandamend.ViewAmendSelectorView
 
 import javax.inject.Inject
-import scala.concurrent.duration.DurationLong
 import scala.concurrent.{ExecutionContext, Future}
 
 class ViewAmendSelectorController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
-    getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: ViewAmendSelectorView,
     appConfig: FrontendAppConfig,
-    lockRepository: LockRepository,
+    lockService: LockService,
     userAnswersService: UserAnswersService,
     sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
@@ -87,9 +85,18 @@ class ViewAmendSelectorController @Inject() (
                         }
                         for {
                           userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
-                          lockResult        <- lockRepository.takeLock(qtReference.value, owner, lockTtlSeconds.seconds)
+                          allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
+                          lockResult        <-
+                            lockService.takeLockWithAudit(
+                              qtReference,
+                              owner,
+                              lockTtlSeconds,
+                              request.authenticatedUser,
+                              StartAmendmentOfTransfer,
+                              allTransfersItem
+                            )
                         } yield (userAnswersResult, lockResult) match {
-                          case (Right(answers), Some(_)) =>
+                          case (Right(answers), true) =>
                             val sessionData = SessionData(
                               request.authenticatedUser.internalId,
                               qtReference,
@@ -109,7 +116,7 @@ class ViewAmendSelectorController @Inject() (
                             Redirect(routes.ViewAmendSubmittedController.amend())
                               .withSession(request.session + ("isAmend" -> "true"))
 
-                          case (_, None) =>
+                          case (_, false) =>
                             val memberName = userAnswersResult.toOption
                               .flatMap(_.get(MemberNamePage))
                               .map(_.fullName)

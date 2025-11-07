@@ -52,7 +52,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers with SpecBas
     JourneyStartedType.values.foreach {
       journey =>
         val expectedJson = Json.obj(
-          "journey"                   -> journey.toString,
+          "journeyType"               -> journey.toString,
           "internalReportReferenceId" -> userAnswersTransferNumber.value,
           "roleLoggedInAs"            -> "Psa",
           "affinityGroup"             -> "Individual",
@@ -67,7 +67,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers with SpecBas
 
   "must create correct minimal json for Individual and PSA" in {
     val expectedJson = Json.obj(
-      "journey"                   -> "startNewTransferReport",
+      "journeyType"               -> "startNewTransferReport",
       "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "roleLoggedInAs"            -> "Psa",
       "affinityGroup"             -> "Individual",
@@ -81,7 +81,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers with SpecBas
 
   "must create correct minimal json for Organisation and PSP" in {
     val expectedJson = Json.obj(
-      "journey"                   -> "startNewTransferReport",
+      "journeyType"               -> "startNewTransferReport",
       "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "roleLoggedInAs"            -> "Psp",
       "affinityGroup"             -> "Organisation",
@@ -101,7 +101,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers with SpecBas
   "must create correct json with pension scheme details" in {
     val user         = authenticatedPsp.copy(affinityGroup = Organisation, pensionSchemeDetails = Some(pensionSchemeDetails))
     val expectedJson = Json.obj(
-      "journey"                   -> "startNewTransferReport",
+      "journeyType"               -> "startNewTransferReport",
       "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "pensionSchemeName"         -> "Pension Scheme A",
       "pensionSchemeTaxReference" -> "PSTR123",
@@ -125,7 +125,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers with SpecBas
       transferId      = QtNumber("QT123456")
     )
     val expectedJson = Json.obj(
-      "journey"                   -> "startNewTransferReport",
+      "journeyType"               -> "startNewTransferReport",
       "internalReportReferenceId" -> "QT123456",
       "pensionSchemeName"         -> "Pension Scheme A",
       "pensionSchemeTaxReference" -> "PSTR123",
@@ -151,7 +151,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers with SpecBas
       memberSurname   = Some("Darby")
     )
     val expectedJson = Json.obj(
-      "journey"                   -> "startNewTransferReport",
+      "journeyType"               -> "startNewTransferReport",
       "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "pensionSchemeName"         -> "Pension Scheme A",
       "pensionSchemeTaxReference" -> "PSTR123",
@@ -172,7 +172,7 @@ class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers with SpecBas
   "must create correct json with failure reason for startJourneyFailed" in {
     val user         = authenticatedPsp.copy(affinityGroup = Organisation, pensionSchemeDetails = Some(pensionSchemeDetails))
     val expectedJson = Json.obj(
-      "journey"                   -> "startNewTransferReport",
+      "journeyType"               -> "startNewTransferReport",
       "internalReportReferenceId" -> userAnswersTransferNumber.value,
       "reasonForFailure"          -> "503: Forbidden request",
       "pensionSchemeName"         -> "Pension Scheme A",

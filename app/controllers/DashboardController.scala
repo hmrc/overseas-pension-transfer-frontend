@@ -18,8 +18,9 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
+import models.audit.JourneyStartedType.ContinueTransfer
 import models.authentication.{PsaUser, PspUser}
-import models.{DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferNumber, TransferReportQueryParams}
+import models.{DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams}
 import pages.DashboardPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -27,16 +28,14 @@ import play.api.mvc._
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, SessionRepository}
-import services.TransferService
+import services.{LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.lock.LockRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import viewmodels.PaginatedAllTransfersViewModel
 import views.html.DashboardView
 
 import javax.inject._
-import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -48,7 +47,8 @@ class DashboardController @Inject() (
     transferService: TransferService,
     view: DashboardView,
     appConfig: FrontendAppConfig,
-    lockRepository: LockRepository
+    userAnswersService: UserAnswersService,
+    lockService: LockService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -85,10 +85,10 @@ class DashboardController @Inject() (
                     transfer.transferId match {
                       case TransferNumber(transferRef) =>
                         logger.info(s"[DashboardController][onPageLoad] lock released for $transferRef")
-                        lockRepository.releaseLock(transferRef, owner)
+                        lockService.releaseLock(transferRef, owner)
                       case QtNumber(qtRefefence)       =>
                         logger.info(s"[DashboardController][onPageLoad] lock released for $qtRefefence")
-                        lockRepository.releaseLock(qtRefefence, owner)
+                        lockService.releaseLock(qtRefefence, owner)
                     }
                 }
 
@@ -101,28 +101,39 @@ class DashboardController @Inject() (
   }
 
   def onTransferClick(): Action[AnyContent] = identify.async { implicit request =>
-    val params = TransferReportQueryParams.fromRequest(request)
-    val owner  = request.authenticatedUser match {
+    val params     = TransferReportQueryParams.fromRequest(request)
+    val owner      = request.authenticatedUser match {
       case PsaUser(psaId, _, _, _) => psaId.value
       case PspUser(pspId, _, _, _) => pspId.value
     }
-    val lockId = params.transferId.map(_.value).getOrElse("-")
+    val transferId = params.transferId.getOrElse(TransferId("-"))
+    val pstr       = params.pstr.getOrElse {
+      throw new IllegalStateException("[DashboardController][onTransferClick] Missing PSTR in query params")
+    }
 
-    if (params.qtStatus == Some(QtStatus.InProgress)) {
-      lockRepository.takeLock(lockId, owner, lockTtlSeconds.seconds).flatMap {
-        case Some(_) =>
-          logger.info(s"[DashboardController][onTransferClick] Lock acquired for $lockId by $owner")
-          val dashboardData  = DashboardData.empty
-          val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus, Some(params))
-          Future.successful(Redirect(redirectTarget))
-
-        case None =>
-          logger.info(s"[DashboardController][onTransferClick] Lock already taken for $lockId")
-          Future.successful(
-            Redirect(routes.DashboardController.onPageLoad(params.currentPage))
-              .flashing("lockWarning" -> params.memberName)
-          )
-      }
+    if (params.qtStatus.contains(QtStatus.InProgress)) {
+      for {
+        userAnswersResult <- userAnswersService.getExternalUserAnswers(transferId, pstr, QtStatus.InProgress, None)
+        allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
+        lockAcquired      <- lockService.takeLockWithAudit(
+                               transferId,
+                               owner,
+                               lockTtlSeconds,
+                               request.authenticatedUser,
+                               ContinueTransfer,
+                               allTransfersItem
+                             )
+        result            <- if (lockAcquired) {
+                               val dashboardData  = DashboardData.empty
+                               val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus, Some(params))
+                               Future.successful(Redirect(redirectTarget))
+                             } else {
+                               Future.successful(
+                                 Redirect(routes.DashboardController.onPageLoad(params.currentPage))
+                                   .flashing("lockWarning" -> params.memberName)
+                               )
+                             }
+      } yield result
     } else {
       val dashboardData  = DashboardData.empty
       val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus, Some(params))

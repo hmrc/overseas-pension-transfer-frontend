@@ -21,7 +21,7 @@ import connectors.{PensionSchemeConnector, UserAnswersConnector}
 import models.authentication.{PsaId, PsaUser}
 import models.dtos.UserAnswersDTO
 import models.responses.{SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
-import models.{QtNumber, UserAnswers}
+import models._
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -29,7 +29,7 @@ import org.mockito.Mockito.when
 import org.scalatest.RecoverMethods.recoverToExceptionIf
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.http.HeaderCarrier
@@ -151,13 +151,70 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
         eqTo(emptySessionData.schemeInformation.srnNumber.value),
         eqTo(testPsaId.get)
       )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(true))
+        .thenReturn(Future.successful(false))
 
       val result = recoverToExceptionIf[RuntimeException] {
         service.submitDeclaration(authenticatedUser, userAnswers, emptySessionData, testPsaId)
       }
 
       result.map(_.getMessage must include("PSA is not associated with the scheme"))
+    }
+  }
+
+  "toAllTransfersItem" - {
+
+    "should create AllTransfersItem with Submitted status including submissionDate" in {
+      val userAnswersJson = Json.obj(
+        "reportDetails" -> Json.obj("qtStatus" -> "Submitted"),
+        "memberDetails" -> Json.obj(
+          "nino" -> "AA123456A",
+          "name" -> Json.obj("firstName" -> "John", "lastName" -> "Doe")
+        )
+      )
+
+      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, instant)
+      val result = service.toAllTransfersItem(ua)
+
+      result.transferId mustBe userAnswersTransferNumber
+      result.qtStatus mustBe Some(QtStatus.Submitted)
+      result.memberFirstName mustBe Some("John")
+      result.memberSurname mustBe Some("Doe")
+      result.nino mustBe Some("AA123456A")
+      result.submissionDate mustBe Some(instant)
+      result.lastUpdated mustBe None
+    }
+
+    "should create AllTransfersItem with InProgress status including lastUpdated" in {
+      val userAnswersJson = Json.obj(
+        "reportDetails" -> Json.obj("qtStatus" -> "InProgress"),
+        "memberDetails" -> Json.obj(
+          "nino" -> "AA654321B",
+          "name" -> Json.obj("firstName" -> "Jane", "lastName" -> "Smith")
+        )
+      )
+
+      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, instant)
+      val result = service.toAllTransfersItem(ua)
+
+      result.qtStatus mustBe Some(QtStatus.InProgress)
+      result.lastUpdated mustBe Some(instant)
+      result.submissionDate mustBe None
+      result.memberFirstName mustBe Some("Jane")
+      result.memberSurname mustBe Some("Smith")
+      result.nino mustBe Some("AA654321B")
+    }
+
+    "should default to InProgress when qtStatus missing" in {
+      val userAnswersJson = Json.obj(
+        "memberDetails" -> Json.obj("nino" -> "AA000000A")
+      )
+
+      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, instant)
+      val result = service.toAllTransfersItem(ua)
+
+      result.qtStatus mustBe Some(QtStatus.InProgress)
+      result.lastUpdated mustBe Some(instant)
+      result.submissionDate mustBe None
     }
   }
 }

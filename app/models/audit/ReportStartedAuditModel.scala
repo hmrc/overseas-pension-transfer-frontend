@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 case class ReportStartedAuditModel(
     internalTransferID: TransferId,
     authenticatedUser: AuthenticatedUser,
-    journey: JourneyStartedType,
+    journeyType: JourneyStartedType,
     allTransfersItem: Option[AllTransfersItem],
     failure: Option[String]
   ) extends JsonAuditModel {
@@ -71,7 +71,7 @@ case class ReportStartedAuditModel(
     failure.map(reason => { Json.obj("reasonForFailure" -> reason) }).getOrElse(Json.obj())
 
   override val detail: JsValue = Json.obj(
-    "journey"                   -> journey.toString,
+    "journeyType"               -> journeyType.toString,
     "internalReportReferenceId" -> internalTransferID,
     "roleLoggedInAs"            -> userRole,
     "affinityGroup"             -> affinityGroup,
@@ -84,9 +84,9 @@ object ReportStartedAuditModel {
   def build(
       transferId: TransferId,
       authenticatedUser: AuthenticatedUser,
-      journey: JourneyStartedType,
+      journeyType: JourneyStartedType,
       allTransfersItem: Option[AllTransfersItem],
       failure: Option[String] = None
     ): ReportStartedAuditModel =
-    ReportStartedAuditModel(transferId, authenticatedUser, journey, allTransfersItem, failure)
+    ReportStartedAuditModel(transferId, authenticatedUser, journeyType, allTransfersItem, failure)
 }
