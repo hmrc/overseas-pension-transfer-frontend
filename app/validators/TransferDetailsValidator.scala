@@ -173,22 +173,45 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
       case None                     => DataMissingError(IsTransferCashOnlyPage).invalidNec
     }
 
-  private def validateTypeOfAsset(answers: UserAnswers): ValidationResult[Seq[TypeOfAsset]] =
-    answers.get(TypeOfAssetPage) match {
-      case Some(asset) => asset.validNec
+  private def validateTypeOfAsset(answers: UserAnswers): ValidationResult[Seq[TypeOfAsset]] = {
+    answers.get(IsTransferCashOnlyPage) match {
+      case Some(true)  => answers.get(TypeOfAssetPage) match {
+          case Some(asset) if asset.length == 1 && asset.contains(Cash) => asset.validNec
+          case Some(_)                                                  =>
+            GenericError("typeOfAsset expected to be Seq(Cash) when cashOnlyTransfer is true")
+              .invalidNec
+          case None                                                     => DataMissingError(TypeOfAssetPage).invalidNec
+        }
+      case Some(false) => answers.get(TypeOfAssetPage) match {
+          case Some(asset) => asset.validNec
+          case None        => DataMissingError(TypeOfAssetPage).invalidNec
+        }
       case None        => DataMissingError(TypeOfAssetPage).invalidNec
     }
+  }
 
+  // Cash value and cash assets can be missing when Cash not present in Type of assets
   private def validateCashAmountInTransfer(
       answers: UserAnswers
     ): ValidationResult[Option[BigDecimal]] = {
     answers.get(IsTransferCashOnlyPage) match {
-      case Some(_) =>
+      case Some(true)  =>
         answers.get(CashAmountInTransferPage) match {
           case Some(cashAmountInTransfer) if cashAmountInTransfer > 0 => Some(cashAmountInTransfer).validNec
           case _                                                      => DataMissingError(CashAmountInTransferPage).invalidNec
         }
-      case None    => DataMissingError(CashAmountInTransferPage).invalidNec
+      case Some(false) => answers.get(TypeOfAssetPage) match {
+          case Some(assets) if assets.contains(Cash) =>
+            answers.get(CashAmountInTransferPage) match {
+              case Some(cashAmountInTransfer) => Some(cashAmountInTransfer).validNec
+              case None                       => DataMissingError(CashAmountInTransferPage).invalidNec
+            }
+          case Some(_)                               => answers.get(CashAmountInTransferPage) match {
+              case Some(_) => GenericError("cashValue not expected when Cash is not present in type of assets").invalidNec
+              case None    => None.validNec
+            }
+        }
+      case None        => DataMissingError(CashAmountInTransferPage).invalidNec
     }
   }
 

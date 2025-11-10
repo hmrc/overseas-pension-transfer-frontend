@@ -80,7 +80,6 @@ object TaskJourneyViewModels {
               if (nec == TransferDetailsValidator.notStarted) {
                 NotStarted
               } else {
-                println("\n----\nnec = " + nec + "\n----\n")
                 InProgress
               }
           }
