@@ -31,8 +31,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.{AuditService, UserAnswersService}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import views.html.WhatWillBeNeededView
 
 import scala.concurrent.Future
@@ -42,62 +40,71 @@ class WhatWillBeNeededControllerSpec
     with SpecBase
     with MockitoSugar {
 
-  "WhatWillBeNeededController.onPageLoad" - {
+  "onPageLoad" - {
+    "must render the view with the correct form action" in {
+      val application = applicationBuilder().build()
 
-    "must initialise UserAnswers, persist once, and render the view when none exist" in {
+      running(application) {
+        val request = FakeRequest(GET, routes.WhatWillBeNeededController.onPageLoad().url)
+        val result  = route(application, request).value
+        val view    = application.injector.instanceOf[WhatWillBeNeededView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view()(request, messages(application)).toString
+      }
+    }
+  }
+
+  "onSubmit" - {
+    "must initialise UserAnswers, persist once, audit, and redirect" in {
       val mockRepo                                    = mock[SessionRepository]
-      val mockUserAnswersService                      = mock[UserAnswersService]
+      val mockUserAnswerSvc                           = mock[UserAnswersService]
       val mockAuditService                            = mock[AuditService]
       val eventCaptor: ArgumentCaptor[JsonAuditModel] = ArgumentCaptor.forClass(classOf[JsonAuditModel])
 
-      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any())).thenReturn(Future.successful(Right(Done)))
+      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers])(any())).thenReturn(Future.successful(Right(Done)))
       when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder()
           .overrides(
             bind[SessionRepository].toInstance(mockRepo),
-            bind[UserAnswersService].toInstance(mockUserAnswersService),
+            bind[UserAnswersService].toInstance(mockUserAnswerSvc),
             bind[AuditService].toInstance(mockAuditService)
           ).build()
 
       running(application) {
-        val request  = FakeRequest(GET, routes.WhatWillBeNeededController.onPageLoad().url)
-        val result   = route(application, request).value
-        val view     = application.injector.instanceOf[WhatWillBeNeededView]
-        val nextPage = controllers.routes.TaskListController.onPageLoad().url
+        val request = FakeRequest(POST, routes.WhatWillBeNeededController.onSubmit().url)
+        val result  = route(application, request).value
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(nextPage)(request, messages(application)).toString
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustBe controllers.routes.TaskListController.onPageLoad().url
 
-        verify(mockRepo).set(any[SessionData])
+        verify(mockRepo, times(1)).set(any[SessionData])
         verify(mockAuditService, times(1)).audit(eventCaptor.capture())(any())
 
-        val auditData: ReportStartedAuditModel = eventCaptor.getValue.asInstanceOf[ReportStartedAuditModel]
-        auditData.auditType mustEqual "OverseasPensionTransferReportStarted"
-        auditData.journey mustEqual StartNewTransfer
-        auditData.allTransfersItem mustBe None
-        auditData.failure mustBe None
+        val auditModel = eventCaptor.getValue.asInstanceOf[ReportStartedAuditModel]
+        auditModel.journeyType mustEqual StartNewTransfer
+        auditModel.auditType mustEqual "OverseasPensionTransferReportStarted"
       }
     }
 
-    "must redirect to JourneyRecovery when persistence returns false" in {
-      val mockRepo               = mock[SessionRepository]
-      val mockUserAnswersService = mock[UserAnswersService]
+    "must redirect to JourneyRecovery when persistence fails" in {
+      val mockRepo          = mock[SessionRepository]
+      val mockUserAnswerSvc = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any[UserAnswers])(any())).thenReturn(Future.successful(Right(Done)))
+      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers])(any())).thenReturn(Future.successful(Right(Done)))
       when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(false))
 
       val application =
         applicationBuilder()
           .overrides(
             bind[SessionRepository].toInstance(mockRepo),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
+            bind[UserAnswersService].toInstance(mockUserAnswerSvc)
+          ).build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.WhatWillBeNeededController.onPageLoad().url)
+        val request = FakeRequest(POST, routes.WhatWillBeNeededController.onSubmit().url)
         val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER

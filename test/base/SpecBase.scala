@@ -20,7 +20,7 @@ import controllers.actions._
 import models.address.{Countries, PropertyAddress}
 import models.authentication._
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
-import models.{PensionSchemeDetails, PersonName, PstrNumber, QtNumber, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import models.{AllTransfersItem, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -44,7 +44,7 @@ import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 import java.time.format.{DateTimeFormatter, FormatStyle}
-import java.time.{Instant, ZoneId}
+import java.time.{Instant, LocalDate, ZoneId}
 import java.util.UUID
 
 trait SpecBase
@@ -231,4 +231,17 @@ trait SpecBase
       withQuotedShares
     }
   }
+
+  val transferItem = AllTransfersItem(
+    transferId      = userAnswersTransferNumber,
+    qtVersion       = Some("v1"),
+    qtStatus        = Some(QtStatus.InProgress),
+    nino            = Some("AA123456A"),
+    memberFirstName = Some("John"),
+    memberSurname   = Some("Doe"),
+    qtDate          = Some(LocalDate.now),
+    lastUpdated     = Some(Instant.now),
+    pstrNumber      = Some(PstrNumber("12345678AB")),
+    submissionDate  = None
+  )
 }
