@@ -19,7 +19,7 @@ package controllers
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.audit.JourneyStartedType.StartNewTransfer
 import models.audit.ReportStartedAuditModel
-import models.{NormalMode, PstrNumber, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import models.{NormalMode, SessionData, TransferNumber, UserAnswers}
 import pages.WhatWillBeNeededPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -27,11 +27,9 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{AuditService, UserAnswersService}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WhatWillBeNeededView
 
-import java.time.Instant
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,12 +46,15 @@ class WhatWillBeNeededController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
-    // TODO remove .get
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData) { implicit request =>
+    Ok(view())
+  }
+
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     val sessionData = SessionData(
       request.authenticatedUser.internalId,
       transferId = TransferNumber(UUID.randomUUID().toString),
-      request.authenticatedUser.pensionSchemeDetails.get,
+      request.schemeDetails,
       request.authenticatedUser,
       Json.obj()
     )
@@ -70,13 +71,13 @@ class WhatWillBeNeededController @Inject() (
           ReportStartedAuditModel(
             sessionData.transferId,
             request.authenticatedUser,
+            request.schemeDetails,
             StartNewTransfer,
             None,
             None
           )
         )
-
-        Ok(view(WhatWillBeNeededPage.nextPage(NormalMode, newUa).url))
+        Redirect(WhatWillBeNeededPage.nextPage(NormalMode, newUa))
       } else {
         logger.warn("SessionRepository.set returned false during SessionData initialisation")
         Redirect(routes.JourneyRecoveryController.onPageLoad())

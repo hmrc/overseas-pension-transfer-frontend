@@ -16,14 +16,15 @@
 
 package models.audit
 
-import models.{AllTransfersItem, TransferId}
+import models.{AllTransfersItem, PensionSchemeDetails, TransferId}
 import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
 import play.api.libs.json.{JsValue, Json}
 
 case class ReportStartedAuditModel(
     internalTransferID: TransferId,
     authenticatedUser: AuthenticatedUser,
-    journey: JourneyStartedType,
+    pensionSchemeDetails: PensionSchemeDetails,
+    journeyType: JourneyStartedType,
     allTransfersItem: Option[AllTransfersItem],
     failure: Option[String]
   ) extends JsonAuditModel {
@@ -32,18 +33,14 @@ case class ReportStartedAuditModel(
   private val userRole           = authenticatedUser.userType
 
   private val pensionSchemeName =
-    authenticatedUser.pensionSchemeDetails
-      .map(details => Json.obj("pensionSchemeName" -> details.schemeName))
-      .getOrElse(Json.obj())
+    Json.obj("pensionSchemeName" -> pensionSchemeDetails.schemeName)
 
   private val pstr =
-    authenticatedUser.pensionSchemeDetails
-      .map(details => Json.obj("pensionSchemeTaxReference" -> details.pstrNumber.value))
-      .getOrElse(Json.obj())
+    Json.obj("pensionSchemeTaxReference" -> pensionSchemeDetails.pstrNumber.value)
 
   private val (userId, affinityGroup) = authenticatedUser match {
-    case PsaUser(psaId, _, _, affinityGroup) => (psaId.value, affinityGroup)
-    case PspUser(pspId, _, _, affinityGroup) => (pspId.value, affinityGroup)
+    case PsaUser(psaId, _, affinityGroup) => (psaId.value, affinityGroup)
+    case PspUser(pspId, _, affinityGroup) => (pspId.value, affinityGroup)
   }
 
   private val memberFirstName =
@@ -71,7 +68,7 @@ case class ReportStartedAuditModel(
     failure.map(reason => { Json.obj("reasonForFailure" -> reason) }).getOrElse(Json.obj())
 
   override val detail: JsValue = Json.obj(
-    "journey"                   -> journey.toString,
+    "journeyType"               -> journeyType.toString,
     "internalReportReferenceId" -> internalTransferID,
     "roleLoggedInAs"            -> userRole,
     "affinityGroup"             -> affinityGroup,
@@ -84,9 +81,10 @@ object ReportStartedAuditModel {
   def build(
       transferId: TransferId,
       authenticatedUser: AuthenticatedUser,
-      journey: JourneyStartedType,
+      pensionSchemeDetails: PensionSchemeDetails,
+      journeyType: JourneyStartedType,
       allTransfersItem: Option[AllTransfersItem],
       failure: Option[String] = None
     ): ReportStartedAuditModel =
-    ReportStartedAuditModel(transferId, authenticatedUser, journey, allTransfersItem, failure)
+    ReportStartedAuditModel(transferId, authenticatedUser, pensionSchemeDetails, journeyType, allTransfersItem, failure)
 }

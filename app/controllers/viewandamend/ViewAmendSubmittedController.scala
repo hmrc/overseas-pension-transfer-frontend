@@ -19,19 +19,17 @@ package controllers.viewandamend
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import controllers.viewandamend.routes
+import models.audit.JourneyStartedType.ContinueAmendmentOfTransfer
 import models.authentication.{PsaUser, PspUser}
-import models.requests.IdentifierRequest
 import models.{AmendCheckMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
 import repositories.SessionRepository
-import services.UserAnswersService
-import uk.gov.hmrc.mongo.lock.LockRepository
+import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
@@ -42,9 +40,7 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.viewandamend.ViewSubmittedView
 
-import scala.concurrent.duration.DurationLong
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
 
 class ViewAmendSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
@@ -54,7 +50,7 @@ class ViewAmendSubmittedController @Inject() (
     getData: DataRetrievalAction,
     val controllerComponents: MessagesControllerComponents,
     view: ViewSubmittedView,
-    lockRepository: LockRepository,
+    lockService: LockService,
     sessionRepository: SessionRepository,
     appConfig: FrontendAppConfig
   )(implicit ec: ExecutionContext
@@ -72,9 +68,11 @@ class ViewAmendSubmittedController @Inject() (
                   val sessionData = SessionData(
                     request.authenticatedUser.internalId,
                     qtReference,
-                    request.authenticatedUser.pensionSchemeDetails.get,
+                    request.schemeDetails,
                     request.authenticatedUser,
-                    Json.obj()
+                    Json.obj(
+                      "receiptDate" -> userAnswers.lastUpdated
+                    )
                   )
 
                   val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) {
@@ -95,48 +93,61 @@ class ViewAmendSubmittedController @Inject() (
     (identify andThen schemeData).async {
       implicit request =>
         val owner = request.authenticatedUser match {
-          case PsaUser(psaId, _, _, _) => psaId.value
-          case PspUser(pspId, _, _, _) => pspId.value
+          case PsaUser(psaId, _, _) => psaId.value
+          case PspUser(pspId, _, _) => pspId.value
         }
 
-        lockRepository.takeLock(qtReference.value, owner, appConfig.dashboardLockTtl.seconds) flatMap {
-          case Some(_) =>
-            userAnswersService.getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber))
-              .flatMap {
-                case Right(userAnswers) =>
-                  val sessionData = SessionData(
-                    request.authenticatedUser.internalId,
-                    qtReference,
-                    request.authenticatedUser.pensionSchemeDetails.get,
-                    request.authenticatedUser,
-                    Json.obj()
-                  )
+        for {
+          userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber))
+          allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
+          lockAcquired      <- lockService.takeLockWithAudit(
+                                 qtReference,
+                                 owner,
+                                 appConfig.dashboardLockTtl,
+                                 request.authenticatedUser,
+                                 request.schemeDetails,
+                                 ContinueAmendmentOfTransfer,
+                                 allTransfersItem
+                               )
+          result            <- (userAnswersResult, lockAcquired) match {
+                                 case (Right(userAnswers), true) =>
+                                   val sessionData = SessionData(
+                                     request.authenticatedUser.internalId,
+                                     qtReference,
+                                     request.schemeDetails,
+                                     request.authenticatedUser,
+                                     Json.obj("receiptDate" -> userAnswers.lastUpdated)
+                                   )
 
-                  val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) {
-                    name =>
-                      sessionData.set(MemberNamePage, name).getOrElse(sessionData)
-                  }
+                                   val sessionDataWithMemberName: SessionData =
+                                     userAnswers.get(MemberNamePage).fold(sessionData) { name =>
+                                       sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+                                     }
 
-                  sessionRepository.set(sessionDataWithMemberName) map {
-                    _ => Redirect(routes.ViewAmendSubmittedController.amend())
-                  }
-                case Left(_)            =>
-                  Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-              }
-          case None    =>
-            Future.successful(
-              Redirect(routes.SubmittedTransferSummaryController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
-                .flashing("lockWarning" -> "")
-            )
+                                   sessionRepository.set(sessionDataWithMemberName).map { _ =>
+                                     Redirect(routes.ViewAmendSubmittedController.amend())
+                                   }
 
-        }
+                                 case (_, false) =>
+                                   Future.successful(
+                                     Redirect(
+                                       routes.SubmittedTransferSummaryController.onPageLoad(
+                                         qtReference,
+                                         pstr,
+                                         qtStatus,
+                                         versionNumber
+                                       )
+                                     ).flashing("lockWarning" -> "")
+                                   )
 
+                                 case _ =>
+                                   Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+                               }
+        } yield result
     }
 
   def amend(): Action[AnyContent] =
     (identify andThen schemeData andThen getData) { implicit dr =>
-      implicit val idReq: IdentifierRequest[_] =
-        IdentifierRequest(dr.request, dr.authenticatedUser)
       Ok(renderView(dr.sessionData, dr.userAnswers, isAmend = true))
     }
 
@@ -144,7 +155,7 @@ class ViewAmendSubmittedController @Inject() (
       sessionData: SessionData,
       userAnswers: UserAnswers,
       isAmend: Boolean
-    )(implicit request: IdentifierRequest[_]
+    )(implicit request: Request[_]
     ): HtmlFormat.Appendable = {
 
     val schemeName                      = sessionData.schemeInformation.schemeName

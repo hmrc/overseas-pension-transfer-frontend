@@ -63,7 +63,6 @@ class SessionRepositoryISpec
     PsaUser(
       PsaId("A123456"),
       "internalId",
-      None,
       Individual
     ),
     Json.obj("foo" -> "bar"),

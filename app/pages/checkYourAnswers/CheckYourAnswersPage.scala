@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package models.requests
+package pages.checkYourAnswers
 
-import models.UserAnswers
-import models.authentication.AuthenticatedUser
-import play.api.mvc.{Request, WrappedRequest}
+import models.{NormalMode, UserAnswers}
+import pages.Page
+import play.api.mvc.Call
 
-case class OptionalDataRequest[A](request: Request[A], authenticatedUser: AuthenticatedUser, userAnswers: Option[UserAnswers])
-    extends WrappedRequest[A](request)
+object CheckYourAnswersPage extends Page {
 
-case class DataRequest[A](request: Request[A], authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers) extends WrappedRequest[A](request)
+  override def nextPageNormalMode(answers: UserAnswers): Call =
+    controllers.routes.SubmitToHMRCController.onPageLoad(NormalMode)
+
+}

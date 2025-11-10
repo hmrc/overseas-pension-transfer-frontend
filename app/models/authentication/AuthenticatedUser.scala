@@ -23,9 +23,6 @@ import play.api.libs.json._
 sealed trait AuthenticatedUser {
   def internalId: String
   def userType: UserType
-  def pensionSchemeDetails: Option[PensionSchemeDetails]
-
-  def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser
 }
 
 object AuthenticatedUser {
@@ -49,12 +46,9 @@ object AuthenticatedUser {
 case class PsaUser(
     psaId: PsaId,
     internalId: String,
-    pensionSchemeDetails: Option[PensionSchemeDetails] = None,
     affinityGroup: AffinityGroup
   ) extends AuthenticatedUser {
   override val userType: UserType = Psa
-
-  override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
 }
 
 object PsaUser {
@@ -64,12 +58,9 @@ object PsaUser {
 case class PspUser(
     pspId: PspId,
     internalId: String,
-    pensionSchemeDetails: Option[PensionSchemeDetails] = None,
     affinityGroup: AffinityGroup
   ) extends AuthenticatedUser {
   override val userType: UserType = Psp
-
-  override def updatePensionSchemeDetails(schemeDetails: PensionSchemeDetails): AuthenticatedUser = this.copy(pensionSchemeDetails = Some(schemeDetails))
 }
 
 object PspUser {

@@ -17,7 +17,7 @@
 package services
 
 import config.FrontendAppConfig
-import models.TransferNumber
+import models.{PensionSchemeDetails, PstrNumber, SrnNumber, TransferNumber}
 import models.audit.{JourneyStartedType, ReportStartedAuditModel}
 import models.authentication.{PsaId, PsaUser}
 import org.mockito.ArgumentMatchers.any
@@ -49,8 +49,13 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with 
   private val authenticatedUser = PsaUser(
     PsaId("21000005"),
     "internalId",
-    None,
     Individual
+  )
+
+  private val schemeDetails = PensionSchemeDetails(
+    SrnNumber("S1234567"),
+    PstrNumber("12345678AB"),
+    "SchemeName"
   )
 
   override def beforeEach(): Unit = {
@@ -64,7 +69,7 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with 
     JourneyStartedType.values.foreach {
       journey =>
         s"must send an event to the audit connector for $journey event type" in {
-          val eventModel = ReportStartedAuditModel.build(transferNumber, authenticatedUser, journey, None, None)
+          val eventModel = ReportStartedAuditModel.build(transferNumber, authenticatedUser, schemeDetails, journey, None, None)
 
           when(mockAppConfig.appName).thenReturn(appName)
           service.audit(eventModel)
@@ -73,11 +78,13 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with 
           verify(mockAuditConnector, times(1)).sendExtendedEvent(eventCaptor.capture())(any(), any())
 
           val expectedJson = Json.obj(
-            "journey"                   -> journey.toString,
+            "journeyType"               -> journey.toString,
             "internalReportReferenceId" -> transferNumber.value,
             "roleLoggedInAs"            -> "Psa",
             "affinityGroup"             -> "Individual",
-            "requesterIdentifier"       -> "21000005"
+            "requesterIdentifier"       -> "21000005",
+            "pensionSchemeName"         -> "SchemeName",
+            "pensionSchemeTaxReference" -> "12345678AB"
           )
 
           val event = eventCaptor.getValue

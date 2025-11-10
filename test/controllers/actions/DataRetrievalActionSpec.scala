@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import models.requests.{DisplayRequest, IdentifierRequest}
+import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import models.responses.UserAnswersErrorResponse
 import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
@@ -55,7 +55,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
   class Harness(sessionRepository: SessionRepository, userAnswersService: UserAnswersService)
       extends DataRetrievalActionImpl(sessionRepository, userAnswersService) {
-    def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, DisplayRequest[A]]] = refine(request)
+    def callRefine[A](request: SchemeRequest[A]): Future[Either[Result, DisplayRequest[A]]] = refine(request)
   }
 
   "Data Retrieval Action" - {
@@ -71,7 +71,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val action = new Harness(sessionRepository, userAnswersService)
 
-        val futureResult = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
+        val futureResult = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
         futureResult.left.map {
           result =>
@@ -92,7 +92,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val action = new Harness(sessionRepository, userAnswersService)
 
-        val futureResult = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
+        val futureResult = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
         futureResult.left.map {
           result =>
@@ -114,7 +114,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Right(userAnswers)))
         val action = new Harness(sessionRepository, userAnswersService)
 
-        val result = action.callRefine(IdentifierRequest(FakeRequest(), psaUser)).futureValue
+        val result = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
         result.map {
           displayRequest =>

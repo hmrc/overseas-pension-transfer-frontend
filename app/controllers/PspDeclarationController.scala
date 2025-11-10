@@ -18,10 +18,11 @@ package controllers
 
 import controllers.actions._
 import forms.PspDeclarationFormProvider
-import models.Mode
+import models.{Mode, PersonName}
 import models.authentication.PsaId
 import models.responses.SubmissionResponse
 import pages.PspDeclarationPage
+import pages.memberDetails.MemberNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.{DateSubmittedQuery, QtNumberQuery}
@@ -63,10 +64,20 @@ class PspDeclarationController @Inject() (
           userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId))
             .flatMap {
               case Right(SubmissionResponse(qtNumber, receiptDate)) =>
+                val name = request.sessionData.get(MemberNamePage) match {
+                  case Some(value) => value
+                  case None        =>
+                    request.userAnswers.get(MemberNamePage) match {
+                      case Some(value) => value
+                      case None        => PersonName("Undefined", "Undefined")
+                    }
+                }
+
                 for {
                   updatedSessionData    <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
                   updateWithReceiptDate <- Future.fromTry(updatedSessionData.set(DateSubmittedQuery, receiptDate))
-                  _                     <- sessionRepository.set(updateWithReceiptDate)
+                  updateWithMemberName  <- Future.fromTry(updateWithReceiptDate.set(MemberNamePage, name))
+                  _                     <- sessionRepository.set(updateWithMemberName)
                 } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
 
               case _ =>
