@@ -30,7 +30,7 @@ class OtherAssetsCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
-    val moreThan5Ua = (0 to 5).foldLeft(emptyUserAnswers)((ua, idx) => ua.withOtherAsset(idx))
+    val moreThan5Ua = (0 to 5).foldLeft(emptyAnswers)((ua, idx) => ua.withOtherAsset(idx))
 
     "in Normal Mode" - {
       "must go to AmendContinue" in {
