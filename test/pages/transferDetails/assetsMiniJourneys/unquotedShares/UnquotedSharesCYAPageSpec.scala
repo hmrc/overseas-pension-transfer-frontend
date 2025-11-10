@@ -21,6 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import uaOps.UAOps.Assets
 
 class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val index = 0
@@ -29,20 +30,29 @@ class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
+    val moreThan5Ua = (0 to 5).foldLeft(emptyUserAnswers)((ua, idx) => ua.withUnquotedSharesAsset(idx))
+
     "in Normal Mode" - {
       "must go to AmendContinue" in {
         UnquotedSharesCYAPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
           NormalMode
         )
       }
-
-      // TODO: must go to 5 or more controller if 5 assets
-
+      "must go to more page if more than 5 assets" in {
+        UnquotedSharesCYAPage(index).nextPage(NormalMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(
+          NormalMode
+        )
+      }
     }
 
     "in CheckMode" - {
       "must go to AmendContinue" in {
         UnquotedSharesCYAPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
+          CheckMode
+        )
+      }
+      "must go to more page if more than 5 assets" in {
+        UnquotedSharesCYAPage(index).nextPage(CheckMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(
           CheckMode
         )
       }
@@ -54,6 +64,12 @@ class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase 
           FinalCheckMode
         )
       }
+      "must go to more page if more than 5 assets" in {
+        UnquotedSharesCYAPage(index).nextPage(FinalCheckMode, moreThan5Ua) mustEqual
+          AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(
+            FinalCheckMode
+          )
+      }
     }
 
     "in AmendCheckMode" - {
@@ -61,6 +77,12 @@ class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase 
         UnquotedSharesCYAPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
           AmendCheckMode
         )
+      }
+      "must go to more page if more than 5 assets" in {
+        UnquotedSharesCYAPage(index).nextPage(AmendCheckMode, moreThan5Ua) mustEqual
+          AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(
+            AmendCheckMode
+          )
       }
     }
   }

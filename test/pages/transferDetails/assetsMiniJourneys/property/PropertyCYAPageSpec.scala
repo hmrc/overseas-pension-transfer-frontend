@@ -21,6 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import uaOps.UAOps.Assets
 
 class PropertyCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val index = 0
@@ -29,18 +30,29 @@ class PropertyCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
+    val moreThan5Ua = (0 to 5).foldLeft(emptyUserAnswers)((ua, idx) => ua.withPropertyAsset(idx))
+
     "in Normal Mode" - {
       "must go to AmendContinue" in {
         PropertyCYAPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(
           NormalMode
         )
       }
-      // TODO: must go to 5 or more controller if 5 assets
+      "must go to more page if more than 5 assets" in {
+        PropertyCYAPage(index).nextPage(NormalMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MorePropertyDeclarationController.onPageLoad(
+          NormalMode
+        )
+      }
     }
 
     "in CheckMode" - {
       "must go to AmendContinue" in {
         PropertyCYAPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(
+          CheckMode
+        )
+      }
+      "must go to more page if more than 5 assets" in {
+        PropertyCYAPage(index).nextPage(CheckMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MorePropertyDeclarationController.onPageLoad(
           CheckMode
         )
       }
@@ -52,11 +64,21 @@ class PropertyCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
           FinalCheckMode
         )
       }
+      "must go to more page if more than 5 assets" in {
+        PropertyCYAPage(index).nextPage(FinalCheckMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MorePropertyDeclarationController.onPageLoad(
+          FinalCheckMode
+        )
+      }
     }
 
     "in AmendCheckMode" - {
       "must go to AmendContinue" in {
         PropertyCYAPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(
+          AmendCheckMode
+        )
+      }
+      "must go to more page if more than 5 assets" in {
+        PropertyCYAPage(index).nextPage(AmendCheckMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MorePropertyDeclarationController.onPageLoad(
           AmendCheckMode
         )
       }
