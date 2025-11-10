@@ -60,11 +60,11 @@ class UnquotedSharesAmendContinueController @Inject() (
             updatedSession <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.UnquotedShares, completed = true))
             _              <- sessionRepository.set(updatedSession)
           } yield {
-            val shares = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
+            val shares = UnquotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
             Ok(view(preparedForm, shares, mode))
           }
         case NormalMode                                  =>
-          val shares = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
+          val shares = UnquotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
           Future.successful(Ok(view(preparedForm, shares, mode)))
       }
     }
@@ -73,7 +73,7 @@ class UnquotedSharesAmendContinueController @Inject() (
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val shares = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
+          val shares = UnquotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
           Future.successful(BadRequest(view(formWithErrors, shares, mode)))
         },
         continue => {

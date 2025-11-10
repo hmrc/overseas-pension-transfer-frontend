@@ -18,9 +18,10 @@ package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
 
 class UnquotedSharesValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val index = 0
@@ -30,7 +31,6 @@ class UnquotedSharesValuePageSpec extends AnyFreeSpec with Matchers with SpecBas
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
-
       "must go to the Next page" in {
         UnquotedSharesValuePage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(
           NormalMode,
@@ -39,18 +39,30 @@ class UnquotedSharesValuePageSpec extends AnyFreeSpec with Matchers with SpecBas
       }
     }
 
-    "in Check Mode" - {
-
-      "must go to Check Answers" in {
-
-        UnquotedSharesValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(index)
+    "in CheckMode" - {
+      "must go to the Next page" in {
+        UnquotedSharesValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(
+          CheckMode,
+          index
+        )
       }
     }
 
     "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        UnquotedSharesValuePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      "must go to the Next page" in {
+        UnquotedSharesValuePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(
+          FinalCheckMode,
+          index
+        )
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to the Next page" in {
+        UnquotedSharesValuePage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(
+          AmendCheckMode,
+          index
+        )
       }
     }
   }

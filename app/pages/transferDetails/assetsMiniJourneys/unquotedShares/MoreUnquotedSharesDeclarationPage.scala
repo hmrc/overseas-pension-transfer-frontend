@@ -28,7 +28,6 @@ case object MoreUnquotedSharesDeclarationPage extends QuestionPage[Boolean] with
   override def path: JsPath =
     JsPath \ "transferDetails" \ "moreUnquoted"
 
-
   override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call =
     TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
       case Some(route) => route

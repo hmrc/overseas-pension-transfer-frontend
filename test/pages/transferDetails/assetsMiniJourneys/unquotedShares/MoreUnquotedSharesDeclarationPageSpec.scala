@@ -18,9 +18,12 @@ package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.{CheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.assets.{QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import pages.transferDetails.TypeOfAssetPage
+import queries.assets.AssetCompletionFlag
 
 class MoreUnquotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
@@ -29,18 +32,83 @@ class MoreUnquotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers wi
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
-
       "must go to TransferDetailsCYAController" in {
-        MoreUnquotedSharesDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual
+        MoreUnquotedSharesDeclarationPage.nextPageWith(NormalMode, emptyAnswers, sessionDataMemberName) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if continue selected" in {
+        val selectedTypes: Seq[TypeOfAsset] = Seq(QuotedSharesMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
+        val userAnswers                     = emptyAnswers.set(MoreUnquotedSharesDeclarationPage, false)
+        val sessionData                     =
+          for {
+            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true)
+          } yield sd2
+
+        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
+        result mustBe QuotedSharesMiniJourney.call
       }
     }
 
     "in Check Mode" - {
-
       "must go to TransferDetailsCYAController" in {
-        MoreUnquotedSharesDeclarationPage.nextPage(CheckMode, emptyAnswers) mustEqual
+        MoreUnquotedSharesDeclarationPage.nextPageWith(CheckMode, emptyAnswers, sessionDataMemberName) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if continue selected and more assets selected" in {
+        val selectedTypes: Seq[TypeOfAsset] = Seq(QuotedSharesMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
+        val userAnswers                     = emptyAnswers.set(MoreUnquotedSharesDeclarationPage, false)
+        val sessionData                     =
+          for {
+            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true)
+          } yield sd2
+
+        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
+        // TODO: The next call should be in check mode too
+        result mustBe QuotedSharesMiniJourney.call
+      }
+    }
+
+    "in FinalCheckMode" - {
+      "must go to amend page" in {
+        MoreUnquotedSharesDeclarationPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+
+      "must go to the next asset page if continue selected and more assets selected" in {
+        val selectedTypes: Seq[TypeOfAsset] = Seq(QuotedSharesMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
+        val userAnswers                     = emptyAnswers.set(MoreUnquotedSharesDeclarationPage, false)
+        val sessionData                     =
+          for {
+            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true)
+          } yield sd2
+
+        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(FinalCheckMode, userAnswers.success.value, sessionData.success.value)
+        result mustBe QuotedSharesMiniJourney.call
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to amend page" in {
+        MoreUnquotedSharesDeclarationPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to the next asset page if continue selected and more assets selected" in {
+        val selectedTypes: Seq[TypeOfAsset] = Seq(QuotedSharesMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
+        val userAnswers                     = emptyAnswers.set(MoreUnquotedSharesDeclarationPage, false)
+        val sessionData                     =
+          for {
+            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
+            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.UnquotedShares), true)
+          } yield sd2
+
+        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(AmendCheckMode, userAnswers.success.value, sessionData.success.value)
+        result mustBe QuotedSharesMiniJourney.call
       }
     }
   }

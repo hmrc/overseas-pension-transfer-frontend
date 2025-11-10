@@ -57,7 +57,7 @@ class MoreUnquotedSharesDeclarationController @Inject() (
       }
 
       def renderView(answers: UserAnswers): Result = {
-        val assets = UnquotedSharesAmendContinueSummary.rows(answers)
+        val assets = UnquotedSharesAmendContinueSummary.rows(mode, answers)
         Ok(view(preparedForm, assets, mode))
       }
 
@@ -84,7 +84,7 @@ class MoreUnquotedSharesDeclarationController @Inject() (
     (identify andThen schemeData andThen getData).async { implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val assets = UnquotedSharesAmendContinueSummary.rows(request.userAnswers)
+          val assets = UnquotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
           Future.successful(BadRequest(view(formWithErrors, assets, mode)))
         },
         continue => {

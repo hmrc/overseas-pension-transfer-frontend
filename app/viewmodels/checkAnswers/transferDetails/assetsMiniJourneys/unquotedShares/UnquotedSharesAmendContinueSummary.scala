@@ -67,13 +67,13 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
     }
   }
 
-  def rows(answers: UserAnswers): Seq[ListItem] = {
+  def rows(mode: Mode, answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(UnquotedSharesQuery)
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(
           name      = entry.companyName,
-          changeUrl = AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(index).url,
+          changeUrl = AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index).url,
           removeUrl = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url
         )
     }

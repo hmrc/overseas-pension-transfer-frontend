@@ -33,7 +33,7 @@ case class UnquotedSharesClassPage(index: Int) extends QuestionPage[String] {
     AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(NormalMode, index)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(CheckMode,index)
+    AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(CheckMode, index)
 
   override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(FinalCheckMode, index)
