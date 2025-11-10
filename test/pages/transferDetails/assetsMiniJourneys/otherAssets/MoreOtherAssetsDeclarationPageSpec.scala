@@ -18,12 +18,11 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.assets.{OtherAssetsMiniJourney, QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
+import models.assets.{OtherAssetsMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.transferDetails.TypeOfAssetPage
-import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import queries.assets.AssetCompletionFlag
 
 class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {

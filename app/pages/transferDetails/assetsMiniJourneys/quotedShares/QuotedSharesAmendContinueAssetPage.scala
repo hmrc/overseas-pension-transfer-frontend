@@ -34,7 +34,7 @@ case object QuotedSharesAmendContinueAssetPage extends QuestionPage[Boolean] wit
     val (sessionData, nextIndex) = sessionDataWithIndex
     answers.get(QuotedSharesAmendContinueAssetPage) match {
       case Some(true)  => AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(mode, nextIndex)
-      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(sessionData, mode) match {
           case Some(route) => route
           case None        => modeCall
         }

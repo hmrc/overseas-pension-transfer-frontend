@@ -16,14 +16,14 @@
 
 package navigators
 
-import models.{SessionData, UserAnswers}
 import models.assets.AssetsMiniJourneyRegistry
+
+import models.{Mode, SessionData}
 import play.api.mvc.Call
 
 object TypeOfAssetNavigator {
 
-  // TODO: This will need to handle the mode
-  def getNextAssetRoute(sessionData: SessionData): Option[Call] = {
-    AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call)
+  def getNextAssetRoute(sessionData: SessionData, mode: Mode): Option[Call] = {
+    AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call(mode))
   }
 }

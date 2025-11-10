@@ -19,7 +19,7 @@ package pages.transferDetails.assetsMiniJourneys.cash
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.assets.CashEntry
-import models.{Mode, SessionData, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.{NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
@@ -32,19 +32,19 @@ case object CashAmountInTransferPage extends QuestionPage[BigDecimal] with NextP
   override def toString: String = CashEntry.CashValue
 
   override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call =
-    decideNextPage(sessionData, routes.TransferDetailsCYAController.onPageLoad())
+    decideNextPage(sessionData, NormalMode, routes.TransferDetailsCYAController.onPageLoad())
 
   override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    decideNextPage(sessionData, routes.TransferDetailsCYAController.onPageLoad())
+    decideNextPage(sessionData, CheckMode, routes.TransferDetailsCYAController.onPageLoad())
 
   override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    decideNextPage(sessionData, super.nextPageFinalCheckMode(answers))
+    decideNextPage(sessionData, FinalCheckMode, super.nextPageFinalCheckMode(answers))
 
   override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    decideNextPage(sessionData, super.nextPageAmendCheckMode(answers))
+    decideNextPage(sessionData, AmendCheckMode, super.nextPageAmendCheckMode(answers))
 
-  private def decideNextPage(sessionData: SessionData, modeCall: Call): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+  private def decideNextPage(sessionData: SessionData, mode: Mode, modeCall: Call): Call =
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData, mode) match {
       case Some(route) => route
       case None        => modeCall
     }

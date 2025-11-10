@@ -34,7 +34,7 @@ case object OtherAssetsAmendContinueAssetPage extends QuestionPage[Boolean] with
     val (sessionData, nextIndex) = sessionDataWithIndex
     answers.get(OtherAssetsAmendContinueAssetPage) match {
       case Some(true)  => AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(mode, nextIndex)
-      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+      case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(sessionData, mode) match {
           case Some(route) => route
           case None        => modeCall
         }

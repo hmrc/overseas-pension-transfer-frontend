@@ -17,7 +17,7 @@
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.transferDetails.routes
-import models.{SessionData, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.{NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
@@ -29,22 +29,25 @@ case object MoreOtherAssetsDeclarationPage extends QuestionPage[Boolean] with Ne
     JsPath \ "transferDetails" \ "moreAsset"
 
   override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData, NormalMode) match {
       case Some(route) => route
       case None        => routes.TransferDetailsCYAController.onPageLoad()
     }
 
   override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    nextPageWith(answers, sessionData)
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData, CheckMode) match {
+      case Some(route) => route
+      case None        => routes.TransferDetailsCYAController.onPageLoad()
+    }
 
   override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData, FinalCheckMode) match {
       case Some(route) => route
       case None        => super.nextPageFinalCheckMode(answers)
     }
 
   override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData, AmendCheckMode) match {
       case Some(route) => route
       case None        => super.nextPageFinalCheckMode(answers)
     }
