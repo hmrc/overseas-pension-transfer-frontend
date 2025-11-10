@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
 import models.assets.{PropertyMiniJourney, TypeOfAsset}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -50,7 +50,7 @@ class PropertyAmendContinueController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
-      val preparedForm = request.userAnswers.get(PropertyAmendContinuePage) match {
+      val preparedForm = request.userAnswers.get(PropertyAmendContinueAssetPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -80,11 +80,11 @@ class PropertyAmendContinueController @Inject() (
           for {
             sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Property, completed = true))
             _   <- sessionRepository.set(sd)
-            ua1 <- Future.fromTry(request.userAnswers.set(PropertyAmendContinuePage, continue))
+            ua1 <- Future.fromTry(request.userAnswers.set(PropertyAmendContinueAssetPage, continue))
             _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(PropertyAmendContinuePage.nextPageWith(mode, ua1, (sd, nextIndex)))
+            Redirect(PropertyAmendContinueAssetPage.nextPageWith(mode, ua1, (sd, nextIndex)))
           }
         }
       )

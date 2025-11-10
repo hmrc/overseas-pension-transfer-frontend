@@ -20,11 +20,11 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{Mode, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.transferDetails.assetsMiniJourneys.AmendContinueContext
-import pages.{MiniJourneyNextPage, QuestionPage}
+import pages.{MiniJourneyNextAssetPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object PropertyAmendContinuePage extends QuestionPage[Boolean] with MiniJourneyNextPage {
+case object PropertyAmendContinueAssetPage extends QuestionPage[Boolean] with MiniJourneyNextAssetPage {
 
   override def path: JsPath = JsPath \ toString
 
@@ -32,7 +32,7 @@ case object PropertyAmendContinuePage extends QuestionPage[Boolean] with MiniJou
 
   override def decideNextPage(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext, mode: Mode, modeCall: Call): Call = {
     val (sessionData, nextIndex) = sessionDataWithIndex
-    answers.get(PropertyAmendContinuePage) match {
+    answers.get(PropertyAmendContinueAssetPage) match {
       case Some(true)  => AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(mode, nextIndex)
       case Some(false) => TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
           case Some(route) => route

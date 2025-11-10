@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueFormProvider
 import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinuePage
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueAssetPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -50,7 +50,7 @@ class UnquotedSharesAmendContinueController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
-      val preparedForm = request.userAnswers.get(UnquotedSharesAmendContinuePage) match {
+      val preparedForm = request.userAnswers.get(UnquotedSharesAmendContinueAssetPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -80,11 +80,11 @@ class UnquotedSharesAmendContinueController @Inject() (
           for {
             sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.UnquotedShares, completed = true))
             _   <- sessionRepository.set(sd)
-            ua1 <- Future.fromTry(request.userAnswers.set(UnquotedSharesAmendContinuePage, continue))
+            ua1 <- Future.fromTry(request.userAnswers.set(UnquotedSharesAmendContinueAssetPage, continue))
             _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(UnquotedSharesAmendContinuePage.nextPageWith(mode, ua1, (sd, nextIndex)))
+            Redirect(UnquotedSharesAmendContinueAssetPage.nextPageWith(mode, ua1, (sd, nextIndex)))
           }
         }
       )

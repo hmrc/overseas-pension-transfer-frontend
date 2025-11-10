@@ -21,7 +21,7 @@ import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, Sess
 import pages.transferDetails.assetsMiniJourneys.AmendContinueContext
 import play.api.mvc.Call
 
-trait MiniJourneyNextPage extends NextPageWith[AmendContinueContext] { self: Page =>
+trait MiniJourneyNextAssetPage extends NextPageWith[AmendContinueContext] { self: Page =>
 
   protected def decideNextPage(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext, mode: Mode, modeCall: Call): Call
 

@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinuePage
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -71,7 +71,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must return OK and the form filled for a GET in NormalMode when answer exists" in {
-      val ua          = emptyUserAnswers.set(OtherAssetsAmendContinuePage, true).success.value
+      val ua          = emptyUserAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
       val application = applicationBuilder(userAnswers = ua).build()
 
       running(application) {
@@ -118,9 +118,9 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, true).success.value
+        val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -144,9 +144,9 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, false).success.value
+        val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, false).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinuePage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -170,9 +170,9 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, true).success.value
+        val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinuePage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -196,9 +196,9 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(OtherAssetsAmendContinuePage, true).success.value
+        val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinuePage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
