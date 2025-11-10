@@ -1,0 +1,132 @@
+/*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package services
+
+import base.SpecBase
+import models.audit.JourneyStartedType.{StartJourneyFailed, StartNewTransfer}
+import models.audit.ReportStartedAuditModel
+import models.authentication.{PsaId, PsaUser}
+import models.{AllTransfersItem, TransferId}
+import org.mockito.ArgumentMatchers.{any, argThat, eq => eqTo}
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
+import org.scalatestplus.mockito.MockitoSugar
+import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
+
+import java.time.Instant
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
+
+class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with MockitoSugar with BeforeAndAfterEach {
+
+  implicit private val hc: HeaderCarrier = HeaderCarrier()
+
+  private val mockLockRepository = mock[LockRepository]
+  private val mockAuditService   = mock[AuditService]
+
+  private val service = new LockService(mockLockRepository, mockAuditService)
+
+  private val transferId        = TransferId("QT123456")
+  private val owner             = "test-owner"
+  private val ttlSeconds        = 120L
+  private val authenticatedUser = PsaUser(PsaId("A1234567"), "internal-123", AffinityGroup.Organisation)
+
+  private val allTransfersItem = Some(
+    AllTransfersItem(
+      transferId      = transferId,
+      qtVersion       = Some("001"),
+      qtStatus        = None,
+      nino            = Some("AA123456A"),
+      memberFirstName = Some("John"),
+      memberSurname   = Some("Doe"),
+      qtDate          = None,
+      lastUpdated     = Some(Instant.now()),
+      pstrNumber      = None,
+      submissionDate  = None
+    )
+  )
+
+  override def beforeEach(): Unit = {
+    reset(mockLockRepository, mockAuditService)
+  }
+
+  "LockService" - {
+
+    "must acquire lock successfully and trigger StartJourney audit" in {
+      val fakeLock = Lock(transferId.value, owner, Instant.now(), Instant.now().plusSeconds(60))
+      when(mockLockRepository.takeLock(eqTo(transferId.value), eqTo(owner), any[Duration]))
+        .thenReturn(Future.successful(Some(fakeLock)))
+
+      val result = await(
+        service.takeLockWithAudit(transferId, owner, ttlSeconds, authenticatedUser, schemeDetails, StartNewTransfer, allTransfersItem)
+      )
+
+      result mustBe true
+      verify(mockAuditService).audit(any[ReportStartedAuditModel])(any[HeaderCarrier])
+      verify(mockLockRepository).takeLock(eqTo(transferId.value), eqTo(owner), any[Duration])
+      verifyNoMoreInteractions(mockAuditService)
+    }
+
+    "must return false and trigger StartJourneyFailed audit when lock is already taken" in {
+      when(mockLockRepository.takeLock(eqTo(transferId.value), eqTo(owner), any()))
+        .thenReturn(Future.successful(None))
+
+      val result = await(
+        service.takeLockWithAudit(transferId, owner, ttlSeconds, authenticatedUser, schemeDetails, StartNewTransfer, allTransfersItem)
+      )
+
+      result mustBe false
+      verify(mockAuditService).audit(argThat[ReportStartedAuditModel](_.journeyType == StartJourneyFailed))(any[HeaderCarrier])
+      verify(mockLockRepository).takeLock(eqTo(transferId.value), eqTo(owner), any())
+      verifyNoMoreInteractions(mockAuditService)
+    }
+
+    "must acquire and release lock using simple takeLock and releaseLock methods" in {
+      val fakeLock = Lock("lock1", owner, Instant.now(), Instant.now().plusSeconds(60))
+      when(mockLockRepository.takeLock(eqTo("lock1"), eqTo(owner), any()))
+        .thenReturn(Future.successful(Some(fakeLock)))
+      when(mockLockRepository.releaseLock(eqTo("lock1"), eqTo(owner)))
+        .thenReturn(Future.unit)
+
+      val takeLockResult = await(service.takeLock("lock1", owner, ttlSeconds))
+      takeLockResult mustBe true
+
+      await(service.releaseLock("lock1", owner))
+
+      verify(mockLockRepository).takeLock(eqTo("lock1"), eqTo(owner), any())
+      verify(mockLockRepository).releaseLock(eqTo("lock1"), eqTo(owner))
+    }
+
+    "must return false if simple takeLock fails" in {
+      when(mockLockRepository.takeLock(eqTo("lock2"), eqTo(owner), any()))
+        .thenReturn(Future.successful(None))
+
+      val result = await(service.takeLock("lock2", owner, ttlSeconds))
+      result mustBe false
+
+      verify(mockLockRepository).takeLock(eqTo("lock2"), eqTo(owner), any())
+    }
+  }
+
+  private def await[T](f: Future[T]): T =
+    Await.result(f, scala.concurrent.duration.Duration.Inf)
+}

@@ -19,8 +19,7 @@ package controllers.actions
 import controllers.routes
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import play.api.Logging
-import play.api.libs.json.Json
-import play.api.mvc.Results.{BadRequest, Redirect}
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
 import services.UserAnswersService
@@ -38,7 +37,7 @@ class DataRetrievalActionImpl @Inject() (
   ) extends DataRetrievalAction with AppUtils with Logging {
 
   override protected def refine[A](request: SchemeRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequest(request)
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     sessionRepository.get(request.authenticatedUser.internalId) flatMap {
       case Some(value) =>
