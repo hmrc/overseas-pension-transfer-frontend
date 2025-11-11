@@ -17,11 +17,9 @@
 package pages.transferDetails.assetsMiniJourneys.cash
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import controllers.transferDetails.routes
 import models.assets.CashEntry
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
-import navigators.TypeOfAssetNavigator
-import pages.{MiniJourneyNextAssetPage, NextPageWith, QuestionPage}
+import models.{Mode, SessionData, TaskCategory, UserAnswers}
+import pages.{MiniJourneyNextAssetPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

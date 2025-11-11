@@ -16,10 +16,8 @@
 
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.{AssetsMiniJourneyRegistry, TypeOfAsset}
 import models.{Mode, UserAnswers}
-import navigators.TypeOfAssetNavigator
 import pages.transferDetails.assetsMiniJourneys.AmendContinueContext
 import pages.{MiniJourneyNextAssetPage, QuestionPage}
 import play.api.libs.json.JsPath

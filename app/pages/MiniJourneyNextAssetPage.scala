@@ -17,8 +17,8 @@
 package pages
 
 import controllers.transferDetails.routes
+import models.assets.AssetsMiniJourneyRegistry
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
-import navigators.TypeOfAssetNavigator
 import play.api.mvc.Call
 
 trait MiniJourneyNextAssetPage[A] extends NextPageWith[A] { self: Page =>
@@ -38,7 +38,8 @@ trait MiniJourneyNextAssetPage[A] extends NextPageWith[A] { self: Page =>
     decideNextPage(answers, ctx, AmendCheckMode, self.nextPageAmendCheckMode(answers))
 
   protected def nextAsset(sessionData: SessionData, mode: Mode, modeCall: Call): Call = {
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, mode, None) match {
+    val nextAsset = AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call(mode))
+    nextAsset match {
       case Some(route) => route
       case None        => modeCall
     }

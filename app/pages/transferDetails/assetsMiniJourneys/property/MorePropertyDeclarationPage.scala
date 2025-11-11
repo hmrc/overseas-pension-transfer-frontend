@@ -16,10 +16,8 @@
 
 package pages.transferDetails.assetsMiniJourneys.property
 
-import controllers.transferDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
-import navigators.TypeOfAssetNavigator
-import pages.{MiniJourneyNextAssetPage, NextPageWith, QuestionPage}
+import models.{Mode, SessionData, UserAnswers}
+import pages.{MiniJourneyNextAssetPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
