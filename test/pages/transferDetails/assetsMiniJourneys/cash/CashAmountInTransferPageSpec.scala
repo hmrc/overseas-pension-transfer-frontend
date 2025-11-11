@@ -18,12 +18,10 @@ package pages.transferDetails.assetsMiniJourneys.cash
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.assets.TypeOfAsset.Cash
-import models.assets.{CashMiniJourney, QuotedSharesMiniJourney, TypeOfAsset}
+import models.assets.{CashMiniJourney, QuotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails.TypeOfAssetPage
-import queries.assets.AssetCompletionFlag
+import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
 
@@ -37,14 +35,17 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
       }
 
       "must go to the next asset page if more assets" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val sessionData                     = for {
-          sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-          sd2 <- sd1.set(AssetCompletionFlag(Cash), true)
-        } yield sd2
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(CashMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = CashAmountInTransferPage.nextPageWith(NormalMode, emptyAnswers, sessionData.success.value)
-        result mustBe QuotedSharesMiniJourney.call
+        result mustBe QuotedSharesMiniJourney.call(NormalMode)
       }
     }
 
@@ -54,14 +55,17 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
       }
 
       "must go to the next asset page if more assets" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val sessionData                     = for {
-          sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-          sd2 <- sd1.set(AssetCompletionFlag(Cash), true)
-        } yield sd2
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(CashMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = CashAmountInTransferPage.nextPageWith(CheckMode, emptyAnswers, sessionData.success.value)
-        result mustBe QuotedSharesMiniJourney.call
+        result mustBe QuotedSharesMiniJourney.call(CheckMode)
       }
     }
 
@@ -75,14 +79,17 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
       }
 
       "must go to the next asset page if more assets" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val sessionData                     = for {
-          sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-          sd2 <- sd1.set(AssetCompletionFlag(Cash), true)
-        } yield sd2
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(CashMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = CashAmountInTransferPage.nextPageWith(FinalCheckMode, emptyAnswers, sessionData.success.value)
-        result mustBe QuotedSharesMiniJourney.call
+        result mustBe QuotedSharesMiniJourney.call(FinalCheckMode)
       }
     }
 
@@ -96,14 +103,17 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
       }
 
       "must go to the next asset page if more assets" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(CashMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val sessionData                     = for {
-          sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-          sd2 <- sd1.set(AssetCompletionFlag(Cash), true)
-        } yield sd2
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(CashMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = CashAmountInTransferPage.nextPageWith(AmendCheckMode, emptyAnswers, sessionData.success.value)
-        result mustBe QuotedSharesMiniJourney.call
+        result mustBe QuotedSharesMiniJourney.call(AmendCheckMode)
       }
     }
   }

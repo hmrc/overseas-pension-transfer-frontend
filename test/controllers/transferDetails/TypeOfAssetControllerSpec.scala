@@ -21,7 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.TypeOfAssetFormProvider
 import models.NormalMode
 import models.assets.TypeOfAsset
-import models.assets.TypeOfAsset.UnquotedShares
+import models.assets.TypeOfAsset.{Cash, Other, Property, QuotedShares, UnquotedShares}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,6 +30,7 @@ import pages.transferDetails.TypeOfAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 import repositories.SessionRepository
 import views.html.transferDetails.TypeOfAssetView
 
@@ -62,12 +63,20 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+      val values = Seq(
+        SessionAssetTypeWithStatus(Cash, isCompleted           = false),
+        SessionAssetTypeWithStatus(UnquotedShares, isCompleted = true),
+        SessionAssetTypeWithStatus(QuotedShares, isCompleted   = true),
+        SessionAssetTypeWithStatus(Property, isCompleted       = false),
+        SessionAssetTypeWithStatus(Other, isCompleted          = true)
+      )
 
-      val values: Seq[TypeOfAsset] = TypeOfAsset.values
+      val sd = sessionDataMemberNameQtNumber.set(
+        SelectedAssetTypesWithStatus,
+        values
+      ).success.value
 
-      val userAnswers = emptyUserAnswers.set(TypeOfAssetPage, values).success.value
-
-      val application = applicationBuilder(userAnswers = userAnswers).build()
+      val application = applicationBuilder(sessionData = sd).build()
 
       running(application) {
         val request = FakeRequest(GET, typeOfAssetRoute)
@@ -77,7 +86,10 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(values), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(SelectedAssetTypesWithStatus.toTypes(values)), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

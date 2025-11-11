@@ -50,7 +50,6 @@ class TypeOfAssetController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      logger.info(Json.prettyPrint(Json.toJson(request.sessionData)))
       val preparedForm = request.sessionData.get(SelectedAssetTypesWithStatus) match {
         case None        => form
         case Some(value) => form.fill(SelectedAssetTypesWithStatus.toTypes(value))

@@ -18,13 +18,11 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.assets.{OtherAssetsMiniJourney, PropertyMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
+import models.assets.{PropertyMiniJourney, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import pages.transferDetails.TypeOfAssetPage
-import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
-import queries.assets.AssetCompletionFlag
+import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
@@ -39,37 +37,40 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
       }
 
       "must go to the next asset page if continue selected" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(PropertyMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
-        val userAnswers                     = emptyAnswers.set(MorePropertyDeclarationPage, false)
-        val sessionData                     =
-          for {
-            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Property), true)
-          } yield sd2
+        val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = MorePropertyDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
-        result mustBe UnquotedSharesMiniJourney.call
+        result mustBe UnquotedSharesMiniJourney.call(NormalMode)
       }
     }
 
-    "in Check Mode" - {
+    "in CheckMode" - {
       "must go to TransferDetailsCYAController" in {
         MorePropertyDeclarationPage.nextPageWith(CheckMode, emptyAnswers, sessionDataMemberName) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected and more assets selected" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(PropertyMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
-        val userAnswers                     = emptyAnswers.set(MorePropertyDeclarationPage, false)
-        val sessionData                     =
-          for {
-            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Property), true)
-          } yield sd2
+      "must go to the next asset page if continue selected" in {
+        val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = MorePropertyDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
-        // TODO: The next call should be in check mode too
-        result mustBe UnquotedSharesMiniJourney.call
+        result mustBe UnquotedSharesMiniJourney.call(CheckMode)
       }
     }
 
@@ -79,17 +80,19 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected and more assets selected" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(PropertyMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
-        val userAnswers                     = emptyAnswers.set(MorePropertyDeclarationPage, false)
-        val sessionData                     =
-          for {
-            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Property), true)
-          } yield sd2
+      "must go to the next asset page if continue selected" in {
+        val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = MorePropertyDeclarationPage.nextPageWith(FinalCheckMode, userAnswers.success.value, sessionData.success.value)
-        result mustBe UnquotedSharesMiniJourney.call
+        result mustBe UnquotedSharesMiniJourney.call(FinalCheckMode)
       }
     }
 
@@ -99,17 +102,19 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
-      "must go to the next asset page if continue selected and more assets selected" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(PropertyMiniJourney.assetType, UnquotedSharesMiniJourney.assetType)
-        val userAnswers                     = emptyAnswers.set(MorePropertyDeclarationPage, false)
-        val sessionData                     =
-          for {
-            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Property), true)
-          } yield sd2
+      "must go to the next asset page if continue selected" in {
+        val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = MorePropertyDeclarationPage.nextPageWith(AmendCheckMode, userAnswers.success.value, sessionData.success.value)
-        result mustBe UnquotedSharesMiniJourney.call
+        result mustBe UnquotedSharesMiniJourney.call(AmendCheckMode)
       }
     }
   }

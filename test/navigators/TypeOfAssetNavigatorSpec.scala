@@ -23,41 +23,64 @@ import models.assets.TypeOfAsset._
 import models.assets.{QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.TypeOfAssetPage
 import play.api.mvc.Call
-import queries.assets.AssetCompletionFlag
+import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 class TypeOfAssetNavigatorSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   "getNextAssetRoute" - {
+
     "must return the first uncompleted journey in order when all assets selected" in {
-      val selectedTypes: Seq[TypeOfAsset] = Seq(Cash, UnquotedShares, QuotedShares, Property, TypeOfAsset.Other)
-      val sessionData                     = emptySessionData.set(TypeOfAssetPage, selectedTypes).success.value
+      val allSelectedWithStatus: Seq[SessionAssetTypeWithStatus] =
+        SelectedAssetTypesWithStatus.fromTypes(Seq(Cash, UnquotedShares, QuotedShares, Property, Other))
+
+      val sessionData =
+        emptySessionData
+          .set(SelectedAssetTypesWithStatus, allSelectedWithStatus)
+          .success
+          .value
 
       val result = TypeOfAssetNavigator.getNextAssetRoute(sessionData, NormalMode).map(_.toString)
       result mustBe Some(AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(NormalMode).url)
     }
 
     "must return the first uncompleted journey in order" in {
-      val selectedTypes: Seq[TypeOfAsset] = Seq(UnquotedSharesMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-      val sessionData                     = emptySessionData.set(TypeOfAssetPage, selectedTypes).success.value
+      val selectedWithStatus =
+        SelectedAssetTypesWithStatus.fromTypes(Seq(UnquotedSharesMiniJourney.assetType, QuotedSharesMiniJourney.assetType))
+
+      val sessionData =
+        emptySessionData
+          .set(SelectedAssetTypesWithStatus, selectedWithStatus)
+          .success
+          .value
 
       val result = TypeOfAssetNavigator.getNextAssetRoute(sessionData, NormalMode).map(_.toString)
       result mustBe Some(UnquotedSharesMiniJourney.call(NormalMode).url)
     }
 
     "must skip journeys not in the selected assets" in {
-      val selectedTypes: Seq[TypeOfAsset] = Seq(QuotedSharesMiniJourney.assetType)
-      val sessionData                     = emptySessionData.set(TypeOfAssetPage, selectedTypes).success.value
+      val selectedWithStatus =
+        SelectedAssetTypesWithStatus.fromTypes(Seq(QuotedSharesMiniJourney.assetType))
+
+      val sessionData =
+        emptySessionData
+          .set(SelectedAssetTypesWithStatus, selectedWithStatus)
+          .success
+          .value
 
       val result = TypeOfAssetNavigator.getNextAssetRoute(sessionData, NormalMode).map(_.toString)
       result mustBe Some(QuotedSharesMiniJourney.call(NormalMode).url)
     }
 
     "must return None if all selected journeys are completed" in {
-      val sessionData = emptySessionData
-        .set[Seq[TypeOfAsset]](TypeOfAssetPage, Seq(UnquotedSharesMiniJourney.assetType)).success.value
-        .set(AssetCompletionFlag(UnquotedSharesMiniJourney.assetType), true).success.value
+      val allCompleted =
+        Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
+
+      val sessionData =
+        emptySessionData
+          .set(SelectedAssetTypesWithStatus, allCompleted)
+          .success
+          .value
 
       val result = TypeOfAssetNavigator.getNextAssetRoute(sessionData, NormalMode)
       result mustBe None

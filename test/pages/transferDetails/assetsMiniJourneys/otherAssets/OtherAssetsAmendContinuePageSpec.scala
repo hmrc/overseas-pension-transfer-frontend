@@ -19,11 +19,10 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.assets.{OtherAssetsMiniJourney, QuotedSharesMiniJourney, TypeOfAsset}
+import models.assets.{OtherAssetsMiniJourney, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails.TypeOfAssetPage
-import queries.assets.AssetCompletionFlag
+import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
 
@@ -56,17 +55,19 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
-      "must go to the next asset page if no-continue selected and more assets" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(OtherAssetsMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val userAnswers                     = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
-        val sessionData                     =
-          for {
-            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Other), true)
-          } yield sd2
+      "must go to the next asset page if continue selected" in {
+        val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(OtherAssetsMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, userAnswers.success.value, (sessionData.success.value, 0))
-        result mustBe QuotedSharesMiniJourney.call
+        result mustBe UnquotedSharesMiniJourney.call(NormalMode)
       }
     }
 
@@ -95,17 +96,19 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
-      "must go to the next asset page if no-continue selected and more assets" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(OtherAssetsMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val userAnswers                     = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
-        val sessionData                     =
-          for {
-            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Other), true)
-          } yield sd2
+      "must go to the next asset page if continue selected" in {
+        val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(OtherAssetsMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = OtherAssetsAmendContinueAssetPage.nextPageWith(CheckMode, userAnswers.success.value, (sessionData.success.value, 0))
-        result mustBe QuotedSharesMiniJourney.call
+        result mustBe UnquotedSharesMiniJourney.call(CheckMode)
       }
     }
 
@@ -134,17 +137,19 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
 
-      "must go to the next asset page if no-continue selected and more assets" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(OtherAssetsMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val userAnswers                     = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
-        val sessionData                     =
-          for {
-            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Other), true)
-          } yield sd2
+      "must go to the next asset page if continue selected" in {
+        val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(OtherAssetsMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = OtherAssetsAmendContinueAssetPage.nextPageWith(FinalCheckMode, userAnswers.success.value, (sessionData.success.value, 0))
-        result mustBe QuotedSharesMiniJourney.call
+        result mustBe UnquotedSharesMiniJourney.call(FinalCheckMode)
       }
     }
 
@@ -173,17 +178,19 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
-      "must go to the next asset page if no-continue selected and more assets" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(OtherAssetsMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val userAnswers                     = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
-        val sessionData                     =
-          for {
-            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Other), true)
-          } yield sd2
+      "must go to the next asset page if continue selected" in {
+        val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(OtherAssetsMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
 
         val result = OtherAssetsAmendContinueAssetPage.nextPageWith(AmendCheckMode, userAnswers.success.value, (sessionData.success.value, 0))
-        result mustBe QuotedSharesMiniJourney.call
+        result mustBe UnquotedSharesMiniJourney.call(AmendCheckMode)
       }
     }
   }

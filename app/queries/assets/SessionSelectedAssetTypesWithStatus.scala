@@ -44,6 +44,7 @@ case class SessionAssetTypeWithStatus(
   )
 
 object SessionAssetTypeWithStatus {
+
   implicit val format: Format[SessionAssetTypeWithStatus] = (
     (__ \ "type").format[TypeOfAsset] and
       (__ \ "isCompleted").format[Boolean]

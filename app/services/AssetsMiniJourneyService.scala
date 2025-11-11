@@ -19,7 +19,6 @@ package services
 import models.assets.TypeOfAsset.Cash
 import models.assets._
 import models.{SessionData, UserAnswers}
-import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json._
 import queries.assets._
 
@@ -178,9 +177,14 @@ object AssetsMiniJourneyService {
     sessionData.set(SelectedAssetTypesWithStatus, updated)
   }
 
-  def clearAllAssetCompletionFlags(sessionData: SessionData): Try[SessionData] = {
-    val selectedAssetsWithStatuses = sessionData.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty)
-    val updated                    = SelectedAssetTypesWithStatus.markAllIncomplete(selectedAssetsWithStatuses)
-    sessionData.set(SelectedAssetTypesWithStatus, updated)
-  }
+  def clearAllAssetCompletionFlags(sessionData: SessionData): Try[SessionData] =
+    sessionData.get(SelectedAssetTypesWithStatus) match {
+      case None           =>
+        Success(sessionData)
+      case Some(Nil)      =>
+        sessionData.remove(SelectedAssetTypesWithStatus)
+      case Some(existing) =>
+        val updated = SelectedAssetTypesWithStatus.markAllIncomplete(existing)
+        sessionData.set(SelectedAssetTypesWithStatus, updated)
+    }
 }
