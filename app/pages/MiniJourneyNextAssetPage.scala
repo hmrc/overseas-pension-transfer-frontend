@@ -18,23 +18,29 @@ package pages
 
 import controllers.transferDetails.routes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.AmendContinueContext
+import navigators.TypeOfAssetNavigator
 import play.api.mvc.Call
 
-trait MiniJourneyNextAssetPage extends NextPageWith[AmendContinueContext] { self: Page =>
+trait MiniJourneyNextAssetPage[A] extends NextPageWith[A] { self: Page =>
 
-  protected def decideNextPage(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext, mode: Mode, modeCall: Call): Call
+  protected def decideNextPage(answers: UserAnswers, ctx: A, mode: Mode, modeCall: Call): Call
 
-  override protected def nextPageWith(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext): Call =
-    decideNextPage(answers, sessionDataWithIndex, NormalMode, routes.TransferDetailsCYAController.onPageLoad())
+  override protected def nextPageWith(answers: UserAnswers, ctx: A): Call =
+    decideNextPage(answers, ctx, NormalMode, routes.TransferDetailsCYAController.onPageLoad())
 
-  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext): Call =
-    decideNextPage(answers, sessionDataWithIndex, CheckMode, routes.TransferDetailsCYAController.onPageLoad())
+  override protected def nextPageCheckModeWith(answers: UserAnswers, ctx: A): Call =
+    decideNextPage(answers, ctx, CheckMode, routes.TransferDetailsCYAController.onPageLoad())
 
-  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext): Call =
-    decideNextPage(answers, sessionDataWithIndex, FinalCheckMode, self.nextPageFinalCheckMode(answers))
+  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, ctx: A): Call =
+    decideNextPage(answers, ctx, FinalCheckMode, self.nextPageFinalCheckMode(answers))
 
-  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext): Call =
-    decideNextPage(answers, sessionDataWithIndex, AmendCheckMode, self.nextPageAmendCheckMode(answers))
+  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, ctx: A): Call =
+    decideNextPage(answers, ctx, AmendCheckMode, self.nextPageAmendCheckMode(answers))
 
+  protected def nextAsset(sessionData: SessionData, mode: Mode, modeCall: Call): Call = {
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData, mode, None) match {
+      case Some(route) => route
+      case None        => modeCall
+    }
+  }
 }

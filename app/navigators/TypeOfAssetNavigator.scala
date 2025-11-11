@@ -23,7 +23,7 @@ import play.api.mvc.Call
 
 object TypeOfAssetNavigator {
 
-  def getNextAssetRoute(sessionData: SessionData, mode: Mode): Option[Call] = {
-    AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call(mode))
+  def getNextAssetRoute(sessionData: SessionData, mode: Mode, index: Option[Int] = None): Option[Call] = {
+    AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call(mode, index))
   }
 }

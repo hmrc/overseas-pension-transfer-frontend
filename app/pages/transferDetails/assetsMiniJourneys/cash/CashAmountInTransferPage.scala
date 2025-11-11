@@ -21,33 +21,18 @@ import controllers.transferDetails.routes
 import models.assets.CashEntry
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import navigators.TypeOfAssetNavigator
-import pages.{NextPageWith, QuestionPage}
+import pages.{MiniJourneyNextAssetPage, NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CashAmountInTransferPage extends QuestionPage[BigDecimal] with NextPageWith[SessionData] {
+case object CashAmountInTransferPage extends QuestionPage[BigDecimal] with MiniJourneyNextAssetPage[SessionData] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = CashEntry.CashValue
 
-  override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call =
-    decideNextPage(sessionData, NormalMode, routes.TransferDetailsCYAController.onPageLoad())
-
-  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    decideNextPage(sessionData, CheckMode, routes.TransferDetailsCYAController.onPageLoad())
-
-  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    decideNextPage(sessionData, FinalCheckMode, super.nextPageFinalCheckMode(answers))
-
-  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    decideNextPage(sessionData, AmendCheckMode, super.nextPageAmendCheckMode(answers))
-
-  private def decideNextPage(sessionData: SessionData, mode: Mode, modeCall: Call): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, mode) match {
-      case Some(route) => route
-      case None        => modeCall
-    }
+  override def decideNextPage(userAnswers: UserAnswers, sessionData: SessionData, mode: Mode, modeCall: Call): Call =
+    super.nextAsset(sessionData, mode, modeCall)
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(mode)

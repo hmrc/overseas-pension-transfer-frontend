@@ -16,39 +16,16 @@
 
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.transferDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
-import navigators.TypeOfAssetNavigator
-import pages.{NextPageWith, QuestionPage}
+import models.{Mode, SessionData, UserAnswers}
+import pages.{MiniJourneyNextAssetPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MoreOtherAssetsDeclarationPage extends QuestionPage[Boolean] with NextPageWith[SessionData] {
+case object MoreOtherAssetsDeclarationPage extends QuestionPage[Boolean] with MiniJourneyNextAssetPage[SessionData] {
 
   override def path: JsPath =
     JsPath \ "transferDetails" \ "moreAsset"
 
-  override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, NormalMode) match {
-      case Some(route) => route
-      case None        => routes.TransferDetailsCYAController.onPageLoad()
-    }
-
-  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, CheckMode) match {
-      case Some(route) => route
-      case None        => routes.TransferDetailsCYAController.onPageLoad()
-    }
-
-  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, FinalCheckMode) match {
-      case Some(route) => route
-      case None        => super.nextPageFinalCheckMode(answers)
-    }
-
-  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, AmendCheckMode) match {
-      case Some(route) => route
-      case None        => super.nextPageFinalCheckMode(answers)
-    }
+  override def decideNextPage(answers: UserAnswers, sessionData: SessionData, mode: Mode, modeCall: Call): Call =
+    super.nextAsset(sessionData, mode, modeCall)
 }

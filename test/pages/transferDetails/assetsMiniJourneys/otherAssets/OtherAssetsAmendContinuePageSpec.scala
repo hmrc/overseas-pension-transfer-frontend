@@ -39,10 +39,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
           NormalMode,
           userAnswers,
           (emptySessionData, nextIndex)
-        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(
-          NormalMode,
-          nextIndex
-        )
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsStartController.onPageLoad()
       }
 
       "must go to the cya page if no-continue selected and no more assets" in {

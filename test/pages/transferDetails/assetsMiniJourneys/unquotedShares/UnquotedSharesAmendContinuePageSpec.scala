@@ -40,10 +40,7 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
           NormalMode,
           userAnswers,
           (emptySessionData, nextIndex)
-        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
-          NormalMode,
-          nextIndex
-        )
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad()
       }
 
       "must go to the CYA page if no-continue selected and no more assets" in {

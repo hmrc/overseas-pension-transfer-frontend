@@ -20,43 +20,18 @@ import controllers.transferDetails.routes
 import models.assets.TypeOfAsset
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import navigators.TypeOfAssetNavigator
-import pages.{NextPageWith, QuestionPage}
+import pages.{MiniJourneyNextAssetPage, NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object TypeOfAssetPage extends QuestionPage[Seq[TypeOfAsset]] with NextPageWith[SessionData] {
+case object TypeOfAssetPage extends QuestionPage[Seq[TypeOfAsset]] with MiniJourneyNextAssetPage[SessionData] {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = "typeOfAsset"
 
-  override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call = {
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, NormalMode) match {
-      case Some(route) => route
-      case None        => routes.TransferDetailsCYAController.onPageLoad()
-    }
-  }
-
-  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call = {
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, CheckMode) match {
-      case Some(route) => route
-      case None        => routes.TransferDetailsCYAController.onPageLoad()
-    }
-  }
-
-  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call = {
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, FinalCheckMode) match {
-      case Some(route) => route
-      case None        => controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
-    }
-  }
-
-  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call = {
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData, AmendCheckMode) match {
-      case Some(route) => route
-      case None        => controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
-    }
-  }
+  override def decideNextPage(answers: UserAnswers, sessionData: SessionData, mode: Mode, modeCall: Call): Call =
+    super.nextAsset(sessionData, mode, modeCall)
 
   final def changeLink(mode: Mode): Call =
     routes.TypeOfAssetController.onPageLoad(mode)
