@@ -78,7 +78,7 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with 
           verify(mockAuditConnector, times(1)).sendExtendedEvent(eventCaptor.capture())(any(), any())
 
           val expectedJson = Json.obj(
-            "journey"                   -> journey.toString,
+            "journeyType"               -> journey.toString,
             "internalReportReferenceId" -> transferNumber.value,
             "roleLoggedInAs"            -> "Psa",
             "affinityGroup"             -> "Individual",

@@ -22,6 +22,7 @@ GET        /refresh-session                                                     
 GET        /there-is-a-problem                                                                    controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
 GET        /what-will-be-needed                                                                   controllers.WhatWillBeNeededController.onPageLoad()
+POST       /what-will-be-needed                                                                   controllers.WhatWillBeNeededController.onSubmit()
 
 GET        /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onPageLoad()
 POST       /check-your-answers                                                                    controllers.checkYourAnswers.CheckYourAnswersController.onSubmit()

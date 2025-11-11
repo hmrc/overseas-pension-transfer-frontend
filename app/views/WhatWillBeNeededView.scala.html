@@ -15,18 +15,19 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton}
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
 @import play.twirl.api.Html
 
 
 @this(
-        layout: templates.Layout,
-        govukButton: GovukButton
+    layout: templates.Layout,
+    formHelper: FormWithCSRF,
+    govukButton: GovukButton
 )
 
-@(nextPage: String)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("requiredInfo.title")), showStartFooter = true) {
 
@@ -64,8 +65,7 @@
         <li>@messages("requiredInfo.schemeManager.bullet2")</li>
     </ul>
 
-    @govukButton(
-        ButtonViewModel(messages("site.continue"))
-        .asLink(nextPage)
-    )
+    @formHelper(action = controllers.routes.WhatWillBeNeededController.onSubmit()) {
+        @govukButton(ButtonViewModel(Text(messages("site.continue"))))
+    }
 }
