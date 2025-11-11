@@ -190,7 +190,6 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
     }
   }
 
-  // Cash value and cash assets can be missing when Cash not present in Type of assets
   private def validateCashAmountInTransfer(
       answers: UserAnswers
     ): ValidationResult[Option[BigDecimal]] = {
