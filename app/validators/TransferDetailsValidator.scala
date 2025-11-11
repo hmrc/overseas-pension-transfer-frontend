@@ -169,7 +169,7 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
     }
 
   private def validateTypeOfAsset(answers: UserAnswers): ValidationResult[Seq[TypeOfAsset]] =
-    answers.get(TypeOfAssetPage) match {
+    answers.get(AnswersSelectedAssetTypes) match {
       case Some(asset) => asset.validNec
       case None        => DataMissingError(TypeOfAssetPage).invalidNec
     }

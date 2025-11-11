@@ -18,7 +18,7 @@ package pages.transferDetails
 
 import controllers.transferDetails.routes
 import models.assets.TypeOfAsset
-import models.{CheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import navigators.TypeOfAssetNavigator
 import pages.{NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
@@ -37,8 +37,26 @@ case object TypeOfAssetPage extends QuestionPage[Seq[TypeOfAsset]] with NextPage
     }
   }
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call = {
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData, CheckMode) match {
+      case Some(route) => route
+      case None        => routes.TransferDetailsCYAController.onPageLoad()
+    }
+  }
+
+  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call = {
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData, FinalCheckMode) match {
+      case Some(route) => route
+      case None        => controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+    }
+  }
+
+  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call = {
+    TypeOfAssetNavigator.getNextAssetRoute(sessionData, AmendCheckMode) match {
+      case Some(route) => route
+      case None        => controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     routes.TypeOfAssetController.onPageLoad(mode)

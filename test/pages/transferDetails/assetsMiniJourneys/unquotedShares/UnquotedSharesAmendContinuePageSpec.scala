@@ -19,11 +19,10 @@ package pages.transferDetails.assetsMiniJourneys.unquotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.assets.{CashMiniJourney, QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
+import models.assets.{QuotedSharesMiniJourney, TypeOfAsset, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
-import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueAssetPage
 import queries.assets.AssetCompletionFlag
 
 class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {

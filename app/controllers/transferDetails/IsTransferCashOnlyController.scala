@@ -22,12 +22,14 @@ import forms.transferDetails.IsTransferCashOnlyFormProvider
 import models.{Mode, SessionData}
 import models.TaskCategory.TransferDetails
 import models.assets.TypeOfAsset
+import models.assets.TypeOfAsset.Cash
 import org.apache.pekko.Done
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage, TypeOfAssetPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Writes._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -86,7 +88,7 @@ class IsTransferCashOnlyController @Inject() (
     if (isCashOnly) {
       for {
         sd  <- AssetsMiniJourneyService.clearAllAssetCompletionFlags(sessionData)
-        sd1 <- sd.set(TypeOfAssetPage, Seq[TypeOfAsset](TypeOfAsset.Cash))
+        sd1 <- sd.set(SelectedAssetTypesWithStatus, SelectedAssetTypesWithStatus.fromTypes(Seq(Cash)))
       } yield sd1
     } else {
       Success(sessionData)
@@ -98,7 +100,7 @@ class IsTransferCashOnlyController @Inject() (
       for {
         ua1 <- AssetsMiniJourneyService.removeAllAssetEntriesExceptCash(userAnswers)
         ua2 <- ua1.set(CashAmountInTransferPage, netAmount)
-        ua3 <- ua2.set(TypeOfAssetPage, Seq[TypeOfAsset](TypeOfAsset.Cash))
+        ua3 <- ua2.set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash))
         ua4 <- ua3.set(IsTransferCashOnlyPage, isCashOnly)
       } yield ua4
     } else {

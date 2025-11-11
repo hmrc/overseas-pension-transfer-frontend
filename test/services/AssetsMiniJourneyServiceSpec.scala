@@ -20,7 +20,7 @@ import base.SpecBase
 import models.assets._
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.libs.json.Json
-import queries.assets.{AssetCompletionFlag, AssetCompletionFlags, SelectedAssetTypes}
+import queries.assets.AnswersSelectedAssetTypes
 
 import scala.util.{Failure, Success}
 
@@ -120,7 +120,10 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
           .set(QuotedSharesMiniJourney.query, List(QuotedSharesEntry("Q Co", 20, 2, "B"))).success.value
           .set(OtherAssetsMiniJourney.query, List(OtherAssetsEntry("Gold", 30))).success.value
           .set(CashMiniJourney.query, CashEntry(999)).success.value
-          .set(SelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash, TypeOfAsset.UnquotedShares, TypeOfAsset.QuotedShares, TypeOfAsset.Other)).success.value
+          .set(
+            AnswersSelectedAssetTypes,
+            Seq[TypeOfAsset](TypeOfAsset.Cash, TypeOfAsset.UnquotedShares, TypeOfAsset.QuotedShares, TypeOfAsset.Other)
+          ).success.value
 
       val result = service.removeAllAssetEntriesExceptCash(uaWithAssetsAndFlags)
 
@@ -133,14 +136,14 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
 
       updated.get(CashMiniJourney.query) mustBe Some(CashEntry(999))
 
-      updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
+      updated.get(AnswersSelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
     }
 
     "must remove non-cash data even if SelectedAssetTypes already equals Set(Cash)" in {
       val ua =
         emptyUserAnswers
           .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("Leftover", 10, 1, "C"))).success.value
-          .set(SelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash)).success.value
+          .set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash)).success.value
 
       val result = service.removeAllAssetEntriesExceptCash(ua)
 
@@ -148,7 +151,7 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
       val updated = result.get
 
       updated.get(UnquotedSharesMiniJourney.query) mustBe None
-      updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
+      updated.get(AnswersSelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
     }
 
     "must succeed and set SelectedAssetTypes to cash when there is nothing to remove" in {
@@ -156,7 +159,7 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
 
       result mustBe a[Success[_]]
       val updated = result.get
-      updated.get(SelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
+      updated.get(AnswersSelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
     }
   }
 }

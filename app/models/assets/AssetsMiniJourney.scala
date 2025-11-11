@@ -17,17 +17,22 @@
 package models.assets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.{Mode, NormalMode, SessionData, UserAnswers}
+import models.assets.CashMiniJourney.assetType
+import models.{Mode, NormalMode, SessionData}
+import play.api.Logging
 import play.api.libs.json.OFormat
 import play.api.mvc.Call
 import queries.assets._
 
 sealed trait AssetsMiniJourneyBase {
   def assetType: TypeOfAsset
-  def isCompleted(session: SessionData): Boolean
   def startPage: Mode => Call
   final def call(mode: Mode): Call = startPage(mode)
 
+  def isCompleted(sd: SessionData): Boolean = {
+    val selected = sd.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty)
+    SelectedAssetTypesWithStatus.toTypes(selected).contains(assetType)
+  }
 }
 
 trait RepeatingAssetsMiniJourney[A <: AssetEntry] extends AssetsMiniJourneyBase {
@@ -46,18 +51,12 @@ object CashMiniJourney extends SingleAssetsMiniJourney[CashEntry] {
   val query                            = CashQuery
   val format                           = CashEntry.format
   override def startPage: Mode => Call = (mode: Mode) => CashAmountInTransferController.onPageLoad(mode)
-
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
-object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEntry] {
+object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEntry] with Logging {
   val assetType = TypeOfAsset.QuotedShares
   val query     = QuotedSharesQuery
   val format    = QuotedSharesEntry.format
-
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
 
   override def startPage: Mode => Call = {
     case NormalMode => QuotedSharesStartController.onPageLoad()
@@ -76,12 +75,9 @@ object UnquotedSharesMiniJourney extends RepeatingAssetsMiniJourney[UnquotedShar
     case mode       => UnquotedSharesCompanyNameController.onPageLoad(mode, 0)
     case _          => controllers.routes.JourneyRecoveryController.onPageLoad()
   }
-
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
-object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] {
+object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] with Logging {
   val assetType = TypeOfAsset.Property
   val query     = PropertyQuery
   val format    = PropertyEntry.format
@@ -91,9 +87,6 @@ object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] {
     case mode       => PropertyAddressController.onPageLoad(mode, 0)
     case _          => controllers.routes.JourneyRecoveryController.onPageLoad()
   }
-
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
 }
 
 object OtherAssetsMiniJourney extends RepeatingAssetsMiniJourney[OtherAssetsEntry] {
@@ -106,7 +99,4 @@ object OtherAssetsMiniJourney extends RepeatingAssetsMiniJourney[OtherAssetsEntr
     case mode       => OtherAssetsDescriptionController.onPageLoad(mode, 0)
     case _          => controllers.routes.JourneyRecoveryController.onPageLoad()
   }
-
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
 }

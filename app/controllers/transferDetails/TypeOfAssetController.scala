@@ -19,11 +19,12 @@ package controllers.transferDetails
 import controllers.actions._
 import forms.transferDetails.TypeOfAssetFormProvider
 import models.Mode
-import navigators.TypeOfAssetNavigator
 import pages.transferDetails.TypeOfAssetPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.assets.SelectedAssetTypesWithStatus
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -49,9 +50,10 @@ class TypeOfAssetController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TypeOfAssetPage) match {
+      logger.info(Json.prettyPrint(Json.toJson(request.sessionData)))
+      val preparedForm = request.sessionData.get(SelectedAssetTypesWithStatus) match {
         case None        => form
-        case Some(value) => form.fill(value)
+        case Some(value) => form.fill(SelectedAssetTypesWithStatus.toTypes(value))
       }
 
       Ok(view(preparedForm, mode))
@@ -65,13 +67,10 @@ class TypeOfAssetController @Inject() (
         selectedAssets => {
           val orderedAssets = selectedAssets.toSeq.sorted
           for {
-            setAssetsUA               <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, selectedAssets))
-            setAssetsSD               <- Future.fromTry(request.sessionData.set(TypeOfAssetPage, selectedAssets))
-            removePrevSetAssetFlagsSD <- Future.fromTry(AssetsMiniJourneyService.clearAllAssetCompletionFlags(setAssetsSD))
-            setAssetsCompletedSD      <- Future.fromTry(AssetsMiniJourneyService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsSD, orderedAssets))
-            _                         <- userAnswersService.setExternalUserAnswers(setAssetsUA)
-            _                         <- sessionRepository.set(setAssetsCompletedSD)
-          } yield Redirect(TypeOfAssetPage.nextPageWith(mode, setAssetsUA, setAssetsCompletedSD))
+            (sd, ua) <- Future.fromTry(AssetsMiniJourneyService.handleTypeOfAssetStatusUpdate(request.sessionData, request.userAnswers, orderedAssets))
+            _        <- userAnswersService.setExternalUserAnswers(ua)
+            _        <- sessionRepository.set(sd)
+          } yield Redirect(TypeOfAssetPage.nextPageWith(mode, ua, sd))
         }
       )
     }
