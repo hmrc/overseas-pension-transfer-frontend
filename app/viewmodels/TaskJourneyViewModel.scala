@@ -139,7 +139,6 @@ object TaskJourneyViewModels {
     val category             = TaskCategory.SubmissionDetails
     val id                   = "submit"
     val linkTextKey          = "taskList.submit.linkText"
-    // TODO: These will need to be updated with the actual submission pages when they are completed
     def start(m: Mode): Call = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
     def cya(): Call          = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
 

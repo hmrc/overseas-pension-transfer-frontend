@@ -18,7 +18,7 @@ package validators
 
 import cats.data.Chain
 import cats.implicits._
-import models.WhyTransferIsTaxable.NoExclusion
+import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
 import models.assets.TypeOfAsset
 import models.assets.TypeOfAsset._
 import models.transferJourneys._
@@ -88,7 +88,7 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
         }
       case Some(false) =>
         answers.get(WhyTransferIsTaxablePage) match {
-          case Some(_) => GenericError("cannot have why is transfer taxable value when is transfer taxable is false").invalidNec
+          case Some(_) => GenericError("whyTaxableOT cannot be present when paymentTaxableOverseas is false").invalidNec
           case None    => None.validNec
         }
       case None        =>
@@ -104,7 +104,7 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
         }
       case Some(true)  =>
         answers.get(WhyTransferIsNotTaxablePage) match {
-          case Some(_) => GenericError("cannot have why transfer is not taxable value when is transfr taxable is true").invalidNec
+          case Some(_) => GenericError("reasonNoOverseasTransfer cannot be present when paymentTaxableOverseas is true").invalidNec
           case None    => None.validNec
         }
       case None        =>
@@ -112,18 +112,23 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
     }
 
   private def validateApplicableTaxExclusions(answers: UserAnswers): ValidationResult[Option[Set[ApplicableTaxExclusions]]] =
-    answers.get(IsTransferTaxablePage) match {
-      case Some(true)  =>
+    (answers.get(IsTransferTaxablePage), answers.get(WhyTransferIsTaxablePage)) match {
+      case (Some(true), Some(TransferExceedsOTCAllowance)) =>
         answers.get(ApplicableTaxExclusionsPage) match {
           case Some(exclusions) => Some(exclusions).validNec
           case _                => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
         }
-      case Some(false) =>
+      case (Some(true), Some(NoExclusion))                 =>
         answers.get(ApplicableTaxExclusionsPage) match {
-          case Some(_) => GenericError("exclusions can not be present when is transfer taxable is false").invalidNec
-          case None    => None.validNec
+          case None => None.validNec
+          case _    => GenericError("Applicable exclusions cannot be present when WhyTransferTaxable is NoExclusion").invalidNec
         }
-      case _           => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
+      case (Some(false), _)                                =>
+        answers.get(ApplicableTaxExclusionsPage) match {
+          case None => None.validNec
+          case _    => GenericError("applicableExclusion cannot be present when paymentTaxableOverseas is false").invalidNec
+        }
+      case _                                               => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
     }
 
   private def validateAmountOfTaxDeducted(answers: UserAnswers): ValidationResult[Option[BigDecimal]] = {
@@ -168,22 +173,44 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
       case None                     => DataMissingError(IsTransferCashOnlyPage).invalidNec
     }
 
-  private def validateTypeOfAsset(answers: UserAnswers): ValidationResult[Seq[TypeOfAsset]] =
-    answers.get(TypeOfAssetPage) match {
-      case Some(asset) => asset.validNec
+  private def validateTypeOfAsset(answers: UserAnswers): ValidationResult[Seq[TypeOfAsset]] = {
+    answers.get(IsTransferCashOnlyPage) match {
+      case Some(true)  => answers.get(TypeOfAssetPage) match {
+          case Some(asset) if asset.length == 1 && asset.contains(Cash) => asset.validNec
+          case Some(_)                                                  =>
+            GenericError("typeOfAsset expected to be Seq(Cash) when cashOnlyTransfer is true")
+              .invalidNec
+          case None                                                     => DataMissingError(TypeOfAssetPage).invalidNec
+        }
+      case Some(false) => answers.get(TypeOfAssetPage) match {
+          case Some(asset) => asset.validNec
+          case None        => DataMissingError(TypeOfAssetPage).invalidNec
+        }
       case None        => DataMissingError(TypeOfAssetPage).invalidNec
     }
+  }
 
   private def validateCashAmountInTransfer(
       answers: UserAnswers
     ): ValidationResult[Option[BigDecimal]] = {
     answers.get(IsTransferCashOnlyPage) match {
-      case Some(_) =>
+      case Some(true)  =>
         answers.get(CashAmountInTransferPage) match {
           case Some(cashAmountInTransfer) if cashAmountInTransfer > 0 => Some(cashAmountInTransfer).validNec
           case _                                                      => DataMissingError(CashAmountInTransferPage).invalidNec
         }
-      case None    => DataMissingError(CashAmountInTransferPage).invalidNec
+      case Some(false) => answers.get(TypeOfAssetPage) match {
+          case Some(assets) if assets.contains(Cash) =>
+            answers.get(CashAmountInTransferPage) match {
+              case Some(cashAmountInTransfer) => Some(cashAmountInTransfer).validNec
+              case None                       => DataMissingError(CashAmountInTransferPage).invalidNec
+            }
+          case Some(_)                               => answers.get(CashAmountInTransferPage) match {
+              case Some(_) => GenericError("cashValue not expected when Cash is not present in type of assets").invalidNec
+              case None    => None.validNec
+            }
+        }
+      case None        => DataMissingError(CashAmountInTransferPage).invalidNec
     }
   }
 

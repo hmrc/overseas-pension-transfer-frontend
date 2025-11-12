@@ -19,7 +19,12 @@ package validators
 import base.SpecBase
 import cats.data.Chain
 import cats.data.Validated.{Invalid, Valid}
-import models.assets.{OtherAssetsEntry, QuotedSharesEntry, TypeOfAsset, UnquotedSharesEntry}
+import models.ApplicableTaxExclusions.Occupational
+import models.WhyTransferIsNotTaxable.IndividualIsEmployeeOccupational
+import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
+import models.address.{Country, PropertyAddress}
+import models.assets.TypeOfAsset.{Cash, Other, Property}
+import models.assets.{OtherAssetsEntry, PropertyEntry, QuotedSharesEntry, TypeOfAsset, UnquotedSharesEntry}
 import models.transferJourneys._
 import models.{ApplicableTaxExclusions, DataMissingError, GenericError, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
 import org.scalatest.freespec.AnyFreeSpec
@@ -35,6 +40,7 @@ import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
   UnquotedSharesNumberPage,
   UnquotedSharesValuePage
 }
+import play.api.libs.json.Json
 import queries.assets.{OtherAssetsQuery, PropertyQuery, QuotedSharesQuery, UnquotedSharesQuery}
 
 import java.time.LocalDate
@@ -55,6 +61,15 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
   private val testAssetDesc1         = "Crypto"
   private val testAssetDesc2         = "Bullion"
 
+  private val testPropertyAddress = PropertyAddress(
+    addressLine1 = "Line 1",
+    addressLine2 = "Line 2",
+    addressLine3 = None,
+    addressLine4 = None,
+    country      = Country("GB", "United Kingdom"),
+    ukPostCode   = None
+  )
+
   private val validator = TransferDetailsValidator
   private val today     = LocalDate.now
 
@@ -68,9 +83,9 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
     amountOfTaxDeducted     = Some(100.33),
     netTransferAmount       = Some(1900.99),
     dateOfTransfer          = today,
-    isTransferCashOnly      = false,
-    typeOfAsset             = Seq.empty,
-    cashAmountInTransfer    = Some(BigDecimal(2000.88)),
+    isTransferCashOnly      = true,
+    typeOfAsset             = Seq(Cash),
+    cashAmountInTransfer    = None,
     unquotedShares          = None,
     moreThan5Unquoted       = None,
     quotedShares            = None,
@@ -90,47 +105,59 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
     .set(AmountOfTaxDeductedPage, BigDecimal(100.33)).success.value
     .set(NetTransferAmountPage, BigDecimal(1900.99)).success.value
     .set(DateOfTransferPage, today).success.value
-    .set(IsTransferCashOnlyPage, false).success.value
-    .set(CashAmountInTransferPage, BigDecimal(2000.88)).success.value
+    .set(IsTransferCashOnlyPage, true).success.value
+    .set(TypeOfAssetPage, Seq(Cash)).success.value
 
   "fromUserAnswers" - {
     "must return valid TransferDetails" - {
       "when all required fields are provided" in {
         val userAnswers = buildBaseUserAnswers
-          .set(TypeOfAssetPage, Seq.empty).success.value
+          .set(CashAmountInTransferPage, BigDecimal(2000.88)).success.value
 
         validator.fromUserAnswers(userAnswers) mustBe
           Valid(baseTransferDetails.copy(
-            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational)),
+            cashAmountInTransfer    = Some(BigDecimal(2000.88))
+          ))
+      }
+
+      "When transfer is taxable and WhyTransferIsTaxable is NoExclusion with ApplicableExclusion None" in {
+        val validWithNoExclusion = Json.obj("transferDetails" -> Json.obj(
+          "allowanceBeforeTransfer" -> 1000.25,
+          "transferAmount"          -> 2000.88,
+          "paymentTaxableOverseas"  -> true,
+          "whyTaxableOT"            -> NoExclusion.toString,
+          "amountTaxDeducted"       -> 100.33,
+          "transferMinusTax"        -> 1900.99,
+          "dateMemberTransferred"   -> today,
+          "cashOnlyTransfer"        -> true,
+          "cashValue"               -> 2000.88,
+          "typeOfAsset"             -> List(Cash.toString)
+        ))
+
+        val userAnswers = emptyUserAnswers.copy(data = validWithNoExclusion)
+
+        validator.fromUserAnswers(userAnswers) mustBe
+          Valid(baseTransferDetails.copy(
+            whyTaxable              = Some(NoExclusion),
+            applicableTaxExclusions = None,
+            isTransferCashOnly      = true,
+            cashAmountInTransfer    = Some(BigDecimal(2000.88)),
+            typeOfAsset             = Seq(Cash)
           ))
       }
 
       "when a transfer includes a cash asset" - {
-        "with a valid amount" in {
+        "when value is not cash only with a valid amount" in {
           val userAnswers = buildBaseUserAnswers
+            .set(IsTransferCashOnlyPage, false).success.value
+            .set(CashAmountInTransferPage, BigDecimal(2000.88)).success.value
             .set(TypeOfAssetPage, Seq(TypeOfAsset.Cash)).success.value
             .set(CashAmountInTransferPage, testCashAmount).success.value
 
           val expected = baseTransferDetails.copy(
+            isTransferCashOnly      = false,
             typeOfAsset             = Seq(TypeOfAsset.Cash),
-            cashAmountInTransfer    = Some(testCashAmount),
-            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
-          )
-
-          validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
-        }
-
-        "with cash only and cash amount equals transfer amount" in {
-          val userAnswers = buildBaseUserAnswers
-            .set(TypeOfAssetPage, Seq(TypeOfAsset.Cash)).success.value
-            .set(AmountOfTransferPage, testCashAmount).success.value
-            .set(IsTransferCashOnlyPage, true).success.value
-            .set(CashAmountInTransferPage, testCashAmount).success.value
-
-          val expected = baseTransferDetails.copy(
-            typeOfAsset             = Seq(TypeOfAsset.Cash),
-            transferAmount          = testCashAmount,
-            isTransferCashOnly      = true,
             cashAmountInTransfer    = Some(testCashAmount),
             applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
           )
@@ -142,6 +169,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
       "when a transfer includes unquoted shares" - {
         "with valid share details" in {
           val userAnswers = buildBaseUserAnswers
+            .set(IsTransferCashOnlyPage, false).success.value
             .set(TypeOfAssetPage, Seq(TypeOfAsset.UnquotedShares)).success.value
             .set(UnquotedSharesCompanyNamePage(0), testCompanyName1).success.value
             .set(UnquotedSharesValuePage(0), testUnquotedShareValue).success.value
@@ -156,7 +184,32 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
               testUnquotedShareCount,
               testShareClass1
             ))),
-            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational)),
+            isTransferCashOnly      = false
+          )
+
+          validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
+        }
+      }
+
+      "when a transfer includes property assets" - {
+        "with valid property details" in {
+          val userAnswers = buildBaseUserAnswers
+            .set(IsTransferCashOnlyPage, false).success.value
+            .set(TypeOfAssetPage, Seq(TypeOfAsset.Property)).success.value
+            .set(PropertyAddressPage(0), testPropertyAddress).success.value
+            .set(PropertyValuePage(0), BigDecimal(1000000.99)).success.value
+            .set(PropertyDescriptionPage(0), "Bungalow").success.value
+
+          val expected = baseTransferDetails.copy(
+            typeOfAsset             = Seq(TypeOfAsset.Property),
+            propertyDetails         = Some(List(PropertyEntry(
+              testPropertyAddress,
+              BigDecimal(1000000.99),
+              "Bungalow"
+            ))),
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational)),
+            isTransferCashOnly      = false
           )
 
           validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
@@ -166,6 +219,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
       "when a transfer includes quoted shares" - {
         "with valid share details" in {
           val userAnswers = buildBaseUserAnswers
+            .set(IsTransferCashOnlyPage, false).success.value
             .set(TypeOfAssetPage, Seq(TypeOfAsset.QuotedShares)).success.value
             .set(QuotedSharesCompanyNamePage(0), testCompanyName2).success.value
             .set(QuotedSharesValuePage(0), testQuotedShareValue).success.value
@@ -180,7 +234,8 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
               testQuotedShareCount,
               testShareClass2
             ))),
-            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational)),
+            isTransferCashOnly      = false
           )
 
           validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
@@ -190,6 +245,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
       "when a transfer includes other assets" - {
         "with valid asset details" in {
           val userAnswers = buildBaseUserAnswers
+            .set(IsTransferCashOnlyPage, false).success.value
             .set(TypeOfAssetPage, Seq(TypeOfAsset.Other)).success.value
             .set(OtherAssetsDescriptionPage(0), testAssetDesc1).success.value
             .set(OtherAssetsValuePage(0), testAssetValue1).success.value
@@ -208,7 +264,8 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
                 testAssetValue2
               )
             )),
-            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
+            applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational)),
+            isTransferCashOnly      = false
           )
 
           validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
@@ -225,6 +282,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
         )
 
         val userAnswers = buildBaseUserAnswers
+          .set(IsTransferCashOnlyPage, false).success.value
           .set(TypeOfAssetPage, Seq(TypeOfAsset.Other)).success.value
           .set(OtherAssetsQuery, otherAssetList).success.value
           .set(MoreOtherAssetsDeclarationPage, true).success.value
@@ -239,7 +297,8 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
             OtherAssetsEntry(testAssetDesc2, testAssetValue2)
           )),
           moreThan5OtherAssets    = Some(true),
-          applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational))
+          applicableTaxExclusions = Some(Set(ApplicableTaxExclusions.Occupational)),
+          isTransferCashOnly      = false
         )
 
         validator.fromUserAnswers(userAnswers) mustBe Valid(expected)
@@ -255,6 +314,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
       "when a cash asset is selected but the amount is missing" in {
         val userAnswers = buildBaseUserAnswers
+          .set(IsTransferCashOnlyPage, false).success.value
           .set(TypeOfAssetPage, Seq(TypeOfAsset.Cash)).success.value
           .remove(CashAmountInTransferPage).success.value
 
@@ -262,6 +322,74 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
         result mustBe Invalid(Chain(
           DataMissingError(CashAmountInTransferPage)
+        ))
+      }
+
+      "when a transfer is paymentTaxableOverseas is true and WhyTransferTaxable is ExceedsOtcAllowance and applicableExclusions is missing" in {
+        val validWithNoExclusion = Json.obj("transferDetails" -> Json.obj(
+          "allowanceBeforeTransfer" -> 1000.25,
+          "transferAmount"          -> 2000.88,
+          "paymentTaxableOverseas"  -> true,
+          "whyTaxableOT"            -> TransferExceedsOTCAllowance.toString,
+          "amountTaxDeducted"       -> 100.33,
+          "transferMinusTax"        -> 1900.99,
+          "dateMemberTransferred"   -> today,
+          "cashOnlyTransfer"        -> true,
+          "cashValue"               -> 2000.88,
+          "typeOfAsset"             -> List(Cash.toString)
+        ))
+
+        val userAnswers = emptyUserAnswers.copy(data = validWithNoExclusion)
+
+        val result = validator.fromUserAnswers(userAnswers)
+
+        result mustBe Invalid(Chain(
+          DataMissingError(ApplicableTaxExclusionsPage)
+        ))
+      }
+
+      "when a transfer is paymentTaxableOverseas is true and WhyTransferTaxable and applicableExclusions is missing" in {
+        val validWithNoExclusion = Json.obj("transferDetails" -> Json.obj(
+          "allowanceBeforeTransfer" -> 1000.25,
+          "transferAmount"          -> 2000.88,
+          "paymentTaxableOverseas"  -> true,
+          "amountTaxDeducted"       -> 100.33,
+          "transferMinusTax"        -> 1900.99,
+          "dateMemberTransferred"   -> today,
+          "cashOnlyTransfer"        -> true,
+          "cashValue"               -> 2000.88,
+          "typeOfAsset"             -> List(Cash.toString)
+        ))
+
+        val userAnswers = emptyUserAnswers.copy(data = validWithNoExclusion)
+
+        val result = validator.fromUserAnswers(userAnswers)
+
+        result mustBe Invalid(Chain(
+          DataMissingError(WhyTransferIsTaxablePage),
+          DataMissingError(ApplicableTaxExclusionsPage)
+        ))
+      }
+
+      "when a transfer is paymentTaxableOverseas is false and WhyTransferIsNotTaxable is missing" in {
+        val validWithNoExclusion = Json.obj("transferDetails" -> Json.obj(
+          "allowanceBeforeTransfer" -> 1000.25,
+          "transferAmount"          -> 2000.88,
+          "paymentTaxableOverseas"  -> false,
+          "amountTaxDeducted"       -> 100.33,
+          "transferMinusTax"        -> 1900.99,
+          "dateMemberTransferred"   -> today,
+          "cashOnlyTransfer"        -> true,
+          "cashValue"               -> 2000.88,
+          "typeOfAsset"             -> List(Cash.toString)
+        ))
+
+        val userAnswers = emptyUserAnswers.copy(data = validWithNoExclusion)
+
+        val result = validator.fromUserAnswers(userAnswers)
+
+        result mustBe Invalid(Chain(
+          DataMissingError(WhyTransferIsNotTaxablePage)
         ))
       }
 
@@ -280,6 +408,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
       "when a property asset is selected but the details are missing" in {
         val userAnswers = buildBaseUserAnswers
+          .set(IsTransferCashOnlyPage, false).success.value
           .set(TypeOfAssetPage, Seq(TypeOfAsset.Property)).success.value
 
         val result = validator.fromUserAnswers(userAnswers)
@@ -291,6 +420,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
       "when unquoted shares are selected but the details are missing" in {
         val userAnswers = buildBaseUserAnswers
+          .set(IsTransferCashOnlyPage, false).success.value
           .set(TypeOfAssetPage, Seq(TypeOfAsset.UnquotedShares)).success.value
 
         val result = validator.fromUserAnswers(userAnswers)
@@ -302,6 +432,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
       "when quoted shares are selected but the details are missing" in {
         val userAnswers = buildBaseUserAnswers
+          .set(IsTransferCashOnlyPage, false).success.value
           .set(TypeOfAssetPage, Seq(TypeOfAsset.QuotedShares)).success.value
 
         val result = validator.fromUserAnswers(userAnswers)
@@ -313,12 +444,86 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
       "when other assets are selected but the details are missing" in {
         val userAnswers = buildBaseUserAnswers
+          .set(IsTransferCashOnlyPage, false).success.value
           .set(TypeOfAssetPage, Seq(TypeOfAsset.Other)).success.value
 
         val result = validator.fromUserAnswers(userAnswers)
 
         result mustBe Invalid(Chain(
           DataMissingError(OtherAssetsQuery)
+        ))
+      }
+
+      "when paymentTaxableOverseas == true and WhyTransferNotTaxable is present" in {
+        val validWithNoExclusion = Json.obj("transferDetails" -> Json.obj(
+          "allowanceBeforeTransfer"  -> 1000.25,
+          "transferAmount"           -> 2000.88,
+          "paymentTaxableOverseas"   -> true,
+          "whyTaxableOT"             -> NoExclusion.toString,
+          "reasonNoOverseasTransfer" -> List(IndividualIsEmployeeOccupational.toString),
+          "amountTaxDeducted"        -> 100.33,
+          "transferMinusTax"         -> 1900.99,
+          "dateMemberTransferred"    -> today,
+          "cashOnlyTransfer"         -> true,
+          "cashValue"                -> 2000.88,
+          "typeOfAsset"              -> List(Cash.toString)
+        ))
+
+        val userAnswers = emptyUserAnswers.copy(data = validWithNoExclusion)
+
+        validator.fromUserAnswers(userAnswers) mustBe Invalid(Chain(
+          GenericError("reasonNoOverseasTransfer cannot be present when paymentTaxableOverseas is true")
+        ))
+      }
+
+      "when paymentTaxableOverseas == false  and WhyTaxableOT and applicableExclusions are present" in {
+        val validWithNoExclusion = Json.obj("transferDetails" -> Json.obj(
+          "allowanceBeforeTransfer"  -> 1000.25,
+          "transferAmount"           -> 2000.88,
+          "paymentTaxableOverseas"   -> false,
+          "whyTaxableOT"             -> TransferExceedsOTCAllowance.toString,
+          "applicableExclusion"      -> List(Occupational.toString),
+          "reasonNoOverseasTransfer" -> List(IndividualIsEmployeeOccupational.toString),
+          "amountTaxDeducted"        -> 100.33,
+          "transferMinusTax"         -> 1900.99,
+          "dateMemberTransferred"    -> today,
+          "cashOnlyTransfer"         -> true,
+          "cashValue"                -> 2000.88,
+          "typeOfAsset"              -> List(Cash.toString)
+        ))
+
+        val userAnswers = emptyUserAnswers.copy(data = validWithNoExclusion)
+
+        validator.fromUserAnswers(userAnswers) mustBe Invalid(Chain(
+          GenericError("whyTaxableOT cannot be present when paymentTaxableOverseas is false"),
+          GenericError("applicableExclusion cannot be present when paymentTaxableOverseas is false")
+        ))
+      }
+
+      "when cashValue exists when no Cash is present in TypeOfAsset" in {
+        val validWithNoExclusion = Json.obj("transferDetails" -> Json.obj(
+          "allowanceBeforeTransfer"  -> 1000.25,
+          "transferAmount"           -> 2000.88,
+          "paymentTaxableOverseas"   -> false,
+          "reasonNoOverseasTransfer" -> List(IndividualIsEmployeeOccupational.toString),
+          "amountTaxDeducted"        -> 100.33,
+          "transferMinusTax"         -> 1900.99,
+          "dateMemberTransferred"    -> today,
+          "cashOnlyTransfer"         -> false,
+          "cashValue"                -> 2000.88,
+          "typeOfAsset"              -> List(Other.toString),
+          "otherAssets"              -> List(
+            Json.obj(
+              "assetDescription" -> "Vintage Car",
+              "assetValue"       -> 3000.44
+            )
+          )
+        ))
+
+        val userAnswers = emptyUserAnswers.copy(data = validWithNoExclusion)
+
+        validator.fromUserAnswers(userAnswers) mustBe Invalid(Chain(
+          GenericError("cashValue not expected when Cash is not present in type of assets")
         ))
       }
     }
