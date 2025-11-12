@@ -26,8 +26,8 @@ import queries.assets._
 
 sealed trait AssetsMiniJourneyBase {
   def assetType: TypeOfAsset
-  def startPage: (Mode, Option[Int]) => Call
-  final def call(mode: Mode, idx: Option[Int] = None): Call = startPage(mode, idx)
+  def startPage: (Mode, Int) => Call
+  final def call(mode: Mode, idx: Int = 0): Call = startPage(mode, idx)
 
   def isCompleted(sd: SessionData): Boolean = {
     val selected = sd.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty)
@@ -46,10 +46,10 @@ trait SingleAssetsMiniJourney[A <: AssetEntry] extends AssetsMiniJourneyBase {
 }
 
 object CashMiniJourney extends SingleAssetsMiniJourney[CashEntry] {
-  val assetType                                       = TypeOfAsset.Cash
-  val query                                           = CashQuery
-  val format                                          = CashEntry.format
-  override def startPage: (Mode, Option[Int]) => Call = (mode: Mode, _) => CashAmountInTransferController.onPageLoad(mode)
+  val assetType                               = TypeOfAsset.Cash
+  val query                                   = CashQuery
+  val format                                  = CashEntry.format
+  override def startPage: (Mode, Int) => Call = (mode: Mode, _) => CashAmountInTransferController.onPageLoad(mode)
 }
 
 object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEntry] with Logging {
@@ -57,11 +57,11 @@ object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEn
   val query     = QuotedSharesQuery
   val format    = QuotedSharesEntry.format
 
-  override def startPage: (Mode, Option[Int]) => Call = { (mode, idx) =>
-    mode match {
-      case NormalMode => QuotedSharesStartController.onPageLoad()
-      case mode       => QuotedSharesCompanyNameController.onPageLoad(mode, idx.getOrElse(0))
-      case _          => controllers.routes.JourneyRecoveryController.onPageLoad()
+  override def startPage: (Mode, Int) => Call = { (mode, idx) =>
+    idx match {
+      case 0               => QuotedSharesStartController.onPageLoad()
+      case idx if idx <= 5 => QuotedSharesCompanyNameController.onPageLoad(mode, idx)
+      case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
   }
 }
@@ -71,11 +71,11 @@ object UnquotedSharesMiniJourney extends RepeatingAssetsMiniJourney[UnquotedShar
   val query     = UnquotedSharesQuery
   val format    = UnquotedSharesEntry.format
 
-  override def startPage: (Mode, Option[Int]) => Call = { (mode, idx) =>
-    mode match {
-      case NormalMode => UnquotedSharesStartController.onPageLoad()
-      case mode       => UnquotedSharesCompanyNameController.onPageLoad(mode, idx.getOrElse(0))
-      case _          => controllers.routes.JourneyRecoveryController.onPageLoad()
+  override def startPage: (Mode, Int) => Call = { (mode, idx) =>
+    idx match {
+      case 0               => UnquotedSharesStartController.onPageLoad()
+      case idx if idx <= 5 => UnquotedSharesCompanyNameController.onPageLoad(mode, idx)
+      case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
   }
 }
@@ -85,11 +85,11 @@ object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] wit
   val query     = PropertyQuery
   val format    = PropertyEntry.format
 
-  override def startPage: (Mode, Option[Int]) => Call = { (mode, idx) =>
-    mode match {
-      case NormalMode => PropertyStartController.onPageLoad()
-      case mode       => PropertyAddressController.onPageLoad(mode, idx.getOrElse(0))
-      case _          => controllers.routes.JourneyRecoveryController.onPageLoad()
+  override def startPage: (Mode, Int) => Call = { (mode, idx) =>
+    idx match {
+      case 0               => PropertyStartController.onPageLoad()
+      case idx if idx <= 5 => PropertyAddressController.onPageLoad(mode, idx)
+      case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
   }
 }
@@ -99,11 +99,11 @@ object OtherAssetsMiniJourney extends RepeatingAssetsMiniJourney[OtherAssetsEntr
   val query     = OtherAssetsQuery
   val format    = OtherAssetsEntry.format
 
-  override def startPage: (Mode, Option[Int]) => Call = { (mode, idx) =>
-    mode match {
-      case NormalMode => OtherAssetsStartController.onPageLoad()
-      case mode       => OtherAssetsDescriptionController.onPageLoad(mode, idx.getOrElse(0))
-      case _          => controllers.routes.JourneyRecoveryController.onPageLoad()
+  override def startPage: (Mode, Int) => Call = { (mode, idx) =>
+    idx match {
+      case 0               => OtherAssetsStartController.onPageLoad()
+      case idx if idx <= 5 => OtherAssetsDescriptionController.onPageLoad(mode, idx)
+      case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
   }
 }

@@ -29,17 +29,30 @@ case class UnquotedSharesCompanyNamePage(index: Int) extends QuestionPage[String
 
   override def toString: String = UnquotedSharesEntry.CompanyName
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+  override protected def nextPageNormalMode(answers: UserAnswers): Call = {
     AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(NormalMode, index)
+  }
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(CheckMode, index)
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
+    answers.get(UnquotedSharesValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(CheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(CheckMode, index)
+    }
+  }
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(FinalCheckMode, index)
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+    answers.get(UnquotedSharesValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(FinalCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(FinalCheckMode, index)
+    }
+  }
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(AmendCheckMode, index)
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+    answers.get(UnquotedSharesValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(AmendCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(AmendCheckMode, index)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(mode, index)

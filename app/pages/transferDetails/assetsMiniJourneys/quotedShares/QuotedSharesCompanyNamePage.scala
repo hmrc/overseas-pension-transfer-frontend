@@ -29,17 +29,30 @@ case class QuotedSharesCompanyNamePage(index: Int) extends QuestionPage[String] 
 
   override def toString: String = QuotedSharesEntry.CompanyName
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+  override protected def nextPageNormalMode(answers: UserAnswers): Call = {
     AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(NormalMode, index)
+  }
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(CheckMode, index)
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
+    answers.get(QuotedSharesValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(CheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(CheckMode, index)
+    }
+  }
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(FinalCheckMode, index)
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+    answers.get(QuotedSharesValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(FinalCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(FinalCheckMode, index)
+    }
+  }
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(AmendCheckMode, index)
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+    answers.get(QuotedSharesValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(AmendCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(AmendCheckMode, index)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(mode, index)

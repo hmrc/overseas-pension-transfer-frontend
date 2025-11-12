@@ -20,8 +20,8 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.address._
 import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
+import pages.{NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -34,14 +34,26 @@ case class PropertyAddressPage(index: Int) extends QuestionPage[PropertyAddress]
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode, index)
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
+    answers.get(PropertyValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(CheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode, index)
+    }
+  }
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(FinalCheckMode, index)
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+    answers.get(PropertyValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(FinalCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(FinalCheckMode, index)
+    }
+  }
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(AmendCheckMode, index)
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+    answers.get(PropertyValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(AmendCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(AmendCheckMode, index)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(mode, index)

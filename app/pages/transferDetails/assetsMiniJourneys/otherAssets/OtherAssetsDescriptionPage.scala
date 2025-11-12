@@ -18,8 +18,8 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.{OtherAssetsEntry, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
+import pages.{NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -32,14 +32,26 @@ case class OtherAssetsDescriptionPage(index: Int) extends QuestionPage[String] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(CheckMode, index)
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
+    answers.get(OtherAssetsValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(CheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(CheckMode, index)
+    }
+  }
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(FinalCheckMode, index)
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+    answers.get(OtherAssetsValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(FinalCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(FinalCheckMode, index)
+    }
+  }
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(AmendCheckMode, index)
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+    answers.get(OtherAssetsValuePage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(AmendCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(AmendCheckMode, index)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(mode, index)

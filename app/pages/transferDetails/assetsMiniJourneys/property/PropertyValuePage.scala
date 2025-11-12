@@ -18,8 +18,8 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
+import pages.{NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -32,14 +32,26 @@ case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode, index)
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
+    answers.get(PropertyDescriptionPage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(CheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode, index)
+    }
+  }
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(FinalCheckMode, index)
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+    answers.get(PropertyDescriptionPage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(FinalCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(FinalCheckMode, index)
+    }
+  }
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(AmendCheckMode, index)
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+    answers.get(PropertyDescriptionPage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(AmendCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(AmendCheckMode, index)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(mode, index)

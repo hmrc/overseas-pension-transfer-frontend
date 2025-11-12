@@ -32,14 +32,26 @@ case class QuotedSharesValuePage(index: Int) extends QuestionPage[BigDecimal] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(NormalMode, index)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(CheckMode, index)
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
+    answers.get(QuotedSharesNumberPage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(CheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(CheckMode, index)
+    }
+  }
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(FinalCheckMode, index)
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+    answers.get(QuotedSharesClassPage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(FinalCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(FinalCheckMode, index)
+    }
+  }
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(AmendCheckMode, index)
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+    answers.get(QuotedSharesClassPage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(AmendCheckMode, index)
+      case None    => AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(AmendCheckMode, index)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(mode, index)

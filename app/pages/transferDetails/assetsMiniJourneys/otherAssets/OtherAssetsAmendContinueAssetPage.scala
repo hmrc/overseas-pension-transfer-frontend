@@ -32,7 +32,7 @@ case object OtherAssetsAmendContinueAssetPage extends QuestionPage[Boolean] with
   override def decideNextPage(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext, mode: Mode, modeCall: Call): Call = {
     val (sessionData, nextIndex) = sessionDataWithIndex
     answers.get(OtherAssetsAmendContinueAssetPage) match {
-      case Some(true)  => AssetsMiniJourneyRegistry.forType(TypeOfAsset.Other).get.call(mode, Some(nextIndex))
+      case Some(true)  => AssetsMiniJourneyRegistry.forType(TypeOfAsset.Other).get.call(mode, nextIndex)
       case Some(false) => super.nextAsset(sessionData, mode, modeCall)
       case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
