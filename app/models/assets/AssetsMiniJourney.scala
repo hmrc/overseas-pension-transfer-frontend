@@ -59,7 +59,7 @@ object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEn
 
   override def startPage: (Mode, Int) => Call = { (mode, idx) =>
     idx match {
-      case 0               => QuotedSharesStartController.onPageLoad()
+      case 0               => QuotedSharesStartController.onPageLoad(mode)
       case idx if idx <= 5 => QuotedSharesCompanyNameController.onPageLoad(mode, idx)
       case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
@@ -73,7 +73,7 @@ object UnquotedSharesMiniJourney extends RepeatingAssetsMiniJourney[UnquotedShar
 
   override def startPage: (Mode, Int) => Call = { (mode, idx) =>
     idx match {
-      case 0               => UnquotedSharesStartController.onPageLoad()
+      case 0               => UnquotedSharesStartController.onPageLoad(mode)
       case idx if idx <= 5 => UnquotedSharesCompanyNameController.onPageLoad(mode, idx)
       case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
@@ -87,7 +87,7 @@ object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] wit
 
   override def startPage: (Mode, Int) => Call = { (mode, idx) =>
     idx match {
-      case 0               => PropertyStartController.onPageLoad()
+      case 0               => PropertyStartController.onPageLoad(mode)
       case idx if idx <= 5 => PropertyAddressController.onPageLoad(mode, idx)
       case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
@@ -101,7 +101,7 @@ object OtherAssetsMiniJourney extends RepeatingAssetsMiniJourney[OtherAssetsEntr
 
   override def startPage: (Mode, Int) => Call = { (mode, idx) =>
     idx match {
-      case 0               => OtherAssetsStartController.onPageLoad()
+      case 0               => OtherAssetsStartController.onPageLoad(mode)
       case idx if idx <= 5 => OtherAssetsDescriptionController.onPageLoad(mode, idx)
       case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
     }

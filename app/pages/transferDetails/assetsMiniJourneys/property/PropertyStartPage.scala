@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{NormalMode, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import pages.Page
 import play.api.mvc.Call
 
@@ -29,5 +29,11 @@ object PropertyStartPage extends Page {
     AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, startIndex)
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.JourneyRecoveryController.onPageLoad()
+    AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, startIndex)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(FinalCheckMode, startIndex)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(AmendCheckMode, startIndex)
 }

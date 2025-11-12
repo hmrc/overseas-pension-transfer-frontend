@@ -93,7 +93,6 @@ class MoreUnquotedSharesDeclarationController @Inject() (
             sessionAfterCompletion <-
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.UnquotedShares, completed = true, Some(continue))
           } yield Redirect(MoreUnquotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
-
         }
       )
     }

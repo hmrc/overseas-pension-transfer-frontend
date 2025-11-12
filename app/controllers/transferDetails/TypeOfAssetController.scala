@@ -24,7 +24,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.SelectedAssetTypesWithStatus
+import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -50,9 +50,9 @@ class TypeOfAssetController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val preparedForm = request.sessionData.get(SelectedAssetTypesWithStatus) match {
+      val preparedForm = request.userAnswers.get(AnswersSelectedAssetTypes) match {
         case None        => form
-        case Some(value) => form.fill(SelectedAssetTypesWithStatus.toTypes(value))
+        case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode))

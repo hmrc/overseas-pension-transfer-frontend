@@ -379,7 +379,10 @@ POST       /transfer-details/assets/amend-change-cash-amount-in-transfer        
 
 # ----- UNQUOTED -----
 
-GET        /transfer-details/assets/unquoted-shares-start                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad()
+GET        /transfer-details/assets/unquoted-shares-start                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-unquoted-shares-start                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad(mode: Mode = CheckMode)
+GET        /transfer-details/assets/final-change-unquoted-shares-start                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-unquoted-shares-start                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/unquoted-shares-company-name                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/unquoted-shares-company-name                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -449,7 +452,10 @@ POST       /transfer-details/assets/unquoted-shares-confirm-removal             
 
 # ----- QUOTED -----
 
-GET        /transfer-details/assets/quoted-shares-start                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad()
+GET        /transfer-details/assets/quoted-shares-start                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-quoted-shares-start                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad(mode: Mode = CheckMode)
+GET        /transfer-details/assets/final-change-quoted-shares-start                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-quoted-shares-start                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/quoted-shares-company-name                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/quoted-shares-company-name                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -519,7 +525,10 @@ POST       /transfer-details/assets/quoted-shares-confirm-removal               
 
 # ----- PROPERTY -----
 
-GET        /transfer-details/assets/property-start                                                controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad()
+GET        /transfer-details/assets/property-start                                                controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-property-start                                         controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad(mode: Mode = CheckMode)
+GET        /transfer-details/assets/final-change-property-start                                          controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-property-start                                          controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/property-address                                              controllers.transferDetails.assetsMiniJourneys.property.PropertyAddressController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/property-address                                              controllers.transferDetails.assetsMiniJourneys.property.PropertyAddressController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -581,7 +590,10 @@ POST       /transfer-details/assets/property-confirm-removal                    
 
 # ----- OTHER -----
 
-GET        /transfer-details/assets/other-assets-start                                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad()
+GET        /transfer-details/assets/other-assets-start                                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-other-assets-start                                     controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad(mode: Mode = CheckMode)
+GET        /transfer-details/assets/final-change-other-assets-start                                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-other-assets-start                                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/other-assets-description                                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/other-assets-description                                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int)

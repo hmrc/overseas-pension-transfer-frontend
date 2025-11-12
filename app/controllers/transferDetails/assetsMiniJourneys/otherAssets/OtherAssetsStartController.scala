@@ -17,7 +17,7 @@
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
-import models.NormalMode
+import models.{Mode, NormalMode}
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,8 +36,8 @@ class OtherAssetsStartController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      Ok(view(OtherAssetsStartPage.nextPage(mode = NormalMode, request.userAnswers).url))
+      Ok(view(OtherAssetsStartPage.nextPage(mode = mode, request.userAnswers).url))
   }
 }
