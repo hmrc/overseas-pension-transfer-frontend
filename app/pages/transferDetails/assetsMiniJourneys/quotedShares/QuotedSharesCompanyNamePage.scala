@@ -20,6 +20,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.{QuotedSharesEntry, TypeOfAsset}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -33,24 +34,16 @@ case class QuotedSharesCompanyNamePage(index: Int) extends QuestionPage[String] 
     AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(NormalMode, index)
   }
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
-    answers.get(QuotedSharesValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(CheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(CheckMode, index)
-    }
-  }
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = decideNextPage(answers, CheckMode)
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
-    answers.get(QuotedSharesValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(FinalCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(FinalCheckMode, index)
-    }
-  }
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = decideNextPage(answers, FinalCheckMode)
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = decideNextPage(answers, AmendCheckMode)
+
+  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     answers.get(QuotedSharesValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(AmendCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(AmendCheckMode, index)
+      case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(mode, index)
+      case None    => AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(mode, index)
     }
   }
 

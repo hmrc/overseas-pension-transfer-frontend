@@ -32,24 +32,16 @@ case class UnquotedSharesNumberPage(index: Int) extends QuestionPage[Int] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(NormalMode, index)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
-    answers.get(UnquotedSharesClassPage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(CheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(CheckMode, index)
-    }
-  }
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = decideNextPage(answers, CheckMode)
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
-    answers.get(UnquotedSharesClassPage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(FinalCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(FinalCheckMode, index)
-    }
-  }
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = decideNextPage(answers, FinalCheckMode)
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = decideNextPage(answers, AmendCheckMode)
+
+  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     answers.get(UnquotedSharesClassPage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(AmendCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(AmendCheckMode, index)
+      case Some(_) => AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index)
+      case None    => AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(mode, index)
     }
   }
 

@@ -32,24 +32,16 @@ case class OtherAssetsDescriptionPage(index: Int) extends QuestionPage[String] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
-    answers.get(OtherAssetsValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(CheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(CheckMode, index)
-    }
-  }
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = decideNextPage(answers, CheckMode)
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
-    answers.get(OtherAssetsValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(FinalCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(FinalCheckMode, index)
-    }
-  }
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = decideNextPage(answers, FinalCheckMode)
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = decideNextPage(answers, AmendCheckMode)
+
+  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     answers.get(OtherAssetsValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(AmendCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(AmendCheckMode, index)
+      case Some(_) => AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(mode, index)
+      case None    => AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(mode, index)
     }
   }
 

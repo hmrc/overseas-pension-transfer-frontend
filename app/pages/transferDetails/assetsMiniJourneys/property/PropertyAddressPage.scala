@@ -21,6 +21,7 @@ import controllers.transferDetails.routes
 import models.address._
 import models.assets.{PropertyEntry, TypeOfAsset}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
 import pages.{NextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -34,24 +35,16 @@ case class PropertyAddressPage(index: Int) extends QuestionPage[PropertyAddress]
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
-    answers.get(PropertyValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(CheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(CheckMode, index)
-    }
-  }
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = decideNextPage(answers, CheckMode)
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
-    answers.get(PropertyValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(FinalCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(FinalCheckMode, index)
-    }
-  }
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = decideNextPage(answers, FinalCheckMode)
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = decideNextPage(answers, AmendCheckMode)
+
+  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     answers.get(PropertyValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(AmendCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(AmendCheckMode, index)
+      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(mode, index)
+      case None    => AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(mode, index)
     }
   }
 

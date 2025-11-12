@@ -32,24 +32,16 @@ case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
-    answers.get(PropertyDescriptionPage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(CheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(CheckMode, index)
-    }
-  }
+  override protected def nextPageCheckMode(answers: UserAnswers): Call = decideNextPage(answers, CheckMode)
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
-    answers.get(PropertyDescriptionPage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(FinalCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(FinalCheckMode, index)
-    }
-  }
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = decideNextPage(answers, FinalCheckMode)
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = decideNextPage(answers, AmendCheckMode)
+
+  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     answers.get(PropertyDescriptionPage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(AmendCheckMode, index)
-      case None    => AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(AmendCheckMode, index)
+      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(mode, index)
+      case None    => AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(mode, index)
     }
   }
 
