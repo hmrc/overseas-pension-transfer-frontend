@@ -191,6 +191,7 @@ memberName.error.memberFirstName.pattern = The member''s first name must only in
 memberName.error.memberLastName.pattern = The member''s last name must only include letters, apostrophes and hyphens
 memberName.memberFirstName.change.hidden = Member''s first name
 memberName.memberLastName.change.hidden = Member''s last name
+memberName.checkYourAnswersLabel.hidden = Member name
 
 memberNino.title = What is the member''s National Insurance number?
 memberNino.heading = What is {0}''s National Insurance number?
@@ -222,7 +223,7 @@ membersCurrentAddress.checkYourAnswersLabel = Current address
 membersCurrentAddress.error.addressLine1.required = Enter the first line of {0}''s address
 membersCurrentAddress.error.addressLine2.required = Enter the second line of {0}''s address
 membersCurrentAddress.countryCode.change.hidden = Country (optional)
-membersCurrentAddress.change.hidden = Current address
+membersCurrentAddress.change.hidden = Current residential address
 
 memberIsResidentUK.title = Is the member currently a resident of the UK for tax purposes?
 memberIsResidentUK.heading = Is {0} currently a resident of the UK for tax purposes?
@@ -230,13 +231,13 @@ memberIsResidentUK.yes = Yes
 memberIsResidentUK.no = No
 memberIsResidentUK.checkYourAnswersLabel = Is member a UK resident
 memberIsResidentUK.error.required = Select yes if the member is currently a resident of the UK for tax purposes
-memberIsResidentUK.change.hidden = Is member a UK resident
+memberIsResidentUK.change.hidden = If member is a UK resident
 
 memberHasEverBeenResidentUK.title = Has the member ever been a resident of the UK for tax purposes?
 memberHasEverBeenResidentUK.heading = Has {0} ever been a resident of the UK for tax purposes?
 memberHasEverBeenResidentUK.checkYourAnswersLabel = Have they ever been a UK resident
 memberHasEverBeenResidentUK.error.required = Select yes if the member has ever been a resident of the UK for tax purposes
-memberHasEverBeenResidentUK.change.hidden = Have they ever been a UK resident
+memberHasEverBeenResidentUK.change.hidden = If member has ever been UK resident
 
 membersLastUkAddressLookup.title = Find the member''s last principal residential address in the UK
 membersLastUkAddressLookup.heading = Find {0}''s last principal residential address in the UK
@@ -278,14 +279,14 @@ memberDateOfLeavingUK.title = When did the member leave the UK?
 memberDateOfLeavingUK.heading = When did {0} leave the UK?
 memberDateOfLeavingUK.checkYourAnswersLabel = Date member left UK
 memberDateOfLeavingUK.error.required.all = Enter the date of leaving the UK
-memberDateOfLeavingUK.change.hidden = Date member left UK
+memberDateOfLeavingUK.change.hidden = The date member left the UK
 
 qropsName.title = What is the full name of the QROPS receiving the transfer?
 qropsName.heading = What is the full name of the QROPS receiving the transfer?
 qropsName.checkYourAnswersLabel = Full name
 qropsName.error.required = Enter the full name of the QROPS receiving the transfer
 qropsName.error.length = The full name of the QROPS must be 160 characters or less
-qropsName.change.hidden = QROPS full name
+qropsName.change.hidden = Scheme name
 
 qropsReference.title = What is the QROPS reference?
 qropsReference.heading = What is the QROPS reference?
@@ -301,20 +302,21 @@ qropsAddress.heading = What is the address of the QROPS?
 qropsAddress.checkYourAnswersLabel = Address
 qropsAddress.error.addressLine1.required = Enter the first line of QROPS address
 qropsAddress.error.addressLine2.required = Enter the second line of QROPS address
+qropsAddress.change.hidden = Scheme address
 
 qropsCountry.title = Country or territory in which QROPS was established?
 qropsCountry.heading = Country or territory in which QROPS was established?
 qropsCountry.checkYourAnswersLabel = Country or territory established
 qropsCountry.error.required = Enter a country or territory
 qropsCountry.error.length = QROPSCountry must be 100 characters or less
-qropsCountry.change.hidden = QROPS country
+qropsCountry.change.hidden = The country where QROPS was established
 
 qropsOtherCountry.title = In which other country or territory was the QROPS established?
 qropsOtherCountry.heading = In which other country or territory was the QROPS established?
 qropsOtherCountry.checkYourAnswersLabel = Other country or territory
 qropsOtherCountry.error.required = Enter a country or territory
 qropsOtherCountry.error.length = Country or territory must be 35 characters or less
-qropsOtherCountry.change.hidden = QROPSOtherCountry
+qropsOtherCountry.change.hidden = The other other country where QROPS was established
 
 schemeManagerType.title = Is the scheme manager an individual or organisation?
 schemeManagerType.heading = Is the scheme manager an individual or organisation?
@@ -322,7 +324,7 @@ schemeManagerType.individual = Individual
 schemeManagerType.organisation = Organisation
 schemeManagerType.checkYourAnswersLabel = Organisation or individual
 schemeManagerType.error.required = Select if the scheme manager is an individual or an organisation
-schemeManagerType.change.hidden = Organisation or individual
+schemeManagerType.change.hidden = If scheme manager is an individual or company
 
 schemeManagersName.title = What is the scheme manager''s name?
 schemeManagersName.heading = What is the scheme manager''s name?
@@ -352,7 +354,7 @@ orgIndividualName.error.firstName.length = The individual''s first name must be 
 orgIndividualName.error.lastName.length = The individual''s last name must be 35 characters or less
 orgIndividualName.error.firstName.pattern = The individual''s first name must only include letters, spaces, apostrophes and hyphens
 orgIndividualName.error.lastName.pattern = The individual''s last name must only include letters, spaces, apostrophes and hyphens
-orgIndividualName.change.hidden = Organisation contact
+orgIndividualName.change.hidden = Organisation contact person
 
 schemeManagersAddress.title = What is the scheme manager''s address?
 schemeManagersAddress.heading = What is the scheme manager''s address?
@@ -377,7 +379,7 @@ schemeManagersContact.checkYourAnswersLabel = Manager telephone number
 schemeManagersContact.error.required = Enter the scheme manager''s telephone number
 schemeManagersContact.error.length = Telephone number must be 35 characters or less
 schemeManagersContact.error.pattern = Telephone number must only include numbers or a + at the beginning
-schemeManagersContact.change.hidden = Manager telephone number
+schemeManagersContact.change.hidden = Manager phone number
 
 whyTransferIsTaxable.title = Why is this a taxable overseas transfer?
 whyTransferIsTaxable.heading = Why is this a taxable overseas transfer?
@@ -395,7 +397,7 @@ whyTransferIsNotTaxable.individualIsEmployeeInternationalOrg = The QROPS is a pe
 whyTransferIsNotTaxable.individualAndQROPSResidentSameCountry = Both the individual and QROPS are resident in the same country.
 whyTransferIsNotTaxable.checkYourAnswersLabel = Why transfer is not taxable
 whyTransferIsNotTaxable.error.required = Select at least one reason why the transfer isn''t taxable
-whyTransferIsNotTaxable.change.hidden = Why isn''t this a taxable overseas transfer?
+whyTransferIsNotTaxable.change.hidden = Why this transfer is not taxable
 whyTransferIsNotTaxable.paragraph = The transfer value does not exceed the members available overseas transfer allowance at the time of transfer and:
 whyTransferIsNotTaxable.hint = Select all that apply.
 
@@ -406,20 +408,20 @@ overseasTransferAllowance.error.required = Enter the amount of the transfer allo
 overseasTransferAllowance.error.nonNumeric = The transfer allowance must be an amount of money, like 123 or 123.00
 overseasTransferAllowance.error.aboveMaximum = The transfer amount must be {0} or less
 overseasTransferAllowance.error.belowMinimum = The transfer amount must be {0} or more
-overseasTransferAllowance.change.hidden = Transfer allowance
+overseasTransferAllowance.change.hidden = Member's available transfer allowance
 overseasTransferAllowance.hint = For example, £60000 or £19,300.54.
 
 isTransferTaxable.title = Is this transfer payment a taxable overseas transfer?
 isTransferTaxable.heading = Is this transfer payment a taxable overseas transfer?
 isTransferTaxable.checkYourAnswersLabel = Is transfer taxable
 isTransferTaxable.error.required = Select yes if the transfer payment is taxable
-isTransferTaxable.change.hidden = Is transfer taxable
+isTransferTaxable.change.hidden = Why this transfer is taxable
 
 isTransferCashOnly.title = Is the transfer made up of cash only?
 isTransferCashOnly.heading = Is the transfer made up of cash only?
 isTransferCashOnly.checkYourAnswersLabel = Is transfer cash only
 isTransferCashOnly.error.required = Select yes if the transfer is cash only
-isTransferCashOnly.change.hidden = Is transfer cash only
+isTransferCashOnly.change.hidden = If transfer is cash only
 
 cashAmountInTransfer.title = What is the amount of cash?
 cashAmountInTransfer.heading = What is the amount of cash?
@@ -428,7 +430,7 @@ cashAmountInTransfer.error.nonNumeric = The amount of cash must be an amount of 
 cashAmountInTransfer.error.required = Enter the amount of Cash
 cashAmountInTransfer.error.aboveMaximum = The amount of cash must be {0} or less
 cashAmountInTransfer.error.belowMinimum = The amount of cash must be {0} or more
-cashAmountInTransfer.change.hidden = Cash amount in transfer
+cashAmountInTransfer.change.hidden = Amount of cash
 cashAmountInTransfer.hint = For example, £60000 or £19,300.54.
 
 amountOfTaxDeducted.title = What is the amount of tax deducted at 25%?
@@ -438,7 +440,7 @@ amountOfTaxDeducted.error.nonNumeric = The tax amount must be an amount of money
 amountOfTaxDeducted.error.required = Enter the amount of tax deducted at 25%
 amountOfTaxDeducted.error.aboveMaximum = The tax amount must be {0} or less
 amountOfTaxDeducted.error.belowMinimum = The tax amount must be {0} or more
-amountOfTaxDeducted.change.hidden = Amount deducted at 25%
+amountOfTaxDeducted.change.hidden = Amount of tax deducted at 25%
 amountOfTaxDeducted.hint = For example, £60000 or £19,300.54.
 
 typeOfAsset.title = What type of assets are part of this transfer?
@@ -474,7 +476,7 @@ applicableTaxExclusions.resident = Both the individual and QROPS are resident in
 applicableTaxExclusions.hint = Select all that apply.
 applicableTaxExclusions.checkYourAnswersLabel = Applicable exclusion
 applicableTaxExclusions.error.required = Select at least one reason why the transfer is not taxable
-applicableTaxExclusions.change.hidden = Why transfer is not taxable
+applicableTaxExclusions.change.hidden = Applicable exclusions
 
 amountOfTransfer.title = What is the amount of the transfer?
 amountOfTransfer.heading = What is the amount of the transfer?
@@ -493,7 +495,7 @@ netTransferAmount.error.nonNumeric = The net amount of the transfer must be an a
 netTransferAmount.error.required = Enter the net amount of the transfer after tax
 netTransferAmount.error.aboveMaximum = The net amount of the transfer must be {0} or less
 netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0} or more
-netTransferAmount.change.hidden = Net amount
+netTransferAmount.change.hidden = Net amount of transfer
 netTransferAmount.hint = For example, £60000 or £19,300.54.
 
 quotedSharesValue.title = What is the value of these quoted shares?
@@ -503,7 +505,7 @@ quotedSharesValue.error.nonNumeric = The value of quoted shares must be an amoun
 quotedSharesValue.error.required = Enter the value of quoted shares
 quotedSharesValue.error.aboveMaximum = The value of quoted shares must be {0} or less
 quotedSharesValue.error.belowMinimum = The value of quoted shares must be {0} or more
-quotedSharesValue.change.hidden = Quoted shares value
+quotedSharesValue.change.hidden = Value of quoted shares
 quotedSharesValue.hint = For example, £1000 or £1934.50.
 
 propertyStart.title = Add property
@@ -529,7 +531,7 @@ quotedSharesCompanyName.heading = What is the name of the company these quoted s
 quotedSharesCompanyName.checkYourAnswersLabel = Company name
 quotedSharesCompanyName.error.required = Enter the company name
 quotedSharesCompanyName.error.length = The company name must be 160 characters or less
-quotedSharesCompanyName.change.hidden = Quoted shares company name
+quotedSharesCompanyName.change.hidden = Company name
 
 unquotedShareStart.title = Add unquoted shares
 unquotedShareStart.heading = Add unquoted shares
@@ -540,7 +542,7 @@ unquotedSharesCompanyName.heading = What is the name of the company these unquot
 unquotedSharesCompanyName.checkYourAnswersLabel = Company name
 unquotedSharesCompanyName.error.required = Enter company name
 unquotedSharesCompanyName.error.length = The company name must be 160 characters or less
-unquotedSharesCompanyName.change.hidden = Unquoted shares company name
+unquotedSharesCompanyName.change.hidden = Company name
 
 valueOfAsset.title = What is the value of the asset?
 valueOfAsset.heading = What is the value of the asset?
@@ -628,7 +630,7 @@ additionalAsset.common.title = You have added {0} {1}
 
 unquotedSharesAmendContinue.error.required = Please select an option
 unquotedSharesAmendContinue.checkYourAnswersLabel = Unquoted shares
-unquotedSharesAmendContinue.change.hidden = Unquoted shares
+unquotedSharesAmendContinue.change.hidden = Unquoted share details
 unquotedSharesAmendContinue.summary.value = {0} added
 unquotedSharesAmendContinue.text.singular = group of unquoted shares
 unquotedSharesAmendContinue.text.plural = groups of unquoted shares
@@ -668,7 +670,7 @@ quotedSharesAmendContinue.heading = You have added 1 quoted shares
 quotedSharesAmendContinue.error.required = Please select an option
 quotedSharesAmendContinue.addMore = Do you need to add another quoted shares?
 quotedSharesAmendContinue.checkYourAnswersLabel = Quoted shares
-quotedSharesAmendContinue.change.hidden = Quoted shares
+quotedSharesAmendContinue.change.hidden = Quoted share details
 quotedSharesAmendContinue.summary.value = {0} added
 quotedSharesAmendContinue.text.singular = group of quoted shares
 quotedSharesAmendContinue.text.plural = groups of quoted shares
@@ -682,7 +684,7 @@ propertyAmendContinue.title = propertyAmendContinue
 propertyAmendContinue.heading = You have added 1 Property
 propertyAmendContinue.checkYourAnswersLabel = Property
 propertyAmendContinue.error.required = Please select an option
-propertyAmendContinue.change.hidden = AddAdditionalProperty
+propertyAmendContinue.change.hidden = Property details
 propertyAmendContinue.addMore = Do you need to add another property?
 propertyAmendContinue.summary.value = {0} added
 propertyAmendContinue.text.singular = property
@@ -695,7 +697,7 @@ morePropertyDeclaration.error.required = Please select an option
 
 otherAssetsAmendContinue.error.required = Please select an option
 otherAssetsAmendContinue.checkYourAnswersLabel = Other assets
-otherAssetsAmendContinue.change.hidden = Other assets
+otherAssetsAmendContinue.change.hidden = Other asset details
 otherAssetsAmendContinue.summary.value = {0} added
 otherAssetsAmendContinue.text.singular = asset
 otherAssetsAmendContinue.text.plural = assets
