@@ -35,7 +35,10 @@
 
 @(memberDetails: SummaryList, transferDetails: SummaryList, qropsDetails: SummaryList, schemeManagerDetails: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true) {
+@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")),
+    showCYAFooter = false,
+    showPageFooter = false
+) {
 
  @heading(messages("checkYourAnswers.heading"), Some(messages("common.memberDetails.heading")))
 
@@ -58,4 +61,22 @@
    ButtonViewModel(Text(messages("site.continue")))
   )
  }
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<div style="margin-top: 10px;">
+    <p class="govuk-body">
+        <a id="discardReportLink"
+           class="govuk-link"
+           href="@routes.DiscardTransferConfirmController.onPageLoad()">
+            @messages("footer.link.text.discard.report")
+        </a>
+    </p>
+    <p class="govuk-body">
+        <a id="returnTaskListLink"
+           class="govuk-link"
+           href="@routes.TaskListController.onPageLoad()">
+            @messages("footer.link.text.tasklist")
+        </a>
+    </p>
+</div>
 }
