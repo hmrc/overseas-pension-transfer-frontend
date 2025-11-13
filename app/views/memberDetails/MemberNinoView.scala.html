@@ -22,6 +22,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.Link
+@import uk.gov.hmrc.govukfrontend.views.html.components.HtmlContent
 
 @this(
     layout: templates.Layout,
@@ -49,12 +50,14 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(Text(messages("memberNino.heading", memberName)))
-                    .withCssClass("govuk-!-margin-bottom-6")
-                    .asPageHeading(size = Large)
+                label = LabelViewModel(Text(messages("memberNino.heading", memberName))).withCssClass("govuk-label--l").asPageHeading()
             )
-            .withHint(HintViewModel(messages("memberNino.hint")))
-            .withWidth(Fixed10)
+            .withHint(Hint(content = HtmlContent(
+                s"""<span aria-hidden="true">${messages("memberNino.hint")}</span>""" +
+                """<span class="govuk-visually-hidden">For example, Q Q 1 2 3 4 5 6 A</span>"""
+            )))
+            .withCssClass("govuk-input--width-10")
+
         )
 
         @link("noNinoPageLink", noNinoPage, messages("memberNino.doesNotHaveNino.link.text"), extraClasses = "govuk-body")
