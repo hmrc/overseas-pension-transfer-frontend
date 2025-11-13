@@ -41,15 +41,26 @@ trait MiniJourneyNextPageWith[A] extends NextPageWith[A] { self: Page =>
 
   protected def decideNextPage(answers: UserAnswers, ctx: A, mode: Mode, modeCall: Call): Call
 
+  // This can be overriden if necessary with other mode calls
+  protected def getModeCall(mode: Mode, answers: UserAnswers): Call =
+    mode match {
+      case NormalMode | CheckMode =>
+        controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+      case FinalCheckMode         =>
+        self.nextPageFinalCheckMode(answers)
+      case AmendCheckMode         =>
+        self.nextPageAmendCheckMode(answers)
+    }
+
   override protected def nextPageWith(answers: UserAnswers, ctx: A): Call =
-    decideNextPage(answers, ctx, NormalMode, routes.TransferDetailsCYAController.onPageLoad())
+    decideNextPage(answers, ctx, NormalMode, getModeCall(NormalMode, answers))
 
   override protected def nextPageCheckModeWith(answers: UserAnswers, ctx: A): Call =
-    decideNextPage(answers, ctx, CheckMode, routes.TransferDetailsCYAController.onPageLoad())
+    decideNextPage(answers, ctx, CheckMode, getModeCall(CheckMode, answers))
 
   override protected def nextPageFinalCheckModeWith(answers: UserAnswers, ctx: A): Call =
-    decideNextPage(answers, ctx, FinalCheckMode, self.nextPageFinalCheckMode(answers))
+    decideNextPage(answers, ctx, FinalCheckMode, getModeCall(FinalCheckMode, answers))
 
   override protected def nextPageAmendCheckModeWith(answers: UserAnswers, ctx: A): Call =
-    decideNextPage(answers, ctx, AmendCheckMode, self.nextPageAmendCheckMode(answers))
+    decideNextPage(answers, ctx, AmendCheckMode, getModeCall(AmendCheckMode, answers))
 }
