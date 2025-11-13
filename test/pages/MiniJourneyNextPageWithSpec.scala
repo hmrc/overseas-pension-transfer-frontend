@@ -23,15 +23,16 @@ import models.assets.TypeOfAsset.Cash
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
 import play.api.mvc.Call
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
-final class MiniJourneyNextAssetPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+final class MiniJourneyNextPageWithSpec extends AnyFreeSpec with Matchers with SpecBase {
 
-  private case object DummyPage extends Page with MiniJourneyNextAssetPage[SessionData] {
+  private case object DummyPage extends Page with MiniJourneyNextPageWith[SessionData] with NextAssetMiniJourney {
 
     override protected def decideNextPage(answers: UserAnswers, ctx: SessionData, mode: Mode, modeCall: Call): Call =
-      nextAsset(ctx, mode, modeCall)
+      getNextAsset(ctx, mode, modeCall)
 
     override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
       routes.TransferDetailsCYAController.onPageLoad()

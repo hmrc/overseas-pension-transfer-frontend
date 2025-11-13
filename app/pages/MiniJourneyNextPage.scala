@@ -17,11 +17,27 @@
 package pages
 
 import controllers.transferDetails.routes
-import models.assets.AssetsMiniJourneyRegistry
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 
-trait MiniJourneyNextAssetPage[A] extends NextPageWith[A] { self: Page =>
+trait MiniJourneyNextPage extends Page { self: Page =>
+
+  protected def decideNextPage(answers: UserAnswers, mode: Mode): Call
+
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    decideNextPage(answers, NormalMode)
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    decideNextPage(answers, CheckMode)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    decideNextPage(answers, FinalCheckMode)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    decideNextPage(answers, AmendCheckMode)
+}
+
+trait MiniJourneyNextPageWith[A] extends NextPageWith[A] { self: Page =>
 
   protected def decideNextPage(answers: UserAnswers, ctx: A, mode: Mode, modeCall: Call): Call
 
@@ -36,12 +52,4 @@ trait MiniJourneyNextAssetPage[A] extends NextPageWith[A] { self: Page =>
 
   override protected def nextPageAmendCheckModeWith(answers: UserAnswers, ctx: A): Call =
     decideNextPage(answers, ctx, AmendCheckMode, self.nextPageAmendCheckMode(answers))
-
-  protected def nextAsset(sessionData: SessionData, mode: Mode, modeCall: Call): Call = {
-    val nextAsset = AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call(mode))
-    nextAsset match {
-      case Some(route) => route
-      case None        => modeCall
-    }
-  }
 }

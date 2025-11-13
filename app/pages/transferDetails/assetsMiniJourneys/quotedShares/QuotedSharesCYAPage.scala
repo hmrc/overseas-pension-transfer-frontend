@@ -18,33 +18,19 @@ package pages.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
-import models.assets.{QuotedSharesEntry, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.{Page, QuestionPage}
-import play.api.libs.json.JsPath
+import models.assets.TypeOfAsset
+import models.{Mode, UserAnswers}
+import pages.MiniJourneyNextPage
 import play.api.mvc.Call
 
-case class QuotedSharesCYAPage(index: Int) extends Page {
+case class QuotedSharesCYAPage(index: Int) extends MiniJourneyNextPage {
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    decideNextPage(answers, NormalMode)
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    decideNextPage(answers, CheckMode)
-
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    decideNextPage(answers, FinalCheckMode)
-
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    decideNextPage(answers, AmendCheckMode)
-
-  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     val quotedSharesCount = AssetThresholdHandler.getAssetCount(answers, TypeOfAsset.QuotedShares)
     if (quotedSharesCount >= 5) {
       controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.MoreQuotedSharesDeclarationController.onPageLoad(mode = mode)
     } else {
       AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = mode)
-
     }
   }
 

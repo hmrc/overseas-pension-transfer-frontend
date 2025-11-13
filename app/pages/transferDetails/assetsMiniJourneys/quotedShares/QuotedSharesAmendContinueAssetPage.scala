@@ -18,12 +18,12 @@ package pages.transferDetails.assetsMiniJourneys.quotedShares
 
 import models.assets.{AssetsMiniJourneyRegistry, TypeOfAsset}
 import models.{Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.AmendContinueContext
-import pages.{MiniJourneyNextAssetPage, QuestionPage}
+import pages.transferDetails.assetsMiniJourneys.{AmendContinueContext, NextAssetMiniJourney}
+import pages.{MiniJourneyNextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QuotedSharesAmendContinueAssetPage extends QuestionPage[Boolean] with MiniJourneyNextAssetPage[AmendContinueContext] {
+case object QuotedSharesAmendContinueAssetPage extends QuestionPage[Boolean] with MiniJourneyNextPageWith[AmendContinueContext] with NextAssetMiniJourney {
 
   override def path: JsPath = JsPath \ toString
 
@@ -33,7 +33,7 @@ case object QuotedSharesAmendContinueAssetPage extends QuestionPage[Boolean] wit
     val (sessionData, nextIndex) = sessionDataWithIndex
     answers.get(QuotedSharesAmendContinueAssetPage) match {
       case Some(true)  => AssetsMiniJourneyRegistry.forType(TypeOfAsset.QuotedShares).get.call(mode, nextIndex)
-      case Some(false) => super.nextAsset(sessionData, mode, modeCall)
+      case Some(false) => getNextAsset(sessionData, mode, modeCall)
       case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
   }

@@ -16,7 +16,6 @@
 
 package pages.transferDetails.assetsMiniJourneys.quotedShares
 
-import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import pages.Page

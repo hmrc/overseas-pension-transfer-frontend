@@ -18,27 +18,18 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.{OtherAssetsEntry, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
-import pages.{NextPageWith, QuestionPage}
+import models.{Mode, TaskCategory, UserAnswers}
+import pages.{MiniJourneyNextPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class OtherAssetsDescriptionPage(index: Int) extends QuestionPage[String] {
+case class OtherAssetsDescriptionPage(index: Int) extends QuestionPage[String] with MiniJourneyNextPage {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Other.entryName \ index \ toString
 
   override def toString: String = OtherAssetsEntry.AssetDescription
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index)
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call = decideNextPage(answers, CheckMode)
-
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = decideNextPage(answers, FinalCheckMode)
-
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = decideNextPage(answers, AmendCheckMode)
-
-  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     answers.get(OtherAssetsValuePage(index)) match {
       case Some(_) => AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(mode, index)
       case None    => AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(mode, index)

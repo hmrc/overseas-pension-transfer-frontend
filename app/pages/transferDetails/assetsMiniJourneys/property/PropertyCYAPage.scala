@@ -19,25 +19,13 @@ package pages.transferDetails.assetsMiniJourneys.property
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
-import pages.Page
+import models.{Mode, UserAnswers}
+import pages.MiniJourneyNextPage
 import play.api.mvc.Call
 
-case class PropertyCYAPage(index: Int) extends Page {
+case class PropertyCYAPage(index: Int) extends MiniJourneyNextPage {
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    decideNextPage(answers, NormalMode)
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    decideNextPage(answers, CheckMode)
-
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    decideNextPage(answers, FinalCheckMode)
-
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    decideNextPage(answers, AmendCheckMode)
-
-  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     val propertyCount = AssetThresholdHandler.getAssetCount(answers, TypeOfAsset.Property)
     if (propertyCount >= 5) {
       controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController.onPageLoad(mode)

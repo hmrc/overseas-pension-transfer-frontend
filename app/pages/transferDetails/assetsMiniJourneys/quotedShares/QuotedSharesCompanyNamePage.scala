@@ -18,29 +18,18 @@ package pages.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.{QuotedSharesEntry, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
+import models.{Mode, TaskCategory, UserAnswers}
+import pages.{MiniJourneyNextPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class QuotedSharesCompanyNamePage(index: Int) extends QuestionPage[String] {
+case class QuotedSharesCompanyNamePage(index: Int) extends QuestionPage[String] with MiniJourneyNextPage {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.entryName \ index \ toString
 
   override def toString: String = QuotedSharesEntry.CompanyName
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call = {
-    AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(NormalMode, index)
-  }
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call = decideNextPage(answers, CheckMode)
-
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = decideNextPage(answers, FinalCheckMode)
-
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = decideNextPage(answers, AmendCheckMode)
-
-  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     answers.get(QuotedSharesValuePage(index)) match {
       case Some(_) => AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(mode, index)
       case None    => AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(mode, index)

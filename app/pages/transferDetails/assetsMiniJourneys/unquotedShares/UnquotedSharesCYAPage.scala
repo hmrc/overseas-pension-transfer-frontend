@@ -19,25 +19,13 @@ package pages.transferDetails.assetsMiniJourneys.unquotedShares
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
-import pages.Page
+import models.{Mode, UserAnswers}
+import pages.MiniJourneyNextPage
 import play.api.mvc.Call
 
-case class UnquotedSharesCYAPage(index: Int) extends Page {
+case class UnquotedSharesCYAPage(index: Int) extends MiniJourneyNextPage {
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    decideNextPage(answers, NormalMode)
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    decideNextPage(answers, CheckMode)
-
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
-    decideNextPage(answers, FinalCheckMode)
-
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
-    decideNextPage(answers, AmendCheckMode)
-
-  private def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     val unquotedSharesCount = AssetThresholdHandler.getAssetCount(answers, TypeOfAsset.UnquotedShares)
     if (unquotedSharesCount >= 5) {
       controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController.onPageLoad(mode = mode)
