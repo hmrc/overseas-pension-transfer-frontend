@@ -41,7 +41,7 @@ object AssetsMiniJourneyRegistry {
     SelectedAssetTypesWithStatus.getIncompleteAssets(sd).flatMap(forType).headOption
   }
 
-  def startOf(assetType: TypeOfAsset, mode: Mode, index: Int): Call                   =
+  def startOf(assetType: TypeOfAsset, mode: Mode, index: Int): Call =
     forType(assetType).map(_.call(mode, index))
       .getOrElse(controllers.routes.JourneyRecoveryController.onPageLoad())
 }

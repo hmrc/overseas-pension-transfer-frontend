@@ -19,28 +19,23 @@ package controllers.transferDetails
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
-import models.TaskCategory.TransferDetails
-import models.taskList.TaskStatus.Completed
 import models.{CheckMode, NormalMode}
 import pages.transferDetails.TransferDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.TaskStatusQuery
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.TransferDetailsCYAView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class TransferDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
-    sessionRepository: SessionRepository,
     val controllerComponents: MessagesControllerComponents,
     view: TransferDetailsCYAView
   )(implicit ec: ExecutionContext
@@ -48,8 +43,7 @@ class TransferDetailsCYAController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val list = SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, request.userAnswers))
-      logger.info(Json.prettyPrint(Json.toJson(request.sessionData)))
+      val list = SummaryListViewModel(TransferDetailsSummary.rows(NormalMode, request.userAnswers))
       Ok(view(list))
   }
 

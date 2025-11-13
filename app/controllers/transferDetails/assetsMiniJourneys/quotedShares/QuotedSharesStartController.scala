@@ -17,7 +17,7 @@
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.actions._
-import models.{Mode, NormalMode}
+import models.Mode
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,6 +38,6 @@ class QuotedSharesStartController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      Ok(view(QuotedSharesStartPage.nextPage(mode = mode, request.userAnswers).url))
+      Ok(view(QuotedSharesStartPage.nextPage(mode, request.userAnswers).url))
   }
 }

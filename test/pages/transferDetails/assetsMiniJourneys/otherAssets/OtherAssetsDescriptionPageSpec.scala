@@ -29,8 +29,7 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
-    "in Normal Mode" - {
-
+    "in NormalMode" - {
       "must go to the Next page" in {
         OtherAssetsDescriptionPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           NormalMode,
@@ -40,7 +39,6 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
     }
 
     "in CheckMode" - {
-
       "must go to the Next page" in {
         OtherAssetsDescriptionPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           CheckMode,

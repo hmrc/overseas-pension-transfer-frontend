@@ -30,13 +30,13 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
-    "in Normal Mode" - {
-      "must go to TransferDetailsCYAController" in {
+    "in NormalMode" - {
+      "must go to cya if no more assets" in {
         MorePropertyDeclarationPage.nextPageWith(NormalMode, emptyAnswers, sessionDataMemberName) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if more assets" in {
         val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
         val sessionData =
           emptySessionData.set(
@@ -53,12 +53,12 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
     }
 
     "in CheckMode" - {
-      "must go to TransferDetailsCYAController" in {
+      "must go to cya if no more assets" in {
         MorePropertyDeclarationPage.nextPageWith(CheckMode, emptyAnswers, sessionDataMemberName) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if more assets" in {
         val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
         val sessionData =
           emptySessionData.set(
@@ -75,12 +75,12 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
     }
 
     "in FinalCheckMode" - {
-      "must go to amend page" in {
+      "must go to cya if no more assets" in {
         MorePropertyDeclarationPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if no-continue selected and more assets" in {
         val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
         val sessionData =
           emptySessionData.set(
@@ -97,12 +97,12 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
     }
 
     "in AmendCheckMode" - {
-      "must go to amend page" in {
+      "must go to cya if no more assets" in {
         MorePropertyDeclarationPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if more assets" in {
         val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
         val sessionData =
           emptySessionData.set(

@@ -38,6 +38,6 @@ class PropertyStartController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      Ok(view(PropertyStartPage.nextPage(mode = mode, request.userAnswers).url))
+      Ok(view(PropertyStartPage.nextPage(mode, request.userAnswers).url))
   }
 }

@@ -30,10 +30,10 @@ object OtherAssetsStartPage extends Page {
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(CheckMode, startIndex)
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(FinalCheckMode, startIndex)
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
     AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(AmendCheckMode, startIndex)
 
 }

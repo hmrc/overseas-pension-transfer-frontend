@@ -62,7 +62,7 @@ class QuotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if no-continue selected and more assets" in {
         val userAnswers = emptyAnswers.set(QuotedSharesAmendContinueAssetPage, false)
         val sessionData =
           emptySessionData.set(
@@ -110,7 +110,7 @@ class QuotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if no-continue selected and more assets" in {
         val userAnswers = emptyAnswers.set(QuotedSharesAmendContinueAssetPage, false)
         val sessionData =
           emptySessionData.set(
@@ -158,7 +158,7 @@ class QuotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if no-continue selected and more assets" in {
         val userAnswers = emptyAnswers.set(QuotedSharesAmendContinueAssetPage, false)
         val sessionData =
           emptySessionData.set(
@@ -206,7 +206,7 @@ class QuotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if no-continue selected and more assets" in {
         val userAnswers = emptyAnswers.set(QuotedSharesAmendContinueAssetPage, false)
         val sessionData =
           emptySessionData.set(

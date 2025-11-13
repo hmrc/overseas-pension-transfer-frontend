@@ -42,7 +42,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsStartController.onPageLoad(NormalMode)
       }
 
-      "must go to the description in mini journey if continue selected and index 1" in {
+      "must go to the description page in mini journey if continue selected and index 1" in {
         val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
         val nextIndex   = 1
         OtherAssetsAmendContinueAssetPage.nextPageWith(
@@ -62,7 +62,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if no-continue selected and more assets" in {
         val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
         val sessionData =
           emptySessionData.set(
@@ -90,7 +90,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsStartController.onPageLoad(CheckMode)
       }
 
-      "must go to the description in mini journey if continue selected and index 1" in {
+      "must go to the description page in mini journey if continue selected and index 1" in {
         val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
         val nextIndex   = 1
         OtherAssetsAmendContinueAssetPage.nextPageWith(
@@ -110,7 +110,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if no-continue selected and more assets" in {
         val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
         val sessionData =
           emptySessionData.set(
@@ -138,7 +138,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsStartController.onPageLoad(FinalCheckMode)
       }
 
-      "must go to the description in mini journey if continue selected and index 1" in {
+      "must go to the description page in mini journey if continue selected and index 1" in {
         val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
         val nextIndex   = 1
         OtherAssetsAmendContinueAssetPage.nextPageWith(
@@ -158,7 +158,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if no-continue selected and more assets" in {
         val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
         val sessionData =
           emptySessionData.set(
@@ -186,7 +186,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsStartController.onPageLoad(AmendCheckMode)
       }
 
-      "must go to the description in mini journey if continue selected and index 1" in {
+      "must go to the description page in mini journey if continue selected and index 1" in {
         val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
         val nextIndex   = 1
         OtherAssetsAmendContinueAssetPage.nextPageWith(
@@ -206,7 +206,7 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
         ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
-      "must go to the next asset page if continue selected" in {
+      "must go to the next asset page if no-continue selected and more assets" in {
         val userAnswers = emptyAnswers.set(OtherAssetsAmendContinueAssetPage, false)
         val sessionData =
           emptySessionData.set(

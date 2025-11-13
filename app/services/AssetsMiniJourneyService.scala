@@ -126,14 +126,14 @@ object AssetsMiniJourneyService {
 
   // ----- Shared helpers -----
 
-  /** Synchronises the selected asset types between `SessionData` and `UserAnswers`.
+  /** Synchronises the selected asset types between SessionData and UserAnswers.
     *
     * Behaviour:
     *   - Preserves existing asset completion status for assets that remain selected.
-    *   - Adds any newly selected asset types to the session with `isCompleted = false`.
+    *   - Adds any newly selected asset types to the session with isCompleted = false.
     *   - Removes all user answers data for asset types that were previously selected but are now deselected.
-    *   - Updates the `SelectedAssetTypes` entry in `UserAnswers` to reflect the new selection.
-    *   - Updates the `TypeOfAssetPage` entry in `SessionData` to reflect the new set of assets and statuses.
+    *   - Updates the SelectedAssetTypes entry in UserAnswers to reflect the new selection.
+    *   - Updates the TypeOfAssetPage entry in SessionData to reflect the new set of assets and statuses.
     */
   def handleTypeOfAssetStatusUpdate(sd: SessionData, ua: UserAnswers, selectedAssets: Seq[TypeOfAsset]): Try[(SessionData, UserAnswers)] = {
     val previous: Map[TypeOfAsset, SessionAssetTypeWithStatus] =

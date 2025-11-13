@@ -25,20 +25,16 @@ import org.scalatest.matchers.must.Matchers
 class OtherAssetsValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val index = 0
   ".nextPage" - {
-
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
-    "in Normal Mode" - {
-
+    "in NormalMode" - {
       "must go to the Next page" in {
         OtherAssetsValuePage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(NormalMode, index)
       }
     }
 
-    "in Check Mode" - {
-
+    "in CheckMode" - {
       "must go to Check Answers" in {
-
         OtherAssetsValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(CheckMode, index)
       }
     }

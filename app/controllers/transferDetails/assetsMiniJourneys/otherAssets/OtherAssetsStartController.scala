@@ -38,6 +38,6 @@ class OtherAssetsStartController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      Ok(view(OtherAssetsStartPage.nextPage(mode = mode, request.userAnswers).url))
+      Ok(view(OtherAssetsStartPage.nextPage(mode, request.userAnswers).url))
   }
 }
