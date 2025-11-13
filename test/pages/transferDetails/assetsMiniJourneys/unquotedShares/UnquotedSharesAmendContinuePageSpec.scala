@@ -32,15 +32,24 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
 
     "in Normal Mode" - {
 
-      "must go to the first page in mini journey if continue selected" in {
+      "must go to the start page in mini journey if continue selected and index 0" in {
         val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinueAssetPage, true).success.value
-        val nextIndex   = 1
-
+        val nextIndex   = 0
         UnquotedSharesAmendContinueAssetPage.nextPageWith(
           NormalMode,
           userAnswers,
           (emptySessionData, nextIndex)
-        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad()
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad(NormalMode)
+      }
+
+      "must go to the company name in mini journey if continue selected and index 1" in {
+        val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinueAssetPage, true).success.value
+        val nextIndex   = 1
+        UnquotedSharesAmendContinueAssetPage.nextPageWith(
+          NormalMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, nextIndex)
       }
 
       "must go to the CYA page if no-continue selected and no more assets" in {
@@ -77,20 +86,26 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
       }
     }
 
-    "in Check Mode" - {
+    "in CheckMode" - {
 
-      "must go to the first page in mini journey if continue selected" in {
+      "must go to the start page in mini journey if continue selected and index 0" in {
         val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinueAssetPage, true).success.value
-        val nextIndex   = 1
-
+        val nextIndex   = 0
         UnquotedSharesAmendContinueAssetPage.nextPageWith(
           CheckMode,
           userAnswers,
           (emptySessionData, nextIndex)
-        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad(CheckMode)
+      }
+
+      "must go to the company name in mini journey if continue selected and index 1" in {
+        val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinueAssetPage, true).success.value
+        val nextIndex   = 1
+        UnquotedSharesAmendContinueAssetPage.nextPageWith(
           CheckMode,
-          nextIndex
-        )
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(CheckMode, nextIndex)
       }
 
       "must go to the CYA page if no-continue selected and no more assets" in {
@@ -127,20 +142,26 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
       }
     }
 
-    "in Final Check Mode" - {
+    "in FinalCheckMode" - {
 
-      "must go to the first page in mini journey if continue selected" in {
+      "must go to the start page in mini journey if continue selected and index 0" in {
         val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinueAssetPage, true).success.value
-        val nextIndex   = 1
-
+        val nextIndex   = 0
         UnquotedSharesAmendContinueAssetPage.nextPageWith(
           FinalCheckMode,
           userAnswers,
           (emptySessionData, nextIndex)
-        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad(FinalCheckMode)
+      }
+
+      "must go to the company name in mini journey if continue selected and index 1" in {
+        val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinueAssetPage, true).success.value
+        val nextIndex   = 1
+        UnquotedSharesAmendContinueAssetPage.nextPageWith(
           FinalCheckMode,
-          nextIndex
-        )
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(FinalCheckMode, nextIndex)
       }
 
       "must go to the CYA page if no-continue selected and no more assets" in {
@@ -177,20 +198,26 @@ class UnquotedSharesAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
       }
     }
 
-    "in Amend Check Mode" - {
+    "in AmendCheckMode" - {
 
-      "must go to the first page in mini journey if continue selected" in {
+      "must go to the start page in mini journey if continue selected and index 0" in {
         val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinueAssetPage, true).success.value
-        val nextIndex   = 1
-
+        val nextIndex   = 0
         UnquotedSharesAmendContinueAssetPage.nextPageWith(
           AmendCheckMode,
           userAnswers,
           (emptySessionData, nextIndex)
-        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad(AmendCheckMode)
+      }
+
+      "must go to the company name in mini journey if continue selected and index 1" in {
+        val userAnswers = emptyAnswers.set(UnquotedSharesAmendContinueAssetPage, true).success.value
+        val nextIndex   = 1
+        UnquotedSharesAmendContinueAssetPage.nextPageWith(
           AmendCheckMode,
-          nextIndex
-        )
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(AmendCheckMode, nextIndex)
       }
 
       "must go to the View & Amend CYA page if no-continue selected and no more assets" in {

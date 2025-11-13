@@ -63,20 +63,12 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val values = Seq(
-        SessionAssetTypeWithStatus(Cash, isCompleted           = false),
-        SessionAssetTypeWithStatus(UnquotedShares, isCompleted = true),
-        SessionAssetTypeWithStatus(QuotedShares, isCompleted   = true),
-        SessionAssetTypeWithStatus(Property, isCompleted       = false),
-        SessionAssetTypeWithStatus(Other, isCompleted          = true)
-      )
 
-      val sd = sessionDataMemberNameQtNumber.set(
-        SelectedAssetTypesWithStatus,
-        values
-      ).success.value
+      val values: Seq[TypeOfAsset] = TypeOfAsset.values
 
-      val application = applicationBuilder(sessionData = sd).build()
+      val userAnswers = emptyUserAnswers.set(TypeOfAssetPage, values).success.value
+
+      val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, typeOfAssetRoute)
@@ -86,10 +78,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(SelectedAssetTypesWithStatus.toTypes(values)), NormalMode)(
-          fakeDisplayRequest(request),
-          messages(application)
-        ).toString
+        contentAsString(result) mustEqual view(form.fill(values), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -105,7 +94,7 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
           .build()
 
       running(application) {
-        val onwardRoute = AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad()
+        val onwardRoute = AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad(NormalMode)
         val unquoted    = UnquotedShares
 
         val request =

@@ -33,7 +33,7 @@ class QuotedSharesStartControllerSpec extends AnyFreeSpec with SpecBase {
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
-        val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.QuotedSharesStartController.onPageLoad().url)
+        val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.QuotedSharesStartController.onPageLoad(NormalMode).url)
         val result   = route(application, request).value
         val view     = application.injector.instanceOf[QuotedSharesStartView]
         val nextPage = AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, 0).url
