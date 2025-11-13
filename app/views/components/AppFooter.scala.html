@@ -21,14 +21,25 @@
         link: Link
 )
 
-@()(footerLinks: Seq[FooterLink])(implicit messages: Messages)
+@(footerLinks: Seq[FooterLink])(implicit messages: Messages, request: RequestHeader)
 
-@if(footerLinks.nonEmpty) {
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+@{
+        val isAmendPage = request.uri.contains("/amend-")
+        val filteredLinks = if (isAmendPage) {
+            footerLinks.filterNot(_.id == "returnTaskListLink")
+        } else {
+                footerLinks
+    }
 
-@for(item <- footerLinks) {
-   <p>@link(item.id, item.href, item.text, extraClasses = "govuk-body")</p>
-}
-
-<hr class="govuk-section-break govuk-section-break--l">
+    if (filteredLinks.nonEmpty) {
+            Html(
+                    """<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">""" +
+                    filteredLinks.map { item =>
+                            s"""<p>${link(item.id, item.href, item.text, extraClasses = "govuk-body").body}</p>"""
+                    }.mkString("\n") +
+                    """<hr class="govuk-section-break govuk-section-break--l">"""
+                )
+            } else {
+                    Html("")
+            }
 }

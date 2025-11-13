@@ -116,7 +116,10 @@ class ViewAmendSubmittedController @Inject() (
                                      qtReference,
                                      request.schemeDetails,
                                      request.authenticatedUser,
-                                     Json.obj("receiptDate" -> userAnswers.lastUpdated)
+                                     Json.obj(
+                                       "receiptDate"   -> userAnswers.lastUpdated,
+                                       "versionNumber" -> versionNumber
+                                     )
                                    )
 
                                    val sessionDataWithMemberName: SessionData =
@@ -147,14 +150,22 @@ class ViewAmendSubmittedController @Inject() (
     }
 
   def amend(): Action[AnyContent] =
-    (identify andThen schemeData andThen getData) { implicit dr =>
-      Ok(renderView(dr.sessionData, dr.userAnswers, isAmend = true))
+    (identify andThen schemeData andThen getData).async { implicit dr =>
+      val versionNumber = (dr.sessionData.data \ "versionNumber").asOpt[String].getOrElse("001")
+      userAnswersService.getExternalUserAnswers(dr.userAnswers.id, dr.userAnswers.pstr, QtStatus.Submitted, Some(versionNumber)).map {
+        case Right(externalUserAnswers) =>
+          val isChanged: Boolean = externalUserAnswers.data != dr.userAnswers.data
+          Ok(renderView(dr.sessionData, dr.userAnswers, isAmend = true, isChanged = isChanged))
+        case Left(_)                    =>
+          InternalServerError("Unable to fetch external user answers")
+      }
     }
 
   private def renderView(
       sessionData: SessionData,
       userAnswers: UserAnswers,
-      isAmend: Boolean
+      isAmend: Boolean,
+      isChanged: Boolean = false
     )(implicit request: Request[_]
     ): HtmlFormat.Appendable = {
 
@@ -182,7 +193,8 @@ class ViewAmendSubmittedController @Inject() (
       schemeManagerDetailsSummaryList,
       sessionData.transferId.value,
       memberName,
-      isAmend
+      isAmend,
+      isChanged
     )
   }
 }

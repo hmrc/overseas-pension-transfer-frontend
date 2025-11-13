@@ -55,7 +55,7 @@
         showTasklistFooter: Boolean = false,
         showDiscardAmendmentFooter: Boolean = false,
         fullWidth: Boolean = false,
-        showBreadcrumbs: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
+        showBreadcrumbs: Boolean = false)(contentBlock: Html)(implicit requestHeader: RequestHeader, messages: Messages)
 
 @head = {
     @autocompleteCss()
@@ -87,9 +87,16 @@
 }
 
 @content = {
-    @contentBlock
-    @appFooter()(FooterLink.build(showCYAFooter, showStartFooter, showPageFooter, showTasklistFooter, showDiscardAmendmentFooter))
-    @hmrcReportTechnicalIssueHelper()
+        @contentBlock
+        @appFooter(
+                FooterLink.build(
+                    showCYAFooter = showCYAFooter,
+                    showStartFooter = showStartFooter,
+                    showPageFooter = showPageFooter,
+                    showTaskListFooter = showTasklistFooter,
+                    showDiscardAmendmentFooter = showDiscardAmendmentFooter
+        ))(messages, requestHeader)
+        @hmrcReportTechnicalIssueHelper()
 }
 
 @hmrcStandardPage(HmrcStandardPageParams(

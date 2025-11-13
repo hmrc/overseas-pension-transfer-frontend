@@ -31,7 +31,11 @@
 
 @(mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("psaDeclaration.title"))) {
+@layout(
+pageTitle = titleNoForm(messages("psaDeclaration.title")),
+showPageFooter = false,
+showTasklistFooter = false
+) {
 
     @qtNumber()
     <h1 class="govuk-heading-l">@messages("psaDeclaration.heading")</h1>
