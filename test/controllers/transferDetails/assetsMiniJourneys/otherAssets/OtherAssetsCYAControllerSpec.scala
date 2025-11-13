@@ -66,7 +66,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val view                    = app.injector.instanceOf[OtherAssetsCYAView]
         implicit val msgs: Messages = messages(app)
 
-        val list = OtherAssetsSummary.rows(CheckMode, ua, 0)
+        val list = OtherAssetsSummary.rows(NormalMode, ua, 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual

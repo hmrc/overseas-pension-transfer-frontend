@@ -66,7 +66,7 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
         val view                    = app.injector.instanceOf[PropertyCYAView]
         implicit val msgs: Messages = messages(app)
 
-        val list = PropertySummary.rows(CheckMode, ua, 0)
+        val list = PropertySummary.rows(NormalMode, ua, 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual

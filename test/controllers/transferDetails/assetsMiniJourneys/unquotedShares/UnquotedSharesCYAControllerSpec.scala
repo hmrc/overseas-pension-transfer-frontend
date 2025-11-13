@@ -66,7 +66,7 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val view                    = app.injector.instanceOf[UnquotedSharesCYAView]
         implicit val msgs: Messages = messages(app)
 
-        val list = UnquotedSharesSummary.rows(CheckMode, ua, 0)
+        val list = UnquotedSharesSummary.rows(NormalMode, ua, 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual

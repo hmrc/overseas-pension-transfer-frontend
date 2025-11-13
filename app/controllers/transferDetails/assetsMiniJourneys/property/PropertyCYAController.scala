@@ -50,7 +50,7 @@ class PropertyCYAController @Inject() (
   private val actions = (identify andThen schemeData andThen getData)
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(PropertySummary.rows(CheckMode, request.userAnswers, index))
+    val list = SummaryListViewModel(PropertySummary.rows(mode, request.userAnswers, index))
 
     Ok(view(list, mode, index))
   }

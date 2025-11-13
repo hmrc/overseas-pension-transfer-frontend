@@ -65,7 +65,7 @@ class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Mocki
         val view                    = app.injector.instanceOf[QuotedSharesCYAView]
         implicit val msgs: Messages = messages(app)
 
-        val list = QuotedSharesSummary.rows(CheckMode, ua, 0)
+        val list = QuotedSharesSummary.rows(NormalMode, ua, 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
