@@ -383,9 +383,9 @@ whyTransferIsTaxable.title = Why is this a taxable overseas transfer?
 whyTransferIsTaxable.heading = Why is this a taxable overseas transfer?
 whyTransferIsTaxable.transferExceedsOTCAllowance = Transfer exceeds member''s overseas transfer allowance and there is an applicable exclusion.
 whyTransferIsTaxable.noExclusion = There is no applicable exclusion.
-whyTransferIsTaxable.checkYourAnswersLabel = Why is this a taxable overseas transfer?
+whyTransferIsTaxable.checkYourAnswersLabel = Why is this transfer taxable?
 whyTransferIsTaxable.error.required = Select why this is a taxable overseas transfer
-whyTransferIsTaxable.change.hidden = Why is this a taxable overseas transfer?
+whyTransferIsTaxable.change.hidden = Why is this transfer taxable?
 
 whyTransferIsNotTaxable.title = Why is this not a taxable overseas transfer?
 whyTransferIsNotTaxable.heading = Why isn''t this a taxable overseas transfer?
@@ -393,20 +393,20 @@ whyTransferIsNotTaxable.individualIsEmployeeOccupational = The QROPS is an occup
 whyTransferIsNotTaxable.individualIsEmployedPublicService = The QROPS is an overseas public service scheme and the individual is employed by the public service.
 whyTransferIsNotTaxable.individualIsEmployeeInternationalOrg = The QROPS is a pension scheme of an international organisation and the individual is employed by that international organisation.
 whyTransferIsNotTaxable.individualAndQROPSResidentSameCountry = Both the individual and QROPS are resident in the same country.
-whyTransferIsNotTaxable.checkYourAnswersLabel = Why transfer is not taxable
+whyTransferIsNotTaxable.checkYourAnswersLabel = Why transfer isn''t taxable?
 whyTransferIsNotTaxable.error.required = Select at least one reason why the transfer isn''t taxable
-whyTransferIsNotTaxable.change.hidden = Why isn''t this a taxable overseas transfer?
+whyTransferIsNotTaxable.change.hidden = Why transfer isn''t taxable?
 whyTransferIsNotTaxable.paragraph = The transfer value does not exceed the members available overseas transfer allowance at the time of transfer and:
 whyTransferIsNotTaxable.hint = Select all that apply.
 
 overseasTransferAllowance.title = How much of the member''s overseas transfer allowance is available before this transfer?
 overseasTransferAllowance.heading = How much of the member''s overseas transfer allowance is available before this transfer?
-overseasTransferAllowance.checkYourAnswersLabel = Transfer allowance
+overseasTransferAllowance.checkYourAnswersLabel = Available transfer allowance
 overseasTransferAllowance.error.required = Enter the amount of the transfer allowance
 overseasTransferAllowance.error.nonNumeric = The transfer allowance must be an amount of money, like 123 or 123.00
 overseasTransferAllowance.error.aboveMaximum = The transfer amount must be {0} or less
 overseasTransferAllowance.error.belowMinimum = The transfer amount must be {0} or more
-overseasTransferAllowance.change.hidden = Transfer allowance
+overseasTransferAllowance.change.hidden = Available transfer allowance
 overseasTransferAllowance.hint = For example, £60000 or £19,300.54.
 
 isTransferTaxable.title = Is this transfer payment a taxable overseas transfer?
@@ -433,12 +433,12 @@ cashAmountInTransfer.hint = For example, £60000 or £19,300.54.
 
 amountOfTaxDeducted.title = What is the amount of tax deducted at 25%?
 amountOfTaxDeducted.heading = What is the amount of tax deducted at 25%?
-amountOfTaxDeducted.checkYourAnswersLabel = Amount deducted at 25%
+amountOfTaxDeducted.checkYourAnswersLabel = Amount of tax deducted at 25%
 amountOfTaxDeducted.error.nonNumeric = The tax amount must be an amount of money, like 123 or 123.00
 amountOfTaxDeducted.error.required = Enter the amount of tax deducted at 25%
 amountOfTaxDeducted.error.aboveMaximum = The tax amount must be {0} or less
 amountOfTaxDeducted.error.belowMinimum = The tax amount must be {0} or more
-amountOfTaxDeducted.change.hidden = Amount deducted at 25%
+amountOfTaxDeducted.change.hidden = Amount of tax deducted at 25%
 amountOfTaxDeducted.hint = For example, £60000 or £19,300.54.
 
 typeOfAsset.title = What type of assets are part of this transfer?
@@ -478,22 +478,22 @@ applicableTaxExclusions.change.hidden = Why transfer is not taxable
 
 amountOfTransfer.title = What is the amount of the transfer?
 amountOfTransfer.heading = What is the amount of the transfer?
-amountOfTransfer.checkYourAnswersLabel = Amount of transfer
+amountOfTransfer.checkYourAnswersLabel = Transfer amount
 amountOfTransfer.error.nonNumeric = The transfer amount must be an amount of money, like 123 or 123.00
 amountOfTransfer.error.required = Enter the transfer amount
 amountOfTransfer.error.aboveMaximum = The transfer amount must be {0} or less
 amountOfTransfer.error.belowMinimum = The transfer amount must be {0} or more
-amountOfTransfer.change.hidden = Amount of transfer
+amountOfTransfer.change.hidden = Transfer amount
 amountOfTransfer.hint = For example, £60000 or £19,300.54.
 
 netTransferAmount.title = What is the net amount of the transfer after deducting the tax charge?
 netTransferAmount.heading = What is the net amount of the transfer after deducting the tax charge?
-netTransferAmount.checkYourAnswersLabel = Net amount
+netTransferAmount.checkYourAnswersLabel = Net amount of transfer
 netTransferAmount.error.nonNumeric = The net amount of the transfer must be an amount of money, like £123 or 123.00
 netTransferAmount.error.required = Enter the net amount of the transfer after tax
 netTransferAmount.error.aboveMaximum = The net amount of the transfer must be {0} or less
 netTransferAmount.error.belowMinimum = The net amount of the transfer must be {0} or more
-netTransferAmount.change.hidden = Net amount
+netTransferAmount.change.hidden = Net amount of transfer
 netTransferAmount.hint = For example, £60000 or £19,300.54.
 
 quotedSharesValue.title = What is the value of these quoted shares?
