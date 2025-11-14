@@ -31,8 +31,8 @@ class SchemeManagersContactSummarySpec extends AnyFreeSpec with SpecBase {
 
     "must return a SummaryListRow when SchemeManagersContactPage has a value" in {
       val phoneNumber = "+441234567890"
-      val answers = emptyUserAnswers.set(SchemeManagersContactPage, phoneNumber).success.value
-      val result = SchemeManagersContactSummary.row(CheckMode, answers)
+      val answers     = emptyUserAnswers.set(SchemeManagersContactPage, phoneNumber).success.value
+      val result      = SchemeManagersContactSummary.row(CheckMode, answers)
 
       result mustBe defined
       result.get.key.content mustBe Text(messages("schemeManagersContact.checkYourAnswersLabel"))
