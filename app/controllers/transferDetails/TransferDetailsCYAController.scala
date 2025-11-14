@@ -43,12 +43,12 @@ class TransferDetailsCYAController @Inject() (
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val list = SummaryListViewModel(TransferDetailsSummary.rows(NormalMode, request.userAnswers))
+      val list = SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, request.userAnswers))
       Ok(view(list))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      Redirect(TransferDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+      Redirect(TransferDetailsSummaryPage.nextPage(CheckMode, request.userAnswers))
   }
 }
