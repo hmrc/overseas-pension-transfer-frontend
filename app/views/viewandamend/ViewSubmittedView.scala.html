@@ -42,7 +42,8 @@
         schemeManagerDetails: SummaryList,
         qtNumber: String,
         memberName: String,
-        isAmend: Boolean
+        isAmend: Boolean,
+        isChanged: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @headingStr = @{if(isAmend) messages("viewSubmitted.amendHeading") else messages("viewSubmitted.heading", memberName)}
@@ -56,7 +57,7 @@
     }
 }
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true, showDiscardAmendmentFooter = true) {
+@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true, showDiscardAmendmentFooter = isAmend) {
 
  <span class="govuk-caption-l">@qtNumber</span>
  @heading(headingStr)
@@ -81,6 +82,8 @@
 
  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--invisible">
 
+ @if(isChanged) {
   @continueButton
+ }
 
 }

@@ -40,7 +40,11 @@
 @hintTextYes = @{if (mode != AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.hintYes")))) else None}
 @hintTextNo = @{if (mode == AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.amendHintNo")))) else Some(HintViewModel(Text(messages("submitToHMRC.hintNo"))))}
 
-@layout(pageTitle = title(form, messages("submitToHMRC.title"))) {
+@layout(pageTitle = title(form, messages("submitToHMRC.title")),
+showCYAFooter = true,
+showPageFooter = false,
+showTasklistFooter = false
+) {
 
     @formHelper(action = routes.SubmitToHMRCController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
