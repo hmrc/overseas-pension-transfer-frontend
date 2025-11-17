@@ -32,7 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersService @Inject() (
     connector: UserAnswersConnector,
-    pensionSchemeConnector: PensionSchemeConnector
+    pensionSchemeConnector: PensionSchemeConnector,
+    authService: AuthService
   )(implicit ec: ExecutionContext
   ) extends Logging {
 
@@ -79,7 +80,11 @@ class UserAnswersService @Inject() (
       case Some(psaId) =>
         pensionSchemeConnector.checkPsaAssociation(sessionData.schemeInformation.srnNumber.value, psaId).flatMap {
           case true  =>
-            connector.postSubmission(submissionDTO)
+            authService.checkIsAuthorisingPsa(sessionData.schemeInformation.srnNumber.value, psaId).flatMap {
+              case true  => connector.postSubmission(submissionDTO)
+              case false =>
+                Future.failed(new RuntimeException("PSA is not PSP authorising PSA"))
+            }
           case false =>
             Future.failed(new RuntimeException("PSA is not associated with the scheme"))
         }

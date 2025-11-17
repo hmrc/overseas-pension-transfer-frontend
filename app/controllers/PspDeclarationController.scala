@@ -84,11 +84,13 @@ class PspDeclarationController @Inject() (
                 Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
             }
             .recoverWith {
+              case e: RuntimeException if e.getMessage == "PSA is not PSP authorising PSA"        =>
+                val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
+                Future.successful(BadRequest(view(formWithError, mode)))
               case e: RuntimeException if e.getMessage == "PSA is not associated with the scheme" =>
                 val formWithError = form.withError("value", "pspDeclaration.error.notAssociated")
                 Future.successful(BadRequest(view(formWithError, mode)))
             }
-
         }
       )
   }
