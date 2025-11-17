@@ -219,7 +219,7 @@ memberDateOfBirth.change.hidden = Date of birth
 
 membersCurrentAddress.title = What is the member''s current address?
 membersCurrentAddress.heading = What is {0}''s current address?
-membersCurrentAddress.checkYourAnswersLabel = Current address
+membersCurrentAddress.checkYourAnswersLabel = Principal residential address
 membersCurrentAddress.error.addressLine1.required = Enter the first line of {0}''s address
 membersCurrentAddress.error.addressLine2.required = Enter the second line of {0}''s address
 membersCurrentAddress.countryCode.change.hidden = Country (optional)
@@ -229,13 +229,13 @@ memberIsResidentUK.title = Is the member currently a resident of the UK for tax 
 memberIsResidentUK.heading = Is {0} currently a resident of the UK for tax purposes?
 memberIsResidentUK.yes = Yes
 memberIsResidentUK.no = No
-memberIsResidentUK.checkYourAnswersLabel = Is member a UK resident
+memberIsResidentUK.checkYourAnswersLabel = Is member a UK resident for tax purposes
 memberIsResidentUK.error.required = Select yes if the member is currently a resident of the UK for tax purposes
 memberIsResidentUK.change.hidden = If member is a UK resident
 
 memberHasEverBeenResidentUK.title = Has the member ever been a resident of the UK for tax purposes?
 memberHasEverBeenResidentUK.heading = Has {0} ever been a resident of the UK for tax purposes?
-memberHasEverBeenResidentUK.checkYourAnswersLabel = Have they ever been a UK resident
+memberHasEverBeenResidentUK.checkYourAnswersLabel = Have they ever been a UK resident for tax purposes
 memberHasEverBeenResidentUK.error.required = Select yes if the member has ever been a resident of the UK for tax purposes
 memberHasEverBeenResidentUK.change.hidden = If member has ever been UK resident
 
