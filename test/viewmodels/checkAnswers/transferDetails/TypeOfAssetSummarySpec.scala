@@ -37,7 +37,7 @@ class TypeOfAssetSummarySpec extends AnyFreeSpec with SpecBase {
 
       result mustBe defined
       result.get.key.content mustBe Text(messages("typeOfAsset.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages("typeOfAsset.cashAssets,<br>typeOfAsset.propertyAsset"))
+      result.get.value.content mustBe HtmlContent(messages("typeOfAsset.cashAssets<br>typeOfAsset.propertyAsset"))
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.TypeOfAssetController.onPageLoad(CheckMode).url
     }
