@@ -41,7 +41,7 @@ object MemberNameSummary {
         val actions = if (showChangeLink) {
           Seq(
             ActionItemViewModel("site.change", MemberNamePage.changeLink(mode).url)
-              .withVisuallyHiddenText(messages("memberName.change.hidden"))
+              .withVisuallyHiddenText(messages("memberName.checkYourAnswersLabel.hidden"))
           )
         } else {
           Seq.empty
