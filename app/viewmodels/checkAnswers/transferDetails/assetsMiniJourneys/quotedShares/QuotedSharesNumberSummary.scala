@@ -33,7 +33,7 @@ object QuotedSharesNumberSummary {
           value   = ValueViewModel(answer.toString),
           actions = Seq(
             ActionItemViewModel("site.change", QuotedSharesNumberPage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("unquotedSharesNumber.change.hidden"))
+              .withVisuallyHiddenText(messages("quotedSharesNumber.change.hidden"))
           )
         )
     }

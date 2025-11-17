@@ -18,12 +18,12 @@ package controllers.viewandamend
 
 import base.SpecBase
 import models.responses.UserAnswersErrorResponse
-import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, TransferId}
+import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, TransferId, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -134,7 +134,8 @@ class ViewAmendSubmittedControllerSpec
           schemeManagerDetailsSummaryList,
           testQtNumber.value,
           testMemberName.fullName,
-          isAmend = false
+          isAmend   = false,
+          isChanged = false
         )(
           fakeIdentifierRequest(
             req
@@ -236,6 +237,78 @@ class ViewAmendSubmittedControllerSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).value mustBe controllers.routes.JourneyRecoveryController.onPageLoad().url
+
+        app.stop()
+      }
+    }
+
+    "amend" - {
+
+      "return Ok with isChanged = true when local and external user answers differ" in {
+        val localUserAnswers    = userAnswersMemberNameQtNumber
+        val externalUserAnswers = localUserAnswers.copy(data = localUserAnswers.data ++ play.api.libs.json.Json.obj("newField" -> "newValue"))
+
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+          .thenReturn(Future.successful(Right(externalUserAnswers)))
+        when(mockUserAnswersService.toAllTransfersItem(any())).thenReturn(transferItem)
+        when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
+          .thenReturn(Future.successful(true))
+        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+
+        val app = applicationBuilder(
+          userAnswers = localUserAnswers,
+          sessionData = sessionDataMemberNameQtNumber
+        ).overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        ).build()
+
+        val request = FakeRequest(GET, routes.ViewAmendSubmittedController.amend().url)
+        val result  = route(app, request).value
+
+        status(result) mustBe OK
+        contentAsString(result).toLowerCase must include("continue")
+
+        app.stop()
+      }
+
+      "return Ok with isChanged = false when local and external user answers are same" in {
+        val localUserAnswers = userAnswersMemberNameQtNumber
+
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+          .thenReturn(Future.successful(Right(localUserAnswers)))
+
+        val app = applicationBuilder(
+          userAnswers = localUserAnswers,
+          sessionData = sessionDataMemberNameQtNumber
+        ).overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        ).build()
+
+        val request = FakeRequest(GET, routes.ViewAmendSubmittedController.amend().url)
+        val result  = route(app, request).value
+
+        status(result) mustBe OK
+        contentAsString(result) must not include ("continue")
+
+        app.stop()
+      }
+
+      "return InternalServerError when external answers lookup fails" in {
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+          .thenReturn(Future.successful(Left(UserAnswersErrorResponse("failure", None))))
+
+        val app = applicationBuilder(
+          userAnswers = userAnswersMemberNameQtNumber,
+          sessionData = sessionDataMemberNameQtNumber
+        ).overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        ).build()
+
+        val request = FakeRequest(GET, routes.ViewAmendSubmittedController.amend().url)
+        val result  = route(app, request).value
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        contentAsString(result) must include("Unable to fetch external user answers")
 
         app.stop()
       }
