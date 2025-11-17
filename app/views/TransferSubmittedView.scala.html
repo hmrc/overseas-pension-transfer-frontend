@@ -27,7 +27,7 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(qtNumber: String, list: SummaryList)(implicit request: SchemeRequest[_], messages: Messages)
+@(qtNumber: String, list: SummaryList, mpsLink: String)(implicit request: SchemeRequest[_], messages: Messages)
 @schemeName = @{request.schemeDetails.schemeName}
 
 @layout(pageTitle = titleNoForm(messages("transferSubmitted.title")), showPageFooter = false) {
@@ -46,7 +46,6 @@
     </div>
 
     <div class="govuk-body">
-        @*TODO: Update this with the pension scheme MPS link when we have it *@
-        <a class="govuk-link govuk-body" href="@controllers.routes.DashboardController.onPageLoad()">@messages("transferSubmitted.pensionSchemeLink.text", schemeName)</a>
+        <a class="govuk-link govuk-body" href="@mpsLink">@messages("transferSubmitted.pensionSchemeLink.text", schemeName)</a>
     </div>
 }
