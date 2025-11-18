@@ -114,7 +114,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       val rawTransfers: Seq[AllTransfersItem] = Seq(
         AllTransfersItem(userAnswersTransferNumber, None, None, None, Some("Ada"), Some("Lovelace"), None, None, None, None),
         AllTransfersItem(userAnswersTransferNumber, None, None, None, Some(""), Some("Valid"), None, None, None, None), // invalid
-        AllTransfersItem(userAnswersTransferNumber, None, None, None, Some("Grace"), None, None, None, None, None)      // invalid
+        AllTransfersItem(userAnswersTransferNumber, None, None, None, Some("Grace"), None, None, None, None, None) // invalid
       )
 
       val dtoLastUpdated = Instant.parse("2025-10-01T09:00:00Z")
