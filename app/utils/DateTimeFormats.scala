@@ -22,7 +22,7 @@ import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.Locale
 
 object DateTimeFormats {
-  private val dateTimeFormatterNumeric = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH)
+  private val dateTimeFormatterNumeric = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
   val localDateTimeFormatter           = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
 
   private val localisedDateTimeFormatters = Map(
