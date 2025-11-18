@@ -51,17 +51,6 @@ class PensionSchemeConnector @Inject() (
       .execute[Boolean]
   }
 
-  def checkPsaAssociation(srn: String, psaId: PsaId)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url        = url"${appConfig.pensionSchemeService}/is-psa-associated"
-    val userHeader = "psaId" -> psaId.value
-    http.get(url)
-      .setHeader(
-        "schemeReferenceNumber" -> srn,
-        userHeader
-      )
-      .execute[Boolean]
-  }
-
   def getAuthorisingPsa(srn: String)(implicit hc: HeaderCarrier): Future[AuthorisingPsaIdType] = {
     val url = url"${appConfig.pensionSchemeService}/psp-scheme/$srn"
     http.get(url)

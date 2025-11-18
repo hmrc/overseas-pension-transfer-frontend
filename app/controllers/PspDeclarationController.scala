@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.PspDeclarationFormProvider
 import models.{Mode, PersonName}
 import models.authentication.PsaId
-import models.responses.SubmissionResponse
+import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
 import pages.PspDeclarationPage
 import pages.memberDetails.MemberNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -79,17 +79,11 @@ class PspDeclarationController @Inject() (
                   updateWithMemberName  <- Future.fromTry(updateWithReceiptDate.set(MemberNamePage, name))
                   _                     <- sessionRepository.set(updateWithMemberName)
                 } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
-
-              case _ =>
-                Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-            }
-            .recoverWith {
-              case e: RuntimeException if e.getMessage == "PSA is not PSP authorising PSA"        =>
+              case Left(NotAuthorisingPsaIdErrorResponse(_, _))     =>
                 val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
                 Future.successful(BadRequest(view(formWithError, mode)))
-              case e: RuntimeException if e.getMessage == "PSA is not associated with the scheme" =>
-                val formWithError = form.withError("value", "pspDeclaration.error.notAssociated")
-                Future.successful(BadRequest(view(formWithError, mode)))
+              case _                                                =>
+                Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
             }
         }
       )

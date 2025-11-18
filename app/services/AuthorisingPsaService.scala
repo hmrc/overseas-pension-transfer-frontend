@@ -17,7 +17,7 @@
 package services
 
 import connectors.PensionSchemeConnector
-import models.authentication.PsaId
+import models.authentication.{PsaId, PspId}
 import models.responses.{PensionSchemeError, PensionSchemeNotAssociated}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthService @Inject() (
+class AuthorisingPsaService @Inject() (
     pensionSchemeConnector: PensionSchemeConnector
   )(implicit ex: ExecutionContext
   ) extends Logging {

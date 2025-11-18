@@ -126,48 +126,13 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
     }
   }
 
-  "PensionSchemeConnector.checkPsaAssociation" when {
-    "called with valid SRN and PSA ID" must {
-      "return true when downstream says PSA is associated" in {
-        // Stub the downstream endpoint to return true for PSA association
-        PensionSchemeStub.stubCheckPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId.value, true)
-
-        val result: Boolean = await(connector.checkPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId))
-
-        result shouldBe true
-      }
-
-      "return false when downstream says PSA is not associated" in {
-        // Stub the downstream endpoint to return false for PSA association
-        PensionSchemeStub.stubCheckPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId.value, false)
-
-        val result: Boolean = await(connector.checkPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId))
-
-        result shouldBe false
-      }
-    }
-
-    "handle failures gracefully" must {
-      "fail the Future if the downstream call fails" in {
-        // Stub the downstream endpoint to simulate failure (e.g. 500 error or network fault)
-        PensionSchemeStub.stubCheckPsaAssociationFailure(srn, psaUser.asInstanceOf[PsaUser].psaId.value)
-
-        val result = connector.checkPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId)
-
-        intercept[Exception] {
-          await(result)
-        }
-      }
-    }
-  }
-
   "PensionSchemeConnector.getIsAuthorisingPsa" when {
     "fetching the authorising PSA ID" must {
 
       "return Right(PsaId) when downstream returns valid JSON with authorisingPSAID" in {
         PensionSchemeStub.getAuthorisingPsaSuccess(srn, "A2100005")
 
-        val result = await(connector.getAuthorisingPsa(srn, psaUser.asInstanceOf[PsaUser].psaId))
+        val result = await(connector.getAuthorisingPsa(srn))
 
         result shouldBe Right(PsaId("A2100005"))
       }
@@ -175,7 +140,7 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
       "return Left(PensionSchemeNotAssociated) on 404" in {
         PensionSchemeStub.getAuthorisingPsaNotAssociated(srn)
 
-        val result = await(connector.getAuthorisingPsa(srn, psaUser.asInstanceOf[PsaUser].psaId))
+        val result = await(connector.getAuthorisingPsa(srn))
 
         result match {
           case Left(_: PensionSchemeNotAssociated) => succeed
@@ -200,7 +165,7 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
                |}""".stripMargin
         )
 
-        val result = await(connector.getAuthorisingPsa(srn, psaUser.asInstanceOf[PsaUser].psaId))
+        val result = await(connector.getAuthorisingPsa(srn))
 
         result match {
           case Left(PensionSchemeErrorResponse(msg, maybeDetails)) =>
@@ -219,7 +184,7 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
           body   = """{"error":"downstream boom"}"""
         )
 
-        val result = await(connector.getAuthorisingPsa(srn, psaUser.asInstanceOf[PsaUser].psaId))
+        val result = await(connector.getAuthorisingPsa(srn))
 
         result match {
           case Left(PensionSchemeErrorResponse(msg, _)) =>
@@ -232,7 +197,7 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
       "return Left(PensionSchemeErrorResponse) when a network fault occurs" in {
         PensionSchemeStub.faultGetAuthorisingPsa(srn)
 
-        val result = await(connector.getAuthorisingPsa(srn, psaUser.asInstanceOf[PsaUser].psaId))
+        val result = await(connector.getAuthorisingPsa(srn))
 
         result match {
           case Left(PensionSchemeErrorResponse(msg, _)) =>

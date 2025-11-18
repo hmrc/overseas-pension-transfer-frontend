@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import controllers.actions._
 import forms.PspDeclarationFormProvider
-import models.responses.SubmissionResponse
+import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
 import models.{NormalMode, QtNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -129,41 +129,11 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       }
     }
 
-    "must return Bad Request with association error when PSA is not associated with scheme" in {
+    "must return Bad Request with authorising psa error when not PSP authorising PSA" in {
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.failed(new RuntimeException("PSA is not associated with the scheme")))
-
-      val userAnswersWithPspDeclaration = emptyUserAnswers.set(PspDeclarationPage, "A1234567").success.value
-
-      val application = applicationBuilderPsp(userAnswersWithPspDeclaration)
-        .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
-        .build()
-
-      running(application) {
-        val fakePostRequestWithValue = FakeRequest(POST, pspDeclarationRoute)
-          .withFormUrlEncodedBody("value" -> "A1234567")
-
-        val resultOfRoute = route(application, fakePostRequestWithValue).value
-
-        status(resultOfRoute) mustBe BAD_REQUEST
-
-        val messagesApi          = messages(application)
-        val expectedErrorMessage = messagesApi("pspDeclaration.error.notAssociated")
-
-        val actualContent  = contentAsString(resultOfRoute)
-        val decodedContent = StringEscapeUtils.unescapeHtml4(actualContent)
-
-        decodedContent must include(expectedErrorMessage)
-      }
-    }
-
-    "must return Bad Request with authorising psa error when PSA is PSP authorising PSA" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-
-      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.failed(new RuntimeException("PSA is not PSP authorising PSA")))
+        .thenReturn(Future.successful(Left(NotAuthorisingPsaIdErrorResponse("PSA is not PSP authorising PSA", None))))
 
       val userAnswersWithPspDeclaration = emptyUserAnswers.set(PspDeclarationPage, "A1234567").success.value
 
