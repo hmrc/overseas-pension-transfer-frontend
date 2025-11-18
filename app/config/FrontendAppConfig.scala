@@ -78,4 +78,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val transfersPerPage: Int = configuration.get[Int]("pagination.transfersPerPage")
 
   val dashboardLockTtl: Long = configuration.get[Long]("dashboard.lockTtlSeconds")
+
+  val mpsSchemeSummaryPath: String = configuration.get[String]("pension-scheme-summary.service-path")
+
+  def mpsBaseUrl(implicit request: RequestHeader): String = {
+    val scheme = if (request.secure) "https" else "http"
+    s"$scheme://${request.host}$mpsSchemeSummaryPath"
+  }
+
 }

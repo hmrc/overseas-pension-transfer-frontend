@@ -34,7 +34,7 @@ object WhyTransferIsNotTaxableSummary {
         HtmlContent(
           selections
             .map(sel => HtmlFormat.escape(messages(s"whyTransferIsNotTaxable.$sel")).toString)
-            .mkString(",<br>")
+            .mkString("<br><br>")
         )
       )
 
