@@ -17,8 +17,7 @@
 package models.assets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.assets.CashMiniJourney.assetType
-import models.{Mode, NormalMode, SessionData}
+import models.{Mode, SessionData}
 import play.api.Logging
 import play.api.libs.json.OFormat
 import play.api.mvc.Call
@@ -80,7 +79,7 @@ object UnquotedSharesMiniJourney extends RepeatingAssetsMiniJourney[UnquotedShar
   }
 }
 
-object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] with Logging {
+object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] {
   val assetType = TypeOfAsset.Property
   val query     = PropertyQuery
   val format    = PropertyEntry.format
