@@ -32,7 +32,7 @@ class AuthService @Inject() (
 
   def checkIsAuthorisingPsa(srn: String, psaId: PsaId)(implicit hc: HeaderCarrier): Future[Boolean] =
     pensionSchemeConnector
-      .getIsAuthorisingPsa(srn, psaId)
+      .getAuthorisingPsa(srn)
       .map {
         case Right(returnedPsaId) =>
           returnedPsaId == psaId

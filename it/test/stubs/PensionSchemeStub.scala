@@ -135,7 +135,7 @@ object PensionSchemeStub {
     )
   }
 
-  def stubCheckPsaAssociationFailure(srn: String, psaId: String): Unit = {
+  def stubCheckPsaAssociationFailure(srn: String, psaId: String): Unit          = {
     stubGet(
       urlRegex        = AssocPathRegex,
       status          = INTERNAL_SERVER_ERROR,
@@ -145,4 +145,52 @@ object PensionSchemeStub {
     )
   }
 
+  private def authorisingPsaJson(srn: String, authorisingPsaId: String): String =
+    s"""
+       |{
+       |  "pspDetails": {
+       |    "id": "21000005",
+       |    "individual": {
+       |      "firstName": "PSP Individual",
+       |      "lastName": "UK"
+       |    },
+       |    "relationshipStartDate": "2019-03-29",
+       |    "authorisingPSAID": "$authorisingPsaId",
+       |    "authorisingPSA": {
+       |      "firstName": "Nigel",
+       |      "middleName": "Robert",
+       |      "lastName": "Smith"
+       |    },
+       |    "pspClientReference": "1234345"
+       |  },
+       |  "srn": "$srn",
+       |  "pstr": "24000040IN",
+       |  "schemeStatus": "Open",
+       |  "schemeName": "Open Scheme Overview API Test"
+       |}
+       |""".stripMargin
+
+  def responseGetAuthorisingPsa(srn: String)(status: Int, body: String): Unit =
+    stubGet(
+      urlRegex        = PspDetailsPath(srn),
+      status          = status,
+      responseBody    = body,
+      requiredHeaders = Seq("srn" -> srn)
+    )
+
+  def getAuthorisingPsaSuccess(srn: String, authorisingPsaId: String): Unit =
+    responseGetAuthorisingPsa(srn)(OK, authorisingPsaJson(srn, authorisingPsaId))
+
+  def getAuthorisingPsaNotAssociated(srn: String): Unit =
+    responseGetAuthorisingPsa(srn)(NOT_FOUND, """{"error":"not associated"}""")
+
+  def getAuthorisingPsaError(srn: String)(status: Int, body: String): Unit =
+    responseGetAuthorisingPsa(srn)(status, body)
+
+  def faultGetAuthorisingPsa(srn: String): StubMapping =
+    stubFor(
+      get(urlPathMatching(PspDetailsPath(srn)))
+        .withHeader("srn", equalTo(srn))
+        .willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER))
+    )
 }

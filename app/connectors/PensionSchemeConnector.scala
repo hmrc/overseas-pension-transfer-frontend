@@ -62,7 +62,7 @@ class PensionSchemeConnector @Inject() (
       .execute[Boolean]
   }
 
-  def getIsAuthorisingPsa(srn: String)(implicit hc: HeaderCarrier): Future[AuthorisingPsaIdType] = {
+  def getAuthorisingPsa(srn: String)(implicit hc: HeaderCarrier): Future[AuthorisingPsaIdType] = {
     val url = url"${appConfig.pensionSchemeService}/psp-scheme/$srn"
     http.get(url)
       .setHeader(
@@ -71,7 +71,7 @@ class PensionSchemeConnector @Inject() (
       .execute[AuthorisingPsaIdType]
       .recover {
         case e: Exception =>
-          val errMsg = logNonHttpError("[PensionSchemeConnector][getIsAuthorisingPsa]", hc, e)
+          val errMsg = logNonHttpError("[PensionSchemeConnector][getAuthorisingPsa]", hc, e)
           Left(PensionSchemeErrorResponse(errMsg, None))
       }
   }
