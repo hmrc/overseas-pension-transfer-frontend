@@ -34,7 +34,7 @@ object ApplicableTaxExclusionsSummary {
         HtmlContent(
           selections
             .map(sel => HtmlFormat.escape(messages(s"applicableTaxExclusions.$sel")).toString)
-            .mkString(",<br>")
+            .mkString("<br><br>")
         )
       )
 
