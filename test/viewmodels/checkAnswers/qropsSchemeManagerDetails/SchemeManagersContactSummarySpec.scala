@@ -22,7 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 
 class SchemeManagersContactSummarySpec extends AnyFreeSpec with SpecBase {
 
@@ -30,12 +30,18 @@ class SchemeManagersContactSummarySpec extends AnyFreeSpec with SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when SchemeManagersContactPage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagersContactPage, "Scheme Manager Contact").success.value
-      val result  = SchemeManagersContactSummary.row(CheckMode, answers)
+      val phoneNumber = "+441234567890"
+      val answers     = emptyUserAnswers.set(SchemeManagersContactPage, phoneNumber).success.value
+      val result      = SchemeManagersContactSummary.row(CheckMode, answers)
 
       result mustBe defined
       result.get.key.content mustBe Text(messages("schemeManagersContact.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("Scheme Manager Contact")
+
+      result.get.value.content mustBe HtmlContent(
+        s"""<span aria-hidden="true">$phoneNumber</span>""" +
+          s"""<span class="govuk-visually-hidden">+4 4 1 2 3 4 5 6 7 8 9 0</span>"""
+      )
+
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagersContactController.onPageLoad(CheckMode).url
     }

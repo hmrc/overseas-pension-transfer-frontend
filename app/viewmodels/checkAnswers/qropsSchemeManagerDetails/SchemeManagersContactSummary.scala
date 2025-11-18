@@ -21,6 +21,7 @@ import models.{CheckMode, Mode, UserAnswers}
 import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -29,7 +30,7 @@ object SchemeManagersContactSummary {
 
   def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeManagersContactPage).map { answer =>
-      val actions =
+      val actions                    =
         if (showChangeLink) {
           Seq(
             ActionItemViewModel("site.change", SchemeManagersContactPage.changeLink(mode).url)
@@ -38,10 +39,12 @@ object SchemeManagersContactSummary {
         } else {
           Seq.empty
         }
+      val phoneNumberForScreenReader = answer.replaceAll("(\\d)", "$1 ").trim
+      val phoneNumberHtml            = s"""<span aria-hidden="true">$answer</span><span class="govuk-visually-hidden">$phoneNumberForScreenReader</span>"""
 
       SummaryListRowViewModel(
         key     = "schemeManagersContact.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+        value   = ValueViewModel(HtmlContent(phoneNumberHtml)),
         actions = actions
       )
     }
