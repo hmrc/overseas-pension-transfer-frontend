@@ -17,11 +17,13 @@
 package controllers
 
 import base.SpecBase
+import config.FrontendAppConfig
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
@@ -30,12 +32,13 @@ import viewmodels.checkAnswers.TransferSubmittedSummary
 import views.html.TransferSubmittedView
 
 import java.time.ZoneId
-import java.time.format.{DateTimeFormatter, FormatStyle}
 import scala.concurrent.Future
 
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
   private val mockSessionRepository = mock[SessionRepository]
+  private val application           = new GuiceApplicationBuilder().build()
+  private val appConfig             = application.injector.instanceOf[FrontendAppConfig]
 
   "TransferSubmitted Controller" - {
 
@@ -54,6 +57,8 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
         val result = route(application, request).value
 
+        val expectedMpsLink = s"${appConfig.mpsBaseUrl(fakeSchemeRequest(request))}1234567890"
+
         val view = application.injector.instanceOf[TransferSubmittedView]
 
         val formattedInstant = {
@@ -71,7 +76,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
           )
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("QT123456", summaryList)(fakeSchemeRequest(request), testMessages).toString
+        contentAsString(result) mustEqual view("QT123456", summaryList, expectedMpsLink)(fakeSchemeRequest(request), testMessages).toString
       }
     }
 

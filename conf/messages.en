@@ -61,6 +61,7 @@ dashboard.banner.linkText = View transfer
 dashboard.lock.title = Important
 dashboard.lock.warning = Someone else is editing the transfer report for {0}, please try again later.
 dashboard.lock.hide = Hide message
+dashboard.pensionSchemeLink.text = Return to {0} pension scheme
 
 requiredInfo.title = What you will need
 requiredInfo.heading = What you will need
