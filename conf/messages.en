@@ -316,7 +316,7 @@ qropsOtherCountry.heading = In which other country or territory was the QROPS es
 qropsOtherCountry.checkYourAnswersLabel = Other country or territory
 qropsOtherCountry.error.required = Enter a country or territory
 qropsOtherCountry.error.length = Country or territory must be 35 characters or less
-qropsOtherCountry.change.hidden = The other other country where QROPS was established
+qropsOtherCountry.change.hidden = The other country where QROPS was established
 
 schemeManagerType.title = Is the scheme manager an individual or organisation?
 schemeManagerType.heading = Is the scheme manager an individual or organisation?
@@ -385,9 +385,9 @@ whyTransferIsTaxable.title = Why is this a taxable overseas transfer?
 whyTransferIsTaxable.heading = Why is this a taxable overseas transfer?
 whyTransferIsTaxable.transferExceedsOTCAllowance = Transfer exceeds member''s overseas transfer allowance and there is an applicable exclusion.
 whyTransferIsTaxable.noExclusion = There is no applicable exclusion.
-whyTransferIsTaxable.checkYourAnswersLabel = Why is this a taxable overseas transfer?
+whyTransferIsTaxable.checkYourAnswersLabel = Why is this transfer taxable
 whyTransferIsTaxable.error.required = Select why this is a taxable overseas transfer
-whyTransferIsTaxable.change.hidden = Why is this a taxable overseas transfer?
+whyTransferIsTaxable.change.hidden = Why this transfer is taxable
 
 whyTransferIsNotTaxable.title = Why is this not a taxable overseas transfer?
 whyTransferIsNotTaxable.heading = Why isn''t this a taxable overseas transfer?
@@ -395,7 +395,7 @@ whyTransferIsNotTaxable.individualIsEmployeeOccupational = The QROPS is an occup
 whyTransferIsNotTaxable.individualIsEmployedPublicService = The QROPS is an overseas public service scheme and the individual is employed by the public service.
 whyTransferIsNotTaxable.individualIsEmployeeInternationalOrg = The QROPS is a pension scheme of an international organisation and the individual is employed by that international organisation.
 whyTransferIsNotTaxable.individualAndQROPSResidentSameCountry = Both the individual and QROPS are resident in the same country.
-whyTransferIsNotTaxable.checkYourAnswersLabel = Why transfer is not taxable
+whyTransferIsNotTaxable.checkYourAnswersLabel = Why transfer isn''t taxable
 whyTransferIsNotTaxable.error.required = Select at least one reason why the transfer isn''t taxable
 whyTransferIsNotTaxable.change.hidden = Why this transfer is not taxable
 whyTransferIsNotTaxable.paragraph = The transfer value does not exceed the members available overseas transfer allowance at the time of transfer and:
@@ -403,7 +403,7 @@ whyTransferIsNotTaxable.hint = Select all that apply.
 
 overseasTransferAllowance.title = How much of the member''s overseas transfer allowance is available before this transfer?
 overseasTransferAllowance.heading = How much of the member''s overseas transfer allowance is available before this transfer?
-overseasTransferAllowance.checkYourAnswersLabel = Transfer allowance
+overseasTransferAllowance.checkYourAnswersLabel = Available transfer allowance
 overseasTransferAllowance.error.required = Enter the amount of the transfer allowance
 overseasTransferAllowance.error.nonNumeric = The transfer allowance must be an amount of money, like 123 or 123.00
 overseasTransferAllowance.error.aboveMaximum = The transfer amount must be {0} or less
@@ -415,7 +415,7 @@ isTransferTaxable.title = Is this transfer payment a taxable overseas transfer?
 isTransferTaxable.heading = Is this transfer payment a taxable overseas transfer?
 isTransferTaxable.checkYourAnswersLabel = Is transfer taxable
 isTransferTaxable.error.required = Select yes if the transfer payment is taxable
-isTransferTaxable.change.hidden = Why this transfer is taxable
+isTransferTaxable.change.hidden = If transfer is taxable
 
 isTransferCashOnly.title = Is the transfer made up of cash only?
 isTransferCashOnly.heading = Is the transfer made up of cash only?
@@ -435,7 +435,7 @@ cashAmountInTransfer.hint = For example, £60000 or £19,300.54.
 
 amountOfTaxDeducted.title = What is the amount of tax deducted at 25%?
 amountOfTaxDeducted.heading = What is the amount of tax deducted at 25%?
-amountOfTaxDeducted.checkYourAnswersLabel = Amount deducted at 25%
+amountOfTaxDeducted.checkYourAnswersLabel = Amount of tax deducted at 25%
 amountOfTaxDeducted.error.nonNumeric = The tax amount must be an amount of money, like 123 or 123.00
 amountOfTaxDeducted.error.required = Enter the amount of tax deducted at 25%
 amountOfTaxDeducted.error.aboveMaximum = The tax amount must be {0} or less
@@ -480,7 +480,7 @@ applicableTaxExclusions.change.hidden = Applicable exclusions
 
 amountOfTransfer.title = What is the amount of the transfer?
 amountOfTransfer.heading = What is the amount of the transfer?
-amountOfTransfer.checkYourAnswersLabel = Amount of transfer
+amountOfTransfer.checkYourAnswersLabel = Transfer amount
 amountOfTransfer.error.nonNumeric = The transfer amount must be an amount of money, like 123 or 123.00
 amountOfTransfer.error.required = Enter the transfer amount
 amountOfTransfer.error.aboveMaximum = The transfer amount must be {0} or less
@@ -490,7 +490,7 @@ amountOfTransfer.hint = For example, £60000 or £19,300.54.
 
 netTransferAmount.title = What is the net amount of the transfer after deducting the tax charge?
 netTransferAmount.heading = What is the net amount of the transfer after deducting the tax charge?
-netTransferAmount.checkYourAnswersLabel = Net amount
+netTransferAmount.checkYourAnswersLabel = Net amount of transfer
 netTransferAmount.error.nonNumeric = The net amount of the transfer must be an amount of money, like £123 or 123.00
 netTransferAmount.error.required = Enter the net amount of the transfer after tax
 netTransferAmount.error.aboveMaximum = The net amount of the transfer must be {0} or less

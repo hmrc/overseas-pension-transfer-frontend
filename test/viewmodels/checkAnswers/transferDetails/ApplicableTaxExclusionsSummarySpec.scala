@@ -38,7 +38,7 @@ class ApplicableTaxExclusionsSummarySpec extends AnyFreeSpec with SpecBase {
       result mustBe defined
       result.get.key.content mustBe Text(messages("applicableTaxExclusions.checkYourAnswersLabel"))
       result.get.value.content mustBe HtmlContent(messages(
-        "applicableTaxExclusions.occupational,<br>applicableTaxExclusions.publicService,<br>applicableTaxExclusions.resident"
+        "applicableTaxExclusions.occupational<br><br>applicableTaxExclusions.publicService<br><br>applicableTaxExclusions.resident"
       ))
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.ApplicableTaxExclusionsController.onPageLoad(CheckMode).url
