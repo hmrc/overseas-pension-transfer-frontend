@@ -37,7 +37,7 @@ object TypeOfAssetSummary {
           HtmlContent(
             selections
               .map(sel => HtmlFormat.escape(messages(s"typeOfAsset.$sel")).toString)
-              .mkString(",<br>")
+              .mkString("<br>")
           )
         )
 
