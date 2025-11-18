@@ -37,7 +37,7 @@ class MemberDateOfLeavingUKSummarySpec extends AnyFreeSpec with SpecBase {
 
       result mustBe defined
       result.get.key.content mustBe Text(messages("memberDateOfLeavingUK.checkYourAnswersLabel"))
-      result.get.value.content mustBe Text("5 5 1995")
+      result.get.value.content mustBe Text("5 May 1995")
       result.get.actions.get.items.head.href mustBe
         controllers.memberDetails.routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode).url
     }

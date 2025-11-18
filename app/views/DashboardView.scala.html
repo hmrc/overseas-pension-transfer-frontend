@@ -29,7 +29,8 @@
 @(schemeName: String,
   nextPage: String,
   vm: PaginatedAllTransfersViewModel,
-  expiringItems: Seq[AllTransfersItem] = Seq.empty
+  expiringItems: Seq[AllTransfersItem] = Seq.empty,
+  mpsLink: String
 )(implicit request: Request[_], messages: Messages)
 
 @messageFor(item: AllTransfersItem) = @{
@@ -120,4 +121,6 @@ item.qtStatus match {
     }
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+    <p><a class="govuk-link govuk-body" href="@mpsLink">@messages("dashboard.pensionSchemeLink.text", schemeName)</a></p>
 }
