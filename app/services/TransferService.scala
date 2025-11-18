@@ -18,7 +18,7 @@ package services
 
 import connectors.TransferConnector
 import models.responses.{AllTransfersUnexpectedError, NoTransfersFound, TransferError}
-import models.{DashboardData, PstrNumber}
+import models.{AllTransfersItem, DashboardData, PstrNumber}
 import queries.dashboard.{TransfersDataUpdatedAtQuery, TransfersOverviewQuery, TransfersSyncedAtQuery}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -45,8 +45,9 @@ class TransferService @Inject() (
       case Left(err)              =>
         Left(err)
       case Right(dto)             =>
+        val cleanedTransfers = filterTransfersWithValidNames(dto.transfers)
         (for {
-          dd1 <- current.set(TransfersOverviewQuery, dto.transfers)
+          dd1 <- current.set(TransfersOverviewQuery, cleanedTransfers)
           dd2 <- dd1.set(TransfersSyncedAtQuery, Instant.now())
           dd3 <- dd2.set(TransfersDataUpdatedAtQuery, dto.lastUpdated) // upstream timestamp
         } yield dd3).fold(
@@ -54,4 +55,12 @@ class TransferService @Inject() (
           updated => Right(updated)
         )
     }
+
+  /** Filters out transfers missing a valid first name or surname. This prevents displaying incomplete member records on the dashboard.
+    */
+  private def filterTransfersWithValidNames(transfers: Seq[AllTransfersItem]) =
+    transfers.filter(t =>
+      t.memberFirstName.exists(_.trim.nonEmpty) &&
+        t.memberSurname.exists(_.trim.nonEmpty)
+    )
 }
