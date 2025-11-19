@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinuePage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -72,7 +72,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must return OK and the form filled for a GET in NormalMode when answer exists" in {
-      val userAnswers = emptyUserAnswers.set(PropertyAmendContinuePage, true).success.value
+      val userAnswers = emptyUserAnswers.set(PropertyAmendContinueAssetPage, true).success.value
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
@@ -119,9 +119,9 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
+        val ua2       = userAnswers.set(PropertyAmendContinueAssetPage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
-        val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
+        val expected  = PropertyAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -145,9 +145,9 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(PropertyAmendContinuePage, false).success.value
+        val ua2       = userAnswers.set(PropertyAmendContinueAssetPage, false).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
-        val expected  = PropertyAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
+        val expected  = PropertyAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -171,9 +171,9 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
+        val ua2       = userAnswers.set(PropertyAmendContinueAssetPage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
-        val expected  = PropertyAmendContinuePage.nextPageWith(CheckMode, ua2, emptySessionData, nextIndex).url
+        val expected  = PropertyAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -197,9 +197,9 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(PropertyAmendContinuePage, true).success.value
+        val ua2       = userAnswers.set(PropertyAmendContinueAssetPage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
-        val expected  = PropertyAmendContinuePage.nextPageWith(FinalCheckMode, ua2, emptySessionData, nextIndex).url
+        val expected  = PropertyAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected

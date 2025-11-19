@@ -16,21 +16,17 @@
 
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.transferDetails.routes
-import models.UserAnswers
-import navigators.TypeOfAssetNavigator
-import pages.QuestionPage
+import models.{Mode, SessionData, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
+import pages.{MiniJourneyNextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MoreOtherAssetsDeclarationPage extends QuestionPage[Boolean] {
+case object MoreOtherAssetsDeclarationPage extends QuestionPage[Boolean] with MiniJourneyNextPageWith[SessionData] with NextAssetMiniJourney {
 
   override def path: JsPath =
     JsPath \ "transferDetails" \ "moreAsset"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+  override def decideNextPage(answers: UserAnswers, sessionData: SessionData, mode: Mode, modeCall: Call): Call =
+    getNextAsset(sessionData, mode, modeCall)
 }

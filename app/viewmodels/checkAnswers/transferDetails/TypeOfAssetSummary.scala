@@ -18,10 +18,10 @@ package viewmodels.checkAnswers.transferDetails
 
 import controllers.transferDetails.routes
 import models.assets.TypeOfAsset.Cash
-import models.{CheckMode, Mode, UserAnswers}
-import pages.transferDetails.TypeOfAssetPage
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import queries.assets.AnswersSelectedAssetTypes
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
@@ -30,7 +30,7 @@ import viewmodels.implicits._
 object TypeOfAssetSummary {
 
   def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(TypeOfAssetPage).flatMap {
+    answers.get(AnswersSelectedAssetTypes).flatMap {
       case Seq(Cash)  => None
       case selections =>
         val value = ValueViewModel(
