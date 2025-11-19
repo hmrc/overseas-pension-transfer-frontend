@@ -105,6 +105,7 @@ object TaskJourneyViewModels {
               if (nec == QropsDetailsValidator.notStarted) {
                 NotStarted
               } else {
+                println("\n----\n" + QropsDetailsValidator.fromUserAnswers(userAnswers) + "\n----\n")
                 InProgress
               }
           }

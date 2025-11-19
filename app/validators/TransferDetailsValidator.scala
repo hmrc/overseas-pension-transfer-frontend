@@ -209,6 +209,7 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
               case Some(_) => GenericError("cashValue not expected when Cash is not present in type of assets").invalidNec
               case None    => None.validNec
             }
+          case None                                  => None.validNec
         }
       case None        => DataMissingError(CashAmountInTransferPage).invalidNec
     }
