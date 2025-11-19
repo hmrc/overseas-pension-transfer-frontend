@@ -36,11 +36,7 @@ class SchemeManagersContactSummarySpec extends AnyFreeSpec with SpecBase {
 
       result mustBe defined
       result.get.key.content mustBe Text(messages("schemeManagersContact.checkYourAnswersLabel"))
-
-      result.get.value.content mustBe HtmlContent(
-        s"""<span aria-hidden="true">$phoneNumber</span>""" +
-          s"""<span class="govuk-visually-hidden">+4 4 1 2 3 4 5 6 7 8 9 0</span>"""
-      )
+      result.get.value.content mustBe Text(phoneNumber)
 
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagersContactController.onPageLoad(CheckMode).url
