@@ -725,6 +725,7 @@ pspDeclaration.error.required = Enter the authorising scheme administrator''s ID
 pspDeclaration.error.pattern = Enter the authorising scheme administrator''s ID in the correct format, like A1234567
 pspDeclaration.change.hidden = Psp Declaration
 pspDeclaration.error.notAssociated = The authorising scheme administrator''s ID does not match any IDs we hold for your scheme
+pspDeclaration.error.notAuthorisingPsaId = The scheme administrator''s ID does not match the authorising ID for your practitioner account
 
 psaDeclaration.title = Declaration
 psaDeclaration.heading = Declaration

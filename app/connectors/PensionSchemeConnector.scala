@@ -18,9 +18,10 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.parsers.PensionSchemeParser.{GetPensionSchemeDetailsHttpReads, PensionSchemeDetailsType}
-import models.authentication.{AuthenticatedUser, PsaId, PsaUser, PspUser}
+import connectors.parsers.PensionSchemeParser.{AuthorisingPsaIdType, GetAuthorisingPsaIdHttpReads, GetPensionSchemeDetailsHttpReads, PensionSchemeDetailsType}
+import models.authentication.{AuthenticatedUser, PsaId, PsaUser, PspId, PspUser}
 import models.responses.PensionSchemeErrorResponse
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import utils.DownstreamLogging
@@ -50,15 +51,18 @@ class PensionSchemeConnector @Inject() (
       .execute[Boolean]
   }
 
-  def checkPsaAssociation(srn: String, psaId: PsaId)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    val url        = url"${appConfig.pensionSchemeService}/is-psa-associated"
-    val userHeader = "psaId" -> psaId.value
+  def getAuthorisingPsa(srn: String)(implicit hc: HeaderCarrier): Future[AuthorisingPsaIdType] = {
+    val url = url"${appConfig.pensionSchemeService}/psp-scheme/$srn"
     http.get(url)
       .setHeader(
-        "schemeReferenceNumber" -> srn,
-        userHeader
+        "srn" -> srn
       )
-      .execute[Boolean]
+      .execute[AuthorisingPsaIdType]
+      .recover {
+        case e: Exception =>
+          val errMsg = logNonHttpError("[PensionSchemeConnector][getAuthorisingPsa]", hc, e)
+          Left(PensionSchemeErrorResponse(errMsg, None))
+      }
   }
 
   def getSchemeDetails(srn: String, authenticatedUser: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[PensionSchemeDetailsType] = {
