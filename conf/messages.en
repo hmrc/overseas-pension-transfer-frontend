@@ -43,6 +43,7 @@ footer.link.text.dashboard = Return to Report a transfer to a QROPS dashboard
 footer.link.text.tasklist = Return to task list
 
 dashboard.title = Report a transfer to a qualifying recognised overseas pension scheme
+dashboard.allTransfers.page = All transfers (page {0} of {1})
 dashboard.heading = Report a transfer to a qualifying recognised overseas pension scheme
 dashboard.linkText = Start a new transfer
 dashboard.allTransfers.heading = All transfers
