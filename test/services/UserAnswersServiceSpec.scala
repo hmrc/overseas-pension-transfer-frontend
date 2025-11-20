@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.{PensionSchemeConnector, UserAnswersConnector}
 import models.authentication.{PsaId, PsaUser}
 import models.dtos.UserAnswersDTO
-import models.responses.{SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import models._
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
@@ -43,8 +43,9 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
   private val instant: Instant           = Instant.now
   private val mockUserAnswersConnector   = mock[UserAnswersConnector]
   private val mockPensionSchemeConnector = mock[PensionSchemeConnector]
+  private val mockAuthService            = mock[AuthorisingPsaService]
 
-  val service: UserAnswersService = new UserAnswersService(mockUserAnswersConnector, mockPensionSchemeConnector)
+  val service: UserAnswersService = new UserAnswersService(mockUserAnswersConnector, mockAuthService)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -131,33 +132,37 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
     val authenticatedUser  = PsaUser(PsaId("psaId"), "internalId", affinityGroup = Individual)
     val submissionResponse = Right(SubmissionResponse(QtNumber("qtNumber"), Instant.now))
 
-    "should post submission when PSA is associated with scheme" in {
-      when(mockPensionSchemeConnector.checkPsaAssociation(
-        eqTo(emptySessionData.schemeInformation.srnNumber.value),
-        eqTo(testPsaId.get)
-      )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(true))
+    "should post submission when PSA is associated with scheme and is the authorising PSA" in {
+      val srn   = emptySessionData.schemeInformation.srnNumber.value
+      val psaId = testPsaId.get
+
+      when(
+        mockAuthService.checkIsAuthorisingPsa(
+          eqTo(srn),
+          eqTo(psaId)
+        )(any[HeaderCarrier])
+      ).thenReturn(Future.successful(true))
 
       when(mockUserAnswersConnector.postSubmission(any())(any(), any()))
         .thenReturn(Future.successful(submissionResponse))
 
-      val result = await(service.submitDeclaration(authenticatedUser, userAnswers, emptySessionData, testPsaId))
+      val result =
+        await(service.submitDeclaration(authenticatedUser, userAnswers, emptySessionData, testPsaId))
 
       result mustBe submissionResponse
     }
 
-    "should fail when PSA is not associated with scheme" in {
-      when(mockPensionSchemeConnector.checkPsaAssociation(
-        eqTo(emptySessionData.schemeInformation.srnNumber.value),
-        eqTo(testPsaId.get)
-      )(any[HeaderCarrier]))
-        .thenReturn(Future.successful(false))
+    "should fail when PSA is not authorising PSA" in {
+      when(
+        mockAuthService.checkIsAuthorisingPsa(
+          any[String],
+          any[PsaId]
+        )(any[HeaderCarrier])
+      ).thenReturn(Future.successful(false))
 
-      val result = recoverToExceptionIf[RuntimeException] {
-        service.submitDeclaration(authenticatedUser, userAnswers, emptySessionData, testPsaId)
-      }
+      val result = await(service.submitDeclaration(authenticatedUser, userAnswers, emptySessionData, testPsaId))
 
-      result.map(_.getMessage must include("PSA is not associated with the scheme"))
+      result mustBe Left(NotAuthorisingPsaIdErrorResponse("PSA is not PSP authorising PSA", None))
     }
   }
 

@@ -30,12 +30,11 @@ import viewmodels.implicits._
 
 object UnquotedSharesAmendContinueSummary extends AppUtils {
 
-  private val thresholdHandler = new AssetThresholdHandler()
-  private val threshold        = 5
+  private val threshold = 5
 
   def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(UnquotedSharesQuery)
-    val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.UnquotedShares)
+    val count        = AssetThresholdHandler.getAssetCount(userAnswers, TypeOfAsset.UnquotedShares)
     val valueText    = messages("unquotedSharesAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
 
     maybeEntries match {
@@ -68,13 +67,13 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
     }
   }
 
-  def rows(answers: UserAnswers): Seq[ListItem] = {
+  def rows(mode: Mode, answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(UnquotedSharesQuery)
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(
           name      = entry.companyName,
-          changeUrl = AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(index).url,
+          changeUrl = AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index).url,
           removeUrl = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url
         )
     }

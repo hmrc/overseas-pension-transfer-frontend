@@ -126,41 +126,86 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
     }
   }
 
-  // Inside your PensionSchemeConnectorISpec class...
+  "PensionSchemeConnector.getIsAuthorisingPsa" when {
+    "fetching the authorising PSA ID" must {
 
-  "checkPsaAssociation" when {
-    "called with valid SRN and PSA ID" must {
-      "return true when downstream says PSA is associated" in {
-        // Stub the downstream endpoint to return true for PSA association
-        PensionSchemeStub.stubCheckPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId.value, true)
+      "return Right(PsaId) when downstream returns valid JSON with authorisingPSAID" in {
+        PensionSchemeStub.getAuthorisingPsaSuccess(srn, "A2100005")
 
-        val result: Boolean = await(connector.checkPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId))
+        val result = await(connector.getAuthorisingPsa(srn))
 
-        result shouldBe true
+        result shouldBe Right(PsaId("A2100005"))
       }
 
-      "return false when downstream says PSA is not associated" in {
-        // Stub the downstream endpoint to return false for PSA association
-        PensionSchemeStub.stubCheckPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId.value, false)
+      "return Left(PensionSchemeNotAssociated) on 404" in {
+        PensionSchemeStub.getAuthorisingPsaNotAssociated(srn)
 
-        val result: Boolean = await(connector.checkPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId))
+        val result = await(connector.getAuthorisingPsa(srn))
 
-        result shouldBe false
+        result match {
+          case Left(_: PensionSchemeNotAssociated) => succeed
+          case _                                   => fail(s"Expected PensionSchemeNotAssociated but got: $result")
+        }
       }
-    }
 
-    "handle failures gracefully" must {
-      "fail the Future if the downstream call fails" in {
-        // Stub the downstream endpoint to simulate failure (e.g. 500 error or network fault)
-        PensionSchemeStub.stubCheckPsaAssociationFailure(srn, psaUser.asInstanceOf[PsaUser].psaId.value)
+      "return Left(PensionSchemeErrorResponse) on 200 with invalid JSON (missing authorisingPSAID)" in {
+        PensionSchemeStub.responseGetAuthorisingPsa(
+          srn = srn
+        )(
+          status = OK,
+          body   =
+            s"""{
+               |  "pspDetails": {
+               |    "id": "21000005",
+               |    "individual": {
+               |      "firstName": "PSP Individual",
+               |      "lastName": "UK"
+               |    }
+               |  }
+               |}""".stripMargin
+        )
 
-        val result = connector.checkPsaAssociation(srn, psaUser.asInstanceOf[PsaUser].psaId)
+        val result = await(connector.getAuthorisingPsa(srn))
 
-        intercept[Exception] {
-          await(result)
+        result match {
+          case Left(PensionSchemeErrorResponse(msg, maybeDetails)) =>
+            msg.toLowerCase          should include("unable to parse json")
+            maybeDetails.isDefined shouldBe true
+          case _                                                   =>
+            fail(s"Expected PensionSchemeErrorResponse (invalid JSON) but got: $result")
+        }
+      }
+
+      "return Left(PensionSchemeErrorResponse) on 500 with JSON error body" in {
+        PensionSchemeStub.getAuthorisingPsaError(
+          srn = srn
+        )(
+          status = INTERNAL_SERVER_ERROR,
+          body   = """{"error":"downstream boom"}"""
+        )
+
+        val result = await(connector.getAuthorisingPsa(srn))
+
+        result match {
+          case Left(PensionSchemeErrorResponse(msg, _)) =>
+            msg should include("downstream boom")
+          case _                                        =>
+            fail(s"Expected PensionSchemeErrorResponse (500) but got: $result")
+        }
+      }
+
+      "return Left(PensionSchemeErrorResponse) when a network fault occurs" in {
+        PensionSchemeStub.faultGetAuthorisingPsa(srn)
+
+        val result = await(connector.getAuthorisingPsa(srn))
+
+        result match {
+          case Left(PensionSchemeErrorResponse(msg, _)) =>
+            msg.nonEmpty shouldBe true
+          case _                                        =>
+            fail(s"Expected PensionSchemeErrorResponse (fault) but got: $result")
         }
       }
     }
   }
-
 }

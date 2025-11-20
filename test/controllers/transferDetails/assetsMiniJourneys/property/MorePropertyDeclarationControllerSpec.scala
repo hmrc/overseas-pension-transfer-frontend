@@ -52,7 +52,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
         val view   = application.injector.instanceOf[MorePropertyDeclarationView]
 
-        val rows = PropertyAmendContinueSummary.rows(userAnswersWithAssets(assetsCount = 5))
+        val rows = PropertyAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = 5))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual

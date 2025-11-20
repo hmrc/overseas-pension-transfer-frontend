@@ -17,17 +17,21 @@
 package models.assets
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
-import models.{NormalMode, SessionData, UserAnswers}
+import models.{Mode, SessionData}
+import play.api.Logging
 import play.api.libs.json.OFormat
 import play.api.mvc.Call
 import queries.assets._
 
 sealed trait AssetsMiniJourneyBase {
   def assetType: TypeOfAsset
-  def startPage: () => Call
-  def isCompleted(session: SessionData): Boolean
+  def startPage: (Mode, Int) => Call
+  final def call(mode: Mode, idx: Int = 0): Call = startPage(mode, idx)
 
-  final def call: Call = startPage()
+  def isCompleted(sd: SessionData): Boolean = {
+    val selected = sd.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty)
+    SelectedAssetTypesWithStatus.toTypes(selected).contains(assetType)
+  }
 }
 
 trait RepeatingAssetsMiniJourney[A <: AssetEntry] extends AssetsMiniJourneyBase {
@@ -41,51 +45,64 @@ trait SingleAssetsMiniJourney[A <: AssetEntry] extends AssetsMiniJourneyBase {
 }
 
 object CashMiniJourney extends SingleAssetsMiniJourney[CashEntry] {
-  val assetType = TypeOfAsset.Cash
-  val query     = CashQuery
-  val format    = CashEntry.format
-  val startPage = () => CashAmountInTransferController.onPageLoad(NormalMode)
-
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
+  val assetType                               = TypeOfAsset.Cash
+  val query                                   = CashQuery
+  val format                                  = CashEntry.format
+  override def startPage: (Mode, Int) => Call = (mode: Mode, _) => CashAmountInTransferController.onPageLoad(mode)
 }
 
-object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEntry] {
+object QuotedSharesMiniJourney extends RepeatingAssetsMiniJourney[QuotedSharesEntry] with Logging {
   val assetType = TypeOfAsset.QuotedShares
   val query     = QuotedSharesQuery
   val format    = QuotedSharesEntry.format
-  val startPage = () => QuotedSharesStartController.onPageLoad()
 
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
+  override def startPage: (Mode, Int) => Call = { (mode, idx) =>
+    idx match {
+      case 0               => QuotedSharesStartController.onPageLoad(mode)
+      case idx if idx <= 5 => QuotedSharesCompanyNameController.onPageLoad(mode, idx)
+      case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }
 
 object UnquotedSharesMiniJourney extends RepeatingAssetsMiniJourney[UnquotedSharesEntry] {
   val assetType = TypeOfAsset.UnquotedShares
   val query     = UnquotedSharesQuery
   val format    = UnquotedSharesEntry.format
-  val startPage = () => UnquotedSharesStartController.onPageLoad()
 
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
+  override def startPage: (Mode, Int) => Call = { (mode, idx) =>
+    idx match {
+      case 0               => UnquotedSharesStartController.onPageLoad(mode)
+      case idx if idx <= 5 => UnquotedSharesCompanyNameController.onPageLoad(mode, idx)
+      case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }
 
 object PropertyMiniJourney extends RepeatingAssetsMiniJourney[PropertyEntry] {
   val assetType = TypeOfAsset.Property
   val query     = PropertyQuery
   val format    = PropertyEntry.format
-  val startPage = () => PropertyStartController.onPageLoad()
 
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
+  override def startPage: (Mode, Int) => Call = { (mode, idx) =>
+    idx match {
+      case 0               => PropertyStartController.onPageLoad(mode)
+      case idx if idx <= 5 => PropertyAddressController.onPageLoad(mode, idx)
+      case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }
 
 object OtherAssetsMiniJourney extends RepeatingAssetsMiniJourney[OtherAssetsEntry] {
   val assetType = TypeOfAsset.Other
   val query     = OtherAssetsQuery
   val format    = OtherAssetsEntry.format
-  val startPage = () => OtherAssetsStartController.onPageLoad()
 
-  def isCompleted(sd: SessionData): Boolean =
-    sd.get(AssetCompletionFlag(assetType)).contains(true)
+  override def startPage: (Mode, Int) => Call = { (mode, idx) =>
+    idx match {
+      case 0               => OtherAssetsStartController.onPageLoad(mode)
+      case idx if idx <= 5 => OtherAssetsDescriptionController.onPageLoad(mode, idx)
+      case _               => controllers.routes.JourneyRecoveryController.onPageLoad()
+    }
+  }
 }

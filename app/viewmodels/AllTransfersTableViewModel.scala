@@ -83,8 +83,11 @@ object AllTransfersTableViewModel {
       )
 
       val linkHtml = HtmlFormat.raw(s"""<a href="${TransferReportQueryParams.toUrl(params)}" class="govuk-link">$name</a>""")
-      val refText  = if (params.qtStatus == Some(InProgress)) { Text("-") }
-      else { Text(ref.value) }
+      val refText  = if (params.qtStatus.contains(InProgress)) {
+        Text(messages("dashboard.allTransfers.reference.inProgressText"))
+      } else {
+        Text(ref.value)
+      }
 
       Seq(
         cell(content = HtmlContent(linkHtml)),

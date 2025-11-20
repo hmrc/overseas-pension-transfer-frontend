@@ -88,7 +88,7 @@ case object SubmittedTransferSummaryViewModel {
     s""" <tr class="govuk-table__row">
        |            <td class="govuk-table__cell">$version</th>
        |            <td class="govuk-table__cell">$status</td>
-       |            <td class="govuk-table__cell"><a href=$href class="govuk-link govuk-!-font-weight-bold">$linkText</a></td>
+       |            <td class="govuk-table__cell"><a href=$href class="govuk-link govuk-!-font-weight-bold">$linkText<span class="govuk-visually-hidden"> submission $version</span></a></td>
        |        </tr>""".stripMargin
 
 }
