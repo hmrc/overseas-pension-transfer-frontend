@@ -38,7 +38,6 @@ class PropertyConfirmRemovalController @Inject() (
     schemeData: SchemeDataAction,
     formProvider: PropertyConfirmRemovalFormProvider,
     miniJourney: PropertyMiniJourney.type,
-    assetThresholdHandler: AssetThresholdHandler,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     view: PropertyConfirmRemovalView,
@@ -58,7 +57,7 @@ class PropertyConfirmRemovalController @Inject() (
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
       confirmRemoval =>
         if (!confirmRemoval) {
-          val propertyCount  = assetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.Property)
+          val propertyCount  = AssetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.Property)
           val redirectTarget =
             if (propertyCount >= 5) {
 

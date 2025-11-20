@@ -30,7 +30,7 @@ object SchemeManagersContactSummary {
 
   def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(SchemeManagersContactPage).map { answer =>
-      val actions                    =
+      val actions =
         if (showChangeLink) {
           Seq(
             ActionItemViewModel("site.change", SchemeManagersContactPage.changeLink(mode).url)
@@ -39,12 +39,10 @@ object SchemeManagersContactSummary {
         } else {
           Seq.empty
         }
-      val phoneNumberForScreenReader = answer.replaceAll("(\\d)", "$1 ").trim
-      val phoneNumberHtml            = s"""<span aria-hidden="true">$answer</span><span class="govuk-visually-hidden">$phoneNumberForScreenReader</span>"""
 
       SummaryListRowViewModel(
         key     = "schemeManagersContact.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlContent(phoneNumberHtml)),
+        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = actions
       )
     }

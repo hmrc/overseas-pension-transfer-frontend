@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package navigators
+package pages.transferDetails
 
-import models.{SessionData, UserAnswers}
-import models.assets.AssetsMiniJourneyRegistry
-import play.api.mvc.Call
+import models.SessionData
 
-object TypeOfAssetNavigator {
-
-  def getNextAssetRoute(sessionData: SessionData): Option[Call] = {
-    AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call)
-  }
+package object assetsMiniJourneys {
+  type AmendContinueContext = (SessionData, Int)
 }

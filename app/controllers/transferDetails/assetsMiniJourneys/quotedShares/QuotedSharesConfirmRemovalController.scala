@@ -37,7 +37,6 @@ class QuotedSharesConfirmRemovalController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     formProvider: QuotedSharesConfirmRemovalFormProvider,
-    assetThresholdHandler: AssetThresholdHandler,
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: QuotedSharesMiniJourney.type,
@@ -58,7 +57,7 @@ class QuotedSharesConfirmRemovalController @Inject() (
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
       confirmRemoval =>
         if (!confirmRemoval) {
-          val quotedSharesCount = assetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.QuotedShares)
+          val quotedSharesCount = AssetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.QuotedShares)
           val redirectTarget    =
             if (quotedSharesCount >= 5) {
 

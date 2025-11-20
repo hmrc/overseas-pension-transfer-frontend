@@ -52,7 +52,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
         val view   = application.injector.instanceOf[MoreOtherAssetsDeclarationView]
 
-        val rows = OtherAssetsAmendContinueSummary.rows(userAnswersWithAssets(assetsCount = 5))
+        val rows = OtherAssetsAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = 5))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual

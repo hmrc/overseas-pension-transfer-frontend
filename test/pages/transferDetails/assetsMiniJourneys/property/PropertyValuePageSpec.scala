@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -39,17 +39,31 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
       }
     }
 
-    "in Check Mode" - {
+    "in CheckMode" - {
 
-      "must go to Check Answers" in {
-        PropertyValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
+      "must go to the Next page" in {
+        PropertyValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+          CheckMode,
+          index
+        )
       }
     }
 
     "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        PropertyValuePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      "must go to the Next page" in {
+        PropertyValuePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+          FinalCheckMode,
+          index
+        )
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to the Next page" in {
+        PropertyValuePage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+          AmendCheckMode,
+          index
+        )
       }
     }
   }

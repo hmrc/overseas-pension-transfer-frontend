@@ -17,28 +17,21 @@
 package pages.transferDetails.assetsMiniJourneys.cash
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import controllers.transferDetails.routes
 import models.assets.CashEntry
 import models.{Mode, SessionData, TaskCategory, UserAnswers}
-import navigators.TypeOfAssetNavigator
-import pages.{NextPageWith, QuestionPage}
+import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
+import pages.{MiniJourneyNextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object CashAmountInTransferPage extends QuestionPage[BigDecimal] with NextPageWith[SessionData] {
+case object CashAmountInTransferPage extends QuestionPage[BigDecimal] with MiniJourneyNextPageWith[SessionData] with NextAssetMiniJourney {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = CashEntry.CashValue
 
-  override protected def nextPageWith(answers: UserAnswers, sessionData: SessionData): Call =
-    TypeOfAssetNavigator.getNextAssetRoute(sessionData) match {
-      case Some(route) => route
-      case None        => controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
-    }
-
-  override protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+  override def decideNextPage(userAnswers: UserAnswers, sessionData: SessionData, mode: Mode, modeCall: Call): Call =
+    getNextAsset(sessionData, mode, modeCall)
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(mode)

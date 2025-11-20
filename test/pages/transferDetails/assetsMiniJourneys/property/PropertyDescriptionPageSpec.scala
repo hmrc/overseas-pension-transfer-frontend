@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -33,23 +33,37 @@ class PropertyDescriptionPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
       "must go to the Next page" in {
         PropertyDescriptionPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(
+          NormalMode,
           index
         )
       }
     }
 
-    "in Check Mode" - {
+    "in CheckMode" - {
 
-      "must go to Check Answers" in {
-
-        PropertyDescriptionPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(index)
+      "must go to the Next page" in {
+        PropertyDescriptionPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(
+          CheckMode,
+          index
+        )
       }
     }
 
     "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        PropertyDescriptionPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      "must go to the Next page" in {
+        PropertyDescriptionPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(
+          FinalCheckMode,
+          index
+        )
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to the Next page" in {
+        PropertyDescriptionPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(
+          AmendCheckMode,
+          index
+        )
       }
     }
   }

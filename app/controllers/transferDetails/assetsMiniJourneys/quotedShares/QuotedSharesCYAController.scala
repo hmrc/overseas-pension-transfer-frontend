@@ -18,14 +18,13 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, Mode}
 import org.apache.pekko.Done
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.QuotedSharesQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -33,7 +32,7 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.Q
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class QuotedSharesCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -41,7 +40,6 @@ class QuotedSharesCYAController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     userAnswersService: UserAnswersService,
-    assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
     view: QuotedSharesCYAView
   )(implicit ec: ExecutionContext
@@ -49,29 +47,20 @@ class QuotedSharesCYAController @Inject() (
 
   private val actions = (identify andThen schemeData andThen getData)
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(QuotedSharesSummary.rows(CheckMode, request.userAnswers, index))
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = actions { implicit request =>
+    val list = SummaryListViewModel(QuotedSharesSummary.rows(mode, request.userAnswers, index))
 
-    Ok(view(list, index))
+    Ok(view(list, mode, index))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
-    val updatedUserAnswers = assetThresholdHandler.handle(request.userAnswers, TypeOfAsset.QuotedShares, userSelection = None)
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = actions.async { implicit request =>
+    val updatedUserAnswers = AssetThresholdHandler.handle(request.userAnswers, TypeOfAsset.QuotedShares, userSelection = None)
     for {
       saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
     } yield {
       saved match {
         case Right(Done) =>
-          val quotedSharesCount = assetThresholdHandler.getAssetCount(updatedUserAnswers, TypeOfAsset.QuotedShares)
-          if (quotedSharesCount >= 5) {
-            Redirect(
-              controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.MoreQuotedSharesDeclarationController.onPageLoad(mode = NormalMode)
-            )
-          } else {
-            Redirect(
-              AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)
-            )
-          }
+          Redirect(QuotedSharesCYAPage(index).nextPage(mode, request.userAnswers))
         case _           =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }

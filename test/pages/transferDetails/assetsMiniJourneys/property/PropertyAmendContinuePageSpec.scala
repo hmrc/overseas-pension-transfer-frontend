@@ -19,11 +19,10 @@ package pages.transferDetails.assetsMiniJourneys.property
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
-import models.assets.{PropertyMiniJourney, QuotedSharesMiniJourney, TypeOfAsset}
-import models.{CheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.assets.{PropertyMiniJourney, UnquotedSharesMiniJourney}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails.TypeOfAssetPage
-import queries.assets.AssetCompletionFlag
+import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 class PropertyAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
 
@@ -31,49 +30,195 @@ class PropertyAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
-    "in Normal Mode" - {
+    "in NormalMode" - {
 
-      "must go to the first page in mini journey if continue selected" in {
-        val userAnswers = emptyAnswers.set(PropertyAmendContinuePage, true).success.value
-        val nextIndex   = 1
-        PropertyAmendContinuePage.nextPageWith(
+      "must go to the start page in mini journey if continue selected and index 0" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, true).success.value
+        val nextIndex   = 0
+        PropertyAmendContinueAssetPage.nextPageWith(
           NormalMode,
           userAnswers,
-          emptySessionData,
-          nextIndex
-        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyStartController.onPageLoad(NormalMode)
+      }
+
+      "must go to the address page in mini journey if continue selected and index 1" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, true).success.value
+        val nextIndex   = 1
+        PropertyAmendContinueAssetPage.nextPageWith(
           NormalMode,
-          nextIndex
-        )
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, nextIndex)
       }
 
       "must go to the cya page if no-continue selected and no more assets" in {
-        val userAnswers = emptyAnswers.set(PropertyAmendContinuePage, false).success.value
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, false).success.value
         val nextIndex   = 2
-        PropertyAmendContinuePage.nextPageWith(NormalMode, userAnswers, emptySessionData, nextIndex) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        PropertyAmendContinueAssetPage.nextPageWith(
+          NormalMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if no-continue selected and more assets" in {
-        val selectedTypes: Seq[TypeOfAsset] = Seq(PropertyMiniJourney.assetType, QuotedSharesMiniJourney.assetType)
-        val userAnswers                     = emptyAnswers.set(PropertyAmendContinuePage, false)
-        val sessionData                     =
-          for {
-            sd1 <- emptySessionData.set(TypeOfAssetPage, selectedTypes)
-            sd2 <- sd1.set(AssetCompletionFlag(TypeOfAsset.Property), true)
-          } yield sd2
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
 
-        val result = PropertyAmendContinuePage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value, 0)
-        result mustBe QuotedSharesMiniJourney.call
+        val result = PropertyAmendContinueAssetPage.nextPageWith(NormalMode, userAnswers.success.value, (sessionData.success.value, 0))
+        result mustBe UnquotedSharesMiniJourney.call(NormalMode)
       }
     }
 
-    "in Check Mode" - {
+    "in CheckMode" - {
 
-      "must go to Check Answers" in {
-        PropertyAmendContinuePage.nextPage(
+      "must go to the start page in mini journey if continue selected and index 0" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, true).success.value
+        val nextIndex   = 0
+        PropertyAmendContinueAssetPage.nextPageWith(
           CheckMode,
-          emptyAnswers
-        ) mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyStartController.onPageLoad(CheckMode)
+      }
+
+      "must go to the address page in mini journey if continue selected and index 1" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, true).success.value
+        val nextIndex   = 1
+        PropertyAmendContinueAssetPage.nextPageWith(
+          CheckMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, nextIndex)
+      }
+
+      "must go to the cya page if no-continue selected and no more assets" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, false).success.value
+        val nextIndex   = 2
+        PropertyAmendContinueAssetPage.nextPageWith(
+          CheckMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if no-continue selected and more assets" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
+
+        val result = PropertyAmendContinueAssetPage.nextPageWith(CheckMode, userAnswers.success.value, (sessionData.success.value, 0))
+        result mustBe UnquotedSharesMiniJourney.call(CheckMode)
+      }
+    }
+
+    "in FinalCheckMode" - {
+
+      "must go to the start page in mini journey if continue selected and index 0" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, true).success.value
+        val nextIndex   = 0
+        PropertyAmendContinueAssetPage.nextPageWith(
+          FinalCheckMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyStartController.onPageLoad(FinalCheckMode)
+      }
+
+      "must go to the address page in mini journey if continue selected and index 1" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, true).success.value
+        val nextIndex   = 1
+        PropertyAmendContinueAssetPage.nextPageWith(
+          FinalCheckMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(FinalCheckMode, nextIndex)
+      }
+
+      "must go to the cya page if no-continue selected and no more assets" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, false).success.value
+        val nextIndex   = 2
+        PropertyAmendContinueAssetPage.nextPageWith(
+          FinalCheckMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+
+      "must go to the next asset page if no-continue selected and more assets" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
+
+        val result = PropertyAmendContinueAssetPage.nextPageWith(FinalCheckMode, userAnswers.success.value, (sessionData.success.value, 0))
+        result mustBe UnquotedSharesMiniJourney.call(FinalCheckMode)
+      }
+    }
+
+    "in AmendCheckMode" - {
+
+      "must go to the start page in mini journey if continue selected and index 0" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, true).success.value
+        val nextIndex   = 0
+        PropertyAmendContinueAssetPage.nextPageWith(
+          AmendCheckMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyStartController.onPageLoad(AmendCheckMode)
+      }
+
+      "must go to the address page in mini journey if continue selected and index 1" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, true).success.value
+        val nextIndex   = 1
+        PropertyAmendContinueAssetPage.nextPageWith(
+          AmendCheckMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(AmendCheckMode, nextIndex)
+      }
+
+      "must go to the cya page if no-continue selected and no more assets" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, false).success.value
+        val nextIndex   = 2
+        PropertyAmendContinueAssetPage.nextPageWith(
+          AmendCheckMode,
+          userAnswers,
+          (emptySessionData, nextIndex)
+        ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to the next asset page if no-continue selected and more assets" in {
+        val userAnswers = emptyAnswers.set(PropertyAmendContinueAssetPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
+
+        val result = PropertyAmendContinueAssetPage.nextPageWith(AmendCheckMode, userAnswers.success.value, (sessionData.success.value, 0))
+        result mustBe UnquotedSharesMiniJourney.call(AmendCheckMode)
       }
     }
   }
