@@ -29,7 +29,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyStartView
 class PropertyStartControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
   private val index = 0
 
-  private lazy val propertyStartRoute = AssetsMiniJourneysRoutes.PropertyStartController.onPageLoad().url
+  private lazy val propertyStartRoute = AssetsMiniJourneysRoutes.PropertyStartController.onPageLoad(NormalMode).url
 
   "AddProperty Controller" - {
 

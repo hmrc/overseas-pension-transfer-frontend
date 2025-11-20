@@ -52,7 +52,7 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
         val view   = application.injector.instanceOf[MoreQuotedSharesDeclarationView]
 
-        val rows = QuotedSharesAmendContinueSummary.rows(userAnswersWithAssets(assetsCount = 5))
+        val rows = QuotedSharesAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = 5))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual

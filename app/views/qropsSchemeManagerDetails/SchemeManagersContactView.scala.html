@@ -46,7 +46,10 @@
                             .withCssClass("govuk-!-margin-bottom-6")
                             .asPageHeading(size = Large)
             )
-            .withHint(HintViewModel(messages("schemeManagersContact.hint")))
+            .withHint(Hint(content = HtmlContent(
+                s"""<span aria-hidden="true">${messages("schemeManagersContact.hint")}</span>""" +
+                """<span class="govuk-visually-hidden">All numbers should include the area, dialling or country code For example, + 4 4 1 2 3 4 5 6 7 8 9 0</span>"""
+            )))
             .withWidth(OneHalf)
         )
 

@@ -21,18 +21,6 @@ import models.assets.TypeOfAsset
 import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 
-case object AssetCompletionFlags extends Gettable[Map[TypeOfAsset, Boolean]] with Settable[Map[TypeOfAsset, Boolean]] {
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ "completedAssets"
-
-  def allFlags: Seq[AssetCompletionFlag] =
-    TypeOfAsset.values.map(AssetCompletionFlag(_))
-
-  def selectedFlags(selected: Seq[TypeOfAsset]): Seq[AssetCompletionFlag] =
-    selected.map(AssetCompletionFlag(_))
-}
-
-case class AssetCompletionFlag(assetType: TypeOfAsset)
-    extends Gettable[Boolean] with Settable[Boolean] {
-
-  override def path: JsPath = AssetCompletionFlags.path \ assetType.toString
+case object AnswersSelectedAssetTypes extends Settable[Seq[TypeOfAsset]] with Gettable[Seq[TypeOfAsset]] {
+  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ "typeOfAsset"
 }

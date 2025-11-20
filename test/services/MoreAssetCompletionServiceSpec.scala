@@ -21,6 +21,7 @@ import handlers.AssetThresholdHandler
 import models.{SessionData, UserAnswers}
 import models.assets.TypeOfAsset
 import org.apache.pekko.Done
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -42,12 +43,10 @@ class MoreAssetCompletionServiceSpec
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val mockAssetThresholdHandler = mock[AssetThresholdHandler]
-  private val mockSessionRepository     = mock[SessionRepository]
-  private val mockUserAnswersService    = mock[UserAnswersService]
+  private val mockSessionRepository  = mock[SessionRepository]
+  private val mockUserAnswersService = mock[UserAnswersService]
 
   private val service = new MoreAssetCompletionService(
-    mockAssetThresholdHandler,
     mockSessionRepository,
     mockUserAnswersService
   )
@@ -57,7 +56,7 @@ class MoreAssetCompletionServiceSpec
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAssetThresholdHandler, mockUserAnswersService, mockSessionRepository)
+    reset(mockUserAnswersService, mockSessionRepository)
   }
 
   "MoreAssetCompletionService" - {
@@ -72,9 +71,6 @@ class MoreAssetCompletionServiceSpec
           val updated: SessionData =
             AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
 
-          when(mockAssetThresholdHandler.handle(any(), any(), any()))
-            .thenReturn(userAnswers)
-
           when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
             .thenReturn(Future.successful(Right(Done)))
 
@@ -84,8 +80,12 @@ class MoreAssetCompletionServiceSpec
           service.completeAsset(userAnswers, emptySessionData, assetType, completed = true, userSelection = Some(true)).map { result =>
             result mustBe updated
 
-            verify(mockAssetThresholdHandler, times(2)).handle(userAnswers, assetType, Some(true))
-            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(userAnswers)
+            val expectedOnce  = AssetThresholdHandler.handle(userAnswers, assetType, Some(true))
+            val expectedTwice = AssetThresholdHandler.handle(expectedOnce, assetType, Some(true))
+
+            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture())(any[HeaderCarrier])
+            uaCaptor.getValue mustBe expectedTwice
             verify(mockSessionRepository, times(1)).set(updated)
 
             succeed
@@ -97,9 +97,6 @@ class MoreAssetCompletionServiceSpec
           val updated: SessionData =
             AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
 
-          when(mockAssetThresholdHandler.handle(any(), any(), any()))
-            .thenReturn(userAnswers)
-
           when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
             .thenReturn(Future.successful(Right(Done)))
 
@@ -108,31 +105,31 @@ class MoreAssetCompletionServiceSpec
 
           service.completeAsset(userAnswers, emptySessionData, assetType, completed = true).map { result =>
             result mustBe updated
-            verify(mockAssetThresholdHandler, times(2)).handle(userAnswers, assetType, None)
-            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(userAnswers)
+
+            val expectedOnce  = AssetThresholdHandler.handle(userAnswers, assetType, None)
+            val expectedTwice = AssetThresholdHandler.handle(expectedOnce, assetType, None)
+
+            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture())(any[HeaderCarrier])
+            uaCaptor.getValue mustBe expectedTwice
             verify(mockSessionRepository, times(1)).set(updated)
             succeed
           }
         }
       }
 
-      "should propagate failure when enrichment (threshold handler) fails" in {
+      "should propagate failure when persistence fails" in {
         val userAnswers = userAnswersWithAssets()
         val asset       = TypeOfAsset.Property
 
-        when(mockSessionRepository.set(any()))
-          .thenReturn(Future.successful(true))
-
-        when(mockAssetThresholdHandler.handle(any(), any(), any()))
+        when(mockSessionRepository.set(any[SessionData]))
           .thenThrow(new RuntimeException("boom"))
 
         val completed = service.completeAsset(userAnswers, emptySessionData, asset, completed = true)
 
         recoverToExceptionIf[RuntimeException](completed).map { ex =>
           ex.getMessage mustBe "boom"
-          verify(mockUserAnswersService, never()).setExternalUserAnswers(any())(any[HeaderCarrier])
-          verify(mockSessionRepository, times(1)).set(any())
-          verify(mockAssetThresholdHandler, times(1)).handle(userAnswers, asset, None)
+          verify(mockSessionRepository, times(1)).set(any[SessionData])
           succeed
         }
       }

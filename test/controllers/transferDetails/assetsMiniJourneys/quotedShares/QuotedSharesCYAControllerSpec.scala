@@ -17,7 +17,6 @@
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import base.SpecBase
-import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
@@ -40,7 +39,7 @@ import scala.concurrent.Future
 class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val quotedSharesCyaRoute =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController.onPageLoad(0).url
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController.onPageLoad(NormalMode, 0).url
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]
@@ -66,11 +65,11 @@ class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Mocki
         val view                    = app.injector.instanceOf[QuotedSharesCYAView]
         implicit val msgs: Messages = messages(app)
 
-        val list = QuotedSharesSummary.rows(CheckMode, ua, 0)
+        val list = QuotedSharesSummary.rows(NormalMode, ua, 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(SummaryList(rows = list), 0)(fakeDisplayRequest(request, ua), msgs).toString
+          view(SummaryList(rows = list), NormalMode, 0)(fakeDisplayRequest(request, ua), msgs).toString
       }
     }
 
