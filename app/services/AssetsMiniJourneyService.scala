@@ -16,9 +16,9 @@
 
 package services
 
-import models.{SessionData, UserAnswers}
 import models.assets.TypeOfAsset.Cash
 import models.assets._
+import models.{SessionData, UserAnswers}
 import play.api.libs.json._
 import queries.assets._
 
@@ -99,7 +99,7 @@ object AssetsMiniJourneyService {
 
     for {
       ua1 <- clearedData
-      ua2 <- ua1.set(SelectedAssetTypes, Seq[TypeOfAsset](Cash))
+      ua2 <- ua1.set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](Cash))
     } yield ua2
   }
 
@@ -126,15 +126,65 @@ object AssetsMiniJourneyService {
 
   // ----- Shared helpers -----
 
-  def setAssetCompleted(sessionData: SessionData, assetType: TypeOfAsset, completed: Boolean): Try[SessionData] =
-    sessionData.set(AssetCompletionFlag(assetType), completed)
+  /** Synchronises the selected asset types between SessionData and UserAnswers.
+    *
+    * Behaviour:
+    *   - Preserves existing asset completion status for assets that remain selected.
+    *   - Adds any newly selected asset types to the session with isCompleted = false.
+    *   - Removes all user answers data for asset types that were previously selected but are now deselected.
+    *   - Updates the SelectedAssetTypes entry in UserAnswers to reflect the new selection.
+    *   - Updates the TypeOfAssetPage entry in SessionData to reflect the new set of assets and statuses.
+    */
+  def handleTypeOfAssetStatusUpdate(sd: SessionData, ua: UserAnswers, selectedAssets: Seq[TypeOfAsset]): Try[(SessionData, UserAnswers)] = {
+    val previous: Map[TypeOfAsset, SessionAssetTypeWithStatus] =
+      sd.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty).map(a => a.assetType -> a).toMap
 
-  def setSelectedAssetsIncomplete(sessionData: SessionData, selectedAssets: Seq[TypeOfAsset]): Try[SessionData] =
-    selectedAssets.foldLeft(Try(sessionData)) {
-      case (Success(ua), assetType) =>
-        setAssetCompleted(sessionData, assetType, completed = false)
+    val removed: Set[TypeOfAsset] = previous.keySet.diff(selectedAssets.toSet)
+
+    val updated: Seq[SessionAssetTypeWithStatus] =
+      selectedAssets.map { t =>
+        previous.getOrElse(t, SessionAssetTypeWithStatus(t))
+      }
+
+    val uaCleared: Try[UserAnswers] =
+      removed.toList.foldLeft[Try[UserAnswers]](Success(ua)) { (acc, t) =>
+        acc.flatMap(u => clearAssetData(u, t))
+      }
+
+    for {
+      sd <- sd.set(SelectedAssetTypesWithStatus, updated)
+      ua <- uaCleared.flatMap(_.set(AnswersSelectedAssetTypes, selectedAssets))
+    } yield (sd, ua)
+  }
+
+  private def clearAssetData(ua: UserAnswers, t: TypeOfAsset): Try[UserAnswers] =
+    AssetsMiniJourneyRegistry.forType(t) match {
+      case Some(s: SingleAssetsMiniJourney[_])    => ua.remove(s.query)
+      case Some(r: RepeatingAssetsMiniJourney[_]) => ua.remove(r.query)
+      case Some(_: AssetsMiniJourneyBase)         => Success(ua)
+      case None                                   => Success(ua)
     }
 
+  def setAssetCompleted(sessionData: SessionData, assetType: TypeOfAsset, completed: Boolean): Try[SessionData] = {
+    val selectedAssetsWithStatuses = sessionData.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty)
+    val updated                    = {
+      if (completed) {
+        SelectedAssetTypesWithStatus.markAsCompleted(selectedAssetsWithStatuses, assetType)
+      } else {
+        SelectedAssetTypesWithStatus.markAsIncomplete(selectedAssetsWithStatuses, assetType)
+      }
+    }
+    sessionData.set(SelectedAssetTypesWithStatus, updated)
+  }
+
   def clearAllAssetCompletionFlags(sessionData: SessionData): Try[SessionData] =
-    sessionData.remove(AssetCompletionFlags)
+    sessionData.get(SelectedAssetTypesWithStatus) match {
+      case None           =>
+        Success(sessionData)
+      case Some(Nil)      =>
+        sessionData.remove(SelectedAssetTypesWithStatus)
+      case Some(existing) =>
+        val updated = SelectedAssetTypesWithStatus.markAllIncomplete(existing)
+        sessionData.set(SelectedAssetTypesWithStatus, updated)
+    }
 }

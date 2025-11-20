@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,7 +35,8 @@ class TransferSubmittedController @Inject() (
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: TransferSubmittedView,
-    sessionRepository: SessionRepository
+    sessionRepository: SessionRepository,
+    appConfig: FrontendAppConfig
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
@@ -44,7 +46,10 @@ class TransferSubmittedController @Inject() (
         case Some(sessionData) =>
           val summaryList = TransferSubmittedSummary.rows(memberFullName(sessionData), dateTransferSubmitted(sessionData))
 
-          Ok(view(qtNumber(sessionData).value, summaryList))
+          val srn     = sessionData.schemeInformation.srnNumber.value
+          val mpsLink = s"${appConfig.mpsBaseUrl}$srn"
+
+          Ok(view(qtNumber(sessionData).value, summaryList, mpsLink))
         case None              =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }

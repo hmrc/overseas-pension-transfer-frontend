@@ -18,22 +18,48 @@ package pages.transferDetails.assetsMiniJourneys.quotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
 class QuotedSharesStartPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+  private val index = 0
 
   ".nextPage" - {
-
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
-
       "must go to the Next page" in {
         QuotedSharesStartPage.nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(
-          mode  = NormalMode,
-          index = 0
+          NormalMode,
+          index
+        )
+      }
+    }
+
+    "in CheckMode" - {
+      "must go to the Next page" in {
+        QuotedSharesStartPage.nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(
+          CheckMode,
+          index
+        )
+      }
+    }
+
+    "in FinalCheckMode" - {
+      "must go to the Next page" in {
+        QuotedSharesStartPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(
+          FinalCheckMode,
+          index
+        )
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to the Next page" in {
+        QuotedSharesStartPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(
+          AmendCheckMode,
+          index
         )
       }
     }

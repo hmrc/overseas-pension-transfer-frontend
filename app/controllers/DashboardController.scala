@@ -29,9 +29,6 @@ import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, SessionRepository}
 import services.{LockService, TransferService, UserAnswersService}
-import uk.gov.hmrc.http.HeaderCarrier
-import services.TransferService
-import uk.gov.hmrc.mongo.lock.LockRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.PaginatedAllTransfersViewModel
 import views.html.DashboardView
@@ -169,13 +166,17 @@ class DashboardController @Inject() (
             lockWarning = lockWarning
           )
 
+          val srn     = pensionSchemeDetails.srnNumber.value
+          val mpsLink = s"${appConfig.mpsBaseUrl}$srn"
+
           repo.set(updatedData).map { _ =>
             Ok(
               view(
                 schemeName    = pensionSchemeDetails.schemeName,
                 nextPage      = DashboardPage.nextPage(updatedData, None, None).url,
                 vm            = viewModel,
-                expiringItems = expiringItems
+                expiringItems = expiringItems,
+                mpsLink       = mpsLink
               )
             )
           }

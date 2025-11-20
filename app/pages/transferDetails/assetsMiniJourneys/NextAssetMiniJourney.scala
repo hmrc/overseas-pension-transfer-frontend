@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package queries.assets
+package pages.transferDetails.assetsMiniJourneys
 
-import models.TaskCategory
-import models.assets.TypeOfAsset
-import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
+import models.{Mode, SessionData}
+import models.assets.AssetsMiniJourneyRegistry
+import play.api.mvc.Call
 
-case object SelectedAssetTypes extends Settable[Seq[TypeOfAsset]] with Gettable[Seq[TypeOfAsset]] {
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ "typeOfAsset"
+trait NextAssetMiniJourney {
+
+  protected def getNextAsset(sessionData: SessionData, mode: Mode, modeCall: Call): Call = {
+    val nextAsset = AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call(mode))
+    nextAsset match {
+      case Some(route) => route
+      case None        => modeCall
+    }
+  }
 }

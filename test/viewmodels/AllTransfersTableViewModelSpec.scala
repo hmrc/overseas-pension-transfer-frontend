@@ -124,7 +124,7 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
       memberHtml must include(">-</a>")
       memberHtml must include("currentPage=2")
       htmlOf(row(1)) mustBe "dashboard.allTransfers.status.inProgress"
-      htmlOf(row(2)) mustBe "-"
+      htmlOf(row(2)) mustBe "dashboard.allTransfers.reference.inProgressText"
 
       val updatedHtml = htmlOf(row(3))
       extractDate(updatedHtml) mustBe "5 January 2025"
