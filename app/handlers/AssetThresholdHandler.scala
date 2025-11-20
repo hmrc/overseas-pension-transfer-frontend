@@ -20,7 +20,7 @@ import models.{RichJsObject, SessionData, UserAnswers}
 import models.assets.TypeOfAsset
 import play.api.libs.json._
 
-class AssetThresholdHandler {
+object AssetThresholdHandler {
 
   private val AssetThresholdLimit: Int = 5
 

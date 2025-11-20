@@ -18,9 +18,11 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.{CheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.assets.{PropertyMiniJourney, UnquotedSharesMiniJourney}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
@@ -28,19 +30,91 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
-    "in Normal Mode" - {
-
-      "must go to TransferDetailsCYAController" in {
-        MorePropertyDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual
+    "in NormalMode" - {
+      "must go to cya if no more assets" in {
+        MorePropertyDeclarationPage.nextPageWith(NormalMode, emptyAnswers, sessionDataMemberName) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if more assets" in {
+        val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
+
+        val result = MorePropertyDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
+        result mustBe UnquotedSharesMiniJourney.call(NormalMode)
       }
     }
 
-    "in Check Mode" - {
-
-      "must go to TransferDetailsCYAController" in {
-        MorePropertyDeclarationPage.nextPage(CheckMode, emptyAnswers) mustEqual
+    "in CheckMode" - {
+      "must go to cya if no more assets" in {
+        MorePropertyDeclarationPage.nextPageWith(CheckMode, emptyAnswers, sessionDataMemberName) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
+      }
+
+      "must go to the next asset page if more assets" in {
+        val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
+
+        val result = MorePropertyDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
+        result mustBe UnquotedSharesMiniJourney.call(CheckMode)
+      }
+    }
+
+    "in FinalCheckMode" - {
+      "must go to cya if no more assets" in {
+        MorePropertyDeclarationPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      }
+
+      "must go to the next asset page if no-continue selected and more assets" in {
+        val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
+
+        val result = MorePropertyDeclarationPage.nextPageWith(FinalCheckMode, userAnswers.success.value, sessionData.success.value)
+        result mustBe UnquotedSharesMiniJourney.call(FinalCheckMode)
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to cya if no more assets" in {
+        MorePropertyDeclarationPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "must go to the next asset page if more assets" in {
+        val userAnswers = emptyAnswers.set(MorePropertyDeclarationPage, false)
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(PropertyMiniJourney.assetType, isCompleted = true),
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType)
+            )
+          )
+
+        val result = MorePropertyDeclarationPage.nextPageWith(AmendCheckMode, userAnswers.success.value, sessionData.success.value)
+        result mustBe UnquotedSharesMiniJourney.call(AmendCheckMode)
       }
     }
   }

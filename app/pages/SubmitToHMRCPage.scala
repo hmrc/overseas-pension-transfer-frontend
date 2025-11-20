@@ -30,7 +30,7 @@ case object SubmitToHMRCPage
   override def path: JsPath     = JsPath \ toString
   override def toString: String = "submitToHMRC"
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call = {
+  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call = {
     answers.get(SubmitToHMRCPage) match {
       case Some(true)  =>
         authenticatedUser.userType match {

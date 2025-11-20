@@ -30,4 +30,7 @@ case object TransferDetailsSummaryPage extends QuestionPage[PersonName] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.TaskListController.onPageLoad()
+
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    routes.TaskListController.onPageLoad()
 }

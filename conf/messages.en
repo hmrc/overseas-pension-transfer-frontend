@@ -54,6 +54,7 @@ dashboard.allTransfers.head.updated = Last updated
 dashboard.allTransfers.status.submitted = Submitted to HMRC
 dashboard.allTransfers.status.inProgress = In progress
 dashboard.allTransfers.status.amendInProgress = Amendment in progress
+dashboard.allTransfers.reference.inProgressText = Available after submission
 dashboard.allTransfers.empty = This scheme does not currently have any overseas pension transfer reports.
 dashboard.banner.title = Important
 dashboard.banner.inProgress.text = The transfer for {0} will be deleted on {1} if you do not work on it.

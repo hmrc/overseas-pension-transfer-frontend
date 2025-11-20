@@ -40,7 +40,7 @@ import scala.concurrent.Future
 class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val propertyCyaRoute =
-    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController.onPageLoad(0).url
+    controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController.onPageLoad(NormalMode, 0).url
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]
@@ -66,11 +66,11 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
         val view                    = app.injector.instanceOf[PropertyCYAView]
         implicit val msgs: Messages = messages(app)
 
-        val list = PropertySummary.rows(CheckMode, ua, 0)
+        val list = PropertySummary.rows(NormalMode, ua, 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(SummaryList(rows = list), 0)(fakeDisplayRequest(request, ua), msgs).toString
+          view(SummaryList(rows = list), NormalMode, 0)(fakeDisplayRequest(request, ua), msgs).toString
       }
     }
 
