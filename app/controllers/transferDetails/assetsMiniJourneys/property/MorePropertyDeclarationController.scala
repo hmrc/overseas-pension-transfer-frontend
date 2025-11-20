@@ -23,6 +23,7 @@ import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, User
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -31,6 +32,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.MorePropertyDeclar
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class MorePropertyDeclarationController @Inject() (
     override val messagesApi: MessagesApi,
@@ -86,8 +88,19 @@ class MorePropertyDeclarationController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, assets, mode)))
         },
         continue => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              for {
+                addCashAmount                      <- request.userAnswers.set(MorePropertyDeclarationPage, continue)
+                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+              } yield removeTypeOfAssetsRecordVersion
+            } else {
+              request.userAnswers.set(MorePropertyDeclarationPage, continue)
+            }
+
           for {
-            userAnswers            <- Future.fromTry(request.userAnswers.set(MorePropertyDeclarationPage, continue))
+            userAnswers            <- Future.fromTry(setAnswers())
             _                      <- userAnswersService.setExternalUserAnswers(userAnswers)
             sessionAfterCompletion <-
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.Property, completed = true, Some(continue))

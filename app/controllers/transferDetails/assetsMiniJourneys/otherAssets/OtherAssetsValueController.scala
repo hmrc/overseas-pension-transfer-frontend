@@ -18,16 +18,20 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueFormProvider
-import models.Mode
+import models.assets.TypeOfAsset.Other
+import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
+import queries.assets.AssetsRecordVersionQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class OtherAssetsValueController @Inject() (
     override val messagesApi: MessagesApi,
@@ -58,11 +62,24 @@ class OtherAssetsValueController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value =>
+        value => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              for {
+                addCashAmount                      <- request.userAnswers.set(OtherAssetsValuePage(index), value)
+                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, Other))
+              } yield removeAssetRecordVersion
+            } else {
+              request.userAnswers.set(OtherAssetsValuePage(index), value)
+            }
+
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(OtherAssetsValuePage(index), value))
+            updatedAnswers <- Future.fromTry(setAnswers())
             _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield Redirect(OtherAssetsValuePage(index).nextPage(mode, updatedAnswers))
+        }
       )
   }
 }

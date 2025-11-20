@@ -18,16 +18,20 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberFormProvider
-import models.Mode
+import models.assets.TypeOfAsset.UnquotedShares
+import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
+import queries.assets.AssetsRecordVersionQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class UnquotedSharesNumberController @Inject() (
     override val messagesApi: MessagesApi,
@@ -58,11 +62,24 @@ class UnquotedSharesNumberController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value =>
+        value => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              for {
+                addCashAmount                      <- request.userAnswers.set(UnquotedSharesNumberPage(index), value)
+                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, UnquotedShares))
+              } yield removeAssetRecordVersion
+            } else {
+              request.userAnswers.set(UnquotedSharesNumberPage(index), value)
+            }
+
           for {
-            updatedSession <- Future.fromTry(request.userAnswers.set(UnquotedSharesNumberPage(index), value))
+            updatedSession <- Future.fromTry(setAnswers())
             _              <- userAnswersService.setExternalUserAnswers(updatedSession)
           } yield Redirect(UnquotedSharesNumberPage(index).nextPage(mode, updatedSession))
+        }
       )
   }
 }

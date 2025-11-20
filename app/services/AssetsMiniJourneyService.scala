@@ -18,8 +18,10 @@ package services
 
 import models.assets.TypeOfAsset.Cash
 import models.assets._
-import models.{SessionData, UserAnswers}
+import models.{AmendCheckMode, Mode, SessionData, UserAnswers}
+import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json._
+import queries.TransferDetailsRecordVersionQuery
 import queries.assets._
 
 import scala.util.{Failure, Success, Try}
@@ -135,7 +137,7 @@ object AssetsMiniJourneyService {
     *   - Updates the SelectedAssetTypes entry in UserAnswers to reflect the new selection.
     *   - Updates the TypeOfAssetPage entry in SessionData to reflect the new set of assets and statuses.
     */
-  def handleTypeOfAssetStatusUpdate(sd: SessionData, ua: UserAnswers, selectedAssets: Seq[TypeOfAsset]): Try[(SessionData, UserAnswers)] = {
+  def handleTypeOfAssetStatusUpdate(sd: SessionData, ua: UserAnswers, selectedAssets: Seq[TypeOfAsset], mode: Mode): Try[(SessionData, UserAnswers)] = {
     val previous: Map[TypeOfAsset, SessionAssetTypeWithStatus] =
       sd.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty).map(a => a.assetType -> a).toMap
 
@@ -151,10 +153,21 @@ object AssetsMiniJourneyService {
         acc.flatMap(u => clearAssetData(u, t))
       }
 
+    def setAnswers(userAnswers: UserAnswers): Try[UserAnswers] =
+      if (mode == AmendCheckMode) {
+        userAnswers.set(TypeOfAssetPage, selectedAssets) flatMap {
+          answers =>
+            answers.remove(TransferDetailsRecordVersionQuery)
+        }
+      } else {
+        userAnswers.set(TypeOfAssetPage, selectedAssets)
+      }
+
     for {
-      sd <- sd.set(SelectedAssetTypesWithStatus, updated)
-      ua <- uaCleared.flatMap(_.set(AnswersSelectedAssetTypes, selectedAssets))
-    } yield (sd, ua)
+      sd  <- sd.set(SelectedAssetTypesWithStatus, updated)
+      ua  <- uaCleared
+      ua1 <- setAnswers(ua)
+    } yield (sd, ua1)
   }
 
   private def clearAssetData(ua: UserAnswers, t: TypeOfAsset): Try[UserAnswers] =

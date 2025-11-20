@@ -19,6 +19,7 @@ package controllers.actions
 import controllers.routes
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import play.api.Logging
+import play.api.libs.json.Json
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
@@ -43,6 +44,8 @@ class DataRetrievalActionImpl @Inject() (
       case Some(value) =>
         userAnswersService.getExternalUserAnswers(value) map {
           case Right(answers) =>
+            println("\n----\n" + Json.prettyPrint(answers.data) + "\n----\n")
+
             Right(DisplayRequest(
               request.request,
               request.authenticatedUser,

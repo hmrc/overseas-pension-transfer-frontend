@@ -19,18 +19,20 @@ package controllers.transferDetails
 import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.IsTransferTaxableFormProvider
-import models.Mode
+import models.{AmendCheckMode, Mode, UserAnswers}
 import models.TaskCategory.TransferDetails
 import org.apache.pekko.Done
-import pages.transferDetails.IsTransferTaxablePage
+import pages.transferDetails.{AmountOfTransferPage, IsTransferTaxablePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TransferDetailsRecordVersionQuery
 import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.IsTransferTaxableView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class IsTransferTaxableController @Inject() (
     override val messagesApi: MessagesApi,
@@ -61,9 +63,19 @@ class IsTransferTaxableController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
+        value => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              request.userAnswers.set(IsTransferTaxablePage, value) flatMap {
+                answers =>
+                  answers.remove(TransferDetailsRecordVersionQuery)
+              }
+            } else {
+              request.userAnswers.set(IsTransferTaxablePage, value)
+            }
+
           for {
-            ua1           <- Future.fromTry(request.userAnswers.set(IsTransferTaxablePage, value))
+            ua1           <- Future.fromTry(setAnswers())
             ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
           } yield {
@@ -72,6 +84,7 @@ class IsTransferTaxableController @Inject() (
               case Left(err)   => onFailureRedirect(err)
             }
           }
+        }
       )
   }
 }

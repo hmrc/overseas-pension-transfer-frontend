@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyDescriptionFormProvider
-import models.NormalMode
+import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -97,6 +97,31 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual PropertyDescriptionPage(index).nextPage(NormalMode, emptyUserAnswers).url
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(AmendCheckMode, index).url)
+            .withFormUrlEncodedBody(("value", "answer"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual PropertyDescriptionPage(index).nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
 
