@@ -44,8 +44,6 @@ class DataRetrievalActionImpl @Inject() (
       case Some(value) =>
         userAnswersService.getExternalUserAnswers(value) map {
           case Right(answers) =>
-            println("\n----\n" + Json.prettyPrint(answers.data) + "\n----\n")
-
             Right(DisplayRequest(
               request.request,
               request.authenticatedUser,
