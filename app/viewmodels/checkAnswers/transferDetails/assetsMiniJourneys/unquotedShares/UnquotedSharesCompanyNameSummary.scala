@@ -31,7 +31,7 @@ object UnquotedSharesCompanyNameSummary {
       answer =>
         SummaryListRowViewModel(
           key     = "unquotedSharesCompanyName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(answer),
           actions = Seq(
             ActionItemViewModel("site.change", UnquotedSharesCompanyNamePage(index).changeLink(mode).url)
               .withVisuallyHiddenText(messages("unquotedSharesCompanyName.change.hidden"))

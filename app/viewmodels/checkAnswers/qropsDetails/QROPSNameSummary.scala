@@ -40,7 +40,7 @@ object QROPSNameSummary {
 
       SummaryListRowViewModel(
         key     = "qropsName.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+        value   = ValueViewModel(answer),
         actions = actions
       )
     }

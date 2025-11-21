@@ -34,4 +34,9 @@ object ViewUtils {
     if (form.hasErrors || form.hasGlobalErrors) messages("error.title.prefix") else ""
   }
 
+  def titleWithPagination(title: String, maybePageSuffix: Option[String], section: Option[String] = None)(implicit messages: Messages): String = {
+    val base = s"${messages(title)} - ${section.fold("")(messages(_) + " - ")}${messages("site.govuk")}"
+    maybePageSuffix.map(suffix => s"$base - $suffix").getOrElse(base)
+  }
+
 }

@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewmodels.PaginatedAllTransfersViewModel
-@import views.ViewUtils.titleNoForm
+@import views.ViewUtils.{titleNoForm, titleWithPagination}
 @import models.{AllTransfersItem, QtStatus}
 
 @this(
@@ -49,8 +49,16 @@ item.qtStatus match {
   }
 }
 
+@pageSuffix: Option[String] = @{
+    if (vm.totalPages > 1) {
+      Some(messages("dashboard.allTransfers.page", vm.currentPage.toString, vm.totalPages.toString))
+    } else {
+      None
+    }
+}
+
 @layout(
-  pageTitle       = titleNoForm(messages("dashboard.title")),
+  pageTitle       = titleWithPagination(messages("dashboard.title"), pageSuffix),
   showBackLink    = false,
   showPageFooter  = false,
   showBreadcrumbs = true,
@@ -102,7 +110,7 @@ item.qtStatus match {
     </div>
   }
 
-    <span class="govuk-caption-l">@schemeName</span>
+    <h2 class="govuk-caption-l">@schemeName</h2>
     <h1 class="govuk-heading-l">@messages("dashboard.heading")</h1>
 
     <p class="govuk-body">
