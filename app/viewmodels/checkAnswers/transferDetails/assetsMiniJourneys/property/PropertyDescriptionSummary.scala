@@ -31,7 +31,7 @@ object PropertyDescriptionSummary {
       answer =>
         SummaryListRowViewModel(
           key     = "propertyDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(answer),
           actions = Seq(
             ActionItemViewModel("site.change", PropertyDescriptionPage(index).changeLink(mode).url)
               .withVisuallyHiddenText(messages("propertyDescription.change.hidden"))

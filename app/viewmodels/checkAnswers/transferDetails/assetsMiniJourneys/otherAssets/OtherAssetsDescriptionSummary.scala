@@ -31,7 +31,7 @@ object OtherAssetsDescriptionSummary {
       answer =>
         SummaryListRowViewModel(
           key     = "assetValueDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(answer),
           actions = Seq(
             ActionItemViewModel("site.change", OtherAssetsDescriptionPage(index).changeLink(mode).url)
               .withVisuallyHiddenText(messages("assetValueDescription.change.hidden"))
