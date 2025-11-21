@@ -19,13 +19,14 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import base.AddressBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
-import models.assets.{PropertyEntry, PropertyMiniJourney}
-import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import models.assets.{PropertyEntry, PropertyMiniJourney, UnquotedSharesMiniJourney}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -203,6 +204,35 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val userAnswers = uaWithProperties(2)
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(AmendCheckMode).url)
+            .withFormUrlEncodedBody(("add-another", "Yes"))
+
+        val result = route(application, request).value
+
+        val ua2       = userAnswers.set(PropertyAmendContinueAssetPage, value = true).success.value
+        val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual PropertyAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
       }
     }
 
