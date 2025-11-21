@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.cash
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.CashAmountInTransferFormProvider
-import models.NormalMode
+import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -100,6 +100,31 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual CashAmountInTransferPage.nextPageWith(NormalMode, emptyUserAnswers, emptySessionData).url
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(AmendCheckMode).url)
+            .withFormUrlEncodedBody(("cashInTransfer", validAnswer.toString))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual CashAmountInTransferPage.nextPageWith(AmendCheckMode, emptyUserAnswers, emptySessionData).url
       }
     }
 

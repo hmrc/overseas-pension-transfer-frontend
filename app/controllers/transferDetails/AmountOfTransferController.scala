@@ -19,17 +19,19 @@ package controllers.transferDetails
 import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.AmountOfTransferFormProvider
-import models.Mode
+import models.{AmendCheckMode, Mode, UserAnswers}
 import org.apache.pekko.Done
 import pages.transferDetails.AmountOfTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TransferDetailsRecordVersionQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.AmountOfTransferView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class AmountOfTransferController @Inject() (
     override val messagesApi: MessagesApi,
@@ -60,9 +62,19 @@ class AmountOfTransferController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
+        value => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              request.userAnswers.set(AmountOfTransferPage, value) flatMap {
+                answers =>
+                  answers.remove(TransferDetailsRecordVersionQuery)
+              }
+            } else {
+              request.userAnswers.set(AmountOfTransferPage, value)
+            }
+
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmountOfTransferPage, value))
+            updatedAnswers <- Future.fromTry(setAnswers())
             savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield {
             savedForLater match {
@@ -70,6 +82,7 @@ class AmountOfTransferController @Inject() (
               case Left(err)   => onFailureRedirect(err)
             }
           }
+        }
       )
   }
 }

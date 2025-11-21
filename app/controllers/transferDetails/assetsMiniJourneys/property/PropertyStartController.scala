@@ -17,7 +17,7 @@
 package controllers.transferDetails.assetsMiniJourneys.property
 
 import controllers.actions._
-import models.NormalMode
+import models.{Mode, NormalMode}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyStartPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,8 +36,8 @@ class PropertyStartController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      Ok(view(PropertyStartPage.nextPage(mode = NormalMode, request.userAnswers).url))
+      Ok(view(PropertyStartPage.nextPage(mode, request.userAnswers).url))
   }
 }

@@ -16,11 +16,12 @@
 
 package queries.assets
 
-import models.TaskCategory
+import models.TaskCategory.TransferDetails
 import models.assets.TypeOfAsset
 import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 
-case object SelectedAssetTypes extends Settable[Seq[TypeOfAsset]] with Gettable[Seq[TypeOfAsset]] {
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ "typeOfAsset"
+case class AssetsRecordVersionQuery(index: Int, asset: TypeOfAsset) extends Gettable[String] with Settable[String] {
+
+  override def path: JsPath = JsPath \ TransferDetails.toString \ asset.entryName \ index \ "recordVersion"
 }

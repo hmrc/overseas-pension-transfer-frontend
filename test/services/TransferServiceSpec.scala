@@ -18,15 +18,15 @@ package services
 
 import base.SpecBase
 import connectors.TransferConnector
-import models.{AllTransfersItem, DashboardData, PstrNumber}
 import models.dtos.GetAllTransfersDTO
 import models.responses.{AllTransfersUnexpectedError, NoTransfersFound, TransferError}
+import models.{AllTransfersItem, DashboardData, PstrNumber}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import queries.dashboard.{TransfersDataUpdatedAtQuery, TransfersOverviewQuery, TransfersSyncedAtQuery}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -102,6 +102,35 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       updated.get(TransfersOverviewQuery) mustBe Some(dtoTransfers)
       updated.get(TransfersSyncedAtQuery).isDefined mustBe true
       updated.get(TransfersDataUpdatedAtQuery) mustBe Some(dtoLastUpdated)
+    }
+
+    "must remove transfers with missing first name or surname" in {
+
+      val mockConnector = mock[TransferConnector]
+      val service       = new TransferService(mockConnector)
+
+      val pstr = PstrNumber("12345678AB")
+
+      val rawTransfers: Seq[AllTransfersItem] = Seq(
+        AllTransfersItem(userAnswersTransferNumber, None, None, None, Some("Ada"), Some("Lovelace"), None, None, None, None),
+        AllTransfersItem(userAnswersTransferNumber, None, None, None, Some(""), Some("Valid"), None, None, None, None), // invalid
+        AllTransfersItem(userAnswersTransferNumber, None, None, None, Some("Grace"), None, None, None, None, None) // invalid
+      )
+
+      val dtoLastUpdated = Instant.parse("2025-10-01T09:00:00Z")
+      val dto            = GetAllTransfersDTO(pstr, dtoLastUpdated, rawTransfers)
+
+      when(mockConnector.getAllTransfers(meq(pstr))(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(Right(dto)))
+
+      val startDd = DashboardData(id = "id")
+
+      val result = await(service.getAllTransfersData(startDd, pstr))
+
+      result.isRight mustBe true
+      val updated = result.toOption.get
+
+      updated.get(TransfersOverviewQuery) mustBe Some(Seq(rawTransfers.head))
     }
 
     "must pass through connector errors unchanged" in {

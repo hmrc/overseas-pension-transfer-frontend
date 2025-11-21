@@ -18,11 +18,14 @@ package controllers.transferDetails.assetsMiniJourneys.property
 
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormProvider}
-import models.Mode
+import models.assets.TypeOfAsset.Property
+import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.assets.AssetsRecordVersionQuery
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
@@ -30,6 +33,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressVie
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class PropertyAddressController @Inject() (
     override val messagesApi: MessagesApi,
@@ -71,8 +75,20 @@ class PropertyAddressController @Inject() (
                 Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
               )
             case Some(addressToSave) =>
+              def setAnswers(): Try[UserAnswers] =
+                if (mode == AmendCheckMode) {
+                  for {
+                    addCashAmount                      <- request.userAnswers.set(PropertyAddressPage(index), addressToSave)
+                    removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                    removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                    removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, Property))
+                  } yield removeAssetRecordVersion
+                } else {
+                  request.userAnswers.set(PropertyAddressPage(index), addressToSave)
+                }
+
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyAddressPage(index), addressToSave))
+                updatedAnswers <- Future.fromTry(setAnswers())
                 _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
           }

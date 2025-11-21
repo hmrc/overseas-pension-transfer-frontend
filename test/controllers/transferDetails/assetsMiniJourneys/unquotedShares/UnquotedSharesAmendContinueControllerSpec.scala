@@ -20,12 +20,12 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueFormProvider
 import models.assets.{UnquotedSharesEntry, UnquotedSharesMiniJourney}
-import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinuePage
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -76,7 +76,7 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must return OK and the form filled for a GET in NormalMode when answer exists" in {
-      val userAnswers = emptyUserAnswers.set(UnquotedSharesAmendContinuePage, value = true).success.value
+      val userAnswers = emptyUserAnswers.set(UnquotedSharesAmendContinueAssetPage, value = true).success.value
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
@@ -140,12 +140,41 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(UnquotedSharesAmendContinuePage, value = true).success.value
+        val ua2       = userAnswers.set(UnquotedSharesAmendContinueAssetPage, value = true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
-        val expected  = UnquotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
+        val expected  = UnquotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val userAnswers = uaWithUnquotedShares(2)
+      val application =
+        applicationBuilder(userAnswers)
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(AmendCheckMode).url)
+            .withFormUrlEncodedBody(("add-another", "Yes"))
+
+        val result = route(application, request).value
+
+        val ua2       = userAnswers.set(UnquotedSharesAmendContinueAssetPage, value = true).success.value
+        val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual UnquotedSharesAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
       }
     }
 
@@ -166,9 +195,9 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(UnquotedSharesAmendContinuePage, value = false).success.value
+        val ua2       = userAnswers.set(UnquotedSharesAmendContinueAssetPage, value = false).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
-        val expected  = UnquotedSharesAmendContinuePage.nextPageWith(NormalMode, ua2, emptySessionData, nextIndex).url
+        val expected  = UnquotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -192,9 +221,9 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
         val result = route(application, request).value
 
-        val ua2       = userAnswers.set(UnquotedSharesAmendContinuePage, value = true).success.value
+        val ua2       = userAnswers.set(UnquotedSharesAmendContinueAssetPage, value = true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
-        val expected  = UnquotedSharesAmendContinuePage.nextPageWith(CheckMode, ua2, emptySessionData, nextIndex).url
+        val expected  = UnquotedSharesAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected

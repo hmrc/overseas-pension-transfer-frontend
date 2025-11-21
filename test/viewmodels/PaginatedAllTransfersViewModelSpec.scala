@@ -93,6 +93,8 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       vm.pagination mustBe None
       vm.table.rows.size mustBe items.size
       vm.lockWarning mustBe None
+      vm.currentPage mustBe 1
+      vm.totalPages mustBe 1
     }
 
     "must return pagination with correct items, current page marking, and prev/next links" in {
@@ -123,6 +125,8 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       p.next.isDefined mustBe true
       p.next.get.href mustBe "/dash?page=3"
       p.next.get.labelText mustBe Some("site.next")
+      vm.currentPage mustBe 2
+      vm.totalPages mustBe 3
     }
 
     "must sort items by latest before paginating (newest first on page 1)" in {

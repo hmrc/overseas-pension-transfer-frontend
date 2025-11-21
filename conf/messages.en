@@ -43,6 +43,7 @@ footer.link.text.dashboard = Return to Report a transfer to a QROPS dashboard
 footer.link.text.tasklist = Return to task list
 
 dashboard.title = Report a transfer to a qualifying recognised overseas pension scheme
+dashboard.allTransfers.page = All transfers (page {0} of {1})
 dashboard.heading = Report a transfer to a qualifying recognised overseas pension scheme
 dashboard.linkText = Start a new transfer
 dashboard.allTransfers.heading = All transfers
@@ -53,6 +54,7 @@ dashboard.allTransfers.head.updated = Last updated
 dashboard.allTransfers.status.submitted = Submitted to HMRC
 dashboard.allTransfers.status.inProgress = In progress
 dashboard.allTransfers.status.amendInProgress = Amendment in progress
+dashboard.allTransfers.reference.inProgressText = Available after submission
 dashboard.allTransfers.empty = This scheme does not currently have any overseas pension transfer reports.
 dashboard.banner.title = Important
 dashboard.banner.inProgress.text = The transfer for {0} will be deleted on {1} if you do not work on it.
@@ -724,6 +726,7 @@ pspDeclaration.error.required = Enter the authorising scheme administrator''s ID
 pspDeclaration.error.pattern = Enter the authorising scheme administrator''s ID in the correct format, like A1234567
 pspDeclaration.change.hidden = Psp Declaration
 pspDeclaration.error.notAssociated = The authorising scheme administrator''s ID does not match any IDs we hold for your scheme
+pspDeclaration.error.notAuthorisingPsaId = The scheme administrator''s ID does not match the authorising ID for your practitioner account
 
 psaDeclaration.title = Declaration
 psaDeclaration.heading = Declaration

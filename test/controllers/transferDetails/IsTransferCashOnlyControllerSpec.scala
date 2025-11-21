@@ -18,7 +18,7 @@ package controllers.transferDetails
 
 import base.SpecBase
 import forms.transferDetails.IsTransferCashOnlyFormProvider
-import models.NormalMode
+import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -104,6 +104,31 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual IsTransferCashOnlyPage.nextPage(NormalMode, ua).url
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.IsTransferCashOnlyController.onPageLoad(AmendCheckMode).url)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual IsTransferCashOnlyPage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
 

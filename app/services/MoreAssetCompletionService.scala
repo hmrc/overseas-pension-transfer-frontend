@@ -27,7 +27,6 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MoreAssetCompletionService @Inject() (
-    assetThresholdHandler: AssetThresholdHandler,
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
@@ -52,10 +51,10 @@ class MoreAssetCompletionService @Inject() (
       _              <- sessionRepository.set(updatedSession)
 
       // Step 3: enrich with threshold flags
-      enrichedAnswers = assetThresholdHandler.handle(userAnswers, assetType, userSelection)
+      enrichedAnswers = AssetThresholdHandler.handle(userAnswers, assetType, userSelection)
 
       // Step 4: persist model SaveForLater + enriched full copy Session
-      _ <- userAnswersService.setExternalUserAnswers(assetThresholdHandler.handle(userAnswers, assetType, userSelection))
+      _ <- userAnswersService.setExternalUserAnswers(AssetThresholdHandler.handle(enrichedAnswers, assetType, userSelection))
 
     } yield updatedSession
   }

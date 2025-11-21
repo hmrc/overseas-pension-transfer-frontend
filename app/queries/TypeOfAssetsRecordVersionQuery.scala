@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package navigators
+package queries
 
-import models.{SessionData, UserAnswers}
-import models.assets.AssetsMiniJourneyRegistry
-import play.api.mvc.Call
+import models.TaskCategory.TransferDetails
+import play.api.libs.json.JsPath
 
-object TypeOfAssetNavigator {
+object TypeOfAssetsRecordVersionQuery extends Gettable[String] with Settable[String] {
 
-  def getNextAssetRoute(sessionData: SessionData): Option[Call] = {
-    AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call)
-  }
+  override def path: JsPath = JsPath \ TransferDetails.toString \ "typeOfAssetsVersion" \ "recordVersion"
+
 }

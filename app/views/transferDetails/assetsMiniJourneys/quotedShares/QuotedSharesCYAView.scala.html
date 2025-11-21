@@ -35,7 +35,7 @@
 )
 
 
-@(list: SummaryList, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
+@(list: SummaryList, mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showPageFooter = true) {
 
@@ -44,7 +44,7 @@
 
     @govukSummaryList(list)
 
-    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesCYAController.onSubmit(index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AssetsMiniJourneysRoutes.QuotedSharesCYAController.onSubmit(mode, index), Symbol("autoComplete") -> "off") {
         @govukButton(
             ButtonViewModel(Text(messages("site.continue")))
         )

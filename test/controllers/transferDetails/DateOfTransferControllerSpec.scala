@@ -19,7 +19,7 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.DateOfTransferFormProvider
-import models.NormalMode
+import models.{AmendCheckMode, NormalMode}
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -29,6 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.Messages
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -113,6 +114,37 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(NormalMode, emptyUserAnswers).url
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful(Right(emptyUserAnswers.set(DateOfTransferPage, validAnswer).success.value)))
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
+        .overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.DateOfTransferController.onSubmit(AmendCheckMode).url)
+            .withFormUrlEncodedBody(
+              "value.day"   -> validAnswer.minusDays(1).getDayOfMonth.toString,
+              "value.month" -> validAnswer.minusDays(1).getMonthValue.toString,
+              "value.year"  -> validAnswer.minusDays(1).getYear.toString
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
 

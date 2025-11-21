@@ -19,11 +19,11 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationFormProvider
 import models.assets.TypeOfAsset
-import models.{CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
-import navigators.TypeOfAssetNavigator
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -32,6 +32,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedShar
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class MoreQuotedSharesDeclarationController @Inject() (
     override val messagesApi: MessagesApi,
@@ -57,12 +58,12 @@ class MoreQuotedSharesDeclarationController @Inject() (
       }
 
       def renderView(answers: UserAnswers): Result = {
-        val assets = QuotedSharesAmendContinueSummary.rows(answers)
+        val assets = QuotedSharesAmendContinueSummary.rows(mode, answers)
         Ok(view(preparedForm, assets, mode))
       }
 
       mode match {
-        case CheckMode | FinalCheckMode =>
+        case CheckMode | FinalCheckMode | AmendCheckMode =>
           for {
             updatedSession <- Future.fromTry(
                                 AssetsMiniJourneyService.setAssetCompleted(
@@ -83,19 +84,27 @@ class MoreQuotedSharesDeclarationController @Inject() (
     (identify andThen schemeData andThen getData).async { implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          val assets = QuotedSharesAmendContinueSummary.rows(request.userAnswers)
+          val assets = QuotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
           Future.successful(BadRequest(view(formWithErrors, assets, mode)))
         },
         continue => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              for {
+                addCashAmount                      <- request.userAnswers.set(MoreQuotedSharesDeclarationPage, continue)
+                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+              } yield removeTypeOfAssetsRecordVersion
+            } else {
+              request.userAnswers.set(MoreQuotedSharesDeclarationPage, continue)
+            }
+
           for {
-            userAnswers            <- Future.fromTry(request.userAnswers.set(MoreQuotedSharesDeclarationPage, continue))
+            userAnswers            <- Future.fromTry(setAnswers())
             _                      <- userAnswersService.setExternalUserAnswers(userAnswers)
             sessionAfterCompletion <-
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.QuotedShares, completed = true, Some(continue))
-          } yield TypeOfAssetNavigator.getNextAssetRoute(sessionAfterCompletion) match {
-            case Some(route) => Redirect(route)
-            case None        => Redirect(MoreQuotedSharesDeclarationPage.nextPage(mode, userAnswers))
-          }
+          } yield Redirect(MoreQuotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
         }
       )
     }

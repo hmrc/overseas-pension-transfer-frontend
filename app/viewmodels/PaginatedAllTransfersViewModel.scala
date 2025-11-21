@@ -25,7 +25,9 @@ import utils.{Paging, PagingRequest}
 final case class PaginatedAllTransfersViewModel(
     table: Table,
     pagination: Option[Pagination], // None when single page
-    lockWarning: Option[String] = None
+    lockWarning: Option[String] = None,
+    currentPage: Int            = 1,
+    totalPages: Int             = 1
   )
 
 object PaginatedAllTransfersViewModel {
@@ -43,7 +45,7 @@ object PaginatedAllTransfersViewModel {
     val paging = Paging.fromSeq(sorted, PagingRequest(page, pageSize))
     val table  = AllTransfersTableViewModel.from(paging.items, page)
     val pager  = paginationFrom(paging, urlForPage)
-    PaginatedAllTransfersViewModel(table, pager, lockWarning)
+    PaginatedAllTransfersViewModel(table, pager, lockWarning, paging.page, paging.totalPages)
   }
 
   private def paginationFrom[A](p: Paging[A], urlForPage: Int => String)(implicit m: Messages): Option[Pagination] = {
