@@ -45,16 +45,13 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("whyTransferIsNotTaxable.heading")</h1>
-
-        <p class="govuk-body">@messages("whyTransferIsNotTaxable.paragraph")</p>
 
         @govukCheckboxes(
             CheckboxesViewModel(
                 form   = form,
                 name   = "value",
                 items  = WhyTransferIsNotTaxable.checkboxItems,
-                legend = LegendViewModel(messages("whyTransferIsNotTaxable.heading")).withCssClass("govuk-fieldset__legend--m")
+                legend = LegendViewModel(messages("whyTransferIsNotTaxable.heading")).asPageHeading(Large)
             )
                 .withHint(HintViewModel(Text(messages("whyTransferIsNotTaxable.hint"))))
         )
