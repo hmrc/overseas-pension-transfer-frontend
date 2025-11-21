@@ -208,7 +208,7 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
       val userAnswers = uaWithQuotedShares(2)
       val application =
-        applicationBuilder()
+        applicationBuilder(userAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )

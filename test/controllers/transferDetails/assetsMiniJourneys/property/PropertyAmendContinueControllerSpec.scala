@@ -215,7 +215,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
       val userAnswers = uaWithProperties(2)
       val application =
-        applicationBuilder()
+        applicationBuilder(userAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )

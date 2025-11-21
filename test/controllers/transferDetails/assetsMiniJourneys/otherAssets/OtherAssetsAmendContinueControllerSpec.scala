@@ -161,7 +161,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
       val userAnswers = uaWithOtherAssets(2)
       val application =
-        applicationBuilder()
+        applicationBuilder(userAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
@@ -176,9 +176,10 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, value = true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
+        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OtherAssetsAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
+        redirectLocation(result).value mustEqual expected
       }
     }
 
