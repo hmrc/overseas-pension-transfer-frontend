@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
+@import viewmodels.LegendSize.Large
 
 @this(
     layout: templates.Layout,
@@ -44,16 +45,15 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("whyTransferIsNotTaxable.heading")</h1>
-
-        <p class="govuk-body">@messages("whyTransferIsNotTaxable.paragraph")</p>
 
         @govukCheckboxes(
             CheckboxesViewModel(
                 form   = form,
                 name   = "value",
-                items  = WhyTransferIsNotTaxable.checkboxItems
-            ).withHint(HintViewModel(Text(messages("whyTransferIsNotTaxable.hint"))))
+                items  = WhyTransferIsNotTaxable.checkboxItems,
+                legend = LegendViewModel(messages("whyTransferIsNotTaxable.heading")).asPageHeading(Large)
+            )
+                .withHint(HintViewModel(Text(messages("whyTransferIsNotTaxable.hint"))))
         )
 
         @govukButton(

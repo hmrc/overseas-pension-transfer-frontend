@@ -39,6 +39,8 @@
 @heading = @{if(mode == AmendCheckMode) messages("submitToHMRC.amendHeading") else messages("submitToHMRC.heading")}
 @hintTextYes = @{if (mode != AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.hintYes")))) else None}
 @hintTextNo = @{if (mode == AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.amendHintNo")))) else Some(HintViewModel(Text(messages("submitToHMRC.hintNo"))))}
+@legendHeading = @{LegendViewModel(messages("submitToHMRC.heading") ).asPageHeading(Large)}
+
 
 @layout(pageTitle = title(form, messages("submitToHMRC.title")),
 showCYAFooter = true,
@@ -52,14 +54,13 @@ showTasklistFooter = false
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("submitToHMRC.heading")</h1>
-
         @govukRadios(
             RadiosViewModel.yesNo(
                 field = form("value"),
+                fieldset    = FieldsetViewModel(legendHeading),
                 hintYes = hintTextYes,
                 hintNo = hintTextNo)
-            )
+                )
 
 
         @govukButton(
