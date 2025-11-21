@@ -18,16 +18,20 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassFormProvider
-import models.Mode
+import models.assets.TypeOfAsset.QuotedShares
+import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.assets.AssetsRecordVersionQuery
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class QuotedSharesClassController @Inject() (
     override val messagesApi: MessagesApi,
@@ -58,11 +62,24 @@ class QuotedSharesClassController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value =>
+        value => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              for {
+                addCashAmount                      <- request.userAnswers.set(QuotedSharesClassPage(index), value)
+                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, QuotedShares))
+              } yield removeAssetRecordVersion
+            } else {
+              request.userAnswers.set(QuotedSharesClassPage(index), value)
+            }
+
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesClassPage(index), value))
+            updatedAnswers <- Future.fromTry(setAnswers())
             _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield Redirect(QuotedSharesClassPage(index).nextPage(mode, updatedAnswers))
+        }
       )
   }
 }

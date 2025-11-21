@@ -19,7 +19,7 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueFormProvider
-import models.NormalMode
+import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -101,6 +101,31 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual QuotedSharesValuePage(index).nextPage(NormalMode, emptyUserAnswers).url
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.QuotedSharesValueController.onPageLoad(AmendCheckMode, index).url)
+            .withFormUrlEncodedBody(("value", validAnswer.toString))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual QuotedSharesValuePage(index).nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
 

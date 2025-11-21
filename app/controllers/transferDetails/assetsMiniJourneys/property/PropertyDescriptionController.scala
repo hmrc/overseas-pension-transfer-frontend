@@ -18,16 +18,20 @@ package controllers.transferDetails.assetsMiniJourneys.property
 
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.property.PropertyDescriptionFormProvider
-import models.Mode
+import models.assets.TypeOfAsset.Property
+import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.assets.AssetsRecordVersionQuery
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyDescriptionView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class PropertyDescriptionController @Inject() (
     override val messagesApi: MessagesApi,
@@ -58,11 +62,24 @@ class PropertyDescriptionController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value =>
+        value => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              for {
+                addCashAmount                      <- request.userAnswers.set(PropertyDescriptionPage(index), value)
+                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, Property))
+              } yield removeAssetRecordVersion
+            } else {
+              request.userAnswers.set(PropertyDescriptionPage(index), value)
+            }
+
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyDescriptionPage(index), value))
+            updatedAnswers <- Future.fromTry(setAnswers())
             _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield Redirect(PropertyDescriptionPage(index).nextPage(mode, updatedAnswers))
+        }
       )
   }
 }

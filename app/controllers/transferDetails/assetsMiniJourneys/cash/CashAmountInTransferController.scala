@@ -18,11 +18,12 @@ package controllers.transferDetails.assetsMiniJourneys.cash
 
 import controllers.actions._
 import forms.transferDetails.CashAmountInTransferFormProvider
-import models.Mode
+import models.{AmendCheckMode, Mode, UserAnswers}
 import models.assets.TypeOfAsset
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -30,6 +31,7 @@ import views.html.transferDetails.CashAmountInTransferView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class CashAmountInTransferController @Inject() (
     override val messagesApi: MessagesApi,
@@ -61,15 +63,27 @@ class CashAmountInTransferController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
+        value => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              for {
+                addCashAmount                      <- request.userAnswers.set(CashAmountInTransferPage, value)
+                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+              } yield removeTypeOfAssetsRecordVersion
+            } else {
+              request.userAnswers.set(CashAmountInTransferPage, value)
+            }
+
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(CashAmountInTransferPage, value))
+            updatedAnswers <- Future.fromTry(setAnswers())
             updatedSession <- Future.fromTry(
                                 AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Cash, completed = true)
                               )
             _              <- sessionRepository.set(updatedSession)
             _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield Redirect(CashAmountInTransferPage.nextPageWith(mode, updatedAnswers, updatedSession))
+        }
       )
   }
 }

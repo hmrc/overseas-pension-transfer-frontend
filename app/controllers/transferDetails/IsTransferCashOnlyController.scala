@@ -19,7 +19,7 @@ package controllers.transferDetails
 import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.IsTransferCashOnlyFormProvider
-import models.{Mode, SessionData}
+import models.{AmendCheckMode, Mode, SessionData, UserAnswers}
 import models.TaskCategory.TransferDetails
 import models.assets.TypeOfAsset
 import models.assets.TypeOfAsset.Cash
@@ -29,6 +29,7 @@ import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage, Type
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Writes._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, TaskService, UserAnswersService}
@@ -70,7 +71,7 @@ class IsTransferCashOnlyController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            ua1           <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value))
+            ua1           <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value, mode))
             ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
             savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
             sd            <- Future.fromTry(updateCashOnlySession(request.sessionData, value))
@@ -94,20 +95,30 @@ class IsTransferCashOnlyController @Inject() (
       Success(sessionData)
     }
 
-  private def updateCashOnlyAnswers(userAnswers: models.UserAnswers, isCashOnly: Boolean): Try[models.UserAnswers] = {
+  private def updateCashOnlyAnswers(userAnswers: models.UserAnswers, isCashOnly: Boolean, mode: Mode): Try[models.UserAnswers] = {
+    def setAnswers(ua: UserAnswers): Try[UserAnswers] =
+      if (mode == AmendCheckMode) {
+        ua.set(IsTransferCashOnlyPage, isCashOnly) flatMap {
+          answers =>
+            answers.remove(TransferDetailsRecordVersionQuery)
+        }
+      } else {
+        ua.set(IsTransferCashOnlyPage, isCashOnly)
+      }
+
     if (isCashOnly) {
       val netAmount = userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
       for {
         ua1 <- AssetsMiniJourneyService.removeAllAssetEntriesExceptCash(userAnswers)
         ua2 <- ua1.set(CashAmountInTransferPage, netAmount)
         ua3 <- ua2.set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash))
-        ua4 <- ua3.set(IsTransferCashOnlyPage, isCashOnly)
+        ua4 <- setAnswers(ua3)
       } yield ua4
     } else {
       for {
         ua1 <- userAnswers.remove(CashAmountInTransferPage)
         ua2 <- ua1.remove(TypeOfAssetPage)
-        ua3 <- ua2.set(IsTransferCashOnlyPage, isCashOnly)
+        ua3 <- setAnswers(ua2)
       } yield ua3
     }
   }

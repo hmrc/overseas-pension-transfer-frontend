@@ -20,18 +20,21 @@ import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.{AmendDateOfTransferFormProvider, DateOfTransferFormProvider}
 import models.requests.DisplayRequest
-import models.{Mode, UserAnswers}
+import models.{AmendCheckMode, Mode, UserAnswers}
 import org.apache.pekko.Done
-import pages.transferDetails.DateOfTransferPage
+import pages.transferDetails.{AmountOfTransferPage, DateOfTransferPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TransferDetailsRecordVersionQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.DateOfTransferView
+
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class DateOfTransferController @Inject() (
     override val messagesApi: MessagesApi,
@@ -60,14 +63,24 @@ class DateOfTransferController @Inject() (
     ) = {
     form.bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAmend(mode)))),
-      value =>
+      value => {
+        def setAnswers(): Try[UserAnswers] =
+          if (mode == AmendCheckMode) {
+            userAnswers.set(DateOfTransferPage, value) flatMap {
+              answers =>
+                answers.remove(TransferDetailsRecordVersionQuery)
+            }
+          } else {
+            userAnswers.set(DateOfTransferPage, value)
+          }
         for {
-          updatedAnswers <- Future.fromTry(userAnswers.set(DateOfTransferPage, value))
+          updatedAnswers <- Future.fromTry(setAnswers())
           savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
         } yield savedForLater match {
           case Right(Done) => Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers))
           case Left(err)   => onFailureRedirect(err)
         }
+      }
     )
   }
 

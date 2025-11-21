@@ -21,7 +21,7 @@ import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.WhyTransferIsTaxableFormProvider
 import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
 import models.responses.UserAnswersErrorResponse
-import models.{NormalMode, WhyTransferIsTaxable}
+import models.{AmendCheckMode, NormalMode, WhyTransferIsTaxable}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -109,6 +109,31 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual WhyTransferIsTaxablePage.nextPage(NormalMode, ua).url
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.WhyTransferIsTaxableController.onPageLoad(AmendCheckMode).url)
+            .withFormUrlEncodedBody(("value", WhyTransferIsTaxable.values.head.toString))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual WhyTransferIsTaxablePage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
 

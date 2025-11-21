@@ -19,10 +19,11 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueFormProvider
 import models.assets.{OtherAssetsMiniJourney, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueAssetPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -31,6 +32,7 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmen
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class OtherAssetsAmendContinueController @Inject() (
     override val messagesApi: MessagesApi,
@@ -77,10 +79,21 @@ class OtherAssetsAmendContinueController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, shares, mode)))
         },
         continue => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode && continue) {
+              for {
+                addContinue                        <- request.userAnswers.set(OtherAssetsAmendContinueAssetPage, continue)
+                removeTransferDetailsRecordVersion <- addContinue.remove(TransferDetailsRecordVersionQuery)
+                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+              } yield removeTypeOfAssetsRecordVersion
+            } else {
+              request.userAnswers.set(OtherAssetsAmendContinueAssetPage, continue)
+            }
+
           for {
             sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Other, completed = true))
             _   <- sessionRepository.set(sd)
-            ua1 <- Future.fromTry(request.userAnswers.set(OtherAssetsAmendContinueAssetPage, continue))
+            ua1 <- Future.fromTry(setAnswers())
             _   <- userAnswersService.setExternalUserAnswers(ua1)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
