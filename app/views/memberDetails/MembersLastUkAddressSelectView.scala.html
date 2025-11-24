@@ -59,10 +59,8 @@
                     HtmlContent(messages("memberSelectLastUkAddress.legend", addressLength, postcode, searchAgain))
                 ).withCssClass("govuk-!-padding-bottom-3"),
                 items  = addressRadios
-            ).withHint(
-                HintViewModel(Text(messages("memberSelectLastUkAddress.heading", memberName)))
-                    .withCssClass("govuk-visually-hidden")
             )
+
         )
 
         <p class="govuk-body govuk-!-padding-bottom-2">@Html(messages("memberSelectLastUkAddress.link", manualEntry))</p>
