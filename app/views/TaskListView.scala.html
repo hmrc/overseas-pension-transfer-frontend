@@ -32,6 +32,6 @@
     <h2 class="govuk-heading-m">@messages("taskList.transferDetails.heading")</h2>
     @govukTaskList(TaskList(taskItems))
     <h2 class="govuk-heading-m govuk-!-margin-top-7">@messages("taskList.checkAndSubmit.heading")</h2>
-    @govukTaskList(TaskList(Seq(submissionItem)))
+    @govukTaskList(TaskList(Seq(submissionItem), idPrefix = "check-and-submit"))
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--invisible">
 }
