@@ -17,13 +17,13 @@
 package forms.qropsSchemeManagerDetails
 
 import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Regex
+import models.PersonName
 import play.api.data.FormError
 
-class SchemeManagersNameFormProviderSpec extends StringFieldBehaviours {
+class SchemeManagersNameFormProviderSpec extends StringFieldBehaviours with Regex {
 
   val form = new SchemeManagersNameFormProvider()()
-
-  val nameRegex = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
   ".schemeManagersFirstName" - {
 
@@ -93,5 +93,24 @@ class SchemeManagersNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "SchemeManagersNameFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "schemeManagersFirstName" -> "  Jane  ",
+          "schemeManagersLastName"  -> "  Doe  "
+        )
+      )
+
+      result.errors mustBe empty
+
+      val PersonName(firstName, lastName) = result.value.value
+
+      firstName mustBe "Jane"
+      lastName mustBe "Doe"
+    }
   }
 }

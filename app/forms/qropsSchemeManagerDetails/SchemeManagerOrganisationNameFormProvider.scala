@@ -26,6 +26,7 @@ class SchemeManagerOrganisationNameFormProvider @Inject() extends Mappings with 
   def apply(): Form[String] =
     Form(
       "organisationName" -> text("organisationName.error.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(160, "organisationName.error.length"))
         .verifying(regexp(nameRegex, "organisationName.error.pattern"))
     )
