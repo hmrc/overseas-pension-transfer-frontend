@@ -54,16 +54,15 @@
 
         @govukRadios(
             RadiosViewModel(
-                field  = form("value"),
-                legend = LegendViewModel(
-                    HtmlContent(messages("memberSelectLastUkAddress.legend", addressLength, postcode, searchAgain))
-                ).withCssClass("govuk-!-padding-bottom-3"),
-                items  = addressRadios
-                ).withHint(
-                    HintViewModel(Text(messages("memberSelectLastUkAddress.heading", memberName)))
-                        .withCssClass("govuk-visually-hidden")
-                )
-                )
+                    field = form("value"),
+                    legend = LegendViewModel(
+                            content = Text(messages("memberSelectLastUkAddress.heading", memberName))
+                    ).withCssClass("govuk-visually-hidden"),
+                    items = addressRadios
+                ).withHint(Hint(
+                    content = HtmlContent(messages("memberSelectLastUkAddress.legend", addressLength, postcode, searchAgain))
+                )).withCssClass("govuk-!-padding-bottom-3")
+    )
 
         <p class="govuk-body govuk-!-padding-bottom-2">@Html(messages("memberSelectLastUkAddress.link", manualEntry))</p>
 
