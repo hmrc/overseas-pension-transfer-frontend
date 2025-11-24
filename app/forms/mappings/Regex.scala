@@ -20,7 +20,7 @@ trait Regex {
 
   val nameRegex: String = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
-  val ninoRegex: String = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
+  val ninoRegex: String = "^[A-Z]{2}\\d{6}[A-Z]$"
 
   val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
 

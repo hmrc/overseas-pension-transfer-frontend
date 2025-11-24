@@ -26,7 +26,7 @@ class MemberNinoFormProvider @Inject() extends Mappings with Regex {
   def apply(): Form[String] =
     Form(
       "value" -> text("memberNino.error.required")
-        .transform[String](_.replaceAll("\\s+", ""), identity)
+        .transform[String](_.replaceAll("\\s+", "").toUpperCase, identity)
         .verifying(regexp(ninoRegex, "memberNino.error.pattern"))
     )
 }
