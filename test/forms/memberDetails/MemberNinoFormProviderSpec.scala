@@ -52,4 +52,26 @@ class MemberNinoFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
+  "MemberNinoFormProvider" - {
+
+    "must allow combinations of whitespace and strip them on binding" in {
+
+      val inputs = Seq(
+        "QQ123456C",
+        " QQ123456C ",
+        "QQ 123456C",
+        "QQ 12 34 56 C"
+      )
+
+      inputs.foreach { input =>
+        val result = form.bind(Map("value" -> input))
+
+        withClue(s"For input '$input': ") {
+          result.errors mustBe empty
+          result.value.value mustBe "QQ123456C"
+        }
+      }
+    }
+  }
 }

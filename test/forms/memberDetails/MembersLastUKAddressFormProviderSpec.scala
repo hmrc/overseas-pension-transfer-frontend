@@ -38,7 +38,8 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(addressLinesRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -73,7 +74,8 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(addressLinesRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -99,14 +101,16 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
 
   "addressLine3" - {
 
-    val fieldName = "addressLine3"
-    val lengthKey = "common.addressInput.error.addressLine3.length"
-    val maxLength = 35
+    val fieldName  = "addressLine3"
+    val lengthKey  = "common.addressInput.error.addressLine3.length"
+    val patternKey = "common.addressInput.error.addressLine3.pattern"
+    val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(addressLinesRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -119,19 +123,28 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like optionalField(
       form,
       fieldName
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
     )
   }
 
   "addressLine4" - {
 
-    val fieldName = "addressLine4"
-    val lengthKey = "common.addressInput.error.addressLine4.length"
-    val maxLength = 35
+    val fieldName  = "addressLine4"
+    val lengthKey  = "common.addressInput.error.addressLine4.length"
+    val patternKey = "common.addressInput.error.addressLine4.pattern"
+    val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(addressLinesRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -144,6 +157,13 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like optionalField(
       form,
       fieldName
+    )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
+      Option(maxLength)
     )
   }
 
@@ -152,12 +172,14 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     val fieldName   = "postcode"
     val lengthKey   = "membersLastUKAddress.error.postcode.length"
     val requiredKey = "membersLastUKAddress.error.postcode.required"
+    val patternKey  = "membersLastUKAddress.error.postcode.incorrect"
     val maxLength   = 16
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsMatchingRegex(postcodeRegex)
+      stringsMatchingRegex(postcodeRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like mandatoryField(
@@ -172,5 +194,38 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
       maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
+
+    behave like fieldThatRejectsInvalidCharacters(
+      form,
+      fieldName,
+      patternError = FormError(fieldName, patternKey, Seq(postcodeRegex)),
+      Option(maxLength)
+    )
+  }
+
+  "MembersLastUKAddressFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+
+      val result = form.bind(
+        Map(
+          "addressLine1" -> "  10 Downing Street  ",
+          "addressLine2" -> "  Westminster  ",
+          "addressLine3" -> "  London  ",
+          "addressLine4" -> "  Greater London  ",
+          "postcode"     -> "  SW1A 2AA  "
+        )
+      )
+
+      result.errors mustBe empty
+
+      val bound = result.value.value
+
+      bound.addressLine1 mustBe "10 Downing Street"
+      bound.addressLine2 mustBe "Westminster"
+      bound.addressLine3.value mustBe "London"
+      bound.addressLine4.value mustBe "Greater London"
+      bound.postcode.value mustBe "SW1A2AA"
+    }
   }
 }

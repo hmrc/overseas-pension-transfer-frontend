@@ -34,25 +34,39 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
     Form(
       mapping(
         "addressLine1" -> text("membersLastUKAddress.error.addressLine1.required", Seq(memberName))
+          .transform[String](input => input.trim, identity)
           .verifying(maxLength(length35, "common.addressInput.error.addressLine1.length"))
           .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine1.pattern")),
         "addressLine2" -> text("membersLastUKAddress.error.addressLine2.required", Seq(memberName))
+          .transform[String](input => input.trim, identity)
           .verifying(maxLength(length35, "common.addressInput.error.addressLine2.length"))
           .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine2.pattern")),
         "addressLine3" -> optional(
           Forms.text
-            verifying maxLength(length35, "common.addressInput.error.addressLine3.length")
-            verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern")
+            .transform[String](input => input.trim, identity)
+            .verifying(maxLength(length35, "common.addressInput.error.addressLine3.length"))
+            .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern"))
         ),
         "addressLine4" -> optional(
           Forms.text
-            verifying maxLength(length35, "common.addressInput.error.addressLine4.length")
-            verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern")
+            .transform[String](input => input.trim, identity)
+            .verifying(maxLength(length35, "common.addressInput.error.addressLine4.length"))
+            .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern"))
         ),
         "postcode"     -> text("membersLastUKAddress.error.postcode.required")
+          .transform[String](
+            raw => formatPostcode(raw),
+            formatted => formatted
+          )
           .verifying(maxLength(length16, "membersLastUKAddress.error.postcode.length"))
           .verifying(regexp(postcodeRegex, "membersLastUKAddress.error.postcode.incorrect"))
       )(MembersLastUKAddress.apply)(MembersLastUKAddress.unapply)
     )
+  }
+
+  private def formatPostcode(raw: String): String = {
+    val formated          = raw.trim.toUpperCase.replaceAll("\\s+", "")
+    val (outcode, incode) = formated.splitAt(formated.length - 3)
+    s"$outcode$incode"
   }
 }

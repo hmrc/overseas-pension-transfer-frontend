@@ -17,6 +17,7 @@
 package forms.memberDetails
 
 import forms.behaviours.StringFieldBehaviours
+import models.PersonName
 import play.api.data.FormError
 
 class MemberNameFormProviderSpec extends StringFieldBehaviours {
@@ -93,5 +94,24 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "MemberNameFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "memberFirstName" -> "  Jane  ",
+          "memberLastName"  -> "  Doe  "
+        )
+      )
+
+      result.errors mustBe empty
+
+      val PersonName(firstName, lastName) = result.value.value
+
+      firstName mustBe "Jane"
+      lastName mustBe "Doe"
+    }
   }
 }

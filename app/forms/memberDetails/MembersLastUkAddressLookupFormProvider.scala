@@ -36,6 +36,6 @@ class MembersLastUkAddressLookupFormProvider @Inject() extends Mappings with Reg
   private def formatPostcode(raw: String): String = {
     val formated          = raw.trim.toUpperCase.replaceAll("\\s+", "")
     val (outcode, incode) = formated.splitAt(formated.length - 3)
-    s"$outcode $incode"
+    s"$outcode$incode"
   }
 }
