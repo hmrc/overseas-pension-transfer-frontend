@@ -28,9 +28,9 @@ class QROPSReferenceFormProviderSpec extends StringFieldBehaviours with Regex {
 
   val form = new QROPSReferenceFormProvider()()
 
-  ".value" - {
+  val fieldName = "qropsRef"
 
-    val fieldName = "qropsRef"
+  ".value" - {
 
     behave like fieldThatBindsValidData(
       form,
@@ -49,5 +49,25 @@ class QROPSReferenceFormProviderSpec extends StringFieldBehaviours with Regex {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "QROPSReferenceFormProvider" - {
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val inputs = Seq(
+        "QROPS123456",
+        " 123456 ",
+        "qrops 123 456",
+        "QROPS 12 34 56"
+      )
+
+      inputs.foreach { input =>
+        val result = form.bind(Map(fieldName -> input))
+
+        withClue(s"For input '$input': ") {
+          result.errors mustBe empty
+          result.value.value mustBe "QROPS123456"
+        }
+      }
+    }
   }
 }
