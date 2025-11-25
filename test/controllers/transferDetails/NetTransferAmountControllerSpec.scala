@@ -18,7 +18,7 @@ package controllers.transferDetails
 
 import base.SpecBase
 import forms.transferDetails.NetTransferAmountFormProvider
-import models.NormalMode
+import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -99,6 +99,31 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual NetTransferAmountPage.nextPage(NormalMode, emptyUserAnswers).url
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.NetTransferAmountController.onPageLoad(AmendCheckMode).url)
+            .withFormUrlEncodedBody(("netAmount", validAnswer.toString))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual NetTransferAmountPage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
 

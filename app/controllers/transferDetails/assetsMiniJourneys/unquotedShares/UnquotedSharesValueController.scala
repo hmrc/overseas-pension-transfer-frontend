@@ -18,16 +18,20 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueFormProvider
-import models.Mode
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
+import models.assets.TypeOfAsset.UnquotedShares
+import models.{AmendCheckMode, Mode, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesValuePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.assets.AssetsRecordVersionQuery
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class UnquotedSharesValueController @Inject() (
     override val messagesApi: MessagesApi,
@@ -58,11 +62,24 @@ class UnquotedSharesValueController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value =>
+        value => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              for {
+                addCashAmount                      <- request.userAnswers.set(UnquotedSharesValuePage(index), value)
+                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, UnquotedShares))
+              } yield removeAssetRecordVersion
+            } else {
+              request.userAnswers.set(UnquotedSharesValuePage(index), value)
+            }
+
           for {
-            updatedSession <- Future.fromTry(request.userAnswers.set(UnquotedSharesValuePage(index), value))
+            updatedSession <- Future.fromTry(setAnswers())
             _              <- userAnswersService.setExternalUserAnswers(updatedSession)
           } yield Redirect(UnquotedSharesValuePage(index).nextPage(mode, updatedSession))
+        }
       )
   }
 }

@@ -18,12 +18,13 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.transferDetails.TypeOfAssetFormProvider
-import models.Mode
-import pages.transferDetails.TypeOfAssetPage
+import models.{AmendCheckMode, Mode, UserAnswers}
+import pages.transferDetails.{AmountOfTransferPage, TypeOfAssetPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TransferDetailsRecordVersionQuery
 import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, UserAnswersService}
@@ -32,6 +33,7 @@ import views.html.transferDetails.TypeOfAssetView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class TypeOfAssetController @Inject() (
     override val messagesApi: MessagesApi,
@@ -66,7 +68,7 @@ class TypeOfAssetController @Inject() (
         selectedAssets => {
           val orderedAssets = selectedAssets.toSeq.sorted
           for {
-            (sd, ua) <- Future.fromTry(AssetsMiniJourneyService.handleTypeOfAssetStatusUpdate(request.sessionData, request.userAnswers, orderedAssets))
+            (sd, ua) <- Future.fromTry(AssetsMiniJourneyService.handleTypeOfAssetStatusUpdate(request.sessionData, request.userAnswers, orderedAssets, mode))
             _        <- userAnswersService.setExternalUserAnswers(ua)
             _        <- sessionRepository.set(sd)
           } yield Redirect(TypeOfAssetPage.nextPageWith(mode, ua, sd))

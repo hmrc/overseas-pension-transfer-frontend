@@ -19,7 +19,7 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.AmountOfTransferFormProvider
-import models.NormalMode
+import models.{AmendCheckMode, NormalMode}
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -106,6 +106,34 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual AmountOfTransferPage.nextPage(NormalMode, emptyUserAnswers).url
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, routes.AmountOfTransferController.onPageLoad(AmendCheckMode).url)
+            .withFormUrlEncodedBody(("value", validAnswer.toString))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual AmountOfTransferPage.nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
 

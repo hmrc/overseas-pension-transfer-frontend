@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueFormProvider
 import models.assets.{OtherAssetsEntry, OtherAssetsMiniJourney}
-import models.{CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -147,6 +147,36 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, false).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
         val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual expected
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val userAnswers = uaWithOtherAssets(2)
+      val application =
+        applicationBuilder(userAnswers)
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onSubmit(AmendCheckMode).url)
+            .withFormUrlEncodedBody(("add-another", "Yes"))
+
+        val result = route(application, request).value
+
+        val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, value = true).success.value
+        val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
+        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
