@@ -32,8 +32,6 @@ trait Regex {
 
   val qropsRefRegex: String = "^(QROPS\\d{6}|QROPS|\\d{6})$"
 
-  val phoneNumberRegex: String = "^\\+?[0-9]+$"
-
   val descriptionRegex: String = """^[A-Za-z0-9 \-,.&'/]+$"""
 
   val classRegex: String = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
