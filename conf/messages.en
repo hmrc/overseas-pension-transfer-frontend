@@ -776,3 +776,8 @@ viewAmend.title = What would you like to do?
 viewAmend.radio1 = View this overseas pension transfer
 viewAmend.radio2 = Amend this overseas pension transfer
 viewAmend.error.required = Select whether you want to view or amend this transfer
+
+checkYourAnswers.memberDetails.heading = Check member details
+checkYourAnswers.transferDetails.heading = Check transfer details
+checkYourAnswers.QROPSDetails.heading = Check QROPS details
+checkYourAnswers.QROPSSchemeManagerDetails.heading = Check QROPS scheme manager details
