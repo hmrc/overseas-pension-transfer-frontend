@@ -666,9 +666,9 @@ addAdditionalOtherAsset.checkYourAnswersLabel = Do you need to add another asset
 addAdditionalOtherAsset.error.required = Please select an option
 addAdditionalOtherAsset.change.hidden = Do you need to add another asset?
 
-unquotedSharesAmendContinue.title = unquotedSharesAmendContinue
+unquotedSharesAmendContinue.title = Do you need to add more unquoted shares?
 
-quotedSharesAmendContinue.title = quotedSharesAmendContinue
+quotedSharesAmendContinue.title = Do you need add more quoted shares?
 quotedSharesAmendContinue.heading = You have added 1 quoted shares
 quotedSharesAmendContinue.error.required = Please select an option
 quotedSharesAmendContinue.addMore = Do you need to add another quoted shares?
@@ -683,7 +683,7 @@ moreQuotedSharesDeclaration.moreQuotedShares = Does the member have more than 5 
 moreQuotedSharesDeclaration.moreQuotedShares.hint = Select yes if the member has more than 5 quoted shares. We''ll contact the scheme administrator for information on the rest of the quoted shares.
 moreQuotedSharesDeclaration.error.required = Please select an option
 
-propertyAmendContinue.title = propertyAmendContinue
+propertyAmendContinue.title = Do you need to add another property?
 propertyAmendContinue.heading = You have added 1 Property
 propertyAmendContinue.checkYourAnswersLabel = Property
 propertyAmendContinue.error.required = Please select an option
