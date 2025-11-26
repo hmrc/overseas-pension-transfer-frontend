@@ -39,8 +39,8 @@ error.summary.title = There is a problem
 
 footer.link.text.discard.report = Discard transfer report
 footer.link.text.discard.amendment = Discard amendments to submission
-footer.link.text.dashboard = Return to Report a transfer to a QROPS dashboard
-footer.link.text.tasklist = Return to task list
+footer.link.text.dashboard = Return to Report a transfer to a QROPS
+footer.link.text.tasklist = Return to complete your transfer report
 
 dashboard.title = Report a transfer to a qualifying recognised overseas pension scheme
 dashboard.allTransfers.page = All transfers (page {0} of {1})
@@ -750,7 +750,7 @@ submitToHMRC.amendHintNo = Mark as ''amendment in progress'' and return to the d
 transferSubmitted.title = Transfer submitted
 transferSubmitted.heading = Transfer submitted
 transferSubmitted.referenceNumber.text = Your reference number
-transferSubmitted.dashboardLink.text = Return to Report a transfer to a QROPS dashboard
+transferSubmitted.dashboardLink.text = Return to Report a transfer to a QROPS
 transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
 transferSubmitted.memberName.key = Member name
 transferSubmitted.pensionScheme.key = Scheme
