@@ -24,7 +24,6 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty, GET, POST}
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.SummaryListFluency
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.checkYourAnswers.CheckYourAnswersView
 

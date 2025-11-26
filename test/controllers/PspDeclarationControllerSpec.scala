@@ -21,6 +21,7 @@ import controllers.actions._
 import forms.PspDeclarationFormProvider
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
 import models.{NormalMode, QtNumber, UserAnswers}
+import org.apache.commons.text.StringEscapeUtils
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -37,7 +38,6 @@ import views.html.PspDeclarationView
 
 import java.time.Instant
 import scala.concurrent.Future
-import org.apache.commons.text.StringEscapeUtils
 
 class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 

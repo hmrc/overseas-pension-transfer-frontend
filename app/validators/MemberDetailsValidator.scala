@@ -16,11 +16,11 @@
 
 package validators
 
-import cats.data.{Chain, NonEmptyChain}
+import cats.data.Chain
 import cats.implicits._
 import models.address.{MembersCurrentAddress, MembersLastUKAddress}
-import models.{DataMissingError, GenericError, PersonName, UserAnswers, ValidationResult}
 import models.transferJourneys.MemberDetails
+import models.{DataMissingError, GenericError, PersonName, UserAnswers, ValidationResult}
 import pages.memberDetails._
 
 import java.time.LocalDate

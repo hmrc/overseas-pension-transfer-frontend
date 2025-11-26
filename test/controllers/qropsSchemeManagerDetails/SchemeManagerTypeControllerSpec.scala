@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, SessionData, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -31,7 +31,6 @@ import pages.qropsSchemeManagerDetails.{SchemeManagerTypePage, SchemeManagersNam
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView

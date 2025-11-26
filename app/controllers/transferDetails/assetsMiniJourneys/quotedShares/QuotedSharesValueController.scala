@@ -18,13 +18,13 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers}
 import models.assets.TypeOfAsset.QuotedShares
+import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import queries.assets.AssetsRecordVersionQuery
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueView

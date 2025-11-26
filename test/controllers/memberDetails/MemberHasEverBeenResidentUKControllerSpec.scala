@@ -32,7 +32,6 @@ import pages.memberDetails.{MemberHasEverBeenResidentUKPage, MembersLastUKAddres
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.memberDetails.MemberHasEverBeenResidentUKView

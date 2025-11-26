@@ -17,7 +17,6 @@
 package models
 
 import play.api.i18n.Messages
-import play.api.libs.json.{JsString, Writes}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import viewmodels.govuk.checkbox._

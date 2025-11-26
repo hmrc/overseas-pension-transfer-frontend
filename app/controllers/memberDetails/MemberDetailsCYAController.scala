@@ -19,22 +19,17 @@ package controllers.memberDetails
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
-import models.TaskCategory.MemberDetails
-import models.taskList.TaskStatus.Completed
 import models.{CheckMode, NormalMode}
-import org.apache.pekko.Done
 import pages.memberDetails.MemberDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.TaskStatusQuery
 import repositories.SessionRepository
-import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.memberDetails.MemberDetailsCYAView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class MemberDetailsCYAController @Inject() (
     override val messagesApi: MessagesApi,

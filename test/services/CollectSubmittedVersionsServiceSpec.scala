@@ -18,10 +18,10 @@ package services
 
 import base.SpecBase
 import connectors.UserAnswersConnector
-import models.{PstrNumber, QtNumber, UserAnswers}
 import models.QtStatus.Submitted
 import models.dtos.UserAnswersDTO
 import models.responses.UserAnswersErrorResponse
+import models.{PstrNumber, QtNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec

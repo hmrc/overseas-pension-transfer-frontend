@@ -18,7 +18,7 @@ package repositories
 
 import base.SpecBase
 import config.TestAppConfig
-import models.{SessionData, TransferId, TransferNumber}
+import models.{SessionData, TransferId}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec

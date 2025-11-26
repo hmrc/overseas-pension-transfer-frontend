@@ -16,8 +16,8 @@
 
 package models.audit
 
-import models.{AllTransfersItem, PensionSchemeDetails, TransferId}
 import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
+import models.{AllTransfersItem, PensionSchemeDetails, TransferId}
 import play.api.libs.json.{JsValue, Json}
 
 case class ReportStartedAuditModel(

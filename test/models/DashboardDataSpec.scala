@@ -20,6 +20,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json._
 import services.EncryptionService
+
 import java.time.Instant
 
 class DashboardDataSpec extends AnyWordSpec with Matchers {

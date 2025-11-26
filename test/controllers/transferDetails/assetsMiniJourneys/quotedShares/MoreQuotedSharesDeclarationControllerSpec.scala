@@ -17,7 +17,6 @@
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import base.SpecBase
-import controllers.routes
 import forms.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationFormProvider
 import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec

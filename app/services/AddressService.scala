@@ -21,7 +21,7 @@ import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
-import models.{SessionData, UserAnswers}
+import models.SessionData
 import models.address._
 import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}

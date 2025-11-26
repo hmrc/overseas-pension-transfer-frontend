@@ -16,8 +16,8 @@
 
 package pages.transferDetails.assetsMiniJourneys
 
-import models.{Mode, SessionData}
 import models.assets.AssetsMiniJourneyRegistry
+import models.{Mode, SessionData}
 import play.api.mvc.Call
 
 trait NextAssetMiniJourney {

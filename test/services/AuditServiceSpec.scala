@@ -17,9 +17,9 @@
 package services
 
 import config.FrontendAppConfig
-import models.{PensionSchemeDetails, PstrNumber, SrnNumber, TransferNumber}
 import models.audit.{JourneyStartedType, ReportStartedAuditModel}
 import models.authentication.{PsaId, PsaUser}
+import models.{PensionSchemeDetails, PstrNumber, SrnNumber, TransferNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}

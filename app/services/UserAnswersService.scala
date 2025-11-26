@@ -17,7 +17,7 @@
 package services
 
 import com.google.inject.Inject
-import connectors.{PensionSchemeConnector, UserAnswersConnector}
+import connectors.UserAnswersConnector
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}

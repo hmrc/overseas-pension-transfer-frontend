@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.{SessionData, UserAnswers}
+import models.UserAnswers
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 

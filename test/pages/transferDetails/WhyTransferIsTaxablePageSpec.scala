@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.transferDetails.routes
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 

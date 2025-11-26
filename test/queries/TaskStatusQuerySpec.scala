@@ -17,8 +17,8 @@
 package queries
 
 import base.SpecBase
-import models.{PstrNumber, TaskCategory, UserAnswers}
 import models.taskList.TaskStatus
+import models.{PstrNumber, TaskCategory, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 

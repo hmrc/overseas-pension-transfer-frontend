@@ -16,7 +16,6 @@
 
 package pages
 
-import controllers.transferDetails.routes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 

@@ -22,7 +22,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
 class SchemeManagersContactSummarySpec extends AnyFreeSpec with SpecBase {
 

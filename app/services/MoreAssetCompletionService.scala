@@ -19,7 +19,6 @@ package services
 import handlers.AssetThresholdHandler
 import models.assets._
 import models.{SessionData, UserAnswers}
-import queries.assets._
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 

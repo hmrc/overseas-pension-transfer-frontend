@@ -19,12 +19,12 @@ package controllers.actions
 import base.SpecBase
 import config.FrontendAppConfig
 import models.requests.IdentifierRequest
-import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers._
-import play.api.mvc.Results._
+import org.mockito.Mockito._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

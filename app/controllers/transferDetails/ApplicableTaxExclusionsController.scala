@@ -23,7 +23,6 @@ import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.ApplicableTaxExclusionsView

@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.memberDetails
 
 import models.{Mode, UserAnswers}
-import pages.memberDetails.{MemberNamePage, MemberNinoPage}
+import pages.memberDetails.MemberNinoPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

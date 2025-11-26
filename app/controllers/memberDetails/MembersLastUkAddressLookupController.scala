@@ -21,10 +21,8 @@ import controllers.helpers.ErrorHandling
 import forms.memberDetails.MembersLastUkAddressLookupFormProvider
 import models.Mode
 import models.address.{AddressLookupResult, AddressRecords, NoAddressFound}
-import org.apache.pekko.Done
 import pages.memberDetails.MembersLastUkAddressLookupPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{AddressService, UserAnswersService}

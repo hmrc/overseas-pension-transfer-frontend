@@ -17,8 +17,8 @@
 package pages.qropsDetails
 
 import controllers.qropsDetails.routes
-import models.address.{Address, QROPSAddress}
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import models.address.QROPSAddress
+import models.{Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

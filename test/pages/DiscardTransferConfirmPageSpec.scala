@@ -19,11 +19,8 @@ package pages
 import base.SpecBase
 import controllers.routes
 import models.{NormalMode, PstrNumber, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-
-import scala.util.Try
 
 class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 

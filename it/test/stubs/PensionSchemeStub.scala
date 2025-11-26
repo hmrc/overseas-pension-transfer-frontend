@@ -135,7 +135,7 @@ object PensionSchemeStub {
     )
   }
 
-  def stubCheckPsaAssociationFailure(srn: String, psaId: String): Unit          = {
+  def stubCheckPsaAssociationFailure(srn: String, psaId: String): Unit = {
     stubGet(
       urlRegex        = AssocPathRegex,
       status          = INTERNAL_SERVER_ERROR,

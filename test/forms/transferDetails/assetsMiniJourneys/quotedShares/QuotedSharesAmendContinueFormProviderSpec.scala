@@ -17,7 +17,6 @@
 package forms.transferDetails.assetsMiniJourneys.quotedShares
 
 import forms.behaviours.BooleanFieldBehaviours
-import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueFormProvider
 import play.api.data.FormError
 
 class QuotedSharesAmendContinueFormProviderSpec extends BooleanFieldBehaviours {

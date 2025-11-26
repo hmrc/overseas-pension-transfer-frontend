@@ -21,8 +21,6 @@ import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswer
 import pages.Page
 import play.api.mvc.Call
 
-import scala.util.Try
-
 case object MembersLastUkAddressConfirmPage extends Page {
 
   override def toString: String = "memberConfirmLastUkAddress"

@@ -18,12 +18,12 @@ package services
 
 import base.SpecBase
 import handlers.AssetThresholdHandler
-import models.{SessionData, UserAnswers}
 import models.assets.TypeOfAsset
+import models.{SessionData, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.must.Matchers

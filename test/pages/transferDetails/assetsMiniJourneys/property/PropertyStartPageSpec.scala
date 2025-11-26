@@ -21,7 +21,6 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartPage
 
 class PropertyStartPageSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val index = 0

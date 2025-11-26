@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Request
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets

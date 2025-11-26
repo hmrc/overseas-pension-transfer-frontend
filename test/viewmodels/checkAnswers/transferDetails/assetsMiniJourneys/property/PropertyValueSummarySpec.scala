@@ -24,7 +24,6 @@ import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionSummary
 
 class PropertyValueSummarySpec extends AnyFreeSpec with SpecBase {
 

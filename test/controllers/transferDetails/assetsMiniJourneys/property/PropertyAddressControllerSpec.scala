@@ -17,12 +17,11 @@
 package controllers.transferDetails.assetsMiniJourneys.property
 
 import base.AddressBase
-import controllers.routes.JourneyRecoveryController
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormProvider}
-import models.{AmendCheckMode, NormalMode}
 import models.address._
 import models.requests.DisplayRequest
+import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec

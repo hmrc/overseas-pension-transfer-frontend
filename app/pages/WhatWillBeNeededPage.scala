@@ -17,7 +17,7 @@
 package pages
 
 import controllers.routes
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import play.api.mvc.Call
 
 object WhatWillBeNeededPage extends Page {

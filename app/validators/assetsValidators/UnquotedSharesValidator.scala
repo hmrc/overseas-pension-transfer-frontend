@@ -18,8 +18,8 @@ package validators.assetsValidators
 
 import cats.data.Validated.Valid
 import cats.implicits.{catsSyntaxTuple4Semigroupal, catsSyntaxValidatedIdBinCompat0}
-import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import models.assets.{TypeOfAsset, UnquotedSharesEntry}
+import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.transferDetails.TypeOfAssetPage
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
   UnquotedSharesClassPage,

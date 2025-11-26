@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.assets.{OtherAssetsMiniJourney, QuotedSharesMiniJourney, UnquotedSharesMiniJourney}
+import models.assets.{OtherAssetsMiniJourney, QuotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers

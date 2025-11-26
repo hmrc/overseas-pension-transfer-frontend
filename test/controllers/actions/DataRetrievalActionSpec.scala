@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
+import models.requests.{DisplayRequest, SchemeRequest}
 import models.responses.UserAnswersErrorResponse
 import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any

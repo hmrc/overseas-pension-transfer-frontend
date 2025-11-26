@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberPage
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages

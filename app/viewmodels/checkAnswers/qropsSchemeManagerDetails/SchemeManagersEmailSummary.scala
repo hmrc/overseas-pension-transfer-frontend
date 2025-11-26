@@ -16,8 +16,7 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat

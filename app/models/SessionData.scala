@@ -22,12 +22,11 @@ import models.taskList.TaskStatus.{CannotStart, NotStarted}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import queries.{Gettable, Settable, TaskStatusQuery}
+import services.EncryptionService
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-import uk.gov.hmrc.play.audit.model.TransactionFailure
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
-import services.EncryptionService
 
 case class SessionData(
     sessionId: String,

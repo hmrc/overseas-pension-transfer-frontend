@@ -17,7 +17,7 @@
 package pages.qropsSchemeManagerDetails
 
 import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, Mode, TaskCategory, UserAnswers}
+import models.{Mode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

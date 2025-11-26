@@ -19,7 +19,6 @@ package services
 import base.SpecBase
 import models.assets._
 import org.scalatest.freespec.AnyFreeSpec
-import play.api.libs.json.Json
 import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 import scala.util.{Failure, Success}

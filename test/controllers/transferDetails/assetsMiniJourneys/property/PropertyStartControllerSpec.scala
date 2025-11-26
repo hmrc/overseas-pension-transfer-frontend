@@ -18,7 +18,6 @@ package controllers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import controllers.transferDetails.routes
 import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar

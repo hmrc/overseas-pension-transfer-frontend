@@ -18,10 +18,10 @@ package controllers.actions
 
 import base.SpecBase
 import connectors.PensionSchemeConnector
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
 import models.authentication.{PsaId, PsaUser}
 import models.requests.{IdentifierRequest, SchemeRequest}
 import models.responses.PensionSchemeErrorResponse
+import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec

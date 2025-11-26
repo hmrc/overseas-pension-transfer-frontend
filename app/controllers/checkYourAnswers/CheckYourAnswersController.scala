@@ -18,7 +18,7 @@ package controllers.checkYourAnswers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import models.{FinalCheckMode, Mode, NormalMode}
+import models.{FinalCheckMode, NormalMode}
 import pages.checkYourAnswers.CheckYourAnswersPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

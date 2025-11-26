@@ -20,7 +20,7 @@ import controllers.actions._
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValueFormProvider
 import models.assets.TypeOfAsset.UnquotedShares
 import models.{AmendCheckMode, Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesValuePage}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.AssetsRecordVersionQuery
