@@ -31,7 +31,6 @@ class AmendDateOfTransferFormProvider @Inject() extends Mappings {
   private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 
   def apply(submissionDate: LocalDate)(implicit messages: Messages): Form[LocalDate] = {
-    val dayBeforeSubmission = submissionDate.minusDays(1)
 
     Form(
       "value" -> localDate(
@@ -43,7 +42,7 @@ class AmendDateOfTransferFormProvider @Inject() extends Mappings {
       )
         .verifying(
           minDate(minDate, "dateOfTransfer.amend.error.invalid.mindate", minDate.format(dateFormatter)),
-          maxDate(dayBeforeSubmission, "dateOfTransfer.amend.error.afterSubmissionDate", submissionDate.format(dateFormatter))
+          maxDate(submissionDate, "dateOfTransfer.amend.error.afterSubmissionDate", submissionDate.format(dateFormatter))
         )
     )
   }

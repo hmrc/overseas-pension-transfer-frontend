@@ -59,8 +59,8 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
       }
     }
 
-    "must succeed when name, reference, address and (otherCountry only) are provided" in {
-      val ua = emptyUserAnswers.withName(name).withRef(ref).withAddress(qropsAddress).withOtherCountry(otherCountry)
+    "must succeed when name, reference, address, country IS 'Other' and otherCountry are provided" in {
+      val ua = emptyUserAnswers.withName(name).withRef(ref).withAddress(qropsAddress).withCountry(Country("ZZ", "Other")).withOtherCountry(otherCountry)
 
       QropsDetailsValidator.fromUserAnswers(ua) match {
         case Valid(details) =>
@@ -68,7 +68,7 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
             qropsName         = name,
             qropsReference    = ref,
             qropsAddress      = qropsAddress,
-            qropsCountry      = None,
+            qropsCountry      = Some(Country("ZZ", "Other")),
             qropsOtherCountry = Some(otherCountry)
           )
 
@@ -77,19 +77,34 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
       }
     }
 
-    "must fail (and accumulate) when both country and otherCountry are present" in {
+    "must fail (and accumulate) when both country and otherCountry are present and country is NOT 'Other'" in {
       val ua = emptyUserAnswers.withName(name).withRef(ref).withAddress(qropsAddress).withCountry(country).withOtherCountry(otherCountry)
 
       val res = QropsDetailsValidator.fromUserAnswers(ua)
 
       res match {
         case Invalid(nec) =>
-          nec.toNonEmptyList.toList must have size 2
-          nec.toNonEmptyList.toList.head mustBe GenericError("Cannot have valid payload with selected country and other country")
-          nec.toNonEmptyList.toList(1) mustBe GenericError("Cannot have valid payload with other country and selected country")
+          nec.toNonEmptyList.toList must have size 1
+          nec.toNonEmptyList.toList.head mustBe GenericError("Cannot have valid payload value of QROPS Country is not 'Other'")
 
         case Valid(v) =>
-          fail(s"Expected Invalid with 2 GenericErrors, but got Valid: $v")
+          fail(s"Expected Invalid with 1 GenericError, but got Valid: $v")
+      }
+    }
+
+    "must fail (and accumulate) when country is NOT present and otherCountry is present" in {
+      val ua = emptyUserAnswers.withName(name).withRef(ref).withAddress(qropsAddress).withOtherCountry(otherCountry)
+
+      val res = QropsDetailsValidator.fromUserAnswers(ua)
+
+      res match {
+        case Invalid(nec) =>
+          nec.toNonEmptyList.toList must have size 2
+          nec.toNonEmptyList.toList.head mustBe DataMissingError(QROPSCountryPage)
+          nec.toNonEmptyList.toList(1) mustBe GenericError("Cannot have a value for other Country where value of QROPS Country is None")
+
+        case Valid(v) =>
+          fail(s"Expected Invalid with 1 GenericError and DataMissingError, but got Valid: $v")
       }
     }
 
