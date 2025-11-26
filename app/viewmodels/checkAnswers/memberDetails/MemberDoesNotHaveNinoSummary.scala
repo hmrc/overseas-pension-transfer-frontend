@@ -19,7 +19,6 @@ package viewmodels.checkAnswers.memberDetails
 import models.{Mode, UserAnswers}
 import pages.memberDetails.MemberDoesNotHaveNinoPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -47,7 +46,7 @@ object MemberDoesNotHaveNinoSummary {
       answer =>
         SummaryListRowViewModel(
           key     = "memberDoesNotHaveNino.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+          value   = ValueViewModel(answer),
           actions = actions
         ).withCssClass(additionalClasses.getOrElse(""))
     }
