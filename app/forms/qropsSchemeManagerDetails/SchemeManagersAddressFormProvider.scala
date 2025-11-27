@@ -50,25 +50,30 @@ class SchemeManagersAddressFormProvider @Inject() extends Mappings with Regex {
   def apply(): Form[SchemeManagersAddressFormData] = Form(
     mapping(
       "addressLine1" -> text("schemeManagersAddress.error.addressLine1.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(35, "common.addressInput.error.addressLine1.length"))
         .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine1.pattern")),
       "addressLine2" -> text("schemeManagersAddress.error.addressLine2.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(35, "common.addressInput.error.addressLine2.length"))
         .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine2.pattern")),
       "addressLine3" -> optional(
         Forms.text
-          verifying maxLength(35, "common.addressInput.error.addressLine3.length")
-          verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern")
+          .transform[String](input => input.trim, identity)
+          .verifying(maxLength(35, "common.addressInput.error.addressLine3.length"))
+          .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern"))
       ),
       "addressLine4" -> optional(
         Forms.text
-          verifying maxLength(35, "common.addressInput.error.addressLine4.length")
-          verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern")
+          .transform[String](input => input.trim, identity)
+          .verifying(maxLength(35, "common.addressInput.error.addressLine4.length"))
+          .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern"))
       ),
       "addressLine5" -> optional(
         Forms.text
-          verifying maxLength(35, "common.addressInput.error.addressLine5.length")
-          verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine5.pattern")
+          .transform[String](input => input.trim, identity)
+          .verifying(maxLength(35, "common.addressInput.error.addressLine5.length"))
+          .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine5.pattern"))
       ),
       "countryCode"  -> text("common.addressInput.error.countryCode.required")
     )(SchemeManagersAddressFormData.apply)(SchemeManagersAddressFormData.unapply)

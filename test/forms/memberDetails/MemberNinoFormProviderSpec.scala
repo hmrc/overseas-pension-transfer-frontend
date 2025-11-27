@@ -17,16 +17,15 @@
 package forms.memberDetails
 
 import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Regex
 import play.api.data.FormError
 
-class MemberNinoFormProviderSpec extends StringFieldBehaviours {
+class MemberNinoFormProviderSpec extends StringFieldBehaviours with Regex {
 
   val requiredKey = "memberNino.error.required"
   val lengthKey   = "memberNino.error.length"
   val patternKey  = "memberNino.error.pattern"
   val maxLength   = 9
-
-  val ninoRegex = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
 
   val form = new MemberNinoFormProvider()()
 
@@ -51,5 +50,27 @@ class MemberNinoFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "MemberNinoFormProvider" - {
+
+    "must allow combinations of whitespace and strip them on binding" in {
+
+      val inputs = Seq(
+        "QQ123456C",
+        " QQ123456C ",
+        "qq 123456c",
+        "QQ 12 34 56 C"
+      )
+
+      inputs.foreach { input =>
+        val result = form.bind(Map("value" -> input))
+
+        withClue(s"For input '$input': ") {
+          result.errors mustBe empty
+          result.value.value mustBe "QQ123456C"
+        }
+      }
+    }
   }
 }

@@ -28,14 +28,15 @@ class QROPSReferenceFormProvider @Inject() extends Mappings with Regex {
   def apply(): Form[String] =
     Form(
       "qropsRef" -> text("qropsReference.error.required")
-        .verifying(regexp(qropsRefRegex, "qropsReference.error.invalid"))
         .transform[String](
-          raw => prependReferencePrefix(raw),
-          formatted => formatted
+          raw => formatQropsRef(raw),
+          identity
         )
+        .verifying(regexp(qropsRefRegex, "qropsReference.error.invalid"))
     )
 
-  private def prependReferencePrefix(raw: String): String = {
-    if (raw.startsWith(referencePrefix)) raw else s"$referencePrefix$raw"
+  private def formatQropsRef(raw: String): String = {
+    val fd = raw.replaceAll("\\s+", "").toUpperCase
+    if (fd.startsWith(referencePrefix)) fd else s"$referencePrefix$fd"
   }
 }

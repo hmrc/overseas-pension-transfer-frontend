@@ -37,7 +37,7 @@ class UnquotedSharesClassFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(classRegex, maybeMaxLength = Some(maxLength))
     )
 
     behave like fieldWithMaxLength(
@@ -59,5 +59,20 @@ class UnquotedSharesClassFormProviderSpec extends StringFieldBehaviours {
       patternError   = FormError(fieldName, patternKey, Seq(classRegex)),
       maybeMaxLength = Some(maxLength)
     )
+  }
+
+  "UnquotedSharesClassFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "value" -> "  Ordinary A Shares  "
+        )
+      )
+
+      result.errors mustBe empty
+      val bound = result.value.value
+      bound mustBe "Ordinary A Shares"
+    }
   }
 }

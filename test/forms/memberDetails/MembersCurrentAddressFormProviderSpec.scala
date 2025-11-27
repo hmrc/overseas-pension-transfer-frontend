@@ -37,7 +37,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(addressLinesRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -72,7 +73,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(addressLinesRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -106,7 +108,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(addressLinesRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -139,7 +142,8 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      stringsMatchingRegex(addressLinesRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -185,6 +189,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
       form,
       fieldName,
       stringsMatchingRegex(internationalPostcodeRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -218,6 +223,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
       form,
       fieldName,
       stringsMatchingRegex(poBoxRegex, maybeMaxLength = Some(maxLength))
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -238,5 +244,35 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
       patternError = FormError(fieldName, patternKey, Seq(poBoxRegex)),
       Option(maxLength)
     )
+  }
+
+  "MembersCurrentAddressFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+
+      val result = form.bind(
+        Map(
+          "addressLine1" -> "  10 Downing Street  ",
+          "addressLine2" -> "  Westminster  ",
+          "addressLine3" -> "  London  ",
+          "addressLine4" -> "  Greater London  ",
+          "countryCode"  -> "GB",
+          "postcode"     -> "  SW1A 2AA  ",
+          "poBox"        -> "  PO Box 123  "
+        )
+      )
+
+      result.errors mustBe empty
+
+      val bound = result.value.value
+
+      bound.addressLine1 mustBe "10 Downing Street"
+      bound.addressLine2 mustBe "Westminster"
+      bound.addressLine3.value mustBe "London"
+      bound.addressLine4.value mustBe "Greater London"
+      bound.countryCode mustBe "GB"
+      bound.postcode.value mustBe "SW1A2AA"
+      bound.poBox.value mustBe "PO Box 123"
+    }
   }
 }

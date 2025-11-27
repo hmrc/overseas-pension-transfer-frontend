@@ -17,13 +17,13 @@
 package forms.memberDetails
 
 import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Regex
 import play.api.data.FormError
 
-class MembersLastUkAddressLookupFormProviderSpec extends StringFieldBehaviours {
+class MembersLastUkAddressLookupFormProviderSpec extends StringFieldBehaviours with Regex {
 
-  val requiredKey   = "membersLastUkAddressLookup.error.required"
-  val patternKey    = "membersLastUkAddressLookup.error.patternKey"
-  val postcodeRegex = "^(GIR 0AA|[A-Za-z]{1,2}[0-9][0-9A-Za-z]? ?[0-9][A-Za-z]{2})$"
+  val requiredKey = "membersLastUkAddressLookup.error.required"
+  val patternKey  = "membersLastUkAddressLookup.error.patternKey"
 
   val form = new MembersLastUkAddressLookupFormProvider()()
 

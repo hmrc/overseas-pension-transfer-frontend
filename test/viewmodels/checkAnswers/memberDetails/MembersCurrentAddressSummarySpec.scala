@@ -70,7 +70,6 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
       row.get.value.content mustBe HtmlContent("Line1<br>Line2<br>Finland")
       row.get.value.content.asHtml.body must not include "null"
     }
-//TODO: This test should be fixed once it is decided how to handle whitespace in optional fields
 
     "must not include blank or whitespace-only fields" in {
 

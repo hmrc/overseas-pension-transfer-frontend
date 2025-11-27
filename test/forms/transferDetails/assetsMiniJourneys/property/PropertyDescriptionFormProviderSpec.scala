@@ -62,4 +62,19 @@ class PropertyDescriptionFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
+  "PropertyDescriptionFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "value" -> "   Detached 4-bed house with garage   "
+        )
+      )
+
+      result.errors mustBe empty
+      val bound = result.value.value
+      bound mustBe "Detached 4-bed house with garage"
+    }
+  }
 }
