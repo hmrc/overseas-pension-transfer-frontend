@@ -252,8 +252,7 @@ membersLastUkAddressLookup.link = You can also <a href="{0}" class="govuk-link">
 
 memberSelectLastUkAddress.title = Select the member''s last UK address
 memberSelectLastUkAddress.heading = Select {0}''s last UK address
-memberSelectLastUkAddress.link = You can also <a href="{0}" class="govuk-link">enter the address manually</a>.
-memberSelectLastUkAddress.legend = {0} addresses found for <b>{1}</b> or try a <a href="{2}" class="govuk-link">different postcode</a>.
+memberSelectLastUkAddress.link = You can also <a href="{0}" class="govuk-link">enter the address manually</a> or try a <a href="{2}" class="govuk-link">different postcode</a>.
 memberSelectLastUkAddress.error.required = Select the member''s last UK address
 
 memberLastUkAddressNotFound.title = No address found
