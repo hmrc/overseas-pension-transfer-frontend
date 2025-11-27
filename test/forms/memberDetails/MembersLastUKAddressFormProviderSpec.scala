@@ -225,7 +225,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
       bound.addressLine2 mustBe "Westminster"
       bound.addressLine3.value mustBe "London"
       bound.addressLine4.value mustBe "Greater London"
-      bound.postcode.value mustBe "SW1A2AA"
+      bound.postcode.value mustBe "SW1A 2AA"
     }
   }
 }

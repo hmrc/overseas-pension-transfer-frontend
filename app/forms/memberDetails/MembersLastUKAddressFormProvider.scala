@@ -21,10 +21,11 @@ import models.address._
 import models.requests.DisplayRequest
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
+import utils.AppUtils
 
 import javax.inject.Inject
 
-class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
+class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {
 
   private val length35 = 35
   private val length16 = 16
@@ -55,18 +56,12 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
         ),
         "postcode"     -> text("membersLastUKAddress.error.postcode.required")
           .transform[String](
-            raw => formatPostcode(raw),
+            raw => formatUkPostcode(raw),
             formatted => formatted
           )
           .verifying(maxLength(length16, "membersLastUKAddress.error.postcode.length"))
           .verifying(regexp(postcodeRegex, "membersLastUKAddress.error.postcode.incorrect"))
       )(MembersLastUKAddress.apply)(MembersLastUKAddress.unapply)
     )
-  }
-
-  private def formatPostcode(raw: String): String = {
-    val formated          = raw.trim.toUpperCase.replaceAll("\\s+", "")
-    val (outcode, incode) = formated.splitAt(formated.length - 3)
-    s"$outcode$incode"
   }
 }

@@ -17,14 +17,13 @@
 package forms.memberDetails
 
 import forms.behaviours.StringFieldBehaviours
+import forms.mappings.Regex
 import models.PersonName
 import play.api.data.FormError
 
-class MemberNameFormProviderSpec extends StringFieldBehaviours {
+class MemberNameFormProviderSpec extends StringFieldBehaviours with Regex {
 
   val form = new MemberNameFormProvider()()
-
-  val nameRegex = "^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
 
   ".memberFirstName" - {
 
@@ -112,6 +111,22 @@ class MemberNameFormProviderSpec extends StringFieldBehaviours {
 
       firstName mustBe "Jane"
       lastName mustBe "Doe"
+    }
+
+    "must handle names with spaces, allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "memberFirstName" -> "  Jimmy John  ",
+          "memberLastName"  -> "  Doe Ray Mee  "
+        )
+      )
+
+      result.errors mustBe empty
+
+      val PersonName(firstName, lastName) = result.value.value
+
+      firstName mustBe "Jimmy John"
+      lastName mustBe "Doe Ray Mee"
     }
   }
 }

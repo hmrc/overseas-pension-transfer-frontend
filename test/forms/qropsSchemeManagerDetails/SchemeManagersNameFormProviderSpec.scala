@@ -112,5 +112,21 @@ class SchemeManagersNameFormProviderSpec extends StringFieldBehaviours with Rege
       firstName mustBe "Jane"
       lastName mustBe "Doe"
     }
+
+    "must handle names with spaces, allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "schemeManagersFirstName" -> "  Jimmy John  ",
+          "schemeManagersLastName"  -> "  Doe Ray Mee  "
+        )
+      )
+
+      result.errors mustBe empty
+
+      val PersonName(firstName, lastName) = result.value.value
+
+      firstName mustBe "Jimmy John"
+      lastName mustBe "Doe Ray Mee"
+    }
   }
 }

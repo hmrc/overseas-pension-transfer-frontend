@@ -40,4 +40,10 @@ trait AppUtils {
       dateTime.format(localDateTimeFormatter)
     }
   }
+
+  def formatUkPostcode(raw: String): String = {
+    val formated          = raw.trim.toUpperCase.replaceAll("\\s+", "")
+    val (outcode, incode) = formated.splitAt(formated.length - 3)
+    s"$outcode $incode"
+  }
 }

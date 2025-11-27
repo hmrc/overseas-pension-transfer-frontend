@@ -18,24 +18,20 @@ package forms.memberDetails
 
 import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
+import utils.AppUtils
 
 import javax.inject.Inject
 
-class MembersLastUkAddressLookupFormProvider @Inject() extends Mappings with Regex {
+class MembersLastUkAddressLookupFormProvider @Inject() extends Mappings with Regex with AppUtils {
 
   def apply(): Form[String] =
     Form(
       "value" -> text("membersLastUkAddressLookup.error.required")
         .transform[String](
-          raw => formatPostcode(raw),
+          raw => formatUkPostcode(raw),
           formatted => formatted
         )
         .verifying(regexp(postcodeRegex, "membersLastUkAddressLookup.error.pattern"))
     )
 
-  private def formatPostcode(raw: String): String = {
-    val formated          = raw.trim.toUpperCase.replaceAll("\\s+", "")
-    val (outcode, incode) = formated.splitAt(formated.length - 3)
-    s"$outcode$incode"
-  }
 }

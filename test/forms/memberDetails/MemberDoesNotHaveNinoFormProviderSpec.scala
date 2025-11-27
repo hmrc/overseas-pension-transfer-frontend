@@ -50,4 +50,19 @@ class MemberDoesNotHaveNinoFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
+  "MemberDoesNotHaveNinoFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "value" -> "  long explanation about why the member does not have a National Insurance number  "
+        )
+      )
+
+      result.errors mustBe empty
+      val bound = result.value.value
+      bound mustBe "long explanation about why the member does not have a National Insurance number"
+    }
+  }
 }
