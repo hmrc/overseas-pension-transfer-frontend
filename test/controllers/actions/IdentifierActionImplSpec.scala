@@ -19,12 +19,12 @@ package controllers.actions
 import base.SpecBase
 import config.FrontendAppConfig
 import models.requests.IdentifierRequest
-import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers._
+import play.api.mvc.Results._
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -95,13 +95,14 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
       redirectLocation(result) mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
     }
 
-    "must redirect to signed out page if no active session" in {
+    "must redirect to login if no active session" in {
       when(mockAuthConnector.authorise(any(), any())(any(), any())).thenReturn(Future.failed(BearerTokenExpired()))
 
-      val result = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
+      val result             = action.invokeBlock(fakeRequest, (_: IdentifierRequest[AnyContent]) => fail("Should not reach block"))
+      val redirectedLocation = java.net.URLDecoder.decode(redirectLocation(result).get, "UTF-8")
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.auth.routes.SignedOutController.onPageLoad().url)
+      redirectedLocation mustBe s"${appConfig.loginUrl}?continue=${appConfig.loginContinueUrl}"
     }
 
     "must redirect to unauthorised page on InsufficientEnrolments" in {
