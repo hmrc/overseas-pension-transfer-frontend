@@ -30,6 +30,19 @@ trait CurrencyFieldBehaviours extends FieldBehaviours {
           result.errors mustEqual Seq(nonNumericError)
       }
     }
+
+    "treat whitespace anywhere in the value as insignificant" in {
+
+      forAll(intsInRange(Int.MinValue + 1000, Int.MaxValue - 1000) -> "intValue") { number =>
+        val raw    = number.toString
+        val spaced = s"  ${raw.toCharArray.mkString(" ")}  "
+
+        val baseResult   = form.bind(Map(fieldName -> raw)).apply(fieldName)
+        val spacedResult = form.bind(Map(fieldName -> spaced)).apply(fieldName)
+
+        spacedResult.errors mustBe baseResult.errors
+      }
+    }
   }
 
   def currencyFieldWithMinimum(form: Form[_], fieldName: String, minimum: BigDecimal, expectedError: FormError): Unit = {
