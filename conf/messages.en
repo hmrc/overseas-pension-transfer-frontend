@@ -743,8 +743,8 @@ submitToHMRC.checkYourAnswersLabel = Save and continue
 submitToHMRC.error.required = Select yes if you want to submit the report
 submitToHMRC.change.hidden = SubmitToHMRC
 submitToHMRC.hintYes = You will still be able to amend the report after it''s been submitted.
-submitToHMRC.hintNo = Save this report as ''in progress''.
-submitToHMRC.amendHintNo = Save this report as ''amendment in progress''.
+submitToHMRC.hintNo = Save the report as ''in progress''.
+submitToHMRC.amendHintNo = Save the report as ''amendment in progress''.
 
 
 transferSubmitted.title = Transfer submitted
