@@ -20,7 +20,6 @@ import controllers.qropsDetails.routes
 import models.{Mode, UserAnswers}
 import pages.qropsDetails.QROPSOtherCountryPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -41,7 +40,7 @@ object QROPSOtherCountrySummary {
 
       SummaryListRowViewModel(
         key     = "qropsOtherCountry.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+        value   = ValueViewModel(answer),
         actions = actions
       )
     }
