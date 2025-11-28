@@ -65,7 +65,7 @@ private[mappings] class LocalDateFormatter(
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
     val cleanedData: Map[String, String] =
-      data.map { case (k, v) => k -> v.trim }
+      data.map { case (k, v) => k -> v.replaceAll("\\s+", "") }
 
     val fields = fieldKeys.map { field =>
       field -> cleanedData.get(s"$key.$field").filter(_.nonEmpty)

@@ -43,9 +43,11 @@ class DateBehaviours extends FieldBehaviours {
       }
     }
 
-    "treat leading and trailing whitespace in date fields as insignificant" in {
+    "treat whitespace anywhere in the date fields as insignificant" in {
 
-      forAll(validData -> "valid date with surrounding whitespace") { (date: LocalDate) =>
+      def spacedDigits(s: String): String = s"  ${s.toCharArray.mkString(" ")}  "
+
+      forAll(validData -> "valid date with whitespace") { (date: LocalDate) =>
         val dayRaw   = date.getDayOfMonth.toString
         val monthRaw = date.getMonthValue.toString
         val yearRaw  = date.getYear.toString
@@ -57,9 +59,9 @@ class DateBehaviours extends FieldBehaviours {
         )
 
         val spacedData = Map(
-          s"$key.day"   -> s"  $dayRaw  ",
-          s"$key.month" -> s"  $monthRaw  ",
-          s"$key.year"  -> s"  $yearRaw  "
+          s"$key.day"   -> spacedDigits(dayRaw),
+          s"$key.month" -> spacedDigits(monthRaw),
+          s"$key.year"  -> spacedDigits(yearRaw)
         )
 
         val baseResult   = form.bind(baseData)
