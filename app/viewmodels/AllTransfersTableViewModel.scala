@@ -98,8 +98,10 @@ object AllTransfersTableViewModel {
     }
 
     Table(
-      head = Some(head),
-      rows = rows
+      head           = Some(head),
+      rows           = rows,
+      caption        = Some(messages("dashboard.allTransfers.heading")),
+      captionClasses = "govuk-table__caption--m"
     )
   }
 }
