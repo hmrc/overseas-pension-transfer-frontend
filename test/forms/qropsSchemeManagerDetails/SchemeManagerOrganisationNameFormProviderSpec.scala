@@ -18,6 +18,7 @@ package forms.qropsSchemeManagerDetails
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
+import models.PersonName
 import play.api.data.FormError
 
 class SchemeManagerOrganisationNameFormProviderSpec extends StringFieldBehaviours with Regex {
@@ -58,5 +59,20 @@ class SchemeManagerOrganisationNameFormProviderSpec extends StringFieldBehaviour
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "SchemeManagerOrganisationNameFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "organisationName" -> "  John Doe Ltd  "
+        )
+      )
+
+      result.errors mustBe empty
+      val bound = result.value.value
+      bound mustBe "John Doe Ltd"
+    }
   }
 }

@@ -26,6 +26,7 @@ class MemberDoesNotHaveNinoFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("memberDoesNotHaveNino.error.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(160, "memberDoesNotHaveNino.error.length"))
     )
 }

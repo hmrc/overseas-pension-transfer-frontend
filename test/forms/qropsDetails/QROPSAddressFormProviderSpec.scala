@@ -37,6 +37,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
       form,
       fieldName,
       stringsWithMaxLength(maxLength)
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -72,6 +73,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
       form,
       fieldName,
       stringsWithMaxLength(maxLength)
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -106,6 +108,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
       form,
       fieldName,
       stringsWithMaxLength(maxLength)
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -139,6 +142,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
       form,
       fieldName,
       stringsWithMaxLength(maxLength)
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -172,6 +176,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
       form,
       fieldName,
       stringsWithMaxLength(maxLength)
+        .suchThat(_.trim.nonEmpty)
     )
 
     behave like fieldWithMaxLength(
@@ -204,5 +209,35 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "QROPSAddressFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+
+      val result = form.bind(
+        Map(
+          "addressLine1" -> "  10 Downing Street  ",
+          "addressLine2" -> "  Westminster  ",
+          "addressLine3" -> "  London  ",
+          "addressLine4" -> "  Greater London  ",
+          "addressLine5" -> "  Greater London  ",
+          "countryCode"  -> "GB",
+          "postcode"     -> "  SW1A 2AA  ",
+          "poBox"        -> "  PO Box 123  "
+        )
+      )
+
+      result.errors mustBe empty
+
+      val bound = result.value.value
+
+      bound.addressLine1 mustBe "10 Downing Street"
+      bound.addressLine2 mustBe "Westminster"
+      bound.addressLine3.value mustBe "London"
+      bound.addressLine4.value mustBe "Greater London"
+      bound.addressLine5.value mustBe "Greater London"
+      bound.countryCode mustBe "GB"
+    }
   }
 }

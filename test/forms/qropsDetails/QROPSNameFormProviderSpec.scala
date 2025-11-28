@@ -27,9 +27,9 @@ class QROPSNameFormProviderSpec extends StringFieldBehaviours {
 
   val form = new QROPSNameFormProvider()()
 
-  ".value" - {
+  val fieldName = "qropsName"
 
-    val fieldName = "qropsName"
+  ".value" - {
 
     behave like fieldThatBindsValidData(
       form,
@@ -49,5 +49,19 @@ class QROPSNameFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "QROPSNameFormProvider" - {
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          fieldName -> "  German Transfers  "
+        )
+      )
+
+      result.errors mustBe empty
+      val bound = result.value.value
+      bound mustBe "German Transfers"
+    }
   }
 }

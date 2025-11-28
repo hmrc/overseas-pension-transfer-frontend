@@ -17,26 +17,65 @@
 package forms.qropsSchemeManagerDetails
 
 import forms.behaviours.StringFieldBehaviours
-import forms.mappings.Regex
 import play.api.data.FormError
 
-class SchemeManagersContactFormProviderSpec extends StringFieldBehaviours with Regex {
+class SchemeManagersContactFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "schemeManagersContact.error.required"
-  val lengthKey   = "schemeManagersContact.error.length"
-  val maxLength   = 35
+  private val requiredKey = "schemeManagersContact.error.required"
+  private val lengthKey   = "schemeManagersContact.error.length"
+  private val patternKey  = "schemeManagersContact.error.pattern"
+  private val maxLength   = 35
 
-  val form = new SchemeManagersContactFormProvider()()
+  private val form      = new SchemeManagersContactFormProvider()()
+  private val fieldName = "contactNumber"
 
-  ".value" - {
+  ".contactNumber" - {
 
-    val fieldName = "contactNumber"
+    "must bind valid international phone numbers" in {
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsMatchingRegex(phoneNumberRegex, maybeMaxLength = Some(maxLength))
-    )
+      val validNumbers = Seq(
+        "+44 7911 123 456",
+        "07911123456",
+        "(+1) 202-555-0123",
+        "+33123456789"
+      )
+
+      validNumbers.foreach { number =>
+        val result = form.bind(Map(fieldName -> number))
+
+        withClue(s"For input '$number': ") {
+          result.errors mustBe empty
+        }
+      }
+    }
+
+    "must reject invalid phone numbers" in {
+
+      val invalidNumbers = Seq(
+        "abc123",
+        "+",
+        "+++++++",
+        "123",
+        "0000000000"
+      )
+
+      invalidNumbers.foreach { number =>
+        val result = form.bind(Map(fieldName -> number))
+
+        withClue(s"For input '$number': ") {
+          result.errors.map(_.message) must contain(patternKey)
+        }
+      }
+    }
+
+    "must strip whitespace before validating and binding" in {
+
+      val input  = "   +44 7911 123456   "
+      val result = form.bind(Map(fieldName -> input))
+
+      result.errors mustBe empty
+      result.value.value mustBe "+447911123456"
+    }
 
     behave like fieldWithMaxLength(
       form,
