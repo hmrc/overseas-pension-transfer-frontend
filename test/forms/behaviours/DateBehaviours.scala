@@ -42,6 +42,37 @@ class DateBehaviours extends FieldBehaviours {
           result.errors mustBe empty
       }
     }
+
+    "treat leading and trailing whitespace in date fields as insignificant" in {
+
+      forAll(validData -> "valid date with surrounding whitespace") { (date: LocalDate) =>
+        val dayRaw   = date.getDayOfMonth.toString
+        val monthRaw = date.getMonthValue.toString
+        val yearRaw  = date.getYear.toString
+
+        val baseData = Map(
+          s"$key.day"   -> dayRaw,
+          s"$key.month" -> monthRaw,
+          s"$key.year"  -> yearRaw
+        )
+
+        val spacedData = Map(
+          s"$key.day"   -> s"  $dayRaw  ",
+          s"$key.month" -> s"  $monthRaw  ",
+          s"$key.year"  -> s"  $yearRaw  "
+        )
+
+        val baseResult   = form.bind(baseData)
+        val spacedResult = form.bind(spacedData)
+
+        withClue(s"For date $date: ") {
+          baseResult.errors mustBe empty
+          spacedResult.errors mustBe empty
+
+          spacedResult.value.value mustEqual baseResult.value.value
+        }
+      }
+    }
   }
 
   def dateFieldWithMax(form: Form[_], key: String, max: LocalDate, formError: FormError): Unit = {
