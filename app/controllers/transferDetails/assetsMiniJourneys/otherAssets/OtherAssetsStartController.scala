@@ -17,7 +17,7 @@
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import controllers.actions._
-import models.{Mode, NormalMode}
+import models.Mode
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

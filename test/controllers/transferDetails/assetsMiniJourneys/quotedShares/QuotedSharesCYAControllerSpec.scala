@@ -18,7 +18,7 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

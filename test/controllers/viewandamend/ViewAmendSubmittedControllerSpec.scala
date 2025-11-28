@@ -18,7 +18,7 @@ package controllers.viewandamend
 
 import base.SpecBase
 import models.responses.UserAnswersErrorResponse
-import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, TransferId, UserAnswers}
+import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, TransferId}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec

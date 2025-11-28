@@ -18,11 +18,10 @@ package controllers
 
 import base.SpecBase
 import connectors.PensionSchemeConnector
-import models.responses.PensionSchemeErrorResponse
 import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{never, times, verify, when}
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind

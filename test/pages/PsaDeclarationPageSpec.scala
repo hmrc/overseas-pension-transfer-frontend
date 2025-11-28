@@ -19,7 +19,6 @@ package pages
 import base.SpecBase
 import controllers.routes
 import models.{AmendCheckMode, NormalMode, PstrNumber, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 

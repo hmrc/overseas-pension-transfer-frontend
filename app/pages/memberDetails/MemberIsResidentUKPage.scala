@@ -16,8 +16,8 @@
 
 package pages.memberDetails
 
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import controllers.{memberDetails, routes}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.Logging
 import play.api.libs.json.JsPath

@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
-import models.{Mode, SessionData, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

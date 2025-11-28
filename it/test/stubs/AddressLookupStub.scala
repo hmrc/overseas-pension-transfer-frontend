@@ -29,8 +29,7 @@ object AddressLookupStub {
         aResponse()
           .withStatus(status)
           .withBody(responseBody)
-      )
-    )
+      ))
 
   def responsePostPostcode(postcode: String)(status: Int, body: String): Unit = {
     stubPost("/lookup", Some(s"""{ "postcode": "$postcode" }"""), status, body)
@@ -44,7 +43,6 @@ object AddressLookupStub {
     s"""
        |[]
        |""".stripMargin
-
 
   val successResponseJson: String =
     s"""
@@ -120,7 +118,6 @@ object AddressLookupStub {
        |""".stripMargin
 
   def postPostcodeSuccessResponse(): Unit = responsePostPostcode("BB001BB")(OK, successResponseJson)
-
 
   def postPostcodeNoAddressesFoundResponse(): Unit = responsePostPostcode("BB002BB")(OK, noAddressesFoundResponseJson)
 

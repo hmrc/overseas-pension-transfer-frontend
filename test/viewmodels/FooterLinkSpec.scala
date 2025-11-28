@@ -18,7 +18,7 @@ package viewmodels
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessagesApi
 
 class FooterLinkSpec extends AnyWordSpec with Matchers {

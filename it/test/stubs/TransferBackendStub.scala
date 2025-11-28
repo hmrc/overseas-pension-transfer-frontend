@@ -132,17 +132,16 @@ object TransferBackendStub {
        |}
        |""".stripMargin
 
-
   // ----- get specific -----
 
   def getSpecificTransferOk(
-                             referenceId: String,
-                             pstr: String,
-                             qtStatus: String,
-                             dataJson: String,
-                             lastUpdatedIso: String,
-                             versionNumber: Option[String] = None
-                           ): Unit = {
+      referenceId: String,
+      pstr: String,
+      qtStatus: String,
+      dataJson: String,
+      lastUpdatedIso: String,
+      versionNumber: Option[String] = None
+    ): Unit = {
     val base =
       get(urlPathEqualTo(specificUrl(referenceId)))
         .withQueryParam("pstr", equalTo(pstr))
@@ -168,11 +167,11 @@ object TransferBackendStub {
   }
 
   def getSpecificTransferMalformed(
-                                    referenceId: String,
-                                    pstr: String,
-                                    qtStatus: String,
-                                    versionNumber: Option[String] = None
-                                  ): Unit = {
+      referenceId: String,
+      pstr: String,
+      qtStatus: String,
+      versionNumber: Option[String] = None
+    ): Unit = {
     val base =
       get(urlPathEqualTo(specificUrl(referenceId)))
         .withQueryParam("pstr", equalTo(pstr))
@@ -187,11 +186,11 @@ object TransferBackendStub {
   }
 
   def getSpecificTransferNotFound(
-                                   referenceId: String,
-                                   pstr: String,
-                                   qtStatus: String,
-                                   versionNumber: Option[String] = None
-                                 ): Unit = {
+      referenceId: String,
+      pstr: String,
+      qtStatus: String,
+      versionNumber: Option[String] = None
+    ): Unit = {
     val base =
       get(urlPathEqualTo(specificUrl(referenceId)))
         .withQueryParam("pstr", equalTo(pstr))
@@ -206,11 +205,11 @@ object TransferBackendStub {
   }
 
   def getSpecificTransferServerError(
-                                      referenceId: String,
-                                      pstr: String,
-                                      qtStatus: String,
-                                      versionNumber: Option[String] = None
-                                    ): Unit = {
+      referenceId: String,
+      pstr: String,
+      qtStatus: String,
+      versionNumber: Option[String] = None
+    ): Unit = {
     val base =
       get(urlPathEqualTo(specificUrl(referenceId)))
         .withQueryParam("pstr", equalTo(pstr))

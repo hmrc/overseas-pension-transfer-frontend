@@ -16,7 +16,7 @@
 
 package base
 
-import models.{SessionData, UserAnswers}
+import models.SessionData
 import models.address._
 import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 

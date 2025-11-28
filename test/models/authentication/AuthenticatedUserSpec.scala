@@ -16,7 +16,6 @@
 
 package models.authentication
 
-import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual

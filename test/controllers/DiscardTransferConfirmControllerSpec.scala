@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import forms.DiscardTransferConfirmFormProvider
-import models.NormalMode
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any

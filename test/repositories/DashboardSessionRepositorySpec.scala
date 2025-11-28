@@ -16,17 +16,17 @@
 
 package repositories
 
+import base.SpecBase
+import config.TestAppConfig
+import models.{AllTransfersItem, DashboardData, QtNumber, QtStatus}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import uk.gov.hmrc.mongo.test.CleanMongoCollectionSupport
-import base.SpecBase
-import config.TestAppConfig
 import services.EncryptionService
-import models.{AllTransfersItem, DashboardData, QtNumber, QtStatus}
+import uk.gov.hmrc.mongo.test.CleanMongoCollectionSupport
 
-import java.time.{Clock, Duration, Instant, Period, ZoneOffset}
+import java.time.{Duration, _}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 

@@ -24,7 +24,6 @@ import models.TaskCategory.MemberDetails
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{TaskService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

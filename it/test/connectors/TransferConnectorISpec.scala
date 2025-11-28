@@ -19,8 +19,8 @@ package connectors
 import base.BaseISpec
 import connectors.parsers.TransferParser.GetAllTransfersType
 import models.QtStatus.Submitted
-import models.{PstrNumber, QtNumber}
 import models.responses._
+import models.{PstrNumber, QtNumber}
 import org.scalatest.OptionValues
 import play.api.test.Injecting
 import stubs.TransferBackendStub
@@ -46,15 +46,15 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
             dto.pstr.value         shouldBe pstr.value
             dto.transfers.nonEmpty shouldBe true
             val first = dto.transfers.head
-            first.transferId shouldBe QtNumber("QT564321")
-            first.qtVersion.value         shouldBe "001"
-            first.memberFirstName.value   shouldBe "David"
-            first.memberSurname.value     shouldBe "Warne"
-            first.nino.value              shouldBe "AA000000A"
-            first.submissionDate.value    shouldBe Instant.parse("2025-03-14T00:00:00Z")
-            first.lastUpdated             shouldBe empty
-            first.qtStatus.value          shouldBe Submitted
-            first.pstrNumber.value        shouldBe pstr
+            first.transferId            shouldBe QtNumber("QT564321")
+            first.qtVersion.value       shouldBe "001"
+            first.memberFirstName.value shouldBe "David"
+            first.memberSurname.value   shouldBe "Warne"
+            first.nino.value            shouldBe "AA000000A"
+            first.submissionDate.value  shouldBe Instant.parse("2025-03-14T00:00:00Z")
+            first.lastUpdated           shouldBe empty
+            first.qtStatus.value        shouldBe Submitted
+            first.pstrNumber.value      shouldBe pstr
           case Left(err)  =>
             fail(s"Expected Right(dto) but got $err")
         }

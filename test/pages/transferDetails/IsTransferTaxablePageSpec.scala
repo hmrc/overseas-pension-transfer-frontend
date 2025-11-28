@@ -18,11 +18,8 @@ package pages.transferDetails
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.ApplicableTaxExclusions.Occupational
-import models.WhyTransferIsNotTaxable.{IndividualIsEmployedPublicService, IndividualIsEmployeeOccupational}
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
 import models.{AmendCheckMode, ApplicableTaxExclusions, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers, WhyTransferIsNotTaxable}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 

@@ -16,7 +16,6 @@
 
 package models.responses
 
-import models.dtos.UserAnswersDTO
 import play.api.libs.json.{Json, Reads}
 
 sealed trait UserAnswersError

@@ -19,8 +19,8 @@ package services
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
 import models.QtStatus.Submitted
-import models.{PstrNumber, QtNumber, QtStatus, TransferId, UserAnswers}
 import models.dtos.UserAnswersDTO.toUserAnswers
+import models.{PstrNumber, QtStatus, TransferId, UserAnswers}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
