@@ -44,7 +44,7 @@ class MemberNameController @Inject() (
     view: MemberNameView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging with ErrorHandling {
+  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   val form = formProvider()
 

@@ -26,6 +26,7 @@ class SchemeManagersEmailFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "emailAddress" -> text("schemeManagersEmail.error.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(254, "schemeManagersEmail.error.length"))
         .verifying(validEmail("schemeManagersEmail.error.format"))
     )

@@ -59,4 +59,20 @@ class OtherAssetsDescriptionFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
+  "OtherAssetsDescriptionFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "value" -> "   Antique vase from 19th century   "
+        )
+      )
+
+      result.errors mustBe empty
+      val bound = result.value.value
+      bound mustBe "Antique vase from 19th century"
+    }
+  }
+
 }

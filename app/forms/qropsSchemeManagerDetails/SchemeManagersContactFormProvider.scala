@@ -16,6 +16,7 @@
 
 package forms.qropsSchemeManagerDetails
 
+import com.google.i18n.phonenumbers.{NumberParseException, PhoneNumberUtil}
 import forms.mappings.{Mappings, Regex}
 import play.api.data.Form
 
@@ -26,7 +27,32 @@ class SchemeManagersContactFormProvider @Inject() extends Mappings with Regex {
   def apply(): Form[String] =
     Form(
       "contactNumber" -> text("schemeManagersContact.error.required")
+        .transform[String](_.replaceAll("\\s+", ""), identity)
         .verifying(maxLength(35, "schemeManagersContact.error.length"))
-        .verifying(regexp(phoneNumberRegex, "schemeManagersContact.error.pattern"))
+        .verifying("schemeManagersContact.error.pattern", number => isValidPhoneNumber(number))
     )
+
+  /** Accepts any valid phone number in the world. If it starts with '+', it's treated as an international number. If it doesn't, we fall back to GB as a
+    * default region for parsing. See: https://design-system.service.gov.uk/patterns/phone-numbers/
+    */
+  private def isValidPhoneNumber(raw: String): Boolean = {
+    val phoneUtil = PhoneNumberUtil.getInstance()
+    try {
+      if (raw.isEmpty) {
+        false
+      } else {
+        val defaultRegion =
+          if (raw.startsWith("+")) {
+            "ZZ" // default
+          } else {
+            "GB"
+          }
+
+        val parsed = phoneUtil.parse(raw, defaultRegion)
+        phoneUtil.isValidNumber(parsed)
+      }
+    } catch {
+      case _: NumberParseException => false
+    }
+  }
 }
