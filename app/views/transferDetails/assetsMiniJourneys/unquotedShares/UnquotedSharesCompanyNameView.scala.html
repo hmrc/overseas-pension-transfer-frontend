@@ -15,19 +15,13 @@
  *@
 
 @import viewmodels.InputWidth._
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import views.ViewUtils.title
-@import viewmodels.govuk.all._
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import viewmodels.LabelSize.Large
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
-@import viewmodels.LabelSize.Large
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 @import play.api.data.Form
 @import play.api.i18n.Messages
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.charactercount.CharacterCount
 
 @this(
         layout: templates.Layout,
@@ -35,7 +29,8 @@
         govukErrorSummary: GovukErrorSummary,
         govukInput: GovukInput,
         govukButton: GovukButton,
-        qtNumber: QTNumber
+        qtNumber: QTNumber,
+        govukCharacterCount: GovukCharacterCount
 )
 
 
@@ -51,15 +46,21 @@
 
         @qtNumber()
 
-        @govukInput(
-            InputViewModel(
-                field = form("value"),
-                label = LabelViewModel(Text(messages("unquotedSharesCompanyName.heading")))
-                    .withCssClass("govuk-!-margin-bottom-6")
-                    .asPageHeading(size = Large)
-            )
-            .withWidth(OneHalf)
-        )
+        @govukCharacterCount(CharacterCount(
+            id = "value",
+            name = "value",
+            label = Label(
+                content = Text(messages("unquotedSharesCompanyName.heading")),
+                isPageHeading = true,
+                classes = "govuk-label--l"
+            ),
+            maxLength = Some(160),
+            errorMessage = form("value").error.map { err =>
+                ErrorMessage(content = Text(messages(err.message, err.args: _*)))
+            },
+            classes = "govuk-!-width-two-thirds govuk-!-margin-bottom-6",
+            value = form("value").value
+        ))
 
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))

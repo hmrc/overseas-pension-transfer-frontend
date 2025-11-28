@@ -22,6 +22,7 @@
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
 @import viewmodels.LabelSize.Large
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.charactercount.CharacterCount
 
 @this(
         layout: templates.Layout,
@@ -29,7 +30,9 @@
         govukErrorSummary: GovukErrorSummary,
         govukInput: GovukInput,
         govukButton: GovukButton,
-        qtNumber: QTNumber
+        qtNumber: QTNumber,
+        govukCharacterCount: GovukCharacterCount
+
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
@@ -44,15 +47,21 @@
 
         @qtNumber()
 
-        @govukInput(
-            InputViewModel(
-                field = form("qropsName"),
-                label = LabelViewModel(Text(messages("qropsName.heading")))
-                    .withCssClass("govuk-!-margin-bottom-6")
-                    .asPageHeading(size = Large)
-            )
-            .withWidth(OneHalf)
-        )
+        @govukCharacterCount(CharacterCount(
+            id = "qropsName",
+            name = "qropsName",
+            label = Label(
+                content = Text(messages("qropsName.heading")),
+                isPageHeading = true,
+                classes = "govuk-label--l"
+            ),
+            maxLength = Some(160),
+            errorMessage = form("qropsName").error.map { err =>
+                ErrorMessage(content = Text(messages(err.message, err.args: _*)))
+            },
+            classes = "govuk-!-width-one-half govuk-!-margin-bottom-6",
+            value = form("qropsName").value
+        ))
 
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
