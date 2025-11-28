@@ -42,9 +42,9 @@ footer.link.text.discard.amendment = Discard amendments to submission
 footer.link.text.dashboard = Return to Report a transfer to a QROPS
 footer.link.text.tasklist = Return to complete your transfer report
 
-dashboard.title = Report a transfer to a qualifying recognised overseas pension scheme
+dashboard.title = Report a transfer to a qualifying recognised overseas pension scheme (QROPS)
 dashboard.allTransfers.page = All transfers (page {0} of {1})
-dashboard.heading = Report a transfer to a qualifying recognised overseas pension scheme
+dashboard.heading = Report a transfer to a qualifying recognised overseas pension scheme (QROPS)
 dashboard.linkText = Start a new transfer
 dashboard.allTransfers.heading = All transfers
 dashboard.allTransfers.head.member = Member name
