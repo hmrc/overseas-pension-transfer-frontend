@@ -51,9 +51,9 @@ item.qtStatus match {
 
 @pageSuffix: Option[String] = @{
     if (vm.totalPages > 1) {
-      Some(messages("dashboard.allTransfers.page", vm.currentPage.toString, vm.totalPages.toString))
+        Some(messages("dashboard.allTransfers.page", vm.currentPage.toString, vm.totalPages.toString))
     } else {
-      None
+        None
     }
 }
 
@@ -120,7 +120,9 @@ item.qtStatus match {
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
     @if(vm.table.rows.nonEmpty) {
-        @govukTable(vm.table)
+        <div role="region" aria-labelledby="Caption01" tabindex="0">
+            @govukTable(vm.table)
+        </div>
         @vm.pagination.map(govukPagination(_))
     } else {
         <p class="govuk-body">@messages("dashboard.allTransfers.empty")</p>
