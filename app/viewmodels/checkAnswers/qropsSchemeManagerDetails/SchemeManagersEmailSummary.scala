@@ -16,11 +16,9 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
@@ -41,7 +39,7 @@ object SchemeManagersEmailSummary {
 
       SummaryListRowViewModel(
         key     = "schemeManagersEmail.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+        value   = ValueViewModel(answer),
         actions = actions
       )
     }
