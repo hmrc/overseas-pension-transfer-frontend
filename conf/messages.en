@@ -39,12 +39,12 @@ error.summary.title = There is a problem
 
 footer.link.text.discard.report = Discard transfer report
 footer.link.text.discard.amendment = Discard amendments to submission
-footer.link.text.dashboard = Return to Report a transfer to a QROPS dashboard
-footer.link.text.tasklist = Return to task list
+footer.link.text.dashboard = Return to Report a transfer to a QROPS
+footer.link.text.tasklist = Return to complete your transfer report
 
-dashboard.title = Report a transfer to a qualifying recognised overseas pension scheme
+dashboard.title = Report a transfer to a qualifying recognised overseas pension scheme (QROPS)
 dashboard.allTransfers.page = All transfers (page {0} of {1})
-dashboard.heading = Report a transfer to a qualifying recognised overseas pension scheme
+dashboard.heading = Report a transfer to a qualifying recognised overseas pension scheme (QROPS)
 dashboard.linkText = Start a new transfer
 dashboard.allTransfers.heading = All transfers
 dashboard.allTransfers.head.member = Member name
@@ -95,7 +95,7 @@ requiredInfo.schemeManager.bullet2 = The scheme manager's address and contact de
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = Try again later.
-journeyRecovery.continue.guidance.extra = Your transfer report will be saved as ''in progress''. You can come back to your dashboard to complete it at any time.
+journeyRecovery.continue.guidance.extra = Your transfer report will be saved as ''in progress''. You can come back to complete it at any time.
 
 journeyRecovery.startAgain.title = Sorry, there is a problem with the service
 journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
@@ -106,7 +106,7 @@ addressLookupDown.heading = Sorry, there is a problem with our address search
 addressLookupDown.body = We''re having trouble retrieving some information.
 addressLookupDown.options.heading = You can:
 addressLookupDown.options.tryAgain = Try again in a few minutes
-addressLookupDown.options.dashboard = Return to overseas pension transfer dashboard
+addressLookupDown.options.dashboard = Return to Report a transfer to a QROPS
 addressLookupDown.options.enterManually = Enter the information manually
 
 signedOut.title = For your security, we signed you out
@@ -742,14 +742,14 @@ submitToHMRC.checkYourAnswersLabel = Save and continue
 submitToHMRC.error.required = Select yes if you want to submit the report
 submitToHMRC.change.hidden = SubmitToHMRC
 submitToHMRC.hintYes = You will still be able to amend the report after it''s been submitted.
-submitToHMRC.hintNo = Mark as ''in progress'' and return to the dashboard.
-submitToHMRC.amendHintNo = Mark as ''amendment in progress'' and return to the dashboard.
+submitToHMRC.hintNo = Save the report as ''in progress''.
+submitToHMRC.amendHintNo = Save the report as ''amendment in progress''.
 
 
 transferSubmitted.title = Transfer submitted
 transferSubmitted.heading = Transfer submitted
 transferSubmitted.referenceNumber.text = Your reference number
-transferSubmitted.dashboardLink.text = Return to Report a transfer to a QROPS dashboard
+transferSubmitted.dashboardLink.text = Return to Report a transfer to a QROPS
 transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
 transferSubmitted.memberName.key = Member name
 transferSubmitted.pensionScheme.key = Scheme
