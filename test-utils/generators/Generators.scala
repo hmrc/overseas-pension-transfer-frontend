@@ -59,6 +59,9 @@ trait Generators extends ModelGenerators with Logging {
     }
   }
 
+  def intsInRange(min: Int, max: Int): Gen[Int] =
+    Gen.chooseNum(min, max)
+
   def intsInRangeWithCommas(min: Int, max: Int): Gen[String] = {
     val numberGen = choose[Int](min, max).map(_.toString)
     genIntersperseString(numberGen, ",")
