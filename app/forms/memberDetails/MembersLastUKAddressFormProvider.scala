@@ -21,10 +21,11 @@ import models.address._
 import models.requests.DisplayRequest
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
+import utils.AppUtils
 
 import javax.inject.Inject
 
-class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
+class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {
 
   private val length35 = 35
   private val length16 = 16
@@ -34,22 +35,30 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex {
     Form(
       mapping(
         "addressLine1" -> text("membersLastUKAddress.error.addressLine1.required", Seq(memberName))
+          .transform[String](input => input.trim, identity)
           .verifying(maxLength(length35, "common.addressInput.error.addressLine1.length"))
           .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine1.pattern")),
         "addressLine2" -> text("membersLastUKAddress.error.addressLine2.required", Seq(memberName))
+          .transform[String](input => input.trim, identity)
           .verifying(maxLength(length35, "common.addressInput.error.addressLine2.length"))
           .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine2.pattern")),
         "addressLine3" -> optional(
           Forms.text
-            verifying maxLength(length35, "common.addressInput.error.addressLine3.length")
-            verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern")
+            .transform[String](input => input.trim, identity)
+            .verifying(maxLength(length35, "common.addressInput.error.addressLine3.length"))
+            .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern"))
         ),
         "addressLine4" -> optional(
           Forms.text
-            verifying maxLength(length35, "common.addressInput.error.addressLine4.length")
-            verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern")
+            .transform[String](input => input.trim, identity)
+            .verifying(maxLength(length35, "common.addressInput.error.addressLine4.length"))
+            .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern"))
         ),
         "postcode"     -> text("membersLastUKAddress.error.postcode.required")
+          .transform[String](
+            raw => formatUkPostcode(raw),
+            formatted => formatted
+          )
           .verifying(maxLength(length16, "membersLastUKAddress.error.postcode.length"))
           .verifying(regexp(postcodeRegex, "membersLastUKAddress.error.postcode.incorrect"))
       )(MembersLastUKAddress.apply)(MembersLastUKAddress.unapply)

@@ -28,6 +28,7 @@ class QuotedSharesClassFormProvider @Inject() extends Mappings with Regex {
   def apply(): Form[String] =
     Form(
       "value" -> text("quotedSharesClass.error.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(maxLength, "quotedSharesClass.error.length"))
         .verifying(regexp(nameRegex, "quotedSharesClass.error.pattern"))
     )

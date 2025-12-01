@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{QtNumber, SessionData}
+import models.{QtNumber, SessionData, UserAnswers}
 import pages.memberDetails.MemberNamePage
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import utils.DateTimeFormats.localDateTimeFormatter
@@ -25,8 +25,13 @@ import java.time.ZoneId
 
 trait AppUtils {
 
-  def memberFullName(sessionData: SessionData): String = {
-    sessionData.get(MemberNamePage).fold("Undefined Undefined")(_.fullName)
+  def memberFullName(sessionData: SessionData, userAnswers: Option[UserAnswers] = None): String = {
+    sessionData.get(MemberNamePage)
+      .map(_.fullName)
+      .orElse {
+        userAnswers.flatMap(_.get(pages.memberDetails.MemberNamePage).map(_.fullName))
+      }
+      .getOrElse("Undefined Undefined")
   }
 
   def qtNumber(sessionData: SessionData): QtNumber = {
@@ -39,5 +44,11 @@ trait AppUtils {
       val dateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime
       dateTime.format(localDateTimeFormatter)
     }
+  }
+
+  def formatUkPostcode(raw: String): String = {
+    val formated          = raw.trim.toUpperCase.replaceAll("\\s+", "")
+    val (outcode, incode) = formated.splitAt(formated.length - 3)
+    s"$outcode $incode"
   }
 }

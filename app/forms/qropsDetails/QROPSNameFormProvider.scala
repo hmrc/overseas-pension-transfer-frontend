@@ -26,6 +26,7 @@ class QROPSNameFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "qropsName" -> text("qropsName.error.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(160, "qropsName.error.length"))
     )
 }
