@@ -60,12 +60,12 @@ class DashboardController @Inject() (
     sessionRepository.clear(id) flatMap { _ =>
       repo.get(id).flatMap {
         case None =>
-          logger.warn(s"[DashboardController][onPageLoad] No dashboard data found for $id")
+          logger.warn(s"[DashboardController][onPageLoad] No dashboard data found this customer")
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
 
         case Some(dashboardData) =>
           dashboardData.get(PensionSchemeDetailsQuery).fold {
-            logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for $id")
+            logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for this customer")
             Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
           } { pensionSchemeDetails =>
             dashboardData.get(TransfersOverviewQuery) match {
