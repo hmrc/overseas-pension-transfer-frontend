@@ -24,12 +24,13 @@
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 @import play.api.data.Form
 @import play.api.i18n.Messages
+@import views.html.components.AmendContinueList
 
 @this(
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        hmrcAddToAList : HmrcAddToAList,
+        hmrcAddToAList : AmendContinueList,
         qtNumber: QTNumber
 )
 
@@ -38,10 +39,15 @@
 @singularTxt = @{messages("unquotedSharesAmendContinue.text.singular")}
 @pluralTxt = @{messages("unquotedSharesAmendContinue.text.plural")}
 @partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
+@titleTxt = @{
+    shares.length match {
+        case 0 => messages("unquotedSharesAmendContinue.text.title.noItems")
+        case 1 => messages("unquotedSharesAmendContinue.text.title.oneItem")
+        case n => messages("unquotedSharesAmendContinue.text.title.multipleItems", n)
+    }
+}
 
-@titleText = @{messages("unquotedSharesAmendContinue.title", shares.size, partTxt)}
-
-@layout(pageTitle = title(form, titleText)) {
+@layout(pageTitle = title(form, titleTxt)) {
 
     @formHelper(action = AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
@@ -57,7 +63,10 @@
                     singular = singularTxt,
                     plural = pluralTxt
                 ))
-            )
+            ),
+            errorMessage = form("add-another")
+                .error
+                .map(error => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = messages(error.message)))
         )
     }
 }

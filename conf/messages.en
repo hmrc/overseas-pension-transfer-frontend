@@ -630,6 +630,9 @@ unquotedSharesClass.error.pattern = The class of unquoted shares must only inclu
 
 additionalAsset.common.title = You have added {0} {1}
 
+unquotedSharesAmendContinue.text.title.noItems = You have not added any items
+unquotedSharesAmendContinue.text.title.oneItem = You have added 1 group of unquoted shares
+unquotedSharesAmendContinue.text.title.multipleItems = You have added {0} groups of unquoted shares
 unquotedSharesAmendContinue.error.required = Please select an option
 unquotedSharesAmendContinue.checkYourAnswersLabel = Unquoted shares
 unquotedSharesAmendContinue.change.hidden = Unquoted share details
@@ -665,10 +668,9 @@ addAdditionalOtherAsset.checkYourAnswersLabel = Do you need to add another asset
 addAdditionalOtherAsset.error.required = Please select an option
 addAdditionalOtherAsset.change.hidden = Do you need to add another asset?
 
-unquotedSharesAmendContinue.title = Do you need to add more unquoted shares?
-
-quotedSharesAmendContinue.title = Do you need add more quoted shares?
-quotedSharesAmendContinue.heading = You have added 1 quoted shares
+quotedSharesAmendContinue.text.title.noItems = You have not added any items
+quotedSharesAmendContinue.text.title.oneItem = You have added 1 group of quoted shares
+quotedSharesAmendContinue.text.title.multipleItems = You have added {0} groups of quoted shares
 quotedSharesAmendContinue.error.required = Please select an option
 quotedSharesAmendContinue.addMore = Do you need to add another quoted shares?
 quotedSharesAmendContinue.checkYourAnswersLabel = Quoted shares
@@ -682,7 +684,9 @@ moreQuotedSharesDeclaration.moreQuotedShares = Does the member have more than 5 
 moreQuotedSharesDeclaration.moreQuotedShares.hint = Select yes if the member has more than 5 quoted shares. We''ll contact the scheme administrator for information on the rest of the quoted shares.
 moreQuotedSharesDeclaration.error.required = Please select an option
 
-propertyAmendContinue.title = Do you need to add another property?
+propertyAmendContinue.text.title.noItems = You have not added any items
+propertyAmendContinue.text.title.oneItem = You have added 1 property
+propertyAmendContinue.text.title.multipleItems = You have added {0} properties
 propertyAmendContinue.heading = You have added 1 Property
 propertyAmendContinue.checkYourAnswersLabel = Property
 propertyAmendContinue.error.required = Please select an option
@@ -697,6 +701,9 @@ morePropertyDeclaration.moreProperty = Does the member have more than 5 properti
 morePropertyDeclaration.moreProperty.hint = Select yes if the member has more than 5 properties. We''ll contact the scheme administrator for information on the rest of the properties.
 morePropertyDeclaration.error.required = Please select an option
 
+otherAssetsAmendContinue.text.title.noItems = You have not added any items
+otherAssetsAmendContinue.text.title.oneItem = You have added 1 asset
+otherAssetsAmendContinue.text.title.multipleItems = You have added {0} assets
 otherAssetsAmendContinue.error.required = Please select an option
 otherAssetsAmendContinue.checkYourAnswersLabel = Other assets
 otherAssetsAmendContinue.change.hidden = Other asset details

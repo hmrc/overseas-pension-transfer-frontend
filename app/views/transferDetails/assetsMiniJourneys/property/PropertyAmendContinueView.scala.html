@@ -25,6 +25,7 @@
 @import views.html.components.QTNumber
 @import play.api.data.Form
 @import play.api.i18n.Messages
+@import views.html.components.AmendContinueList
 
 @this(
         layout: templates.Layout,
@@ -32,7 +33,7 @@
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
         govukButton: GovukButton,
-        hmrcAddToAList : HmrcAddToAList,
+        hmrcAddToAList : AmendContinueList,
         qtNumber: QTNumber
 )
 
@@ -41,8 +42,15 @@
 @singularTxt = @{messages("propertyAmendContinue.text.singular")}
 @pluralTxt = @{messages("propertyAmendContinue.text.plural")}
 @partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
+@titleTxt = @{
+    shares.length match {
+        case 0 => messages("propertyAmendContinue.text.title.noItems")
+        case 1 => messages("propertyAmendContinue.text.title.oneItem")
+        case n => messages("propertyAmendContinue.text.title.multipleItems", n)
+    }
+}
 
-@layout(pageTitle = title(form, messages("propertyAmendContinue.title"))) {
+@layout(pageTitle = title(form, titleTxt)) {
 
     @formHelper(action = AssetsMiniJourneysRoutes.PropertyAmendContinueController.onSubmit(mode)) {
 
@@ -58,7 +66,10 @@
                     singular = singularTxt,
                     plural = pluralTxt
                 ))
-            )
+            ),
+            errorMessage = form("add-another")
+                .error
+                .map(error => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = messages(error.message)))
         )
     }
 }
