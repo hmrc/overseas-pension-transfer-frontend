@@ -26,6 +26,7 @@ import pages.memberDetails.{MembersLastUKAddressPage, MembersLastUkAddressConfir
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import services.{AddressService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.AddressViewModel
@@ -42,6 +43,7 @@ class MembersLastUkAddressConfirmController @Inject() (
     addressService: AddressService,
     formProvider: MemberConfirmLastUkAddressFormProvider,
     val controllerComponents: MessagesControllerComponents,
+    sessionRepository: SessionRepository,
     view: MembersLastUkAddressConfirmView,
     userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
@@ -54,7 +56,7 @@ class MembersLastUkAddressConfirmController @Inject() (
       val maybeSelectedAddress = request.sessionData.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
         case Some(selectedAddress) =>
-          val viewModel = AddressViewModel.fromAddress(selectedAddress)
+          val viewModel = AddressViewModel.fromAddress(selectedAddress._2)
           Ok(view(form, mode, viewModel))
         case _                     =>
           Redirect(
@@ -68,15 +70,16 @@ class MembersLastUkAddressConfirmController @Inject() (
       val maybeSelectedAddress = request.sessionData.get(MembersLastUkAddressSelectPage)
       maybeSelectedAddress match {
         case Some(selectedAddress) =>
-          val viewModel     = AddressViewModel.fromAddress(selectedAddress)
-          val addressToSave = MembersLastUKAddress.fromAddress(selectedAddress)
+          val viewModel     = AddressViewModel.fromAddress(selectedAddress._2)
+          val addressToSave = MembersLastUKAddress.fromAddress(selectedAddress._2)
           formProvider().bindFromRequest().fold(
             formWithErrors => {
               Future.successful(BadRequest(view(formWithErrors, mode, viewModel)))
             },
             _ =>
               for {
-                clearedLookupUA <- addressService.clearAddressLookups(request.sessionData)
+                clearedLookupSD <- addressService.clearAddressLookups(request.sessionData)
+                _               <- sessionRepository.set(clearedLookupSD)
                 updatedAnswers  <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, addressToSave))
                 savedForLater   <- userAnswersService.setExternalUserAnswers(updatedAnswers)
               } yield {
