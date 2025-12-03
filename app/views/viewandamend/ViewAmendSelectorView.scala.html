@@ -14,29 +14,25 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios, ErrorMessage}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios, ErrorMessage, GovukErrorSummary}
+@import viewmodels.govuk.all._
+@import play.api.data.Forms._
 
 @this(
-  layout: templates.Layout,
-  formHelper: FormWithCSRF,
-  govukButton: GovukButton,
-  govukRadios: GovukRadios,
-  govukErrorSummary: GovukErrorSummary
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukErrorSummary: GovukErrorSummary
 )
 
-@(qtReference: TransferId, pstr: models.PstrNumber, qtStatus: models.QtStatus, versionNumber: String)(implicit request: Request[_], messages: Messages)
+@(qtReference: TransferId, pstr: models.PstrNumber, qtStatus: models.QtStatus, versionNumber: String, form: Form[_] (implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("viewAmend.title"), showCYAFooter = true) {
-  @request.flash.get("error").map { _ =>
-    @govukErrorSummary(ErrorSummary(
-      errorList = Seq(ErrorLink(
-        href = Some("#option"),
-        content = Text(messages("viewAmend.error.required"))
-      )),
-      title = Text(messages("error.summary.title"))
-    ))
-  }
   @formHelper(action = controllers.viewandamend.routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber)) {
+    @if(form.errors.nonEmpty) {
+      @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
     @request.flash.get("lockWarning").map { name =>
       <div class="govuk-notification-banner govuk-notification-banner--important"
            role="region"

@@ -18,13 +18,14 @@ package controllers.viewandamend
 
 import config.FrontendAppConfig
 import controllers.actions._
+import forms.transferDetails.ViewAmendSelectorFormProvider
 import models.QtStatus.AmendInProgress
 import models.audit.JourneyStartedType.StartAmendmentOfTransfer
 import models.authentication.{PsaUser, PspUser}
 import models.{PstrNumber, QtStatus, SessionData, TransferId}
 import pages.memberDetails.MemberNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, __}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
@@ -48,88 +49,65 @@ class ViewAmendSelectorController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
+  private val form = ViewAmendSelectorFormProvider.form()
 
   def onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
     (identify andThen schemeData) { implicit request =>
       Ok(view(qtReference, pstr, qtStatus, versionNumber)).withSession(
         request.session +
-          ("qtReference"   -> qtReference.value) +
-          ("pstr"          -> pstr.value) +
-          ("qtStatus"      -> qtStatus.toString) +
+          ("qtReference" -> qtReference.value) +
+          ("pstr" -> pstr.value) +
+          ("qtStatus" -> qtStatus.toString) +
           ("versionNumber" -> versionNumber)
       )
     }
 
   def onSubmit(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
     (identify andThen schemeData).async { implicit request =>
-      for {
-        formData <- Future.successful(
-                      request.body.asFormUrlEncoded
-                        .flatMap(_.get("option").flatMap(_.headOption))
-                    )
-        result   <- formData match {
+      form.bindFromRequest().fold(
+        formWithErrors => Future.successful(BadRequest(view(qtReference, pstr, qtStatus, versionNumber, formWithErrors))),
+        {
+          case Some("view") =>
+            Future.successful(Redirect(routes.ViewAmendSubmittedController.view(qtReference, pstr, qtStatus, versionNumber)))
 
-                      case Some("view") =>
-                        Future.successful(Redirect(routes.ViewAmendSubmittedController.view(qtReference, pstr, qtStatus, versionNumber)))
+          case Some("amend") =>
+            val owner = request.authenticatedUser match {
+              case PsaUser(psaId, _, _) => psaId.value
+              case PspUser(pspId, _, _) => pspId.value
+            }
+            for {
+              userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
+              allTransfersItem = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
+              lockResult <-
+                lockService.takeLockWithAudit(
+                  qtReference,
+                  owner,
+                  lockTtlSeconds,
+                  request.authenticatedUser,
+                  request.schemeDetails,
+                  StartAmendmentOfTransfer,
+                  allTransfersItem
+                )
+            } yield (userAnswersResult, lockResult) match {
+              case (Right(answers), true) =>
+                val sessionData = SessionData(
+                  request.authenticatedUser.internalId,
+                  qtReference,
+                  request.schemeDetails,
+                  request.authenticatedUser,
+                  Json.obj(
+                    "receiptDate" -> answers.lastUpdated
+                  )
+                )
+                val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {
+                  name =>
+                    sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+                }
+                sessionRepository.set(sessionDataWithMemberName).flatMap(__ => Redirect(routes.ViewAmendSubmittedController.amend()).withSession(request.session + ("isAmend" -> "true")))
 
-                      case Some("") | None =>
-                        Future.successful(
-                          Redirect(routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
-                            .flashing("error" -> "true")
-                        )
+            }
 
-                      case Some("amend") =>
-                        val owner = request.authenticatedUser match {
-                          case PsaUser(psaId, _, _) => psaId.value
-                          case PspUser(pspId, _, _) => pspId.value
-                        }
-                        for {
-                          userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
-                          allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
-                          lockResult        <-
-                            lockService.takeLockWithAudit(
-                              qtReference,
-                              owner,
-                              lockTtlSeconds,
-                              request.authenticatedUser,
-                              request.schemeDetails,
-                              StartAmendmentOfTransfer,
-                              allTransfersItem
-                            )
-                        } yield (userAnswersResult, lockResult) match {
-                          case (Right(answers), true) =>
-                            val sessionData = SessionData(
-                              request.authenticatedUser.internalId,
-                              qtReference,
-                              request.schemeDetails,
-                              request.authenticatedUser,
-                              Json.obj(
-                                "receiptDate" -> answers.lastUpdated
-                              )
-                            )
-
-                            val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {
-                              name =>
-                                sessionData.set(MemberNamePage, name).getOrElse(sessionData)
-                            }
-
-                            sessionRepository.set(sessionDataWithMemberName)
-                            Redirect(routes.ViewAmendSubmittedController.amend())
-                              .withSession(request.session + ("isAmend" -> "true"))
-
-                          case (_, false) =>
-                            val memberName = userAnswersResult.toOption
-                              .flatMap(_.get(MemberNamePage))
-                              .map(_.fullName)
-                              .getOrElse(qtReference.value)
-
-                            Redirect(routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
-                              .flashing("lockWarning" -> memberName)
-
-                          case _ =>
-                            Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-                        }
-                    }
-      } yield result
+        })
     }
+
 }
