@@ -21,7 +21,7 @@ import controllers.helpers.ErrorHandling
 import forms.memberDetails.MembersLastUkAddressSelectFormProvider
 import models.address.{AddressRecords, MembersLookupLastUkAddress, NoAddressFound}
 import models.{Mode, NormalMode}
-import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
+import pages.memberDetails.{MemberNamePage, MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -51,9 +51,13 @@ class MembersLastUkAddressSelectController @Inject() (
           val idAddressPairs  = records.map(r => (r.id, MembersLookupLastUkAddress.fromAddressRecord(r)))
           val ids             = idAddressPairs.map(_._1)
           val form            = formProvider(ids)
+          val preparedForm    = request.sessionData.get(MembersLastUkAddressSelectPage) match {
+            case None        => form
+            case Some(value) => form.fill(value._1)
+          }
           val addressRadioSet = AddressViewModel.addressRadios(idAddressPairs)
 
-          Ok(view(form, mode, addressRadioSet, postcode))
+          Ok(view(preparedForm, mode, addressRadioSet, postcode))
 
         case Some(_: NoAddressFound) =>
           Redirect(MembersLastUkAddressSelectPage.nextPageRecovery(Some(MembersLastUkAddressSelectPage.recoveryModeReturnUrl)))
@@ -79,7 +83,7 @@ class MembersLastUkAddressSelectController @Inject() (
                 case Some(record) =>
                   val addressToSave = MembersLookupLastUkAddress.fromAddressRecord(record)
                   for {
-                    updatedAnswers <- Future.fromTry(request.sessionData.set(MembersLastUkAddressSelectPage, addressToSave))
+                    updatedAnswers <- Future.fromTry(request.sessionData.set(MembersLastUkAddressSelectPage, (selectedId, addressToSave)))
                     stored         <- sessionRepository.set(updatedAnswers)
                   } yield {
                     if (stored) {

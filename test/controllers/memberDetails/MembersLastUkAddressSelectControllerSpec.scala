@@ -72,6 +72,27 @@ class MembersLastUkAddressSelectControllerSpec extends AnyFreeSpec with MockitoS
       }
     }
 
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+
+      val application = applicationBuilder(sessionData = addressSelectedSessionData).build()
+
+      running(application) {
+        val request = FakeRequest(GET, memberSelectLastUkAddressRoute)
+
+        val view = application.injector.instanceOf[MembersLastUkAddressSelectView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(
+          form.fill(selectedRecordId),
+          NormalMode,
+          AddressViewModel.addressRadios(idsWithAddresses = idAddressMap.toSeq),
+          addressRecords.postcode
+        )(fakeDisplayRequest(request), messages(application)).toString
+      }
+    }
+
     "must redirect to the address confirmation when valid data is submitted" in {
 
       val mockUserAnswersService = mock[UserAnswersService]
