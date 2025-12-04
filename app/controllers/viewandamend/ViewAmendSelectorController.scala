@@ -87,20 +87,29 @@ class ViewAmendSelectorController @Inject() (
                   StartAmendmentOfTransfer,
                   allTransfersItem
                 )
-            } yield lockResult match {
-              case true =>
+            } yield (userAnswersResult, lockResult) match {
+              case (Right(answers), true) =>
                 val sessionData = SessionData(
                   request.authenticatedUser.internalId,
                   qtReference,
                   request.schemeDetails,
                   request.authenticatedUser,
-                  Json.obj()
+                  Json.obj(
+                    "receiptDate" -> answers.lastUpdated
+                  )
                 )
 
-                sessionRepository.set(sessionData)
+                val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {
+                  name =>
+                    sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+                }
 
-                Redirect(routes.ViewAmendSubmittedController.amend()).withSession(request.session + ("isAmend" -> "true"))
-              case _    =>
+                sessionRepository.set(sessionDataWithMemberName)
+
+                Redirect(routes.ViewAmendSubmittedController.amend())
+                  .withSession(request.session + ("isAmend" -> "true"))
+
+              case (_, false) =>
                 val memberName = userAnswersResult.toOption
                   .flatMap(_.get(MemberNamePage))
                   .map(_.fullName)
@@ -108,6 +117,9 @@ class ViewAmendSelectorController @Inject() (
 
                 Redirect(routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
                   .flashing("lockWarning" -> memberName)
+
+              case _ =>
+                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
             }
         }
       )

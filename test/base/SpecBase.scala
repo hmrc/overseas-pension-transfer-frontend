@@ -111,9 +111,6 @@ trait SpecBase
   def sessionDataMemberNameQtNumberTransferSubmitted: SessionData =
     sessionDataMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
 
-  def userAnswersMemberNameQtNumberTransferSubmittedFromQtDetails: UserAnswers =
-    userAnswersMemberNameQtNumber.set(QtDetailsReceiptDateQuery, testDateTransferSubmitted).success.value
-
   def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
     userAnswersMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
 

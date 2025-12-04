@@ -33,6 +33,7 @@
     @if(form.errors.nonEmpty) {
       @govukErrorSummary(ErrorSummaryViewModel(form))
     }
+
     @request.flash.get("lockWarning").map { name =>
       <div class="govuk-notification-banner govuk-notification-banner--important"
            role="region"
@@ -61,9 +62,9 @@
         ))
       )),
       name = "viewOrAmend",
-      errorMessage = request.flash.get("error").map { _ =>
-        ErrorMessage(content = Text(messages("viewAmend.error.required")))
-      },
+      errorMessage = form.error("viewOrAmend").map(
+        err => ErrorMessage(content = Text(messages(err.message)))
+      ),
       items = Seq(
         RadioItem(
           content = Text(messages("viewAmend.radio1")),

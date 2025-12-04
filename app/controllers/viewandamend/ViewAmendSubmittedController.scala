@@ -173,13 +173,7 @@ class ViewAmendSubmittedController @Inject() (
     ): HtmlFormat.Appendable = {
 
     val schemeName                      = sessionData.schemeInformation.schemeName
-    val receiptDate                     = {
-      userAnswers.get(QtDetailsReceiptDateQuery).fold("Transfer not submitted") { instant =>
-        val dateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime
-        dateTime.format(localDateTimeFormatter)
-      }
-    }
-    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(AmendCheckMode, schemeName, receiptDate))
+    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(AmendCheckMode, schemeName, dateTransferSubmitted(sessionData)))
     val memberDetailsSummaryList        = if (isAmend) {
       SummaryListViewModel(MemberDetailsSummary.amendRows(AmendCheckMode, userAnswers))
     } else {
