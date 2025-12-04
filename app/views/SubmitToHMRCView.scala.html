@@ -37,7 +37,7 @@
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @heading = @{if(mode == AmendCheckMode) messages("submitToHMRC.amendHeading") else messages("submitToHMRC.heading")}
-@hintTextYes = @{if (mode != AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.hintYes")))) else None}
+@hintTextYes = @{if (mode == AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.amendHintYes")))) else Some(HintViewModel(Text(messages("submitToHMRC.hintYes"))))}
 @hintTextNo = @{if (mode == AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.amendHintNo")))) else Some(HintViewModel(Text(messages("submitToHMRC.hintNo"))))}
 @legendHeading = @{if(mode == AmendCheckMode) {LegendViewModel(messages("submitToHMRC.amendHeading") ).asPageHeading(Large)} else {LegendViewModel(messages("submitToHMRC.heading") ).asPageHeading(Large)}}
 

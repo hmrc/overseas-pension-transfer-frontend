@@ -752,6 +752,7 @@ submitToHMRC.change.hidden = SubmitToHMRC
 submitToHMRC.hintYes = You will still be able to amend the report after it''s been submitted.
 submitToHMRC.hintNo = Save the report as ''in progress''.
 submitToHMRC.amendHintNo = Save the report as ''amendment in progress''.
+submitToHMRC.amendHintYes = You will still be able to amend the report after it''s been submitted.
 
 
 transferSubmitted.title = Transfer submitted
