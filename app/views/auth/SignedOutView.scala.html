@@ -18,10 +18,12 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
+@import config.FrontendAppConfig
 
 @this(
     layout: templates.Layout,
-    govukButton: GovukButton
+    govukButton: GovukButton,
+    config : FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -40,7 +42,7 @@
     <p class="govuk-body">
         @govukButton(
             ButtonViewModel(Text(messages("site.signIn")))
-                .asLink(routes.DashboardController.onPageLoad().url)
+                .asLink(config.loginUrl)
         )
     </p>
 }

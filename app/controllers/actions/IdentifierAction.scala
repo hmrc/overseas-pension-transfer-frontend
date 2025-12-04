@@ -63,7 +63,7 @@ class IdentifierActionImpl @Inject() (
 
   private def handleAuthException: PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
-      Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
+      Redirect(controllers.auth.routes.SignedOutController.onPageLoad())
 
     case AgentAffinityGroupNotAllowed =>
       logger.warn("Agent users are not permitted to access this service")

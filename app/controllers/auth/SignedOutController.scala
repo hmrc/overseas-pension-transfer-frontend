@@ -22,13 +22,18 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.auth.SignedOutView
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class SignedOutController @Inject() (
     val controllerComponents: MessagesControllerComponents,
-    view: SignedOutView
+    view: SignedOutView,
+    authController: AuthController
+  )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
-    Ok(view())
+  def onPageLoad(): Action[AnyContent] = Action {
+    implicit request =>
+      authController.signOutNoSurvey()
+      Ok(view())
   }
 }
