@@ -28,10 +28,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
+import queries.QtDetailsReceiptDateQuery
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
+import utils.DateTimeFormats.localDateTimeFormatter
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
@@ -40,6 +42,7 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.viewandamend.ViewSubmittedView
 
+import java.time.ZoneId
 import scala.concurrent.{ExecutionContext, Future}
 
 class ViewAmendSubmittedController @Inject() (
@@ -170,7 +173,13 @@ class ViewAmendSubmittedController @Inject() (
     ): HtmlFormat.Appendable = {
 
     val schemeName                      = sessionData.schemeInformation.schemeName
-    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(AmendCheckMode, schemeName, dateTransferSubmitted(sessionData)))
+    val receiptDate                     = {
+      userAnswers.get(QtDetailsReceiptDateQuery).fold("Transfer not submitted") { instant =>
+        val dateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime
+        dateTime.format(localDateTimeFormatter)
+      }
+    }
+    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(AmendCheckMode, schemeName, receiptDate))
     val memberDetailsSummaryList        = if (isAmend) {
       SummaryListViewModel(MemberDetailsSummary.amendRows(AmendCheckMode, userAnswers))
     } else {
@@ -182,7 +191,7 @@ class ViewAmendSubmittedController @Inject() (
       SummaryListViewModel(SchemeManagerDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
 
     val memberName =
-      sessionData.get(MemberNamePage).map(_.fullName).getOrElse("")
+      userAnswers.get(MemberNamePage).map(_.fullName).getOrElse("")
 
     view(
       mode = AmendCheckMode,

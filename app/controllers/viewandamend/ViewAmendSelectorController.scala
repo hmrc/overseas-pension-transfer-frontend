@@ -67,9 +67,8 @@ class ViewAmendSelectorController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(qtReference, pstr, qtStatus, versionNumber, formWithErrors))),
         {
-          case Some("view") =>
+          case Some("view")  =>
             Future.successful(Redirect(routes.ViewAmendSubmittedController.view(qtReference, pstr, qtStatus, versionNumber)))
-
           case Some("amend") =>
             val owner = request.authenticatedUser match {
               case PsaUser(psaId, _, _) => psaId.value
@@ -88,27 +87,28 @@ class ViewAmendSelectorController @Inject() (
                   StartAmendmentOfTransfer,
                   allTransfersItem
                 )
-            } yield (userAnswersResult, lockResult) match {
-              case (Right(answers), true) =>
-                val sessionData                            = SessionData(
+            } yield lockResult match {
+              case true =>
+                val sessionData = SessionData(
                   request.authenticatedUser.internalId,
                   qtReference,
                   request.schemeDetails,
                   request.authenticatedUser,
-                  Json.obj(
-                    "receiptDate" -> answers.lastUpdated
-                  )
-                )
-                val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {
-                  name =>
-                    sessionData.set(MemberNamePage, name).getOrElse(sessionData)
-                }
-                sessionRepository.set(sessionDataWithMemberName).flatMap(__ =>
-                  Redirect(routes.ViewAmendSubmittedController.amend()).withSession(request.session + ("isAmend" -> "true"))
+                  Json.obj()
                 )
 
+                sessionRepository.set(sessionData)
+
+                Redirect(routes.ViewAmendSubmittedController.amend()).withSession(request.session + ("isAmend" -> "true"))
+              case _    =>
+                val memberName = userAnswersResult.toOption
+                  .flatMap(_.get(MemberNamePage))
+                  .map(_.fullName)
+                  .getOrElse(qtReference.value)
+
+                Redirect(routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
+                  .flashing("lockWarning" -> memberName)
             }
-
         }
       )
     }

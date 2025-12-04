@@ -61,7 +61,7 @@ class ViewAmendSelectorControllerSpec
 
         val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("option" -> "view")
+          .withFormUrlEncodedBody("viewOrAmend" -> "view")
 
         val result = route(app, request).value
 
@@ -81,7 +81,7 @@ class ViewAmendSelectorControllerSpec
 
         val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("option" -> "amend")
+          .withFormUrlEncodedBody("viewOrAmend" -> "amend")
 
         val result = route(app, request).value
 
@@ -98,7 +98,7 @@ class ViewAmendSelectorControllerSpec
 
         val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("option" -> "amend")
+          .withFormUrlEncodedBody("viewOrAmend" -> "amend")
 
         val result = route(app, request).value
 
@@ -113,14 +113,11 @@ class ViewAmendSelectorControllerSpec
       "must show error message" in {
         val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("option" -> "")
+          .withFormUrlEncodedBody("viewOrAmend" -> "")
 
         val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
-        flash(result).get("error") mustBe Some("true")
-        redirectLocation(result).value mustBe routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber).url
-        app.stop()
+        status(result) mustBe BAD_REQUEST
       }
     }
   }

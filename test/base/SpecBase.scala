@@ -40,7 +40,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import queries.{DateSubmittedQuery, QtNumberQuery}
+import queries.{DateSubmittedQuery, QtDetailsReceiptDateQuery, QtNumberQuery}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 import java.time.format.{DateTimeFormatter, FormatStyle}
@@ -110,6 +110,9 @@ trait SpecBase
 
   def sessionDataMemberNameQtNumberTransferSubmitted: SessionData =
     sessionDataMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
+
+  def userAnswersMemberNameQtNumberTransferSubmittedFromQtDetails: UserAnswers =
+    userAnswersMemberNameQtNumber.set(QtDetailsReceiptDateQuery, testDateTransferSubmitted).success.value
 
   def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
     userAnswersMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value

@@ -109,7 +109,7 @@ class ViewAmendSubmittedControllerSpec
             any[QtStatus],
             any[Option[String]]
           )(any[HeaderCarrier])
-        ).thenReturn(Future.successful(Right(userAnswersMemberNameQtNumber)))
+        ).thenReturn(Future.successful(Right(userAnswersMemberNameQtNumberTransferSubmittedFromQtDetails)))
 
         val app =
           applicationBuilder(
