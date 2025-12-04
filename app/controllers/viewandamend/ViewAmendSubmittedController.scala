@@ -28,12 +28,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
-import queries.QtDetailsReceiptDateQuery
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
-import utils.DateTimeFormats.localDateTimeFormatter
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
@@ -42,7 +40,6 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.viewandamend.ViewSubmittedView
 
-import java.time.ZoneId
 import scala.concurrent.{ExecutionContext, Future}
 
 class ViewAmendSubmittedController @Inject() (
