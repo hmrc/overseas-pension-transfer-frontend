@@ -18,7 +18,7 @@ package controllers.viewandamend
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.transferDetails.ViewAmendSelectorFormProvider
+import forms.viewandamend.ViewAmendSelectorFormProvider
 import models.QtStatus.AmendInProgress
 import models.audit.JourneyStartedType.StartAmendmentOfTransfer
 import models.authentication.{PsaUser, PspUser}

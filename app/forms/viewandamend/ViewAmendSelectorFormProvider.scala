@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.transferDetails
+package forms.viewandamend
 
 import play.api.data.Form
 import play.api.data.Forms.{optional, single, text}
@@ -24,6 +24,14 @@ object ViewAmendSelectorFormProvider {
   val ViewOrAmend = "viewOrAmend"
 
   def form(): Form[Option[String]] = Form[Option[String]](
-    single(ViewOrAmend -> optional(text).verifying("viewAmend.error.required", { _.isDefined }))
+    single(ViewOrAmend -> optional(text).verifying(
+      "viewAmend.error.required",
+      {
+        case Some("view")  => true
+        case Some("amend") => true
+        case _             => false
+
+      }
+    ))
   )
 }
