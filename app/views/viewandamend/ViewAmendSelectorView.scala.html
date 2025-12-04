@@ -26,7 +26,7 @@
         govukErrorSummary: GovukErrorSummary
 )
 
-@(qtReference: TransferId, pstr: models.PstrNumber, qtStatus: models.QtStatus, versionNumber: String, form: Form[_] (implicit request: Request[_], messages: Messages)
+@(qtReference: TransferId, pstr: models.PstrNumber, qtStatus: models.QtStatus, versionNumber: String, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("viewAmend.title"), showCYAFooter = true) {
   @formHelper(action = controllers.viewandamend.routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber)) {

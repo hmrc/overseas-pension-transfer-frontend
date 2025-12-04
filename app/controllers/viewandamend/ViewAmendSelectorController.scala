@@ -25,7 +25,7 @@ import models.authentication.{PsaUser, PspUser}
 import models.{PstrNumber, QtStatus, SessionData, TransferId}
 import pages.memberDetails.MemberNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{Json, __}
+import play.api.libs.json.{__, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
@@ -49,15 +49,15 @@ class ViewAmendSelectorController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
-  private val form = ViewAmendSelectorFormProvider.form()
+  private val form                 = ViewAmendSelectorFormProvider.form()
 
   def onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
     (identify andThen schemeData) { implicit request =>
-      Ok(view(qtReference, pstr, qtStatus, versionNumber)).withSession(
+      Ok(view(qtReference, pstr, qtStatus, versionNumber, form)).withSession(
         request.session +
-          ("qtReference" -> qtReference.value) +
-          ("pstr" -> pstr.value) +
-          ("qtStatus" -> qtStatus.toString) +
+          ("qtReference"   -> qtReference.value) +
+          ("pstr"          -> pstr.value) +
+          ("qtStatus"      -> qtStatus.toString) +
           ("versionNumber" -> versionNumber)
       )
     }
@@ -77,8 +77,8 @@ class ViewAmendSelectorController @Inject() (
             }
             for {
               userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
-              allTransfersItem = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
-              lockResult <-
+              allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
+              lockResult        <-
                 lockService.takeLockWithAudit(
                   qtReference,
                   owner,
@@ -90,7 +90,7 @@ class ViewAmendSelectorController @Inject() (
                 )
             } yield (userAnswersResult, lockResult) match {
               case (Right(answers), true) =>
-                val sessionData = SessionData(
+                val sessionData                            = SessionData(
                   request.authenticatedUser.internalId,
                   qtReference,
                   request.schemeDetails,
@@ -103,11 +103,14 @@ class ViewAmendSelectorController @Inject() (
                   name =>
                     sessionData.set(MemberNamePage, name).getOrElse(sessionData)
                 }
-                sessionRepository.set(sessionDataWithMemberName).flatMap(__ => Redirect(routes.ViewAmendSubmittedController.amend()).withSession(request.session + ("isAmend" -> "true")))
+                sessionRepository.set(sessionDataWithMemberName).flatMap(__ =>
+                  Redirect(routes.ViewAmendSubmittedController.amend()).withSession(request.session + ("isAmend" -> "true"))
+                )
 
             }
 
-        })
+        }
+      )
     }
 
 }
