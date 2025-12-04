@@ -745,6 +745,7 @@ psaDeclaration.change.hidden = Psa Declaration
 submitToHMRC.title = Do you want to submit this report to HMRC?
 submitToHMRC.heading = Do you want to submit this report to HMRC?
 submitToHMRC.amendHeading = Do you want to submit this amended report to HMRC?
+submitToHMRC.amendTitle = Do you want to submit this amended report to HMRC?
 submitToHMRC.checkYourAnswersLabel = Save and continue
 submitToHMRC.error.required = Select yes if you want to submit the report
 submitToHMRC.change.hidden = SubmitToHMRC
