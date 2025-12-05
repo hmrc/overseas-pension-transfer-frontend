@@ -53,7 +53,7 @@ trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with O
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val appRouteContext: String = "/report-transfer-qualified-recognised-overseas-pension-scheme"
+  val appRouteContext: String = "/report-transfer-qualifying-recognised-overseas-pension-scheme"
 
   override def beforeAll(): Unit = {
     super.beforeAll()

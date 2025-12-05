@@ -41,7 +41,7 @@ case class AllTransfersItem(
   def lastUpdatedDate: Option[Instant] = lastUpdated.orElse(submissionDate)
 
   def viewExpiringTransferUrl: String = {
-    val baseUrl = "/report-transfer-qualified-recognised-overseas-pension-scheme/dashboard/transfer-report"
+    val baseUrl = "/report-transfer-qualifying-recognised-overseas-pension-scheme/dashboard/transfer-report"
     val params  = TransferReportQueryParams(
       transferId    = Some(transferId),
       qtStatus      = qtStatus,

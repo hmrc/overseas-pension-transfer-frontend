@@ -40,7 +40,7 @@ class SubmittedTransferSummaryViewModelSpec extends AnyFreeSpec with SpecBase {
         Html(s""" <tr class="govuk-table__row">
                 |            <td class="govuk-table__cell">1</th>
                 |            <td class="govuk-table__cell">Submitted on ${formattedDate(now)}</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-amend?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">View or amend<span class="govuk-visually-hidden"> submission 1</span></a></td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualifying-recognised-overseas-pension-scheme/view-amend?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">View or amend<span class="govuk-visually-hidden"> submission 1</span></a></td>
                 |        </tr>""".stripMargin)
     }
 
@@ -49,11 +49,11 @@ class SubmittedTransferSummaryViewModelSpec extends AnyFreeSpec with SpecBase {
         Html(s""" <tr class="govuk-table__row">
                 |            <td class="govuk-table__cell">Draft</th>
                 |            <td class="govuk-table__cell">In progress</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/amend-in-progress-draft?qtReference=QT123456&pstr=12345678AB&qtStatus=AmendInProgress&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">Review and submit<span class="govuk-visually-hidden"> submission Draft</span></a></td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualifying-recognised-overseas-pension-scheme/amend-in-progress-draft?qtReference=QT123456&pstr=12345678AB&qtStatus=AmendInProgress&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">Review and submit<span class="govuk-visually-hidden"> submission Draft</span></a></td>
                 |        </tr> <tr class="govuk-table__row">
                 |            <td class="govuk-table__cell">1</th>
                 |            <td class="govuk-table__cell">Submitted on ${formattedDate(now)}</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-submitted-transfer?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">View<span class="govuk-visually-hidden"> submission 1</span></a></td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualifying-recognised-overseas-pension-scheme/view-submitted-transfer?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">View<span class="govuk-visually-hidden"> submission 1</span></a></td>
                 |        </tr>""".stripMargin)
     }
 
@@ -66,11 +66,11 @@ class SubmittedTransferSummaryViewModelSpec extends AnyFreeSpec with SpecBase {
         Html(s""" <tr class="govuk-table__row">
                 |            <td class="govuk-table__cell">2</th>
                 |            <td class="govuk-table__cell">Submitted on ${formattedDate(now)}</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-amend?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=002 class="govuk-link govuk-!-font-weight-bold">View or amend<span class="govuk-visually-hidden"> submission 2</span></a></td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualifying-recognised-overseas-pension-scheme/view-amend?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=002 class="govuk-link govuk-!-font-weight-bold">View or amend<span class="govuk-visually-hidden"> submission 2</span></a></td>
                 |        </tr> <tr class="govuk-table__row">
                 |            <td class="govuk-table__cell">1</th>
                 |            <td class="govuk-table__cell">Submitted on ${formattedDate(now)}</td>
-                |            <td class="govuk-table__cell"><a href=/report-transfer-qualified-recognised-overseas-pension-scheme/view-submitted-transfer?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">View<span class="govuk-visually-hidden"> submission 1</span></a></td>
+                |            <td class="govuk-table__cell"><a href=/report-transfer-qualifying-recognised-overseas-pension-scheme/view-submitted-transfer?qtReference=QT123456&pstr=12345678AB&qtStatus=Submitted&versionNumber=001 class="govuk-link govuk-!-font-weight-bold">View<span class="govuk-visually-hidden"> submission 1</span></a></td>
                 |        </tr>""".stripMargin)
     }
   }
