@@ -37,12 +37,12 @@
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @heading = @{if(mode == AmendCheckMode) messages("submitToHMRC.amendHeading") else messages("submitToHMRC.heading")}
-@hintTextYes = @{if (mode != AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.hintYes")))) else None}
+@hintTextYes = @{if (mode == AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.amendHintYes")))) else Some(HintViewModel(Text(messages("submitToHMRC.hintYes"))))}
 @hintTextNo = @{if (mode == AmendCheckMode) Some(HintViewModel(Text(messages("submitToHMRC.amendHintNo")))) else Some(HintViewModel(Text(messages("submitToHMRC.hintNo"))))}
-@legendHeading = @{LegendViewModel(messages("submitToHMRC.heading") ).asPageHeading(Large)}
+@legendHeading = @{if(mode == AmendCheckMode) {LegendViewModel(messages("submitToHMRC.amendHeading") ).asPageHeading(Large)} else {LegendViewModel(messages("submitToHMRC.heading") ).asPageHeading(Large)}}
 
 
-@layout(pageTitle = title(form, messages("submitToHMRC.title")),
+@layout(pageTitle = if(mode == AmendCheckMode) title(form, messages("submitToHMRC.amendTitle")) else title(form, messages("submitToHMRC.title")),
 showCYAFooter = true,
 showPageFooter = false,
 showTasklistFooter = false
