@@ -19,12 +19,14 @@
 @import views.ViewUtils.{titleNoForm, titleWithPagination}
 @import models.{AllTransfersItem, QtStatus}
 @import viewmodels.SearchBarViewModel
+@import views.html.components.SearchBar
 
 @this(
         layout: templates.Layout,
         govukButton: GovukButton,
         govukTable: GovukTable,
-        govukPagination: GovukPagination
+        govukPagination: GovukPagination,
+        searchBar: SearchBar
 )
 
 @(schemeName: String,
@@ -120,6 +122,8 @@ item.qtStatus match {
     </p>
 
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+    @searchBarViewModel.map(searchBar(_))
 
     @if(allTransfersViewModel.table.rows.nonEmpty) {
         <div role="region" aria-labelledby="Caption01" tabindex="0">

@@ -70,7 +70,7 @@ class DashboardController @Inject() (
           } { pensionSchemeDetails =>
             dashboardData.get(TransfersOverviewQuery) match {
               case None            =>
-                renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+                renderDashboard(page, dashboardData, pensionSchemeDetails, appConfig, lockWarning)
               case Some(transfers) =>
                 transfers.map {
                   val owner =
@@ -90,7 +90,7 @@ class DashboardController @Inject() (
                     }
                 }
 
-                renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+                renderDashboard(page, dashboardData, pensionSchemeDetails, appConfig, lockWarning)
             }
 
           }
@@ -168,7 +168,7 @@ class DashboardController @Inject() (
           )
 
           val searchBarViewModel = if (appConfig.allowDashboardSearch) {
-            Some(new SearchBarViewModel())
+            Some(SearchBarViewModel())
           } else {
             None
           }
