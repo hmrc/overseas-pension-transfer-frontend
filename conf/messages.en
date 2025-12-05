@@ -644,6 +644,8 @@ moreUnquotedSharesDeclaration.title = Does the member have more than 5 groups of
 moreUnquotedSharesDeclaration.moreUnquotedShares = Does the member have more than 5 groups of unquoted shares?
 moreUnquotedSharesDeclaration.moreUnquotedShares.hint = Select yes if the member has more than 5 unquoted shares. We''ll contact the scheme administrator for information on the rest of the unquoted shares.
 moreUnquotedSharesDeclaration.error.required = Please select an option
+moreThanFive.unquotedShares.checkYourAnswersLabel = More than 5 groups of unquoted shares
+moreThanFive.unquotedShares.change.hidden = if the member is transferring more than 5 groups of unquoted shares
 
 unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
 unquotedSharesConfirmRemoval.heading = Are you sure you want to remove these unquoted shares?
@@ -683,6 +685,8 @@ moreQuotedSharesDeclaration.title = Does the member have more than 5 groups of q
 moreQuotedSharesDeclaration.moreQuotedShares = Does the member have more than 5 groups of quoted shares?
 moreQuotedSharesDeclaration.moreQuotedShares.hint = Select yes if the member has more than 5 quoted shares. We''ll contact the scheme administrator for information on the rest of the quoted shares.
 moreQuotedSharesDeclaration.error.required = Please select an option
+moreThanFive.quotedShares.checkYourAnswersLabel = More than 5 groups of quoted shares
+moreThanFive.quotedShares.change.hidden = if the member is transferring more than 5 groups of quoted shares
 
 propertyAmendContinue.text.title.noItems = You have not added any items
 propertyAmendContinue.text.title.oneItem = You have added 1 property
@@ -700,6 +704,8 @@ morePropertyDeclaration.title = Does the member have more than 5 properties?
 morePropertyDeclaration.moreProperty = Does the member have more than 5 properties?
 morePropertyDeclaration.moreProperty.hint = Select yes if the member has more than 5 properties. We''ll contact the scheme administrator for information on the rest of the properties.
 morePropertyDeclaration.error.required = Please select an option
+moreThanFive.properties.checkYourAnswersLabel = More than 5 properties
+moreThanFive.properties.change.hidden = if the member is transferring more than 5 properties
 
 otherAssetsAmendContinue.text.title.noItems = You have not added any items
 otherAssetsAmendContinue.text.title.oneItem = You have added 1 asset
@@ -715,6 +721,8 @@ moreOtherAssetsDeclaration.title = Does the member have more than 5 assets?
 moreOtherAssetsDeclaration.moreOtherAssets = Does the member have more than 5 assets?
 moreOtherAssetsDeclaration.moreOtherAssets.hint = Select yes if the member has more than 5 assets. We''ll contact the scheme administrator for information on the rest of the assets.
 moreOtherAssetsDeclaration.error.required = Please select an option
+moreThanFive.otherAssets.checkYourAnswersLabel = More than 5 'other' assets
+moreThanFive.otherAssets.change.hidden = if the member is transferring more than 5 'other' assets
 
 otherAssetsStart.title = Add other assets
 otherAssetsStart.heading = Add other assets
