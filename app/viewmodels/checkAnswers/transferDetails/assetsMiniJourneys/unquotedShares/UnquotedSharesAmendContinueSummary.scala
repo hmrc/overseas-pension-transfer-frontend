@@ -20,9 +20,11 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
 import models.{Mode, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
 import play.api.i18n.Messages
 import queries.assets.UnquotedSharesQuery
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AppUtils
 import viewmodels.govuk.summarylist._
@@ -64,6 +66,22 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
           )
         )
       case _                                 => None
+    }
+  }
+
+  def moreThanFiveUnquotedSharesRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+    userAnswers.get(MoreUnquotedSharesDeclarationPage).filter(identity).map { _ =>
+      SummaryListRowViewModel(
+        key     = Key(Text(messages("moreThanFive.unquotedShares.checkYourAnswersLabel"))),
+        value   = ValueViewModel(HtmlContent(messages("site.yes"))),
+        actions = if (showChangeLinks) {
+          Seq(ActionItemViewModel(
+            content = Text(messages("site.change")),
+            href    = controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController
+              .onPageLoad(mode).url
+          ).withVisuallyHiddenText(messages("moreThanFive.unquotedShares.change.hidden")))
+        } else Nil
+      )
     }
   }
 
