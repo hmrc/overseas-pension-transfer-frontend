@@ -84,4 +84,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
     val scheme = if (request.secure) "https" else "http"
     s"$scheme://${request.host}$mpsSchemeSummaryPath"
   }
+
+  val allowDashboardSearch: Boolean = configuration.get[Boolean]("features.dashboard-search")
+
 }

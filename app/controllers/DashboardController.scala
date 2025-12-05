@@ -30,7 +30,7 @@ import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, SessionRepository}
 import services.{LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.PaginatedAllTransfersViewModel
+import viewmodels.{PaginatedAllTransfersViewModel, SearchBarViewModel}
 import views.html.DashboardView
 
 import javax.inject._
@@ -144,6 +144,7 @@ class DashboardController @Inject() (
       page: Int,
       dashboardData: DashboardData,
       pensionSchemeDetails: PensionSchemeDetails,
+      appConfig: FrontendAppConfig,
       lockWarning: Option[String]
     )(implicit request: Request[_]
     ): Future[Result] = {
@@ -158,7 +159,7 @@ class DashboardController @Inject() (
           val allTransfers  = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
           val expiringItems = repo.findExpiringWithin2Days(allTransfers)
 
-          val viewModel = PaginatedAllTransfersViewModel.build(
+          val allTransfersViewModel = PaginatedAllTransfersViewModel.build(
             items       = allTransfers,
             page        = page,
             pageSize    = appConfig.transfersPerPage,
@@ -166,17 +167,24 @@ class DashboardController @Inject() (
             lockWarning = lockWarning
           )
 
+          val searchBarViewModel = if (appConfig.allowDashboardSearch) {
+            Some(new SearchBarViewModel())
+          } else {
+            None
+          }
+
           val srn     = pensionSchemeDetails.srnNumber.value
           val mpsLink = s"${appConfig.mpsBaseUrl}$srn"
 
           repo.set(updatedData).map { _ =>
             Ok(
               view(
-                schemeName    = pensionSchemeDetails.schemeName,
-                nextPage      = DashboardPage.nextPage(updatedData, None, None).url,
-                vm            = viewModel,
-                expiringItems = expiringItems,
-                mpsLink       = mpsLink
+                schemeName            = pensionSchemeDetails.schemeName,
+                nextPage              = DashboardPage.nextPage(updatedData, None, None).url,
+                allTransfersViewModel = allTransfersViewModel,
+                searchBarViewModel    = searchBarViewModel,
+                expiringItems         = expiringItems,
+                mpsLink               = mpsLink
               )
             )
           }
