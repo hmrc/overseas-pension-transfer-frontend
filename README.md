@@ -37,7 +37,7 @@ https://github.com/hmrc/pensions-scheme-stubs
 
 ### Start Journey 
 
-1. Redirect URL: http://localhost:15600/report-transfer-qualified-recognised-overseas-pension-scheme/start?srn=S2400000001
+1. Redirect URL: http://localhost:15600/report-transfer-qualifying-recognised-overseas-pension-scheme/start?srn=S2400000001
 
 ## Running tests
 

@@ -38,7 +38,8 @@ class AmendDateOfTransferFormProvider @Inject() extends Mappings {
         invalidKey       = "dateOfTransfer.error.invalid",
         requiredKey      = "common.dateInput.error.required",
         twoRequiredKey   = "common.dateInput.error.required.two",
-        allRequiredKey   = "dateOfTransfer.error.required.all"
+        allRequiredKey   = "dateOfTransfer.error.required.all",
+        realDateKey      = "dateOfTransfer.error.real.date"
       )
         .verifying(
           minDate(minDate, "dateOfTransfer.amend.error.invalid.mindate", minDate.format(dateFormatter)),

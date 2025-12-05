@@ -218,6 +218,7 @@ memberDateOfBirth.title = What is the members''s date of birth?
 memberDateOfBirth.heading = What is {0}’s date of birth?
 memberDateOfBirth.checkYourAnswersLabel = Date of birth
 memberDateOfBirth.error.required.all = Enter the date of birth
+memberDateOfBirth.error.real.date = Date of birth must be a real date
 memberDateOfBirth.change.hidden = Date of birth
 
 membersCurrentAddress.title = What is the member''s current address?
@@ -281,6 +282,7 @@ memberDateOfLeavingUK.title = When did the member leave the UK?
 memberDateOfLeavingUK.heading = When did {0} leave the UK?
 memberDateOfLeavingUK.checkYourAnswersLabel = Date member left UK
 memberDateOfLeavingUK.error.required.all = Enter the date of leaving the UK
+memberDateOfLeavingUK.error.real.date = Date the member left the UK must be a real date
 memberDateOfLeavingUK.change.hidden = The date member left the UK
 
 qropsName.title = What is the full name of the QROPS receiving the transfer?
@@ -463,6 +465,7 @@ dateOfTransfer.heading = What was the date of the transfer?
 dateOfTransfer.hint = For example, 31 03 2023.
 dateOfTransfer.checkYourAnswersLabel = Date of transfer
 dateOfTransfer.error.required.all = Enter the date of the transfer
+dateOfTransfer.error.real.date = Date of transfer must be a real date
 dateOfTransfer.change.hidden = Date of transfer
 dateOfTransfer.error.invalid.mindate = Date cannot be before 6 April 2012, or in the future
 dateOfTransfer.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 2018
