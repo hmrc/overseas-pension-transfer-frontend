@@ -19,8 +19,8 @@ package models
 import play.api.libs.json._
 import play.api.mvc.QueryStringBindable
 
-import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
+import scala.util.{Failure, Success, Try}
 
 trait TransferId {
   def value: String

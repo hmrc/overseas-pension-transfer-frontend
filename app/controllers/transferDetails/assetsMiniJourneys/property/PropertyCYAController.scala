@@ -18,15 +18,13 @@ package controllers.transferDetails.assetsMiniJourneys.property
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
+import models.Mode
 import models.assets.TypeOfAsset
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import pages.transferDetails.assetsMiniJourneys.property.PropertyCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.PropertyQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -34,7 +32,7 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.Prope
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyCYAView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PropertyCYAController @Inject() (
     override val messagesApi: MessagesApi,

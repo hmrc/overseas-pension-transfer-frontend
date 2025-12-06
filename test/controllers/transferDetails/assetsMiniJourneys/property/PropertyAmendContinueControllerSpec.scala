@@ -19,14 +19,13 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import base.AddressBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
-import models.assets.{PropertyEntry, PropertyMiniJourney, UnquotedSharesMiniJourney}
+import models.assets.{PropertyEntry, PropertyMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

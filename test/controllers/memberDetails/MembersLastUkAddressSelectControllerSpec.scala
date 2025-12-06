@@ -21,7 +21,6 @@ import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MembersLastUkAddressSelectFormProvider
 import models.NormalMode
 import models.address.MembersLookupLastUkAddress
-import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

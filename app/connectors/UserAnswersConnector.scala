@@ -28,7 +28,7 @@ import connectors.parsers.UserAnswersParser.{
 }
 import models.dtos.{SubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, UserAnswersErrorResponse}
-import models.{PstrNumber, QtNumber, QtStatus, TransferId}
+import models.{PstrNumber, QtStatus, TransferId}
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2

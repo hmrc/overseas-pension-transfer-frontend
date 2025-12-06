@@ -17,8 +17,8 @@
 package controllers
 
 import base.SpecBase
-import models.{NormalMode, QtNumber}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse}
+import models.{NormalMode, QtNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec

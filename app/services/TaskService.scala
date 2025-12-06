@@ -16,7 +16,7 @@
 
 package services
 
-import models.TaskCategory.{MemberDetails, SubmissionDetails}
+import models.TaskCategory.SubmissionDetails
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
 import models.{CheckMode, Mode, SessionData, TaskCategory, UserAnswers}
 import queries.TaskStatusQuery

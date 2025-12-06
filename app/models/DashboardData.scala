@@ -19,8 +19,8 @@ package models
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 import queries.{Gettable, Settable}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import services.EncryptionService
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}

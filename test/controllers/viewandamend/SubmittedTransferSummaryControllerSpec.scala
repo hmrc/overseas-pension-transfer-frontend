@@ -17,7 +17,6 @@
 package controllers.viewandamend
 
 import base.SpecBase
-import controllers.viewandamend.routes
 import models.PstrNumber
 import models.QtStatus.Submitted
 import org.mockito.ArgumentMatchers.any

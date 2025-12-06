@@ -17,8 +17,8 @@
 package controllers
 
 import controllers.actions._
-import models.{Mode, PersonName}
 import models.responses.SubmissionResponse
+import models.{Mode, PersonName}
 import pages.PsaDeclarationPage
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
