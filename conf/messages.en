@@ -748,12 +748,14 @@ psaDeclaration.change.hidden = Psa Declaration
 submitToHMRC.title = Do you want to submit this report to HMRC?
 submitToHMRC.heading = Do you want to submit this report to HMRC?
 submitToHMRC.amendHeading = Do you want to submit this amended report to HMRC?
+submitToHMRC.amendTitle = Do you want to submit this amended report to HMRC?
 submitToHMRC.checkYourAnswersLabel = Save and continue
 submitToHMRC.error.required = Select yes if you want to submit the report
 submitToHMRC.change.hidden = SubmitToHMRC
 submitToHMRC.hintYes = You will still be able to amend the report after it''s been submitted.
 submitToHMRC.hintNo = Save the report as ''in progress''.
 submitToHMRC.amendHintNo = Save the report as ''amendment in progress''.
+submitToHMRC.amendHintYes = You will still be able to amend the report after it''s been submitted.
 
 
 transferSubmitted.title = Transfer submitted
