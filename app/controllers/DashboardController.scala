@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.audit.JourneyStartedType.ContinueTransfer
 import models.authentication.{PsaUser, PspUser}
-import models.{DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams}
+import models.{AllTransfersItem, DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams}
 import pages.DashboardPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -53,7 +53,7 @@ class DashboardController @Inject() (
 
   private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
 
-  def onPageLoad(page: Int): Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(page: Int, search: Option[String]): Action[AnyContent] = identify.async { implicit request =>
     val id          = request.authenticatedUser.internalId
     val lockWarning = request.flash.get("lockWarning") // flash for warning
 
@@ -70,7 +70,7 @@ class DashboardController @Inject() (
           } { pensionSchemeDetails =>
             dashboardData.get(TransfersOverviewQuery) match {
               case None            =>
-                renderDashboard(page, dashboardData, pensionSchemeDetails, appConfig, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, appConfig, lockWarning)
               case Some(transfers) =>
                 transfers.map {
                   val owner =
@@ -89,10 +89,8 @@ class DashboardController @Inject() (
                         lockService.releaseLock(qtRefefence, owner)
                     }
                 }
-
-                renderDashboard(page, dashboardData, pensionSchemeDetails, appConfig, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, appConfig, lockWarning)
             }
-
           }
       }
     }
@@ -142,13 +140,13 @@ class DashboardController @Inject() (
 
   private def renderDashboard(
       page: Int,
+      search: Option[String],
       dashboardData: DashboardData,
       pensionSchemeDetails: PensionSchemeDetails,
       appConfig: FrontendAppConfig,
       lockWarning: Option[String]
     )(implicit request: Request[_]
     ): Future[Result] = {
-
     transferService.getAllTransfersData(dashboardData, pensionSchemeDetails.pstrNumber).flatMap {
       _.fold(
         err => {
@@ -156,43 +154,62 @@ class DashboardController @Inject() (
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         },
         updatedData => {
-          val allTransfers  = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-          val expiringItems = repo.findExpiringWithin2Days(allTransfers)
-
-          val allTransfersViewModel = PaginatedAllTransfersViewModel.build(
-            items       = allTransfers,
+          val allTransfers: Seq[AllTransfersItem] = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
+          val expiringItems                       = repo.findExpiringWithin2Days(allTransfers)
+          val filteredTransfers                   =
+            search.filter(_.trim.nonEmpty) match {
+              case Some(term) => filterTransfers(allTransfers, term)
+              case None       => allTransfers
+            }
+          val allTransfersViewModel               = PaginatedAllTransfersViewModel.build(
+            items       = filteredTransfers,
             page        = page,
             pageSize    = appConfig.transfersPerPage,
-            urlForPage  = pageUrl,
+            urlForPage  = pageUrl(search),
             lockWarning = lockWarning
           )
-
-          val searchBarViewModel = if (appConfig.allowDashboardSearch) {
-            Some(SearchBarViewModel())
-          } else {
-            None
-          }
-
-          val srn     = pensionSchemeDetails.srnNumber.value
-          val mpsLink = s"${appConfig.mpsBaseUrl}$srn"
-
+          val searchBarViewModel                  = if (appConfig.allowDashboardSearch) {
+            Some(SearchBarViewModel(
+              action = routes.DashboardController.onPageLoad().url,
+              value  = search.map(_.trim).filter(_.nonEmpty)
+            ))
+          } else { None }
+          val srn                                 = pensionSchemeDetails.srnNumber.value
+          val mpsLink                             = s"${appConfig.mpsBaseUrl}$srn"
           repo.set(updatedData).map { _ =>
-            Ok(
-              view(
-                schemeName            = pensionSchemeDetails.schemeName,
-                nextPage              = DashboardPage.nextPage(updatedData, None, None).url,
-                allTransfersViewModel = allTransfersViewModel,
-                searchBarViewModel    = searchBarViewModel,
-                expiringItems         = expiringItems,
-                mpsLink               = mpsLink
-              )
-            )
+            Ok(view(
+              schemeName            = pensionSchemeDetails.schemeName,
+              nextPage              = DashboardPage.nextPage(updatedData, None, None).url,
+              allTransfersViewModel = allTransfersViewModel,
+              searchBarViewModel    = searchBarViewModel,
+              expiringItems         = expiringItems,
+              mpsLink               = mpsLink
+            ))
           }
         }
       )
     }
   }
 
-  private def pageUrl(n: Int): String =
-    routes.DashboardController.onPageLoad(n).url
+  private def pageUrl(search: Option[String])(p: Int): String =
+    routes.DashboardController.onPageLoad(p, search).url
+
+  private def filterTransfers(
+      transfers: Seq[AllTransfersItem],
+      rawTerm: String
+    ): Seq[AllTransfersItem] = {
+
+    val term = rawTerm.trim.toLowerCase
+
+    if (term.isEmpty) {
+      transfers
+    } else {
+      transfers.filter { t =>
+        val name = s"${t.memberFirstName.getOrElse("")} ${t.memberSurname.getOrElse("")}".toLowerCase
+        val nino = t.nino.map(_.toLowerCase).getOrElse("")
+        val ref  = t.transferId.value.toLowerCase
+        name.contains(term) || nino.contains(term) || ref.contains(term)
+      }
+    }
+  }
 }
