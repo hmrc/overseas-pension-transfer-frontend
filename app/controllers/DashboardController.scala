@@ -20,10 +20,10 @@ import config.FrontendAppConfig
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.audit.JourneyStartedType.ContinueTransfer
 import models.authentication.{PsaUser, PspUser}
-import models.{AllTransfersItem, DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams}
+import models.{AllTransfersItem, DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams, TransferSearch}
 import pages.DashboardPage
 import play.api.Logging
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc._
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
@@ -147,6 +147,7 @@ class DashboardController @Inject() (
       lockWarning: Option[String]
     )(implicit request: Request[_]
     ): Future[Result] = {
+
     transferService.getAllTransfersData(dashboardData, pensionSchemeDetails.pstrNumber).flatMap {
       _.fold(
         err => {
@@ -154,65 +155,73 @@ class DashboardController @Inject() (
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         },
         updatedData => {
-          val allTransfers: Seq[AllTransfersItem] = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-          val expiringItems                       = repo.findExpiringWithin2Days(allTransfers)
-          val filteredTransfers                   =
-            search.filter(_.trim.nonEmpty) match {
-              case Some(term) => filterTransfers(allTransfers, term)
-              case None       => allTransfers
-            }
-          val allTransfersViewModel               = PaginatedAllTransfersViewModel.build(
-            items       = filteredTransfers,
-            page        = page,
-            pageSize    = appConfig.transfersPerPage,
-            urlForPage  = pageUrl(search),
-            lockWarning = lockWarning
-          )
-          val searchBarViewModel                  = if (appConfig.allowDashboardSearch) {
-            Some(SearchBarViewModel(
-              action = routes.DashboardController.onPageLoad().url,
-              value  = search.map(_.trim).filter(_.nonEmpty)
-            ))
-          } else { None }
-          val srn                                 = pensionSchemeDetails.srnNumber.value
-          val mpsLink                             = s"${appConfig.mpsBaseUrl}$srn"
-          val isSearch: Boolean                   =
-            search.exists(_.trim.nonEmpty)
+
+          val allTransfers      = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
+          val expiringItems     = repo.findExpiringWithin2Days(allTransfers)
+          val filteredTransfers = getFilteredTransfers(allTransfers, search)
+          val transfersVm       = buildTransfersVm(filteredTransfers, page, search, lockWarning, appConfig)
+          val searchBarVm       = buildSearchBarVm(search)(appConfig)
+          val mpsLink           = s"${appConfig.mpsBaseUrl}${pensionSchemeDetails.srnNumber.value}"
+
           repo.set(updatedData).map { _ =>
-            Ok(view(
-              pensionSchemeDetails.schemeName,
-              DashboardPage.nextPage(updatedData, None, None).url,
-              allTransfersViewModel,
-              searchBarViewModel,
-              expiringItems,
-              mpsLink,
-              isSearch
-            ))
+            Ok(
+              view(
+                pensionSchemeDetails.schemeName,
+                DashboardPage.nextPage(updatedData, None, None).url,
+                transfersVm,
+                searchBarVm,
+                expiringItems,
+                mpsLink,
+                isSearch = search.exists(_.trim.nonEmpty)
+              )
+            )
           }
         }
       )
     }
   }
 
+  private def buildTransfersVm(
+      items: Seq[AllTransfersItem],
+      page: Int,
+      search: Option[String],
+      lockWarning: Option[String],
+      appConfig: FrontendAppConfig
+    )(implicit messages: Messages
+    ): PaginatedAllTransfersViewModel =
+    PaginatedAllTransfersViewModel.build(
+      items       = items,
+      page        = page,
+      pageSize    = appConfig.transfersPerPage,
+      urlForPage  = pageUrl(search),
+      lockWarning = lockWarning
+    )
+
+  private def buildSearchBarVm(
+      search: Option[String]
+    )(implicit appConfig: FrontendAppConfig
+    ): Option[SearchBarViewModel] =
+    if (appConfig.allowDashboardSearch) {
+      Some(
+        SearchBarViewModel(
+          action = routes.DashboardController.onPageLoad().url,
+          value  = search.map(_.trim).filter(_.nonEmpty)
+        )
+      )
+    } else {
+      None
+    }
+
+  private def getFilteredTransfers(
+      all: Seq[AllTransfersItem],
+      search: Option[String]
+    ): Seq[AllTransfersItem] =
+    search.filter(_.trim.nonEmpty) match {
+      case Some(term) => TransferSearch.filterTransfers(all, term)
+      case None       => all
+    }
+
   private def pageUrl(search: Option[String])(p: Int): String =
     routes.DashboardController.onPageLoad(p, search).url
 
-  private def filterTransfers(
-      transfers: Seq[AllTransfersItem],
-      rawTerm: String
-    ): Seq[AllTransfersItem] = {
-
-    val term = rawTerm.trim.toLowerCase
-
-    if (term.isEmpty) {
-      transfers
-    } else {
-      transfers.filter { t =>
-        val name = s"${t.memberFirstName.getOrElse("")} ${t.memberSurname.getOrElse("")}".toLowerCase
-        val nino = t.nino.map(_.toLowerCase).getOrElse("")
-        val ref  = t.transferId.value.toLowerCase
-        name.contains(term) || nino.contains(term) || ref.contains(term)
-      }
-    }
-  }
 }
