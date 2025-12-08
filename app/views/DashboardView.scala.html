@@ -34,7 +34,8 @@
   allTransfersViewModel: PaginatedAllTransfersViewModel,
   searchBarViewModel: Option[SearchBarViewModel],
   expiringItems: Seq[AllTransfersItem] = Seq.empty,
-  mpsLink: String
+  mpsLink: String,
+  isSearch: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @messageFor(item: AllTransfersItem) = @{
@@ -131,7 +132,18 @@ item.qtStatus match {
         </div>
         @allTransfersViewModel.pagination.map(govukPagination(_))
     } else {
-        <p class="govuk-body">@messages("dashboard.allTransfers.empty")</p>
+        @if(isSearch) {
+            <h2 class="govuk-heading-m">
+                @messages("dashboard.search.noResults.heading")
+            </h2>
+            <p class="govuk-body">
+                @messages("dashboard.search.noResults.paragraph")
+            </p>
+        } else {
+            <p class="govuk-body">
+            @messages("dashboard.allTransfers.empty")
+            </p>
+        }
     }
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">

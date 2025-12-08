@@ -64,6 +64,8 @@ dashboard.lock.title = Important
 dashboard.lock.warning = Someone else is editing the transfer report for {0}, please try again later.
 dashboard.lock.hide = Hide message
 dashboard.pensionSchemeLink.text = Return to {0} pension scheme
+dashboard.search.noResults.heading = No results found
+dashboard.search.noResults.paragraph = Check what you''ve entered and try searching again.
 
 requiredInfo.title = What you will need
 requiredInfo.heading = What you will need

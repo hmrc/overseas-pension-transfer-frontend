@@ -176,14 +176,17 @@ class DashboardController @Inject() (
           } else { None }
           val srn                                 = pensionSchemeDetails.srnNumber.value
           val mpsLink                             = s"${appConfig.mpsBaseUrl}$srn"
+          val isSearch: Boolean                   =
+            search.exists(_.trim.nonEmpty)
           repo.set(updatedData).map { _ =>
             Ok(view(
-              schemeName            = pensionSchemeDetails.schemeName,
-              nextPage              = DashboardPage.nextPage(updatedData, None, None).url,
-              allTransfersViewModel = allTransfersViewModel,
-              searchBarViewModel    = searchBarViewModel,
-              expiringItems         = expiringItems,
-              mpsLink               = mpsLink
+              pensionSchemeDetails.schemeName,
+              DashboardPage.nextPage(updatedData, None, None).url,
+              allTransfersViewModel,
+              searchBarViewModel,
+              expiringItems,
+              mpsLink,
+              isSearch
             ))
           }
         }
