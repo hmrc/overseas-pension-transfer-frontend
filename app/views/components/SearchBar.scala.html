@@ -20,24 +20,49 @@
 
 @(model: SearchBarViewModel)
 
-<form class="govuk-form-group search-bar" method="get" action="@model.action">
-    <label class="govuk-visually-hidden" for="@model.id">
-        @model.label
-    </label>
+@defining(model.id + "-hint") { hintId =>
 
-    <input
-        class="govuk-input search-bar__input"
-        id="@model.id"
-        name="@model.name"
-        type="search"
-        autocomplete="off"
-        value="@model.value.getOrElse("")"
-    />
+    <form method="GET" action="@model.action" role="search">
+        <div class="govuk-form-group">
+            <label class="govuk-label govuk-visually-hidden" for="@model.id">
+                @model.label
+            </label>
 
-    <button
-        class="govuk-button search-bar__button"
-        data-module="govuk-button"
-        type="submit" >
-        @model.buttonText
-    </button>
-</form>
+            @model.hint.map { hintText =>
+                <div id="@hintId" class="govuk-hint">
+                    @hintText
+                </div>
+            }
+
+            <div class="search-bar">
+                @if(model.hint.isDefined) {
+                    <input
+                    class="govuk-input search-bar__input"
+                    id="@model.id"
+                    name="@model.name"
+                    type="search"
+                    autocomplete="off"
+                    aria-describedby="@hintId"
+                    value="@model.value.getOrElse("")"
+                    />
+                } else {
+                    <input
+                    class="govuk-input search-bar__input"
+                    id="@model.id"
+                    name="@model.name"
+                    type="search"
+                    autocomplete="off"
+                    value="@model.value.getOrElse("")"
+                    />
+                }
+
+                <button
+                class="govuk-button search-bar__button"
+                data-module="govuk-button"
+                type="submit">
+                    @model.buttonText
+                </button>
+            </div>
+        </div>
+    </form>
+}

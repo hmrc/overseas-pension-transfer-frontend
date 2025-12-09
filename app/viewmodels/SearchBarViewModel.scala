@@ -22,5 +22,6 @@ case class SearchBarViewModel(
     label: String         = "Search transfers",
     action: String        = "#",
     buttonText: String    = "Search",
-    value: Option[String] = None
+    value: Option[String] = None,
+    hint: Option[String]  = None
   )

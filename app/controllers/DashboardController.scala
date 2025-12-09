@@ -206,7 +206,8 @@ class DashboardController @Inject() (
       Some(
         SearchBarViewModel(
           action = routes.DashboardController.onPageLoad().url,
-          value  = search.map(_.trim).filter(_.nonEmpty)
+          value  = search.map(_.trim).filter(_.nonEmpty),
+          hint   = Some(messages("dashboard.search.hintText"))
         )
       )
     } else {
