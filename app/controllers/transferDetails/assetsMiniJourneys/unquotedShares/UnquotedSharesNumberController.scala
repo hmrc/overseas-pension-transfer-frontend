@@ -23,8 +23,8 @@ import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import queries.assets.AssetsRecordVersionQuery
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberView

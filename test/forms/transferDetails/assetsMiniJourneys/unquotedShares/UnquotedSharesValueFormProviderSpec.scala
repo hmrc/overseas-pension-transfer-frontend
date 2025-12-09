@@ -16,10 +16,10 @@
 
 package forms.transferDetails.assetsMiniJourneys.unquotedShares
 
-import utils.CurrencyFormats.currencyFormat
 import forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
+import utils.CurrencyFormats.currencyFormat
 
 import scala.math.BigDecimal.RoundingMode
 

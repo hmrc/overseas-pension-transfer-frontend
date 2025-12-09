@@ -19,7 +19,6 @@ package pages.qropsSchemeManagerDetails
 import base.SpecBase
 import controllers.qropsSchemeManagerDetails.routes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PersonName, PstrNumber, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 

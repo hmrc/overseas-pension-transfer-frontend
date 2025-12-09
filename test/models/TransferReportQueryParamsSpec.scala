@@ -17,10 +17,10 @@
 package models
 
 import base.SpecBase
+import controllers.routes
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.test.FakeRequest
-import controllers.routes
 
 class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers with SpecBase {
 

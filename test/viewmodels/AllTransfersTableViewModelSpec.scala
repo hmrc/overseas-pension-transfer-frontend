@@ -17,7 +17,7 @@
 package viewmodels
 
 import base.SpecBase
-import models.{AllTransfersItem, QtNumber, QtStatus}
+import models.{AllTransfersItem, QtStatus}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages

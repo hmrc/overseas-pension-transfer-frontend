@@ -17,7 +17,6 @@
 package pages.qropsDetails
 
 import base.SpecBase
-import controllers.routes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers

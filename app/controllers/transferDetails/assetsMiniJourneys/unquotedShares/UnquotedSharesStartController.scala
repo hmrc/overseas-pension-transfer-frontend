@@ -17,7 +17,7 @@
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.actions._
-import models.{Mode, NormalMode}
+import models.Mode
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

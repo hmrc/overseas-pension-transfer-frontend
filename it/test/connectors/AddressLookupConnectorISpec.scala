@@ -75,7 +75,7 @@ class AddressLookupConnectorISpec extends BaseISpec with Injecting {
 
         result match {
           case AddressLookupErrorResponse(_) => succeed
-          case _ => fail(s"Expected AddressLookupErrorResponse but got: $result")
+          case _                             => fail(s"Expected AddressLookupErrorResponse but got: $result")
         }
       }
     }

@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameFormProvider
 import models.{AmendCheckMode, NormalMode}
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec

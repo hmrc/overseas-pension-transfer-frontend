@@ -19,11 +19,10 @@ package controllers.transferDetails
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
-import models.{CheckMode, NormalMode}
+import models.CheckMode
 import pages.transferDetails.TransferDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._

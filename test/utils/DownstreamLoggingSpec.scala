@@ -32,17 +32,17 @@
 
 package utils
 
+import controllers.helpers.ErrorHandling
+import controllers.routes
 import models.BackendError
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.mvc._
-import play.api.test._
-import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, RequestId}
-import controllers.helpers.ErrorHandling
 import play.api.libs.typedmap.TypedMap
+import play.api.mvc._
 import play.api.routing.{HandlerDef, Router}
-import controllers.routes
+import play.api.test.Helpers._
+import play.api.test._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, RequestId}
 
 import scala.concurrent.Future
 

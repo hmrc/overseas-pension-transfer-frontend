@@ -16,7 +16,6 @@
 
 package models
 
-import models.QtStatus.AmendInProgress
 import play.api.mvc.QueryStringBindable
 
 sealed trait QtStatus

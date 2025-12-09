@@ -16,7 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import models.{CheckMode, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.transferDetails.IsTransferTaxablePage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

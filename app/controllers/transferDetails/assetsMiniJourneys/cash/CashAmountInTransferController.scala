@@ -18,8 +18,8 @@ package controllers.transferDetails.assetsMiniJourneys.cash
 
 import controllers.actions._
 import forms.transferDetails.CashAmountInTransferFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers}
 import models.assets.TypeOfAsset
+import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

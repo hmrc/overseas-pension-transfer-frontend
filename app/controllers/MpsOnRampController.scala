@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.PensionSchemeConnector
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.DashboardData
 import pages.MpsOnRampPage
