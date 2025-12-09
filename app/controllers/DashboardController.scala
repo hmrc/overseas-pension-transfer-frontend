@@ -45,10 +45,10 @@ class DashboardController @Inject() (
     schemeData: SchemeDataAction,
     transferService: TransferService,
     view: DashboardView,
-    appConfig: FrontendAppConfig,
     userAnswersService: UserAnswersService,
     lockService: LockService
-  )(implicit ec: ExecutionContext
+  )(implicit ec: ExecutionContext,
+    appConfig: FrontendAppConfig
   ) extends FrontendBaseController with I18nSupport with Logging {
 
   private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
@@ -70,7 +70,7 @@ class DashboardController @Inject() (
           } { pensionSchemeDetails =>
             dashboardData.get(TransfersOverviewQuery) match {
               case None            =>
-                renderDashboard(page, search, dashboardData, pensionSchemeDetails, appConfig, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning)
               case Some(transfers) =>
                 transfers.map {
                   val owner =
@@ -89,7 +89,7 @@ class DashboardController @Inject() (
                         lockService.releaseLock(qtRefefence, owner)
                     }
                 }
-                renderDashboard(page, search, dashboardData, pensionSchemeDetails, appConfig, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning)
             }
           }
       }
@@ -143,9 +143,9 @@ class DashboardController @Inject() (
       search: Option[String],
       dashboardData: DashboardData,
       pensionSchemeDetails: PensionSchemeDetails,
-      appConfig: FrontendAppConfig,
       lockWarning: Option[String]
-    )(implicit request: Request[_]
+    )(implicit request: Request[_],
+      appConfig: FrontendAppConfig
     ): Future[Result] = {
 
     transferService.getAllTransfersData(dashboardData, pensionSchemeDetails.pstrNumber).flatMap {
@@ -160,7 +160,7 @@ class DashboardController @Inject() (
           val expiringItems     = repo.findExpiringWithin2Days(allTransfers)
           val filteredTransfers = getFilteredTransfers(allTransfers, search)
           val transfersVm       = buildTransfersVm(filteredTransfers, page, search, lockWarning, appConfig)
-          val searchBarVm       = buildSearchBarVm(search)(appConfig)
+          val searchBarVm       = buildSearchBarVm(search)
           val mpsLink           = s"${appConfig.mpsBaseUrl}${pensionSchemeDetails.srnNumber.value}"
 
           repo.set(updatedData).map { _ =>
@@ -199,7 +199,8 @@ class DashboardController @Inject() (
 
   private def buildSearchBarVm(
       search: Option[String]
-    )(implicit appConfig: FrontendAppConfig
+    )(implicit appConfig: FrontendAppConfig,
+      messages: Messages
     ): Option[SearchBarViewModel] =
     if (appConfig.allowDashboardSearch) {
       Some(
