@@ -112,15 +112,33 @@ object TransferSearch {
         case single :: Nil =>
           firstOpt.contains(single) || lastOpt.contains(single)
 
-        case first :: rest =>
-          val last = rest.last
-          firstOpt.contains(first) && lastOpt.contains(last)
+        case many if many.size >= 2 =>
+          /* Create a list of all possible splits of tokens into (first tokens, last tokens) i.e.
+            List(("john", "marie david scott"),
+              ("john marie", "david scott"),
+              ("john marie david", "scott"))
+
+            All should match PersonName("john marie", "david scott")
+            This algorithm still uses strict equality after normalisation.
+           * */
+          val candidateSplits: Seq[(String, String)] =
+            (1 until many.size).map { splitIndex =>
+              val firstTokens = many.take(splitIndex)
+              val lastTokens  = many.drop(splitIndex)
+              (firstTokens.mkString(" "), lastTokens.mkString(" "))
+            }.toList
+
+          candidateSplits.exists { case (firstNameCandidate, lastNameCandidate) =>
+            firstOpt.contains(firstNameCandidate) &&
+            lastOpt.contains(lastNameCandidate)
+          }
 
         case Nil =>
           false
       }
     }
   }
+
 }
 
 sealed private trait SearchMode
