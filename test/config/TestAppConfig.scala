@@ -31,6 +31,7 @@ class TestAppConfig
         "urls.signOut"                        -> "http://localhost:9000/sign-out",
         "feedback-frontend.host"              -> "http://localhost:9514",
         "features.welsh-translation"          -> false,
+        "features.dashboard-search"           -> false,
         "enrolments.psa.serviceName"          -> "HMRC-PSA-ORG",
         "enrolments.psa.identifierKey"        -> "PSAID",
         "enrolments.psp.serviceName"          -> "HMRC-PSP-ORG",
