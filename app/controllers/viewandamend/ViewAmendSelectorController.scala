@@ -25,7 +25,7 @@ import models.authentication.{PsaUser, PspUser}
 import models.{PstrNumber, QtStatus, SessionData, TransferId}
 import pages.memberDetails.MemberNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{__, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
@@ -52,14 +52,24 @@ class ViewAmendSelectorController @Inject() (
   private val form                 = ViewAmendSelectorFormProvider.form()
 
   def onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
-    (identify andThen schemeData) { implicit request =>
-      Ok(view(qtReference, pstr, qtStatus, versionNumber, form)).withSession(
-        request.session +
-          ("qtReference"   -> qtReference.value) +
-          ("pstr"          -> pstr.value) +
-          ("qtStatus"      -> qtStatus.toString) +
-          ("versionNumber" -> versionNumber)
-      )
+    (identify andThen schemeData).async { implicit request =>
+      val owner = request.authenticatedUser match {
+        case PsaUser(psaId, _, _) => psaId.value
+        case PspUser(pspId, _, _) => pspId.value
+      }
+
+      for {
+        isLocked <- lockService.isLocked(qtReference.value, owner)
+        _        <- if (isLocked) lockService.releaseLock(qtReference.value, owner) else Future.unit
+      } yield {
+        Ok(view(qtReference, pstr, qtStatus, versionNumber, form)).withSession(
+          request.session +
+            ("qtReference"   -> qtReference.value) +
+            ("pstr"          -> pstr.value) +
+            ("qtStatus"      -> qtStatus.toString) +
+            ("versionNumber" -> versionNumber)
+        )
+      }
     }
 
   def onSubmit(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
