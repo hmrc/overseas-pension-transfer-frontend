@@ -19,7 +19,6 @@ pagination.landmark = Table pagination
 
 breadcrumbs.mps = MPS
 breadcrumbs.pensionScheme = Pension scheme
-breadcrumbs.otc = Report a transfer to a QROPS
 
 date.day = Day
 date.month = Month

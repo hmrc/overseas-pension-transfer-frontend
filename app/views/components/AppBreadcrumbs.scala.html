@@ -18,20 +18,17 @@
         govukBreadcrumbs: GovukBreadcrumbs
 )
 
-@()(implicit messages: Messages)
+@(mpsLink: String, pensionSchemeLink: String)(implicit messages: Messages)
 
 @govukBreadcrumbs(Breadcrumbs(
     items = Seq(
         BreadcrumbsItem(
             content = messages("breadcrumbs.mps"),
-            href = Some("#")
+            href = Some(mpsLink)
         ),
         BreadcrumbsItem(
             content = messages("breadcrumbs.pensionScheme"),
-            href = Some("#")
-        ),
-        BreadcrumbsItem(
-            content = messages("breadcrumbs.otc"),
+            href = Some(pensionSchemeLink)
         )
     )
 ))
