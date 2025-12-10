@@ -148,9 +148,9 @@ common.addressInput.error.poBox.pattern = PO Box must only include letters, numb
 common.addressInput.error.countryCode.required = Enter a country
 
 common.memberDetails.heading = Member details
-common.qropsDetails.heading = The QROPS details
-common.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
-common.transferDetails.heading = The transfer details
+common.qropsDetails.heading = QROPS details
+common.qropsSchemeManagerDetails.heading = QROPS scheme manager details
+common.transferDetails.heading = Transfer details
 
 common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
