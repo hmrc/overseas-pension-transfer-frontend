@@ -19,12 +19,14 @@ package controllers
 import controllers.actions._
 import forms.DiscardTransferConfirmFormProvider
 import models.NormalMode
+import models.QtStatus.AmendInProgress
+import models.authentication.{PsaUser, PspUser}
 import org.apache.pekko.Done
 import pages.DiscardTransferConfirmPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DiscardTransferConfirmView
 
@@ -40,7 +42,8 @@ class DiscardTransferConfirmController @Inject() (
     formProvider: DiscardTransferConfirmFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: DiscardTransferConfirmView,
-    userAnswersService: UserAnswersService
+    userAnswersService: UserAnswersService,
+    lockService: LockService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -58,13 +61,24 @@ class DiscardTransferConfirmController @Inject() (
 
   def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
+      val owner = request.authenticatedUser match {
+        case psaUser: PsaUser => psaUser.psaId.value
+        case pspUser: PspUser => pspUser.pspId.value
+      }
+
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          // Answers updated in the request but not needed storing in session. Answers required in request for page based navigation
-          Future.fromTry(request.userAnswers.set(DiscardTransferConfirmPage, value)).flatMap {
-            answers =>
+          for {
+            // Always release lock irrespective of YES or NO
+            isLocked <- lockService.isLocked(request.userAnswers.id.value, owner)
+            _        <- if (isLocked) lockService.releaseLock(request.userAnswers.id.value, owner) else Future.unit
+
+            // Answers updated in the request but not needed storing in session. Answers required in request for page based navigation
+            answers <- Future.fromTry(request.userAnswers.set(DiscardTransferConfirmPage, value))
+
+            result <- {
               if (value) {
                 for {
                   _                  <- sessionRepository.clear(answers.id.value)
@@ -76,9 +90,20 @@ class DiscardTransferConfirmController @Inject() (
                   }
                 }
               } else {
-                Future.successful(Redirect(DiscardTransferConfirmPage.nextPage(NormalMode, answers)))
+                val versionNumber: String = request.sessionData.data.value.get("versionNumber").flatMap(_.asOpt[String]).getOrElse("001")
+                Future.successful(
+                  Redirect(
+                    controllers.viewandamend.routes.ViewAmendSubmittedController.fromDraft(
+                      answers.id,
+                      answers.pstr,
+                      AmendInProgress,
+                      versionNumber
+                    )
+                  )
+                )
               }
-          }
+            }
+          } yield result
       )
   }
 }
