@@ -24,7 +24,7 @@ import utils.{Paging, PagingRequest}
 
 final case class PaginatedAllTransfersViewModel(
     table: Table,
-    pagination: Option[Pagination], // None when single page
+    pagination: Option[Pagination],
     lockWarning: Option[String] = None,
     currentPage: Int            = 1,
     totalPages: Int             = 1
@@ -52,14 +52,7 @@ object PaginatedAllTransfersViewModel {
     if (p.totalPages <= 1) {
       None
     } else {
-      val items: Seq[PaginationItem] =
-        (1 to p.totalPages).map { n =>
-          PaginationItem(
-            number  = Some(n.toString),
-            href    = urlForPage(n),
-            current = Some(n == p.page)
-          )
-        }
+      val items: Seq[PaginationItem] = createSmartPaginationItems(p.page, p.totalPages, urlForPage)
 
       val prev = if (p.hasPrev) {
         Some(PaginationLink(href = urlForPage(p.page - 1), labelText = Some(m("site.previous"))))
@@ -81,6 +74,48 @@ object PaginatedAllTransfersViewModel {
           landmarkLabel = Some(m("pagination.landmark"))
         )
       )
+    }
+  }
+
+  private def createSmartPaginationItems(
+      currentPage: Int,
+      totalPages: Int,
+      urlForPage: Int => String
+    ): Seq[PaginationItem] = {
+    val mustShow = Set(
+      1,
+      currentPage,
+      totalPages,
+      currentPage - 1,
+      currentPage + 1
+    ).filter(p => p >= 1 && p <= totalPages)
+      .toSeq
+      .sorted
+
+    val itemsWithEllipsis = mustShow.foldLeft(Seq.empty[Either[Unit, Int]]) { (acc, page) =>
+      acc.lastOption match {
+        case Some(Right(lastPage)) if page - lastPage > 1 =>
+          acc :+ Left(()) :+ Right(page)
+        case _                                            =>
+          acc :+ Right(page)
+      }
+    }
+
+    itemsWithEllipsis.map {
+      case Right(pageNum) =>
+        PaginationItem(
+          href     = urlForPage(pageNum),
+          number   = Some(pageNum.toString),
+          current  = Some(pageNum == currentPage),
+          ellipsis = None
+        )
+      case Left(_)        =>
+        PaginationItem(
+          href     = "",
+          number   = None,
+          current  = None,
+          ellipsis = Some(true)
+        )
     }
   }
 }
