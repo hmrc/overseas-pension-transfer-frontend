@@ -147,7 +147,7 @@ common.addressInput.error.postcode.pattern = Postcode must only include letters,
 common.addressInput.error.poBox.pattern = PO Box must only include letters, numbers or spaces
 common.addressInput.error.countryCode.required = Enter a country
 
-common.memberDetails.heading = The member''s details
+common.memberDetails.heading = Member details
 common.qropsDetails.heading = The QROPS details
 common.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
 common.transferDetails.heading = The transfer details
