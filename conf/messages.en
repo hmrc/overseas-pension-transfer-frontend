@@ -776,6 +776,7 @@ submittedTransferSummary.title = Reports for {0}
 submittedTransferSummary.heading = Reports for {0}
 submittedTransferSummary.submission = Submission
 submittedTransferSummary.status = Status
+submittedTransferSummary.action = Action
 submittedTransferSummary.view = View
 submittedTransferSummary.viewOrAmend = View or amend
 submittedTransferSummary.reviewAndSubmit = Review and submit
