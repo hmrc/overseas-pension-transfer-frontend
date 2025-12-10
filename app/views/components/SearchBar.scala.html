@@ -22,47 +22,59 @@
 
 @defining(model.id + "-hint") { hintId =>
 
-    <form method="GET" action="@model.action" role="search">
+    <form method="get" action="@model.action" role="search">
         <div class="govuk-form-group">
+
             <label class="govuk-label govuk-visually-hidden" for="@model.id">
-                @model.label
+            @model.label
             </label>
 
             @model.hint.map { hintText =>
                 <div id="@hintId" class="govuk-hint">
-                    @hintText
+                @hintText
                 </div>
             }
 
-            <div class="search-bar">
-                @if(model.hint.isDefined) {
-                    <input
-                    class="govuk-input search-bar__input"
-                    id="@model.id"
-                    name="@model.name"
-                    type="search"
-                    autocomplete="off"
-                    aria-describedby="@hintId"
-                    value="@model.value.getOrElse("")"
-                    />
-                } else {
-                    <input
-                    class="govuk-input search-bar__input"
-                    id="@model.id"
-                    name="@model.name"
-                    type="search"
-                    autocomplete="off"
-                    value="@model.value.getOrElse("")"
-                    />
-                }
+            <div class="search-bar-row">
+                <div class="search-bar">
+                    <div class="search-bar__controls">
+                        @if(model.hint.isDefined) {
+                            <input
+                            class="govuk-input search-bar__input"
+                            id="@model.id"
+                            name="@model.name"
+                            type="search"
+                            autocomplete="off"
+                            aria-describedby="@hintId"
+                            value="@model.value.getOrElse("")"
+                            />
+                        } else {
+                            <input
+                            class="govuk-input search-bar__input"
+                            id="@model.id"
+                            name="@model.name"
+                            type="search"
+                            autocomplete="off"
+                            value="@model.value.getOrElse("")"
+                            />
+                        }
 
-                <button
-                class="govuk-button search-bar__button"
-                data-module="govuk-button"
-                type="submit">
-                    @model.buttonText
-                </button>
+                        <button
+                        class="govuk-button search-bar__button"
+                        data-module="govuk-button"
+                        type="submit">
+                        @model.buttonText
+                        </button>
+                    </div>
+                </div>
+
+                @model.clearUrl.map { url =>
+                    <a class="govuk-link search-bar__clear" href="@url">
+                        Clear<span class="govuk-visually-hidden"> search</span>
+                    </a>
+                }
             </div>
         </div>
     </form>
+
 }

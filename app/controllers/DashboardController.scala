@@ -203,11 +203,16 @@ class DashboardController @Inject() (
       messages: Messages
     ): Option[SearchBarViewModel] =
     if (appConfig.allowDashboardSearch) {
+
+      val clearUrl: Option[String] =
+        search.map(_ => routes.DashboardController.onPageLoad(page = 1, search = None).url)
+
       Some(
         SearchBarViewModel(
-          action = routes.DashboardController.onPageLoad().url,
-          value  = search.map(_.trim).filter(_.nonEmpty),
-          hint   = Some(messages("dashboard.search.hintText"))
+          action   = routes.DashboardController.onPageLoad().url,
+          value    = search.map(_.trim).filter(_.nonEmpty),
+          hint     = Some(messages("dashboard.search.hintText")),
+          clearUrl = clearUrl
         )
       )
     } else {
