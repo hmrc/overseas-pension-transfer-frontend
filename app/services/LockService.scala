@@ -83,4 +83,7 @@ class LockService @Inject() (
   def releaseLock(lockId: String, owner: String): Future[Unit] =
     lockRepository.releaseLock(lockId, owner)
 
+  def isLocked(lockId: String, owner: String): Future[Boolean] =
+    lockRepository.isLocked(lockId, owner)
+
 }
