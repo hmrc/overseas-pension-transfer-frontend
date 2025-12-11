@@ -179,8 +179,8 @@ taskList.taskStatus.completed = Completed
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
-discardTransferConfirm.title = Are you sure you want to discard this transfer?
-discardTransferConfirm.heading = Are you sure you want to discard this transfer?
+discardTransferConfirm.title = Are you sure you want to discard updates made to this transfer?
+discardTransferConfirm.heading = Are you sure you want to discard updates made to this transfer?
 discardTransferConfirm.error.required = Select yes if you want to discard this transfer
 
 memberName.title = What is the member''s name?
