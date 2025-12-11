@@ -49,16 +49,12 @@ item.qtStatus match {
   }
 }
 
-@pageSuffix: Option[String] = @{
-    if (vm.totalPages > 1) {
-        Some(messages("dashboard.allTransfers.page", vm.currentPage.toString, vm.totalPages.toString))
-    } else {
-        None
-    }
+@pagePrefix: String = @{
+    messages("dashboard.allTransfers.page", vm.currentPage.toString, vm.totalPages.toString)
 }
 
 @layout(
-  pageTitle       = titleWithPagination(messages("dashboard.title"), pageSuffix),
+  pageTitle       = titleWithPagination(messages("dashboard.title"), pagePrefix),
   showBackLink    = false,
   showPageFooter  = false,
   showBreadcrumbs = true,
