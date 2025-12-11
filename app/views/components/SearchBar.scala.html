@@ -25,9 +25,11 @@
     <form method="get" action="@model.action" role="search">
         <div class="govuk-form-group">
 
-            <label class="govuk-label govuk-visually-hidden" for="@model.id">
-            @model.label
-            </label>
+            <h2 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--m" for="@model.id">
+                    @model.label
+                </label>
+            </h2>
 
             @model.hint.map { hintText =>
                 <div id="@hintId" class="govuk-hint">
