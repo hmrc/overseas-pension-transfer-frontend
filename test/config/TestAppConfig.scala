@@ -22,13 +22,13 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 class TestAppConfig
     extends FrontendAppConfig(
       configuration  = Configuration(
-        "host"                                -> "http://localhost:9000",
         "appName"                             -> "test-frontend",
         "contact-frontend.host"               -> "http://localhost:9250",
         "contact-frontend.serviceId"          -> "test-service",
         "urls.login"                          -> "http://localhost:9553/login",
         "urls.loginContinue"                  -> "http://localhost:9000/continue",
         "urls.signOut"                        -> "http://localhost:9000/sign-out",
+        "urls.signedOutRedirectUrl"           -> "http://localhost:15600/report-transfer-qualifying-recognised-overseas-pension-scheme/account/signed-out",
         "urls.pensionSchemeUrl"               -> "http://localhost:8204/manage-pension-schemes/pension-scheme-summary/",
         "urls.mpsHomeUrl"                     -> "http://localhost:8204/manage-pension-schemes/overview",
         "feedback-frontend.host"              -> "http://localhost:9514",
