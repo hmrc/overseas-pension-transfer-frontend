@@ -19,7 +19,6 @@ pagination.landmark = Table pagination
 
 breadcrumbs.mps = MPS
 breadcrumbs.pensionScheme = Pension scheme
-breadcrumbs.otc = Report a transfer to a QROPS
 
 date.day = Day
 date.month = Month
@@ -55,7 +54,7 @@ dashboard.allTransfers.status.submitted = Submitted to HMRC
 dashboard.allTransfers.status.inProgress = In progress
 dashboard.allTransfers.status.amendInProgress = Amendment in progress
 dashboard.allTransfers.reference.inProgressText = Available after submission
-dashboard.allTransfers.empty = This scheme does not currently have any overseas pension transfer reports.
+dashboard.allTransfers.empty = This scheme does not currently have any QROPS transfer reports.
 dashboard.banner.title = Important
 dashboard.banner.inProgress.text = The transfer for {0} will be deleted on {1} if you do not work on it.
 dashboard.banner.updateInProgress.text = The update for {0} will be deleted on {1} if you do not work on it.
@@ -69,13 +68,13 @@ requiredInfo.title = What you will need
 requiredInfo.heading = What you will need
 requiredInfo.text.bold = You do not have to complete everything at once.
 requiredInfo.text.normal = We''ll save the report as ''in progress'' when you add the member''s name. You can come back to complete it at any time.
-requiredInfo.memberDetails.heading = The member''s details
+requiredInfo.memberDetails.heading = Member details
 requiredInfo.memberDetails.bullet1 = The member''s name, National Insurance number and date of birth
 requiredInfo.memberDetails.bullet2 = The member''s address
 requiredInfo.memberDetails.bullet3 = If the member is or was resident in the UK for tax purposes
 requiredInfo.memberDetails.bullet4 = Their last residential address in the UK
 requiredInfo.memberDetails.bullet5 = The date the member left the UK, if they have left
-requiredInfo.transferDetails.heading = The transfer details
+requiredInfo.transferDetails.heading = Transfer details
 requiredInfo.transferDetails.bullet1 = The member''s available overseas transfer allowance before this transfer takes place
 requiredInfo.transferDetails.bullet2 = The amount of the transfer
 requiredInfo.transferDetails.bullet3 = Whether the transfer is taxable
@@ -83,12 +82,12 @@ requiredInfo.transferDetails.bullet4 = Why the transfer is taxable or not
 requiredInfo.transferDetails.bullet5 = The amount of tax deducted at 25%
 requiredInfo.transferDetails.bullet6 = The transfer date
 requiredInfo.transferDetails.bullet7 = Whether the transfer is cash only or a mix of cash and assets; and if the latter, details of the assets and amounts
-requiredInfo.qropsDetails.heading = The QROPS details
+requiredInfo.qropsDetails.heading = QROPS details
 requiredInfo.qropsDetails.bullet1 = The full name of the QROPS
 requiredInfo.qropsDetails.bullet2 = The QROPS reference
 requiredInfo.qropsDetails.bullet3 = The country or territory in which the QROPS was established
 requiredInfo.qropsDetails.bullet4 = The address of the QROPS
-requiredInfo.schemeManager.heading = The QROPS scheme manager
+requiredInfo.schemeManager.heading = QROPS scheme manager details
 requiredInfo.schemeManager.bullet1 = The name of the scheme manager, either an individual or organisation
 requiredInfo.schemeManager.bullet2 = The scheme manager's address and contact details
 
@@ -147,10 +146,10 @@ common.addressInput.error.postcode.pattern = Postcode must only include letters,
 common.addressInput.error.poBox.pattern = PO Box must only include letters, numbers or spaces
 common.addressInput.error.countryCode.required = Enter a country
 
-common.memberDetails.heading = The member''s details
-common.qropsDetails.heading = The QROPS details
-common.qropsSchemeManagerDetails.heading = The QROPS scheme manager''s details
-common.transferDetails.heading = The transfer details
+common.memberDetails.heading = Member details
+common.qropsDetails.heading = QROPS details
+common.qropsSchemeManagerDetails.heading = QROPS scheme manager details
+common.transferDetails.heading = Transfer details
 
 common.nameInput.firstName = First name
 common.nameInput.lastName = Last name
@@ -179,8 +178,8 @@ taskList.taskStatus.completed = Completed
 checkYourAnswers.title = Check your answers
 checkYourAnswers.heading = Check your answers
 
-discardTransferConfirm.title = Are you sure you want to discard this transfer?
-discardTransferConfirm.heading = Are you sure you want to discard this transfer?
+discardTransferConfirm.title = Are you sure you want to discard updates made to this transfer?
+discardTransferConfirm.heading = Are you sure you want to discard updates made to this transfer?
 discardTransferConfirm.error.required = Select yes if you want to discard this transfer
 
 memberName.title = What is the member''s name?
@@ -308,15 +307,15 @@ qropsAddress.error.addressLine1.required = Enter the first line of QROPS address
 qropsAddress.error.addressLine2.required = Enter the second line of QROPS address
 qropsAddress.change.hidden = Scheme address
 
-qropsCountry.title = Country or territory in which QROPS was established?
-qropsCountry.heading = Country or territory in which QROPS was established?
+qropsCountry.title = In which country or territory is the QROPS established?
+qropsCountry.heading = In which country or territory is the QROPS established?
 qropsCountry.checkYourAnswersLabel = Country or territory established
 qropsCountry.error.required = Enter a country or territory
 qropsCountry.error.length = QROPSCountry must be 100 characters or less
 qropsCountry.change.hidden = The country where QROPS was established
 
-qropsOtherCountry.title = In which other country or territory was the QROPS established?
-qropsOtherCountry.heading = In which other country or territory was the QROPS established?
+qropsOtherCountry.title = In which other country or territory is the QROPS established?
+qropsOtherCountry.heading = In which other country or territory is the QROPS established?
 qropsOtherCountry.checkYourAnswersLabel = Other country or territory
 qropsOtherCountry.error.required = Enter a country or territory
 qropsOtherCountry.error.length = Country or territory must be 35 characters or less
@@ -472,8 +471,8 @@ dateOfTransfer.error.invalid = Enter the day, month, year in the correct format.
 dateOfTransfer.amend.error.invalid.mindate = Date cannot be before 6 April 2012
 dateOfTransfer.amend.error.afterSubmissionDate = Date of transfer must be before your original submission date
 
-applicableTaxExclusions.title = Please provide the applicable exclusion
-applicableTaxExclusions.heading = Please provide the applicable exclusion
+applicableTaxExclusions.title = What are the applicable exclusions?
+applicableTaxExclusions.heading = What are the applicable exclusions?
 applicableTaxExclusions.occupational = The QROPS is an occupational pension scheme and the individual is an employee of the sponsoring employer.
 applicableTaxExclusions.publicService = The QROPS is an overseas public service scheme and the individual is employed by the public service.
 applicableTaxExclusions.internationalOrg = The QROPS is a pension scheme of an international organisation and the individual is employed by that international organisation.
@@ -643,9 +642,9 @@ unquotedSharesAmendContinue.summary.value = {0} added
 unquotedSharesAmendContinue.text.singular = group of unquoted shares
 unquotedSharesAmendContinue.text.plural = groups of unquoted shares
 
-moreUnquotedSharesDeclaration.title = Does the member have more than 5 groups of unquoted shares?
-moreUnquotedSharesDeclaration.moreUnquotedShares = Does the member have more than 5 groups of unquoted shares?
-moreUnquotedSharesDeclaration.moreUnquotedShares.hint = Select yes if the member has more than 5 unquoted shares. We''ll contact the scheme administrator for information on the rest of the unquoted shares.
+moreUnquotedSharesDeclaration.title = Is the member transferring more than 5 groups of unquoted shares?
+moreUnquotedSharesDeclaration.moreUnquotedShares = Is the member transferring more than 5 groups of unquoted shares?
+moreUnquotedSharesDeclaration.moreUnquotedShares.hint = Select yes if the member is transferring more than 5 unquoted shares. We''ll contact the scheme administrator for information on the rest of the unquoted shares.
 moreUnquotedSharesDeclaration.error.required = Please select an option
 
 unquotedSharesConfirmRemoval.title = Are you sure you want to remove these unquoted shares?
@@ -682,9 +681,9 @@ quotedSharesAmendContinue.summary.value = {0} added
 quotedSharesAmendContinue.text.singular = group of quoted shares
 quotedSharesAmendContinue.text.plural = groups of quoted shares
 
-moreQuotedSharesDeclaration.title = Does the member have more than 5 groups of quoted shares?
-moreQuotedSharesDeclaration.moreQuotedShares = Does the member have more than 5 groups of quoted shares?
-moreQuotedSharesDeclaration.moreQuotedShares.hint = Select yes if the member has more than 5 quoted shares. We''ll contact the scheme administrator for information on the rest of the quoted shares.
+moreQuotedSharesDeclaration.title = Is the member transferring more than 5 groups of quoted shares?
+moreQuotedSharesDeclaration.moreQuotedShares = Is the member transferring more than 5 groups of quoted shares?
+moreQuotedSharesDeclaration.moreQuotedShares.hint = Select yes if the member is transferring more than 5 quoted shares. We''ll contact the scheme administrator for information on the rest of the quoted shares.
 moreQuotedSharesDeclaration.error.required = Please select an option
 
 propertyAmendContinue.text.title.noItems = You have not added any items
@@ -699,9 +698,9 @@ propertyAmendContinue.summary.value = {0} added
 propertyAmendContinue.text.singular = property
 propertyAmendContinue.text.plural = properties
 
-morePropertyDeclaration.title = Does the member have more than 5 properties?
-morePropertyDeclaration.moreProperty = Does the member have more than 5 properties?
-morePropertyDeclaration.moreProperty.hint = Select yes if the member has more than 5 properties. We''ll contact the scheme administrator for information on the rest of the properties.
+morePropertyDeclaration.title = Is the member transferring more than 5 properties?
+morePropertyDeclaration.moreProperty = Is the member transferring more than 5 properties?
+morePropertyDeclaration.moreProperty.hint = Select yes if the member is transferring more than 5 properties. We''ll contact the scheme administrator for information on the rest of the properties.
 morePropertyDeclaration.error.required = Please select an option
 
 otherAssetsAmendContinue.text.title.noItems = You have not added any items
@@ -714,9 +713,9 @@ otherAssetsAmendContinue.summary.value = {0} added
 otherAssetsAmendContinue.text.singular = asset
 otherAssetsAmendContinue.text.plural = assets
 
-moreOtherAssetsDeclaration.title = Does the member have more than 5 assets?
-moreOtherAssetsDeclaration.moreOtherAssets = Does the member have more than 5 assets?
-moreOtherAssetsDeclaration.moreOtherAssets.hint = Select yes if the member has more than 5 assets. We''ll contact the scheme administrator for information on the rest of the assets.
+moreOtherAssetsDeclaration.title = Is the member transferring more than 5 other assets?
+moreOtherAssetsDeclaration.moreOtherAssets = Is the member transferring more than 5 other assets?
+moreOtherAssetsDeclaration.moreOtherAssets.hint = Select yes if the member is transferring more than other assets. We''ll contact the scheme administrator for information on the rest of the other assets.
 moreOtherAssetsDeclaration.error.required = Please select an option
 
 otherAssetsStart.title = Add other assets
@@ -784,8 +783,8 @@ submittedTransferSummary.status.inProgress = In progress
 submittedTransferSummary.status.submitted = Submitted on {0}
 
 viewAmend.title = What would you like to do?
-viewAmend.radio1 = View this overseas pension transfer
-viewAmend.radio2 = Amend this overseas pension transfer
+viewAmend.radio1 = View this QROPS transfer report
+viewAmend.radio2 = Amend this QROPS transfer report
 viewAmend.error.required = Select whether you want to view or amend this transfer
 
 checkYourAnswers.memberDetails.heading = Check member details

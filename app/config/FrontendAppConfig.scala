@@ -35,9 +35,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${request.uri}"
 
-  val loginUrl: String         = configuration.get[String]("urls.login")
-  val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  val signOutUrl: String       = configuration.get[String]("urls.signOut")
+  val loginUrl: String                = configuration.get[String]("urls.login")
+  val loginContinueUrl: String        = configuration.get[String]("urls.loginContinue")
+  val signOutUrl: String              = configuration.get[String]("urls.signOut")
+  val pensionSchemeSummaryUrl: String = configuration.get[String]("urls.pensionSchemeUrl")
+  val mpsHomeUrl: String              = configuration.get[String]("urls.mpsHomeUrl")
 
   private val exitSurveyBaseUrl: String = configuration.get[String]("feedback-frontend.host")
   val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/report-transfer-qualifying-recognised-overseas-pension-scheme"
@@ -77,11 +79,4 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val transfersPerPage: Int = configuration.get[Int]("pagination.transfersPerPage")
 
   val dashboardLockTtl: Long = configuration.get[Long]("dashboard.lockTtlSeconds")
-
-  val mpsSchemeSummaryPath: String = configuration.get[String]("pension-scheme-summary.service-path")
-
-  def mpsBaseUrl(implicit request: RequestHeader): String = {
-    val scheme = if (request.secure) "https" else "http"
-    s"$scheme://${request.host}$mpsSchemeSummaryPath"
-  }
 }
