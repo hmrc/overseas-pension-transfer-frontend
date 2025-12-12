@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import forms.DiscardTransferConfirmFormProvider
-import models.NormalMode
+import models.QtStatus.AmendInProgress
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -27,10 +27,11 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DiscardTransferConfirmPage
 import play.api.inject.bind
+import play.api.libs.json.{JsObject, JsString}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{LockService, UserAnswersService}
 import views.html.DiscardTransferConfirmView
 
 import scala.concurrent.Future
@@ -78,12 +79,15 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
       }
     }
 
-    "must redirect and clear session and save for later when user answers true" in {
+    "must release lock and redirect + clear answers when YES selected" in {
       val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
 
       val mockSessionRepository  = mock[SessionRepository]
       val mockUserAnswersService = mock[UserAnswersService]
+      val mockLockService        = mock[LockService]
 
+      when(mockLockService.isLocked(any(), any())) thenReturn Future.successful(true)
+      when(mockLockService.releaseLock(any(), any())) thenReturn Future.successful(())
       when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
       when(mockUserAnswersService.clearUserAnswers(any())(any())) thenReturn Future.successful(Right(Done))
 
@@ -91,7 +95,8 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         applicationBuilder(userAnswers = userAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
+            bind[LockService].toInstance(mockLockService)
           )
           .build()
 
@@ -105,16 +110,27 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.routes.DashboardController.onPageLoad().url
 
+        verify(mockLockService, times(1)).isLocked(any(), any())
+        verify(mockLockService, times(1)).releaseLock(any(), any())
         verify(mockSessionRepository, times(1)).clear(any())
         verify(mockUserAnswersService, times(1)).clearUserAnswers(any())(any())
       }
     }
 
-    "must redirect to the task list page when user answers false" in {
+    "must release lock and redirect to fromDraft when NO selected" in {
       val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, false).success.value
 
+      val mockLockService = mock[LockService]
+
+      when(mockLockService.isLocked(any(), any())) thenReturn Future.successful(true)
+      when(mockLockService.releaseLock(any(), any())) thenReturn Future.successful(())
+
+      val sessionDataWithVersion = emptySessionData.copy(data = emptySessionData.data ++ JsObject(Map("versionNumber" -> JsString("002"))))
+
       val application =
-        applicationBuilder(userAnswers = userAnswers).build()
+        applicationBuilder(userAnswers = userAnswers, sessionData = sessionDataWithVersion)
+          .overrides(bind[LockService].toInstance(mockLockService))
+          .build()
 
       running(application) {
         val request =
@@ -123,9 +139,17 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.TaskListController.onPageLoad().url
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe
+          controllers.viewandamend.routes.ViewAmendSubmittedController.fromDraft(
+            userAnswers.id,
+            userAnswers.pstr,
+            AmendInProgress,
+            "002"
+          ).url
 
+        verify(mockLockService, times(1)).isLocked(any(), any())
+        verify(mockLockService, times(1)).releaseLock(any(), any())
       }
     }
 
@@ -134,7 +158,10 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
 
       val mockSessionRepository  = mock[SessionRepository]
       val mockUserAnswersService = mock[UserAnswersService]
+      val mockLockService        = mock[LockService]
 
+      when(mockLockService.isLocked(any(), any())) thenReturn Future.successful(true)
+      when(mockLockService.releaseLock(any(), any())) thenReturn Future.successful(())
       when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
       when(mockUserAnswersService.clearUserAnswers(any())(any())) thenReturn
         Future.successful(Left(UserAnswersErrorResponse("Error", None)))
@@ -143,7 +170,8 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         applicationBuilder(userAnswers = userAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
+            bind[LockService].toInstance(mockLockService)
           )
           .build()
 

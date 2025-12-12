@@ -32,6 +32,7 @@ import services.{LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.PaginatedAllTransfersViewModel
 import views.html.DashboardView
+import views.html.components.AppBreadcrumbs
 
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +48,8 @@ class DashboardController @Inject() (
     view: DashboardView,
     appConfig: FrontendAppConfig,
     userAnswersService: UserAnswersService,
-    lockService: LockService
+    lockService: LockService,
+    appBreadcrumbs: AppBreadcrumbs
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -166,17 +168,19 @@ class DashboardController @Inject() (
             lockWarning = lockWarning
           )
 
-          val srn     = pensionSchemeDetails.srnNumber.value
-          val mpsLink = s"${appConfig.mpsBaseUrl}$srn"
+          val srn               = pensionSchemeDetails.srnNumber.value
+          val mpsLink           = appConfig.mpsHomeUrl
+          val pensionSchemeLink = s"${appConfig.pensionSchemeSummaryUrl}$srn"
 
           repo.set(updatedData).map { _ =>
             Ok(
               view(
-                schemeName    = pensionSchemeDetails.schemeName,
-                nextPage      = DashboardPage.nextPage(updatedData, None, None).url,
-                vm            = viewModel,
-                expiringItems = expiringItems,
-                mpsLink       = mpsLink
+                schemeName        = pensionSchemeDetails.schemeName,
+                nextPage          = DashboardPage.nextPage(updatedData, None, None).url,
+                vm                = viewModel,
+                expiringItems     = expiringItems,
+                pensionSchemeLink = pensionSchemeLink,
+                breadcrumbs       = appBreadcrumbs(mpsLink, pensionSchemeLink)
               )
             )
           }
