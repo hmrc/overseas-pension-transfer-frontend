@@ -27,6 +27,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   import servicesConfig._
 
+  lazy val host: String = servicesConfig.getString("host")
+
   val appName: String = configuration.get[String]("appName")
 
   private val contactHost                  = configuration.get[String]("contact-frontend.host")
@@ -79,4 +81,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val transfersPerPage: Int = configuration.get[Int]("pagination.transfersPerPage")
 
   val dashboardLockTtl: Long = configuration.get[Long]("dashboard.lockTtlSeconds")
+
+  val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
 }
