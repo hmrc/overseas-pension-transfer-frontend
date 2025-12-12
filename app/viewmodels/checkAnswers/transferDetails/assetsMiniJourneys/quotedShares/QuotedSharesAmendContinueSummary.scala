@@ -22,11 +22,13 @@ import models.assets.TypeOfAsset
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import queries.assets.QuotedSharesQuery
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AppUtils
 import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 
 object QuotedSharesAmendContinueSummary extends AppUtils {
   private val threshold = 5
@@ -63,6 +65,22 @@ object QuotedSharesAmendContinueSummary extends AppUtils {
           )
         )
       case _                                 => None
+    }
+  }
+
+  def moreThanFiveQuotedSharesRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+    userAnswers.get(MoreQuotedSharesDeclarationPage).filter(identity).map { _ =>
+      SummaryListRowViewModel(
+        key     = Key(Text(messages("moreThanFive.quotedShares.checkYourAnswersLabel"))),
+        value   = ValueViewModel(HtmlContent(messages("site.yes"))),
+        actions = if (showChangeLinks) {
+          Seq(ActionItemViewModel(
+            content = Text(messages("site.change")),
+            href    = controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.MoreQuotedSharesDeclarationController
+              .onPageLoad(mode).url
+          ).withVisuallyHiddenText(messages("moreThanFive.quotedShares.change.hidden")))
+        } else Nil
+      )
     }
   }
 

@@ -83,7 +83,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
       when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
-      when(mockView.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard view"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard view"))
 
       val application = applicationBuilder()
         .overrides(
@@ -233,7 +233,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
-      when(mockView.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard"))
 
       when(mockLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
 
@@ -327,7 +327,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq(expiringTransfer))
 
-      when(mockView.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("expiring soon banner"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("expiring soon banner"))
 
       val application = applicationBuilder()
         .overrides(

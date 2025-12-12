@@ -30,7 +30,8 @@
   nextPage: String,
   vm: PaginatedAllTransfersViewModel,
   expiringItems: Seq[AllTransfersItem] = Seq.empty,
-  mpsLink: String
+  pensionSchemeLink: String,
+  breadcrumbs: Html
 )(implicit request: Request[_], messages: Messages)
 
 @messageFor(item: AllTransfersItem) = @{
@@ -49,20 +50,16 @@ item.qtStatus match {
   }
 }
 
-@pageSuffix: Option[String] = @{
-    if (vm.totalPages > 1) {
-        Some(messages("dashboard.allTransfers.page", vm.currentPage.toString, vm.totalPages.toString))
-    } else {
-        None
-    }
+@pagePrefix: String = @{
+    messages("dashboard.allTransfers.page", vm.currentPage.toString, vm.totalPages.toString)
 }
 
 @layout(
-  pageTitle       = titleWithPagination(messages("dashboard.title"), pageSuffix),
+  pageTitle       = titleWithPagination(messages("dashboard.title"), pagePrefix),
   showBackLink    = false,
   showPageFooter  = false,
-  showBreadcrumbs = true,
-  fullWidth       = true
+  fullWidth       = true,
+  showBreadcrumbs = Some(breadcrumbs)
 ) {
 
   @vm.lockWarning.map { name =>
@@ -130,5 +127,5 @@ item.qtStatus match {
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-    <p><a class="govuk-link govuk-body" href="@mpsLink">@messages("dashboard.pensionSchemeLink.text", schemeName)</a></p>
+    <p><a class="govuk-link govuk-body" href="@pensionSchemeLink">@messages("dashboard.pensionSchemeLink.text", schemeName)</a></p>
 }

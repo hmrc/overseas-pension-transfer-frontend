@@ -21,6 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.CheckMode
 import models.assets.UnquotedSharesEntry
 import org.scalatest.freespec.AnyFreeSpec
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import queries.assets.UnquotedSharesQuery
@@ -51,6 +52,20 @@ class UnquotedSharesAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
       result.get.value.content mustBe Text(messages("unquotedSharesAmendContinue.summary.value"))
       result.get.actions.get.items.head.href mustBe
         AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(CheckMode).url
+    }
+
+    "moreThanFiveUnquotedSharesRow" - {
+      "should return Some when user has selected more than 5 unquoted shares" in {
+        val userAnswers = emptyUserAnswers.set(MoreUnquotedSharesDeclarationPage, true).success.value
+        val result      = UnquotedSharesAmendContinueSummary.moreThanFiveUnquotedSharesRow(CheckMode, userAnswers, true)
+        result mustBe defined
+      }
+
+      "should return None when user has not selected more than 5 unquoted shares" in {
+        val userAnswers = emptyUserAnswers.set(MoreUnquotedSharesDeclarationPage, false).success.value
+        val result      = UnquotedSharesAmendContinueSummary.moreThanFiveUnquotedSharesRow(CheckMode, userAnswers, true)
+        result mustBe None
+      }
     }
   }
 }

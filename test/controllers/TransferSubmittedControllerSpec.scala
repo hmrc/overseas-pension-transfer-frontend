@@ -57,7 +57,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
         val result = route(application, request).value
 
-        val expectedMpsLink = s"${appConfig.mpsBaseUrl(fakeSchemeRequest(request))}1234567890"
+        val expectedMpsLink = s"${appConfig.pensionSchemeSummaryUrl}1234567890"
 
         val view = application.injector.instanceOf[TransferSubmittedView]
 
