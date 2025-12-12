@@ -145,6 +145,7 @@ common.addressInput.error.addressLine5.pattern = Address line 5 must only includ
 common.addressInput.error.postcode.pattern = Postcode must only include letters, numbers or spaces
 common.addressInput.error.poBox.pattern = PO Box must only include letters, numbers or spaces
 common.addressInput.error.countryCode.required = Enter a country
+common.addressInput.countryCode.select = Select a country
 
 common.memberDetails.heading = Member details
 common.qropsDetails.heading = QROPS details
