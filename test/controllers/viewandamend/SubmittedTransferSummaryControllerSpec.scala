@@ -17,7 +17,6 @@
 package controllers.viewandamend
 
 import base.SpecBase
-import controllers.viewandamend.routes
 import models.PstrNumber
 import models.QtStatus.Submitted
 import org.mockito.ArgumentMatchers.any
@@ -28,7 +27,7 @@ import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CollectSubmittedVersionsService
+import services.{CollectSubmittedVersionsService, LockService}
 import viewmodels.SubmittedTransferSummaryViewModel
 import views.html.viewandamend.SubmittedTransferSummaryView
 
@@ -37,12 +36,21 @@ import scala.concurrent.Future
 class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
 
   private val mockCollectVersionsService = mock[CollectSubmittedVersionsService]
+  private val mockLockService            = mock[LockService]
 
   "onPageLoad" - {
     "Return 200 with table content" in {
+
+      when(mockLockService.isLocked(any(), any())).thenReturn(Future.successful(false))
+      when(mockLockService.releaseLock(any(), any())).thenReturn(Future.unit)
+
+      when(mockCollectVersionsService.collectVersions(any(), any(), any(), any())(any()))
+        .thenReturn(Future.successful(None, List(emptyUserAnswers)))
+
       val application  = applicationBuilder(userAnswers = emptyUserAnswers)
         .overrides(
-          bind[CollectSubmittedVersionsService].toInstance(mockCollectVersionsService)
+          bind[CollectSubmittedVersionsService].toInstance(mockCollectVersionsService),
+          bind[LockService].toInstance(mockLockService)
         )
         .build()
       val testMessages = messages(application)

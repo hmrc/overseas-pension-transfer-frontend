@@ -39,7 +39,6 @@
         appFooter: AppFooter,
         autocompleteCss: HmrcAccessibleAutocompleteCss,
         autocompleteJavascript: HmrcAccessibleAutocompleteJavascript,
-        appBreadcrumbs: AppBreadcrumbs,
         twoThirdsLayout: TwoThirdsMainContent,
         fullWidthMainContent: fullWidthMainContentLayout
 )
@@ -55,7 +54,7 @@
         showTasklistFooter: Boolean = false,
         showDiscardAmendmentFooter: Boolean = false,
         fullWidth: Boolean = false,
-        showBreadcrumbs: Boolean = false)(contentBlock: Html)(implicit requestHeader: RequestHeader, messages: Messages)
+        showBreadcrumbs: Option[Html] = None)(contentBlock: Html)(implicit requestHeader: RequestHeader, messages: Messages)
 
 @head = {
     @autocompleteCss()
@@ -94,7 +93,7 @@
     pageTitle = Some(pageTitle),
     templateOverrides = TemplateOverrides(
         additionalHeadBlock = Some(head),
-        beforeContentBlock = if(showBreadcrumbs) Some(appBreadcrumbs()) else None,
+        beforeContentBlock = showBreadcrumbs,
         additionalScriptsBlock = Some(autocompleteJavascript()),
         mainContentLayout = if(fullWidth) Some(fullWidthMainContent(_)) else Some(twoThirdsLayout(_))
     ),

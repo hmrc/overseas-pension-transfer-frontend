@@ -125,6 +125,27 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with Mocki
 
       verify(mockLockRepository).takeLock(eqTo("lock2"), eqTo(owner), any())
     }
+
+    "must return true when lock is currently locked by the owner (isLocked)" in {
+      when(mockLockRepository.isLocked(eqTo("lock1"), eqTo(owner)))
+        .thenReturn(Future.successful(true))
+
+      val result = await(service.isLocked("lock1", owner))
+      result mustBe true
+
+      verify(mockLockRepository).isLocked(eqTo("lock1"), eqTo(owner))
+    }
+
+    "must return false when lock is not held by the owner (isLocked)" in {
+      when(mockLockRepository.isLocked(eqTo("lock2"), eqTo(owner)))
+        .thenReturn(Future.successful(false))
+
+      val result = await(service.isLocked("lock2", owner))
+      result mustBe false
+
+      verify(mockLockRepository).isLocked(eqTo("lock2"), eqTo(owner))
+    }
+
   }
 
   private def await[T](f: Future[T]): T =

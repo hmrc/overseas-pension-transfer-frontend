@@ -29,6 +29,8 @@ class TestAppConfig
         "urls.login"                          -> "http://localhost:9553/login",
         "urls.loginContinue"                  -> "http://localhost:9000/continue",
         "urls.signOut"                        -> "http://localhost:9000/sign-out",
+        "urls.pensionSchemeUrl"               -> "http://localhost:8204/manage-pension-schemes/pension-scheme-summary/",
+        "urls.mpsHomeUrl"                     -> "http://localhost:8204/manage-pension-schemes/overview",
         "feedback-frontend.host"              -> "http://localhost:9514",
         "features.welsh-translation"          -> false,
         "features.dashboard-search"           -> false,

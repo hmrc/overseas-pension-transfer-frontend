@@ -32,6 +32,7 @@ import services.{LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.{PaginatedAllTransfersViewModel, SearchBarViewModel}
 import views.html.DashboardView
+import views.html.components.AppBreadcrumbs
 
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +47,8 @@ class DashboardController @Inject() (
     transferService: TransferService,
     view: DashboardView,
     userAnswersService: UserAnswersService,
-    lockService: LockService
+    lockService: LockService,
+    appBreadcrumbs: AppBreadcrumbs
   )(implicit ec: ExecutionContext,
     appConfig: FrontendAppConfig
   ) extends FrontendBaseController with I18nSupport with Logging {
@@ -162,6 +164,7 @@ class DashboardController @Inject() (
           val transfersVm       = buildTransfersVm(filteredTransfers, page, search, lockWarning, appConfig)
           val searchBarVm       = buildSearchBarVm(search)
           val mpsLink           = s"${appConfig.mpsBaseUrl}${pensionSchemeDetails.srnNumber.value}"
+          val pensionSchemeLink = s"${appConfig.pensionSchemeSummaryUrl}$srn"
 
           repo.set(updatedData).map { _ =>
             Ok(
@@ -172,7 +175,8 @@ class DashboardController @Inject() (
                 searchBarVm,
                 expiringItems,
                 mpsLink,
-                isSearch = search.exists(_.trim.nonEmpty)
+                isSearch = search.exists(_.trim.nonEmpty),
+                breadcrumbs = appBreadcrumbs(mpsLink, pensionSchemeLink)
               )
             )
           }
@@ -196,7 +200,6 @@ class DashboardController @Inject() (
       urlForPage  = pageUrl(search),
       lockWarning = lockWarning
     )
-
   private def buildSearchBarVm(
       search: Option[String]
     )(implicit appConfig: FrontendAppConfig,
