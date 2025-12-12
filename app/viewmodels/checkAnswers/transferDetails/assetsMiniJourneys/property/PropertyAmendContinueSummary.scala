@@ -20,9 +20,11 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
 import models.{Mode, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import play.api.i18n.Messages
 import queries.assets.PropertyQuery
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.AddressViewModel
 import viewmodels.govuk.summarylist._
@@ -64,6 +66,22 @@ object PropertyAmendContinueSummary {
           )
         )
       case _                                 => None
+    }
+  }
+
+  def moreThanFivePropertiesRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+    userAnswers.get(MorePropertyDeclarationPage).filter(identity).map { _ =>
+      SummaryListRowViewModel(
+        key     = Key(Text(messages("moreThanFive.properties.checkYourAnswersLabel"))),
+        value   = ValueViewModel(HtmlContent(messages("site.yes"))),
+        actions = if (showChangeLinks) {
+          Seq(ActionItemViewModel(
+            content = Text(messages("site.change")),
+            href    = controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
+              .onPageLoad(mode).url
+          ).withVisuallyHiddenText(messages("moreThanFive.properties.change.hidden")))
+        } else Nil
+      )
     }
   }
 
