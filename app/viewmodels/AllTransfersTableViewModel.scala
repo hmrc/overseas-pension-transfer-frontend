@@ -101,7 +101,7 @@ object AllTransfersTableViewModel {
       head           = Some(head),
       rows           = rows,
       caption        = Some(messages("dashboard.allTransfers.heading")),
-      captionClasses = "govuk-table__caption--m"
+      captionClasses = "govuk-table__caption--m govuk-visually-hidden"
     )
   }
 }

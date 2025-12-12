@@ -8,7 +8,7 @@ GET        /language/:lang                                                      
 
 GET        /start                                                                                 controllers.MpsOnRampController.onRamp(srn: String ?= "")
 
-GET        /dashboard                                                                             controllers.DashboardController.onPageLoad(page: Int ?= 1)
+GET        /dashboard                                                                             controllers.DashboardController.onPageLoad(page: Int ?= 1, search: Option[String] ?= None)
 
 GET        /dashboard/transfer-report                                                             controllers.DashboardController.onTransferClick()
 

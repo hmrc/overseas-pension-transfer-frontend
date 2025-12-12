@@ -79,4 +79,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val transfersPerPage: Int = configuration.get[Int]("pagination.transfersPerPage")
 
   val dashboardLockTtl: Long = configuration.get[Long]("dashboard.lockTtlSeconds")
+
+  val allowDashboardSearch: Boolean = configuration.get[Boolean]("features.dashboard-search")
+
 }
