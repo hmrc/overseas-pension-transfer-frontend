@@ -57,7 +57,7 @@ item.qtStatus match {
 }
 
 @pagePrefix: String = @{
-    messages("dashboard.allTransfers.page", vm.currentPage.toString, vm.totalPages.toString)
+    messages("dashboard.allTransfers.page", allTransfersViewModel.currentPage.toString, allTransfersViewModel.totalPages.toString)
 }
 
 @layout(

@@ -163,8 +163,8 @@ class DashboardController @Inject() (
           val filteredTransfers = getFilteredTransfers(allTransfers, search)
           val transfersVm       = buildTransfersVm(filteredTransfers, page, search, lockWarning, appConfig)
           val searchBarVm       = buildSearchBarVm(search)
-          val mpsLink           = s"${appConfig.mpsBaseUrl}${pensionSchemeDetails.srnNumber.value}"
-          val pensionSchemeLink = s"${appConfig.pensionSchemeSummaryUrl}$srn"
+          val mpsLink           = appConfig.mpsHomeUrl
+          val pensionSchemeLink = s"${appConfig.pensionSchemeSummaryUrl}${pensionSchemeDetails.srnNumber.value}"
 
           repo.set(updatedData).map { _ =>
             Ok(
@@ -175,8 +175,9 @@ class DashboardController @Inject() (
                 searchBarVm,
                 expiringItems,
                 mpsLink,
-                isSearch = search.exists(_.trim.nonEmpty),
-                breadcrumbs = appBreadcrumbs(mpsLink, pensionSchemeLink)
+                isSearch          = search.exists(_.trim.nonEmpty),
+                breadcrumbs       = appBreadcrumbs(mpsLink, pensionSchemeLink),
+                pensionSchemeLink = pensionSchemeLink
               )
             )
           }
@@ -200,6 +201,7 @@ class DashboardController @Inject() (
       urlForPage  = pageUrl(search),
       lockWarning = lockWarning
     )
+
   private def buildSearchBarVm(
       search: Option[String]
     )(implicit appConfig: FrontendAppConfig,
