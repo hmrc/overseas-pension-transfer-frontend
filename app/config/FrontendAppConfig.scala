@@ -79,4 +79,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val transfersPerPage: Int = configuration.get[Int]("pagination.transfersPerPage")
 
   val dashboardLockTtl: Long = configuration.get[Long]("dashboard.lockTtlSeconds")
+
+  val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
 }
