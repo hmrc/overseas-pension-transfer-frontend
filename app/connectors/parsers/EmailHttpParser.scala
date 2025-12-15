@@ -16,8 +16,7 @@
 
 package connectors.parsers
 
-import models.email.EmailSendingResult
-import models.email.EmailSendingResult.{EMAIL_ACCEPTED, EMAIL_NOT_SENT, EMAIL_UNSENDABLE}
+import models.email.{EMAIL_ACCEPTED, EMAIL_NOT_SENT, EMAIL_UNSENDABLE, EmailSendingResult}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object EmailHttpParser {

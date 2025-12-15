@@ -16,14 +16,17 @@
 
 package controllers
 
+import cats.data.EitherT
+import connectors.MinimalDetailsConnector
 import controllers.actions._
-import models.{Mode, PersonName}
+import models.authentication.{PsaUser, PspUser}
 import models.responses.SubmissionResponse
-import pages.PsaDeclarationPage
+import models.{Mode, PersonName}
+import pages.PspDeclarationPage
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.SessionRepository
 import services.{EmailService, UserAnswersService}
@@ -42,6 +45,7 @@ class PsaDeclarationController @Inject() (
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: PsaDeclarationView,
+    minimalDetailsConnector: MinimalDetailsConnector,
     emailService: EmailService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
@@ -55,22 +59,24 @@ class PsaDeclarationController @Inject() (
     implicit request =>
       userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData).flatMap {
         case Right(SubmissionResponse(qtNumber, receiptDate)) =>
-          val name = request.sessionData.get(MemberNamePage) match {
-            case Some(value) => value
-            case None        =>
-              request.userAnswers.get(MemberNamePage) match {
-                case Some(value) => value
-                case None        => PersonName("Undefined", "Undefined")
-              }
-          }
-
-          for {
-            updatedSessionData    <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
-            updateWithReceiptDate <- Future.fromTry(updatedSessionData.set(DateSubmittedQuery, receiptDate))
-            updateWithMemberName  <- Future.fromTry(updateWithReceiptDate.set(MemberNamePage, name))
-            _                     <- sessionRepository.set(updateWithMemberName)
-          } yield Redirect(PsaDeclarationPage.nextPage(mode, request.userAnswers))
-        case _                                                => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+          (for {
+            updatedSessionData      <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber)))
+            updateWithReceiptDateSD <- EitherT.right[Result](Future.fromTry(updatedSessionData.set(DateSubmittedQuery, receiptDate)))
+            name                     = request.sessionData.get(MemberNamePage)
+                                         .orElse(request.userAnswers.get(MemberNamePage))
+                                         .getOrElse(PersonName("Undefined", "Undefined"))
+            updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
+            psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
+            minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
+                                         logger.warn(s"[PspDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e")
+                                         Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                                       }
+            sentEmailSD             <- EitherT.right[Result](emailService.sendConfirmationEmail(updateWithMemberNameSD, minimalDetails))
+            _                       <- EitherT.right[Result](sessionRepository.set(sentEmailSD))
+          } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
+        case e                                                =>
+          logger.warn(s"[PsaDeclarationController][onSubmit] Failed to submit declaration: $e")
+          Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
       }
   }
 }
