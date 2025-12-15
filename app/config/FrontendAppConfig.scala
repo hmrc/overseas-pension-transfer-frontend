@@ -85,4 +85,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val allowPrintSubmittedTransfer: Boolean = configuration.get[Boolean]("features.print-submitted-transfer")
 
   val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
+
+  val submittedConfirmationTemplateId: String = configuration.get[String]("submission-confirmation-template-id")
+
+  val submissionEmailEnabled: Boolean = configuration.get[Boolean]("features.submission-email")
+
 }
