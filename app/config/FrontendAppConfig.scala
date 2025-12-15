@@ -27,8 +27,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   import servicesConfig._
 
-  lazy val host: String = servicesConfig.getString("host")
-
   val appName: String = configuration.get[String]("appName")
 
   private val contactHost                  = configuration.get[String]("contact-frontend.host")
