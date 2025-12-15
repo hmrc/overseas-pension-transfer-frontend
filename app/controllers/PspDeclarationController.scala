@@ -16,18 +16,22 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions._
 import forms.PspDeclarationFormProvider
 import models.{Mode, PersonName}
 import models.authentication.PsaId
+import models.email.EmailSendingResult.EMAIL_ACCEPTED
+import models.requests.DisplayRequest
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
 import pages.PspDeclarationPage
 import pages.memberDetails.MemberNamePage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{DateSubmittedQuery, QtNumberQuery}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import queries.{DateSubmittedQuery, EmailConfirmationQuery, QtNumberQuery}
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{EmailService, UserAnswersService}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PspDeclarationView
 
@@ -43,7 +47,8 @@ class PspDeclarationController @Inject() (
     schemeData: SchemeDataAction,
     formProvider: PspDeclarationFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: PspDeclarationView
+    view: PspDeclarationView,
+    emailService: EmailService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -87,5 +92,34 @@ class PspDeclarationController @Inject() (
             }
         }
       )
+  }
+
+  private def sendEmailConfirmation(
+      request: DisplayRequest[AnyContent],
+      mode: Mode
+    )(implicit hc: HeaderCarrier,
+      messages: Messages,
+      appConfig: FrontendAppConfig
+    ): Future[Result] = {
+    if (appConfig.submissionEmailEnabled) {
+      emailService.sendConfirmationEmail(
+        ???,
+        ???
+      ) flatMap {
+        emailConfirmationResult =>
+          val emailSent = EMAIL_ACCEPTED == emailConfirmationResult
+          for {
+            sessionData <- Future.fromTry(request.sessionData.set(EmailConfirmationQuery, emailSent))
+            _              <- sessionRepository.set(sessionData)
+          } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
+      }
+    } else {
+      val emailSent = false
+      for {
+        sessionData <- Future.fromTry(request.sessionData.set(EmailConfirmationQuery, emailSent))
+        _              <- sessionRepository.set(sessionData)
+      } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
+      }
+    }
   }
 }

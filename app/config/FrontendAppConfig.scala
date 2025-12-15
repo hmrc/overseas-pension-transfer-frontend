@@ -83,4 +83,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val allowDashboardSearch: Boolean = configuration.get[Boolean]("features.dashboard-search")
 
   val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
+
+  val submittedConfirmationTemplateId: String = configuration.get[String]("submission-confirmation-template-id")
+
+  val submissionEmailEnabled: Boolean = configuration.get[Boolean]("features.submission-email")
+
 }

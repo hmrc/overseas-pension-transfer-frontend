@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{EmailService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PsaDeclarationView
 
@@ -41,7 +41,8 @@ class PsaDeclarationController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
-    view: PsaDeclarationView
+    view: PsaDeclarationView,
+    emailService: EmailService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
