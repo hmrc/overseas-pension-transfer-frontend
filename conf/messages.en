@@ -775,6 +775,7 @@ transferSubmitted.pensionScheme.key = Scheme
 transferSubmitted.dateSubmitted.key = Date submitted
 
 viewSubmitted.heading = Overseas transfer report for {0}
+viewSubmitted.amendTitle = Amend your submission
 viewSubmitted.amendHeading = Amend your submission
 schemeName.label = Scheme
 dateOfSubmission.label = Date submitted
@@ -796,7 +797,11 @@ viewAmend.radio1 = View this QROPS transfer report
 viewAmend.radio2 = Amend this QROPS transfer report
 viewAmend.error.required = Select whether you want to view or amend this transfer
 
+checkYourAnswers.memberDetails.title = Check member details
 checkYourAnswers.memberDetails.heading = Check member details
+checkYourAnswers.transferDetails.title = Check transfer details
 checkYourAnswers.transferDetails.heading = Check transfer details
+checkYourAnswers.QROPSDetails.title = Check QROPS details
 checkYourAnswers.QROPSDetails.heading = Check QROPS details
+checkYourAnswers.QROPSSchemeManagerDetails.title = Check QROPS scheme manager details
 checkYourAnswers.QROPSSchemeManagerDetails.heading = Check QROPS scheme manager details
