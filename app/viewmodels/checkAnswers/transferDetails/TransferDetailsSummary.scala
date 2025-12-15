@@ -19,7 +19,7 @@ package viewmodels.checkAnswers.transferDetails
 import models.{Mode, UserAnswers}
 import pages.transferDetails.IsTransferCashOnlyPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueSummary
@@ -45,9 +45,13 @@ case object TransferDetailsSummary {
       if (showCashAmount) CashAmountInTransferSummary.row(mode, userAnswers, showChangeLinks) else None
 
     val totalUnquotedSharesRow: Option[SummaryListRow] = UnquotedSharesAmendContinueSummary.row(mode, userAnswers, showChangeLinks)
+    val moreThanFiveUnquotedSharesRow                  = UnquotedSharesAmendContinueSummary.moreThanFiveUnquotedSharesRow(mode, userAnswers, showChangeLinks)
     val totalQuotedSharesRow: Option[SummaryListRow]   = QuotedSharesAmendContinueSummary.row(mode, userAnswers, showChangeLinks)
+    val moreThanFiveQuotedSharesRow                    = QuotedSharesAmendContinueSummary.moreThanFiveQuotedSharesRow(mode, userAnswers, showChangeLinks)
     val totalPropertiesRow: Option[SummaryListRow]     = PropertyAmendContinueSummary.row(mode, userAnswers, showChangeLinks)
+    val moreThanFivePropertiesRow                      = PropertyAmendContinueSummary.moreThanFivePropertiesRow(mode, userAnswers, showChangeLinks)
     val totalOtherAssetsRow: Option[SummaryListRow]    = OtherAssetsAmendContinueSummary.row(mode, userAnswers, showChangeLinks)
+    val moreThanFiveOtherAssetsRow                     = OtherAssetsAmendContinueSummary.moreThanFiveOtherAssetsRow(mode, userAnswers, showChangeLinks)
 
     Seq(
       overseasTransferAllowance,
@@ -63,9 +67,13 @@ case object TransferDetailsSummary {
       typeOfAsset,
       cashAmountInTransfer,
       totalUnquotedSharesRow,
+      moreThanFiveUnquotedSharesRow,
       totalQuotedSharesRow,
+      moreThanFiveQuotedSharesRow,
       totalPropertiesRow,
-      totalOtherAssetsRow
+      moreThanFivePropertiesRow,
+      totalOtherAssetsRow,
+      moreThanFiveOtherAssetsRow
     ).flatten
   }
 }
