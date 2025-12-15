@@ -16,22 +16,22 @@
 
 package controllers
 
+import cats.data.EitherT
 import config.FrontendAppConfig
+import connectors.MinimalDetailsConnector
 import controllers.actions._
 import forms.PspDeclarationFormProvider
-import models.{Mode, PersonName}
-import models.authentication.PsaId
-import models.email.EmailSendingResult.EMAIL_ACCEPTED
-import models.requests.DisplayRequest
+import models.authentication.{PsaId, PspUser}
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
+import models.{Mode, PersonName}
 import pages.PspDeclarationPage
 import pages.memberDetails.MemberNamePage
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.Logging
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import queries.{DateSubmittedQuery, EmailConfirmationQuery, QtNumberQuery}
+import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.SessionRepository
 import services.{EmailService, UserAnswersService}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PspDeclarationView
 
@@ -48,9 +48,10 @@ class PspDeclarationController @Inject() (
     formProvider: PspDeclarationFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: PspDeclarationView,
-    emailService: EmailService
+    emailService: EmailService,
+    minimalDetailsConnector: MinimalDetailsConnector
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   val form = formProvider()
 
@@ -69,57 +70,29 @@ class PspDeclarationController @Inject() (
           userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId))
             .flatMap {
               case Right(SubmissionResponse(qtNumber, receiptDate)) =>
-                val name = request.sessionData.get(MemberNamePage) match {
-                  case Some(value) => value
-                  case None        =>
-                    request.userAnswers.get(MemberNamePage) match {
-                      case Some(value) => value
-                      case None        => PersonName("Undefined", "Undefined")
-                    }
-                }
-
-                for {
-                  updatedSessionData    <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
-                  updateWithReceiptDate <- Future.fromTry(updatedSessionData.set(DateSubmittedQuery, receiptDate))
-                  updateWithMemberName  <- Future.fromTry(updateWithReceiptDate.set(MemberNamePage, name))
-                  _                     <- sessionRepository.set(updateWithMemberName)
-                } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
+                (for {
+                  updatedSessionData      <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber)))
+                  updateWithReceiptDateSD <- EitherT.right[Result](Future.fromTry(updatedSessionData.set(DateSubmittedQuery, receiptDate)))
+                  name                     = request.sessionData.get(MemberNamePage)
+                                               .orElse(request.userAnswers.get(MemberNamePage))
+                                               .getOrElse(PersonName("Undefined", "Undefined"))
+                  updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
+                  pspId                    = request.authenticatedUser.asInstanceOf[PspUser].pspId
+                  minimalDetails          <- EitherT(minimalDetailsConnector.fetch(pspId)).leftMap { e =>
+                                               logger.warn(s"[PspDeclarationController][onSubmit] Failed to fetch minimal details for pspId=${pspId.value}: $e")
+                                               Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                                             }
+                  sentEmailSD             <- EitherT.right[Result](emailService.sendConfirmationEmail(updateWithMemberNameSD, minimalDetails))
+                  _                       <- EitherT.right[Result](sessionRepository.set(sentEmailSD))
+                } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
               case Left(NotAuthorisingPsaIdErrorResponse(_, _))     =>
                 val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
                 Future.successful(BadRequest(view(formWithError, mode)))
-              case _                                                =>
+              case e                                                =>
+                logger.warn(s"[PspDeclarationController][onSubmit] Failed to submit declaration: $e")
                 Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
             }
         }
       )
-  }
-
-  private def sendEmailConfirmation(
-      request: DisplayRequest[AnyContent],
-      mode: Mode
-    )(implicit hc: HeaderCarrier,
-      messages: Messages,
-      appConfig: FrontendAppConfig
-    ): Future[Result] = {
-    if (appConfig.submissionEmailEnabled) {
-      emailService.sendConfirmationEmail(
-        ???,
-        ???
-      ) flatMap {
-        emailConfirmationResult =>
-          val emailSent = EMAIL_ACCEPTED == emailConfirmationResult
-          for {
-            sessionData <- Future.fromTry(request.sessionData.set(EmailConfirmationQuery, emailSent))
-            _              <- sessionRepository.set(sessionData)
-          } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
-      }
-    } else {
-      val emailSent = false
-      for {
-        sessionData <- Future.fromTry(request.sessionData.set(EmailConfirmationQuery, emailSent))
-        _              <- sessionRepository.set(sessionData)
-      } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
-      }
-    }
   }
 }
