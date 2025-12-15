@@ -18,8 +18,10 @@ package services
 
 import config.FrontendAppConfig
 import connectors.EmailConnector
-import models.email.{EmailSendingResult, EmailToSendRequest, SubmissionConfirmation}
+import models.{MinimalDetails, SessionData}
+import models.email.{EMAIL_ACCEPTED, EmailSendingResult, EmailToSendRequest, SubmissionConfirmation}
 import play.api.i18n.Messages
+import queries.EmailConfirmationQuery
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.format.DateTimeFormatter
@@ -36,28 +38,38 @@ class EmailService @Inject() (
   ) {
 
   def sendConfirmationEmail(
-      recipientName: String,
-      emailAddress: String
+      sessionData: SessionData,
+      minimalDetails: MinimalDetails
     )(implicit hc: HeaderCarrier,
       messages: Messages
-    ): Future[EmailSendingResult] = {
+    ): Future[SessionData] = {
+    if (appConfig.submissionEmailEnabled) {
+      val recipientName = minimalDetails.individualDetails.map { id => s"${id.firstName} ${id.lastName}" }.getOrElse("Undefined")
+      val emailAddress  = minimalDetails.email
+      val amendmentDate = format(LocalDate.now(clock))
 
-    val amendmentDate = format(LocalDate.now(clock))
+      val emailParameters = {
+        SubmissionConfirmation(
+          recipientName,
+          amendmentDate
+        )
+      }
 
-    val emailParameters = {
-      SubmissionConfirmation(
-        recipientName,
-        amendmentDate
-      )
+      emailConnector.send(
+        EmailToSendRequest(
+          List(emailAddress),
+          appConfig.submittedConfirmationTemplateId,
+          emailParameters
+        )
+      ) flatMap {
+        emailConfirmationResult =>
+          val emailSent = EMAIL_ACCEPTED == emailConfirmationResult
+          Future.fromTry(sessionData.set(EmailConfirmationQuery, emailSent))
+      }
+    } else {
+      val emailSent = false
+      Future.fromTry(sessionData.set(EmailConfirmationQuery, emailSent))
     }
-
-    emailConnector.send(
-      EmailToSendRequest(
-        List(emailAddress),
-        appConfig.submittedConfirmationTemplateId,
-        emailParameters
-      )
-    )
   }
 
   private def format(date: LocalDate) = {

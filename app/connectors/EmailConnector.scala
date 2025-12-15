@@ -16,32 +16,30 @@
 
 package connectors
 
-import config.Service
-import connectors.parsers.EmailHttpParser
-import models.email.EmailSendingResult.EMAIL_NOT_SENT
-import models.email.{EmailSendingResult, EmailToSendRequest}
+import config.FrontendAppConfig
+import models.email.{EMAIL_NOT_SENT, EmailSendingResult, EmailToSendRequest}
+import play.api.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.writeableOf_JsValue
-import play.api.{Configuration, Logging}
-
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{BadGatewayException, GatewayTimeoutException, HeaderCarrier, StringContextOps}
+import connectors.parsers.EmailHttpParser._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailConnector @Inject() (config: Configuration, httpClientV2: HttpClientV2) extends Logging {
+class EmailConnector @Inject() (appConfig: FrontendAppConfig, httpClientV2: HttpClientV2) extends Logging {
 
-  private val baseUrl = config.get[Service]("microservice.services.email")
+  private val baseUrl = url"${appConfig.emailServiceHost}/hmrc/email"
 
   def send(email: EmailToSendRequest)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[EmailSendingResult] = {
-    httpClientV2.post(url"${baseUrl}hmrc/email").withBody(Json.toJson(email)).execute[EmailSendingResult].recover {
+    httpClientV2.post(baseUrl).withBody(Json.toJson(email)).execute[EmailSendingResult].recover {
       case e: BadGatewayException     =>
-        logger.warn("There was an error sending the email: " + e.message + " " + e.responseCode)
+        logger.warn("[EmailConnector][send] Error sending email: " + e.message + " " + e.responseCode)
         EMAIL_NOT_SENT
       case e: GatewayTimeoutException =>
-        logger.warn("There was a time out whilst sending the email: " + e.message + " " + e.responseCode)
+        logger.warn("[EmailConnector][send] Gateway timed out: " + e.message + " " + e.responseCode)
         EMAIL_NOT_SENT
     }
   }
