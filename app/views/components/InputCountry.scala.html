@@ -38,7 +38,10 @@
 
     val selectModel = SelectViewModel(
         field = form(field),
-        items = countries,
+        items = {
+                val emptyOption = SelectItem(value = Some(""), text = messages("common.addressInput.countryCode.select"), selected = false)
+                emptyOption +: countries
+        },
         label = label
     )
     .asAccessibleAutocomplete(
