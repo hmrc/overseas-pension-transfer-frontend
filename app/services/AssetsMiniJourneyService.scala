@@ -54,7 +54,9 @@ object AssetsMiniJourneyService {
     userAnswers.get(queryKey) match {
       case Some(currentList) if index >= 0 && index < currentList.size =>
         val updatedList = currentList.patch(index, Nil, 1)
-        userAnswers.set(queryKey, updatedList)
+        userAnswers.set(queryKey, updatedList).map { updatedAnswers =>
+          cleanupTypeOfAsset(journey, updatedAnswers)
+        }
 
       case Some(_) =>
         Failure(new IndexOutOfBoundsException(s"Index $index out of bounds"))
@@ -200,4 +202,27 @@ object AssetsMiniJourneyService {
         val updated = SelectedAssetTypesWithStatus.markAllIncomplete(existing)
         sessionData.set(SelectedAssetTypesWithStatus, updated)
     }
+
+  private def cleanupTypeOfAsset[A <: AssetEntry: Reads](journey: RepeatingAssetsMiniJourney[A], userAnswers: UserAnswers): UserAnswers = {
+
+    val assetType = journey.assetType
+    val remaining = userAnswers.get(journey.query).map(_.size).getOrElse(0)
+
+    if (remaining == 0) {
+      val cleanedUserAnswers = userAnswers.remove(journey.query).getOrElse(userAnswers)
+
+      cleanedUserAnswers.get(TypeOfAssetPage) match {
+        case Some(list) =>
+          cleanedUserAnswers
+            .set(TypeOfAssetPage, list.filterNot(_ == assetType))
+            .getOrElse(cleanedUserAnswers)
+
+        case None =>
+          cleanedUserAnswers
+      }
+    } else {
+      userAnswers
+    }
+  }
+
 }

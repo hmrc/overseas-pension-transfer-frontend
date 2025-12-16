@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import models.assets._
 import org.scalatest.freespec.AnyFreeSpec
-import play.api.libs.json.Json
+import pages.transferDetails.TypeOfAssetPage
 import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 import scala.util.{Failure, Success}
@@ -186,4 +186,52 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
       updated.get(AnswersSelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
     }
   }
+
+  "must remove the specified entry and keep asset type when entries still remain" in {
+    val entries = List(
+      UnquotedSharesEntry("One", 1, 100, "A"),
+      UnquotedSharesEntry("Two", 2, 200, "B")
+    )
+
+    val userAnswers =
+      emptyUserAnswers
+        .set(UnquotedSharesMiniJourney.query, entries).success.value
+        .set(TypeOfAssetPage, Seq(UnquotedSharesMiniJourney.assetType)).success.value
+
+    val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 0)
+
+    result mustBe a[Success[_]]
+
+    val updated = result.get
+    updated.get(UnquotedSharesMiniJourney.query).value mustBe
+      List(UnquotedSharesEntry("Two", 2, 200, "B"))
+
+    updated.get(TypeOfAssetPage).value mustBe Seq(UnquotedSharesMiniJourney.assetType)
+  }
+
+  "must remove asset data and remove asset type from TypeOfAssetPage when last entry is removed" in {
+    val entries = List(UnquotedSharesEntry("Only", 1, 100, "A"))
+
+    val userAnswers =
+      emptyUserAnswers
+        .set(UnquotedSharesMiniJourney.query, entries).success.value
+        .set(
+          TypeOfAssetPage,
+          Seq(
+            UnquotedSharesMiniJourney.assetType,
+            QuotedSharesMiniJourney.assetType
+          )
+        ).success.value
+
+    val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 0)
+
+    result mustBe a[Success[_]]
+
+    val updated = result.get
+
+    updated.get(UnquotedSharesMiniJourney.query) mustBe None
+
+    updated.get(TypeOfAssetPage).value mustBe Seq(QuotedSharesMiniJourney.assetType)
+  }
+
 }
