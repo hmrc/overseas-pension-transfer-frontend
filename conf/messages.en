@@ -467,9 +467,10 @@ dateOfTransfer.checkYourAnswersLabel = Date of transfer
 dateOfTransfer.error.required.all = Enter the date of the transfer
 dateOfTransfer.error.real.date = Date of transfer must be a real date
 dateOfTransfer.change.hidden = Date of transfer
-dateOfTransfer.error.invalid.mindate = Date cannot be before 6 April 2012, or in the future
+dateOfTransfer.error.invalid.mindate = Date of transfer must be after 5 April 2012
+dateOfTransfer.error.invalid.maxdate = Date of transfer must be in the past
 dateOfTransfer.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 2018
-dateOfTransfer.amend.error.invalid.mindate = Date cannot be before 6 April 2012
+dateOfTransfer.amend.error.invalid.mindate = Date of transfer must be after 5 April 2012
 dateOfTransfer.amend.error.afterSubmissionDate = Date of transfer must be before your original submission date
 
 applicableTaxExclusions.title = What are the applicable exclusions?
