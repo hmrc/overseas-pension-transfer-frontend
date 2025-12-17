@@ -20,23 +20,18 @@ import config.FrontendAppConfig
 import models.MinimalDetails
 import models.authentication.{PsaId, PspId}
 import play.api.Logging
-import play.api.http.Status.{FORBIDDEN, NOT_FOUND}
-import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait MinimalDetailsError
 
-case object DelimitedAdmin  extends MinimalDetailsError
+case object UpstreamError   extends MinimalDetailsError
 case object DetailsNotFound extends MinimalDetailsError
 
 class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: HttpClientV2) extends Logging {
-
-  private val delimitedPSA    = "DELIMITED_PSAID"
-  private val detailsNotFound = "no match found"
 
   private val url = url"${appConfig.pensionAdministratorHost}/pension-administrator/get-minimal-details-self"
 
@@ -66,14 +61,11 @@ class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: Htt
       .setHeader(idType -> idValue, "loggedInAsPsa" -> loggedInAsPsa.toString)
       .execute[MinimalDetails]
       .map(Right(_))
-      .recoverWith { case t =>
-        logger.error(s"Failed to fetch minimal details with message ${t.getMessage}", t)
-        Future.failed(t)
-      }
       .recover {
-        case e @ WithStatusCode(NOT_FOUND) if e.message.contains(detailsNotFound) =>
+        case e: NotFoundException if e.message.contains("no match found") =>
           Left(DetailsNotFound)
-        case e @ WithStatusCode(FORBIDDEN) if e.message.contains(delimitedPSA)    =>
-          Left(DelimitedAdmin)
+        case e                                                            =>
+          logger.error(s"[MinimalDetailsConnector][fetch] Upstream error occurred ${e.getMessage}", e)
+          Left(UpstreamError)
       }
 }
