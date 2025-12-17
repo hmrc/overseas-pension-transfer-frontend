@@ -45,7 +45,9 @@ trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with O
     "microservice.services.auth.host"                              -> WireMockHelper.wireMockHost,
     "microservice.services.auth.port"                              -> WireMockHelper.wireMockPort.toString,
     "microservice.services.pension-administrator.host"             -> WireMockHelper.wireMockHost,
-    "microservice.services.pension-administrator.port"             -> WireMockHelper.wireMockPort.toString
+    "microservice.services.pension-administrator.port"             -> WireMockHelper.wireMockPort.toString,
+    "microservice.services.email.host"                             -> WireMockHelper.wireMockHost,
+    "microservice.services.email.port"                             -> WireMockHelper.wireMockPort.toString
   )
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
