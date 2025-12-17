@@ -91,22 +91,22 @@ requiredInfo.schemeManager.heading = QROPS scheme manager details
 requiredInfo.schemeManager.bullet1 = The name of the scheme manager, either an individual or organisation
 requiredInfo.schemeManager.bullet2 = The scheme manager's address and contact details
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
+journeyRecovery.continue.title = Sorry, there is a problem with this service
+journeyRecovery.continue.heading = Sorry, there is a problem with this service
 journeyRecovery.continue.guidance = Try again later.
-journeyRecovery.continue.guidance.extra = Your transfer report will be saved as ''in progress''. You can come back to complete it at any time.
+journeyRecovery.continue.guidance.extra = If you were working on a transfer report, it will be saved as ''in progress''.
 
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
+journeyRecovery.startAgain.title = Sorry, there is a problem with this service
+journeyRecovery.startAgain.heading = Sorry, there is a problem with this service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
 
 addressLookupDown.title = Sorry, there is a problem with our address search
 addressLookupDown.heading = Sorry, there is a problem with our address search
-addressLookupDown.body = We''re having trouble retrieving some information.
-addressLookupDown.options.heading = You can:
+addressLookupDown.body = We cannot look up addresses at the moment.
+addressLookupDown.options.heading = You can try again later or:
 addressLookupDown.options.tryAgain = Try again in a few minutes
 addressLookupDown.options.dashboard = Return to Report a transfer to a QROPS
-addressLookupDown.options.enterManually = Enter the information manually
+addressLookupDown.options.enterManually = Enter the address manually
 
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
