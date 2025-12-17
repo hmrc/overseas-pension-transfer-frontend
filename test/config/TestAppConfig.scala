@@ -33,7 +33,7 @@ class TestAppConfig
         "urls.mpsHomeUrl"                     -> "http://localhost:8204/manage-pension-schemes/overview",
         "feedback-frontend.host"              -> "http://localhost:9514",
         "features.welsh-translation"          -> false,
-        "features.dashboard-search"           -> false,
+        "features.dashboard-search"           -> true,
         "enrolments.psa.serviceName"          -> "HMRC-PSA-ORG",
         "enrolments.psa.identifierKey"        -> "PSAID",
         "enrolments.psp.serviceName"          -> "HMRC-PSP-ORG",

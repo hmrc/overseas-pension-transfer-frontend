@@ -161,7 +161,7 @@ class DashboardController @Inject() (
           val allTransfers      = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
           val expiringItems     = repo.findExpiringWithin2Days(allTransfers)
           val filteredTransfers = getFilteredTransfers(allTransfers, search)
-          val transfersVm       = buildTransfersVm(filteredTransfers, page, search, lockWarning, appConfig)
+          val transfersVm       = buildTransfersVm(filteredTransfers, page, search, lockWarning)
           val searchBarVm       = buildSearchBarVm(search)
           val mpsLink           = appConfig.mpsHomeUrl
           val pensionSchemeLink = s"${appConfig.pensionSchemeSummaryUrl}${pensionSchemeDetails.srnNumber.value}"
@@ -190,9 +190,9 @@ class DashboardController @Inject() (
       items: Seq[AllTransfersItem],
       page: Int,
       search: Option[String],
-      lockWarning: Option[String],
+      lockWarning: Option[String]
+    )(implicit messages: Messages,
       appConfig: FrontendAppConfig
-    )(implicit messages: Messages
     ): PaginatedAllTransfersViewModel =
     PaginatedAllTransfersViewModel.build(
       items       = items,
@@ -204,26 +204,20 @@ class DashboardController @Inject() (
 
   private def buildSearchBarVm(
       search: Option[String]
-    )(implicit appConfig: FrontendAppConfig,
-      messages: Messages
-    ): Option[SearchBarViewModel] =
-    if (appConfig.allowDashboardSearch) {
+    )(implicit messages: Messages
+    ): SearchBarViewModel = {
 
-      val clearUrl: Option[String] =
-        search.map(_ => routes.DashboardController.onPageLoad(page = 1, search = None).url)
+    val clearUrl: Option[String] =
+      search.map(_ => routes.DashboardController.onPageLoad(page = 1, search = None).url)
 
-      Some(
-        SearchBarViewModel(
-          action   = routes.DashboardController.onPageLoad().url,
-          value    = search.map(_.trim).filter(_.nonEmpty),
-          label    = messages("dashboard.search.heading"),
-          hint     = Some(messages("dashboard.search.hintText")),
-          clearUrl = clearUrl
-        )
-      )
-    } else {
-      None
-    }
+    SearchBarViewModel(
+      action   = routes.DashboardController.onPageLoad().url,
+      value    = search.map(_.trim).filter(_.nonEmpty),
+      label    = messages("dashboard.search.heading"),
+      hint     = Some(messages("dashboard.search.hintText")),
+      clearUrl = clearUrl
+    )
+  }
 
   private def getFilteredTransfers(
       all: Seq[AllTransfersItem],
