@@ -20,6 +20,7 @@ import cats.data.Validated.{Invalid, Valid}
 import models.taskList.TaskStatus
 import models.taskList.TaskStatus._
 import models.{Mode, NormalMode, TaskCategory, UserAnswers}
+import play.api.i18n.Messages
 import play.api.mvc.Call
 import validators._
 
@@ -27,7 +28,8 @@ trait TaskJourneyViewModel {
   def category: TaskCategory
   def id: String
   def linkTextKey: String
-  def hint: Option[String] = None
+  def changeLinkTextKey: Option[String] = None
+  def hint: Option[String]              = None
 
   def start(mode: Mode): Call
   def cya(): Call
@@ -39,14 +41,22 @@ trait TaskJourneyViewModel {
       case TaskStatus.Completed => cya()
       case _                    => start(NormalMode)
     }
+
+  final def linkText(userAnswers: UserAnswers)(implicit messages: Messages): String =
+    status(userAnswers) match {
+      case TaskStatus.Completed => messages(changeLinkTextKey.getOrElse(linkTextKey))
+      case _                    => messages(linkTextKey)
+    }
+
 }
 
 object TaskJourneyViewModels {
 
   case object MemberDetailsJourneyViewModel extends TaskJourneyViewModel {
-    val category    = TaskCategory.MemberDetails
-    val id          = "member-details"
-    val linkTextKey = "taskList.memberDetails.linkText"
+    val category                   = TaskCategory.MemberDetails
+    val id                         = "member-details"
+    val linkTextKey                = "taskList.memberDetails.linkText"
+    override val changeLinkTextKey = Some("taskList.memberDetails.change.linkText")
 
     def start(m: Mode): Call = controllers.memberDetails.routes.MemberNameController.onPageLoad(m)
     def cya(): Call          = controllers.memberDetails.routes.MemberDetailsCYAController.onPageLoad()
@@ -64,9 +74,10 @@ object TaskJourneyViewModels {
   }
 
   case object TransferDetailsJourneyViewModel extends TaskJourneyViewModel {
-    val category    = TaskCategory.TransferDetails
-    val id          = "transfer-details"
-    val linkTextKey = "taskList.transferDetails.linkText"
+    val category                   = TaskCategory.TransferDetails
+    val id                         = "transfer-details"
+    val linkTextKey                = "taskList.transferDetails.linkText"
+    override val changeLinkTextKey = Some("taskList.transferDetails.change.linkText")
 
     def start(m: Mode): Call = controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(m)
     def cya(): Call          = controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
@@ -89,9 +100,10 @@ object TaskJourneyViewModels {
   }
 
   case object QropsDetailsJourneyViewModel extends TaskJourneyViewModel {
-    val category    = TaskCategory.QROPSDetails
-    val id          = "qrops-details"
-    val linkTextKey = "taskList.qropsDetails.linkText"
+    val category                   = TaskCategory.QROPSDetails
+    val id                         = "qrops-details"
+    val linkTextKey                = "taskList.qropsDetails.linkText"
+    override val changeLinkTextKey = Some("taskList.qropsDetails.change.linkText")
 
     def start(m: Mode): Call = controllers.qropsDetails.routes.QROPSNameController.onPageLoad(m)
     def cya(): Call          = controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
@@ -113,9 +125,11 @@ object TaskJourneyViewModels {
   }
 
   case object SchemeManagerDetailsJourneyViewModel extends TaskJourneyViewModel {
-    val category             = TaskCategory.SchemeManagerDetails
-    val id                   = "scheme-manager-details"
-    val linkTextKey          = "taskList.schemeManagerDetails.linkText"
+    val category                   = TaskCategory.SchemeManagerDetails
+    val id                         = "scheme-manager-details"
+    val linkTextKey                = "taskList.schemeManagerDetails.linkText"
+    override val changeLinkTextKey = Some("taskList.schemeManagerDetails.change.linkText")
+
     def start(m: Mode): Call = controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(m)
     def cya(): Call          = controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad()
 
@@ -136,9 +150,10 @@ object TaskJourneyViewModels {
   }
 
   case object SubmissionDetailsJourneyViewModel extends TaskJourneyViewModel {
-    val category             = TaskCategory.SubmissionDetails
-    val id                   = "submit"
-    val linkTextKey          = "taskList.submit.linkText"
+    val category    = TaskCategory.SubmissionDetails
+    val id          = "submit"
+    val linkTextKey = "taskList.submit.linkText"
+
     def start(m: Mode): Call = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
     def cya(): Call          = controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
 

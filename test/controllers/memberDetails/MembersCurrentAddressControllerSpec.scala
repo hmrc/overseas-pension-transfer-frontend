@@ -33,6 +33,7 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.i18n.Messages
 import repositories.SessionRepository
 import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
@@ -52,7 +53,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
     Country("FR", "France")
   )
 
-  private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
+  implicit private val messages: Messages = stubMessages()
+  private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
 
   private val mockCountryService = mock[CountryService]
 
