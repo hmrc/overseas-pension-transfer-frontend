@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import config.FrontendAppConfig
 import models.AllTransfersItem
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination._
@@ -38,7 +39,8 @@ object PaginatedAllTransfersViewModel {
       pageSize: Int,
       urlForPage: Int => String,
       lockWarning: Option[String] = None
-    )(implicit messages: Messages
+    )(implicit messages: Messages,
+      appConfig: FrontendAppConfig
     ): PaginatedAllTransfersViewModel = {
 
     val sorted = items.sorted
