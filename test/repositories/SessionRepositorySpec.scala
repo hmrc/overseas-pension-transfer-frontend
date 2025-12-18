@@ -92,7 +92,7 @@ class SessionRepositorySpec
       val session = sessionData("session-transfer", testQtNumber).copy(lastUpdated = now.minusSeconds(500))
       repository.set(session).futureValue mustBe true
 
-      repository.keepAliveByTransferId(testQtNumber.value).futureValue mustBe true
+      repository.keepAlive(testQtNumber.value).futureValue mustBe true
 
       val updated = repository.get("session-transfer").futureValue.value
       updated.lastUpdated mustBe now

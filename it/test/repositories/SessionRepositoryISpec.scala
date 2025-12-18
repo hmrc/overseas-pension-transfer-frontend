@@ -49,7 +49,7 @@ class SessionRepositoryISpec
     with MockitoSugar
     with SpecBase {
 
-  private val instant          = Instant.now.truncatedTo(ChronoUnit.MILLIS)
+  private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
   private val sessionData = SessionData(
@@ -77,10 +77,10 @@ class SessionRepositoryISpec
   private val encryptionService = new EncryptionService("test-master-key")
 
   override protected val repository: SessionRepository = new SessionRepository(
-    mongoComponent    = mongoComponent,
+    mongoComponent = mongoComponent,
     encryptionService = encryptionService,
-    appConfig         = mockAppConfig,
-    clock             = stubClock
+    appConfig = mockAppConfig,
+    clock = stubClock
   )
 
   ".set" - {
@@ -106,33 +106,7 @@ class SessionRepositoryISpec
 
         insert(sessionData).futureValue
 
-        val result         = repository.get(sessionData.sessionId).futureValue
-        val expectedResult = sessionData copy (lastUpdated = instant)
-
-        result.value mustEqual expectedResult
-      }
-    }
-
-    "when there is no record for this id" - {
-
-      "must return None" in {
-
-        repository.get("id that does not exist").futureValue must not be defined
-      }
-    }
-
-    mustPreserveMdc(repository.get(sessionData.sessionId))
-  }
-
-  ".getByTransferId" - {
-
-    "when there is a record for this id" - {
-
-      "must update the lastUpdated time and get the record" in {
-
-        insert(sessionData).futureValue
-
-        val result         = repository.get(sessionData.sessionId).futureValue
+        val result = repository.get(sessionData.sessionId).futureValue
         val expectedResult = sessionData copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult
@@ -175,55 +149,26 @@ class SessionRepositoryISpec
     "when there is a record for this id" - {
 
       "must update its lastUpdated to `now` and return true" in {
-
         insert(sessionData).futureValue
 
         val result = repository.keepAlive(sessionData.sessionId).futureValue
-
-        val expectedUpdatedAnswers = sessionData copy (lastUpdated = instant)
+        result mustBe true
 
         val updatedAnswers = find(Filters.equal("_id", sessionData.sessionId)).futureValue.headOption.value
-        updatedAnswers mustEqual expectedUpdatedAnswers
+
+        updatedAnswers.lastUpdated mustEqual instant
+        updatedAnswers.copy(lastUpdated = sessionData.lastUpdated) mustEqual sessionData
       }
     }
 
     "when there is no record for this id" - {
-
       "must return true" in {
-
-        repository.keepAlive("id that does not exist").futureValue mustEqual true
+        val result = repository.keepAlive("id that does not exist").futureValue
+        result mustBe true
       }
     }
 
-    mustPreserveMdc(repository.keepAlive(sessionData.transferId.value))
-  }
-
-  ".keepAliveByTransferId" - {
-
-    "when there is a record for this id" - {
-
-      "must update its lastUpdated to `now` and return true" in {
-
-        insert(sessionData).futureValue
-
-        val result = repository.keepAliveByTransferId(sessionData.transferId.value).futureValue
-
-        val expectedUpdatedAnswers = sessionData copy (lastUpdated = instant)
-
-        val updatedAnswers = find(Filters.equal("transferId", sessionData.transferId.value)).futureValue.headOption.value
-        updatedAnswers mustEqual expectedUpdatedAnswers
-      }
-    }
-
-    "when there is no record for this id" - {
-
-      "must return true" in {
-
-        repository.keepAlive("id that does not exist").futureValue mustEqual true
-      }
-    }
-
-    mustPreserveMdc(repository.keepAlive(sessionData.transferId.value))
+    mustPreserveMdc(repository.keepAlive(sessionData.sessionId))
   }
 
   "EncryptionService" - {
