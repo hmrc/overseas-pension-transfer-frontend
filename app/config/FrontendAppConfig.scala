@@ -76,7 +76,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val pensionSchemeHost: String        = baseUrl("pensions-scheme")
   val pensionSchemeService: String     = s"$pensionSchemeHost/pensions-scheme"
   val pensionAdministratorHost: String = baseUrl("pension-administrator")
-  val emailServiceHost: String         = baseUrl("email")
+  val emailHost: String                = baseUrl("email")
+  val emailService: String             = s"$emailHost/hmrc/email"
 
   val transfersPerPage: Int = configuration.get[Int]("pagination.transfersPerPage")
 
