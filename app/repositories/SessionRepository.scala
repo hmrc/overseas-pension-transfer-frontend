@@ -71,16 +71,6 @@ class SessionRepository @Inject() (
       .map(_ => true)
   }
 
-  def keepAliveByTransferId(id: String): Future[Boolean] = Mdc.preservingMdc {
-    collection
-      .updateOne(
-        filter = byTransferId(id),
-        update = Updates.set("lastUpdated", Instant.now(clock))
-      )
-      .toFuture()
-      .map(_ => true)
-  }
-
   def get(id: String): Future[Option[SessionData]] = Mdc.preservingMdc {
     keepAlive(id).flatMap {
       _ =>
