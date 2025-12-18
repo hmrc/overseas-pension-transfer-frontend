@@ -94,7 +94,7 @@ class SessionRepositorySpec
 
       repository.keepAliveByTransferId(testQtNumber.value).futureValue mustBe true
 
-      val updated = repository.getByTransferId(testQtNumber.value).futureValue.value
+      val updated = repository.get("session-transfer").futureValue.value
       updated.lastUpdated mustBe now
     }
 
@@ -120,7 +120,7 @@ class SessionRepositorySpec
 
     "must handle missing SessionData gracefully" in {
       repository.get("non-existent").futureValue mustBe None
-      repository.getByTransferId("non-existent").futureValue mustBe None
+      repository.get("non-existent").futureValue mustBe None
     }
   }
 }

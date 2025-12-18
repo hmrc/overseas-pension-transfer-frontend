@@ -90,15 +90,6 @@ class SessionRepository @Inject() (
     }
   }
 
-  def getByTransferId(id: String): Future[Option[SessionData]] = Mdc.preservingMdc {
-    keepAliveByTransferId(id).flatMap {
-      _ =>
-        collection
-          .find(byTransferId(id))
-          .headOption()
-    }
-  }
-
   def set(sessionData: SessionData): Future[Boolean] = Mdc.preservingMdc {
 
     val updatedSession = sessionData copy (lastUpdated = Instant.now(clock))
