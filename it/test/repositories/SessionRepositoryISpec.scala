@@ -121,7 +121,7 @@ class SessionRepositoryISpec
       }
     }
 
-    mustPreserveMdc(repository.get(sessionData.transferId.value))
+    mustPreserveMdc(repository.get(sessionData.sessionId))
   }
 
   ".getByTransferId" - {
@@ -132,7 +132,7 @@ class SessionRepositoryISpec
 
         insert(sessionData).futureValue
 
-        val result         = repository.getByTransferId(sessionData.transferId.value).futureValue
+        val result         = repository.get(sessionData.sessionId).futureValue
         val expectedResult = sessionData copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult
@@ -143,11 +143,11 @@ class SessionRepositoryISpec
 
       "must return None" in {
 
-        repository.getByTransferId("id that does not exist").futureValue must not be defined
+        repository.get("id that does not exist").futureValue must not be defined
       }
     }
 
-    mustPreserveMdc(repository.get(sessionData.transferId.value))
+    mustPreserveMdc(repository.get(sessionData.sessionId))
   }
 
   ".clear" - {
