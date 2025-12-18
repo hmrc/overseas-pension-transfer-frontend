@@ -31,10 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EmailConnector @Inject() (appConfig: FrontendAppConfig, httpClientV2: HttpClientV2) extends Logging {
 
-  private val baseUrl = url"${appConfig.emailServiceHost}/hmrc/email"
-
   def send(email: EmailToSendRequest)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[EmailSendingResult] = {
-    httpClientV2.post(baseUrl).withBody(Json.toJson(email)).execute[EmailSendingResult].recover {
+    httpClientV2.post(url"${appConfig.emailService}").withBody(Json.toJson(email)).execute[EmailSendingResult].recover {
       case e: BadGatewayException     =>
         logger.warn(s"[EmailConnector][send] Error sending email: ${e.message}")
         EMAIL_NOT_SENT
