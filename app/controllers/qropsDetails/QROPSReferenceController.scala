@@ -49,7 +49,7 @@ class QROPSReferenceController @Inject() (
     implicit request =>
       val preparedForm = request.userAnswers.get(QROPSReferencePage) match {
         case None        => form
-        case Some(value) => form.fill(value)
+        case Some(value) => form.fill(value.stripPrefix(formProvider.referencePrefix))
       }
 
       Ok(view(preparedForm, mode))
