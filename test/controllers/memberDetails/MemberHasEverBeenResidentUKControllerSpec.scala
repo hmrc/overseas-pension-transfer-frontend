@@ -32,7 +32,6 @@ import pages.memberDetails.{MemberHasEverBeenResidentUKPage, MembersLastUKAddres
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.memberDetails.MemberHasEverBeenResidentUKView
@@ -126,7 +125,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual routes.MembersLastUKAddressController.onPageLoad(NormalMode).url
       }
     }
 
@@ -151,7 +150,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(CheckMode).url
+        redirectLocation(result).value mustEqual routes.MembersLastUKAddressController.onPageLoad(CheckMode).url
       }
     }
 

@@ -48,9 +48,6 @@
 
         @qtNumber()
         <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading", memberName)</h1>
-        <p id ="postcodeSearchHint " class="govuk-body govuk-!-padding-bottom-2">
-            @Html(messages("membersLastUKAddress.by.postcode.hint", link("postcodeSearchLink", addressLookupPage, messages("membersLastUKAddress.by.postcode.link.text"))) )
-        </p>
 
         @govukInput(
             InputViewModel(
