@@ -63,6 +63,10 @@ dashboard.lock.title = Important
 dashboard.lock.warning = Someone else is editing the transfer report for {0}, please try again later.
 dashboard.lock.hide = Hide message
 dashboard.pensionSchemeLink.text = Return to {0} pension scheme
+dashboard.search.heading = All transfers
+dashboard.search.hintText = You can search by National Insurance number, transfer reference or member name
+dashboard.search.noResults.heading = No results found
+dashboard.search.noResults.paragraph = Check what you''ve entered and try searching again.
 
 requiredInfo.title = What you will need
 requiredInfo.heading = What you will need
@@ -91,22 +95,22 @@ requiredInfo.schemeManager.heading = QROPS scheme manager details
 requiredInfo.schemeManager.bullet1 = The name of the scheme manager, either an individual or organisation
 requiredInfo.schemeManager.bullet2 = The scheme manager's address and contact details
 
-journeyRecovery.continue.title = Sorry, there is a problem with the service
-journeyRecovery.continue.heading = Sorry, there is a problem with the service
+journeyRecovery.continue.title = Sorry, there is a problem with this service
+journeyRecovery.continue.heading = Sorry, there is a problem with this service
 journeyRecovery.continue.guidance = Try again later.
-journeyRecovery.continue.guidance.extra = Your transfer report will be saved as ''in progress''. You can come back to complete it at any time.
+journeyRecovery.continue.guidance.extra = If you were working on a transfer report, it will be saved as ''in progress''.
 
-journeyRecovery.startAgain.title = Sorry, there is a problem with the service
-journeyRecovery.startAgain.heading = Sorry, there is a problem with the service
+journeyRecovery.startAgain.title = Sorry, there is a problem with this service
+journeyRecovery.startAgain.heading = Sorry, there is a problem with this service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
 
 addressLookupDown.title = Sorry, there is a problem with our address search
 addressLookupDown.heading = Sorry, there is a problem with our address search
-addressLookupDown.body = We''re having trouble retrieving some information.
-addressLookupDown.options.heading = You can:
+addressLookupDown.body = We cannot look up addresses at the moment.
+addressLookupDown.options.heading = You can try again later or:
 addressLookupDown.options.tryAgain = Try again in a few minutes
 addressLookupDown.options.dashboard = Return to Report a transfer to a QROPS
-addressLookupDown.options.enterManually = Enter the information manually
+addressLookupDown.options.enterManually = Enter the address manually
 
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
@@ -145,6 +149,7 @@ common.addressInput.error.addressLine5.pattern = Address line 5 must only includ
 common.addressInput.error.postcode.pattern = Postcode must only include letters, numbers or spaces
 common.addressInput.error.poBox.pattern = PO Box must only include letters, numbers or spaces
 common.addressInput.error.countryCode.required = Enter a country
+common.addressInput.countryCode.select = Select a country
 
 common.memberDetails.heading = Member details
 common.qropsDetails.heading = QROPS details
@@ -166,9 +171,13 @@ taskList.heading = Complete your transfer report
 taskList.transferDetails.heading = Transfer details
 taskList.checkAndSubmit.heading = Check and submit
 taskList.memberDetails.linkText = Add details about the member
+taskList.memberDetails.change.linkText = Change details about the member
 taskList.transferDetails.linkText = Add information about the transfer
+taskList.transferDetails.change.linkText = Change information about the transfer
 taskList.qropsDetails.linkText = Add information about the QROPS
+taskList.qropsDetails.change.linkText = Change information about the QROPS
 taskList.schemeManagerDetails.linkText = Add QROPS scheme manager''s details
+taskList.schemeManagerDetails.change.linkText = Change QROPS scheme manager''s details
 taskList.submit.linkText = Check your answers and submit the report
 taskList.taskStatus.cannotStart = Cannot start yet
 taskList.taskStatus.notStarted = Not started yet
@@ -466,9 +475,10 @@ dateOfTransfer.checkYourAnswersLabel = Date of transfer
 dateOfTransfer.error.required.all = Enter the date of the transfer
 dateOfTransfer.error.real.date = Date of transfer must be a real date
 dateOfTransfer.change.hidden = Date of transfer
-dateOfTransfer.error.invalid.mindate = Date cannot be before 6 April 2012, or in the future
+dateOfTransfer.error.invalid.mindate = Date of transfer must be after 5 April 2012
+dateOfTransfer.error.invalid.maxdate = Date of transfer must be in the past
 dateOfTransfer.error.invalid = Enter the day, month, year in the correct format. For example, 27 03 2018
-dateOfTransfer.amend.error.invalid.mindate = Date cannot be before 6 April 2012
+dateOfTransfer.amend.error.invalid.mindate = Date of transfer must be after 5 April 2012
 dateOfTransfer.amend.error.afterSubmissionDate = Date of transfer must be before your original submission date
 
 applicableTaxExclusions.title = What are the applicable exclusions?
@@ -775,6 +785,7 @@ transferSubmitted.pensionScheme.key = Scheme
 transferSubmitted.dateSubmitted.key = Date submitted
 
 viewSubmitted.heading = Overseas transfer report for {0}
+viewSubmitted.amendTitle = Amend your submission
 viewSubmitted.amendHeading = Amend your submission
 schemeName.label = Scheme
 dateOfSubmission.label = Date submitted
@@ -796,7 +807,11 @@ viewAmend.radio1 = View this QROPS transfer report
 viewAmend.radio2 = Amend this QROPS transfer report
 viewAmend.error.required = Select whether you want to view or amend this transfer
 
+checkYourAnswers.memberDetails.title = Check member details
 checkYourAnswers.memberDetails.heading = Check member details
+checkYourAnswers.transferDetails.title = Check transfer details
 checkYourAnswers.transferDetails.heading = Check transfer details
+checkYourAnswers.QROPSDetails.title = Check QROPS details
 checkYourAnswers.QROPSDetails.heading = Check QROPS details
+checkYourAnswers.QROPSSchemeManagerDetails.title = Check QROPS scheme manager details
 checkYourAnswers.QROPSSchemeManagerDetails.heading = Check QROPS scheme manager details

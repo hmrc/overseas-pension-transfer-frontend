@@ -41,7 +41,7 @@ class DateOfTransferFormProvider @Inject() extends Mappings {
         realDateKey      = "dateOfTransfer.error.real.date"
       )
         .verifying(
-          maxDate(maxDate, "dateOfTransfer.error.invalid.mindate", maxDate.format(dateFormatter)),
+          maxDate(maxDate, "dateOfTransfer.error.invalid.maxdate", maxDate.format(dateFormatter)),
           minDate(minDate, "dateOfTransfer.error.invalid.mindate", minDate.format(dateFormatter))
         )
     )

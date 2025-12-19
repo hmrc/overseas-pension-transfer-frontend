@@ -83,6 +83,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val dashboardLockTtl: Long = configuration.get[Long]("dashboard.lockTtlSeconds")
 
+  val allowDashboardSearch: Boolean = configuration.get[Boolean]("features.dashboard-search")
+
   val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
 
   val submittedConfirmationTemplateId: String = configuration.get[String]("submission-confirmation-template-id")

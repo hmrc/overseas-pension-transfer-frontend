@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import config.FrontendAppConfig
 import models.QtStatus.{AmendInProgress, Compiled, InProgress, Submitted}
 import models.{AllTransfersItem, TransferReportQueryParams}
 import play.api.i18n.Messages
@@ -56,7 +57,7 @@ object AllTransfersTableViewModel {
       case None    => Text("-")
     }
 
-  def from(items: Seq[AllTransfersItem], currentPage: Int)(implicit messages: Messages): Table = {
+  def from(items: Seq[AllTransfersItem], currentPage: Int)(implicit messages: Messages, appConfig: FrontendAppConfig): Table = {
     val head: Seq[HeadCell] = Seq(
       HeadCell(Text(messages("dashboard.allTransfers.head.member"))),
       HeadCell(Text(messages("dashboard.allTransfers.head.status"))),
@@ -97,11 +98,13 @@ object AllTransfersTableViewModel {
       )
     }
 
+    val hideCaption = if (appConfig.allowDashboardSearch) "govuk-visually-hidden" else ""
+
     Table(
       head           = Some(head),
       rows           = rows,
       caption        = Some(messages("dashboard.allTransfers.heading")),
-      captionClasses = "govuk-table__caption--m"
+      captionClasses = s"govuk-table__caption--m $hideCaption"
     )
   }
 }

@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import models.taskList.TaskStatus
 import models.{SessionData, UserAnswers}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases._
@@ -26,7 +27,7 @@ object TaskListViewModel {
     TaskJourneyViewModels.valuesWithoutSubmissionJourney.map { journey =>
       TaskTileViewModel(
         id       = journey.id,
-        linkText = messages(journey.linkTextKey),
+        linkText = journey.linkText(userAnswers),
         link     = journey.entry(userAnswers),
         status   = journey.status(userAnswers)
       ).toTaskListItem
