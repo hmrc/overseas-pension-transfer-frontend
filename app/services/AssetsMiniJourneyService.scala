@@ -54,7 +54,9 @@ object AssetsMiniJourneyService {
     userAnswers.get(queryKey) match {
       case Some(currentList) if index >= 0 && index < currentList.size =>
         val updatedList = currentList.patch(index, Nil, 1)
-        userAnswers.set(queryKey, updatedList)
+        userAnswers.set(queryKey, updatedList).map { updatedAnswers =>
+          cleanupTypeOfAsset(journey, updatedAnswers)
+        }
 
       case Some(_) =>
         Failure(new IndexOutOfBoundsException(s"Index $index out of bounds"))
@@ -144,8 +146,13 @@ object AssetsMiniJourneyService {
     val removed: Set[TypeOfAsset] = previous.keySet.diff(selectedAssets.toSet)
 
     val updated: Seq[SessionAssetTypeWithStatus] =
-      selectedAssets.map { t =>
-        previous.getOrElse(t, SessionAssetTypeWithStatus(t))
+      selectedAssets.map { assetType =>
+        val completed = isAssetCompleted(assetType, ua)
+
+        previous
+          .get(assetType)
+          .map(_.copy(isCompleted = completed))
+          .getOrElse(SessionAssetTypeWithStatus(assetType, completed))
       }
 
     val uaCleared: Try[UserAnswers] =
@@ -168,6 +175,34 @@ object AssetsMiniJourneyService {
       ua  <- uaCleared
       ua1 <- setAnswers(ua)
     } yield (sd, ua1)
+  }
+
+  private def isAssetCompleted(assetType: TypeOfAsset, ua: UserAnswers): Boolean = {
+    val td = ua.data \ "transferDetails"
+
+    assetType match {
+
+      case TypeOfAsset.Cash =>
+        (td \ "cashValue").asOpt[JsValue].exists {
+          case JsNumber(_) => true
+          case _           => false
+        }
+
+      case TypeOfAsset.UnquotedShares =>
+        (td \ "unquotedShares").asOpt[JsArray].exists(_.value.nonEmpty)
+
+      case TypeOfAsset.QuotedShares =>
+        (td \ "quotedShares").asOpt[JsArray].exists(_.value.nonEmpty)
+
+      case TypeOfAsset.Property =>
+        (td \ "propertyAssets").asOpt[JsArray].exists(_.value.nonEmpty)
+
+      case TypeOfAsset.Other =>
+        (td \ "otherAssets").asOpt[JsArray].exists(_.value.nonEmpty)
+
+      case _ =>
+        false
+    }
   }
 
   private def clearAssetData(ua: UserAnswers, t: TypeOfAsset): Try[UserAnswers] =
@@ -200,4 +235,27 @@ object AssetsMiniJourneyService {
         val updated = SelectedAssetTypesWithStatus.markAllIncomplete(existing)
         sessionData.set(SelectedAssetTypesWithStatus, updated)
     }
+
+  private def cleanupTypeOfAsset[A <: AssetEntry: Reads](journey: RepeatingAssetsMiniJourney[A], userAnswers: UserAnswers): UserAnswers = {
+
+    val assetType = journey.assetType
+    val remaining = userAnswers.get(journey.query).map(_.size).getOrElse(0)
+
+    if (remaining == 0) {
+      val cleanedUserAnswers = userAnswers.remove(journey.query).getOrElse(userAnswers)
+
+      cleanedUserAnswers.get(TypeOfAssetPage) match {
+        case Some(list) =>
+          cleanedUserAnswers
+            .set(TypeOfAssetPage, list.filterNot(_ == assetType))
+            .getOrElse(cleanedUserAnswers)
+
+        case None =>
+          cleanedUserAnswers
+      }
+    } else {
+      userAnswers
+    }
+  }
+
 }

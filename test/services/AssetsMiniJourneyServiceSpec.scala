@@ -17,8 +17,10 @@
 package services
 
 import base.SpecBase
+import models.NormalMode
 import models.assets._
 import org.scalatest.freespec.AnyFreeSpec
+import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json.Json
 import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
@@ -186,4 +188,132 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
       updated.get(AnswersSelectedAssetTypes) mustBe Some(Seq[TypeOfAsset](TypeOfAsset.Cash))
     }
   }
+
+  "must remove the specified entry and keep asset type when entries still remain" in {
+    val entries = List(
+      UnquotedSharesEntry("One", 1, 100, "A"),
+      UnquotedSharesEntry("Two", 2, 200, "B")
+    )
+
+    val userAnswers =
+      emptyUserAnswers
+        .set(UnquotedSharesMiniJourney.query, entries).success.value
+        .set(TypeOfAssetPage, Seq(UnquotedSharesMiniJourney.assetType)).success.value
+
+    val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 0)
+
+    result mustBe a[Success[_]]
+
+    val updated = result.get
+    updated.get(UnquotedSharesMiniJourney.query).value mustBe
+      List(UnquotedSharesEntry("Two", 2, 200, "B"))
+
+    updated.get(TypeOfAssetPage).value mustBe Seq(UnquotedSharesMiniJourney.assetType)
+  }
+
+  "must remove asset data and remove asset type from TypeOfAssetPage when last entry is removed" in {
+    val entries = List(UnquotedSharesEntry("Only", 1, 100, "A"))
+
+    val userAnswers =
+      emptyUserAnswers
+        .set(UnquotedSharesMiniJourney.query, entries).success.value
+        .set(
+          TypeOfAssetPage,
+          Seq(
+            UnquotedSharesMiniJourney.assetType,
+            QuotedSharesMiniJourney.assetType
+          )
+        ).success.value
+
+    val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 0)
+
+    result mustBe a[Success[_]]
+
+    val updated = result.get
+
+    updated.get(UnquotedSharesMiniJourney.query) mustBe None
+
+    updated.get(TypeOfAssetPage).value mustBe Seq(QuotedSharesMiniJourney.assetType)
+  }
+
+  "handleTypeOfAssetStatusUpdate" - {
+
+    "must mark assets as completed based on transferDetails data" in {
+
+      val ua =
+        emptyUserAnswers
+          .copy(
+            data = Json.obj(
+              "transferDetails" -> Json.obj(
+                "cashValue"      -> 1000,
+                "quotedShares"   -> Json.arr(
+                  Json.obj(
+                    "quotedValue"   -> 100,
+                    "quotedCompany" -> "ABC",
+                    "quotedClass"   -> "A"
+                  )
+                ),
+                "unquotedShares" -> Json.arr(),
+                "propertyAssets" -> Json.arr(
+                  Json.obj(
+                    "propValue"       -> 200,
+                    "propDescription" -> "House"
+                  )
+                )
+              )
+            )
+          )
+
+      val sd = emptySessionData
+
+      val selected = Seq(
+        TypeOfAsset.Cash,
+        TypeOfAsset.QuotedShares,
+        TypeOfAsset.UnquotedShares,
+        TypeOfAsset.Property,
+        TypeOfAsset.Other
+      )
+
+      val result =
+        service.handleTypeOfAssetStatusUpdate(sd, ua, selected, mode = NormalMode)
+
+      result mustBe a[Success[_]]
+
+      val updatedSession =
+        result.success.value._1.get(SelectedAssetTypesWithStatus).value
+
+      updatedSession must contain theSameElementsAs Seq(
+        SessionAssetTypeWithStatus(TypeOfAsset.Cash, isCompleted           = true),
+        SessionAssetTypeWithStatus(TypeOfAsset.QuotedShares, isCompleted   = true),
+        SessionAssetTypeWithStatus(TypeOfAsset.Property, isCompleted       = true),
+        SessionAssetTypeWithStatus(TypeOfAsset.UnquotedShares, isCompleted = false),
+        SessionAssetTypeWithStatus(TypeOfAsset.Other, isCompleted          = false)
+      )
+    }
+
+    "must mark all assets as incomplete when no transferDetails data exists" in {
+
+      val ua = emptyUserAnswers
+      val sd = emptySessionData
+
+      val selected = Seq(
+        TypeOfAsset.Cash,
+        TypeOfAsset.QuotedShares,
+        TypeOfAsset.UnquotedShares,
+        TypeOfAsset.Property,
+        TypeOfAsset.Other
+      )
+
+      val result =
+        service.handleTypeOfAssetStatusUpdate(sd, ua, selected, mode = NormalMode)
+
+      result mustBe a[Success[_]]
+
+      val updatedSession =
+        result.success.value._1.get(SelectedAssetTypesWithStatus).value
+
+      updatedSession.foreach(_.isCompleted mustBe false)
+    }
+  }
+
 }
