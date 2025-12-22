@@ -17,6 +17,7 @@
 package viewmodels
 
 import base.SpecBase
+import config.{FrontendAppConfig, TestAppConfig}
 import models.AllTransfersItem
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -30,7 +31,8 @@ import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
 class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
-  implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
+  implicit val messages: Messages               = stubMessagesApi().preferred(Seq.empty)
+  implicit private val appConfig: TestAppConfig = new TestAppConfig
 
   private def mkItem(idx: Int, when: Instant): AllTransfersItem =
     AllTransfersItem(

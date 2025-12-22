@@ -32,28 +32,28 @@ case object MemberHasEverBeenResidentUKPage extends QuestionPage[Boolean] {
 
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     answers.get(MemberHasEverBeenResidentUKPage) match {
-      case Some(true)  => memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode)
+      case Some(true)  => memberDetails.routes.MembersLastUKAddressController.onPageLoad(NormalMode)
       case Some(false) => memberDetails.routes.MemberDetailsCYAController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     answers.get(MemberHasEverBeenResidentUKPage) match {
-      case Some(true)  => memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(CheckMode)
+      case Some(true)  => memberDetails.routes.MembersLastUKAddressController.onPageLoad(CheckMode)
       case Some(false) => memberDetails.routes.MemberDetailsCYAController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
 
   override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
     answers.get(MemberHasEverBeenResidentUKPage) match {
-      case Some(true)  => memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(FinalCheckMode)
+      case Some(true)  => memberDetails.routes.MembersLastUKAddressController.onPageLoad(FinalCheckMode)
       case Some(false) => super.nextPageFinalCheckMode(answers)
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
 
   override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
     answers.get(MemberHasEverBeenResidentUKPage) match {
-      case Some(true)  => memberDetails.routes.MembersLastUkAddressLookupController.onPageLoad(AmendCheckMode)
+      case Some(true)  => memberDetails.routes.MembersLastUKAddressController.onPageLoad(AmendCheckMode)
       case Some(false) => super.nextPageAmendCheckMode(answers)
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }

@@ -75,7 +75,7 @@ class QROPSReferenceControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("QROPS123456"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("123456"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
