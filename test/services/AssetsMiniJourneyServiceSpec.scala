@@ -17,9 +17,11 @@
 package services
 
 import base.SpecBase
+import models.NormalMode
 import models.assets._
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
+import play.api.libs.json.Json
 import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
 import scala.util.{Failure, Success}
@@ -232,6 +234,86 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
     updated.get(UnquotedSharesMiniJourney.query) mustBe None
 
     updated.get(TypeOfAssetPage).value mustBe Seq(QuotedSharesMiniJourney.assetType)
+  }
+
+  "handleTypeOfAssetStatusUpdate" - {
+
+    "must mark assets as completed based on transferDetails data" in {
+
+      val ua =
+        emptyUserAnswers
+          .copy(
+            data = Json.obj(
+              "transferDetails" -> Json.obj(
+                "cashValue"      -> 1000,
+                "quotedShares"   -> Json.arr(
+                  Json.obj(
+                    "quotedValue"   -> 100,
+                    "quotedCompany" -> "ABC",
+                    "quotedClass"   -> "A"
+                  )
+                ),
+                "unquotedShares" -> Json.arr(),
+                "propertyAssets" -> Json.arr(
+                  Json.obj(
+                    "propValue"       -> 200,
+                    "propDescription" -> "House"
+                  )
+                )
+              )
+            )
+          )
+
+      val sd = emptySessionData
+
+      val selected = Seq(
+        TypeOfAsset.Cash,
+        TypeOfAsset.QuotedShares,
+        TypeOfAsset.UnquotedShares,
+        TypeOfAsset.Property,
+        TypeOfAsset.Other
+      )
+
+      val result =
+        service.handleTypeOfAssetStatusUpdate(sd, ua, selected, mode = NormalMode)
+
+      result mustBe a[Success[_]]
+
+      val updatedSession =
+        result.success.value._1.get(SelectedAssetTypesWithStatus).value
+
+      updatedSession must contain theSameElementsAs Seq(
+        SessionAssetTypeWithStatus(TypeOfAsset.Cash, isCompleted           = true),
+        SessionAssetTypeWithStatus(TypeOfAsset.QuotedShares, isCompleted   = true),
+        SessionAssetTypeWithStatus(TypeOfAsset.Property, isCompleted       = true),
+        SessionAssetTypeWithStatus(TypeOfAsset.UnquotedShares, isCompleted = false),
+        SessionAssetTypeWithStatus(TypeOfAsset.Other, isCompleted          = false)
+      )
+    }
+
+    "must mark all assets as incomplete when no transferDetails data exists" in {
+
+      val ua = emptyUserAnswers
+      val sd = emptySessionData
+
+      val selected = Seq(
+        TypeOfAsset.Cash,
+        TypeOfAsset.QuotedShares,
+        TypeOfAsset.UnquotedShares,
+        TypeOfAsset.Property,
+        TypeOfAsset.Other
+      )
+
+      val result =
+        service.handleTypeOfAssetStatusUpdate(sd, ua, selected, mode = NormalMode)
+
+      result mustBe a[Success[_]]
+
+      val updatedSession =
+        result.success.value._1.get(SelectedAssetTypesWithStatus).value
+
+      updatedSession.foreach(_.isCompleted mustBe false)
+    }
   }
 
 }

@@ -146,8 +146,13 @@ object AssetsMiniJourneyService {
     val removed: Set[TypeOfAsset] = previous.keySet.diff(selectedAssets.toSet)
 
     val updated: Seq[SessionAssetTypeWithStatus] =
-      selectedAssets.map { t =>
-        previous.getOrElse(t, SessionAssetTypeWithStatus(t))
+      selectedAssets.map { assetType =>
+        val completed = isAssetCompleted(assetType, ua)
+
+        previous
+          .get(assetType)
+          .map(_.copy(isCompleted = completed))
+          .getOrElse(SessionAssetTypeWithStatus(assetType, completed))
       }
 
     val uaCleared: Try[UserAnswers] =
@@ -170,6 +175,34 @@ object AssetsMiniJourneyService {
       ua  <- uaCleared
       ua1 <- setAnswers(ua)
     } yield (sd, ua1)
+  }
+
+  private def isAssetCompleted(assetType: TypeOfAsset, ua: UserAnswers): Boolean = {
+    val td = ua.data \ "transferDetails"
+
+    assetType match {
+
+      case TypeOfAsset.Cash =>
+        (td \ "cashValue").asOpt[JsValue].exists {
+          case JsNumber(_) => true
+          case _           => false
+        }
+
+      case TypeOfAsset.UnquotedShares =>
+        (td \ "unquotedShares").asOpt[JsArray].exists(_.value.nonEmpty)
+
+      case TypeOfAsset.QuotedShares =>
+        (td \ "quotedShares").asOpt[JsArray].exists(_.value.nonEmpty)
+
+      case TypeOfAsset.Property =>
+        (td \ "propertyAssets").asOpt[JsArray].exists(_.value.nonEmpty)
+
+      case TypeOfAsset.Other =>
+        (td \ "otherAssets").asOpt[JsArray].exists(_.value.nonEmpty)
+
+      case _ =>
+        false
+    }
   }
 
   private def clearAssetData(ua: UserAnswers, t: TypeOfAsset): Try[UserAnswers] =
