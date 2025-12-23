@@ -121,7 +121,7 @@ item.qtStatus match {
         <a href="@nextPage" class="govuk-link">@messages("dashboard.linkText")</a>
     </p>
 
-    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" aria-hidden="true">
 
     @if(appConfig.allowDashboardSearch){
         @searchBar(searchBarViewModel)
@@ -147,7 +147,7 @@ item.qtStatus match {
         }
     }
 
-    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true">
 
     <p><a class="govuk-link govuk-body" href="@pensionSchemeLink">@messages("dashboard.pensionSchemeLink.text", schemeName)</a></p>
 }
