@@ -19,11 +19,10 @@ package controllers.transferDetails
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
-import models.{CheckMode, NormalMode}
+import models.{AmendCheckMode, CheckMode}
 import pages.transferDetails.TransferDetailsSummaryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
@@ -49,6 +48,8 @@ class TransferDetailsCYAController @Inject() (
 
   def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      Redirect(TransferDetailsSummaryPage.nextPage(CheckMode, request.userAnswers))
+      val isAmendJourney = (request.sessionData.data \ "versionNumber").isDefined || (request.sessionData.data \ "receiptDate").isDefined
+      val mode           = if (isAmendJourney) AmendCheckMode else CheckMode
+      Redirect(TransferDetailsSummaryPage.nextPage(mode, request.userAnswers))
   }
 }
