@@ -18,27 +18,17 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
-import models.CheckMode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.UserAnswersService
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
 import viewmodels.checkAnswers.TransferSubmittedSummary
-import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
-import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
-import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.all.SummaryListViewModel
 import views.html.TransferSubmittedView
 
 import java.time.ZoneId
@@ -46,101 +36,58 @@ import scala.concurrent.Future
 
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
-  private val mockSessionRepository  = mock[SessionRepository]
-  private val application            = new GuiceApplicationBuilder().build()
-  private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
-  private val mockUserAnswersService = mock[UserAnswersService]
+  private val mockSessionRepository = mock[SessionRepository]
+  private val application           = new GuiceApplicationBuilder().build()
+  private val appConfig             = application.injector.instanceOf[FrontendAppConfig]
 
   "TransferSubmitted Controller" - {
 
-    "must return OK and render the submitted transfer view" in {
+    "must return OK and the correct view for a GET" in {
+      val application  = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
+        .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository)
+        )
+        .build()
+      val testMessages = messages(application)
 
-      val application =
-        applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
-
-      implicit val testMessages: Messages = messages(application)
-
-      when(mockSessionRepository.get(any()))
-        .thenReturn(Future.successful(Some(sessionDataMemberNameQtNumberTransferSubmitted)))
-
-      when(
-        mockUserAnswersService.getExternalUserAnswers(
-          any(),
-          any(),
-          any(),
-          any()
-        )(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Right(userAnswersMemberName)))
+      when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(sessionDataMemberNameQtNumberTransferSubmitted)))
 
       running(application) {
-
         val request = FakeRequest(GET, routes.TransferSubmittedController.onPageLoad().url)
-        val result  = route(application, request).value
+
+        val result = route(application, request).value
+
+        val expectedMpsLink = s"${appConfig.pensionSchemeSummaryUrl}1234567890"
+
+        val view = application.injector.instanceOf[TransferSubmittedView]
 
         val formattedInstant = {
           val dateTime = testDateTransferSubmitted.atZone(ZoneId.systemDefault()).toLocalDateTime
           dateTime.format(localDateTimeFormatter)
         }
 
-        val overviewDetails =
+        val summaryList =
           TransferSubmittedSummary.rows(
             "User McUser",
             formattedInstant
-          )(fakeSchemeRequest(request), testMessages)
-
-        val memberDetails =
-          SummaryListViewModel(
-            MemberDetailsSummary.rows(CheckMode, userAnswersMemberName, showChangeLinks = false)
+          )(
+            fakeSchemeRequest(request),
+            testMessages
           )
-
-        val transferDetails =
-          SummaryListViewModel(
-            TransferDetailsSummary.rows(CheckMode, userAnswersMemberName, showChangeLinks = false)
-          )
-
-        val qropsDetails =
-          SummaryListViewModel(
-            QROPSDetailsSummary.rows(CheckMode, userAnswersMemberName, showChangeLinks = false)
-          )
-
-        val schemeManagerDetails =
-          SummaryListViewModel(
-            SchemeManagerDetailsSummary.rows(CheckMode, userAnswersMemberName, showChangeLinks = false)
-          )
-
-        val managerEmail: String = userAnswersMemberName.get(SchemeManagersEmailPage).getOrElse("")
-
-        val expectedMpsLink =
-          s"${appConfig.pensionSchemeSummaryUrl}1234567890"
-
-        val view = application.injector.instanceOf[TransferSubmittedView]
 
         status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(
-            "QT123456",
-            overviewDetails,
-            memberDetails,
-            transferDetails,
-            qropsDetails,
-            schemeManagerDetails,
-            managerEmail,
-            expectedMpsLink
-          )(fakeSchemeRequest(request), testMessages).toString
+        contentAsString(result) mustEqual view("QT123456", summaryList, expectedMpsLink)(
+          fakeSchemeRequest(request),
+          testMessages,
+          appConfig
+        ).toString
       }
     }
 
     "redirect to JourneyRecovery page when the sessionRepo is empty" in {
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
+          bind[SessionRepository].toInstance(mockSessionRepository)
         )
         .build()
 

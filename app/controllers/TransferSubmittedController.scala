@@ -18,24 +18,16 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import models.{CheckMode, QtStatus}
-import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.TransferSubmittedSummary
-import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
-import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
-import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.all.SummaryListViewModel
 import views.html.TransferSubmittedView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class TransferSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
@@ -43,62 +35,23 @@ class TransferSubmittedController @Inject() (
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: TransferSubmittedView,
-    sessionRepository: SessionRepository,
-    appConfig: FrontendAppConfig,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
+    sessionRepository: SessionRepository
+  )(implicit ec: ExecutionContext,
+    appConfig: FrontendAppConfig
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  def onPageLoad: Action[AnyContent] =
-    (identify andThen schemeData).async { implicit request =>
-      sessionRepository.get(request.authenticatedUser.internalId).flatMap {
-
+  def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async {
+    implicit request =>
+      sessionRepository.get(request.authenticatedUser.internalId) map {
         case Some(sessionData) =>
-          val transferId                    = sessionData.transferId
-          val pstr                          = sessionData.schemeInformation.pstrNumber
-          val qtStatus                      = QtStatus.Submitted
-          val versionNumber: Option[String] = Some((sessionData.data \ "versionNumber").asOpt[String].getOrElse("001"))
+          val summaryList = TransferSubmittedSummary.rows(memberFullName(sessionData), dateTransferSubmitted(sessionData))
 
-          userAnswersService
-            .getExternalUserAnswers(transferId, pstr, qtStatus, versionNumber)
-            .map {
-              case Right(userAnswers) =>
-                val overviewDetails = TransferSubmittedSummary.rows(memberFullName(sessionData), dateTransferSubmitted(sessionData))
+          val srn     = sessionData.schemeInformation.srnNumber.value
+          val mpsLink = s"${appConfig.pensionSchemeSummaryUrl}$srn"
 
-                val memberDetails = SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
-
-                val transferDetails = SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
-
-                val qropsDetails = SummaryListViewModel(QROPSDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
-
-                val schemeManagerDetails = SummaryListViewModel(SchemeManagerDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
-
-                val managerEmail: String = userAnswers.get(SchemeManagersEmailPage).getOrElse("")
-
-                val srn     = sessionData.schemeInformation.srnNumber.value
-                val mpsLink = s"${appConfig.pensionSchemeSummaryUrl}$srn"
-
-                Ok(
-                  view(
-                    qtNumber(sessionData).value,
-                    overviewDetails,
-                    memberDetails,
-                    transferDetails,
-                    qropsDetails,
-                    schemeManagerDetails,
-                    managerEmail,
-                    mpsLink
-                  )
-                )
-
-              case Left(_) =>
-                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-            }
-
-        case None =>
-          Future.successful(
-            Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-          )
+          Ok(view(qtNumber(sessionData).value, summaryList, mpsLink))
+        case None              =>
+          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }
-    }
+  }
 }

@@ -789,6 +789,10 @@ transferSubmitted.transferDetails = The transfer details
 transferSubmitted.qropsDetails = The QROPS details
 transferSubmitted.qropsManagerDetails = The QROPS scheme manager details
 transferSubmitted.notification = We have sent a confirmation email to {0}.
+transferSubmitted.printLink = Prints this page and your submitted report
+transferSubmitted.start = Start a
+transferSubmitted.newTransfer = new transfer
+transferSubmitted.nextInfo = What you can do next
 
 viewSubmitted.heading = Overseas transfer report for {0}
 viewSubmitted.amendTitle = Amend your submission
