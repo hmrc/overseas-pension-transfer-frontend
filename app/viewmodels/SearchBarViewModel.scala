@@ -19,9 +19,9 @@ package viewmodels
 case class SearchBarViewModel(
     id: String               = "dashboard-search",
     name: String             = "search",
-    label: String            = "Search transfers",
+    label: String            = "dashboard.search.heading",
     action: String           = "#",
-    buttonText: String       = "Search",
+    buttonText: String       = "dashboard.search.buttonText",
     value: Option[String]    = None,
     hint: Option[String]     = None,
     clearUrl: Option[String] = None

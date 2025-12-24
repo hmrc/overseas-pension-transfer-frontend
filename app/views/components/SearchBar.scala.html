@@ -18,7 +18,7 @@
 
 @this()
 
-@(model: SearchBarViewModel)
+@(model: SearchBarViewModel)(implicit messages: Messages)
 
 @defining(model.id + "-hint") { hintId =>
 
@@ -27,13 +27,13 @@
 
             <h2 class="govuk-label-wrapper">
                 <label class="govuk-label govuk-label--m" for="@model.id">
-                    @model.label
+                    @messages(model.label)
                 </label>
             </h2>
 
             @model.hint.map { hintText =>
                 <div id="@hintId" class="govuk-hint">
-                @hintText
+                @messages(hintText)
                 </div>
             }
 
@@ -65,14 +65,14 @@
                         class="govuk-button search-bar__button"
                         data-module="govuk-button"
                         type="submit">
-                        @model.buttonText
+                        @messages(model.buttonText)
                         </button>
                     </div>
                 </div>
 
                 @model.clearUrl.map { url =>
                     <a class="govuk-link search-bar__clear" href="@url">
-                        Clear<span class="govuk-visually-hidden"> search</span>
+                        @messages("dashboard.search.clear")<span class="govuk-visually-hidden"> @messages("dashboard.search.buttonText")</span>
                     </a>
                 }
             </div>
