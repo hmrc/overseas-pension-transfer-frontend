@@ -18,10 +18,11 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import models.{CheckMode, QtStatus}
+import models.{CheckMode, QtNumber, QtStatus}
 import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.QtNumberQuery
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -54,11 +55,12 @@ class PrintSubmittedTransferController @Inject() (
       sessionRepository.get(request.authenticatedUser.internalId).flatMap {
 
         case Some(sessionData) =>
+          val transferId                    = sessionData.get(QtNumberQuery).getOrElse(QtNumber.empty)
           val pstr                          = sessionData.schemeInformation.pstrNumber
           val versionNumber: Option[String] = Some((sessionData.data \ "versionNumber").asOpt[String].getOrElse("001"))
 
           userAnswersService
-            .getExternalUserAnswers(sessionData.transferId, pstr, QtStatus.Submitted, versionNumber)
+            .getExternalUserAnswers(transferId, pstr, QtStatus.Submitted, versionNumber)
             .map {
               case Right(userAnswers) =>
                 val overviewDetails =
