@@ -35,9 +35,9 @@ class TransferSubmittedController @Inject() (
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: TransferSubmittedView,
-    sessionRepository: SessionRepository,
+    sessionRepository: SessionRepository
+  )(implicit ec: ExecutionContext,
     appConfig: FrontendAppConfig
-  )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
   def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async {

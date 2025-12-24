@@ -659,6 +659,7 @@ GET        /submit-amendment-to-hmrc                                            
 POST       /submit-amendment-to-hmrc                                                              controllers.SubmitToHMRCController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /transfer-submitted                                                                    controllers.TransferSubmittedController.onPageLoad()
+GET        /print-submitted-transfer                                                              controllers.PrintSubmittedTransferController.onPageLoad()
 
 GET        /view-amend                                                                            controllers.viewandamend.ViewAmendSelectorController.onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
 POST       /view-amend                                                                            controllers.viewandamend.ViewAmendSelectorController.onSubmit(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
