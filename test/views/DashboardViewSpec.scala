@@ -20,7 +20,9 @@ import config.FrontendAppConfig
 import controllers.routes
 import models.QtStatus.{AmendInProgress, InProgress, Submitted}
 import models.{AllTransfersItem, QtNumber}
+import org.jsoup.Jsoup
 import org.jsoup.select.Elements
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 import viewmodels.{PaginatedAllTransfersViewModel, SearchBarViewModel}
 import views.html.DashboardView
@@ -36,10 +38,6 @@ class DashboardViewSpec extends ViewBaseSpec {
   val dashboardView: DashboardView = applicationBuilder().injector().instanceOf[DashboardView]
 
   val pageUrl: Int => String = page => routes.DashboardController.onPageLoad(page, None).url
-
-//  private val viewWithNoSearch       = ???
-//  private val viewWithLockWarning    = ???
-//  private val viewWithExpiringRecord = ???
 
   private val searchBarViewModel =
     SearchBarViewModel()
@@ -62,6 +60,17 @@ class DashboardViewSpec extends ViewBaseSpec {
       1,
       appConfig.transfersPerPage,
       pageUrl
+    )
+
+  private val paginatedAllTransfersWithLock =
+    PaginatedAllTransfersViewModel.build(
+      Seq(
+        AllTransfersItem(userAnswersTransferNumber, None, Some(InProgress), None, Some("Firstname"), Some("Surname"), None, Some(now), None, None)
+      ),
+      1,
+      appConfig.transfersPerPage,
+      pageUrl,
+      Some("Firstname Surname")
     )
 
   private val fullView = dashboardView(
@@ -87,6 +96,19 @@ class DashboardViewSpec extends ViewBaseSpec {
     "/pension-scheme-link",
     Html("")
   )
+
+  private val viewWithLockWarning = dashboardView(
+    "Scheme Name",
+    "/what-will-be-needed",
+    paginatedAllTransfersWithLock,
+    searchBarViewModel,
+    Seq(),
+    "/mps-link",
+    isSearch = false,
+    "/pension-scheme-link",
+    Html("")
+  )
+  //  private val viewWithExpiringRecord = ???
 
   val formattedLastUpdated: String = {
     val dateFormatter = DateTimeFormatter.ofPattern("d MMMM uuuu")
@@ -181,5 +203,13 @@ class DashboardViewSpec extends ViewBaseSpec {
       "dashboard.allTransfers.empty",
       "Return to Scheme Name pension scheme"
     )
+  }
+
+  "View with lock warning" - {
+    "display lock warning" in {
+      doc(viewWithLockWarning.body).getElementById("govuk-lock-banner-title").text() mustBe messages("dashboard.lock.title")
+      doc(viewWithLockWarning.body).getElementsByClass("govuk-notification-banner__content").text() mustBe
+        s"${messages("dashboard.lock.warning", "Firstname Surname")} ${messages("dashboard.lock.hide")}."
+    }
   }
 }
