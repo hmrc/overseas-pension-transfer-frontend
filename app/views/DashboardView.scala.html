@@ -128,7 +128,7 @@ item.qtStatus match {
     }
 
     @if(allTransfersViewModel.table.rows.nonEmpty) {
-        <div role="region" aria-labelledby="Caption01" tabindex="0">
+        <div role="region" tabindex="0">
             @govukTable(allTransfersViewModel.table)
         </div>
         @allTransfersViewModel.pagination.map(govukPagination(_))
