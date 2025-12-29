@@ -16,12 +16,13 @@
 
 package stubs
 
+import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.TransferNumber
 
 import java.util.UUID
 
-object TransferBackendStub {
+object TransferBackendStub extends SpecBase{
 
   val transferNumber: TransferNumber = TransferNumber(UUID.randomUUID().toString)
 
@@ -75,7 +76,7 @@ object TransferBackendStub {
        |    {
        |      "transferId": "QT564321",
        |      "qtVersion": "001",
-       |      "nino": "AA000000A",
+       |      "nino": "s"$testNino"",
        |      "memberFirstName": "David",
        |      "memberSurname": "Warne",
        |      "submissionDate": "2025-03-14T00:00:00Z",
@@ -85,7 +86,7 @@ object TransferBackendStub {
        |    {
        |      "transferId": "QT564322",
        |      "qtVersion": "003",
-       |      "nino": "AA000001A",
+       |      "nino": "$testNino",
        |      "memberFirstName": "Edith",
        |      "memberSurname": "Ennis-Hill",
        |      "lastUpdated": "2025-05-01T00:00:00Z",

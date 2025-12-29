@@ -16,7 +16,7 @@
 
 package connectors
 
-import base.BaseISpec
+import base.{BaseISpec, SpecBase}
 import connectors.parsers.TransferParser.GetAllTransfersType
 import models.QtStatus.Submitted
 import models.{PstrNumber, QtNumber}
@@ -50,7 +50,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
             first.qtVersion.value         shouldBe "001"
             first.memberFirstName.value   shouldBe "David"
             first.memberSurname.value     shouldBe "Warne"
-            first.nino.value              shouldBe "AA000000A"
+            first.nino.value              shouldBe testNino
             first.submissionDate.value    shouldBe Instant.parse("2025-03-14T00:00:00Z")
             first.lastUpdated             shouldBe empty
             first.qtStatus.value          shouldBe Submitted
