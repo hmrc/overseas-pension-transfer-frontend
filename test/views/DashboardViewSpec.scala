@@ -20,15 +20,13 @@ import config.FrontendAppConfig
 import controllers.routes
 import models.QtStatus.{AmendInProgress, InProgress, Submitted}
 import models.{AllTransfersItem, QtNumber}
-import org.jsoup.Jsoup
 import org.jsoup.select.Elements
-import play.api.test.FakeRequest
 import play.twirl.api.Html
 import viewmodels.{PaginatedAllTransfersViewModel, SearchBarViewModel}
 import views.html.DashboardView
 import views.utils.ViewBaseSpec
 
-import java.time.{LocalDateTime, ZoneOffset}
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 class DashboardViewSpec extends ViewBaseSpec {
@@ -108,7 +106,6 @@ class DashboardViewSpec extends ViewBaseSpec {
     "/pension-scheme-link",
     Html("")
   )
-  //  private val viewWithExpiringRecord = ???
 
   val formattedLastUpdated: String = {
     val dateFormatter = DateTimeFormatter.ofPattern("d MMMM uuuu")
@@ -210,6 +207,53 @@ class DashboardViewSpec extends ViewBaseSpec {
       doc(viewWithLockWarning.body).getElementById("govuk-lock-banner-title").text() mustBe messages("dashboard.lock.title")
       doc(viewWithLockWarning.body).getElementsByClass("govuk-notification-banner__content").text() mustBe
         s"${messages("dashboard.lock.warning", "Firstname Surname")} ${messages("dashboard.lock.hide")}."
+    }
+  }
+
+  "View with expiry warning" - {
+
+    val messageDate = {
+      val expiryDate = now.atZone(java.time.ZoneId.systemDefault()).toLocalDate().plusDays(25)
+
+      DateTimeFormatter.ofPattern("d MMMM yyyy").format(expiryDate)
+    }
+
+    "display expiry warning for in progress record" in {
+      val viewWithExpiringRecord = dashboardView(
+        "Scheme Name",
+        "/what-will-be-needed",
+        paginatedAllTransfersViewModel,
+        searchBarViewModel,
+        Seq(AllTransfersItem(userAnswersTransferNumber, None, Some(InProgress), None, Some("Firstname2"), Some("Surname2"), None, Some(now), None, None)),
+        "/mps-link",
+        isSearch = false,
+        "/pension-scheme-link",
+        Html("")
+      )
+
+      doc(viewWithExpiringRecord.body).getElementById("govuk-notification-banner-title").text() mustBe messages("dashboard.banner.title")
+      doc(viewWithExpiringRecord.body).getElementsByClass(
+        "govuk-notification-banner__content"
+      ).text() mustBe s"${messages("dashboard.banner.inProgress.text", "Firstname2 Surname2", messageDate)} ${messages("dashboard.banner.linkText")}"
+    }
+
+    "display expiry warning for amendment in progress record" in {
+      val viewWithExpiringRecord = dashboardView(
+        "Scheme Name",
+        "/what-will-be-needed",
+        paginatedAllTransfersViewModel,
+        searchBarViewModel,
+        Seq(AllTransfersItem(userAnswersTransferNumber, None, Some(AmendInProgress), None, Some("Firstname2"), Some("Surname2"), None, Some(now), None, None)),
+        "/mps-link",
+        isSearch = false,
+        "/pension-scheme-link",
+        Html("")
+      )
+
+      doc(viewWithExpiringRecord.body).getElementById("govuk-notification-banner-title").text() mustBe messages("dashboard.banner.title")
+      doc(viewWithExpiringRecord.body).getElementsByClass(
+        "govuk-notification-banner__content"
+      ).text() mustBe s"${messages("dashboard.banner.updateInProgress.text", "Firstname2 Surname2", messageDate)} ${messages("dashboard.banner.linkText")}"
     }
   }
 }
