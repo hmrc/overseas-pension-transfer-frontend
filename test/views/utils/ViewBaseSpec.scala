@@ -62,7 +62,7 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
 
   def pageWithTitle(view: Html, message: String): Unit =
     "show correct page title" in {
-      doc(view.body).getElementsByTag("title").textNodes() mustBe s"${messages(message)} – Report a transfer to a qualifying recognised overseas pension scheme (QROPS) - GOV.UK"
+      doc(view.body).getElementsByTag("title").first().text mustBe s"${messages(message)} - ${messages("service.name")} - GOV.UK"
     }
 
   def pageWithH1(view: Html, message: String): Unit =
@@ -91,6 +91,14 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
   def pageWithText(view: Html, expectedText: String*): Unit =
     s"show correct text: $expectedText" in {
       doc(view.body).getElementById("main-content").getElementsByTag("p").eachText().toArray mustBe
+        expectedText.map(messageKey =>
+          messages(messageKey)
+        ).toArray
+    }
+
+  def pageWithRadioButtons(view: Html, expectedText: String*): Unit =
+    "show correct radio buttons" in {
+      doc(view.body).getElementsByClass("govuk-radios__item").eachText().toArray() mustBe
         expectedText.map(messageKey =>
           messages(messageKey)
         ).toArray
