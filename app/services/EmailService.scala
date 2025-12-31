@@ -18,62 +18,78 @@ package services
 
 import config.FrontendAppConfig
 import connectors.EmailConnector
+import models.email.{EmailAccepted, EmailToSendRequest, SubmissionConfirmation}
 import models.{MinimalDetails, SessionData}
-import models.email.{EMAIL_ACCEPTED, EmailSendingResult, EmailToSendRequest, SubmissionConfirmation}
-import play.api.i18n.Messages
-import queries.EmailConfirmationQuery
+import pages.memberDetails.MemberNamePage
+import play.api.Logging
+import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.format.DateTimeFormatter
-import java.time.{Clock, LocalDate}
+import java.time.{Instant, LocalDateTime, ZoneId}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+sealed trait EmailServiceError
+
+case object SessionDataError            extends EmailServiceError
+case class DownstreamError(err: String) extends EmailServiceError
+
+sealed trait EmailSuccess
+
+case object EmailSentSuccess    extends EmailSuccess
+case object EmailNotSentSuccess extends EmailSuccess
+
 @Singleton
 class EmailService @Inject() (
-    emailConnector: EmailConnector,
-    clock: Clock
+    emailConnector: EmailConnector
   )(implicit executionContext: ExecutionContext,
     appConfig: FrontendAppConfig
-  ) {
+  ) extends Logging {
 
   def sendConfirmationEmail(
       sessionData: SessionData,
       minimalDetails: MinimalDetails
-    )(implicit hc: HeaderCarrier,
-      messages: Messages
-    ): Future[SessionData] = {
+    )(implicit hc: HeaderCarrier
+    ): Future[Either[EmailServiceError, EmailSuccess]] = {
     if (appConfig.submissionEmailEnabled) {
-      val recipientName = minimalDetails.individualDetails.map { id => s"${id.firstName} ${id.lastName}" }.getOrElse("Undefined")
-      val emailAddress  = minimalDetails.email
-      val amendmentDate = format(LocalDate.now(clock))
-
-      val emailParameters = {
-        SubmissionConfirmation(
-          recipientName,
-          amendmentDate
-        )
-      }
-
-      emailConnector.send(
-        EmailToSendRequest(
-          List(emailAddress),
-          appConfig.submittedConfirmationTemplateId,
-          emailParameters
-        )
-      ) flatMap {
-        emailConfirmationResult =>
-          val emailSent = EMAIL_ACCEPTED == emailConfirmationResult
-          Future.fromTry(sessionData.set(EmailConfirmationQuery, emailSent))
+      val emailAddress   = minimalDetails.email
+      val schemeName     = sessionData.schemeInformation.schemeName
+      val sessionDataGet = (sessionData.get(QtNumberQuery), sessionData.get(MemberNamePage), sessionData.get(DateSubmittedQuery))
+      sessionDataGet match {
+        case (Some(qtRef), Some(memberName), Some(dateSubmitted)) =>
+          val emailParameters = {
+            SubmissionConfirmation(
+              qtRef.value,
+              memberName.fullName,
+              format(dateSubmitted),
+              schemeName
+            )
+          }
+          emailConnector.send(
+            EmailToSendRequest(
+              List(emailAddress),
+              appConfig.submittedConfirmationTemplateId,
+              emailParameters
+            )
+          ) flatMap {
+            case EmailAccepted => Future.successful(Right(EmailSentSuccess))
+            case err            =>
+              logger.warn(s"[EmailService][sendConfirmationEmail] Email not sent due to downstream error: ${err.toString}")
+              Future.successful(Left(DownstreamError(err.toString)))
+          }
+        case _                                                    =>
+          logger.warn("[EmailService][sendConfirmationEmail] Email not sent due to missing data in sd")
+          Future.successful(Left(SessionDataError))
       }
     } else {
-      val emailSent = false
-      Future.fromTry(sessionData.set(EmailConfirmationQuery, emailSent))
+      Future.successful(Right(EmailNotSentSuccess))
     }
   }
 
-  private def format(date: LocalDate) = {
-    val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-    date.format(formatter)
+  private def format(instant: Instant): String = {
+    val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+    val time = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("HH:mm"))
+    s"$date at ${time}pm"
   }
 }

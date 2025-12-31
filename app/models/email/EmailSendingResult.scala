@@ -18,6 +18,6 @@ package models.email
 
 sealed trait EmailSendingResult
 
-case object EMAIL_ACCEPTED   extends EmailSendingResult
-case object EMAIL_NOT_SENT   extends EmailSendingResult
-case object EMAIL_UNSENDABLE extends EmailSendingResult
+case object EmailAccepted   extends EmailSendingResult
+case object EmailNotSent    extends EmailSendingResult
+case object EmailUnsendable extends EmailSendingResult

@@ -17,7 +17,7 @@
 package connectors
 
 import base.BaseISpec
-import models.email.{EMAIL_ACCEPTED, EMAIL_NOT_SENT, EmailToSendRequest, SubmissionConfirmation}
+import models.email.{EmailAccepted, EmailNotSent, EmailToSendRequest, SubmissionConfirmation}
 import play.api.libs.json.Json
 import play.api.test.Injecting
 import play.api.http.Status.{ACCEPTED, BAD_GATEWAY, GATEWAY_TIMEOUT}
@@ -47,7 +47,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 
-        await(connector.send(emailRequest)) shouldBe EMAIL_ACCEPTED
+        await(connector.send(emailRequest)) shouldBe EmailAccepted
       }
 
       "return EMAIL_NOT_SENT when downstream responds 502 Bad Gateway" in {
@@ -56,7 +56,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 
-        await(connector.send(emailRequest)) shouldBe EMAIL_NOT_SENT
+        await(connector.send(emailRequest)) shouldBe EmailNotSent
       }
 
       "return EMAIL_NOT_SENT when downstream responds 504 Gateway Timeout" in {
@@ -65,7 +65,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 
-        await(connector.send(emailRequest)) shouldBe EMAIL_NOT_SENT
+        await(connector.send(emailRequest)) shouldBe EmailNotSent
       }
     }
   }
