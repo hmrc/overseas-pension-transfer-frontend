@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.email.{EMAIL_NOT_SENT, EmailSendingResult, EmailToSendRequest}
+import models.email.{EmailNotSent, EmailSendingResult, EmailToSendRequest}
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.writeableOf_JsValue
@@ -35,10 +35,10 @@ class EmailConnector @Inject() (appConfig: FrontendAppConfig, httpClientV2: Http
     httpClientV2.post(url"${appConfig.emailService}").withBody(Json.toJson(email)).execute[EmailSendingResult].recover {
       case e: BadGatewayException     =>
         logger.warn(s"[EmailConnector][send] Error sending email: ${e.message}")
-        EMAIL_NOT_SENT
+        EmailNotSent
       case e: GatewayTimeoutException =>
         logger.warn(s"[EmailConnector][send] Gateway timed out: ${e.message}")
-        EMAIL_NOT_SENT
+        EmailNotSent
     }
   }
 }

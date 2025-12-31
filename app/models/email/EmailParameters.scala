@@ -38,8 +38,10 @@ object EmailParameters {
 }
 
 case class SubmissionConfirmation(
-    recipientName: String,
-    amendmentDate: String
+    qtReference: String,
+    memberName: String,
+    submissionDate: String,
+    pensionSchemeName: String
   ) extends EmailParameters
 
 object SubmissionConfirmation {
