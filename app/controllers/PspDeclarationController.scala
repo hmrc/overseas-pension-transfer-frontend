@@ -82,8 +82,11 @@ class PspDeclarationController @Inject() (
                                                logger.warn(s"[PspDeclarationController][onSubmit] Failed to fetch minimal details for pspId=${pspId.value}: $e")
                                                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
                                              }
-                  sentEmailSD             <- EitherT.right[Result](emailService.sendConfirmationEmail(updateWithMemberNameSD, minimalDetails))
-                  _                       <- EitherT.right[Result](sessionRepository.set(sentEmailSD))
+                  // session data must have qtReference, memberName and pensionSchemeName at this point
+                  _                       <- EitherT(emailService.sendConfirmationEmail(updateWithMemberNameSD, minimalDetails)).leftMap { e =>
+                                               logger.warn(s"[PspDeclarationController][onSubmit] Failed to send email confirmation: $e")
+                                               Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                                             }
                 } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
               case Left(NotAuthorisingPsaIdErrorResponse(_, _))     =>
                 val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")

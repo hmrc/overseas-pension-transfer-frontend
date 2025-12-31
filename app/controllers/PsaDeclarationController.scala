@@ -68,11 +68,14 @@ class PsaDeclarationController @Inject() (
             updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
             psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
             minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
-                                         logger.warn(s"[PspDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e")
+                                         logger.warn(s"[PsaDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e")
                                          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
                                        }
-            sentEmailSD             <- EitherT.right[Result](emailService.sendConfirmationEmail(updateWithMemberNameSD, minimalDetails))
-            _                       <- EitherT.right[Result](sessionRepository.set(sentEmailSD))
+            // session data must have qtReference, memberName and pensionSchemeName at this point
+            _                       <- EitherT(emailService.sendConfirmationEmail(updateWithMemberNameSD, minimalDetails)).leftMap { e =>
+                                         logger.warn(s"[PsaDeclarationController][onSubmit] Failed to send email confirmation: $e")
+                                         Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                                       }
           } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
         case e                                                =>
           logger.warn(s"[PsaDeclarationController][onSubmit] Failed to submit declaration: $e")
