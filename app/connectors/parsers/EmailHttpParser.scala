@@ -31,7 +31,7 @@ object EmailHttpParser {
           EmailUnsendable
         case r if r.status >= 500 && r.status < 600 =>
           EmailNotSent
-        case r                                      =>
+        case _                                      =>
           EmailAccepted
       }
     }
