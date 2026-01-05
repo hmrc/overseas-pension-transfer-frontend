@@ -74,7 +74,7 @@ class EmailService @Inject() (
             )
           ) flatMap {
             case EmailAccepted => Future.successful(Right(EmailSentSuccess))
-            case err            =>
+            case err           =>
               logger.warn(s"[EmailService][sendConfirmationEmail] Email not sent due to downstream error: ${err.toString}")
               Future.successful(Left(DownstreamError(err.toString)))
           }

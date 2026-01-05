@@ -71,7 +71,7 @@ class PspDeclarationController @Inject() (
             .flatMap {
               case Right(SubmissionResponse(qtNumber, receiptDate)) =>
                 (for {
-                  updateWithQTNumberSD      <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber)))
+                  updateWithQTNumberSD    <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber)))
                   updateWithReceiptDateSD <- EitherT.right[Result](Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, receiptDate)))
                   name                     = request.sessionData.get(MemberNamePage)
                                                .orElse(request.userAnswers.get(MemberNamePage))

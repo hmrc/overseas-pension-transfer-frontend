@@ -34,8 +34,10 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
       to         = List("test.user@example.com"),
       templateId = "submitted-confirmation-template",
       parameters = SubmissionConfirmation(
-        recipientName = "Test User",
-        amendmentDate = "17 December 2025"
+        qtReference       = "QT123456",
+        memberName        = "Foo Bar",
+        submissionDate    = "3 October 2025 at 3:00pm",
+        pensionSchemeName = "Smith Harper Pension Scheme"
       )
     )
 
