@@ -26,12 +26,11 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.PsaDeclarationPage
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{EmailService, UserAnswersService}
+import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PsaDeclarationView
 
@@ -77,8 +76,8 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       when(mockMinimalDetailsConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(minimalDetails)))
 
-      when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier], any[Messages]))
-        .thenReturn(Future.successful(sessionDataMemberNameQtNumber))
+      when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(EmailSentSuccess)))
 
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))

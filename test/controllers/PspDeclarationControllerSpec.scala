@@ -31,7 +31,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{EmailService, UserAnswersService}
+import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PspDeclarationView
 
@@ -97,8 +97,8 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       when(mockMinimalDetailsConnector.fetch(any[PspId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(minimalDetails)))
 
-      when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier], any[Messages]))
-        .thenReturn(Future.successful(sessionDataMemberNameQtNumber))
+      when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(EmailSentSuccess)))
 
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))
