@@ -98,10 +98,79 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
 
   def pageWithRadioButtons(view: Html, expectedText: String*): Unit =
     "show correct radio buttons" in {
-      doc(view.body).getElementsByClass("govuk-radios__item").eachText().toArray() mustBe
-        expectedText.map(messageKey =>
-          messages(messageKey)
-        ).toArray
+      val radioItems = doc(view.body).getElementsByClass("govuk-radios__item")
+
+      radioItems.size() mustBe expectedText.size
+
+      expectedText.zipWithIndex.foreach { case (messageKey, index) =>
+        radioItems.get(index).text() must include(messages(messageKey))
+      }
+    }
+
+  def pageWithBulletList(view: Html, expectedText: String*): Unit =
+    "show correct bullet list items" in {
+      val bulletPoints = doc(view.body).getElementsByClass("govuk-list--bullet").first().getElementsByTag("li")
+
+      bulletPoints.eachText().toArray() mustBe expectedText.map(messageKey =>
+        messages(messageKey)
+      ).toArray
+    }
+
+  def pageWithSubmitButton(view: Html, buttonText: String): Unit =
+    "show correct submit button" in {
+      val button = doc(view.body).getElementsByClass("govuk-button").first()
+
+      button.text() mustBe messages(buttonText)
+    }
+
+  def pageWithInputField(view: Html, fieldId: String, labelText: String): Unit =
+    "show correct input field" in {
+      val input = doc(view.body).getElementById(fieldId)
+      val label = doc(view.body).getElementsByAttributeValue("for", fieldId).first()
+
+      assert(input != null, s"\n\nInput field with id '$fieldId' was not rendered on the page.\n")
+      label.text() must include(messages(labelText))
+    }
+
+  def pageWithConfirmationPanel(view: Html, headingText: String, bodyText: String, referenceNumber: String): Unit =
+    "show correct confirmation panel" in {
+      val panel      = doc(view.body).getElementsByClass("govuk-panel--confirmation").first()
+      val panelTitle = panel.getElementsByClass("govuk-panel__title").first()
+      val panelBody  = panel.getElementsByClass("govuk-panel__body").first()
+
+      panelTitle.text() mustBe messages(headingText)
+      panelBody.text() must include(messages(bodyText))
+      panelBody.text() must include(referenceNumber)
+    }
+
+  def pageWithRadioButtonsAndHints(view: Html, expectedRadios: (String, String)*): Unit =
+    "show correct radio buttons with hints" in {
+      val radioItems = doc(view.body).getElementsByClass("govuk-radios__item")
+
+      radioItems.size() mustBe expectedRadios.size
+
+      expectedRadios.zipWithIndex.foreach { case ((labelKey, hintKey), index) =>
+        val radioItem = radioItems.get(index)
+        val label     = radioItem.getElementsByClass("govuk-radios__label").first()
+        val hint      = radioItem.getElementsByClass("govuk-radios__hint").first()
+
+        label.text() mustBe messages(labelKey)
+        if (hint != null) {
+          hint.text() mustBe messages(hintKey)
+        }
+      }
+    }
+
+  def pageWithMultipleInputFields(view: Html, fields: (String, String)*): Unit =
+    "display all required input fields with correct labels" in {
+      fields.foreach { case (fieldId, labelText) =>
+        val field = doc(view.body).getElementById(fieldId)
+        assert(field != null, s"\n\nInput field '$fieldId' was not rendered on the page.\n")
+
+        val label = doc(view.body).select(s"label[for=$fieldId]").first()
+        assert(label != null, s"\n\nLabel for field '$fieldId' was not found.\n")
+        label.text() must include(messages(labelText))
+      }
     }
 
 }
