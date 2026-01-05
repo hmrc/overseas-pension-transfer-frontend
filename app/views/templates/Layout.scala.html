@@ -98,7 +98,11 @@
         mainContentLayout = if(fullWidth) Some(fullWidthMainContent(_)) else Some(twoThirdsLayout(_))
     ),
     serviceURLs = ServiceURLs(
-        serviceUrl = Some(routes.DashboardController.onPageLoad().url),
+        serviceUrl = if(requestHeader.uri.endsWith("report-transfer-qualifying-recognised-overseas-pension-scheme/dashboard")) {
+        None
+        } else {
+        Some(routes.DashboardController.onPageLoad().url)
+        },
         signOutUrl = if(showSignOut) Some(controllers.auth.routes.AuthController.signOut().url) else None
     ),
     banners = hmrcstandardpage.Banners(
