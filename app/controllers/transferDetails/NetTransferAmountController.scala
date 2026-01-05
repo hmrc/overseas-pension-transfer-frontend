@@ -18,16 +18,18 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.transferDetails.NetTransferAmountFormProvider
-import models.Mode
+import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.NetTransferAmountPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TransferDetailsRecordVersionQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.NetTransferAmountView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class NetTransferAmountController @Inject() (
     override val messagesApi: MessagesApi,
@@ -58,11 +60,22 @@ class NetTransferAmountController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
+        value => {
+          def setAnswers(): Try[UserAnswers] =
+            if (mode == AmendCheckMode) {
+              request.userAnswers.set(NetTransferAmountPage, value) flatMap {
+                answers =>
+                  answers.remove(TransferDetailsRecordVersionQuery)
+              }
+            } else {
+              request.userAnswers.set(NetTransferAmountPage, value)
+            }
+
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NetTransferAmountPage, value))
+            updatedAnswers <- Future.fromTry(setAnswers())
             _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
           } yield Redirect(NetTransferAmountPage.nextPage(mode, updatedAnswers))
+        }
       )
   }
 }

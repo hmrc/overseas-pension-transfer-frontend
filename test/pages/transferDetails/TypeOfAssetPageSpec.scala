@@ -18,41 +18,133 @@ package pages.transferDetails
 
 import base.SpecBase
 import controllers.transferDetails.routes
+import models.assets.{QuotedSharesMiniJourney, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
+import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
-class TypeOfAssetPageSpec extends AnyFreeSpec with Matchers with SpecBase {
+class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
-  ".nextPage" - {
+  ".nextPageWith" - {
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
 
-      "must go to the Next page" in {
-        TypeOfAssetPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.routes.DashboardController.onPageLoad()
+      "must go to the first incomplete asset journey when one exists" in {
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = false)
+            )
+          ).success.value
+
+        TypeOfAssetPage.nextPageWith(NormalMode, emptyAnswers, sessionData) mustEqual
+          UnquotedSharesMiniJourney.call(NormalMode)
+      }
+
+      "must go to Transfer Details CYA when all selected assets are completed or none selected" in {
+        val sessionDataAllCompleted =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
+          ).success.value
+
+        TypeOfAssetPage.nextPageWith(NormalMode, emptyAnswers, sessionDataAllCompleted) mustEqual
+          routes.TransferDetailsCYAController.onPageLoad()
+
+        TypeOfAssetPage.nextPageWith(NormalMode, emptyAnswers, emptySessionData) mustEqual
+          routes.TransferDetailsCYAController.onPageLoad()
       }
     }
 
     "in Check Mode" - {
 
-      "must go to Check Answers" in {
+      "must go to the first incomplete asset journey when one exists" in {
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = false)
+            )
+          ).success.value
 
-        TypeOfAssetPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        TypeOfAssetPage.nextPageWith(CheckMode, emptyAnswers, sessionData) mustEqual
+          UnquotedSharesMiniJourney.call(CheckMode)
+      }
+
+      "must go to Transfer Details CYA when all selected assets are completed or none selected" in {
+        val sessionDataAllCompleted =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
+          ).success.value
+
+        TypeOfAssetPage.nextPageWith(CheckMode, emptyAnswers, sessionDataAllCompleted) mustEqual
+          routes.TransferDetailsCYAController.onPageLoad()
+
+        TypeOfAssetPage.nextPageWith(CheckMode, emptyAnswers, emptySessionData) mustEqual
+          routes.TransferDetailsCYAController.onPageLoad()
       }
     }
 
-    "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        TypeOfAssetPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+    "in Final Check Mode" - {
+
+      "must go to the first incomplete asset journey when one exists" in {
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted = false)
+            )
+          ).success.value
+
+        TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyAnswers, sessionData) mustEqual
+          QuotedSharesMiniJourney.call(FinalCheckMode)
+      }
+
+      "must go to Final Check Answers when all selected assets are completed or none selected" in {
+        val sessionDataAllCompleted =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted = true))
+          ).success.value
+
+        TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyAnswers, sessionDataAllCompleted) mustEqual
+          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+
+        TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyAnswers, emptySessionData) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
-    "in AmendCheckMode" - {
-      "must go to Final Check Answers page" in {
-        TypeOfAssetPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+    "in Amend Check Mode" - {
+
+      "must go to the first incomplete asset journey when one exists" in {
+        val sessionData =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(
+              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = false)
+            )
+          ).success.value
+
+        TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyAnswers, sessionData) mustEqual
+          UnquotedSharesMiniJourney.call(AmendCheckMode)
+      }
+
+      "must go to View & Amend CYA when all selected assets are completed or none selected" in {
+        val sessionDataAllCompleted =
+          emptySessionData.set(
+            SelectedAssetTypesWithStatus,
+            Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
+          ).success.value
+
+        TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyAnswers, sessionDataAllCompleted) mustEqual
+          controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+
+        TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyAnswers, emptySessionData) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

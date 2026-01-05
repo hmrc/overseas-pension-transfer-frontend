@@ -17,7 +17,7 @@
 package controllers.actions
 
 import controllers.routes
-import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
+import models.requests.{DisplayRequest, SchemeRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
@@ -48,7 +48,7 @@ class DataRetrievalActionImpl @Inject() (
               request.authenticatedUser,
               answers,
               value,
-              memberFullName(value),
+              memberFullName(value, Some(answers)),
               qtNumber(value),
               dateTransferSubmitted(value)
             ))

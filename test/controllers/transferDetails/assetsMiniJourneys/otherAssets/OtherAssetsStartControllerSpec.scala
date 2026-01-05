@@ -34,7 +34,7 @@ class OtherAssetsStartControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application = applicationBuilder().build()
 
       running(application) {
-        val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.OtherAssetsStartController.onPageLoad().url)
+        val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.OtherAssetsStartController.onPageLoad(NormalMode).url)
         val result   = route(application, request).value
         val view     = application.injector.instanceOf[OtherAssetsStartView]
         val nextPage = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, 0).url

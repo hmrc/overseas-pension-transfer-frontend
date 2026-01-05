@@ -18,6 +18,7 @@ package controllers.viewandamend
 
 import config.FrontendAppConfig
 import controllers.actions._
+import forms.viewandamend.ViewAmendSelectorFormProvider
 import models.QtStatus.AmendInProgress
 import models.audit.JourneyStartedType.StartAmendmentOfTransfer
 import models.authentication.{PsaUser, PspUser}
@@ -48,88 +49,90 @@ class ViewAmendSelectorController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
+  private val form                 = ViewAmendSelectorFormProvider.form()
 
   def onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
-    (identify andThen schemeData) { implicit request =>
-      Ok(view(qtReference, pstr, qtStatus, versionNumber)).withSession(
-        request.session +
-          ("qtReference"   -> qtReference.value) +
-          ("pstr"          -> pstr.value) +
-          ("qtStatus"      -> qtStatus.toString) +
-          ("versionNumber" -> versionNumber)
-      )
+    (identify andThen schemeData).async { implicit request =>
+      val owner = request.authenticatedUser match {
+        case PsaUser(psaId, _, _) => psaId.value
+        case PspUser(pspId, _, _) => pspId.value
+      }
+
+      for {
+        isLocked <- lockService.isLocked(qtReference.value, owner)
+        _        <- if (isLocked) lockService.releaseLock(qtReference.value, owner) else Future.unit
+      } yield {
+        Ok(view(qtReference, pstr, qtStatus, versionNumber, form)).withSession(
+          request.session +
+            ("qtReference"   -> qtReference.value) +
+            ("pstr"          -> pstr.value) +
+            ("qtStatus"      -> qtStatus.toString) +
+            ("versionNumber" -> versionNumber)
+        )
+      }
     }
 
   def onSubmit(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
     (identify andThen schemeData).async { implicit request =>
-      for {
-        formData <- Future.successful(
-                      request.body.asFormUrlEncoded
-                        .flatMap(_.get("option").flatMap(_.headOption))
-                    )
-        result   <- formData match {
+      form.bindFromRequest().fold(
+        formWithErrors => Future.successful(BadRequest(view(qtReference, pstr, qtStatus, versionNumber, formWithErrors))),
+        {
+          case Some("view")  =>
+            Future.successful(Redirect(routes.ViewAmendSubmittedController.view(qtReference, pstr, qtStatus, versionNumber)))
+          case Some("amend") =>
+            val owner = request.authenticatedUser match {
+              case PsaUser(psaId, _, _) => psaId.value
+              case PspUser(pspId, _, _) => pspId.value
+            }
+            for {
+              userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
+              allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
+              lockResult        <-
+                lockService.takeLockWithAudit(
+                  qtReference,
+                  owner,
+                  lockTtlSeconds,
+                  request.authenticatedUser,
+                  request.schemeDetails,
+                  StartAmendmentOfTransfer,
+                  allTransfersItem
+                )
+            } yield (userAnswersResult, lockResult) match {
+              case (Right(answers), true) =>
+                val sessionData = SessionData(
+                  request.authenticatedUser.internalId,
+                  qtReference,
+                  request.schemeDetails,
+                  request.authenticatedUser,
+                  Json.obj(
+                    "receiptDate" -> answers.lastUpdated
+                  )
+                )
 
-                      case Some("view") =>
-                        Future.successful(Redirect(routes.ViewAmendSubmittedController.view(qtReference, pstr, qtStatus, versionNumber)))
+                val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {
+                  name =>
+                    sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+                }
 
-                      case Some("") | None =>
-                        Future.successful(
-                          Redirect(routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
-                            .flashing("error" -> "true")
-                        )
+                sessionRepository.set(sessionDataWithMemberName)
 
-                      case Some("amend") =>
-                        val owner = request.authenticatedUser match {
-                          case PsaUser(psaId, _, _) => psaId.value
-                          case PspUser(pspId, _, _) => pspId.value
-                        }
-                        for {
-                          userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
-                          allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
-                          lockResult        <-
-                            lockService.takeLockWithAudit(
-                              qtReference,
-                              owner,
-                              lockTtlSeconds,
-                              request.authenticatedUser,
-                              request.schemeDetails,
-                              StartAmendmentOfTransfer,
-                              allTransfersItem
-                            )
-                        } yield (userAnswersResult, lockResult) match {
-                          case (Right(answers), true) =>
-                            val sessionData = SessionData(
-                              request.authenticatedUser.internalId,
-                              qtReference,
-                              request.schemeDetails,
-                              request.authenticatedUser,
-                              Json.obj(
-                                "receiptDate" -> answers.lastUpdated
-                              )
-                            )
+                Redirect(routes.ViewAmendSubmittedController.amend())
+                  .withSession(request.session + ("isAmend" -> "true"))
 
-                            val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {
-                              name =>
-                                sessionData.set(MemberNamePage, name).getOrElse(sessionData)
-                            }
+              case (_, false) =>
+                val memberName = userAnswersResult.toOption
+                  .flatMap(_.get(MemberNamePage))
+                  .map(_.fullName)
+                  .getOrElse(qtReference.value)
 
-                            sessionRepository.set(sessionDataWithMemberName)
-                            Redirect(routes.ViewAmendSubmittedController.amend())
-                              .withSession(request.session + ("isAmend" -> "true"))
+                Redirect(routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
+                  .flashing("lockWarning" -> memberName)
 
-                          case (_, false) =>
-                            val memberName = userAnswersResult.toOption
-                              .flatMap(_.get(MemberNamePage))
-                              .map(_.fullName)
-                              .getOrElse(qtReference.value)
-
-                            Redirect(routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber))
-                              .flashing("lockWarning" -> memberName)
-
-                          case _ =>
-                            Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-                        }
-                    }
-      } yield result
+              case _ =>
+                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            }
+        }
+      )
     }
+
 }

@@ -18,22 +18,23 @@ package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.{TypeOfAsset, UnquotedSharesEntry}
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
+import models.{Mode, TaskCategory, UserAnswers}
+import pages.{MiniJourneyNextPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class UnquotedSharesValuePage(index: Int) extends QuestionPage[BigDecimal] {
+case class UnquotedSharesValuePage(index: Int) extends QuestionPage[BigDecimal] with MiniJourneyNextPage {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
 
   override def toString: String = UnquotedSharesEntry.ValueOfShares
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index)
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(index)
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+    answers.get(UnquotedSharesClassPage(index)) match {
+      case Some(_) => AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index)
+      case None    => AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(mode, index)
+    }
+  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(mode, index)

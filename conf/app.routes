@@ -8,7 +8,7 @@ GET        /language/:lang                                                      
 
 GET        /start                                                                                 controllers.MpsOnRampController.onRamp(srn: String ?= "")
 
-GET        /dashboard                                                                             controllers.DashboardController.onPageLoad(page: Int ?= 1)
+GET        /dashboard                                                                             controllers.DashboardController.onPageLoad(page: Int ?= 1, search: Option[String] ?= None)
 
 GET        /dashboard/transfer-report                                                             controllers.DashboardController.onTransferClick()
 
@@ -379,7 +379,10 @@ POST       /transfer-details/assets/amend-change-cash-amount-in-transfer        
 
 # ----- UNQUOTED -----
 
-GET        /transfer-details/assets/unquoted-shares-start                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad()
+GET        /transfer-details/assets/unquoted-shares-start                                         controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-unquoted-shares-start                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad(mode: Mode = CheckMode)
+GET        /transfer-details/assets/final-change-unquoted-shares-start                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-unquoted-shares-start                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartController.onPageLoad(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/unquoted-shares-company-name                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/unquoted-shares-company-name                                  controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -417,8 +420,14 @@ POST       /transfer-details/assets/final-change-unquoted-shares-class          
 GET        /transfer-details/assets/amend-change-unquoted-shares-class                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
 POST       /transfer-details/assets/amend-change-unquoted-shares-class                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
-GET        /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onPageLoad(index: Int)
-POST       /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onSubmit(index: Int)
+GET        /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/unquoted-shares-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-unquoted-shares-check-your-answers                     controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-unquoted-shares-check-your-answers                     controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/assets/final-change-unquoted-shares-check-your-answers               controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
+POST       /transfer-details/assets/final-change-unquoted-shares-check-your-answers               controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-unquoted-shares-check-your-answers               controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-unquoted-shares-check-your-answers               controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/unquoted-shares-amend-continue                                controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/unquoted-shares-amend-continue                                controllers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueController.onSubmit(mode: Mode = NormalMode)
@@ -443,7 +452,10 @@ POST       /transfer-details/assets/unquoted-shares-confirm-removal             
 
 # ----- QUOTED -----
 
-GET        /transfer-details/assets/quoted-shares-start                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad()
+GET        /transfer-details/assets/quoted-shares-start                                           controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-quoted-shares-start                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad(mode: Mode = CheckMode)
+GET        /transfer-details/assets/final-change-quoted-shares-start                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-quoted-shares-start                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartController.onPageLoad(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/quoted-shares-company-name                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/quoted-shares-company-name                                    controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -481,8 +493,14 @@ POST       /transfer-details/assets/final-change-quoted-shares-class            
 GET        /transfer-details/assets/amend-change-quoted-shares-class                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
 POST       /transfer-details/assets/amend-change-quoted-shares-class                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
-GET        /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onPageLoad(index: Int)
-POST       /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onSubmit(index: Int)
+GET        /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/quoted-shares-check-your-answers                              controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-quoted-shares-check-your-answers                       controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-quoted-shares-check-your-answers                       controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/assets/final-change-quoted-shares-check-your-answers                 controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
+POST       /transfer-details/assets/final-change-quoted-shares-check-your-answers                 controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-quoted-shares-check-your-answers                 controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-quoted-shares-check-your-answers                 controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/quoted-shares-amend-continue                                  controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/quoted-shares-amend-continue                                  controllers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueController.onSubmit(mode: Mode = NormalMode)
@@ -507,7 +525,10 @@ POST       /transfer-details/assets/quoted-shares-confirm-removal               
 
 # ----- PROPERTY -----
 
-GET        /transfer-details/assets/property-start                                                controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad()
+GET        /transfer-details/assets/property-start                                                controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-property-start                                         controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad(mode: Mode = CheckMode)
+GET        /transfer-details/assets/final-change-property-start                                          controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-property-start                                          controllers.transferDetails.assetsMiniJourneys.property.PropertyStartController.onPageLoad(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/property-address                                              controllers.transferDetails.assetsMiniJourneys.property.PropertyAddressController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/property-address                                              controllers.transferDetails.assetsMiniJourneys.property.PropertyAddressController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -536,8 +557,14 @@ POST       /transfer-details/assets/final-change-property-description           
 GET        /transfer-details/assets/amend-change-property-description                             controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
 POST       /transfer-details/assets/amend-change-property-description                             controllers.transferDetails.assetsMiniJourneys.property.PropertyDescriptionController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
-GET        /transfer-details/assets/property-check-your-answers                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onPageLoad(index: Int)
-POST       /transfer-details/assets/property-check-your-answers                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onSubmit(index: Int)
+GET        /transfer-details/assets/property-check-your-answers                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/property-check-your-answers                                   controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-property-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-property-check-your-answers                            controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/assets/final-change-property-check-your-answers                      controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
+POST       /transfer-details/assets/final-change-property-check-your-answers                      controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-change-property-check-your-answers                      controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-change-property-check-your-answers                      controllers.transferDetails.assetsMiniJourneys.property.PropertyCYAController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/property-amend-continue                                       controllers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/property-amend-continue                                       controllers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueController.onSubmit(mode: Mode = NormalMode)
@@ -563,7 +590,10 @@ POST       /transfer-details/assets/property-confirm-removal                    
 
 # ----- OTHER -----
 
-GET        /transfer-details/assets/other-assets-start                                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad()
+GET        /transfer-details/assets/other-assets-start                                            controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad(mode: Mode = NormalMode)
+GET        /transfer-details/assets/change-other-assets-start                                     controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad(mode: Mode = CheckMode)
+GET        /transfer-details/assets/final-change-other-assets-start                                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad(mode: Mode = FinalCheckMode)
+GET        /transfer-details/assets/amend-change-other-assets-start                                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartController.onPageLoad(mode: Mode = AmendCheckMode)
 
 GET        /transfer-details/assets/other-assets-description                                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int)
 POST       /transfer-details/assets/other-assets-description                                      controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int)
@@ -583,8 +613,14 @@ POST       /transfer-details/assets/final-change-other-assets-value             
 GET        /transfer-details/assets/amend-change-other-assets-value                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
 POST       /transfer-details/assets/amend-change-other-assets-value                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
-GET        /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(index: Int)
-POST       /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(index: Int)
+GET        /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(mode: Mode = NormalMode, index: Int)
+POST       /transfer-details/assets/other-assets-check-your-answers                               controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(mode: Mode = NormalMode, index: Int)
+GET        /transfer-details/assets/change-other-assets-check-your-answers                        controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(mode: Mode = CheckMode, index: Int)
+POST       /transfer-details/assets/change-other-assets-check-your-answers                        controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(mode: Mode = CheckMode, index: Int)
+GET        /transfer-details/assets/final-other-assets-check-your-answers                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(mode: Mode = FinalCheckMode, index: Int)
+POST       /transfer-details/assets/final-other-assets-check-your-answers                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(mode: Mode = FinalCheckMode, index: Int)
+GET        /transfer-details/assets/amend-other-assets-check-your-answers                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onPageLoad(mode: Mode = AmendCheckMode, index: Int)
+POST       /transfer-details/assets/amend-other-assets-check-your-answers                         controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAController.onSubmit(mode: Mode = AmendCheckMode, index: Int)
 
 GET        /transfer-details/assets/other-assets-amend-continue                                   controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onPageLoad(mode: Mode = NormalMode)
 POST       /transfer-details/assets/other-assets-amend-continue                                   controllers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueController.onSubmit(mode: Mode = NormalMode)

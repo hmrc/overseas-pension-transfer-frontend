@@ -16,8 +16,9 @@
 
 package models.assets
 
-import models.{SessionData, UserAnswers}
-import queries.assets.SelectedAssetTypes
+import models.{Mode, SessionData}
+import play.api.mvc.Call
+import queries.assets.SelectedAssetTypesWithStatus
 
 object AssetsMiniJourneyRegistry {
 
@@ -35,9 +36,12 @@ object AssetsMiniJourneyRegistry {
   def forType(assetType: TypeOfAsset): Option[AssetsMiniJourneyBase] =
     all.find(_.assetType == assetType)
 
-  def selectedJourneys(sessionData: SessionData): Seq[AssetsMiniJourneyBase] =
-    sessionData.get(SelectedAssetTypes).toSeq.flatten.flatMap(forType)
+  def firstIncompleteJourney(sessionData: SessionData): Option[AssetsMiniJourneyBase] = {
+    val sd = sessionData.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty)
+    SelectedAssetTypesWithStatus.getIncompleteAssets(sd).flatMap(forType).headOption
+  }
 
-  def firstIncompleteJourney(sessionData: SessionData): Option[AssetsMiniJourneyBase] =
-    selectedJourneys(sessionData).find(!_.isCompleted(sessionData))
+  def startOf(assetType: TypeOfAsset, mode: Mode, index: Int): Call =
+    forType(assetType).map(_.call(mode, index))
+      .getOrElse(controllers.routes.JourneyRecoveryController.onPageLoad())
 }

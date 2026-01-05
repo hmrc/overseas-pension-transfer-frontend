@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package queries.assets
+package viewmodels
 
-import models.TaskCategory
-import models.assets.TypeOfAsset
-import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
-
-case object SelectedAssetTypes extends Settable[Seq[TypeOfAsset]] with Gettable[Seq[TypeOfAsset]] {
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ "typeOfAsset"
-}
+case class SearchBarViewModel(
+    id: String               = "dashboard-search",
+    name: String             = "search",
+    label: String            = "Search transfers",
+    action: String           = "#",
+    buttonText: String       = "Search",
+    value: Option[String]    = None,
+    hint: Option[String]     = None,
+    clearUrl: Option[String] = None
+  )

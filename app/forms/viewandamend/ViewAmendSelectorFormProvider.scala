@@ -14,15 +14,24 @@
  * limitations under the License.
  */
 
-package navigators
+package forms.viewandamend
 
-import models.{SessionData, UserAnswers}
-import models.assets.AssetsMiniJourneyRegistry
-import play.api.mvc.Call
+import play.api.data.Form
+import play.api.data.Forms.{optional, single, text}
 
-object TypeOfAssetNavigator {
+object ViewAmendSelectorFormProvider {
 
-  def getNextAssetRoute(sessionData: SessionData): Option[Call] = {
-    AssetsMiniJourneyRegistry.firstIncompleteJourney(sessionData).map(_.call)
-  }
+  val ViewOrAmend = "viewOrAmend"
+
+  def form(): Form[Option[String]] = Form[Option[String]](
+    single(ViewOrAmend -> optional(text).verifying(
+      "viewAmend.error.required",
+      {
+        case Some("view")  => true
+        case Some("amend") => true
+        case _             => false
+
+      }
+    ))
+  )
 }

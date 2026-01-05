@@ -19,7 +19,7 @@ package controllers.viewandamend
 import base.SpecBase
 import models.{PstrNumber, QtNumber, QtStatus}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.SEE_OTHER
@@ -53,6 +53,43 @@ class ViewAmendSelectorControllerSpec
       bind[SessionRepository].toInstance(mockSessionRepository)
     ).build()
 
+  "onPageLoad" - {
+
+    "must release lock when a lock exists for the current user" in {
+      when(mockLockService.isLocked(any(), any()))
+        .thenReturn(Future.successful(true))
+
+      when(mockLockService.releaseLock(any(), any()))
+        .thenReturn(Future.unit)
+
+      val app     = buildApp
+      val request = FakeRequest(GET, routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe OK
+      verify(mockLockService).releaseLock(any(), any())
+      app.stop()
+    }
+
+    "must not release lock when no lock exists for the current user" in {
+
+      reset(mockLockService)
+
+      when(mockLockService.isLocked(any(), any()))
+        .thenReturn(Future.successful(false))
+
+      val app     = buildApp
+      val request = FakeRequest(GET, routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe OK
+      verify(mockLockService, never()).releaseLock(any(), any())
+      app.stop()
+    }
+  }
+
   "onSubmit" - {
     "when 'View this overseas pension transfer' is selected on radio page" - {
       "user must be redirected to /view-submitted-transfer page" in {
@@ -61,7 +98,7 @@ class ViewAmendSelectorControllerSpec
 
         val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("option" -> "view")
+          .withFormUrlEncodedBody("viewOrAmend" -> "view")
 
         val result = route(app, request).value
 
@@ -81,7 +118,7 @@ class ViewAmendSelectorControllerSpec
 
         val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("option" -> "amend")
+          .withFormUrlEncodedBody("viewOrAmend" -> "amend")
 
         val result = route(app, request).value
 
@@ -98,7 +135,7 @@ class ViewAmendSelectorControllerSpec
 
         val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("option" -> "amend")
+          .withFormUrlEncodedBody("viewOrAmend" -> "amend")
 
         val result = route(app, request).value
 
@@ -113,14 +150,11 @@ class ViewAmendSelectorControllerSpec
       "must show error message" in {
         val app     = buildApp
         val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("option" -> "")
+          .withFormUrlEncodedBody("viewOrAmend" -> "")
 
         val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
-        flash(result).get("error") mustBe Some("true")
-        redirectLocation(result).value mustBe routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber).url
-        app.stop()
+        status(result) mustBe BAD_REQUEST
       }
     }
   }

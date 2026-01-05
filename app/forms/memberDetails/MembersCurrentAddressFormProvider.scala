@@ -55,31 +55,37 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
     Form(
       mapping(
         "addressLine1" -> text("membersCurrentAddress.error.addressLine1.required", Seq(memberName))
+          .transform[String](input => input.trim, identity)
           .verifying(maxLength(35, "common.addressInput.error.addressLine1.length"))
           .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine1.pattern")),
         "addressLine2" -> text("membersCurrentAddress.error.addressLine2.required", Seq(memberName))
+          .transform[String](input => input.trim, identity)
           .verifying(maxLength(35, "common.addressInput.error.addressLine2.length"))
           .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine2.pattern")),
         "addressLine3" -> optional(
           Forms.text
-            verifying maxLength(35, "common.addressInput.error.addressLine3.length")
-            verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern")
+            .transform[String](input => input.trim, identity)
+            .verifying(maxLength(35, "common.addressInput.error.addressLine3.length"))
+            .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern"))
         ),
         "addressLine4" -> optional(
           Forms.text
-            verifying maxLength(35, "common.addressInput.error.addressLine4.length")
-            verifying regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern")
+            .transform[String](input => input.trim, identity)
+            .verifying(maxLength(35, "common.addressInput.error.addressLine4.length"))
+            .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern"))
         ),
         "countryCode"  -> text("common.addressInput.error.countryCode.required"),
         "postcode"     -> optional(
           Forms.text
-            verifying maxLength(35, "common.addressInput.error.postcode.length")
-            verifying regexp(internationalPostcodeRegex, "common.addressInput.error.postcode.pattern")
+            .transform[String](_.replaceAll("\\s+", ""), identity)
+            .verifying(maxLength(35, "common.addressInput.error.postcode.length"))
+            .verifying(regexp(internationalPostcodeRegex, "common.addressInput.error.postcode.pattern"))
         ),
         "poBox"        -> optional(
           Forms.text
-            verifying maxLength(35, "common.addressInput.error.poBox.length")
-            verifying regexp(poBoxRegex, "common.addressInput.error.poBox.pattern")
+            .transform[String](input => input.trim, identity)
+            .verifying(maxLength(35, "common.addressInput.error.poBox.length"))
+            .verifying(regexp(poBoxRegex, "common.addressInput.error.poBox.pattern"))
         )
       )(MembersCurrentAddressFormData.apply)(MembersCurrentAddressFormData.unapply)
     )

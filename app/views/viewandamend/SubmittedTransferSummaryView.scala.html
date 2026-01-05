@@ -47,20 +47,22 @@
         </div>
     }
 
-    <span class="govuk-caption-l">@qtNumber</span>
+    <h2 class="govuk-caption-l">@qtNumber</h2>
     <h1 class="govuk-heading-l">@messages("submittedTransferSummary.heading", memberName)</h1>
 
-    <table class="govuk-table">
-        <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">@messages("submittedTransferSummary.submission")</th>
-            <th scope="col" class="govuk-table__header">@messages("submittedTransferSummary.status")</th>
-            <th scope="col" class="govuk-table__header"></th>
-        </tr>
-        </thead>
-        <tbody class="govuk-table__body">
+    <div role="region" aria-labelledby="Caption01" tabindex="0">
+        <table class="govuk-table">
+            <caption class="govuk-visually-hidden" id="Caption01">@messages("submittedTransferSummary.heading", memberName)</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">@messages("submittedTransferSummary.submission")</th>
+                    <th scope="col" class="govuk-table__header">@messages("submittedTransferSummary.status")</th>
+                    <th scope="col" class="govuk-table__header">@messages("submittedTransferSummary.action")</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
             @tableRows
-        </tbody>
-    </table>
-
+            </tbody>
+        </table>
+    </div>
 }

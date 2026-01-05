@@ -27,9 +27,9 @@ class SchemeManagersEmailFormProviderSpec extends StringFieldBehaviours {
 
   val form = new SchemeManagersEmailFormProvider()()
 
-  ".value" - {
+  val fieldName = "emailAddress"
 
-    val fieldName = "emailAddress"
+  ".value" - {
 
     behave like fieldThatBindsValidData(
       form,
@@ -49,5 +49,20 @@ class SchemeManagersEmailFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  "SchemeManagerOrganisationNameFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          fieldName -> "  jd@doeltd.com  "
+        )
+      )
+
+      result.errors mustBe empty
+      val bound = result.value.value
+      bound mustBe "jd@doeltd.com"
+    }
   }
 }

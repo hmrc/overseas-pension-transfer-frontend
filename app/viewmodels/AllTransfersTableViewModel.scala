@@ -16,6 +16,7 @@
 
 package viewmodels
 
+import config.FrontendAppConfig
 import models.QtStatus.{AmendInProgress, Compiled, InProgress, Submitted}
 import models.{AllTransfersItem, TransferReportQueryParams}
 import play.api.i18n.Messages
@@ -56,7 +57,7 @@ object AllTransfersTableViewModel {
       case None    => Text("-")
     }
 
-  def from(items: Seq[AllTransfersItem], currentPage: Int)(implicit messages: Messages): Table = {
+  def from(items: Seq[AllTransfersItem], currentPage: Int)(implicit messages: Messages, appConfig: FrontendAppConfig): Table = {
     val head: Seq[HeadCell] = Seq(
       HeadCell(Text(messages("dashboard.allTransfers.head.member"))),
       HeadCell(Text(messages("dashboard.allTransfers.head.status"))),
@@ -83,8 +84,11 @@ object AllTransfersTableViewModel {
       )
 
       val linkHtml = HtmlFormat.raw(s"""<a href="${TransferReportQueryParams.toUrl(params)}" class="govuk-link">$name</a>""")
-      val refText  = if (params.qtStatus == Some(InProgress)) { Text("-") }
-      else { Text(ref.value) }
+      val refText  = if (params.qtStatus.contains(InProgress)) {
+        Text(messages("dashboard.allTransfers.reference.inProgressText"))
+      } else {
+        Text(ref.value)
+      }
 
       Seq(
         cell(content = HtmlContent(linkHtml)),
@@ -94,9 +98,13 @@ object AllTransfersTableViewModel {
       )
     }
 
+    val hideCaption = if (appConfig.allowDashboardSearch) "govuk-visually-hidden" else ""
+
     Table(
-      head = Some(head),
-      rows = rows
+      head           = Some(head),
+      rows           = rows,
+      caption        = Some(messages("dashboard.allTransfers.heading")),
+      captionClasses = s"govuk-table__caption--m $hideCaption"
     )
   }
 }

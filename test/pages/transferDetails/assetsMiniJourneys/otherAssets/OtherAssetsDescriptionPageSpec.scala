@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -29,8 +29,7 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
-    "in Normal Mode" - {
-
+    "in NormalMode" - {
       "must go to the Next page" in {
         OtherAssetsDescriptionPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           NormalMode,
@@ -39,18 +38,30 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
       }
     }
 
-    "in Check Mode" - {
-
-      "must go to Check Answers" in {
-
-        OtherAssetsDescriptionPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index)
+    "in CheckMode" - {
+      "must go to the Next page" in {
+        OtherAssetsDescriptionPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+          CheckMode,
+          index
+        )
       }
     }
 
     "in FinalCheckMode" - {
-      "must go to Final Check Answers page" in {
-        OtherAssetsDescriptionPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual
-          controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+      "must go to the Next page" in {
+        OtherAssetsDescriptionPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+          FinalCheckMode,
+          index
+        )
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to the Next page" in {
+        OtherAssetsDescriptionPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+          AmendCheckMode,
+          index
+        )
       }
     }
   }

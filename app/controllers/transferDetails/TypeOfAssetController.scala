@@ -18,12 +18,14 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.transferDetails.TypeOfAssetFormProvider
-import models.Mode
-import navigators.TypeOfAssetNavigator
-import pages.transferDetails.TypeOfAssetPage
+import models.{AmendCheckMode, Mode, UserAnswers}
+import pages.transferDetails.{AmountOfTransferPage, TypeOfAssetPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import queries.TransferDetailsRecordVersionQuery
+import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -31,6 +33,7 @@ import views.html.transferDetails.TypeOfAssetView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 class TypeOfAssetController @Inject() (
     override val messagesApi: MessagesApi,
@@ -49,7 +52,7 @@ class TypeOfAssetController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(TypeOfAssetPage) match {
+      val preparedForm = request.userAnswers.get(AnswersSelectedAssetTypes) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -65,17 +68,10 @@ class TypeOfAssetController @Inject() (
         selectedAssets => {
           val orderedAssets = selectedAssets.toSeq.sorted
           for {
-            setAssetsUA               <- Future.fromTry(request.userAnswers.set(TypeOfAssetPage, selectedAssets))
-            setAssetsSD               <- Future.fromTry(request.sessionData.set(TypeOfAssetPage, selectedAssets))
-            removePrevSetAssetFlagsSD <- Future.fromTry(AssetsMiniJourneyService.clearAllAssetCompletionFlags(setAssetsSD))
-            setAssetsCompletedUA      <- Future.fromTry(AssetsMiniJourneyService.setSelectedAssetsIncomplete(removePrevSetAssetFlagsSD, orderedAssets))
-            _                         <- userAnswersService.setExternalUserAnswers(setAssetsUA)
-            _                         <- sessionRepository.set(setAssetsCompletedUA)
-          } yield TypeOfAssetNavigator.getNextAssetRoute(setAssetsCompletedUA) match {
-            case Some(route) =>
-              Redirect(route)
-            case None        => Redirect(routes.TransferDetailsCYAController.onPageLoad())
-          }
+            (sd, ua) <- Future.fromTry(AssetsMiniJourneyService.handleTypeOfAssetStatusUpdate(request.sessionData, request.userAnswers, orderedAssets, mode))
+            _        <- userAnswersService.setExternalUserAnswers(ua)
+            _        <- sessionRepository.set(sd)
+          } yield Redirect(TypeOfAssetPage.nextPageWith(mode, ua, sd))
         }
       )
     }

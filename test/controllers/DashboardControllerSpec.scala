@@ -83,7 +83,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
       when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
-      when(mockView.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard view"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(play.twirl.api.Html("dashboard view"))
 
       val application = applicationBuilder()
         .overrides(
@@ -233,7 +233,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
-      when(mockView.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("dashboard"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(play.twirl.api.Html("dashboard"))
 
       when(mockLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
 
@@ -327,7 +327,9 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq(expiringTransfer))
 
-      when(mockView.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(play.twirl.api.Html("expiring soon banner"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(
+        play.twirl.api.Html("expiring soon banner")
+      )
 
       val application = applicationBuilder()
         .overrides(
@@ -346,6 +348,201 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         status(result) mustBe OK
         contentAsString(result) must include("expiring soon banner")
         verify(mockRepo, times(1)).findExpiringWithin2Days(any())
+      }
+    }
+
+    "must render the search bar when dashboard search feature is enabled" in {
+      val mockRepo    = mock[DashboardSessionRepository]
+      val mockService = mock[TransferService]
+      val mockSession = mock[SessionRepository]
+
+      val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
+      val transferItem  = AllTransfersItem(
+        transferId      = userAnswersTransferNumber,
+        qtVersion       = Some("v1"),
+        qtStatus        = Some(QtStatus.InProgress),
+        nino            = Some("AA123456A"),
+        memberFirstName = Some("John"),
+        memberSurname   = Some("Doe"),
+        qtDate          = Some(LocalDate.now),
+        lastUpdated     = Some(Instant.now),
+        pstrNumber      = Some(PstrNumber("12345678AB")),
+        submissionDate  = None
+      )
+
+      val dd = DashboardData("id")
+        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
+        .set(TransfersOverviewQuery, Seq(transferItem)).success.value
+
+      when(mockSession.clear(any())).thenReturn(Future.successful(true))
+      when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
+      when(mockRepo.set(any())).thenReturn(Future.successful(true))
+      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(dd)))
+      when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
+
+      val application = applicationBuilder()
+        .configure("features.allowDashboardSearch" -> true)
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[SessionRepository].toInstance(mockSession)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DashboardController.onPageLoad(1, None).url)
+        val result  = route(application, request).value
+
+        status(result) mustBe OK
+        val body = contentAsString(result)
+
+        body must include("""id="dashboard-search"""")
+        body must include("""name="search"""")
+      }
+    }
+
+    "must filter transfers when a search term is provided and render the clear link" in {
+      val mockRepo    = mock[DashboardSessionRepository]
+      val mockService = mock[TransferService]
+      val mockSession = mock[SessionRepository]
+
+      val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
+
+      val johnTransfer = AllTransfersItem(
+        transferId      = userAnswersTransferNumber,
+        qtVersion       = Some("v1"),
+        qtStatus        = Some(QtStatus.InProgress),
+        nino            = Some("AA123456A"),
+        memberFirstName = Some("John"),
+        memberSurname   = Some("Doe"),
+        qtDate          = Some(LocalDate.now),
+        lastUpdated     = Some(Instant.now),
+        pstrNumber      = Some(PstrNumber("12345678AB")),
+        submissionDate  = None
+      )
+
+      val aliceTransfer = AllTransfersItem(
+        transferId      = testQtNumber,
+        qtVersion       = Some("v1"),
+        qtStatus        = Some(QtStatus.InProgress),
+        nino            = Some("BB123456B"),
+        memberFirstName = Some("Alice"),
+        memberSurname   = Some("Smith"),
+        qtDate          = Some(LocalDate.now),
+        lastUpdated     = Some(Instant.now),
+        pstrNumber      = Some(PstrNumber("12345678AB")),
+        submissionDate  = None
+      )
+
+      val dd = DashboardData("id")
+        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
+        .set(TransfersOverviewQuery, Seq(johnTransfer, aliceTransfer)).success.value
+
+      when(mockSession.clear(any())).thenReturn(Future.successful(true))
+      when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
+      when(mockRepo.set(any())).thenReturn(Future.successful(true))
+      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(dd)))
+      when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
+
+      val application = applicationBuilder()
+        .configure("features.allowDashboardSearch" -> true)
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[SessionRepository].toInstance(mockSession)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DashboardController.onPageLoad(1, Some("John")).url)
+        val result  = route(application, request).value
+
+        status(result) mustBe OK
+        val body = contentAsString(result)
+
+        body must include("John")
+        body must include("Doe")
+
+        body must not include "Alice"
+        body must not include "Smith"
+
+        body must include("""id="dashboard-search"""")
+        body must include("""name="search"""")
+        body must include("""value="John"""")
+
+        body must include("""class="govuk-link search-bar__clear"""")
+        body must include("""Clear<span class="govuk-visually-hidden"> search</span>""")
+      }
+    }
+
+    "must show all transfers again when search term is cleared" in {
+      val mockRepo    = mock[DashboardSessionRepository]
+      val mockService = mock[TransferService]
+      val mockSession = mock[SessionRepository]
+
+      val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
+
+      val johnTransfer = AllTransfersItem(
+        transferId      = userAnswersTransferNumber,
+        qtVersion       = Some("v1"),
+        qtStatus        = Some(QtStatus.InProgress),
+        nino            = Some("AA123456A"),
+        memberFirstName = Some("John"),
+        memberSurname   = Some("Doe"),
+        qtDate          = Some(LocalDate.now),
+        lastUpdated     = Some(Instant.now),
+        pstrNumber      = Some(PstrNumber("12345678AB")),
+        submissionDate  = None
+      )
+
+      val aliceTransfer = AllTransfersItem(
+        transferId      = testQtNumber,
+        qtVersion       = Some("v1"),
+        qtStatus        = Some(QtStatus.InProgress),
+        nino            = Some("BB123456B"),
+        memberFirstName = Some("Alice"),
+        memberSurname   = Some("Smith"),
+        qtDate          = Some(LocalDate.now),
+        lastUpdated     = Some(Instant.now),
+        pstrNumber      = Some(PstrNumber("12345678AB")),
+        submissionDate  = None
+      )
+
+      val dd = DashboardData("id")
+        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
+        .set(TransfersOverviewQuery, Seq(johnTransfer, aliceTransfer)).success.value
+
+      when(mockSession.clear(any())).thenReturn(Future.successful(true))
+      when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
+      when(mockRepo.set(any())).thenReturn(Future.successful(true))
+      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(dd)))
+      when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
+
+      val application = applicationBuilder()
+        .configure("features.allowDashboardSearch" -> true)
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[TransferService].toInstance(mockService),
+          bind[SessionRepository].toInstance(mockSession)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DashboardController.onPageLoad(1, None).url)
+        val result  = route(application, request).value
+
+        status(result) mustBe OK
+        val body = contentAsString(result)
+
+        body must include("John")
+        body must include("Doe")
+        body must include("Alice")
+        body must include("Smith")
+
+        body must not include "search-bar__clear"
       }
     }
   }

@@ -50,4 +50,19 @@ class QuotedSharesClassFormProviderSpec extends StringFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
+  "QuotedSharesClassFormProvider" - {
+
+    "must allow leading and trailing spaces and trim them on binding" in {
+      val result = form.bind(
+        Map(
+          "value" -> "  Ordinary A Shares  "
+        )
+      )
+
+      result.errors mustBe empty
+      val bound = result.value.value
+      bound mustBe "Ordinary A Shares"
+    }
+  }
 }

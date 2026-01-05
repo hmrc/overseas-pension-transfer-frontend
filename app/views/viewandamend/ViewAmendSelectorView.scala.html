@@ -14,19 +14,26 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios, ErrorMessage}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios, ErrorMessage, GovukErrorSummary}
+@import viewmodels.govuk.all._
+@import play.api.data.Forms._
 
 @this(
-  layout: templates.Layout,
-  formHelper: FormWithCSRF,
-  govukButton: GovukButton,
-  govukRadios: GovukRadios
+        layout: templates.Layout,
+        formHelper: FormWithCSRF,
+        govukButton: GovukButton,
+        govukRadios: GovukRadios,
+        govukErrorSummary: GovukErrorSummary
 )
 
-@(qtReference: TransferId, pstr: models.PstrNumber, qtStatus: models.QtStatus, versionNumber: String)(implicit request: Request[_], messages: Messages)
+@(qtReference: TransferId, pstr: models.PstrNumber, qtStatus: models.QtStatus, versionNumber: String, form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = messages("viewAmend.title"), showCYAFooter = true) {
+@layout(pageTitle = title(form, messages("viewAmend.title")), showCYAFooter = true) {
   @formHelper(action = controllers.viewandamend.routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber)) {
+    @if(form.errors.nonEmpty) {
+      @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
+
     @request.flash.get("lockWarning").map { name =>
       <div class="govuk-notification-banner govuk-notification-banner--important"
            role="region"
@@ -54,10 +61,10 @@
           isPageHeading = true
         ))
       )),
-      name = "option",
-      errorMessage = request.flash.get("error").map { _ =>
-        ErrorMessage(content = Text(messages("viewAmend.error.required")))
-      },
+      name = "viewOrAmend",
+      errorMessage = form.error("viewOrAmend").map(
+        err => ErrorMessage(content = Text(messages(err.message)))
+      ),
       items = Seq(
         RadioItem(
           content = Text(messages("viewAmend.radio1")),

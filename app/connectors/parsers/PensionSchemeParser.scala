@@ -16,17 +16,19 @@
 
 package connectors.parsers
 
+import models.authentication.PsaId
 import models.responses.{PensionSchemeError, PensionSchemeErrorResponse, PensionSchemeNotAssociated}
 import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{__, JsError, JsSuccess, Reads}
+import play.api.libs.json.{__, JsError, JsSuccess, Json, Reads}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.DownstreamLogging
 
 object PensionSchemeParser {
   type PensionSchemeDetailsType = Either[PensionSchemeError, PensionSchemeDetails]
+  type AuthorisingPsaIdType     = Either[PensionSchemeError, PsaId]
 
   implicit object GetPensionSchemeDetailsHttpReads extends HttpReads[PensionSchemeDetailsType] with Logging with DownstreamLogging {
 
@@ -55,6 +57,41 @@ object PensionSchemeParser {
               val formatted = formatJsonErrors(errors)
               val err       = logBackendError("[PensionSchemeConnector][getSchemeDetails]", response)
               logger.warn(s"[PensionSchemeConnector][getSchemeDetails] Unable to parse Json as PensionSchemeErrorResponse: $formatted")
+              Left(PensionSchemeErrorResponse(err.message, Some(err.body)))
+          }
+      }
+  }
+
+  implicit object GetAuthorisingPsaIdHttpReads
+      extends HttpReads[AuthorisingPsaIdType]
+      with Logging
+      with DownstreamLogging {
+
+    private val authorisingPsaIdFromApiReads: Reads[PsaId] =
+      (__ \ "pspDetails" \ "authorisingPSAID").read[String].map(PsaId.apply)
+
+    override def read(method: String, url: String, response: HttpResponse): AuthorisingPsaIdType =
+      response.status match {
+        case OK         =>
+          response.json.validate[PsaId](authorisingPsaIdFromApiReads) match {
+            case JsSuccess(value, _) =>
+              Right(value)
+            case JsError(errors)     =>
+              val formatted = formatJsonErrors(errors)
+              logger.warn(s"[PensionSchemeConnector][getAuthorisingPsaId] Unable to parse JSON as AuthorisingPsaId: $formatted")
+              Left(PensionSchemeErrorResponse("Unable to parse JSON as AuthorisingPsaId", Some(formatted)))
+          }
+        case NOT_FOUND  =>
+          Left(new PensionSchemeNotAssociated)
+        case statusCode =>
+          response.json.validate[PensionSchemeErrorResponse] match {
+            case JsSuccess(value, _) =>
+              logger.warn(s"[PensionSchemeConnector][getAuthorisingPsaId] Downstream error $statusCode: ${value.error}")
+              Left(value)
+            case JsError(errors)     =>
+              val formatted = formatJsonErrors(errors)
+              val err       = logBackendError("[PensionSchemeConnector][getAuthorisingPsaId]", response)
+              logger.warn(s"[PensionSchemeConnector][getAuthorisingPsaId] Unable to parse Json as PensionSchemeErrorResponse: $formatted")
               Left(PensionSchemeErrorResponse(err.message, Some(err.body)))
           }
       }

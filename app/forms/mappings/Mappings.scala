@@ -36,14 +36,6 @@ trait Mappings extends Formatters with Constraints {
     ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
 
-  protected def numberOfShares(
-      requiredKey: String = "error.required",
-      invalidKey: String  = "error.invalid",
-      negativeKey: String = "error.negative",
-      args: Seq[String]   = Seq.empty
-    ): FieldMapping[String] =
-    of(numberOfSharesFormatter(requiredKey, invalidKey, negativeKey, args))
-
   protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[String] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
 
@@ -61,10 +53,11 @@ trait Mappings extends Formatters with Constraints {
       allRequiredKey: String,
       twoRequiredKey: String,
       requiredKey: String,
+      realDateKey: String,
       args: Seq[String] = Seq.empty
     )(implicit messages: Messages
     ): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidCharacter, invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+    of(new LocalDateFormatter(invalidCharacter, invalidKey, allRequiredKey, twoRequiredKey, requiredKey, realDateKey, args))
 
   protected def currency(
       requiredKey: String   = "error.required",

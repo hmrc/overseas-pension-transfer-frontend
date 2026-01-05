@@ -20,18 +20,19 @@ import config.FrontendAppConfig
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.audit.JourneyStartedType.ContinueTransfer
 import models.authentication.{PsaUser, PspUser}
-import models.{DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams}
+import models.{AllTransfersItem, DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams, TransferSearch}
 import pages.DashboardPage
 import play.api.Logging
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc._
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, SessionRepository}
 import services.{LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.PaginatedAllTransfersViewModel
+import viewmodels.{PaginatedAllTransfersViewModel, SearchBarViewModel}
 import views.html.DashboardView
+import views.html.components.AppBreadcrumbs
 
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,32 +46,33 @@ class DashboardController @Inject() (
     schemeData: SchemeDataAction,
     transferService: TransferService,
     view: DashboardView,
-    appConfig: FrontendAppConfig,
     userAnswersService: UserAnswersService,
-    lockService: LockService
-  )(implicit ec: ExecutionContext
+    lockService: LockService,
+    appBreadcrumbs: AppBreadcrumbs
+  )(implicit ec: ExecutionContext,
+    appConfig: FrontendAppConfig
   ) extends FrontendBaseController with I18nSupport with Logging {
 
   private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
 
-  def onPageLoad(page: Int): Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(page: Int, search: Option[String]): Action[AnyContent] = identify.async { implicit request =>
     val id          = request.authenticatedUser.internalId
     val lockWarning = request.flash.get("lockWarning") // flash for warning
 
     sessionRepository.clear(id) flatMap { _ =>
       repo.get(id).flatMap {
         case None =>
-          logger.warn(s"[DashboardController][onPageLoad] No dashboard data found for $id")
+          logger.warn(s"[DashboardController][onPageLoad] No dashboard data found this customer")
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
 
         case Some(dashboardData) =>
           dashboardData.get(PensionSchemeDetailsQuery).fold {
-            logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for $id")
+            logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for this customer")
             Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
           } { pensionSchemeDetails =>
             dashboardData.get(TransfersOverviewQuery) match {
               case None            =>
-                renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning)
               case Some(transfers) =>
                 transfers.map {
                   val owner =
@@ -89,10 +91,8 @@ class DashboardController @Inject() (
                         lockService.releaseLock(qtRefefence, owner)
                     }
                 }
-
-                renderDashboard(page, dashboardData, pensionSchemeDetails, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning)
             }
-
           }
       }
     }
@@ -142,10 +142,12 @@ class DashboardController @Inject() (
 
   private def renderDashboard(
       page: Int,
+      search: Option[String],
       dashboardData: DashboardData,
       pensionSchemeDetails: PensionSchemeDetails,
       lockWarning: Option[String]
-    )(implicit request: Request[_]
+    )(implicit request: Request[_],
+      appConfig: FrontendAppConfig
     ): Future[Result] = {
 
     transferService.getAllTransfersData(dashboardData, pensionSchemeDetails.pstrNumber).flatMap {
@@ -155,28 +157,27 @@ class DashboardController @Inject() (
           Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
         },
         updatedData => {
-          val allTransfers  = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-          val expiringItems = repo.findExpiringWithin2Days(allTransfers)
 
-          val viewModel = PaginatedAllTransfersViewModel.build(
-            items       = allTransfers,
-            page        = page,
-            pageSize    = appConfig.transfersPerPage,
-            urlForPage  = pageUrl,
-            lockWarning = lockWarning
-          )
-
-          val srn     = pensionSchemeDetails.srnNumber.value
-          val mpsLink = s"${appConfig.mpsBaseUrl}$srn"
+          val allTransfers      = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
+          val expiringItems     = repo.findExpiringWithin2Days(allTransfers)
+          val filteredTransfers = getFilteredTransfers(allTransfers, search)
+          val transfersVm       = buildTransfersVm(filteredTransfers, page, search, lockWarning)
+          val searchBarVm       = buildSearchBarVm(search)
+          val mpsLink           = appConfig.mpsHomeUrl
+          val pensionSchemeLink = s"${appConfig.pensionSchemeSummaryUrl}${pensionSchemeDetails.srnNumber.value}"
 
           repo.set(updatedData).map { _ =>
             Ok(
               view(
-                schemeName    = pensionSchemeDetails.schemeName,
-                nextPage      = DashboardPage.nextPage(updatedData, None, None).url,
-                vm            = viewModel,
-                expiringItems = expiringItems,
-                mpsLink       = mpsLink
+                pensionSchemeDetails.schemeName,
+                DashboardPage.nextPage(updatedData, None, None).url,
+                transfersVm,
+                searchBarVm,
+                expiringItems,
+                mpsLink,
+                isSearch          = search.exists(_.trim.nonEmpty),
+                breadcrumbs       = appBreadcrumbs(mpsLink, pensionSchemeLink),
+                pensionSchemeLink = pensionSchemeLink
               )
             )
           }
@@ -185,6 +186,49 @@ class DashboardController @Inject() (
     }
   }
 
-  private def pageUrl(n: Int): String =
-    routes.DashboardController.onPageLoad(n).url
+  private def buildTransfersVm(
+      items: Seq[AllTransfersItem],
+      page: Int,
+      search: Option[String],
+      lockWarning: Option[String]
+    )(implicit messages: Messages,
+      appConfig: FrontendAppConfig
+    ): PaginatedAllTransfersViewModel =
+    PaginatedAllTransfersViewModel.build(
+      items       = items,
+      page        = page,
+      pageSize    = appConfig.transfersPerPage,
+      urlForPage  = pageUrl(search),
+      lockWarning = lockWarning
+    )
+
+  private def buildSearchBarVm(
+      search: Option[String]
+    )(implicit messages: Messages
+    ): SearchBarViewModel = {
+
+    val clearUrl: Option[String] =
+      search.map(_ => routes.DashboardController.onPageLoad(page = 1, search = None).url)
+
+    SearchBarViewModel(
+      action   = routes.DashboardController.onPageLoad().url,
+      value    = search.map(_.trim).filter(_.nonEmpty),
+      label    = messages("dashboard.search.heading"),
+      hint     = Some(messages("dashboard.search.hintText")),
+      clearUrl = clearUrl
+    )
+  }
+
+  private def getFilteredTransfers(
+      all: Seq[AllTransfersItem],
+      search: Option[String]
+    ): Seq[AllTransfersItem] =
+    search.filter(_.trim.nonEmpty) match {
+      case Some(term) => TransferSearch.filterTransfers(all, term)
+      case None       => all
+    }
+
+  private def pageUrl(search: Option[String])(p: Int): String =
+    routes.DashboardController.onPageLoad(p, search).url
+
 }

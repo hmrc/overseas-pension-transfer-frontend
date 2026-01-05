@@ -16,22 +16,51 @@
 
 package pages
 
-import models.{CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, UserAnswers}
+import controllers.transferDetails.routes
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
 
-trait MiniJourneyNextPage { self: Page =>
+trait MiniJourneyNextPage extends Page { self: Page =>
 
-  protected def nextPageWith(answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call =
-    nextPageNormalMode(answers)
+  protected def decideNextPage(answers: UserAnswers, mode: Mode): Call
 
-  protected def nextPageCheckModeWith(answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call =
-    nextPageCheckMode(answers)
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
+    decideNextPage(answers, NormalMode)
 
-  final def nextPageWith(mode: Mode, answers: UserAnswers, sessionData: SessionData, nextIndex: Int): Call =
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
+    decideNextPage(answers, CheckMode)
+
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
+    decideNextPage(answers, FinalCheckMode)
+
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
+    decideNextPage(answers, AmendCheckMode)
+}
+
+trait MiniJourneyNextPageWith[A] extends NextPageWith[A] { self: Page =>
+
+  protected def decideNextPage(answers: UserAnswers, ctx: A, mode: Mode, modeCall: Call): Call
+
+  // This can be overriden if necessary with other mode calls
+  protected def getModeCall(mode: Mode, answers: UserAnswers): Call =
     mode match {
-      case NormalMode     => nextPageWith(answers, sessionData, nextIndex)
-      case CheckMode      => nextPageCheckModeWith(answers, sessionData, nextIndex)
-      case FinalCheckMode => this.nextPage(FinalCheckMode, answers)
+      case NormalMode | CheckMode =>
+        controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
+      case FinalCheckMode         =>
+        self.nextPageFinalCheckMode(answers)
+      case AmendCheckMode         =>
+        self.nextPageAmendCheckMode(answers)
     }
 
+  override protected def nextPageWith(answers: UserAnswers, ctx: A): Call =
+    decideNextPage(answers, ctx, NormalMode, getModeCall(NormalMode, answers))
+
+  override protected def nextPageCheckModeWith(answers: UserAnswers, ctx: A): Call =
+    decideNextPage(answers, ctx, CheckMode, getModeCall(CheckMode, answers))
+
+  override protected def nextPageFinalCheckModeWith(answers: UserAnswers, ctx: A): Call =
+    decideNextPage(answers, ctx, FinalCheckMode, getModeCall(FinalCheckMode, answers))
+
+  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, ctx: A): Call =
+    decideNextPage(answers, ctx, AmendCheckMode, getModeCall(AmendCheckMode, answers))
 }

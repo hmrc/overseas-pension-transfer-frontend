@@ -21,8 +21,9 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAct
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -42,7 +43,6 @@ class UnquotedSharesCYAController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     userAnswersService: UserAnswersService,
-    assetThresholdHandler: AssetThresholdHandler,
     val controllerComponents: MessagesControllerComponents,
     view: UnquotedSharesCYAView
   )(implicit ec: ExecutionContext
@@ -50,29 +50,20 @@ class UnquotedSharesCYAController @Inject() (
 
   private val actions = (identify andThen schemeData andThen getData)
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
-    val list = SummaryListViewModel(UnquotedSharesSummary.rows(CheckMode, request.userAnswers, index))
+  def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = actions { implicit request =>
+    val list = SummaryListViewModel(UnquotedSharesSummary.rows(mode, request.userAnswers, index))
 
-    Ok(view(list, index))
+    Ok(view(list, mode, index))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
-    val updatedUserAnswers = assetThresholdHandler.handle(request.userAnswers, TypeOfAsset.UnquotedShares, userSelection = None)
+  def onSubmit(mode: Mode, index: Int): Action[AnyContent] = actions.async { implicit request =>
+    val updatedUserAnswers = AssetThresholdHandler.handle(request.userAnswers, TypeOfAsset.UnquotedShares, userSelection = None)
     for {
       saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
     } yield {
       saved match {
         case Right(Done) =>
-          val unquotedSharesCount = assetThresholdHandler.getAssetCount(updatedUserAnswers, TypeOfAsset.UnquotedShares)
-          if (unquotedSharesCount >= 5) {
-            Redirect(
-              controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController.onPageLoad(mode = NormalMode)
-            )
-          } else {
-            Redirect(
-              AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode)
-            )
-          }
+          Redirect(UnquotedSharesCYAPage(index).nextPage(mode, request.userAnswers))
         case _           =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }

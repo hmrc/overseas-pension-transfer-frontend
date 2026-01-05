@@ -31,8 +31,14 @@ import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails._
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{MoreOtherAssetsDeclarationPage, OtherAssetsDescriptionPage, OtherAssetsValuePage}
-import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
-import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
+import pages.transferDetails.assetsMiniJourneys.property.{MorePropertyDeclarationPage, PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
+import pages.transferDetails.assetsMiniJourneys.quotedShares.{
+  MoreQuotedSharesDeclarationPage,
+  QuotedSharesClassPage,
+  QuotedSharesCompanyNamePage,
+  QuotedSharesNumberPage,
+  QuotedSharesValuePage
+}
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
   MoreUnquotedSharesDeclarationPage,
   UnquotedSharesClassPage,
@@ -390,6 +396,27 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 
         result mustBe Invalid(Chain(
           DataMissingError(WhyTransferIsNotTaxablePage)
+        ))
+      }
+
+      "when Type of asset and CashAmountInTransfer is missing" in {
+        val userAnswers = buildBaseUserAnswers
+          .set(IsTransferCashOnlyPage, false).success.value
+          .remove(TypeOfAssetPage).success.value
+
+        val result = validator.fromUserAnswers(userAnswers)
+
+        result mustBe Invalid(Chain(
+          DataMissingError(TypeOfAssetPage),
+          DataMissingError(CashAmountInTransferPage),
+          DataMissingError(UnquotedSharesQuery),
+          DataMissingError(MoreUnquotedSharesDeclarationPage),
+          DataMissingError(QuotedSharesQuery),
+          DataMissingError(MoreQuotedSharesDeclarationPage),
+          DataMissingError(PropertyQuery),
+          DataMissingError(MorePropertyDeclarationPage),
+          DataMissingError(OtherAssetsQuery),
+          DataMissingError(MoreOtherAssetsDeclarationPage)
         ))
       }
 

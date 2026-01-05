@@ -37,7 +37,8 @@ class MemberDateOfLeavingUKFormProvider @Inject() extends Mappings {
         invalidKey       = "common.dateInput.error.invalid",
         requiredKey      = "common.dateInput.error.required",
         twoRequiredKey   = "common.dateInput.error.required.two",
-        allRequiredKey   = "memberDateOfLeavingUK.error.required.all"
+        allRequiredKey   = "memberDateOfLeavingUK.error.required.all",
+        realDateKey      = "memberDateOfLeavingUK.error.real.date"
       )
         .verifying(
           maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateFormatter)),

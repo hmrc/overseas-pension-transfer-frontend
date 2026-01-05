@@ -55,19 +55,19 @@ object QropsDetailsValidator extends Validator[QropsDetails] {
     }
 
   private def validateQropsCountry(answers: UserAnswers): ValidationResult[Option[Country]] =
-    (answers.get(QROPSCountryPage), answers.get(QROPSOtherCountryPage)) match {
-      case (Some(country), None) => Some(country).validNec
-      case (None, Some(_))       => None.validNec
-      case (Some(_), Some(_))    => GenericError("Cannot have valid payload with selected country and other country").invalidNec
-      case (None, None)          => DataMissingError(QROPSCountryPage).invalidNec
+    answers.get(QROPSCountryPage) match {
+      case Some(country) => Some(country).validNec
+      case None          => DataMissingError(QROPSCountryPage).invalidNec
     }
 
   private def validateQropsOtherCountry(answers: UserAnswers): ValidationResult[Option[String]] =
     (answers.get(QROPSOtherCountryPage), answers.get(QROPSCountryPage)) match {
-      case (Some(oCountry), None) => Some(oCountry).validNec
-      case (None, Some(_))        => None.validNec
-      case (Some(_), Some(_))     => GenericError("Cannot have valid payload with other country and selected country").invalidNec
-      case (None, None)           => DataMissingError(QROPSOtherCountryPage).invalidNec
+      case (Some(oCountry), Some(Country("ZZ", "Other"))) => Some(oCountry).validNec
+      case (None, Some(Country("ZZ", "Other")))           => DataMissingError(QROPSOtherCountryPage).invalidNec
+      case (Some(_), None)                                => GenericError("Cannot have a value for other Country where value of QROPS Country is None").invalidNec
+      case (None, Some(_))                                => None.validNec
+      case (Some(_), Some(_))                             => GenericError(s"Cannot have valid payload value of QROPS Country is not 'Other'").invalidNec
+      case (None, None)                                   => DataMissingError(QROPSOtherCountryPage).invalidNec
     }
 
   val notStarted: Chain[DataMissingError] = Chain(

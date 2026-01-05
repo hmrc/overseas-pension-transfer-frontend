@@ -45,7 +45,7 @@ trait ErrorHandling extends Logging {
       .map(hd => (hd.controller, hd.method))
       .getOrElse(("UnknownController", "UnknownMethod"))
 
-    logger.warn(s"[$controller.$method] address lookup failed for postcode: $postcode")
+    logger.warn(s"[$controller.$method] address lookup failed")
 
     val enterManuallyUrl = MembersLastUkAddressLookupPage.recoveryModeReturnUrl
     val dashboardUrl     = controllers.routes.DashboardController.onPageLoad().url

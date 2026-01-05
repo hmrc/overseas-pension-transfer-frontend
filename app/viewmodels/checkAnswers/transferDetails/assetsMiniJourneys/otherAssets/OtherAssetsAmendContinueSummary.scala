@@ -20,9 +20,11 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
 import models.{Mode, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
 import play.api.i18n.Messages
 import queries.assets.OtherAssetsQuery
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AppUtils
 import viewmodels.govuk.summarylist._
@@ -30,12 +32,11 @@ import viewmodels.implicits._
 
 object OtherAssetsAmendContinueSummary extends AppUtils {
 
-  private val thresholdHandler = new AssetThresholdHandler()
-  private val threshold        = 5
+  private val threshold = 5
 
   def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(OtherAssetsQuery)
-    val count        = thresholdHandler.getAssetCount(userAnswers, TypeOfAsset.Other)
+    val count        = AssetThresholdHandler.getAssetCount(userAnswers, TypeOfAsset.Other)
     val valueText    = messages("otherAssetsAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
 
     maybeEntries match {
@@ -68,13 +69,29 @@ object OtherAssetsAmendContinueSummary extends AppUtils {
     }
   }
 
-  def rows(answers: UserAnswers): Seq[ListItem] = {
+  def moreThanFiveOtherAssetsRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+    userAnswers.get(MoreOtherAssetsDeclarationPage).filter(identity).map { _ =>
+      SummaryListRowViewModel(
+        key     = Key(Text(messages("moreThanFive.otherAssets.checkYourAnswersLabel"))),
+        value   = ValueViewModel(HtmlContent(messages("site.yes"))),
+        actions = if (showChangeLinks) {
+          Seq(ActionItemViewModel(
+            content = Text(messages("site.change")),
+            href    = controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController
+              .onPageLoad(mode).url
+          ).withVisuallyHiddenText(messages("moreThanFive.otherAssets.change.hidden")))
+        } else Nil
+      )
+    }
+  }
+
+  def rows(mode: Mode, answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(OtherAssetsQuery)
     maybeEntries.getOrElse(Nil).zipWithIndex.map {
       case (entry, index) =>
         ListItem(
           name      = entry.assetDescription,
-          changeUrl = AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(index).url,
+          changeUrl = AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(mode, index).url,
           removeUrl = AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(index).url
         )
     }

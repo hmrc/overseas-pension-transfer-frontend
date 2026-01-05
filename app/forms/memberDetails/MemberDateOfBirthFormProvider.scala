@@ -37,7 +37,8 @@ class MemberDateOfBirthFormProvider @Inject() extends Mappings {
         invalidKey       = "common.dateInput.error.invalid",
         allRequiredKey   = "memberDateOfBirth.error.required.all",
         twoRequiredKey   = "common.dateInput.error.required.two",
-        requiredKey      = "common.dateInput.error.required"
+        requiredKey      = "common.dateInput.error.required",
+        realDateKey      = "memberDateOfBirth.error.real.date"
       ).verifying(
         maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateFormatter)),
         minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateFormatter))

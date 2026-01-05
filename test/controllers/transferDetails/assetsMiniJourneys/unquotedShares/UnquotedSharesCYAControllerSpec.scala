@@ -40,7 +40,7 @@ import scala.concurrent.Future
 class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val unquotedSharesCyaRoute =
-    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesCYAController.onPageLoad(0).url
+    controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.UnquotedSharesCYAController.onPageLoad(NormalMode, 0).url
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]
@@ -66,11 +66,11 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val view                    = app.injector.instanceOf[UnquotedSharesCYAView]
         implicit val msgs: Messages = messages(app)
 
-        val list = UnquotedSharesSummary.rows(CheckMode, ua, 0)
+        val list = UnquotedSharesSummary.rows(NormalMode, ua, 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(SummaryList(rows = list), 0)(fakeDisplayRequest(request, ua), msgs).toString
+          view(SummaryList(rows = list), NormalMode, 0)(fakeDisplayRequest(request, ua), msgs).toString
       }
     }
 

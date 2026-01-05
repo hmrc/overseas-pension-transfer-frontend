@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -29,11 +29,31 @@ class OtherAssetsStartPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
-    "in Normal Mode" - {
-
+    "in NormalMode" - {
       "must go to the Next page" in {
         OtherAssetsStartPage.nextPage(NormalMode, emptyAnswers) mustEqual
           AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index)
+      }
+    }
+
+    "in CheckMode" - {
+      "must go to the Next page" in {
+        OtherAssetsStartPage.nextPage(CheckMode, emptyAnswers) mustEqual
+          AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(CheckMode, index)
+      }
+    }
+
+    "in FinalCheckMode" - {
+      "must go to the Next page" in {
+        OtherAssetsStartPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+          AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(FinalCheckMode, index)
+      }
+    }
+
+    "in AmendCheckMode" - {
+      "must go to the Next page" in {
+        OtherAssetsStartPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+          AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(AmendCheckMode, index)
       }
     }
   }

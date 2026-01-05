@@ -17,7 +17,7 @@
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 @import models.requests.DisplayRequest
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukTextarea}
 @import viewmodels.LabelSize.Large
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
@@ -29,7 +29,7 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
+        govukTextarea: GovukTextarea,
         govukButton: GovukButton,
         qtNumber: QTNumber
 )
@@ -46,14 +46,16 @@
 
         @qtNumber()
 
-        @govukInput(
-            InputViewModel(
+        @govukTextarea(
+            TextareaViewModel(
                 field = form("value"),
                 label = LabelViewModel(Text(messages("propertyDescription.heading")))
                     .withCssClass("govuk-!-margin-bottom-6")
                     .asPageHeading(size = Large)
             )
             .withHint(HintViewModel(messages("propertyDescription.hint")))
+            .withRows(3)
+            .withCssClass("govuk-!-width-two-thirds")
         )
 
         @govukButton(

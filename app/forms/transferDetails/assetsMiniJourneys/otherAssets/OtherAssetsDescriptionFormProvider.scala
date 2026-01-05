@@ -28,6 +28,7 @@ class OtherAssetsDescriptionFormProvider @Inject() extends Mappings with Regex {
   def apply(): Form[String] =
     Form(
       "value" -> text("assetValueDescription.error.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(maxLen, "assetValueDescription.error.length"))
         .verifying(regexp(descriptionRegex, "assetValueDescription.error.pattern"))
     )

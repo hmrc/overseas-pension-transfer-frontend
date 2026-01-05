@@ -28,9 +28,11 @@ class SchemeManagerOrgIndividualNameFormProvider @Inject() extends Mappings with
   def apply(): Form[PersonName] = Form(
     mapping(
       "orgIndFirstName" -> text("orgIndividualName.error.firstName.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(35, "orgIndividualName.error.firstName.length"))
         .verifying(regexp(nameRegex, "orgIndividualName.error.firstName.pattern")),
       "orgIndLastName"  -> text("orgIndividualName.error.lastName.required")
+        .transform[String](input => input.trim, identity)
         .verifying(maxLength(35, "orgIndividualName.error.lastName.length"))
         .verifying(regexp(nameRegex, "orgIndividualName.error.lastName.pattern"))
     )(PersonName.apply)(x => Some((x.firstName, x.lastName)))

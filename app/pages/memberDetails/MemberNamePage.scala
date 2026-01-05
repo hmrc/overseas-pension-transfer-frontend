@@ -28,8 +28,16 @@ case object MemberNamePage extends QuestionPage[PersonName] {
 
   override def toString: String = "name"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    routes.MemberNinoController.onPageLoad(NormalMode)
+  override protected def nextPageNormalMode(answers: UserAnswers): Call = {
+    answers.get(MemberNinoPage) match {
+      case Some(_) => routes.MemberNinoController.onPageLoad(NormalMode)
+      case None    => answers.get(MemberDoesNotHaveNinoPage) match {
+          case Some(_) => routes.MemberDoesNotHaveNinoController.onPageLoad(NormalMode)
+          case None    => routes.MemberNinoController.onPageLoad(NormalMode)
+        }
+    }
+
+  }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     routes.MemberDetailsCYAController.onPageLoad()

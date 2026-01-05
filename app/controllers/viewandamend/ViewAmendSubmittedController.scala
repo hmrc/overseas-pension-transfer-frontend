@@ -182,7 +182,7 @@ class ViewAmendSubmittedController @Inject() (
       SummaryListViewModel(SchemeManagerDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
 
     val memberName =
-      sessionData.get(MemberNamePage).map(_.fullName).getOrElse("")
+      userAnswers.get(MemberNamePage).map(_.fullName).getOrElse("")
 
     view(
       mode = AmendCheckMode,

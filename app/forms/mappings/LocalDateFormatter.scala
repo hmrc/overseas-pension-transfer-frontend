@@ -29,6 +29,7 @@ private[mappings] class LocalDateFormatter(
     allRequiredKey: String,
     twoRequiredKey: String,
     requiredKey: String,
+    realDateKey: String,
     args: Seq[String] = Seq.empty
   )(implicit messages: Messages
   ) extends Formatter[LocalDate] with Formatters {
@@ -40,7 +41,7 @@ private[mappings] class LocalDateFormatter(
       case Success(date) =>
         Right(date)
       case Failure(_)    =>
-        Left(Seq(FormError(key, invalidKey, args)))
+        Left(Seq(FormError(key, realDateKey, Seq("day") ++ args)))
     }
 
   private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
@@ -52,7 +53,7 @@ private[mappings] class LocalDateFormatter(
       args
     )
 
-    val month = new MonthFormatter(invalidKey, args)
+    val month = new MonthFormatter(invalidKey, realDateKey, args)
 
     for {
       day   <- int.bind(s"$key.day", data)
@@ -64,9 +65,11 @@ private[mappings] class LocalDateFormatter(
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
-    val fields = fieldKeys.map {
-      field =>
-        field -> data.get(s"$key.$field").filter(_.nonEmpty)
+    val cleanedData: Map[String, String] =
+      data.map { case (k, v) => k -> v.replaceAll("\\s+", "") }
+
+    val fields = fieldKeys.map { field =>
+      field -> cleanedData.get(s"$key.$field").filter(_.nonEmpty)
     }.toMap
 
     lazy val missingFields = fields
@@ -77,8 +80,8 @@ private[mappings] class LocalDateFormatter(
 
     fields.count(_._2.isDefined) match {
       case 3 =>
-        formatDate(key, data).left.map {
-          _.map(_.copy(key = key, args = args))
+        formatDate(key, cleanedData).left.map {
+          _.map(_.copy(key = key))
         }
 
       case 2 =>
@@ -98,7 +101,7 @@ private[mappings] class LocalDateFormatter(
     )
 }
 
-private class MonthFormatter(invalidKey: String, args: Seq[String] = Seq.empty) extends Formatter[Int] with Formatters {
+private class MonthFormatter(invalidKey: String, realDateKey: String, args: Seq[String] = Seq.empty) extends Formatter[Int] with Formatters {
 
   private val baseFormatter = stringFormatter(invalidKey, args)
 
@@ -113,7 +116,7 @@ private class MonthFormatter(invalidKey: String, args: Seq[String] = Seq.empty) 
           months
             .find(m => m.getValue.toString == str.replaceAll("^0+", "") || m.toString == str.toUpperCase || m.toString.take(3) == str.toUpperCase)
             .map(x => Right(x.getValue))
-            .getOrElse(Left(List(FormError(key, invalidKey, args))))
+            .getOrElse(Left(List(FormError(key, realDateKey, Seq("month") ++ args))))
       }
   }
 

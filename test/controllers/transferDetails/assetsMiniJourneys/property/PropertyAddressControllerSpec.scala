@@ -20,7 +20,7 @@ import base.AddressBase
 import controllers.routes.JourneyRecoveryController
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormProvider}
-import models.NormalMode
+import models.{AmendCheckMode, NormalMode}
 import models.address._
 import models.requests.DisplayRequest
 import org.mockito.ArgumentMatchers.any
@@ -28,6 +28,7 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -52,7 +53,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
     Country("FR", "France")
   )
 
-  private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
+  implicit private val messages: Messages = stubMessages()
+  private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
 
   private val mockCountryService = mock[CountryService]
 
@@ -147,6 +149,35 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           PropertyAddressPage(index).nextPage(NormalMode, emptyUserAnswers).url
+      }
+    }
+
+    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(AmendCheckMode, index).url)
+            .withFormUrlEncodedBody(
+              "addressLine1" -> "value 1",
+              "addressLine2" -> "value 2",
+              "countryCode"  -> "GB"
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual PropertyAddressPage(index).nextPage(AmendCheckMode, emptyUserAnswers).url
       }
     }
 

@@ -32,10 +32,10 @@
 
 @(list: SummaryList)(implicit request: DisplayRequest[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title")), showCYAFooter = true) {
+@layout(pageTitle = titleNoForm(messages("checkYourAnswers.QROPSSchemeManagerDetails.title")), showCYAFooter = true) {
 
     @qtNumber()
-    @heading(messages("checkYourAnswers.heading"), Some(messages("common.qropsSchemeManagerDetails.heading")))
+    @heading(messages("checkYourAnswers.QROPSSchemeManagerDetails.heading"))
 
     @govukSummaryList(list)
 

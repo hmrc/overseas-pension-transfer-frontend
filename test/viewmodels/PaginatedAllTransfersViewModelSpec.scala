@@ -17,6 +17,7 @@
 package viewmodels
 
 import base.SpecBase
+import config.{FrontendAppConfig, TestAppConfig}
 import models.AllTransfersItem
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -30,7 +31,8 @@ import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
 class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
-  implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
+  implicit val messages: Messages               = stubMessagesApi().preferred(Seq.empty)
+  implicit private val appConfig: TestAppConfig = new TestAppConfig
 
   private def mkItem(idx: Int, when: Instant): AllTransfersItem =
     AllTransfersItem(
@@ -206,6 +208,200 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       )
 
       vm.lockWarning mustBe lock
+    }
+  }
+
+  "Smart Pagination" - {
+
+    "must show all pages without ellipsis when total pages is 5 or less" in {
+      val items    = (1 to 50).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
+      val pageSize = 10
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items      = items,
+        page       = 3,
+        pageSize   = pageSize,
+        urlForPage = urlFor
+      )
+
+      vm.pagination.isDefined mustBe true
+      val pagers = vm.pagination.get.items.get
+
+      pagers.size mustBe 5
+      pagers.map(_.number) mustBe Seq(Some("1"), Some("2"), Some("3"), Some("4"), Some("5"))
+      pagers.forall(_.ellipsis.isEmpty) mustBe true
+    }
+
+    "must show ellipsis at end when on page 1 of many" in {
+      val items    = (1 to 100).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
+      val pageSize = 10
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items      = items,
+        page       = 1,
+        pageSize   = pageSize,
+        urlForPage = urlFor
+      )
+
+      vm.pagination.isDefined mustBe true
+      val pagers = vm.pagination.get.items.get
+
+      pagers.size mustBe 4
+      pagers(0).number mustBe Some("1")
+      pagers(0).current mustBe Some(true)
+      pagers(1).number mustBe Some("2")
+      pagers(2).ellipsis mustBe Some(true)
+      pagers(2).number mustBe None
+      pagers(3).number mustBe Some("10")
+    }
+
+    "must show ellipsis on both sides when in middle pages" in {
+      val items    = (1 to 100).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
+      val pageSize = 10 // 10 pages
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items      = items,
+        page       = 5,
+        pageSize   = pageSize,
+        urlForPage = urlFor
+      )
+
+      val pagers = vm.pagination.get.items.get
+
+      pagers.size mustBe 7
+      pagers(0).number mustBe Some("1")
+      pagers(1).ellipsis mustBe Some(true)
+      pagers(2).number mustBe Some("4")
+      pagers(3).number mustBe Some("5")
+      pagers(3).current mustBe Some(true)
+      pagers(4).number mustBe Some("6")
+      pagers(5).ellipsis mustBe Some(true)
+      pagers(6).number mustBe Some("10")
+    }
+
+    "must show ellipsis at start when on last page" in {
+      val items    = (1 to 100).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
+      val pageSize = 10
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items      = items,
+        page       = 10,
+        pageSize   = pageSize,
+        urlForPage = urlFor
+      )
+
+      val pagers = vm.pagination.get.items.get
+
+      pagers.size mustBe 4
+      pagers(0).number mustBe Some("1")
+      pagers(1).ellipsis mustBe Some(true)
+      pagers(2).number mustBe Some("9")
+      pagers(3).number mustBe Some("10")
+      pagers(3).current mustBe Some(true)
+    }
+
+    "must not show ellipsis when pages are consecutive" in {
+      val items    = (1 to 60).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
+      val pageSize = 10
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items      = items,
+        page       = 3,
+        pageSize   = pageSize,
+        urlForPage = urlFor
+      )
+
+      val pagers = vm.pagination.get.items.get
+
+      pagers.size mustBe 6
+      pagers.map(_.number) mustBe Seq(Some("1"), Some("2"), Some("3"), Some("4"), None, Some("6"))
+    }
+
+    "must ensure ellipsis items have empty href and no number" in {
+      val items    = (1 to 100).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
+      val pageSize = 10
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items      = items,
+        page       = 5,
+        pageSize   = pageSize,
+        urlForPage = urlFor
+      )
+
+      val pagers        = vm.pagination.get.items.get
+      val ellipsisItems = pagers.filter(_.ellipsis.contains(true))
+
+      ellipsisItems.size mustBe 2
+      ellipsisItems.foreach { item =>
+        item.href mustBe ""
+        item.number mustBe None
+        item.current mustBe None
+      }
+    }
+
+    "must ensure only one page is marked as current" in {
+      val items    = (1 to 100).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
+      val pageSize = 10
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items      = items,
+        page       = 5,
+        pageSize   = pageSize,
+        urlForPage = urlFor
+      )
+
+      val pagers       = vm.pagination.get.items.get
+      val currentPages = pagers.filter(_.current.contains(true))
+
+      currentPages.size mustBe 1
+      currentPages.head.number mustBe Some("5")
+    }
+
+    "must generate correct hrefs for all page items" in {
+      val items    = (1 to 100).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
+      val pageSize = 10
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items      = items,
+        page       = 5,
+        pageSize   = pageSize,
+        urlForPage = urlFor
+      )
+
+      val pagers    = vm.pagination.get.items.get
+      val pageItems = pagers.filter(_.number.isDefined)
+
+      pageItems.map(_.href) mustBe Seq(
+        "/dash?page=1",
+        "/dash?page=4",
+        "/dash?page=5",
+        "/dash?page=6",
+        "/dash?page=10"
+      )
+    }
+
+    "must handle large page numbers correctly" in {
+      val items    = (1 to 500).map(i => mkItem(i, utc(2025, 9, 24, 10, 15)))
+      val pageSize = 10
+
+      val vm = PaginatedAllTransfersViewModel.build(
+        items      = items,
+        page       = 25,
+        pageSize   = pageSize,
+        urlForPage = urlFor
+      )
+
+      val pagers = vm.pagination.get.items.get
+
+      pagers.size mustBe 7
+      pagers(0).number mustBe Some("1")
+      pagers(1).ellipsis mustBe Some(true)
+      pagers(2).number mustBe Some("24")
+      pagers(3).number mustBe Some("25")
+      pagers(3).current mustBe Some(true)
+      pagers(4).number mustBe Some("26")
+      pagers(5).ellipsis mustBe Some(true)
+      pagers(6).number mustBe Some("50")
     }
   }
 }

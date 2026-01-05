@@ -1,0 +1,125 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Hint
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukRadios}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.button.Button
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.AddToAList
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ItemType
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.listwithactions.{ListWithActions, ListWithActionsItem, ListWithActionsAction}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcListWithActions
+
+@this(
+        govukRadios: GovukRadios,
+        govukButton: GovukButton,
+        formWithCsrf: PlayFrontendFormWithCSRF,
+        hmrcListWithActions: HmrcListWithActions
+)
+
+@(params: AddToAList, errorMessage: Option[ErrorMessage])(implicit messages: Messages, request: RequestHeader)
+@import params._
+
+@defining(if(params.language == Cy || messages.lang.code == "cy") Cy else En) { language =>
+
+    @defining(
+        itemType.getOrElse(language match {
+            case Cy => ItemType(
+                singular = "eitem",
+                plural = "o eitemau")
+            case _ => ItemType(
+                singular = "item",
+                plural = "items"
+            )
+        })
+    ) { itemType =>
+
+        <h1 class="govuk-heading-xl">@(language, itemList.length) match {
+            case (Cy, 0) => {Nid ydych wedi ychwanegu unrhyw eitemau }
+            case (_, 0) => {You have not added any items }
+            case (Cy, 1) => {Rydych wedi ychwanegu 1 @itemType.singular}
+            case (_, 1) => {You have added 1 @itemType.singular}
+            case (Cy, n) => {Rydych wedi ychwanegu @n @itemType.plural}
+            case (_, n) => {You have added @n @itemType.plural}
+        }</h1>
+
+        <div class="govuk-form-group">
+        @hmrcListWithActions(ListWithActions(items = itemList map (item => ListWithActionsItem(
+            name = Text(item.name),
+            actions = Seq(
+                ListWithActionsAction(
+                    content = Text(if (language == Cy) "Newid" else "Change"),
+                    visuallyHiddenText = Some(if (language == Cy) s"Newid ${item.name}" else s"Change ${item.name}"),
+                    href= item.changeUrl
+                ),
+                ListWithActionsAction(
+                    content = Text(if (language == Cy) "Dileu" else "Remove"),
+                    visuallyHiddenText = Some(if (language == Cy) s"Dileu’r ${item.name} o’r rhestr" else s"Remove ${item.name} from the list"),
+                    href= item.removeUrl
+                )
+            ))),
+            classes = s"hmrc-list-with-actions--${itemSize.suffix}"
+        ))
+        </div>
+    @defining(params.formAction.getOrElse("")) { action =>
+        @formWithCsrf(action = Call("post", action)) {
+            @govukRadios(
+                Radios(
+                fieldset = Some(Fieldset(
+                    legend = Some(Legend(
+                        content = Text(language match {
+                            case Cy => s"Oes angen i chi ychwanegu ${itemType.singular} arall?"
+                            case _ => s"Do you need to add another ${itemType.singular}?"
+                        }),
+                        classes = "govuk-fieldset__legend govuk-fieldset__legend--m",
+                        isPageHeading = false
+                    ))
+                )),
+                hint = Some(Hint(content = Text(hintText.getOrElse("")))),
+                errorMessage = errorMessage,
+                idPrefix = Some("add-another"),
+                name = "add-another",
+                items = Seq(
+                    RadioItem(
+                        content = Text(language match {
+                            case Cy => "Iawn"
+                            case _ => "Yes"
+                        }),
+                        value = Some("Yes")
+                    ),
+                    RadioItem(
+                        content = Text(language match {
+                            case Cy => "Na"
+                            case _ => "No"
+                        }),
+                        value = Some("No")
+                    )
+                ),
+                classes = "govuk-radios--inline"
+            ))
+
+            @govukButton(Button(content = Text(language match {
+                case Cy => "Yn eich blaen"
+                case _ => "Continue"
+            })))
+        }
+    }
+    }
+}

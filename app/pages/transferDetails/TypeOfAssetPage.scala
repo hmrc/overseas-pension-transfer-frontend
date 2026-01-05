@@ -18,22 +18,20 @@ package pages.transferDetails
 
 import controllers.transferDetails.routes
 import models.assets.TypeOfAsset
-import models.{CheckMode, Mode, TaskCategory, UserAnswers}
-import pages.QuestionPage
+import models.{Mode, SessionData, TaskCategory, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
+import pages.{MiniJourneyNextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object TypeOfAssetPage extends QuestionPage[Seq[TypeOfAsset]] {
+case object TypeOfAssetPage extends QuestionPage[Seq[TypeOfAsset]] with MiniJourneyNextPageWith[SessionData] with NextAssetMiniJourney {
 
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ toString
 
   override def toString: String = "typeOfAsset"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call =
-    controllers.routes.DashboardController.onPageLoad()
-
-  override protected def nextPageCheckMode(answers: UserAnswers): Call =
-    routes.TransferDetailsCYAController.onPageLoad()
+  override def decideNextPage(answers: UserAnswers, sessionData: SessionData, mode: Mode, modeCall: Call): Call =
+    getNextAsset(sessionData, mode, modeCall)
 
   final def changeLink(mode: Mode): Call =
     routes.TypeOfAssetController.onPageLoad(mode)

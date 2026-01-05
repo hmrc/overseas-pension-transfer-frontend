@@ -40,7 +40,6 @@ class OtherAssetsConfirmRemovalController @Inject() (
     userAnswersService: UserAnswersService,
     val controllerComponents: MessagesControllerComponents,
     miniJourney: OtherAssetsMiniJourney.type,
-    assetThresholdHandler: AssetThresholdHandler,
     view: OtherAssetsConfirmRemovalView,
     moreAssetCompletionService: MoreAssetCompletionService
   )(implicit ec: ExecutionContext
@@ -58,7 +57,7 @@ class OtherAssetsConfirmRemovalController @Inject() (
       formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
       confirmRemoval =>
         if (!confirmRemoval) {
-          val otherAssetsCount = assetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.Other)
+          val otherAssetsCount = AssetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.Other)
           val redirectTarget   =
             if (otherAssetsCount >= 5) {
 

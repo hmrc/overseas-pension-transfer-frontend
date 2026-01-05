@@ -39,7 +39,6 @@
         appFooter: AppFooter,
         autocompleteCss: HmrcAccessibleAutocompleteCss,
         autocompleteJavascript: HmrcAccessibleAutocompleteJavascript,
-        appBreadcrumbs: AppBreadcrumbs,
         twoThirdsLayout: TwoThirdsMainContent,
         fullWidthMainContent: fullWidthMainContentLayout
 )
@@ -55,29 +54,20 @@
         showTasklistFooter: Boolean = false,
         showDiscardAmendmentFooter: Boolean = false,
         fullWidth: Boolean = false,
-        showBreadcrumbs: Boolean = false)(contentBlock: Html)(implicit requestHeader: RequestHeader, messages: Messages)
+        showBreadcrumbs: Option[Html] = None)(contentBlock: Html)(implicit requestHeader: RequestHeader, messages: Messages)
 
 @head = {
     @autocompleteCss()
-    <!--
-        The below styling is here to override the default behaviour of the country picker js component.
-        Hopefully this component will be updated soon, when it is please remove this styling and use
-        govuk-!-width-one-half directly on the InputCountry component
-    -->
-    <style type="text/css">
-            .autocomplete__wrapper { width: 100% }
-            @@media (min-width: 40.0625em) {
-                .autocomplete__wrapper { width: 50% };
-            }
 
-    </style>
+    <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' rel="stylesheet" type="text/css" media="screen">
+
     @if(timeout) {
         @hmrcTimeoutDialog(TimeoutDialog(
             timeout             = Some(appConfig.timeout),
             countdown           = Some(appConfig.countdown),
             keepAliveUrl        = Some(routes.KeepAliveController.keepAlive().url),
             keepAliveButtonText = Some(messages("timeout.keepAlive")),
-            signOutUrl          = Some(controllers.auth.routes.AuthController.signOut().url),
+            signOutUrl          = Some(controllers.auth.routes.AuthController.signOutNoSurvey().url),
             signOutButtonText   = Some(messages("timeout.signOut")),
             title               = Some(messages("timeout.title")),
             message             = Some(messages("timeout.message")),
@@ -103,7 +93,7 @@
     pageTitle = Some(pageTitle),
     templateOverrides = TemplateOverrides(
         additionalHeadBlock = Some(head),
-        beforeContentBlock = if(showBreadcrumbs) Some(appBreadcrumbs()) else None,
+        beforeContentBlock = showBreadcrumbs,
         additionalScriptsBlock = Some(autocompleteJavascript()),
         mainContentLayout = if(fullWidth) Some(fullWidthMainContent(_)) else Some(twoThirdsLayout(_))
     ),

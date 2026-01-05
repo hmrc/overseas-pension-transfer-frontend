@@ -18,20 +18,28 @@
 @import viewmodels.PaginatedAllTransfersViewModel
 @import views.ViewUtils.{titleNoForm, titleWithPagination}
 @import models.{AllTransfersItem, QtStatus}
+@import viewmodels.SearchBarViewModel
+@import views.html.components.SearchBar
+@import config.FrontendAppConfig
 
 @this(
         layout: templates.Layout,
         govukButton: GovukButton,
         govukTable: GovukTable,
-        govukPagination: GovukPagination
+        govukPagination: GovukPagination,
+        searchBar: SearchBar
 )
 
 @(schemeName: String,
   nextPage: String,
-  vm: PaginatedAllTransfersViewModel,
+  allTransfersViewModel: PaginatedAllTransfersViewModel,
+  searchBarViewModel: SearchBarViewModel,
   expiringItems: Seq[AllTransfersItem] = Seq.empty,
-  mpsLink: String
-)(implicit request: Request[_], messages: Messages)
+  mpsLink: String,
+  isSearch: Boolean,
+  pensionSchemeLink: String,
+  breadcrumbs: Html
+)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @messageFor(item: AllTransfersItem) = @{
     val firstName = item.memberFirstName.getOrElse("").trim
@@ -49,23 +57,19 @@ item.qtStatus match {
   }
 }
 
-@pageSuffix: Option[String] = @{
-    if (vm.totalPages > 1) {
-      Some(messages("dashboard.allTransfers.page", vm.currentPage.toString, vm.totalPages.toString))
-    } else {
-      None
-    }
+@pagePrefix: String = @{
+    messages("dashboard.allTransfers.page", allTransfersViewModel.currentPage.toString, allTransfersViewModel.totalPages.toString)
 }
 
 @layout(
-  pageTitle       = titleWithPagination(messages("dashboard.title"), pageSuffix),
+  pageTitle       = titleWithPagination(messages("dashboard.title"), pagePrefix),
   showBackLink    = false,
   showPageFooter  = false,
-  showBreadcrumbs = true,
-  fullWidth       = true
+  fullWidth       = true,
+  showBreadcrumbs = Some(breadcrumbs)
 ) {
 
-  @vm.lockWarning.map { name =>
+  @allTransfersViewModel.lockWarning.map { name =>
       <div class="govuk-notification-banner govuk-notification-banner--important"
            role="region"
            aria-labelledby="govuk-notification-banner-title"
@@ -110,7 +114,7 @@ item.qtStatus match {
     </div>
   }
 
-    <span class="govuk-caption-l">@schemeName</span>
+    <h2 class="govuk-caption-l">@schemeName</h2>
     <h1 class="govuk-heading-l">@messages("dashboard.heading")</h1>
 
     <p class="govuk-body">
@@ -119,16 +123,31 @@ item.qtStatus match {
 
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-    <h2 class="govuk-heading-m govuk-!-padding-bottom-2">@messages("dashboard.allTransfers.heading")</h2>
+    @if(appConfig.allowDashboardSearch){
+        @searchBar(searchBarViewModel)
+    }
 
-    @if(vm.table.rows.nonEmpty) {
-        @govukTable(vm.table)
-        @vm.pagination.map(govukPagination(_))
+    @if(allTransfersViewModel.table.rows.nonEmpty) {
+        <div role="region" aria-labelledby="Caption01" tabindex="0">
+            @govukTable(allTransfersViewModel.table)
+        </div>
+        @allTransfersViewModel.pagination.map(govukPagination(_))
     } else {
-        <p class="govuk-body">@messages("dashboard.allTransfers.empty")</p>
+        @if(isSearch) {
+            <h2 class="govuk-heading-m">
+                @messages("dashboard.search.noResults.heading")
+            </h2>
+            <p class="govuk-body">
+                @messages("dashboard.search.noResults.paragraph")
+            </p>
+        } else {
+            <p class="govuk-body">
+            @messages("dashboard.allTransfers.empty")
+            </p>
+        }
     }
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-    <p><a class="govuk-link govuk-body" href="@mpsLink">@messages("dashboard.pensionSchemeLink.text", schemeName)</a></p>
+    <p><a class="govuk-link govuk-body" href="@pensionSchemeLink">@messages("dashboard.pensionSchemeLink.text", schemeName)</a></p>
 }
