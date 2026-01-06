@@ -34,16 +34,16 @@ object TransferBackendStub extends SpecBase{
 
   // ----- get all -----
 
-  def getAllTransfersOk(pstr: String): Unit =
+  def getAllTransfersOk(pstr: String, nino: String): Unit =
     stubFor(
       get(urlEqualTo(allTransfersUrl(pstr)))
-        .willReturn(okJson(successJson(pstr)))
+        .willReturn(okJson(successJson(pstr, nino)))
     )
 
-  def getAllTransfersOkWithInvalidItems(pstr: String): Unit =
+  def getAllTransfersOkWithInvalidItems(pstr: String, nino: String): Unit =
     stubFor(
       get(urlEqualTo(allTransfersUrl(pstr)))
-        .willReturn(okJson(successJsonWithInvalidItem(pstr)))
+        .willReturn(okJson(successJsonWithInvalidItem(pstr, nino)))
     )
 
   def getAllTransfersNotFound(pstr: String): Unit =
@@ -58,7 +58,6 @@ object TransferBackendStub extends SpecBase{
         .willReturn(serverError())
     )
 
-  /** 200 but body isn’t a GetAllTransfersDTO -> triggers parser error branch */
   def getAllTransfersMalformed(pstr: String): Unit =
     stubFor(
       get(urlEqualTo(allTransfersUrl(pstr)))
@@ -67,7 +66,7 @@ object TransferBackendStub extends SpecBase{
 
   // ----- JSON fixtures (get all) -----
 
-  private def successJson(pstr: String): String =
+  private def successJson(pstr: String, nino: String): String =
     s"""
        |{
        |  "pstr": "$pstr",
@@ -76,7 +75,7 @@ object TransferBackendStub extends SpecBase{
        |    {
        |      "transferId": "QT564321",
        |      "qtVersion": "001",
-       |      "nino": "s"$testNino"",
+       |      "nino": "$nino",
        |      "memberFirstName": "David",
        |      "memberSurname": "Warne",
        |      "submissionDate": "2025-03-14T00:00:00Z",
@@ -86,7 +85,7 @@ object TransferBackendStub extends SpecBase{
        |    {
        |      "transferId": "QT564322",
        |      "qtVersion": "003",
-       |      "nino": "$testNino",
+       |      "nino": "$nino",
        |      "memberFirstName": "Edith",
        |      "memberSurname": "Ennis-Hill",
        |      "lastUpdated": "2025-05-01T00:00:00Z",
@@ -98,7 +97,7 @@ object TransferBackendStub extends SpecBase{
        |""".stripMargin
 
   /** Three items: 2 valid, 1 invalid (has both dates -> should be dropped) */
-  private def successJsonWithInvalidItem(pstr: String): String =
+  private def successJsonWithInvalidItem(pstr: String, nino: String): String =
     s"""
        |{
        |  "pstr": "$pstr",
@@ -106,6 +105,7 @@ object TransferBackendStub extends SpecBase{
        |  "transfers": [
        |    {
        |      "transferId": "${transferNumber.value}",
+       |      "nino": "$nino",
        |      "memberFirstName": "Alice",
        |      "memberSurname": "Adams",
        |      "submissionDate": "2025-01-10T00:00:00Z",
@@ -114,6 +114,7 @@ object TransferBackendStub extends SpecBase{
        |    },
        |    {
        |      "transferId": "${transferNumber.value}",
+       |      "nino": "$nino",
        |      "memberFirstName": "Bob",
        |      "memberSurname": "Brown",
        |      "lastUpdated": "2025-02-11T00:00:00Z",
@@ -122,6 +123,7 @@ object TransferBackendStub extends SpecBase{
        |    },
        |    {
        |      "transferId": "${transferNumber.value}",
+       |      "nino": "$nino",
        |      "memberFirstName": "Charlie",
        |      "memberSurname": "Clark",
        |      "submissionDate": "2025-03-12T00:00:00Z",

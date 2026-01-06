@@ -16,11 +16,11 @@
 
 package connectors
 
-import base.{BaseISpec, SpecBase}
+import base.BaseISpec
 import connectors.parsers.TransferParser.GetAllTransfersType
 import models.QtStatus.Submitted
-import models.{PstrNumber, QtNumber}
 import models.responses._
+import models.{PstrNumber, QtNumber}
 import org.scalatest.OptionValues
 import play.api.test.Injecting
 import stubs.TransferBackendStub
@@ -35,44 +35,53 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
   private val pstr = PstrNumber("12345678AB")
 
   "TransferConnector.getAllTransfers" when {
+
     "the backend returns 200" must {
+      val testNino = generateNino()
+
       "return Right(GetAllTransfersDTO) with the parsed transfers if payload valid" in {
-        TransferBackendStub.getAllTransfersOk(pstr.value)
+        TransferBackendStub.getAllTransfersOk(pstr.value, testNino)
 
         val result: GetAllTransfersType = await(connector.getAllTransfers(pstr))
 
         result match {
           case Right(dto) =>
-            dto.pstr.value         shouldBe pstr.value
+            dto.pstr.value shouldBe pstr.value
             dto.transfers.nonEmpty shouldBe true
+
             val first = dto.transfers.head
             first.transferId shouldBe QtNumber("QT564321")
-            first.qtVersion.value         shouldBe "001"
-            first.memberFirstName.value   shouldBe "David"
-            first.memberSurname.value     shouldBe "Warne"
-            first.nino.value              shouldBe testNino
-            first.submissionDate.value    shouldBe Instant.parse("2025-03-14T00:00:00Z")
-            first.lastUpdated             shouldBe empty
-            first.qtStatus.value          shouldBe Submitted
-            first.pstrNumber.value        shouldBe pstr
-          case Left(err)  =>
+            first.qtVersion.value shouldBe "001"
+            first.memberFirstName.value shouldBe "David"
+            first.memberSurname.value shouldBe "Warne"
+            first.nino.value shouldBe testNino
+            first.submissionDate.value shouldBe Instant.parse("2025-03-14T00:00:00Z")
+            first.lastUpdated shouldBe empty
+            first.qtStatus.value shouldBe Submitted
+            first.pstrNumber.value shouldBe pstr
+
+          case Left(err) =>
             fail(s"Expected Right(dto) but got $err")
         }
       }
+
       "drop the invalid items and keep only valid ones if some of payload is invalid" in {
         // 3 items: 1 valid submitted, 1 valid in-progress, 1 invalid (has both dates)
-        TransferBackendStub.getAllTransfersOkWithInvalidItems(pstr.value)
+        TransferBackendStub.getAllTransfersOkWithInvalidItems(pstr.value, testNino)
 
         val result = await(connector.getAllTransfers(pstr))
 
         result match {
           case Right(dto) =>
-            dto.transfers.size                shouldBe 2
+            dto.transfers.size shouldBe 2
             all(dto.transfers.map(_.isValid)) shouldBe true
-          case Left(err)  =>
+            all(dto.transfers.map(_.nino.value)) shouldBe testNino
+
+          case Left(err) =>
             fail(s"Expected Right(dto) but got $err")
         }
       }
+
       "map to Left(AllTransfersUnexpectedError) if json malformed" in {
         TransferBackendStub.getAllTransfersMalformed(pstr.value)
 
@@ -80,7 +89,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
 
         result match {
           case Left(_: AllTransfersUnexpectedError) => succeed
-          case other                                => fail(s"Expected AllTransfersUnexpectedError but got $other")
+          case other => fail(s"Expected AllTransfersUnexpectedError but got $other")
         }
       }
     }

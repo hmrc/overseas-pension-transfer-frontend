@@ -31,7 +31,7 @@ import scala.concurrent.{Await, Awaitable}
 import scala.util.Random
 
 trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with OptionValues with BeforeAndAfterAll with BeforeAndAfterEach
-    with GuiceOneServerPerSuite {
+  with GuiceOneServerPerSuite {
 
   val now = Instant.now
 
@@ -50,11 +50,8 @@ trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with O
   def generateNino(prefix: String = "AA"): String = {
     val num = Random.nextInt(1000000)
     val suffix = "C"
-    val nino = f"$prefix$num%06d$suffix"
-    nino
+    f"$prefix$num%06d$suffix"
   }
-
-  val testNino = generateNino()
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
