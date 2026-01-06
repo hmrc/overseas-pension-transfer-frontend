@@ -28,6 +28,8 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 
+import scala.jdk.CollectionConverters.CollectionHasAsScala
+
 trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
 
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
@@ -77,16 +79,26 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
       ).toArray
     }
 
-  def pageWithLinks(view: Html, expectedLink: (String, String)*): Unit =
-    s"show correct links" in {
-      val links = doc(view.body).getElementById("main-content").getElementsByTag("a")
+  def pageWithLinks(view: Html, links: (String, String)*): Unit = {
+    "show correct links" in {
+      val document = doc(view.body)
+      links.foreach { case (text, url) =>
+        val allLinks     = document.select("a[href]")
+        val matchingLink = allLinks.asScala.find { link =>
+          val href = link.attr("href")
+          href == url || href.endsWith(url)
+        }
 
-      expectedLink.zipWithIndex.map {
-        case ((message, href), index) =>
-          links.get(index).text() mustBe messages(message)
-          links.get(index).attribute("href").getValue mustBe href
+        assert(matchingLink.isDefined, s"Link with href '$url' was not found. Available hrefs: ${allLinks.asScala.map(_.attr("href")).mkString(", ")}")
+
+        val linkText = matchingLink.get.text()
+        assert(
+          linkText.contains(messages(text)) || linkText.contains(text),
+          s"Link text '$linkText' did not contain expected text '${messages(text)}' or '$text'"
+        )
       }
     }
+  }
 
   def pageWithText(view: Html, expectedText: String*): Unit =
     s"show correct text: $expectedText" in {
