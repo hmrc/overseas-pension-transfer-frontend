@@ -16,9 +16,10 @@
 
 package controllers.actions
 
+import com.google.inject.Inject
 import connectors.PensionSchemeConnector
 import controllers.routes
-import models.PensionSchemeDetails
+import models.{PensionSchemeDetails, SrnNumber}
 import models.requests.{IdentifierRequest, SchemeRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
@@ -29,7 +30,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.AppUtils
 
-import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeDataActionImpl @Inject() (
@@ -71,15 +71,15 @@ class SchemeDataActionImpl @Inject() (
               isAssociated =>
                 if (isAssociated) {
                   pensionSchemeConnector.getSchemeDetails(value, request.authenticatedUser) map {
-                    case Right(scheme) =>
+                    case Right(pensionSchemeResponse) =>
                       Right(
                         SchemeRequest(
                           request           = request,
                           authenticatedUser = request.authenticatedUser,
-                          schemeDetails     = scheme
+                          schemeDetails     = PensionSchemeDetails(SrnNumber(value), pensionSchemeResponse.pstr, pensionSchemeResponse.schemeName)
                         )
                       )
-                    case Left(err)     =>
+                    case Left(err)                    =>
                       logger.error(s"[SchemeDataAction][refine]: Error has occurred during request of scheme details: $err")
                       Left(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
                   }
@@ -97,4 +97,4 @@ class SchemeDataActionImpl @Inject() (
   }
 }
 
-trait SchemeDataAction extends ActionRefiner[IdentifierRequest, SchemeRequest]
+abstract class SchemeDataAction extends ActionRefiner[IdentifierRequest, SchemeRequest]
