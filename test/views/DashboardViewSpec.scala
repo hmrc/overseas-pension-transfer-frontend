@@ -28,6 +28,7 @@ import views.utils.ViewBaseSpec
 
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class DashboardViewSpec extends ViewBaseSpec {
 
@@ -109,7 +110,9 @@ class DashboardViewSpec extends ViewBaseSpec {
 
   val formattedLastUpdated: String = {
     val dateFormatter = DateTimeFormatter.ofPattern("d MMMM uuuu")
+      .withLocale(Locale.UK)
     val timeFormatter = DateTimeFormatter.ofPattern("h:mma")
+      .withLocale(Locale.UK)
 
     s"${dateFormatter.format(now.atZone(ZoneOffset.UTC))} ${timeFormatter.format(now.atZone(ZoneOffset.UTC))}"
   }
@@ -215,7 +218,9 @@ class DashboardViewSpec extends ViewBaseSpec {
     val messageDate = {
       val expiryDate = now.atZone(java.time.ZoneId.systemDefault()).toLocalDate().plusDays(25)
 
-      DateTimeFormatter.ofPattern("d MMMM yyyy").format(expiryDate)
+      DateTimeFormatter.ofPattern("d MMMM yyyy")
+        .withLocale(Locale.UK)
+        .format(expiryDate)
     }
 
     "display expiry warning for in progress record" in {
