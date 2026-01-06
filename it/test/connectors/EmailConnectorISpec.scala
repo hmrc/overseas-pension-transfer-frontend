@@ -43,7 +43,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
 
   "EmailConnector.send" when {
     "sending an email" must {
-      "return EMAIL_ACCEPTED when downstream responds 202" in {
+      "return EmailAccepted when downstream responds 202" in {
         EmailStub.sendEmailResponse(
           status                 = ACCEPTED,
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
@@ -52,7 +52,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
         await(connector.send(emailRequest)) shouldBe EmailAccepted
       }
 
-      "return EMAIL_NOT_SENT when downstream responds 502 Bad Gateway" in {
+      "return EmailNotSent when downstream responds 502 Bad Gateway" in {
         EmailStub.sendEmailResponse(
           status                 = BAD_GATEWAY,
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
@@ -61,7 +61,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
         await(connector.send(emailRequest)) shouldBe EmailNotSent
       }
 
-      "return EMAIL_NOT_SENT when downstream responds 504 Gateway Timeout" in {
+      "return EmailNotSent when downstream responds 504 Gateway Timeout" in {
         EmailStub.sendEmailResponse(
           status                 = GATEWAY_TIMEOUT,
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))

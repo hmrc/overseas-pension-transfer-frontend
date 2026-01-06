@@ -19,7 +19,7 @@ package controllers
 import cats.data.EitherT
 import connectors.MinimalDetailsConnector
 import controllers.actions._
-import models.authentication.{PsaUser, PspUser}
+import models.authentication.PsaUser
 import models.responses.SubmissionResponse
 import models.{Mode, PersonName}
 import pages.PspDeclarationPage
@@ -28,7 +28,6 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.{DateSubmittedQuery, QtNumberQuery}
-import repositories.SessionRepository
 import services.{EmailService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PsaDeclarationView
@@ -38,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDeclarationController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,

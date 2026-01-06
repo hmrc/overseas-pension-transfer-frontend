@@ -22,6 +22,7 @@ import models.audit.JourneyStartedType.ContinueTransfer
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.prop.Configuration.PropertyCheckConfiguration
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.libs.json.Json
