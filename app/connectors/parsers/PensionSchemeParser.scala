@@ -18,7 +18,7 @@ package connectors.parsers
 
 import models.authentication.PsaId
 import models.responses.{PensionSchemeError, PensionSchemeErrorResponse, PensionSchemeNotAssociated}
-import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
+import models.{PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
@@ -27,21 +27,15 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.DownstreamLogging
 
 object PensionSchemeParser {
-  type PensionSchemeDetailsType = Either[PensionSchemeError, PensionSchemeDetails]
+  type PensionSchemeDetailsType = Either[PensionSchemeError, PensionSchemeResponse]
   type AuthorisingPsaIdType     = Either[PensionSchemeError, PsaId]
 
   implicit object GetPensionSchemeDetailsHttpReads extends HttpReads[PensionSchemeDetailsType] with Logging with DownstreamLogging {
 
-    private val pensionSchemeDataFromApiReads: Reads[PensionSchemeDetails] = (
-      (__ \ "srn").read[String].map(SrnNumber.apply) ~
-        (__ \ "pstr").read[String].map(PstrNumber.apply) ~
-        (__ \ "schemeName").read[String]
-    )(PensionSchemeDetails.apply _)
-
     override def read(method: String, url: String, response: HttpResponse): PensionSchemeDetailsType =
       response.status match {
         case OK         =>
-          response.json.validate[PensionSchemeDetails](pensionSchemeDataFromApiReads) match {
+          response.json.validate[PensionSchemeResponse] match {
             case JsSuccess(value, _) => Right(value)
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)

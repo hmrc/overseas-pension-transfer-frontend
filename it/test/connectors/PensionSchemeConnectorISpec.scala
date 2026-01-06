@@ -19,7 +19,7 @@ package connectors
 import base.BaseISpec
 import models.authentication._
 import models.responses.{PensionSchemeErrorResponse, PensionSchemeNotAssociated}
-import models.{PensionSchemeDetails, PstrNumber, SrnNumber}
+import models.{PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.test.Injecting
 import stubs.PensionSchemeStub
@@ -52,18 +52,18 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
 
   "PensionSchemeConnector.getSchemeDetails" when {
     "fetching scheme details" must {
-      "return Right(PensionSchemeDetails) for PSA route" in {
+      "return Right(PensionSchemeResponse) for PSA route" in {
         PensionSchemeStub.getSchemeDetailsForPsaSuccess(srn, pstr, schemeNm)
 
         await(connector.getSchemeDetails(srn, psaUser)) shouldBe
-          Right(PensionSchemeDetails(SrnNumber(srn), PstrNumber(pstr), schemeNm))
+          Right(PensionSchemeResponse(PstrNumber(pstr), schemeNm))
       }
 
-      "return Right(PensionSchemeDetails) for PSP route" in {
+      "return Right(PensionSchemeResponse) for PSP route" in {
         PensionSchemeStub.getSchemeDetailsForPspSuccess(srn, pstr, schemeNm)
 
         await(connector.getSchemeDetails(srn, pspUser)) shouldBe
-          Right(PensionSchemeDetails(SrnNumber(srn), PstrNumber(pstr), schemeNm))
+          Right(PensionSchemeResponse(PstrNumber(pstr), schemeNm))
       }
 
       "return Left(PensionSchemeNotAssociated) on 404" in {
