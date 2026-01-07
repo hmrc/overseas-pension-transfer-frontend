@@ -17,12 +17,12 @@
 package viewmodels
 
 case class SearchBarViewModel(
-    id: String               = "dashboard-search",
-    name: String             = "search",
+    id: String                 = "dashboard-search",
+    name: String               = "search",
     label: String,
     action: String,
-    buttonText: String,
-    value: Option[String]    = None,
-    hint: Option[String]     = None,
-    clearUrl: Option[String] = None
+    buttonText: Option[String] = None,
+    value: Option[String]      = None,
+    hint: Option[String]       = None,
+    clearUrl: Option[String]   = None
   )

@@ -39,9 +39,8 @@ class DashboardViewSpec extends ViewBaseSpec {
   val pageUrl: Int => String = page => routes.DashboardController.onPageLoad(page, None).url
 
   private val searchBarViewModel = SearchBarViewModel(
-    label      = messages("dashboard.search.heading"),
-    action     = routes.DashboardController.onPageLoad().url,
-    buttonText = messages("dashboard.search.buttonText")
+    label  = messages("dashboard.search.heading"),
+    action = routes.DashboardController.onPageLoad().url
   )
 
   private val paginatedAllTransfersViewModel =

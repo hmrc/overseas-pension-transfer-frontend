@@ -27,13 +27,13 @@
 
             <h2 class="govuk-label-wrapper">
                 <label class="govuk-label govuk-label--m" for="@model.id">
-                    @messages(model.label)
+                    @model.label
                 </label>
             </h2>
 
             @model.hint.map { hintText =>
                 <div id="@hintId" class="govuk-hint">
-                @messages(hintText)
+                @hintText
                 </div>
             }
 
@@ -65,7 +65,7 @@
                         class="govuk-button search-bar__button"
                         data-module="govuk-button"
                         type="submit">
-                        @messages(model.buttonText)
+                        @model.buttonText.getOrElse(messages("dashboard.search.buttonText"))
                         </button>
                     </div>
                 </div>
