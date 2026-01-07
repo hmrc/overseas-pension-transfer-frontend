@@ -54,24 +54,19 @@
 
     @govukSummaryList(overviewDetails)
 
-    <br>
     <h2 class="govuk-heading-m">@messages("transferSubmitted.memberDetails")</h2>
     @govukSummaryList(memberDetails)
 
-    <br>
     <h2 class="govuk-heading-m">@messages("transferSubmitted.transferDetails")</h2>
     @govukSummaryList(transferDetails)
 
-    <br>
     <h2 class="govuk-heading-m">@messages("transferSubmitted.qropsDetails")</h2>
     @govukSummaryList(qropsDetails)
 
-    <br>
     <h2 class="govuk-heading-m">@messages("transferSubmitted.qropsManagerDetails")</h2>
     @govukSummaryList(schemeManagerDetails)
 
 
-    <br>
     @govukButton(Button(
       content = Text(messages("site.print")),
       classes = "govuk-button",

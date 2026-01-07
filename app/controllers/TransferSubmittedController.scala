@@ -35,9 +35,9 @@ class TransferSubmittedController @Inject() (
     schemeData: SchemeDataAction,
     val controllerComponents: MessagesControllerComponents,
     view: TransferSubmittedView,
-    sessionRepository: SessionRepository
-  )(implicit ec: ExecutionContext,
+    sessionRepository: SessionRepository,
     appConfig: FrontendAppConfig
+  )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
   def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async {
@@ -49,7 +49,7 @@ class TransferSubmittedController @Inject() (
           val srn     = sessionData.schemeInformation.srnNumber.value
           val mpsLink = s"${appConfig.pensionSchemeSummaryUrl}$srn"
 
-          Ok(view(qtNumber(sessionData).value, summaryList, mpsLink))
+          Ok(view(qtNumber(sessionData).value, summaryList, mpsLink, appConfig))
         case None              =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }

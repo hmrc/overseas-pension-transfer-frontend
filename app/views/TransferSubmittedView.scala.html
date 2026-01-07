@@ -28,7 +28,7 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(qtNumber: String, list: SummaryList, mpsLink: String)(implicit request: SchemeRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(qtNumber: String, list: SummaryList, mpsLink: String, appConfig: FrontendAppConfig)(implicit request: SchemeRequest[_], messages: Messages)
 @schemeName = @{request.schemeDetails.schemeName}
 
 @layout(pageTitle = titleNoForm(messages("transferSubmitted.title")), showPageFooter = false) {
