@@ -32,14 +32,17 @@ import java.util.Locale
 
 class DashboardViewSpec extends ViewBaseSpec {
 
-  implicit val appConfig = applicationBuilder().injector().instanceOf[FrontendAppConfig]
+  implicit val appConfig: FrontendAppConfig = applicationBuilder().injector().instanceOf[FrontendAppConfig]
 
   val dashboardView: DashboardView = applicationBuilder().injector().instanceOf[DashboardView]
 
   val pageUrl: Int => String = page => routes.DashboardController.onPageLoad(page, None).url
 
-  private val searchBarViewModel =
-    SearchBarViewModel()
+  private val searchBarViewModel = SearchBarViewModel(
+    label      = messages("dashboard.search.heading"),
+    action     = routes.DashboardController.onPageLoad().url,
+    buttonText = messages("dashboard.search.buttonText")
+  )
 
   private val paginatedAllTransfersViewModel =
     PaginatedAllTransfersViewModel.build(

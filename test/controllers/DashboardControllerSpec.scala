@@ -475,11 +475,11 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val clearLink = doc.select("a.search-bar__clear").first()
         clearLink must not be null
-        clearLink.text() must include("Clear")
+        clearLink.text() must include(messages(application)("dashboard.search.clear"))
 
         val hiddenSpan = clearLink.select("span.govuk-visually-hidden").first()
         hiddenSpan must not be null
-        hiddenSpan.text().trim mustBe "Search"
+        hiddenSpan.text().trim mustBe messages(application)("dashboard.search.buttonText")
       }
     }
 
