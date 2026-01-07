@@ -66,6 +66,7 @@ dashboard.pensionSchemeLink.text = Return to {0} pension scheme
 dashboard.search.heading = All transfers
 dashboard.search.buttonText = Search
 dashboard.search.clear = Clear
+dashboard.search.clear.hiddenText = search
 dashboard.search.hintText = You can search by National Insurance number, transfer reference or member name
 dashboard.search.noResults.heading = No results found
 dashboard.search.noResults.paragraph = Check what you''ve entered and try searching again.
