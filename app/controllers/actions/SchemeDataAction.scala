@@ -97,4 +97,4 @@ class SchemeDataActionImpl @Inject() (
   }
 }
 
-abstract class SchemeDataAction extends ActionRefiner[IdentifierRequest, SchemeRequest]
+trait SchemeDataAction extends ActionRefiner[IdentifierRequest, SchemeRequest]
