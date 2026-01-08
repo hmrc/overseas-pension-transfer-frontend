@@ -137,10 +137,11 @@ item.qtStatus match {
         } else {
             <h2 class="govuk-heading-m">@messages("dashboard.allTransfers.heading")</h2>
         }
-        <div role="region" aria-labelledby="Caption01" tabindex="0">
+        <div role="region" tabindex="0">
             @govukTable(allTransfersViewModel.table)
         </div>
         @allTransfersViewModel.pagination.map(govukPagination(_))
+        </div>
     } else {
         @if(isSearch) {
             <h2 class="govuk-heading-m">
