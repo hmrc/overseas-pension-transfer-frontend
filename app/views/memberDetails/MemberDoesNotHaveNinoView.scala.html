@@ -54,7 +54,7 @@
         )
 
         @link("memberNinoPageLink", memberNinoPage, messages("memberDoesNotHaveNino.memberNino.link.text"), extraClasses = "govuk-body")
-        <hr class="govuk-section-break govuk-section-break govuk-!-margin-bottom-6">
+        <hr class="govuk-section-break govuk-section-break govuk-!-margin-bottom-6" aria-hidden="true">
 
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
