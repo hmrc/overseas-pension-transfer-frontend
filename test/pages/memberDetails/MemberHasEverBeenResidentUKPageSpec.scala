@@ -46,7 +46,7 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
         MemberHasEverBeenResidentUKPage.nextPage(
           NormalMode,
           emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
-        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(NormalMode)
+        ) mustEqual routes.MembersLastUKAddressController.onPageLoad(NormalMode)
       }
     }
 
@@ -65,7 +65,7 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
         MemberHasEverBeenResidentUKPage.nextPage(
           CheckMode,
           emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
-        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(CheckMode)
+        ) mustEqual routes.MembersLastUKAddressController.onPageLoad(CheckMode)
       }
     }
 
@@ -84,7 +84,7 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
         MemberHasEverBeenResidentUKPage.nextPage(
           FinalCheckMode,
           emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
-        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(FinalCheckMode)
+        ) mustEqual routes.MembersLastUKAddressController.onPageLoad(FinalCheckMode)
       }
     }
 
@@ -103,7 +103,7 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
         MemberHasEverBeenResidentUKPage.nextPage(
           AmendCheckMode,
           emptyUserAnswers.set(MemberHasEverBeenResidentUKPage, true).success.value
-        ) mustEqual routes.MembersLastUkAddressLookupController.onPageLoad(AmendCheckMode)
+        ) mustEqual routes.MembersLastUKAddressController.onPageLoad(AmendCheckMode)
       }
     }
   }

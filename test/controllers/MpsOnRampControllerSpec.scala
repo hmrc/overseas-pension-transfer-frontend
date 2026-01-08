@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import connectors.PensionSchemeConnector
 import models.responses.PensionSchemeErrorResponse
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
+import models.{DashboardData, PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{never, times, verify, when}
@@ -76,10 +76,10 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val mockConnector = mock[PensionSchemeConnector]
 
       val srn = "S2400000040"
-      val psd = PensionSchemeDetails(SrnNumber(srn), PstrNumber("24000040IN"), "Open Scheme Overview API Test")
+      val psr = PensionSchemeResponse(PstrNumber("24000040IN"), "Open Scheme Overview API Test")
 
       when(mockConnector.getSchemeDetails(eqTo(srn), any())(any()))
-        .thenReturn(Future.successful(Right(psd)))
+        .thenReturn(Future.successful(Right(psr)))
 
       when(mockRepo.set(any[DashboardData]))
         .thenReturn(Future.successful(false))
@@ -106,10 +106,10 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val mockConnector = mock[PensionSchemeConnector]
 
       val srn = "S2400000040"
-      val psd = PensionSchemeDetails(SrnNumber(srn), PstrNumber("24000040IN"), "Open Scheme Overview API Test")
+      val psr = PensionSchemeResponse(PstrNumber("24000040IN"), "Open Scheme Overview API Test")
 
       when(mockConnector.getSchemeDetails(eqTo(srn), any())(any()))
-        .thenReturn(Future.successful(Right(psd)))
+        .thenReturn(Future.successful(Right(psr)))
 
       when(mockRepo.set(any[DashboardData]))
         .thenReturn(Future.failed(new RuntimeException("boom")))
