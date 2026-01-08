@@ -121,13 +121,14 @@ item.qtStatus match {
         <a href="@nextPage" class="govuk-link">@messages("dashboard.linkText")</a>
     </p>
 
-    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" aria-hidden="true">
 
     @if(appConfig.allowDashboardSearch){
         @searchBar(searchBarViewModel)
     }
 
     @if(allTransfersViewModel.table.rows.nonEmpty) {
+        <div role="region" tabindex="0">
         @if(isSearch) {
             <h2 class="govuk-heading-m">@messages("dashboard.search.results.heading")</h2>
             <p class="govuk-body">
@@ -155,7 +156,7 @@ item.qtStatus match {
         }
     }
 
-    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true">
 
     <p><a class="govuk-link govuk-body" href="@pensionSchemeLink">@messages("dashboard.pensionSchemeLink.text", schemeName)</a></p>
 }
