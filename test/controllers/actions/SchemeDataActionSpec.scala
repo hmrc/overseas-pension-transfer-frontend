@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import connectors.PensionSchemeConnector
-import models.{DashboardData, PensionSchemeDetails, PstrNumber, SrnNumber}
+import models.{DashboardData, PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
 import models.authentication.{PsaId, PsaUser}
 import models.requests.{IdentifierRequest, SchemeRequest}
 import models.responses.PensionSchemeErrorResponse
@@ -104,15 +104,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
       }
 
       "when dashboard data returns none but On Ramp request provides Srn and completes isAssociated and GetSchemeDetails" in {
-        val schemeDetails = PensionSchemeDetails(
-          SrnNumber("S1234567"),
+        val schemeResponse = PensionSchemeResponse(
           PstrNumber("12345678AB"),
           "Scheme Name"
         )
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
         when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
-        when(mockPensionSchemeConnector.getSchemeDetails(any(), any())(any())) thenReturn Future.successful(Right(schemeDetails))
+        when(mockPensionSchemeConnector.getSchemeDetails(any(), any())(any())) thenReturn Future.successful(Right(schemeResponse))
 
         val identifierRequest = IdentifierRequest(
           FakeRequest("GET", "/start?srn=S1234567"),

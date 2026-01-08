@@ -18,7 +18,7 @@ package repositories
 
 import base.SpecBase
 import config.TestAppConfig
-import models.{SessionData, TransferId, TransferNumber}
+import models.{SessionData, TransferId}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
@@ -92,9 +92,9 @@ class SessionRepositorySpec
       val session = sessionData("session-transfer", testQtNumber).copy(lastUpdated = now.minusSeconds(500))
       repository.set(session).futureValue mustBe true
 
-      repository.keepAliveByTransferId(testQtNumber.value).futureValue mustBe true
+      repository.keepAlive(testQtNumber.value).futureValue mustBe true
 
-      val updated = repository.getByTransferId(testQtNumber.value).futureValue.value
+      val updated = repository.get("session-transfer").futureValue.value
       updated.lastUpdated mustBe now
     }
 
@@ -120,7 +120,7 @@ class SessionRepositorySpec
 
     "must handle missing SessionData gracefully" in {
       repository.get("non-existent").futureValue mustBe None
-      repository.getByTransferId("non-existent").futureValue mustBe None
+      repository.get("non-existent").futureValue mustBe None
     }
   }
 }
