@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 @import views.html.components.AppFooter
-@import config.FrontendAppConfig
+@import views.html.helper.CSPNonce
 
 @this(
         layout: templates.Layout,
@@ -28,7 +28,17 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(qtNumber: String, list: SummaryList, mpsLink: String, appConfig: FrontendAppConfig)(implicit request: SchemeRequest[_], messages: Messages)
+@(
+  qtNumber: String,
+  overviewDetails: SummaryList,
+  memberDetails: SummaryList,
+  transferDetails: SummaryList,
+  qropsDetails: SummaryList,
+  schemeManagerDetails: SummaryList,
+  managerEmail: String,
+  mpsLink: String
+)(implicit request: SchemeRequest[_], messages: Messages)
+
 @schemeName = @{request.schemeDetails.schemeName}
 
 @layout(pageTitle = titleNoForm(messages("transferSubmitted.title")), showPageFooter = false) {
@@ -40,16 +50,33 @@
         </div>
     </div>
 
-    @govukSummaryList(list)
+    <p class="govuk-body">@messages("transferSubmitted.notification", managerEmail)</p>
 
-    @if(appConfig.allowPrintSubmittedTransfer){
-        <h2 class="govuk-heading-m">@messages("transferSubmitted.nextInfo")</h2>
-        <ul class="govuk-list govuk-list--bullet">
-            <li><a class="govuk-link govuk-body" href="@controllers.routes.PrintSubmittedTransferController.onPageLoad()">@messages("transferSubmitted.printLink")</a></li>
-            <li>@messages("transferSubmitted.start") <a class="govuk-link govuk-body" href="@controllers.routes.WhatWillBeNeededController.onPageLoad()">@messages("transferSubmitted.newTransfer")</a></li>
-        </ul>
-        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    }
+    @govukSummaryList(overviewDetails)
+
+    <h2 class="govuk-heading-m">@messages("transferSubmitted.memberDetails")</h2>
+    @govukSummaryList(memberDetails)
+
+    <h2 class="govuk-heading-m">@messages("transferSubmitted.transferDetails")</h2>
+    @govukSummaryList(transferDetails)
+
+    <h2 class="govuk-heading-m">@messages("transferSubmitted.qropsDetails")</h2>
+    @govukSummaryList(qropsDetails)
+
+    <h2 class="govuk-heading-m">@messages("transferSubmitted.qropsManagerDetails")</h2>
+    @govukSummaryList(schemeManagerDetails)
+
+
+    @govukButton(Button(
+      content = Text(messages("site.print")),
+      classes = "govuk-button",
+      attributes = Map(
+        "id" -> "print-button",
+        "type" -> "button"
+      )
+    ))
+
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
     <div class="govuk-body">
         <a class="govuk-link govuk-body" href="@controllers.routes.DashboardController.onPageLoad()">@messages("transferSubmitted.dashboardLink.text")</a>
@@ -59,3 +86,15 @@
         <a class="govuk-link govuk-body" href="@mpsLink">@messages("transferSubmitted.pensionSchemeLink.text", schemeName)</a>
     </div>
 }
+
+<script @{CSPNonce.attr}>
+    (function () {
+      var printButton = document.getElementById("print-button")
+      if (printButton) {
+        printButton.addEventListener("click", function () {
+          window.focus()
+          window.print()
+        })
+      }
+    })()
+</script>
