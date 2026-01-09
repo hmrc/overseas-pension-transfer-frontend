@@ -161,7 +161,7 @@ class DashboardController @Inject() (
           val allTransfers      = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
           val expiringItems     = repo.findExpiringWithin2Days(allTransfers)
           val filteredTransfers = getFilteredTransfers(allTransfers, search)
-          val transfersVm       = buildTransfersVm(filteredTransfers, page, search, lockWarning)
+          val transfersVm       = buildTransfersVm(filteredTransfers, allTransfers.size, page, search, lockWarning)
           val searchBarVm       = buildSearchBarVm(search)
           val mpsLink           = appConfig.mpsHomeUrl
           val pensionSchemeLink = s"${appConfig.pensionSchemeSummaryUrl}${pensionSchemeDetails.srnNumber.value}"
@@ -188,6 +188,7 @@ class DashboardController @Inject() (
 
   private def buildTransfersVm(
       items: Seq[AllTransfersItem],
+      totalItems: Int,
       page: Int,
       search: Option[String],
       lockWarning: Option[String]
@@ -199,7 +200,8 @@ class DashboardController @Inject() (
       page        = page,
       pageSize    = appConfig.transfersPerPage,
       urlForPage  = pageUrl(search),
-      lockWarning = lockWarning
+      lockWarning = lockWarning,
+      totalItems  = Some(totalItems)
     )
 
   private def buildSearchBarVm(
