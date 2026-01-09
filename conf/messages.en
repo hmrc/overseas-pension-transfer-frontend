@@ -15,6 +15,7 @@ site.agreeAndSubmit = Agree and submit
 site.previous = Previous
 site.next = Next
 pagination.landmark = Table pagination
+site.print = Print
 
 
 breadcrumbs.mps = MPS
@@ -783,6 +784,15 @@ transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
 transferSubmitted.memberName.key = Member name
 transferSubmitted.pensionScheme.key = Scheme
 transferSubmitted.dateSubmitted.key = Date submitted
+transferSubmitted.memberDetails = The member''s details
+transferSubmitted.transferDetails = The transfer details
+transferSubmitted.qropsDetails = The QROPS details
+transferSubmitted.qropsManagerDetails = The QROPS scheme manager details
+transferSubmitted.notification = We have sent a confirmation email to {0}.
+transferSubmitted.printLink = Print this page and your submitted report
+transferSubmitted.start = Start a
+transferSubmitted.newTransfer = new transfer
+transferSubmitted.nextInfo = What you can do next
 
 viewSubmitted.heading = Overseas transfer report for {0}
 viewSubmitted.amendTitle = Amend your submission

@@ -35,6 +35,7 @@ class TestAppConfig
         "features.welsh-translation"          -> false,
         "features.submission-email"           -> true,
         "features.dashboard-search"           -> true,
+        "features.print-submitted-transfer"   -> true,
         "features.submission-email"           -> true,
         "enrolments.psa.serviceName"          -> "HMRC-PSA-ORG",
         "enrolments.psa.identifierKey"        -> "PSAID",

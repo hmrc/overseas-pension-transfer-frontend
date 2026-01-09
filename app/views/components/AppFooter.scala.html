@@ -33,11 +33,11 @@
 
     if (filteredLinks.nonEmpty) {
             Html(
-                    """<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">""" +
+                    """<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" aria-hidden="true">""" +
                     filteredLinks.map { item =>
                             s"""<p>${link(item.id, item.href, item.text, extraClasses = "govuk-body").body}</p>"""
                     }.mkString("\n") +
-                    """<hr class="govuk-section-break govuk-section-break--l">"""
+                    """<hr class="govuk-section-break govuk-section-break--l" aria-hidden="true">"""
                 )
             } else {
                     Html("")
