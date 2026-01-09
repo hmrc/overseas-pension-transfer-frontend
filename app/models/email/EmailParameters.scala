@@ -40,6 +40,7 @@ object EmailParameters {
 case class SubmissionConfirmation(
     qtReference: String,
     memberName: String,
+    submitter: String,
     submissionDate: String,
     pensionSchemeName: String
   ) extends EmailParameters
