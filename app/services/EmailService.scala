@@ -32,6 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait EmailServiceError
 
+case object MinimalDetailsError         extends EmailServiceError
 case object SessionDataError            extends EmailServiceError
 case class DownstreamError(err: String) extends EmailServiceError
 
@@ -55,28 +56,34 @@ class EmailService @Inject() (
     if (appConfig.submissionEmailEnabled) {
       val emailAddress   = minimalDetails.email
       val schemeName     = sessionData.schemeInformation.schemeName
+      val maybeSubmitter = minimalDetails.organisationName.orElse(minimalDetails.individualDetails.map(_.fullName))
       val sessionDataGet = (sessionData.get(QtNumberQuery), sessionData.get(MemberNamePage), sessionData.get(DateSubmittedQuery))
       sessionDataGet match {
         case (Some(qtRef), Some(memberName), Some(dateSubmitted)) =>
-          val emailParameters = {
-            SubmissionConfirmation(
-              qtRef.value,
-              memberName.fullName,
-              format(dateSubmitted),
-              schemeName
-            )
-          }
-          emailConnector.send(
-            EmailToSendRequest(
-              List(emailAddress),
-              appConfig.submittedConfirmationTemplateId,
-              emailParameters
-            )
-          ) flatMap {
-            case EmailAccepted => Future.successful(Right(EmailSentSuccess))
-            case err           =>
-              logger.warn(s"[EmailService][sendConfirmationEmail] Email not sent due to downstream error: ${err.toString}")
-              Future.successful(Left(DownstreamError(err.toString)))
+          maybeSubmitter match {
+            case Some(submitter) =>
+              val emailParameters = {
+                SubmissionConfirmation(
+                  qtRef.value,
+                  memberName.fullName,
+                  submitter,
+                  format(dateSubmitted),
+                  schemeName
+                )
+              }
+              emailConnector.send(EmailToSendRequest(
+                List(emailAddress),
+                appConfig.submittedConfirmationTemplateId,
+                emailParameters
+              )) flatMap {
+                case EmailAccepted => Future.successful(Right(EmailSentSuccess))
+                case err           =>
+                  logger.warn(s"[EmailService][sendConfirmationEmail] Email not sent due to downstream error: ${err.toString}")
+                  Future.successful(Left(DownstreamError(err.toString)))
+              }
+            case _               =>
+              logger.warn("[EmailService][sendConfirmationEmail] Email not sent due to missing data in minimal details")
+              Future.successful(Left(MinimalDetailsError))
           }
         case _                                                    =>
           logger.warn("[EmailService][sendConfirmationEmail] Email not sent due to missing data in sd")
