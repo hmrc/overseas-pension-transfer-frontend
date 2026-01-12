@@ -778,6 +778,7 @@ submitToHMRC.amendHintYes = You will still be able to amend the report after it'
 
 transferSubmitted.title = Transfer submitted
 transferSubmitted.heading = Transfer submitted
+transferSubmitted.confirmationEmailSent.text = We have sent a confirmation email to <span class="govuk-bold">{0}</span>.
 transferSubmitted.referenceNumber.text = Your reference number
 transferSubmitted.dashboardLink.text = Return to Report a transfer to a QROPS
 transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
