@@ -25,7 +25,7 @@ import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.TransferDetailsRecordVersionQuery
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.AmountOfTransferView
@@ -70,6 +70,7 @@ class AmountOfTransferController @Inject() (
                 if (answers1.get(IsTransferCashOnlyPage).contains(true)) {
                   answers1.set(CashAmountInTransferPage, value) flatMap { answers2 =>
                     answers2.remove(TransferDetailsRecordVersionQuery)
+                    answers2.remove(TypeOfAssetsRecordVersionQuery)
                   }
                 } else {
                   answers1.remove(TransferDetailsRecordVersionQuery)
