@@ -36,6 +36,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
       parameters = SubmissionConfirmation(
         qtReference       = "QT123456",
         memberName        = "Foo Bar",
+        submitter         = "David Frost",
         submissionDate    = "3 October 2025 at 3:00pm",
         pensionSchemeName = "Smith Harper Pension Scheme"
       )
@@ -45,7 +46,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
     "sending an email" must {
       "return EmailAccepted when downstream responds 202" in {
         EmailStub.sendEmailResponse(
-          status                 = ACCEPTED,
+          status                  = ACCEPTED,
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 
@@ -54,7 +55,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
 
       "return EmailNotSent when downstream responds 502 Bad Gateway" in {
         EmailStub.sendEmailResponse(
-          status                 = BAD_GATEWAY,
+          status                  = BAD_GATEWAY,
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 
@@ -63,7 +64,7 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
 
       "return EmailNotSent when downstream responds 504 Gateway Timeout" in {
         EmailStub.sendEmailResponse(
-          status                 = GATEWAY_TIMEOUT,
+          status                  = GATEWAY_TIMEOUT,
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 

@@ -244,4 +244,7 @@ trait SpecBase
     pstrNumber      = Some(PstrNumber("12345678AB")),
     submissionDate  = None
   )
+
+  val testSubmitter = "David Frost"
+
 }
