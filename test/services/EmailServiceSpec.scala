@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.EmailConnector
-import models.MinimalDetails
+import models.{IndividualDetails, MinimalDetails}
 import models.email.{EmailAccepted, EmailToSendRequest, SubmissionConfirmation}
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{never, verify, when}
@@ -73,6 +73,8 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val minimalDetails = mock[MinimalDetails]
       when(minimalDetails.email).thenReturn("test@example.com")
+      when(minimalDetails.organisationName).thenReturn(None)
+      when(minimalDetails.individualDetails).thenReturn(Some(IndividualDetails(firstName = "Test", middleName = None, lastName = "User")))
 
       val result = await(service.sendConfirmationEmail(emptySessionData, minimalDetails))
 
@@ -94,6 +96,8 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val minimalDetails = mock[MinimalDetails]
       when(minimalDetails.email).thenReturn(emailAddress)
+      when(minimalDetails.organisationName).thenReturn(None)
+      when(minimalDetails.individualDetails).thenReturn(Some(IndividualDetails(firstName = "David", middleName = None, lastName = "Frost")))
 
       val submittedAt: Instant = Instant.parse("2025-10-01T09:13:00Z")
 
@@ -114,6 +118,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
           parameters = SubmissionConfirmation(
             qtReference       = testQtNumber.value,
             memberName        = testMemberName.fullName,
+            submitter         = testSubmitter,
             submissionDate    = expectedFormattedSubmittedAt,
             pensionSchemeName = sessionData.schemeInformation.schemeName
           )
@@ -141,6 +146,8 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val minimalDetails = mock[MinimalDetails]
       when(minimalDetails.email).thenReturn("test@example.com")
+      when(minimalDetails.organisationName).thenReturn(None)
+      when(minimalDetails.individualDetails).thenReturn(Some(IndividualDetails(firstName = "Test", middleName = None, lastName = "User")))
 
       val submittedAt: Instant = Instant.parse("2025-10-01T09:13:00Z")
 
