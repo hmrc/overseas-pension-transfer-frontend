@@ -19,6 +19,7 @@ package controllers
 import base.SpecBase
 import models._
 import models.audit.JourneyStartedType.ContinueTransfer
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
@@ -462,10 +463,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         status(result) mustBe OK
         val body = contentAsString(result)
+        val doc  = Jsoup.parse(body)
 
         body must include("John")
         body must include("Doe")
-
         body must not include "Alice"
         body must not include "Smith"
 
@@ -473,8 +474,13 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         body must include("""name="search"""")
         body must include("""value="John"""")
 
-        body must include("""class="govuk-link search-bar__clear"""")
-        body must include("""Clear<span class="govuk-visually-hidden"> search</span>""")
+        val clearLink = doc.select("a.search-bar__clear").first()
+        clearLink must not be null
+        clearLink.text() must include(messages(application)("dashboard.search.clear"))
+
+        val hiddenSpan = clearLink.select("span.govuk-visually-hidden").first()
+        hiddenSpan must not be null
+        hiddenSpan.text().trim mustBe messages(application)("dashboard.search.clear.hiddenText")
       }
     }
 
