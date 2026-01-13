@@ -66,7 +66,7 @@ class TransferSubmittedController @Inject() (
                 appConfig
               )
             )
-          case Left(_) =>
+          case Left(_)               =>
             Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
         }
 

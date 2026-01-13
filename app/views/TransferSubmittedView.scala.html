@@ -40,11 +40,13 @@
         </div>
     </div>
 
+    @if(appConfig.submissionEmailEnabled){
+        <p class="govuk-body">@Html(messages("transferSubmitted.confirmationEmailSent.text", email))</p>
+    }
+
+
     @govukSummaryList(list)
 
-    @if(appConfig.submissionEmailEnabled){
-        <p class="body">@messages("transferSubmitted.confirmationEmailSent.text", email)</p>
-    }
 
     @if(appConfig.allowPrintSubmittedTransfer){
         <h2 class="govuk-heading-m">@messages("transferSubmitted.nextInfo")</h2>

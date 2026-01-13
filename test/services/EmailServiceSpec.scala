@@ -118,7 +118,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
           parameters = SubmissionConfirmation(
             qtReference       = testQtNumber.value,
             memberName        = testMemberName.fullName,
-            submitter         = testSubmitter,
+            submitter         = individualSubmitterDetails.fullName,
             submissionDate    = expectedFormattedSubmittedAt,
             pensionSchemeName = sessionData.schemeInformation.schemeName
           )

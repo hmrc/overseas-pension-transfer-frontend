@@ -16,6 +16,8 @@
 
 package views.viewandamend
 
+import models.requests.SchemeRequest
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.html.viewandamend.SubmittedTransferSummaryView
@@ -29,7 +31,7 @@ class SubmittedTransferSummaryViewSpec extends ViewBaseSpec {
   private val qtNumber   = "QT123456"
   private val tableRows  = Html("<tr><td>Test</td></tr>")
 
-  implicit val schemeRequest = fakeSchemeRequest(FakeRequest())
+  implicit val schemeRequest: SchemeRequest[AnyContentAsEmpty.type] = fakeSchemeRequest(FakeRequest())
 
   "SubmittedTransferSummaryView" - {
 
