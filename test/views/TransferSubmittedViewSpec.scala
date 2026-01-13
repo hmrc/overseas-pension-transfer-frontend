@@ -16,6 +16,7 @@
 
 package views
 
+import config.TestAppConfig
 import controllers.routes
 import models.requests.SchemeRequest
 import play.api.test.FakeRequest
@@ -25,7 +26,8 @@ import views.utils.ViewBaseSpec
 
 class TransferSubmittedViewSpec extends ViewBaseSpec {
 
-  private val view = applicationBuilder().injector().instanceOf[TransferSubmittedView]
+  private val appConfig = new TestAppConfig
+  private val view      = applicationBuilder().injector().instanceOf[TransferSubmittedView]
 
   implicit val schemeRequest: SchemeRequest[_] = SchemeRequest(
     request           = FakeRequest(),
@@ -40,19 +42,20 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
   "TransferSubmittedView" - {
 
     "show correct title" in {
-      doc(view(testQtNumberValue, summaryList, mpsLink).body).getElementsByTag("title").eachText().get(0) mustBe
+      doc(view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email, appConfig).body).getElementsByTag("title").eachText().get(0) mustBe
         s"${messages("transferSubmitted.title")} - ${messages("service.name")} - GOV.UK"
     }
 
     behave like pageWithConfirmationPanel(
-      view(testQtNumberValue, summaryList, mpsLink),
+      view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email, appConfig),
       "transferSubmitted.heading",
       "transferSubmitted.referenceNumber.text",
       testQtNumberValue
     )
 
     "display correct links" in {
-      val links = doc(view(testQtNumberValue, summaryList, mpsLink).body).getElementById("main-content").getElementsByTag("a")
+      val links =
+        doc(view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email, appConfig).body).getElementById("main-content").getElementsByTag("a")
 
       links.get(0).text() mustBe messages("transferSubmitted.dashboardLink.text")
       links.get(0).attr("href") mustBe routes.DashboardController.onPageLoad().url
