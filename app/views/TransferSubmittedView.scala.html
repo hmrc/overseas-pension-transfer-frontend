@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 @import views.html.components.AppFooter
+@import config.FrontendAppConfig
 
 @this(
         layout: templates.Layout,
@@ -27,7 +28,7 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(qtNumber: String, list: SummaryList, mpsLink: String)(implicit request: SchemeRequest[_], messages: Messages)
+@(qtNumber: String, list: SummaryList, mpsLink: String, appConfig: FrontendAppConfig)(implicit request: SchemeRequest[_], messages: Messages)
 @schemeName = @{request.schemeDetails.schemeName}
 
 @layout(pageTitle = titleNoForm(messages("transferSubmitted.title")), showPageFooter = false) {
@@ -40,6 +41,15 @@
     </div>
 
     @govukSummaryList(list)
+
+    @if(appConfig.allowPrintSubmittedTransfer){
+        <h2 class="govuk-heading-m">@messages("transferSubmitted.nextInfo")</h2>
+        <ul class="govuk-list govuk-list--bullet">
+            <li><a class="govuk-link govuk-body" href="@controllers.routes.PrintSubmittedTransferController.onPageLoad()">@messages("transferSubmitted.printLink")</a></li>
+            <li>@messages("transferSubmitted.start") <a class="govuk-link govuk-body" href="@controllers.routes.WhatWillBeNeededController.onPageLoad()">@messages("transferSubmitted.newTransfer")</a></li>
+        </ul>
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+    }
 
     <div class="govuk-body">
         <a class="govuk-link govuk-body" href="@controllers.routes.DashboardController.onPageLoad()">@messages("transferSubmitted.dashboardLink.text")</a>

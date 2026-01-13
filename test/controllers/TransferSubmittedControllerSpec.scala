@@ -76,7 +76,10 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
           )
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("QT123456", summaryList, expectedMpsLink)(fakeSchemeRequest(request), testMessages).toString
+        contentAsString(result) mustEqual view("QT123456", summaryList, expectedMpsLink, appConfig)(
+          fakeSchemeRequest(request),
+          testMessages
+        ).toString
       }
     }
 

@@ -82,5 +82,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val allowDashboardSearch: Boolean = configuration.get[Boolean]("features.dashboard-search")
 
+  val allowPrintSubmittedTransfer: Boolean = configuration.get[Boolean]("features.print-submitted-transfer")
+
   val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
 }

@@ -49,7 +49,7 @@ class TransferSubmittedController @Inject() (
           val srn     = sessionData.schemeInformation.srnNumber.value
           val mpsLink = s"${appConfig.pensionSchemeSummaryUrl}$srn"
 
-          Ok(view(qtNumber(sessionData).value, summaryList, mpsLink))
+          Ok(view(qtNumber(sessionData).value, summaryList, mpsLink, appConfig))
         case None              =>
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
       }
