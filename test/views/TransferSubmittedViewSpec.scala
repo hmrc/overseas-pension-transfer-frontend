@@ -62,8 +62,8 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
       links.get(1).attr("href") mustBe mpsLink
     }
     "display print screen link when enabled in appconfig" in {
-      appConfig.allowPrintSubmittedTransfer = true
-      val links = doc(view(testQtNumberValue, summaryList, mpsLink, appConfig).body).getElementById("main-content").getElementsByTag("a")
+      val printConfig: FrontendAppConfig = applicationBuilder().configure("features.print-submitted-transfer" -> true).injector().instanceOf[FrontendAppConfig]
+      val links                          = doc(view(testQtNumberValue, summaryList, mpsLink, printConfig).body).getElementById("main-content").getElementsByTag("a")
       links.get(0).text() mustBe messages("transferSubmitted.printLink")
       links.get(0).attr("href") mustBe routes.PrintSubmittedTransferController.onPageLoad().url
 
