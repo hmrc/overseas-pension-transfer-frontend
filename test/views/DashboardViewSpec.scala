@@ -125,7 +125,7 @@ class DashboardViewSpec extends ViewBaseSpec {
     }
 
     behave like pageWithH1(fullView, "dashboard.heading")
-    behave like pageWithHeadings(fullView, "h2", "Scheme Name", "dashboard.search.heading")
+    behave like pageWithHeadings(fullView, "h2", "Scheme Name", "All transfers", "All transfers")
     behave like pageWithLinks(
       fullView,
       ("dashboard.linkText", "/what-will-be-needed"),

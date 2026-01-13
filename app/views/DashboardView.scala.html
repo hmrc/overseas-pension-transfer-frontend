@@ -58,7 +58,11 @@ item.qtStatus match {
 }
 
 @pagePrefix: String = @{
-    messages("dashboard.allTransfers.page", allTransfersViewModel.currentPage.toString, allTransfersViewModel.totalPages.toString)
+    if (isSearch) {
+        messages("dashboard.search.results.heading")
+    } else {
+        messages("dashboard.allTransfers.page", allTransfersViewModel.currentPage.toString, allTransfersViewModel.totalPages.toString)
+    }
 }
 
 @layout(
