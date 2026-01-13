@@ -34,7 +34,7 @@ class TestAppConfig
         "feedback-frontend.host"              -> "http://localhost:9514",
         "features.welsh-translation"          -> false,
         "features.dashboard-search"           -> true,
-        "features.print-submitted-transfer"   -> true,
+        "features.print-submitted-transfer"   -> false,
         "enrolments.psa.serviceName"          -> "HMRC-PSA-ORG",
         "enrolments.psa.identifierKey"        -> "PSAID",
         "enrolments.psp.serviceName"          -> "HMRC-PSP-ORG",
