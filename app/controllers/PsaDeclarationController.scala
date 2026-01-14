@@ -55,29 +55,31 @@ class PsaDeclarationController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData).flatMap {
-        case Right(SubmissionResponse(qtNumber, receiptDate)) =>
-          (for {
-            updateWithQTNumberSD    <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber)))
-            updateWithReceiptDateSD <- EitherT.right[Result](Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, receiptDate)))
-            name                     = request.sessionData.get(MemberNamePage)
-                                         .orElse(request.userAnswers.get(MemberNamePage))
-                                         .getOrElse(PersonName("Undefined", "Undefined"))
-            updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
-            psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
-            minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
-                                         logger.warn(s"[PsaDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e")
-                                         Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-                                       }
-            _                       <- EitherT.right[Result](
-                                         emailService
-                                           .sendConfirmationEmail(updateWithMemberNameSD, minimalDetails)
-                                           .map(_ => ())
-                                       )
-          } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
-        case e                                                =>
-          logger.warn(s"[PsaDeclarationController][onSubmit] Failed to submit declaration: $e")
-          Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-      }
+      (for {
+        submissionResponse   <-
+          EitherT(userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData)).leftMap { e =>
+            logger.warn(s"[PsaDeclarationController][onSubmit] Failed to submit declaration: $e")
+            Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          }
+        updateWithQTNumberSD <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, submissionResponse.qtNumber)))
+
+        updateWithReceiptDateSD <- EitherT.right[Result](Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, submissionResponse.receiptDate)))
+        name                     = request.sessionData.get(MemberNamePage)
+                                     .orElse(request.userAnswers.get(MemberNamePage))
+                                     .getOrElse(PersonName("Undefined", "Undefined"))
+        updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
+        psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
+        minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
+                                     logger.warn(s"[PsaDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e")
+                                     Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                                   }
+        _                       <- EitherT.right[Result](
+                                     // Currently we do nothing with the return value from the email service. If we want to map the error we can do so here.
+
+                                     emailService
+                                       .sendConfirmationEmail(updateWithMemberNameSD, minimalDetails)
+                                       .map(_ => ())
+                                   )
+      } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
   }
 }

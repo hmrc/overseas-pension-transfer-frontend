@@ -41,7 +41,7 @@
     </div>
 
     @if(appConfig.submissionEmailEnabled){
-        <p class="govuk-body">@Html(messages("transferSubmitted.confirmationEmailSent.text", email))</p>
+        <p class="govuk-body" id="email-submission-text">@Html(messages("transferSubmitted.confirmationEmailSent.text", email))</p>
     }
 
 

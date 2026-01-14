@@ -20,6 +20,7 @@ import config.TestAppConfig
 import controllers.routes
 import models.requests.SchemeRequest
 import play.api.test.FakeRequest
+import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import views.html.TransferSubmittedView
 import views.utils.ViewBaseSpec
@@ -53,7 +54,7 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
       testQtNumberValue
     )
 
-    "display correct links" in {
+    "display correct text" in {
       val links =
         doc(view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email, appConfig).body).getElementById("main-content").getElementsByTag("a")
 
@@ -62,6 +63,12 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
 
       links.get(1).text() mustBe messages("transferSubmitted.pensionSchemeLink.text", schemeDetails.schemeName)
       links.get(1).attr("href") mustBe mpsLink
+
+      if (appConfig.submissionEmailEnabled) {
+        val email               = minimalDetailsIndividual.email
+        val emailSubmissionText = doc(view(testQtNumberValue, summaryList, mpsLink, email, appConfig).body).getElementById("email-submission-text")
+        emailSubmissionText.html() mustBe messages("transferSubmitted.confirmationEmailSent.text", email)
+      }
     }
   }
 }
