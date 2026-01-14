@@ -103,8 +103,9 @@ object AllTransfersTableViewModel {
     Table(
       head           = Some(head),
       rows           = rows,
-      caption        = Some(messages("dashboard.allTransfers.heading")),
-      captionClasses = s"govuk-table__caption--m $hideCaption"
+      caption        = Some(messages("dashboard.search.results.heading")),
+      captionClasses = s"govuk-table__caption--m $hideCaption",
+      attributes     = if (appConfig.allowDashboardSearch) Map("aria-hidden" -> "true") else Map.empty
     )
   }
 }
