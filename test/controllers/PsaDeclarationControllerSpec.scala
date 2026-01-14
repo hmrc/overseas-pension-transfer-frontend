@@ -17,8 +17,10 @@
 package controllers
 
 import base.SpecBase
-import models.{NormalMode, QtNumber}
+import connectors.{DetailsNotFound, MinimalDetailsConnector}
+import models.authentication.PsaId
 import models.responses.{SubmissionErrorResponse, SubmissionResponse}
+import models.{MinimalDetails, NormalMode, QtNumber, SessionData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -28,12 +30,12 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PsaDeclarationView
 
 import java.time.Instant
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -59,11 +61,23 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     }
 
     "must redirect to the next page when submitted" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService      = mock[UserAnswersService]
+      val mockSessionRepository       = mock[SessionRepository]
+      val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
+      val mockEmailService            = mock[EmailService]
+
+      val receiptDate    = Instant.now
+      val qtNumber       = QtNumber("QT123456")
+      val minimalDetails = mock[MinimalDetails]
 
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456"), Instant.now))))
+        .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, receiptDate))))
+
+      when(mockMinimalDetailsConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(Right(minimalDetails)))
+
+      when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(EmailSentSuccess)))
 
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))
@@ -72,7 +86,9 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         applicationBuilder()
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
+            bind[EmailService].toInstance(mockEmailService)
           )
           .build()
 
@@ -95,6 +111,41 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val application =
         applicationBuilder()
           .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
+          .build()
+
+      running(application) {
+        val request = FakeRequest(POST, psaDeclarationRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery when minimal details lookup returns an error" in {
+      val mockUserAnswersService      = mock[UserAnswersService]
+      val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
+      val mockEmailService            = mock[EmailService]
+      val mockSessionRepository       = mock[SessionRepository]
+
+      val receiptDate = Instant.now
+      val qtNumber    = QtNumber("QT123456")
+
+      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, receiptDate))))
+
+      when(mockMinimalDetailsConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(Left(DetailsNotFound)))
+
+      val application =
+        applicationBuilder()
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
+            bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
+            bind[EmailService].toInstance(mockEmailService),
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
           .build()
 
       running(application) {

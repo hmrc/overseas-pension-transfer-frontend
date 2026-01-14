@@ -33,6 +33,7 @@ class TestAppConfig
         "urls.mpsHomeUrl"                     -> "http://localhost:8204/manage-pension-schemes/overview",
         "feedback-frontend.host"              -> "http://localhost:9514",
         "features.welsh-translation"          -> false,
+        "features.submission-email"           -> true,
         "features.dashboard-search"           -> true,
         "features.print-submitted-transfer"   -> false,
         "enrolments.psa.serviceName"          -> "HMRC-PSA-ORG",
@@ -45,7 +46,8 @@ class TestAppConfig
         "dashboard.ttlSeconds"                -> 600,
         "pagination.transfersPerPage"         -> 10,
         "dashboard.lockTtlSeconds"            -> 30,
-        "pension-scheme-summary.service-path" -> "/manage-pension-schemes/pension-scheme-summary/"
+        "pension-scheme-summary.service-path" -> "/manage-pension-schemes/pension-scheme-summary/",
+        "submission-confirmation-template-id" -> "overseas_transfer_charge_confirm_transfer_submitted"
       ),
       servicesConfig = new ServicesConfig(
         Configuration(
@@ -54,7 +56,11 @@ class TestAppConfig
           "microservice.services.address-lookup.host"                    -> "http://localhost",
           "microservice.services.address-lookup.port"                    -> 9022,
           "microservice.services.pensions-scheme.host"                   -> "http://localhost",
-          "microservice.services.pensions-scheme.port"                   -> 8203
+          "microservice.services.pensions-scheme.port"                   -> 8203,
+          "microservice.services.email.host"                             -> "http://localhost",
+          "microservice.services.email.port"                             -> 8300,
+          "microservice.services.pension-administrator.host"             -> "http://localhost",
+          "microservice.services.pension-administrator.port"             -> 8205
         )
       )
     )
