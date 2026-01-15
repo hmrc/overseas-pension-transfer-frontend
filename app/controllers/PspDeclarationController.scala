@@ -72,7 +72,7 @@ class PspDeclarationController @Inject() (
                   BadRequest(view(formWithError, mode))
                 case e                                      =>
                   logger.warn(s"[PspDeclarationController][onSubmit] Failed to submit declaration: $e")
-                  Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                  Redirect(PspDeclarationPage.nextPageRecovery())
               }
             updateWithQTNumberSD    <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, submissionResponse.qtNumber)))
             updateWithReceiptDateSD <- EitherT.right[Result](Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, submissionResponse.receiptDate)))
@@ -83,7 +83,7 @@ class PspDeclarationController @Inject() (
             pspId                    = request.authenticatedUser.asInstanceOf[PspUser].pspId
             minimalDetails          <- EitherT(minimalDetailsConnector.fetch(pspId)).leftMap { e =>
                                          logger.warn(s"[PspDeclarationController][onSubmit] Failed to fetch minimal details for pspId=${pspId.value}: $e")
-                                         Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                                         Redirect(PspDeclarationPage.nextPageRecovery())
                                        }
             _                       <- EitherT.right[Result](
                                          // Currently we do nothing with the return value from the email service. If we want to map the error we can do so here.

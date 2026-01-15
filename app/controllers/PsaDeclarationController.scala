@@ -20,10 +20,9 @@ import cats.data.EitherT
 import connectors.MinimalDetailsConnector
 import controllers.actions._
 import models.authentication.PsaUser
-import models.responses.SubmissionResponse
 import models.{Mode, PersonName}
-import pages.PspDeclarationPage
 import pages.memberDetails.MemberNamePage
+import pages.{PsaDeclarationPage, PspDeclarationPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -59,7 +58,7 @@ class PsaDeclarationController @Inject() (
         submissionResponse   <-
           EitherT(userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData)).leftMap { e =>
             logger.warn(s"[PsaDeclarationController][onSubmit] Failed to submit declaration: $e")
-            Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            Redirect(PsaDeclarationPage.nextPageRecovery())
           }
         updateWithQTNumberSD <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, submissionResponse.qtNumber)))
 
@@ -71,11 +70,10 @@ class PsaDeclarationController @Inject() (
         psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
         minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
                                      logger.warn(s"[PsaDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e")
-                                     Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                                     Redirect(PsaDeclarationPage.nextPageRecovery())
                                    }
         _                       <- EitherT.right[Result](
                                      // Currently we do nothing with the return value from the email service. If we want to map the error we can do so here.
-
                                      emailService
                                        .sendConfirmationEmail(updateWithMemberNameSD, minimalDetails)
                                        .map(_ => ())

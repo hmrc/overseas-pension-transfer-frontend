@@ -39,6 +39,7 @@ case class DownstreamError(err: String) extends EmailServiceError
 sealed trait EmailSuccess
 
 case object EmailSentSuccess    extends EmailSuccess
+// EmailNotSentSuccess is returned when the submission email is disabled in the config
 case object EmailNotSentSuccess extends EmailSuccess
 
 @Singleton
