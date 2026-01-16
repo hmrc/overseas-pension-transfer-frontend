@@ -29,6 +29,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.{DateSubmittedQuery, QtNumberQuery}
+import repositories.SessionRepository
 import services.{EmailService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PspDeclarationView
@@ -46,7 +47,8 @@ class PspDeclarationController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: PspDeclarationView,
     emailService: EmailService,
-    minimalDetailsConnector: MinimalDetailsConnector
+    minimalDetailsConnector: MinimalDetailsConnector,
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -80,6 +82,7 @@ class PspDeclarationController @Inject() (
                                          .orElse(request.userAnswers.get(MemberNamePage))
                                          .getOrElse(PersonName("Undefined", "Undefined"))
             updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
+            _                       <- EitherT.right[Result](sessionRepository.set(updateWithMemberNameSD))
             pspId                    = request.authenticatedUser.asInstanceOf[PspUser].pspId
             minimalDetails          <- EitherT(minimalDetailsConnector.fetch(pspId)).leftMap { e =>
                                          logger.warn(s"[PspDeclarationController][onSubmit] Failed to fetch minimal details for pspId=${pspId.value}: $e")

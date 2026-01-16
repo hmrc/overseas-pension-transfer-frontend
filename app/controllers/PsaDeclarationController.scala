@@ -27,6 +27,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.{DateSubmittedQuery, QtNumberQuery}
+import repositories.SessionRepository
 import services.{EmailService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PsaDeclarationView
@@ -43,7 +44,8 @@ class PsaDeclarationController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: PsaDeclarationView,
     minimalDetailsConnector: MinimalDetailsConnector,
-    emailService: EmailService
+    emailService: EmailService,
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -67,6 +69,7 @@ class PsaDeclarationController @Inject() (
                                      .orElse(request.userAnswers.get(MemberNamePage))
                                      .getOrElse(PersonName("Undefined", "Undefined"))
         updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
+        _                       <- EitherT.right[Result](sessionRepository.set(updateWithMemberNameSD))
         psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
         minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
                                      logger.warn(s"[PsaDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e")
