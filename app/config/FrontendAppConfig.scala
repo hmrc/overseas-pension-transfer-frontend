@@ -85,4 +85,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val allowPrintSubmittedTransfer: Boolean = configuration.get[Boolean]("features.print-submitted-transfer")
 
   val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
+
+  def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String = {
+    if (isPspUser) {
+      s"${mpsHomeUrl.dropRight("/overview".length)}/$srn/dashboard/pension-scheme-details"
+    } else {
+      s"$pensionSchemeSummaryUrl$srn"
+    }
+  }
 }

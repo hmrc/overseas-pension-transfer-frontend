@@ -72,7 +72,7 @@ class DashboardController @Inject() (
           } { pensionSchemeDetails =>
             dashboardData.get(TransfersOverviewQuery) match {
               case None            =>
-                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning, request.authenticatedUser)
               case Some(transfers) =>
                 transfers.map {
                   val owner =
@@ -91,7 +91,7 @@ class DashboardController @Inject() (
                         lockService.releaseLock(qtRefefence, owner)
                     }
                 }
-                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning, request.authenticatedUser)
             }
           }
       }
@@ -145,7 +145,8 @@ class DashboardController @Inject() (
       search: Option[String],
       dashboardData: DashboardData,
       pensionSchemeDetails: PensionSchemeDetails,
-      lockWarning: Option[String]
+      lockWarning: Option[String],
+      authenticatedUser: models.authentication.AuthenticatedUser
     )(implicit request: Request[_],
       appConfig: FrontendAppConfig
     ): Future[Result] = {
@@ -164,7 +165,10 @@ class DashboardController @Inject() (
           val transfersVm       = buildTransfersVm(filteredTransfers, allTransfers.size, page, search, lockWarning)
           val searchBarVm       = buildSearchBarVm(search)
           val mpsLink           = appConfig.mpsHomeUrl
-          val pensionSchemeLink = s"${appConfig.pensionSchemeSummaryUrl}${pensionSchemeDetails.srnNumber.value}"
+          val pensionSchemeLink = appConfig.getPensionSchemeUrl(
+            srn       = pensionSchemeDetails.srnNumber.value,
+            isPspUser = authenticatedUser.isInstanceOf[models.authentication.PspUser]
+          )
 
           repo.set(updatedData).map { _ =>
             Ok(

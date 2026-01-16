@@ -46,8 +46,10 @@ class TransferSubmittedController @Inject() (
         case Some(sessionData) =>
           val summaryList = TransferSubmittedSummary.rows(memberFullName(sessionData), dateTransferSubmitted(sessionData))
 
-          val srn     = sessionData.schemeInformation.srnNumber.value
-          val mpsLink = s"${appConfig.pensionSchemeSummaryUrl}$srn"
+          val mpsLink = appConfig.getPensionSchemeUrl(
+            srn       = sessionData.schemeInformation.srnNumber.value,
+            isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
+          )
 
           Ok(view(qtNumber(sessionData).value, summaryList, mpsLink, appConfig))
         case None              =>
