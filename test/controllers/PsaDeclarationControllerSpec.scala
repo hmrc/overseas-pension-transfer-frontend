@@ -138,6 +138,9 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       when(mockMinimalDetailsConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Left(DetailsNotFound)))
 
+      when(mockSessionRepository.set(any()))
+        .thenReturn(Future.successful(true))
+
       val application =
         applicationBuilder()
           .overrides(
