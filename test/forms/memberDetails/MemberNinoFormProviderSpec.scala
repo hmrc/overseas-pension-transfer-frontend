@@ -26,7 +26,7 @@ class MemberNinoFormProviderSpec extends StringFieldBehaviours {
   val patternKey  = "memberNino.error.pattern"
   val maxLength   = 9
 
-  val ninoRegex = "^[A-Za-z]{2}\\d{6}[A-Za-z]$"
+  val ninoRegex = "^[A-Z]{2}\\d{6}[A-Z]$"
 
   val form = new MemberNinoFormProvider()()
 
