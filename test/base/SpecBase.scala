@@ -102,7 +102,7 @@ trait SpecBase
     Json.obj()
   )
 
-  def generateNino(prefix: String = "AA"): String = {
+  private def generateNino(prefix: String = "AA"): String = {
     val num    = Random.nextInt(1000000)
     val suffix = "C"
     val nino   = f"$prefix$num%06d$suffix"
