@@ -23,7 +23,7 @@ import utils.AppUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeSchemeDataAction()
+class FakeSchemeDataAction
     extends SchemeDataAction with AppUtils with SpecBase {
 
   implicit override protected val executionContext: ExecutionContext =

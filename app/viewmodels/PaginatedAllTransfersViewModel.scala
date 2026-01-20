@@ -28,7 +28,8 @@ final case class PaginatedAllTransfersViewModel(
     pagination: Option[Pagination],
     lockWarning: Option[String] = None,
     currentPage: Int            = 1,
-    totalPages: Int             = 1
+    totalPages: Int             = 1,
+    totalItems: Int             = 0
   )
 
 object PaginatedAllTransfersViewModel {
@@ -38,16 +39,18 @@ object PaginatedAllTransfersViewModel {
       page: Int,
       pageSize: Int,
       urlForPage: Int => String,
-      lockWarning: Option[String] = None
+      lockWarning: Option[String] = None,
+      totalItems: Option[Int]     = None
     )(implicit messages: Messages,
       appConfig: FrontendAppConfig
     ): PaginatedAllTransfersViewModel = {
 
-    val sorted = items.sorted
-    val paging = Paging.fromSeq(sorted, PagingRequest(page, pageSize))
-    val table  = AllTransfersTableViewModel.from(paging.items, page)
-    val pager  = paginationFrom(paging, urlForPage)
-    PaginatedAllTransfersViewModel(table, pager, lockWarning, paging.page, paging.totalPages)
+    val sorted      = items.sorted
+    val paging      = Paging.fromSeq(sorted, PagingRequest(page, pageSize))
+    val table       = AllTransfersTableViewModel.from(paging.items, page)
+    val pager       = paginationFrom(paging, urlForPage)
+    val actualTotal = totalItems.getOrElse(paging.total)
+    PaginatedAllTransfersViewModel(table, pager, lockWarning, paging.page, paging.totalPages, actualTotal)
   }
 
   private def paginationFrom[A](p: Paging[A], urlForPage: Int => String)(implicit m: Messages): Option[Pagination] = {

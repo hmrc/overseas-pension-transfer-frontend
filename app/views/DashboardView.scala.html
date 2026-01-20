@@ -58,7 +58,11 @@ item.qtStatus match {
 }
 
 @pagePrefix: String = @{
-    messages("dashboard.allTransfers.page", allTransfersViewModel.currentPage.toString, allTransfersViewModel.totalPages.toString)
+    if (isSearch) {
+        messages("dashboard.search.results.heading")
+    } else {
+        messages("dashboard.allTransfers.page", allTransfersViewModel.currentPage.toString, allTransfersViewModel.totalPages.toString)
+    }
 }
 
 @layout(
@@ -129,9 +133,19 @@ item.qtStatus match {
 
     @if(allTransfersViewModel.table.rows.nonEmpty) {
         <div role="region" tabindex="0">
+        @if(isSearch) {
+            <h2 class="govuk-heading-m">@messages("dashboard.search.results.heading")</h2>
+            <p class="govuk-body">
+                @messages("dashboard.search.results.count", allTransfersViewModel.table.rows.size, allTransfersViewModel.totalItems)
+            </p>
+        } else {
+            <h2 class="govuk-heading-m">@messages("dashboard.allTransfers.heading")</h2>
+        }
+        <div role="region" tabindex="0">
             @govukTable(allTransfersViewModel.table)
         </div>
         @allTransfersViewModel.pagination.map(govukPagination(_))
+        </div>
     } else {
         @if(isSearch) {
             <h2 class="govuk-heading-m">
