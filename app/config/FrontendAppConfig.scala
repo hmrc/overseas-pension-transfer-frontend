@@ -82,5 +82,16 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val allowDashboardSearch: Boolean = configuration.get[Boolean]("features.dashboard-search")
 
-  val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
+  val allowPrintSubmittedTransfer: Boolean = configuration.get[Boolean]("features.print-submitted-transfer")
+
+  val signedOutRedirectUrl: String         = configuration.get[String]("urls.signedOutRedirectUrl")
+  val accessibilityAddressChanges: Boolean = configuration.get[Boolean]("features.accessibility-address-changes")
+
+  def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String = {
+    if (isPspUser) {
+      s"${mpsHomeUrl.dropRight("/overview".length)}/$srn/dashboard/pension-scheme-details"
+    } else {
+      s"$pensionSchemeSummaryUrl$srn"
+    }
+  }
 }

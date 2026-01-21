@@ -72,7 +72,7 @@ class DashboardController @Inject() (
           } { pensionSchemeDetails =>
             dashboardData.get(TransfersOverviewQuery) match {
               case None            =>
-                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning, request.authenticatedUser)
               case Some(transfers) =>
                 transfers.map {
                   val owner =
@@ -91,7 +91,7 @@ class DashboardController @Inject() (
                         lockService.releaseLock(qtRefefence, owner)
                     }
                 }
-                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning)
+                renderDashboard(page, search, dashboardData, pensionSchemeDetails, lockWarning, request.authenticatedUser)
             }
           }
       }
@@ -145,7 +145,8 @@ class DashboardController @Inject() (
       search: Option[String],
       dashboardData: DashboardData,
       pensionSchemeDetails: PensionSchemeDetails,
-      lockWarning: Option[String]
+      lockWarning: Option[String],
+      authenticatedUser: models.authentication.AuthenticatedUser
     )(implicit request: Request[_],
       appConfig: FrontendAppConfig
     ): Future[Result] = {
@@ -161,10 +162,13 @@ class DashboardController @Inject() (
           val allTransfers      = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
           val expiringItems     = repo.findExpiringWithin2Days(allTransfers)
           val filteredTransfers = getFilteredTransfers(allTransfers, search)
-          val transfersVm       = buildTransfersVm(filteredTransfers, page, search, lockWarning)
+          val transfersVm       = buildTransfersVm(filteredTransfers, allTransfers.size, page, search, lockWarning)
           val searchBarVm       = buildSearchBarVm(search)
           val mpsLink           = appConfig.mpsHomeUrl
-          val pensionSchemeLink = s"${appConfig.pensionSchemeSummaryUrl}${pensionSchemeDetails.srnNumber.value}"
+          val pensionSchemeLink = appConfig.getPensionSchemeUrl(
+            srn       = pensionSchemeDetails.srnNumber.value,
+            isPspUser = authenticatedUser.isInstanceOf[models.authentication.PspUser]
+          )
 
           repo.set(updatedData).map { _ =>
             Ok(
@@ -188,6 +192,7 @@ class DashboardController @Inject() (
 
   private def buildTransfersVm(
       items: Seq[AllTransfersItem],
+      totalItems: Int,
       page: Int,
       search: Option[String],
       lockWarning: Option[String]
@@ -199,7 +204,8 @@ class DashboardController @Inject() (
       page        = page,
       pageSize    = appConfig.transfersPerPage,
       urlForPage  = pageUrl(search),
-      lockWarning = lockWarning
+      lockWarning = lockWarning,
+      totalItems  = Some(totalItems)
     )
 
   private def buildSearchBarVm(
@@ -211,9 +217,9 @@ class DashboardController @Inject() (
       search.map(_ => routes.DashboardController.onPageLoad(page = 1, search = None).url)
 
     SearchBarViewModel(
+      label    = messages("dashboard.search.heading"),
       action   = routes.DashboardController.onPageLoad().url,
       value    = search.map(_.trim).filter(_.nonEmpty),
-      label    = messages("dashboard.search.heading"),
       hint     = Some(messages("dashboard.search.hintText")),
       clearUrl = clearUrl
     )

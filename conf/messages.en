@@ -15,6 +15,7 @@ site.agreeAndSubmit = Agree and submit
 site.previous = Previous
 site.next = Next
 pagination.landmark = Table pagination
+site.print = Print
 
 
 breadcrumbs.mps = MPS
@@ -46,6 +47,7 @@ dashboard.allTransfers.page = All transfers (page {0} of {1})
 dashboard.heading = Report a transfer to a qualifying recognised overseas pension scheme (QROPS)
 dashboard.linkText = Start a new transfer
 dashboard.allTransfers.heading = All transfers
+dashboard.search.results.heading = Search results
 dashboard.allTransfers.head.member = Member name
 dashboard.allTransfers.head.status = Status
 dashboard.allTransfers.head.reference = Transfer reference
@@ -63,9 +65,13 @@ dashboard.lock.title = Important
 dashboard.lock.warning = Someone else is editing the transfer report for {0}, please try again later.
 dashboard.lock.hide = Hide message
 dashboard.pensionSchemeLink.text = Return to {0} pension scheme
-dashboard.search.heading = All transfers
+dashboard.search.heading = Find a transfer
+dashboard.search.buttonText = Search
+dashboard.search.clear = Clear
+dashboard.search.clear.hiddenText = search
 dashboard.search.hintText = You can search by National Insurance number, transfer reference or member name
 dashboard.search.noResults.heading = No results found
+dashboard.search.results.count = Showing {0} of {1} transfers
 dashboard.search.noResults.paragraph = Check what you''ve entered and try searching again.
 
 requiredInfo.title = What you will need
@@ -783,6 +789,15 @@ transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
 transferSubmitted.memberName.key = Member name
 transferSubmitted.pensionScheme.key = Scheme
 transferSubmitted.dateSubmitted.key = Date submitted
+transferSubmitted.memberDetails = The member''s details
+transferSubmitted.transferDetails = The transfer details
+transferSubmitted.qropsDetails = The QROPS details
+transferSubmitted.qropsManagerDetails = The QROPS scheme manager details
+transferSubmitted.notification = We have sent a confirmation email to {0}.
+transferSubmitted.printLink = Print this page and your submitted report
+transferSubmitted.start = Start a
+transferSubmitted.newTransfer = new transfer
+transferSubmitted.nextInfo = What you can do next
 
 viewSubmitted.heading = Overseas transfer report for {0}
 viewSubmitted.amendTitle = Amend your submission

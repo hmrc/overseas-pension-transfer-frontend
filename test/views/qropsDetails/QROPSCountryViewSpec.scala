@@ -1,0 +1,57 @@
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package views.qropsDetails
+
+import forms.qropsDetails.QROPSCountryFormProvider
+import models.NormalMode
+import play.api.data.FormError
+import viewmodels.CountrySelectViewModel
+import views.html.qropsDetails.QROPSCountryView
+import views.utils.ViewBaseSpec
+
+class QROPSCountryViewSpec extends ViewBaseSpec {
+
+  private val view                   = applicationBuilder().injector().instanceOf[QROPSCountryView]
+  private val formProvider           = applicationBuilder().injector().instanceOf[QROPSCountryFormProvider]
+  private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
+
+  "QROPSCountryView" - {
+
+    "show correct title" in {
+      doc(view(formProvider(), countrySelectViewModel, NormalMode).body)
+        .getElementsByTag("title").eachText().get(0) mustBe
+        s"${messages("qropsCountry.title")} - ${messages("service.name")} - GOV.UK"
+    }
+
+    behave like pageWithH1(view(formProvider(), countrySelectViewModel, NormalMode), "qropsCountry.heading")
+
+    behave like pageWithSubmitButton(
+      view(formProvider(), countrySelectViewModel, NormalMode),
+      "site.saveAndContinue"
+    )
+
+    behave like pageWithErrors(
+      view(
+        formProvider().withError(FormError("countryCode", "qropsCountry.error.required")),
+        countrySelectViewModel,
+        NormalMode
+      ),
+      "countryCode",
+      "qropsCountry.error.required"
+    )
+  }
+}
