@@ -84,6 +84,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val allowPrintSubmittedTransfer: Boolean = configuration.get[Boolean]("features.print-submitted-transfer")
 
+  val signedOutRedirectUrl: String         = configuration.get[String]("urls.signedOutRedirectUrl")
+  val accessibilityAddressChanges: Boolean = configuration.get[Boolean]("features.accessibility-address-changes")
   val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
 
   def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String = {
