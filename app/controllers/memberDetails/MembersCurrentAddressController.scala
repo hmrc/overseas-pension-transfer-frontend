@@ -16,6 +16,7 @@
 
 package controllers.memberDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
@@ -43,7 +44,8 @@ class MembersCurrentAddressController @Inject() (
     countryService: CountryService,
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
-    view: MembersCurrentAddressView
+    view: MembersCurrentAddressView,
+    appConfig: FrontendAppConfig
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with ErrorHandling {
 
@@ -55,7 +57,7 @@ class MembersCurrentAddressController @Inject() (
         case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(address))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-      Ok(view(preparedForm, countrySelectViewModel, mode))
+      Ok(view(preparedForm, countrySelectViewModel, mode, appConfig))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
@@ -64,7 +66,7 @@ class MembersCurrentAddressController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, appConfig)))
         },
         formData =>
           addressService.membersCurrentAddress(formData) match {

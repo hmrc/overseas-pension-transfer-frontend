@@ -17,6 +17,7 @@
 package controllers.memberDetails
 
 import base.AddressBase
+import config.FrontendAppConfig
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.NormalMode
@@ -57,7 +58,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
   private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
 
   private val mockCountryService = mock[CountryService]
-
+  private val appConfig          = applicationBuilder().injector().instanceOf[FrontendAppConfig]
   "MembersCurrentAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
@@ -82,7 +83,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         contentAsString(result) mustEqual view(
           form,
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          appConfig
         )(fakeDisplayRequest(request), messages(application)).toString
       }
     }
@@ -110,7 +112,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         contentAsString(result) mustEqual view(
           form.fill(formData),
           countrySelectViewModel,
-          NormalMode
+          NormalMode,
+          appConfig
         )(displayRequest, messages(application)).toString
       }
     }
@@ -177,7 +180,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, appConfig)(
           displayRequest,
           messages(application)
         ).toString

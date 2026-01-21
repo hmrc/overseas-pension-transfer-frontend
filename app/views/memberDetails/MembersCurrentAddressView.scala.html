@@ -22,6 +22,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.{InputCountry, QTNumber}
+@import config.FrontendAppConfig
 
 @this(
         layout: templates.Layout,
@@ -34,7 +35,7 @@
 )
 
 
-@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode, appConfig: FrontendAppConfig)(implicit request: DisplayRequest[_], messages: Messages)
 
 @memberName = @{request.memberName}
 
@@ -65,36 +66,42 @@
             .withWidth(Fixed20)
         )
 
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine3"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine3")))
-            )
-            .withWidth(Fixed20)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine4"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine4")))
-            )
-            .withWidth(Fixed20)
-        )
-
+        @defining(
+            if (appConfig.accessibilityAddressChanges) "common.addressInput.accessible" else "common.addressInput"
+        ) { prefix =>
+            @govukInput(
+                InputViewModel(
+                    field = form("addressLine3"),
+                    label = LabelViewModel(Text(messages(s"$prefix.addressLine3")))
+                )
+                .withWidth(Fixed20)
+        )}
+        @defining(
+            if (appConfig.accessibilityAddressChanges) "common.addressInput.accessible" else "common.addressInput"
+        ) { prefix =>
+            @govukInput(
+                InputViewModel(
+                    field = form("addressLine4"),
+                    label = LabelViewModel(Text(messages(s"$prefix.addressLine4")))
+                )
+                .withWidth(Fixed20)
+        )}
         @inputCountry(
             form,
             field = "countryCode",
             labelMsg = "common.addressInput.countryCode",
             countries = countrySelectViewModel.items
         )
-
-        @govukInput(
-            InputViewModel(
-                field = form("postcode"),
-                label = LabelViewModel(Text(messages("common.addressInput.postcode")))
-            )
-            .withWidth(OneQuarter)
-        )
+        @defining(
+            if (appConfig.accessibilityAddressChanges) "common.addressInput.accessible" else "common.addressInput"
+        ) { prefix =>
+            @govukInput(
+                InputViewModel(
+                    field = form("postcode"),
+                    label = LabelViewModel(Text(messages(s"$prefix.postcode")))
+                )
+                .withWidth(OneQuarter)
+        )}
 
         @govukInput(
             InputViewModel(
