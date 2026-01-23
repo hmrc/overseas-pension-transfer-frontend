@@ -27,7 +27,7 @@ import views.utils.ViewBaseSpec
 class MembersCurrentAddressViewSpec extends ViewBaseSpec {
 
   private val view                                  = applicationBuilder().injector().instanceOf[MembersCurrentAddressView]
-  private val accessibleView                                  = applicationBuilder().injector().instanceOf[MembersCurrentAddressAccessibleView]
+  private val accessibleView                        = applicationBuilder().injector().instanceOf[MembersCurrentAddressAccessibleView]
   private val formProvider                          = applicationBuilder().injector().instanceOf[MembersCurrentAddressFormProvider]
   private val countrySelectViewModel                = CountrySelectViewModel(Seq.empty)
   implicit private val appConfig: FrontendAppConfig = new TestAppConfig
@@ -54,7 +54,6 @@ class MembersCurrentAddressViewSpec extends ViewBaseSpec {
     )
 
     "display accessible input labels in accessible view" in {
-      val config  = applicationBuilder().configure("features.accessibility-address-changes" -> true).injector().instanceOf[FrontendAppConfig]
       val docBody = doc(accessibleView(formProvider(), countrySelectViewModel, NormalMode).body)
       docBody.select(s"label[for=addressLine1]").first().text() must include(messages("common.addressInput.addressLine1"))
       docBody.select(s"label[for=addressLine2]").first().text() must include(messages("common.addressInput.addressLine2"))

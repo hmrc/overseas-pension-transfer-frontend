@@ -17,7 +17,6 @@
 package controllers.memberDetails
 
 import base.AddressBase
-import config.FrontendAppConfig
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.NormalMode
@@ -29,16 +28,16 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import pages.memberDetails.{MemberNinoPage, MembersCurrentAddressPage}
+import pages.memberDetails.MembersCurrentAddressPage
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.i18n.Messages
 import repositories.SessionRepository
 import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
-import views.html.memberDetails.MembersCurrentAddressView
+import views.html.memberDetails.{MembersCurrentAddressAccessibleView, MembersCurrentAddressView}
 
 import scala.concurrent.Future
 
@@ -58,14 +57,13 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
   private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
 
   private val mockCountryService = mock[CountryService]
-  private val appConfig          = applicationBuilder().injector().instanceOf[FrontendAppConfig]
   "MembersCurrentAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).overrides(
         bind[CountryService].toInstance(mockCountryService)
-      ).build()
+      ).configure("features.accessibility-address-changes" -> false).build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -88,14 +86,40 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       }
     }
 
+    "must return OK and the correct view for a GET when accessible change feature is on" in {
+
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).overrides(
+        bind[CountryService].toInstance(mockCountryService)
+      ).configure("features.accessibility-address-changes" -> true).build()
+
+      when(mockCountryService.countries).thenReturn(testCountries)
+
+      running(application) {
+        val request                                                         = FakeRequest(GET, membersCurrentAddressRoute)
+        implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
+
+        val form = formProvider()
+        val view = application.injector.instanceOf[MembersCurrentAddressAccessibleView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual view(
+          form,
+          countrySelectViewModel,
+          NormalMode
+        )(fakeDisplayRequest(request), messages(application)).toString
+      }
+    }
+
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers =
         userAnswersMemberNameQtNumber.set(MembersCurrentAddressPage, membersCurrentAddress).success.value
       val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        )
-        .build()
+        ).configure("features.accessibility-address-changes" -> false).build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -135,8 +159,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
-          )
-          .build()
+          ).configure("features.accessibility-address-changes" -> false).build()
 
       running(application) {
         val request =
@@ -160,8 +183,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        )
-        .build()
+        ).configure("features.accessibility-address-changes" -> false).build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
