@@ -21,30 +21,31 @@ import forms.memberDetails.MembersCurrentAddressFormProvider
 import models.NormalMode
 import play.api.data.FormError
 import viewmodels.CountrySelectViewModel
-import views.html.memberDetails.MembersCurrentAddressView
+import views.html.memberDetails.{MembersCurrentAddressAccessibleView, MembersCurrentAddressView}
 import views.utils.ViewBaseSpec
 
 class MembersCurrentAddressViewSpec extends ViewBaseSpec {
 
   private val view                                  = applicationBuilder().injector().instanceOf[MembersCurrentAddressView]
+  private val accessibleView                                  = applicationBuilder().injector().instanceOf[MembersCurrentAddressAccessibleView]
   private val formProvider                          = applicationBuilder().injector().instanceOf[MembersCurrentAddressFormProvider]
   private val countrySelectViewModel                = CountrySelectViewModel(Seq.empty)
   implicit private val appConfig: FrontendAppConfig = new TestAppConfig
   "MembersCurrentAddressView" - {
 
     "show correct title" in {
-      doc(view(formProvider(), countrySelectViewModel, NormalMode, appConfig).body)
+      doc(view(formProvider(), countrySelectViewModel, NormalMode).body)
         .getElementsByTag("title").eachText().get(0) mustBe
         s"${messages("membersCurrentAddress.title")} - ${messages("service.name")} - GOV.UK"
     }
 
     "display correct heading with member name" in {
-      val heading = doc(view(formProvider(), countrySelectViewModel, NormalMode, appConfig).body).getElementsByTag("h1").first()
+      val heading = doc(view(formProvider(), countrySelectViewModel, NormalMode).body).getElementsByTag("h1").first()
       heading.text() mustBe messages("membersCurrentAddress.heading", testMemberName.fullName)
     }
 
     behave like pageWithMultipleInputFields(
-      view(formProvider(), countrySelectViewModel, NormalMode, appConfig),
+      view(formProvider(), countrySelectViewModel, NormalMode),
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
       ("addressLine3", "common.addressInput.addressLine3"),
@@ -52,16 +53,18 @@ class MembersCurrentAddressViewSpec extends ViewBaseSpec {
       ("postcode", "common.addressInput.postcode")
     )
 
-    "display accessible input labels when feature is true" in {
+    "display accessible input labels in accessible view" in {
       val config  = applicationBuilder().configure("features.accessibility-address-changes" -> true).injector().instanceOf[FrontendAppConfig]
-      val docBody = doc(view(formProvider(), countrySelectViewModel, NormalMode, config).body)
+      val docBody = doc(accessibleView(formProvider(), countrySelectViewModel, NormalMode).body)
+      docBody.select(s"label[for=addressLine1]").first().text() must include(messages("common.addressInput.addressLine1"))
+      docBody.select(s"label[for=addressLine2]").first().text() must include(messages("common.addressInput.addressLine2"))
       docBody.select(s"label[for=addressLine3]").first().text() must include(messages("common.addressInput.accessible.addressLine3"))
       docBody.select(s"label[for=addressLine4]").first().text() must include(messages("common.addressInput.accessible.addressLine4"))
       docBody.select(s"label[for=postcode]").first().text() must include(messages("common.addressInput.accessible.postcode"))
     }
 
     behave like pageWithSubmitButton(
-      view(formProvider(), countrySelectViewModel, NormalMode, appConfig),
+      view(formProvider(), countrySelectViewModel, NormalMode),
       "site.saveAndContinue"
     )
 
@@ -69,8 +72,7 @@ class MembersCurrentAddressViewSpec extends ViewBaseSpec {
       view(
         formProvider().withError(FormError("addressLine1", "membersCurrentAddress.error.addressLine1.required")),
         countrySelectViewModel,
-        NormalMode,
-        appConfig
+        NormalMode
       ),
       "addressLine1",
       "membersCurrentAddress.error.addressLine1.required"

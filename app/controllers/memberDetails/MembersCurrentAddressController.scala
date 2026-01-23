@@ -30,6 +30,7 @@ import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.MembersCurrentAddressView
+import views.html.memberDetails.MembersCurrentAddressAccessibleView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,6 +46,7 @@ class MembersCurrentAddressController @Inject() (
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: MembersCurrentAddressView,
+    accessibleView: MembersCurrentAddressAccessibleView,
     appConfig: FrontendAppConfig
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with ErrorHandling {
@@ -57,7 +59,11 @@ class MembersCurrentAddressController @Inject() (
         case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(address))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-      Ok(view(preparedForm, countrySelectViewModel, mode, appConfig))
+      if (appConfig.accessibilityAddressChanges) {
+        Ok(accessibleView(preparedForm, countrySelectViewModel, mode))
+      } else {
+        Ok(view(preparedForm, countrySelectViewModel, mode))
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
@@ -66,7 +72,11 @@ class MembersCurrentAddressController @Inject() (
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, appConfig)))
+          if (appConfig.accessibilityAddressChanges) {
+            Future.successful(BadRequest(accessibleView(formWithErrors, countrySelectViewModel, mode)))
+          } else {
+            Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+          }
         },
         formData =>
           addressService.membersCurrentAddress(formData) match {
