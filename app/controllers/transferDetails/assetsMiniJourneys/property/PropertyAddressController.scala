@@ -16,8 +16,9 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
+import config.FrontendAppConfig
 import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormProvider}
+import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormDataTrait, PropertyAddressFormProvider}
 import models.assets.TypeOfAsset.Property
 import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
@@ -46,23 +47,25 @@ class PropertyAddressController @Inject() (
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
     view: PropertyAddressView
-  )(implicit ec: ExecutionContext
+  )(implicit ec: ExecutionContext,
+    appConfig: FrontendAppConfig
   ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val form                   = formProvider()
+      val form                   = formProvider(appConfig.accessibilityAddressChanges)
       val preparedForm           = request.userAnswers.get(PropertyAddressPage(index)) match {
         case None          => form
-        case Some(address) => form.fill(PropertyAddressFormData.fromDomain(address))
+        case Some(address) => form.fill(PropertyAddressFormDataTrait.fromDomain(address))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+
       Ok(view(preparedForm, countrySelectViewModel, mode, index))
   }
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      val form = formProvider()
+      val form = formProvider(appConfig.accessibilityAddressChanges)
       form.bindFromRequest().fold(
         formWithErrors => {
           val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)

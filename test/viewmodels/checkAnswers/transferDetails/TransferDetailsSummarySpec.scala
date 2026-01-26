@@ -41,7 +41,7 @@ class TransferDetailsSummarySpec extends AnyFreeSpec with SpecBase {
   implicit val messages: Messages = stubMessages()
 
   private val propertyEntry      =
-    PropertyEntry(PropertyAddress("Line1", "Line2", None, None, Country("GB", "United Kingdom"), None), BigDecimal(100000.99), "A Barn")
+    PropertyEntry(PropertyAddress("Line1", "Line2", None, None, None, Country("GB", "United Kingdom"), None), BigDecimal(100000.99), "A Barn")
   private val unquotedShareEntry = UnquotedSharesEntry("Unquoted Share Description", BigDecimal(1000.00), 1, "A")
   private val quotedShareEntry   = QuotedSharesEntry("Quoted Share Description", BigDecimal(1000.00), 2, "B")
   private val otherAssetEntry    = OtherAssetsEntry("Other Asset Description", BigDecimal(3000.00))

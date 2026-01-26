@@ -20,7 +20,7 @@ import connectors.AddressLookupConnector
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataTrait
 import models.{SessionData, UserAnswers}
 import models.address._
 import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
@@ -36,13 +36,16 @@ class AddressService @Inject() (
   )(implicit ex: ExecutionContext
   ) {
 
-  def propertyAddress(data: PropertyAddressFormData): Option[PropertyAddress] =
+  def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] =
     countryService.find(data.countryCode).map { country =>
+      println(Console.GREEN + data.poBoxNumber + Console.RESET)
+
       PropertyAddress(
         data.addressLine1,
         data.addressLine2,
-        data.addressLine3,
-        data.addressLine4,
+        data.town,
+        data.county,
+        data.poBoxNumber,
         country,
         data.postcode
       )

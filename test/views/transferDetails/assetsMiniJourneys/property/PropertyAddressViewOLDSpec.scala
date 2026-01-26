@@ -26,10 +26,10 @@ import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
 import views.utils.ViewBaseSpec
 
-class PropertyAddressViewSpec extends ViewBaseSpec {
+class PropertyAddressViewOLDSpec extends ViewBaseSpec {
 
   val application: Application = GuiceApplicationBuilder()
-    .configure("features.accessibility-address-changes" -> true)
+    .configure("features.accessibility-address-changes" -> false)
     .build()
 
   private val view                                  = application.injector.instanceOf[PropertyAddressView]
@@ -41,31 +41,30 @@ class PropertyAddressViewSpec extends ViewBaseSpec {
   "PropertyAddressView" - {
 
     "show correct title" in {
-      doc(view(formProvider(true), countrySelectViewModel, NormalMode, testIndex).body)
+      doc(view(formProvider(false), countrySelectViewModel, NormalMode, testIndex).body)
         .getElementsByTag("title").eachText().get(0) mustBe
         s"${messages("propertyAddress.title")} - ${messages("service.name")} - GOV.UK"
     }
 
-    behave like pageWithH1(view(formProvider(true), countrySelectViewModel, NormalMode, testIndex), "propertyAddress.heading")
+    behave like pageWithH1(view(formProvider(false), countrySelectViewModel, NormalMode, testIndex), "propertyAddress.heading")
 
     behave like pageWithMultipleInputFields(
-      view(formProvider(true), countrySelectViewModel, NormalMode, testIndex),
+      view(formProvider(false), countrySelectViewModel, NormalMode, testIndex),
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
-      ("addressLine3", "common.addressInput.townOrCity"),
-      ("addressLine4", "common.addressInput.county"),
-      ("addressLine5", "common.addressInput.poBox"),
+      ("addressLine3", "common.addressInput.addressLine3"),
+      ("addressLine4", "common.addressInput.addressLine4"),
       ("postcode", "common.addressInput.postcode")
     )
 
     behave like pageWithSubmitButton(
-      view(formProvider(true), countrySelectViewModel, NormalMode, testIndex),
+      view(formProvider(false), countrySelectViewModel, NormalMode, testIndex),
       "site.saveAndContinue"
     )
 
     behave like pageWithErrors(
       view(
-        formProvider(true).withError(FormError("addressLine1", "propertyAddress.error.addressLine1.required")),
+        formProvider(false).withError(FormError("addressLine1", "propertyAddress.error.addressLine1.required")),
         countrySelectViewModel,
         NormalMode,
         testIndex

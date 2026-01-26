@@ -21,7 +21,7 @@ import connectors.AddressLookupConnector
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
+import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormDataTrait, PropertyAddressFormDataOld}
 import models.address._
 import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import org.mockito.ArgumentMatchers.anyString
@@ -49,10 +49,11 @@ class AddressServiceSpec
 
   ".propertyAddress" - {
 
-    "must map the form data (including postcode and PO box)" in {
+    // TODO REMOVE
+    "must map the form data (including postcode and PO box) (OLD)" in {
       when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
 
-      val formData = PropertyAddressFormData(
+      val formData = PropertyAddressFormDataOld(
         addressLine1 = propertyAddress.addressLine1,
         addressLine2 = propertyAddress.addressLine2,
         addressLine3 = propertyAddress.addressLine3,

@@ -18,11 +18,12 @@ package controllers.transferDetails.assetsMiniJourneys.property
 
 import base.AddressBase
 import config.FrontendAppConfig
+import controllers.routes.JourneyRecoveryController
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormDataTrait, PropertyAddressFormProvider}
+import models.{AmendCheckMode, NormalMode}
 import models.address._
 import models.requests.DisplayRequest
-import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -40,7 +41,7 @@ import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressVie
 
 import scala.concurrent.Future
 
-class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
+class PropertyAddressControllerOLDSpec extends AnyFreeSpec with MockitoSugar with AddressBase {
   private val index = 0
 
   private val formProvider = new PropertyAddressFormProvider()
@@ -61,14 +62,14 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
   "PropertyAddress Controller" - {
 
     // TODO REMOVE
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET (OLD)" in {
 
       val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
         .configure(
-          "features.accessibility-address-changes" -> true
+          "features.accessibility-address-changes" -> false
         )
         .build()
 
@@ -77,7 +78,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       running(application) {
         val request = FakeRequest(GET, propertyAddressRoute)
 
-        val form      = formProvider(true)
+        val form      = formProvider(false)
         val view      = application.injector.instanceOf[PropertyAddressView]
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
@@ -94,7 +95,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    // TODO REMOVE
+    "must populate the view correctly on a GET when the question has previously been answered (OLD)" in {
       val userAnswers =
         userAnswersMemberNameQtNumber.set(PropertyAddressPage(index), propertyAddress).success.value
       val application = applicationBuilder(userAnswers)
@@ -102,7 +104,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           bind[CountryService].toInstance(mockCountryService)
         )
         .configure(
-          "features.accessibility-address-changes" -> true
+          "features.accessibility-address-changes" -> false
         )
         .build()
 
@@ -112,7 +114,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val request                                                         = FakeRequest(GET, propertyAddressRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
-        val form      = formProvider(true)
+        val form      = formProvider(false)
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
@@ -191,14 +193,15 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       }
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+    // TODO REMOVE
+    "must return a Bad Request and errors when invalid data is submitted (OLD)" in {
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
         .configure(
-          "features.accessibility-address-changes" -> true
+          "features.accessibility-address-changes" -> false
         )
         .build()
 
@@ -211,7 +214,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
         implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
 
-        val form      = formProvider(true)
+        val form      = formProvider(false)
         val boundForm = form.bind(Map("value" -> "invalid value"))
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value

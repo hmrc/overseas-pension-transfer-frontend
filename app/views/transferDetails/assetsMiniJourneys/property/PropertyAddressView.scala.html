@@ -25,6 +25,7 @@
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 @import play.api.data.Form
 @import play.api.i18n.Messages
+@import config.FrontendAppConfig
 
 @this(
         layout: templates.Layout,
@@ -36,8 +37,26 @@
         inputCountry: InputCountry
 )
 
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages)
+@textInputLine(formField: String, label: String) = {
+    @govukInput(
+        InputViewModel(
+            field = form(formField),
+            label = LabelViewModel(Text(messages(label)))
+        )
+        .withWidth(Fixed20)
+    )
+}
+    
+@countryInput() = {
+    @inputCountry(
+        form,
+        field = "countryCode",
+        labelMsg = "common.addressInput.countryCode",
+        countries = countrySelectViewModel.items
+    )
+}
 
 @layout(pageTitle = title(form, messages("propertyAddress.title"))) {
 
@@ -49,53 +68,23 @@
 
         @qtNumber()
         <h1 class="govuk-heading-l">@messages("propertyAddress.heading")</h1>
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine1"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine1")))
-            )
-            .withWidth(Fixed20)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine2"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine2")))
-            )
-            .withWidth(Fixed20)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine3"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine3")))
-            )
-            .withWidth(Fixed20)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine4"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine4")))
-            )
-            .withWidth(Fixed20)
-        )
-
-        @inputCountry(
-            form,
-            field = "countryCode",
-            labelMsg = "common.addressInput.countryCode",
-            countries = countrySelectViewModel.items
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("postcode"),
-                label = LabelViewModel(Text(messages("common.addressInput.postcode")))
-            )
-            .withWidth(OneQuarter)
-        )
+        
+        @if(appConfig.accessibilityAddressChanges) {
+            @textInputLine("addressLine1", "common.addressInput.addressLine1")
+            @textInputLine("addressLine2", "common.addressInput.addressLine2")
+            @textInputLine("addressLine3", "common.addressInput.townOrCity")
+            @textInputLine("addressLine4", "common.addressInput.county")
+            @textInputLine("postcode", "common.addressInput.postcode")
+            @textInputLine("addressLine5", "common.addressInput.poBox")
+            @countryInput()
+        } else {
+            @textInputLine("addressLine1", "common.addressInput.addressLine1")
+            @textInputLine("addressLine2", "common.addressInput.addressLine2")
+            @textInputLine("addressLine3", "common.addressInput.addressLine3")
+            @textInputLine("addressLine4", "common.addressInput.addressLine4")
+            @countryInput()
+            @textInputLine("postcode", "common.addressInput.postcode")
+        }
 
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))
