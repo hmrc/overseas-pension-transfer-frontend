@@ -21,7 +21,7 @@ import connectors.AddressLookupConnector
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormDataTrait, PropertyAddressFormDataOld}
+import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormDataOld, PropertyAddressFormDataTrait}
 import models.address._
 import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import org.mockito.ArgumentMatchers.anyString

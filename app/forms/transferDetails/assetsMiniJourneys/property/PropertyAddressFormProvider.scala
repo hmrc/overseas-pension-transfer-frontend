@@ -135,7 +135,7 @@ class PropertyAddressFormProvider @Inject() extends Mappings with Regex {
         form
       } {
         case PropertyAddressFormData(al1, al2, town, county, postCode, poBox, countryCode) => Some(al1, al2, town, county, poBox, countryCode, postCode)
-        case PropertyAddressFormDataOld(al1, al2, town, county, countryCode, postCode)        => Some(al1, al2, town, county, None, countryCode, postCode)
+        case PropertyAddressFormDataOld(al1, al2, town, county, countryCode, postCode)     => Some(al1, al2, town, county, None, countryCode, postCode)
       }
     )
   }
