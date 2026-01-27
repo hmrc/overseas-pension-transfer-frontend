@@ -105,7 +105,7 @@ object AllTransfersTableViewModel {
       rows           = rows,
       caption        = Some(messages("dashboard.search.results.heading")),
       captionClasses = s"govuk-table__caption--m $hideCaption",
-      attributes     = if (appConfig.allowDashboardSearch) Map("aria-hidden" -> "true") else Map.empty
+      attributes     = Map.empty
     )
   }
 }
