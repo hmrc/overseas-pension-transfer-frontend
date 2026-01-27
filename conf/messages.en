@@ -131,16 +131,13 @@ unauthorised.link = <a href="{0}" class="govuk-link">Find out more about access 
 common.addressInput.addressLine1 = Address line 1
 common.addressInput.addressLine2 = Address line 2
 common.addressInput.addressLine3 = Address line 3 (optional)
-common.addressInput.accessible.addressLine3 = Town or city (optional)
 common.addressInput.addressLine4 = Address line 4 (optional)
-common.addressInput.accessible.addressLine4 = County (optional)
 common.addressInput.addressLine5 = Address line 5 (optional)
 common.addressInput.addressLine1.change.hidden = Address line 1
 common.addressInput.addressLine2.change.hidden = Address line 2
 common.addressInput.addressLine3.change.hidden = Address line 3 (optional)
 common.addressInput.addressLine4.change.hidden = Address line 4 (optional)
 common.addressInput.postcode = UK Postcode (optional)
-common.addressInput.accessible.postcode = Postcode (optional)
 common.addressInput.poBox = PO Box (optional)
 common.addressInput.countryCode = Country
 common.addressInput.error.addressLine1.length = Address line 1 must be 35 characters or less
