@@ -19,6 +19,8 @@ package forms.memberDetails
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
+import scala.util.Random
+
 class MemberNinoFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "memberNino.error.required"
@@ -57,19 +59,28 @@ class MemberNinoFormProviderSpec extends StringFieldBehaviours {
 
     "must allow combinations of whitespace and strip them on binding" in {
 
-      val inputs = Seq(
-        "QQ123456C",
-        " QQ123456C ",
-        "QQ 123456C",
-        "QQ 12 34 56 C"
+      val ninoParts = Seq(
+        "AA",
+        f"${Random.nextInt(100)}%02d",
+        f"${Random.nextInt(100)}%02d",
+        f"${Random.nextInt(100)}%02d",
+        "C"
       )
+
+      val inputs = Seq(
+        ninoParts.mkString(""),
+        ninoParts.mkString(" ", "", " "),
+        ninoParts.mkString(" ")
+      )
+
+      val expected = ninoParts.mkString("")
 
       inputs.foreach { input =>
         val result = form.bind(Map("value" -> input))
 
         withClue(s"For input '$input': ") {
           result.errors mustBe empty
-          result.value.value mustBe "QQ123456C"
+          result.value.value mustBe expected
         }
       }
     }
