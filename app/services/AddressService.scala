@@ -38,8 +38,6 @@ class AddressService @Inject() (
 
   def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] =
     countryService.find(data.countryCode).map { country =>
-      println(Console.GREEN + data.poBoxNumber + Console.RESET)
-
       PropertyAddress(
         data.addressLine1,
         data.addressLine2,
