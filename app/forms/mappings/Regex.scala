@@ -24,7 +24,8 @@ trait Regex {
 
   val addressLinesRegex: String = "^[a-zA-ZÀ-ÖØ-öø-ÿ0-9\\s\\-,.&'\\/]+$"
 
-  val postcodeRegex: String = "^(GIR 0AA|[A-Z]{1,2}[0-9][0-9A-Z]? ?[0-9][A-Z]{2})$"
+  val postcodeOutcodeRegex: String = "^GIR$|^[A-Z]{1,2}[0-9][0-9A-Z]?$"
+  val postcodeIncodeRegex: String  = "^[0-9][A-Z]{2}$"
 
   val internationalPostcodeRegex: String = "^[A-Za-z0-9\\s]+$"
 
