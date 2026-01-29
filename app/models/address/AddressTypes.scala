@@ -133,13 +133,15 @@ case class PropertyAddress(
     addressLine2: String,
     addressLine3: Option[String],
     addressLine4: Option[String],
+    addressLine5: Option[String],
     country: Country,
     ukPostCode: Option[String]
   ) extends Address {
 
-  val addressLine5: Option[Nothing] = None
-  val postcode: Option[String]      = ukPostCode
-  val poBoxNumber: Option[String]   = None
+  val town: Option[String]        = addressLine3
+  val county: Option[String]      = addressLine4
+  val postcode: Option[String]    = ukPostCode
+  val poBoxNumber: Option[String] = addressLine5
 }
 
 object PropertyAddress {

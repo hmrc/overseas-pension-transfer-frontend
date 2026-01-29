@@ -103,6 +103,7 @@ trait AddressBase extends SpecBase {
     addressLine2 = "Some District",
     addressLine3 = None,
     addressLine4 = None,
+    addressLine5 = None,
     ukPostCode   = Some("ZZ1 1ZZ"),
     country      = Countries.UK
   )

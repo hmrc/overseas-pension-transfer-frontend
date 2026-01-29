@@ -35,7 +35,7 @@ class PropertyAddressSummarySpec extends AnyFreeSpec with SpecBase {
     "must return a SummaryListRow when PropertyAddressPage has a value" in {
       val answers = emptyUserAnswers.set(
         PropertyAddressPage(0),
-        PropertyAddress("Line1", "Line2", None, None, Country("GB", "United Kingdom"), None)
+        PropertyAddress("Line1", "Line2", None, None, None, Country("GB", "United Kingdom"), None)
       ).success.value
 
       val result = PropertyAddressSummary.row(CheckMode, answers, 0)
