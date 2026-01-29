@@ -20,14 +20,15 @@ import config.FrontendAppConfig
 import forms.qropsDetails.QROPSAddressFormProvider
 import models.NormalMode
 import play.api.data.FormError
+import play.api.inject.guice.GuiceApplicationBuilder
 import viewmodels.CountrySelectViewModel
 import views.html.qropsDetails.QROPSAddressView
 import views.utils.ViewBaseSpec
 
-class QROPSAddressViewSpec extends ViewBaseSpec {
+class QROPSAddressViewOLDSpec extends ViewBaseSpec {
 
   private val application = applicationBuilder().configure(
-    "features.accessibility-address-changes" -> true
+    "features.accessibility-address-changes" -> false
   ).build()
 
   private val view                                  = application.injector.instanceOf[QROPSAddressView]
@@ -49,9 +50,9 @@ class QROPSAddressViewSpec extends ViewBaseSpec {
       view(formProvider(), countrySelectViewModel, NormalMode),
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
-      ("addressLine3", "common.addressInput.accessible.addressLine3"),
-      ("addressLine4", "common.addressInput.accessible.addressLine4"),
-      ("addressLine5", "common.addressInput.poBox")
+      ("addressLine3", "common.addressInput.addressLine3"),
+      ("addressLine4", "common.addressInput.addressLine4"),
+      ("addressLine5", "common.addressInput.addressLine5")
     )
 
     behave like pageWithSubmitButton(

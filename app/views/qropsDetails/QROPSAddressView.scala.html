@@ -21,6 +21,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.InputCountry
+@import config.FrontendAppConfig
 
 @this(
     layout: templates.Layout,
@@ -30,8 +31,17 @@
     inputCountry: InputCountry,
     govukButton: GovukButton
 )
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@addressLine(formField: String, message: String) = {
+    @govukInput(
+        InputViewModel(
+            field = form(formField),
+            label = LabelViewModel(Text(messages(message)))
+        )
+        .withWidth(Fixed20)
+    )
+}
 
 @layout(pageTitle = title(form, messages("qropsAddress.title"))) {
 
@@ -42,46 +52,20 @@
         }
 
         <h1 class="govuk-heading-l">@messages("qropsAddress.heading")</h1>
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine1"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine1")))
-            )
-            .withWidth(Fixed20)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine2"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine2")))
-            )
-            .withWidth(Fixed20)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine3"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine3")))
-            )
-            .withWidth(Fixed20)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine4"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine4")))
-            )
-            .withWidth(Fixed20)
-        )
-
-        @govukInput(
-            InputViewModel(
-                field = form("addressLine5"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine5")))
-            )
-            .withWidth(Fixed20)
-        )
+        
+        @if(!appConfig.accessibilityAddressChanges) {
+            @addressLine("addressLine1", "common.addressInput.addressLine1")
+            @addressLine("addressLine2", "common.addressInput.addressLine2")
+            @addressLine("addressLine3", "common.addressInput.addressLine3")
+            @addressLine("addressLine4", "common.addressInput.addressLine4")
+            @addressLine("addressLine5", "common.addressInput.addressLine5")
+        } else {
+            @addressLine("addressLine1", "common.addressInput.addressLine1")
+            @addressLine("addressLine2", "common.addressInput.addressLine2")
+            @addressLine("addressLine3", "common.addressInput.accessible.addressLine3")
+            @addressLine("addressLine4", "common.addressInput.accessible.addressLine4")
+            @addressLine("addressLine5", "common.addressInput.poBox")
+        }
 
         @inputCountry(
             form,

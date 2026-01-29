@@ -16,6 +16,7 @@
 
 package controllers.qropsDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
@@ -46,7 +47,8 @@ class QROPSAddressController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: QROPSAddressView,
     userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
+  )(implicit ec: ExecutionContext,
+    appConfig: FrontendAppConfig
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils with ErrorHandling {
 
   private def form(): Form[QROPSAddressFormData] = formProvider()
