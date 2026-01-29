@@ -40,7 +40,7 @@ import views.html.qropsSchemeManagerDetails.SchemeManagersAddressView
 
 import scala.concurrent.Future
 
-class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with AddressBase {
+class SchemeManagersAddressControllerOLDSpec extends AnyFreeSpec with SpecBase with MockitoSugar with AddressBase {
 
   private val formProvider = new SchemeManagersAddressFormProvider()
   private val form         = formProvider()
@@ -71,7 +71,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           bind[CountryService].toInstance(mockCountryService)
         )
         .configure(
-          "features.accessibility-address-changes" -> true
+          "features.accessibility-address-changes" -> false
         )
         .build()
 
@@ -100,7 +100,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           bind[CountryService].toInstance(mockCountryService)
         )
         .configure(
-          "features.accessibility-address-changes" -> true
+          "features.accessibility-address-changes" -> false
         )
         .build()
 
@@ -168,7 +168,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           bind[CountryService].toInstance(mockCountryService)
         )
         .configure(
-          "features.accessibility-address-changes" -> true
+          "features.accessibility-address-changes" -> false
         )
         .build()
 

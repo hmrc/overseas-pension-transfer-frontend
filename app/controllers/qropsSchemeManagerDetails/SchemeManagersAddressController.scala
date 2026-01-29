@@ -16,6 +16,7 @@
 
 package controllers.qropsSchemeManagerDetails
 
+import config.FrontendAppConfig
 import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
@@ -46,7 +47,8 @@ class SchemeManagersAddressController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: SchemeManagersAddressView,
     userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
+  )(implicit ec: ExecutionContext,
+    appConfig: FrontendAppConfig
   ) extends FrontendBaseController with I18nSupport with Logging with AppUtils with ErrorHandling {
 
   private def form: Form[SchemeManagersAddressFormData] = formProvider()
