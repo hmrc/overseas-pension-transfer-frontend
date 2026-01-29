@@ -93,4 +93,13 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val submissionEmailEnabled: Boolean = configuration.get[Boolean]("features.submission-email")
 
+  val accessibilityAddressChanges: Boolean = configuration.get[Boolean]("features.accessibility-address-changes")
+
+  def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String = {
+    if (isPspUser) {
+      s"${mpsHomeUrl.dropRight("/overview".length)}/$srn/dashboard/pension-scheme-details"
+    } else {
+      s"$pensionSchemeSummaryUrl$srn"
+    }
+  }
 }

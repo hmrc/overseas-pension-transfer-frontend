@@ -36,6 +36,7 @@ class TestAppConfig
         "features.submission-email"           -> true,
         "features.dashboard-search"           -> true,
         "features.print-submitted-transfer"   -> false,
+        "features.accessibility-address-changes" -> false,
         "enrolments.psa.serviceName"          -> "HMRC-PSA-ORG",
         "enrolments.psa.identifierKey"        -> "PSAID",
         "enrolments.psp.serviceName"          -> "HMRC-PSP-ORG",

@@ -76,8 +76,10 @@ class PrintSubmittedTransferController @Inject() (
 
                 val managerEmail: String = userAnswers.get(SchemeManagersEmailPage).getOrElse("")
 
-                val srn     = sessionData.schemeInformation.srnNumber.value
-                val mpsLink = s"${appConfig.pensionSchemeSummaryUrl}$srn"
+                val mpsLink = appConfig.getPensionSchemeUrl(
+                  srn       = sessionData.schemeInformation.srnNumber.value,
+                  isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
+                )
 
                 Ok(
                   view(
