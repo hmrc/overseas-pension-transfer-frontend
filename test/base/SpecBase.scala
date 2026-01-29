@@ -46,6 +46,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.time.{Instant, LocalDate, ZoneId}
 import java.util.UUID
+import scala.util.Random
 
 trait SpecBase
     extends Matchers
@@ -100,6 +101,15 @@ trait SpecBase
     ),
     Json.obj()
   )
+
+  private def generateNino(prefix: String = "AA"): String = {
+    val num    = Random.nextInt(1000000)
+    val suffix = "C"
+    val nino   = f"$prefix$num%06d$suffix"
+    nino
+  }
+
+  val testNino = generateNino()
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
   def sessionDataMemberName: SessionData = emptySessionData.set(MemberNamePage, testMemberName).success.value
