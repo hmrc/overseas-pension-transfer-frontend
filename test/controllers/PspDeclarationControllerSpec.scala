@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.actions._
 import forms.PspDeclarationFormProvider
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
-import models.{NormalMode, QtNumber, UserAnswers}
+import models.{MinimalDetails, NormalMode, QtNumber, SessionData, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -31,13 +31,16 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PspDeclarationView
 
 import java.time.Instant
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import org.apache.commons.text.StringEscapeUtils
+import connectors.MinimalDetailsConnector
+import models.authentication.PspId
+import play.api.i18n.Messages
 
 class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -79,11 +82,23 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService      = mock[UserAnswersService]
+      val mockSessionRepository       = mock[SessionRepository]
+      val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
+      val mockEmailService            = mock[EmailService]
+
+      val receiptDate    = Instant.now
+      val qtNumber       = QtNumber("QT123456")
+      val minimalDetails = mock[MinimalDetails]
 
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456"), Instant.now()))))
+        .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, receiptDate))))
+
+      when(mockMinimalDetailsConnector.fetch(any[PspId]())(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(Right(minimalDetails)))
+
+      when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(EmailSentSuccess)))
 
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))
@@ -93,7 +108,9 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val application = applicationBuilderPsp(userAnswers = ua)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
+          bind[UserAnswersService].toInstance(mockUserAnswersService),
+          bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
+          bind[EmailService].toInstance(mockEmailService)
         )
         .build()
 

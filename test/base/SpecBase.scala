@@ -20,7 +20,20 @@ import controllers.actions._
 import models.address.{Countries, PropertyAddress}
 import models.authentication._
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
-import models.{AllTransfersItem, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import models.{
+  AllTransfersItem,
+  IndividualDetails,
+  MinimalDetails,
+  PensionSchemeDetails,
+  PersonName,
+  PstrNumber,
+  QtNumber,
+  QtStatus,
+  SessionData,
+  SrnNumber,
+  TransferNumber,
+  UserAnswers
+}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -244,4 +257,9 @@ trait SpecBase
     pstrNumber      = Some(PstrNumber("12345678AB")),
     submissionDate  = None
   )
+
+  val individualSubmitterDetails = IndividualDetails("David", None, "Frost")
+
+  val minimalDetailsIndividual = MinimalDetails("d.frost@test.com", false, None, Some(individualSubmitterDetails), false, false)
+
 }

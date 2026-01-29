@@ -70,11 +70,14 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val dashboardCacheTtl: Long = configuration.get[Long]("dashboard.ttlSeconds")
 
-  val backendHost: String          = baseUrl("overseas-pension-transfer-backend")
-  val backendService: String       = s"$backendHost/overseas-pension-transfer-backend"
-  val addressLookupService: String = baseUrl("address-lookup")
-  val pensionSchemeHost: String    = baseUrl("pensions-scheme")
-  val pensionSchemeService: String = s"$pensionSchemeHost/pensions-scheme"
+  val backendHost: String              = baseUrl("overseas-pension-transfer-backend")
+  val backendService: String           = s"$backendHost/overseas-pension-transfer-backend"
+  val addressLookupService: String     = baseUrl("address-lookup")
+  val pensionSchemeHost: String        = baseUrl("pensions-scheme")
+  val pensionSchemeService: String     = s"$pensionSchemeHost/pensions-scheme"
+  val pensionAdministratorHost: String = baseUrl("pension-administrator")
+  val emailHost: String                = baseUrl("email")
+  val emailService: String             = s"$emailHost/hmrc/email"
 
   val transfersPerPage: Int = configuration.get[Int]("pagination.transfersPerPage")
 
@@ -84,7 +87,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val allowPrintSubmittedTransfer: Boolean = configuration.get[Boolean]("features.print-submitted-transfer")
 
-  val signedOutRedirectUrl: String         = configuration.get[String]("urls.signedOutRedirectUrl")
+  val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
+
+  val submittedConfirmationTemplateId: String = configuration.get[String]("submission-confirmation-template-id")
+
+  val submissionEmailEnabled: Boolean = configuration.get[Boolean]("features.submission-email")
+
   val accessibilityAddressChanges: Boolean = configuration.get[Boolean]("features.accessibility-address-changes")
 
   def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String = {

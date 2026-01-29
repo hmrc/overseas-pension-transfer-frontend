@@ -18,6 +18,8 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
+import connectors.MinimalDetailsConnector
+import models.authentication.PsaId
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -27,31 +29,37 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import views.html.TransferSubmittedView
 
 import java.time.ZoneId
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
   private val mockSessionRepository = mock[SessionRepository]
+  private val mockConnector         = mock[MinimalDetailsConnector]
   private val application           = new GuiceApplicationBuilder().build()
   private val appConfig             = application.injector.instanceOf[FrontendAppConfig]
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "TransferSubmitted Controller" - {
 
     "must return OK and the correct view for a GET" in {
       val application  = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository)
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[MinimalDetailsConnector].toInstance(mockConnector)
         )
         .build()
       val testMessages = messages(application)
 
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(sessionDataMemberNameQtNumberTransferSubmitted)))
-
+      when(mockConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(Right(minimalDetailsIndividual)))
       running(application) {
         val request = FakeRequest(GET, routes.TransferSubmittedController.onPageLoad().url)
 
@@ -76,7 +84,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
           )
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("QT123456", summaryList, expectedMpsLink, appConfig)(
+        contentAsString(result) mustEqual view("QT123456", summaryList, expectedMpsLink, minimalDetailsIndividual.email, appConfig)(
           fakeSchemeRequest(request),
           testMessages
         ).toString
