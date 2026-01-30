@@ -49,7 +49,7 @@ class SchemeManagersContactFormProvider @Inject() extends Mappings with Regex {
           }
 
         val parsed = phoneUtil.parse(raw, defaultRegion)
-        phoneUtil.isValidNumber(parsed)
+        phoneUtil.isPossibleNumber(parsed)
       }
     } catch {
       case _: NumberParseException => false
