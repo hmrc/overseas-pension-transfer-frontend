@@ -16,13 +16,9 @@
 
 package controllers.helpers
 
-import pages.memberDetails.MembersLastUkAddressLookupPage
 import play.api.Logging
-import play.api.i18n.Messages
-import play.api.mvc.Results.ServiceUnavailable
-import play.api.mvc.{Request, RequestHeader, Result, Results}
+import play.api.mvc.{RequestHeader, Result, Results}
 import play.api.routing.Router
-import views.html.errors.AddressLookupDownView
 
 trait ErrorHandling extends Logging {
 
@@ -33,23 +29,5 @@ trait ErrorHandling extends Logging {
 
     logger.warn(s"[$controller.$method] downstream persistence error: $err")
     Results.Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-  }
-
-  protected def onAddressLookupFailure(
-      postcode: String,
-      addressLookupDownView: AddressLookupDownView
-    )(implicit request: Request[_],
-      messages: Messages
-    ): Result = {
-    val (controller, method) = request.attrs.get(Router.Attrs.HandlerDef)
-      .map(hd => (hd.controller, hd.method))
-      .getOrElse(("UnknownController", "UnknownMethod"))
-
-    logger.warn(s"[$controller.$method] address lookup failed")
-
-    val enterManuallyUrl = MembersLastUkAddressLookupPage.recoveryModeReturnUrl
-    val dashboardUrl     = controllers.routes.DashboardController.onPageLoad().url
-
-    ServiceUnavailable(addressLookupDownView(enterManuallyUrl, dashboardUrl))
   }
 }
