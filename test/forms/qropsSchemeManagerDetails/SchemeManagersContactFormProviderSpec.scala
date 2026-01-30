@@ -58,7 +58,7 @@ class SchemeManagersContactFormProviderSpec extends StringFieldBehaviours {
         "+44+",
         "123",
         "+0000000000",
-        "+99999999999999999",
+        "+99999999999999999"
       )
 
       invalidNumbers.foreach { number =>
