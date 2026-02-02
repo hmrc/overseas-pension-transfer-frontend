@@ -48,6 +48,7 @@
 
         @qtNumber()
         <h1 class="govuk-heading-l">@messages("membersCurrentAddress.heading", memberName)</h1>
+
         @govukInput(
             InputViewModel(
                 field = form("addressLine1"),
@@ -71,6 +72,7 @@
             )
             .withWidth(Fixed20)
         )
+
         @govukInput(
             InputViewModel(
                 field = form("addressLine4"),
@@ -78,12 +80,14 @@
             )
             .withWidth(Fixed20)
         )
+
         @inputCountry(
             form,
             field = "countryCode",
             labelMsg = "common.addressInput.countryCode",
             countries = countrySelectViewModel.items
         )
+
         @govukInput(
             InputViewModel(
                 field = form("postcode"),

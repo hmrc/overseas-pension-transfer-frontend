@@ -31,7 +31,20 @@ class MembersLastUkAddressLookupFormProvider @Inject() extends Mappings with Reg
           raw => formatUkPostcode(raw),
           formatted => formatted
         )
-        .verifying(regexp(postcodeRegex, "membersLastUkAddressLookup.error.pattern"))
+        .verifying(
+          "membersLastUkAddressLookup.error.pattern",
+          { postcode =>
+            val parts = postcode.split("\\s+")
+            if (parts.length == 2) {
+              val outcode = parts(0)
+              val incode  = parts(1)
+              (outcode.matches(postcodeOutcodeRegex) && incode.matches(postcodeIncodeRegex)) ||
+              postcode == "GIR 0AA"
+            } else {
+              false
+            }
+          }
+        )
     )
 
 }
