@@ -94,10 +94,4 @@ class AddressService @Inject() (
       case AddressLookupErrorResponse(_)                   =>
         None
     }
-
-  def addressIds(records: Seq[AddressRecord]): Seq[String] =
-    records.map(_.id)
-
-  def findAddressById(records: Seq[AddressRecord], selectedId: String): Option[AddressRecord] =
-    records.find(_.id == selectedId)
 }
