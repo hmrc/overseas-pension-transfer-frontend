@@ -28,9 +28,10 @@ import utils.WireMockHelper
 import java.time.Instant
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable}
+import scala.util.Random
 
 trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with OptionValues with BeforeAndAfterAll with BeforeAndAfterEach
-    with GuiceOneServerPerSuite {
+  with GuiceOneServerPerSuite {
 
   val now = Instant.now
 
@@ -49,6 +50,12 @@ trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with O
     "microservice.services.email.host"                             -> WireMockHelper.wireMockHost,
     "microservice.services.email.port"                             -> WireMockHelper.wireMockPort.toString
   )
+
+  def generateNino(prefix: String = "AA"): String = {
+    val num = Random.nextInt(1000000)
+    val suffix = "C"
+    f"$prefix$num%06d$suffix"
+  }
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))

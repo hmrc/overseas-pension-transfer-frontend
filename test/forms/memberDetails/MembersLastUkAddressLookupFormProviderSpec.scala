@@ -34,7 +34,7 @@ class MembersLastUkAddressLookupFormProviderSpec extends StringFieldBehaviours w
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsMatchingRegex(postcodeRegex)
+      "AA1 1AA"
     )
 
     behave like mandatoryField(

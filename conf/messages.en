@@ -392,7 +392,7 @@ schemeManagersEmail.change.hidden = Manager email
 
 schemeManagersContact.title = What is the scheme manager''s telephone number?
 schemeManagersContact.heading = What is the scheme manager''s telephone number?
-schemeManagersContact.hint = All numbers should include the area, dialling or country code for example, +441234567890.
+schemeManagersContact.hint = All numbers should include the area, dialling or country code for example, +44 123 456 7890.
 schemeManagersContact.checkYourAnswersLabel = Manager telephone number
 schemeManagersContact.error.required = Enter the scheme manager''s telephone number
 schemeManagersContact.error.length = Telephone number must be 35 characters or less
