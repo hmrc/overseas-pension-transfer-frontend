@@ -60,7 +60,20 @@ class MembersLastUKAddressNewFormProvider @Inject() extends Mappings with Regex 
             formatted => formatted
           )
           .verifying(maxLength(length16, "membersLastUKAddress.error.postcode.length"))
-          .verifying(regexp(postcodeRegex, "membersLastUKAddress.error.postcode.incorrect"))
+          .verifying(
+            "membersLastUKAddress.error.postcode.incorrect",
+            { postcode =>
+              val parts = postcode.split("\\s+")
+              if (parts.length == 2) {
+                val outcode = parts(0)
+                val incode  = parts(1)
+                (outcode.matches(postcodeOutcodeRegex) && incode.matches(postcodeIncodeRegex)) ||
+                postcode == "GIR 0AA"
+              } else {
+                false
+              }
+            }
+          )
       )(MembersLastUKAddress.apply)(MembersLastUKAddress.unapply)
     )
   }
