@@ -22,6 +22,7 @@
 @import views.ViewUtils.title
 @import views.html.components.InputCountry
 @import config.FrontendAppConfig
+@import viewmodels.InputWidth
 
 @this(
     layout: templates.Layout,
@@ -33,13 +34,13 @@
 )
 @(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@addressLine(formField: String, message: String) = {
+@addressLine(formField: String, message: String, width: InputWidth = Full) = {
     @govukInput(
         InputViewModel(
             field = form(formField),
             label = LabelViewModel(Text(messages(message)))
         )
-        .withWidth(Fixed20)
+        .withWidth(width)
     )
 }
 
@@ -54,17 +55,17 @@
         <h1 class="govuk-heading-l">@messages("qropsAddress.heading")</h1>
         
         @if(!appConfig.accessibilityAddressChanges) {
-            @addressLine("addressLine1", "common.addressInput.addressLine1")
-            @addressLine("addressLine2", "common.addressInput.addressLine2")
-            @addressLine("addressLine3", "common.addressInput.addressLine3")
-            @addressLine("addressLine4", "common.addressInput.addressLine4")
-            @addressLine("addressLine5", "common.addressInput.addressLine5")
+            @addressLine("addressLine1", "common.addressInput.addressLine1", Fixed20)
+            @addressLine("addressLine2", "common.addressInput.addressLine2", Fixed20)
+            @addressLine("addressLine3", "common.addressInput.addressLine3", Fixed20)
+            @addressLine("addressLine4", "common.addressInput.addressLine4", Fixed20)
+            @addressLine("addressLine5", "common.addressInput.addressLine5", Fixed20)
         } else {
             @addressLine("addressLine1", "common.addressInput.addressLine1")
             @addressLine("addressLine2", "common.addressInput.addressLine2")
             @addressLine("addressLine3", "common.addressInput.accessible.addressLine3")
-            @addressLine("addressLine4", "common.addressInput.accessible.addressLine4")
-            @addressLine("addressLine5", "common.addressInput.poBox")
+            @addressLine("addressLine4", "common.addressInput.accessible.addressLine4", OneHalf)
+            @addressLine("addressLine5", "common.addressInput.poBox", OneHalf)
         }
 
         @inputCountry(
