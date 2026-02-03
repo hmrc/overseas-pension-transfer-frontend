@@ -53,42 +53,42 @@
                 field = form("addressLine1"),
                 label = LabelViewModel(Text(messages("common.addressInput.addressLine1")))
             )
-            .withWidth(Fixed20)
+            .withWidth(Full)
         )
         @govukInput(
             InputViewModel(
                 field = form("addressLine2"),
                 label = LabelViewModel(Text(messages("common.addressInput.addressLine2")))
             )
-            .withWidth(Fixed20)
+            .withWidth(Full)
         )
         @govukInput(
             InputViewModel(
                 field = form("addressLine3"),
                 label = LabelViewModel(Text(messages("common.addressInput.accessible.addressLine3")))
             )
-            .withWidth(Fixed20)
+            .withWidth(Full)
         )
         @govukInput(
             InputViewModel(
                 field = form("addressLine4"),
                 label = LabelViewModel(Text(messages("common.addressInput.accessible.addressLine4")))
             )
-            .withWidth(Fixed20)
+            .withWidth(Full)
         )
         @govukInput(
             InputViewModel(
                 field = form("postcode"),
                 label = LabelViewModel(Text(messages("common.addressInput.accessible.postcode")))
             )
-            .withWidth(OneQuarter)
+            .withWidth(OneHalf)
         )
         @govukInput(
             InputViewModel(
                 field = form("poBox"),
                 label = LabelViewModel(Text(messages("common.addressInput.poBox")))
             )
-            .withWidth(OneQuarter)
+            .withWidth(OneHalf)
         )
         @inputCountry(
             form,
