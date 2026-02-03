@@ -79,12 +79,12 @@
             @textInputLine("addressLine5", "common.addressInput.poBox", OneHalf)
             @countryInput()
         } else {
-            @textInputLine("addressLine1", "common.addressInput.addressLine1")
-            @textInputLine("addressLine2", "common.addressInput.addressLine2")
-            @textInputLine("addressLine3", "common.addressInput.addressLine3")
-            @textInputLine("addressLine4", "common.addressInput.addressLine4")
+            @textInputLine("addressLine1", "common.addressInput.addressLine1", Fixed20)
+            @textInputLine("addressLine2", "common.addressInput.addressLine2", Fixed20)
+            @textInputLine("addressLine3", "common.addressInput.addressLine3", Fixed20)
+            @textInputLine("addressLine4", "common.addressInput.addressLine4", Fixed20)
             @countryInput()
-            @textInputLine("postcode", "common.addressInput.postcode")
+            @textInputLine("postcode", "common.addressInput.postcode", Fixed20)
         }
 
         @govukButton(
