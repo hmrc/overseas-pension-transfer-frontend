@@ -20,6 +20,7 @@
 @import models.{AllTransfersItem, QtStatus}
 @import viewmodels.SearchBarViewModel
 @import views.html.components.SearchBar
+@import views.html.components.ScrollableTable
 @import config.FrontendAppConfig
 
 @this(
@@ -27,7 +28,8 @@
         govukButton: GovukButton,
         govukTable: GovukTable,
         govukPagination: GovukPagination,
-        searchBar: SearchBar
+        searchBar: SearchBar,
+        scrollableTable: ScrollableTable
 )
 
 @(schemeName: String,
@@ -142,7 +144,7 @@ item.qtStatus match {
             <h2 class="govuk-heading-m">@messages("dashboard.allTransfers.heading")</h2>
         }
         <div>
-            @govukTable(allTransfersViewModel.table)
+            @scrollableTable(messages("dashboard.allTransfers.heading"), allTransfersViewModel.table)
         </div>
         @allTransfersViewModel.pagination.map(govukPagination(_))
         </div>
