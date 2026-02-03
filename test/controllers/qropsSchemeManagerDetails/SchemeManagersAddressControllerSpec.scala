@@ -34,7 +34,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{CountryService, UserAnswersService}
+import services.{AddressService, CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.qropsSchemeManagerDetails.SchemeManagersAddressView
 
@@ -186,6 +186,55 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(
           boundForm,
+          countrySelectViewModel,
+          NormalMode
+        )(request, messages(application), appConfig).toString
+      }
+    }
+
+    "must return a Bad Request and errors when the country is not GB and a post code is present" in {
+
+      val mockAddressService = mock[AddressService]
+
+      when(mockCountryService.countries).thenReturn(testCountries)
+      when(mockAddressService.schemeManagersAddress(any())).thenReturn(Some(
+        schemeManagersAddress.copy(
+          addressLine4 = Some("somePostCode"),
+          country      = Country("FR", "France")
+        )
+      ))
+
+      val data: Seq[(String, String)] = Seq(
+        "addressLine1" -> "2 Other Place",
+        "addressLine2" -> "Some District",
+        "addressLine4" -> "somePostCode",
+        "countryCode"  -> "FR"
+      )
+
+      val application = applicationBuilder(emptyUserAnswers)
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService),
+          bind[AddressService].toInstance(mockAddressService)
+        )
+        .configure(
+          "features.accessibility-address-changes" -> true
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, schemeManagersAddressRoute)
+            .withFormUrlEncodedBody(data: _*)
+
+        val boundForm                    = form.bind(Map(data: _*))
+        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
+        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(
+          boundForm.withError("addressLine4", "membersLastUkAddressLookup.error.pattern"),
           countrySelectViewModel,
           NormalMode
         )(request, messages(application), appConfig).toString

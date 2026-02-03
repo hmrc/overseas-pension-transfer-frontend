@@ -21,6 +21,7 @@ import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.Mode
+import models.requests.DisplayRequest
 import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.Logging
@@ -66,24 +67,29 @@ class SchemeManagersAddressController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
+  def returnErrorPage(formWithErrors: Form[SchemeManagersAddressFormData], mode: Mode)(implicit request: DisplayRequest[_]) = {
+    val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+    Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+  }
+
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
-        },
+      val boundForm = form.bindFromRequest()
+
+      boundForm.fold(
+        formWithErrors => returnErrorPage(formWithErrors, mode),
         formData => {
           addressService.schemeManagersAddress(formData) match {
-            case None          =>
+            case None                                                                           =>
               Future.successful(
-                Redirect(
-                  SchemeManagersAddressPage.nextPageRecovery(
-                    Some(SchemeManagersAddressPage.recoveryModeReturnUrl)
-                  )
-                )
+                Redirect(SchemeManagersAddressPage.nextPageRecovery(Some(SchemeManagersAddressPage.recoveryModeReturnUrl)))
               )
-            case Some(address) =>
+            case Some(address) if address.addressLine4.nonEmpty && address.country.code != "GB" =>
+              returnErrorPage(
+                boundForm.withError("addressLine4", "membersLastUkAddressLookup.error.pattern"),
+                mode
+              )
+            case Some(address)                                                                  =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersAddressPage, address))
                 savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)

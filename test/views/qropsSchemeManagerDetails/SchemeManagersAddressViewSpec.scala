@@ -50,7 +50,7 @@ class SchemeManagersAddressViewSpec extends ViewBaseSpec {
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
       ("addressLine3", "common.addressInput.townOrCity"),
-      ("addressLine4", "common.addressInput.nonUkPostcode"),
+      ("addressLine4", "common.addressInput.postcode"),
       ("addressLine5", "common.addressInput.poBox")
     )
 
