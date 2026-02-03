@@ -36,7 +36,7 @@ class AddressService @Inject() (
   )(implicit ex: ExecutionContext
   ) {
 
-  def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] =
+  def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] = {
     countryService.find(data.countryCode).map { country =>
       PropertyAddress(
         data.addressLine1,
@@ -48,6 +48,7 @@ class AddressService @Inject() (
         data.postcode
       )
     }
+  }
 
   def schemeManagersAddress(data: SchemeManagersAddressFormData): Option[SchemeManagersAddress] =
     countryService.find(data.countryCode).map { country =>

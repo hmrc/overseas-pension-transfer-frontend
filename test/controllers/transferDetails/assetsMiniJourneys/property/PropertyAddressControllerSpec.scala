@@ -34,7 +34,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.CountryService
+import services.{AddressService, CountryService}
 import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
 
@@ -213,6 +213,56 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
         val form      = formProvider(true)
         val boundForm = form.bind(Map("value" -> "invalid value"))
+        val view      = application.injector.instanceOf[PropertyAddressView]
+        val result    = route(application, request).value
+        val appConfig = application.injector.instanceOf[FrontendAppConfig]
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
+          displayRequest,
+          messages(application),
+          appConfig
+        ).toString
+      }
+    }
+
+    "must return a Bad Request and errors when the country is not set to GB and a postcode is provided" in {
+
+      val mockAddressService = mock[AddressService]
+
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService),
+          bind[AddressService].toInstance(mockAddressService)
+        )
+        .configure(
+          "features.accessibility-address-changes" -> true
+        )
+        .build()
+
+      when(mockCountryService.countries).thenReturn(testCountries)
+      when(mockAddressService.propertyAddress(any())).thenReturn(Some(
+        propertyAddress.copy(country = Country("FR", "France"))
+      ))
+
+      val data: Seq[(String, String)] = Seq(
+        "addressLine1" -> "line1",
+        "addressLine2" -> "line2",
+        "countryCode"  -> "FR",
+        "postcode"     -> "LN2 4GD"
+      )
+
+      running(application) {
+        val request =
+          FakeRequest(POST, propertyAddressRoute)
+            .withFormUrlEncodedBody(data: _*)
+
+        implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
+
+        val form      = formProvider(true)
+        val boundForm = form.bind(
+          Map(data: _*)
+        ).withError("postcode", "membersLastUKAddress.error.postcode.incorrect")
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
