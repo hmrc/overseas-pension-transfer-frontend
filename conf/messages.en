@@ -308,7 +308,7 @@ qropsName.change.hidden = Scheme name
 
 qropsReference.title = What is the QROPS reference?
 qropsReference.heading = What is the QROPS reference?
-qropsReference.hint = For example, QROPS123456.
+qropsReference.hint = For example, QROPS936873.
 qropsReference.prefix = QROPS
 qropsReference.checkYourAnswersLabel = Reference
 qropsReference.error.required = Enter the QROPS Reference
