@@ -17,7 +17,8 @@
 package controllers.memberDetails
 
 import base.AddressBase
-import controllers.routes.JourneyRecoveryController
+import controllers.{routes => baseRoutes}
+import controllers.memberDetails.{routes => memberRoutes}
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.NormalMode
 import models.address._
@@ -35,7 +36,7 @@ import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{CountryService, UserAnswersService}
+import services.{AddressService, CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.{MembersCurrentAddressAccessibleView, MembersCurrentAddressView}
 
@@ -46,7 +47,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
   private val formProvider = new MembersCurrentAddressFormProvider()
   private val formData     = MembersCurrentAddressFormData.fromDomain(membersCurrentAddress)
 
-  private lazy val membersCurrentAddressRoute = routes.MembersCurrentAddressController.onPageLoad(NormalMode).url
+  private lazy val membersCurrentAddressRoute = memberRoutes.MembersCurrentAddressController.onPageLoad(NormalMode).url
 
   private val testCountries = Seq(
     Country("GB", "United Kingdom"),
@@ -207,6 +208,51 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       }
     }
 
+    "must return a Bad Request and errors when the country is not GB but a postcode is provided" in {
+
+      val mockAddressService = mock[AddressService]
+
+      val application = applicationBuilder(userAnswersMemberNameQtNumber)
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService),
+          bind[AddressService].toInstance(mockAddressService)
+        ).configure("features.accessibility-address-changes" -> false).build()
+
+      when(mockCountryService.countries).thenReturn(testCountries)
+      when(mockAddressService.membersCurrentAddress(any())).thenReturn(Some(
+        membersCurrentAddress.copy(
+          ukPostCode = Some("AA00AA"),
+          country    = Country("FR", "France")
+        )
+      ))
+
+      val data = Seq(
+        "addressLine1" -> "2 Other Place",
+        "addressLine2" -> "Some District",
+        "ukPostCode"   -> "AA00AA",
+        "countryCode"  -> "FR"
+      )
+
+      running(application) {
+        val request =
+          FakeRequest(POST, membersCurrentAddressRoute)
+            .withFormUrlEncodedBody(data: _*)
+
+        implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
+
+        val form      = formProvider()
+        val boundForm = form.bind(Map(data: _*)).withError("postcode", "membersLastUkAddressLookup.error.pattern")
+        val view      = application.injector.instanceOf[MembersCurrentAddressView]
+        val result    = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
+          displayRequest,
+          messages(application)
+        ).toString
+      }
+    }
+
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
@@ -235,7 +281,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
