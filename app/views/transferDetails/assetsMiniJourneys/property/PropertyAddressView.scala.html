@@ -26,6 +26,7 @@
 @import play.api.data.Form
 @import play.api.i18n.Messages
 @import config.FrontendAppConfig
+@import viewmodels.InputWidth
 
 @this(
         layout: templates.Layout,
@@ -39,13 +40,13 @@
 
 @(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode, index: Int)(implicit request: DisplayRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@textInputLine(formField: String, label: String) = {
+@textInputLine(formField: String, label: String, width: InputWidth = Full) = {
     @govukInput(
         InputViewModel(
             field = form(formField),
             label = LabelViewModel(Text(messages(label)))
         )
-        .withWidth(Fixed20)
+        .withWidth(width)
     )
 }
     
@@ -74,8 +75,8 @@
             @textInputLine("addressLine2", "common.addressInput.addressLine2")
             @textInputLine("addressLine3", "common.addressInput.townOrCity")
             @textInputLine("addressLine4", "common.addressInput.county")
-            @textInputLine("postcode", "common.addressInput.accessible.postcode")
-            @textInputLine("addressLine5", "common.addressInput.poBox")
+            @textInputLine("postcode", "common.addressInput.accessible.postcode", OneHalf)
+            @textInputLine("addressLine5", "common.addressInput.poBox", OneHalf)
             @countryInput()
         } else {
             @textInputLine("addressLine1", "common.addressInput.addressLine1")
