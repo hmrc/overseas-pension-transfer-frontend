@@ -22,7 +22,8 @@
 @import views.ViewUtils.title
 @import views.html.components.InputCountry
 @import config.FrontendAppConfig
-
+@import viewmodels.InputWidth
+    
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
@@ -34,13 +35,13 @@
 
 @(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@addresslineField(line: Int, label: Option[String] = None) = {
+@addresslineField(line: Int, label: Option[String] = None, width: InputWidth = Full) = {
     @govukInput(
         InputViewModel(
             field = form(s"addressLine$line"),
             label = LabelViewModel(Text(messages(label.getOrElse(s"common.addressInput.addressLine$line"))))
         )
-        .withWidth(Fixed20)
+        .withWidth(width)
     )
 }
 
@@ -58,14 +59,14 @@
             @addresslineField(1)
             @addresslineField(2)
             @addresslineField(3, Some("common.addressInput.townOrCity"))
-            @addresslineField(4, Some("common.addressInput.nonUkPostcode"))
-            @addresslineField(5, Some("common.addressInput.poBox"))
+            @addresslineField(4, Some("common.addressInput.nonUkPostcode"), OneHalf)
+            @addresslineField(5, Some("common.addressInput.poBox"), OneHalf)
         } else {
-            @addresslineField(1)
-            @addresslineField(2)
-            @addresslineField(3)
-            @addresslineField(4)
-            @addresslineField(5)
+            @addresslineField(1, width = Fixed20)
+            @addresslineField(2, width = Fixed20)
+            @addresslineField(3, width = Fixed20)
+            @addresslineField(4, width = Fixed20)
+            @addresslineField(5, width = Fixed20)
         }
 
         @inputCountry(
