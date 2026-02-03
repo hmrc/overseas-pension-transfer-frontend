@@ -21,10 +21,11 @@ import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
 import models.Mode
+import models.requests.DisplayRequest
 import org.apache.pekko.Done
 import pages.qropsDetails.QROPSAddressPage
 import play.api.Logging
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{AddressService, CountryService, UserAnswersService}
@@ -65,20 +66,32 @@ class QROPSAddressController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
+  def renderErrorPage(formWithErrors: Form[QROPSAddressFormData], mode: Mode)(implicit displayRequest: DisplayRequest[_]) = {
+    val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+    Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+  }
+
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form().bindFromRequest().fold(
-        formWithErrors => {
-          val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
-        },
+      val boundForm = form().bindFromRequest()
+
+      boundForm.fold(
+        formWithErrors => renderErrorPage(formWithErrors, mode),
         formData =>
           addressService.qropsAddress(formData) match {
-            case None          =>
+            case None                                                                           =>
               Future.successful(
                 Redirect(QROPSAddressPage.nextPageRecovery(Some(QROPSAddressPage.recoveryModeReturnUrl)))
               )
-            case Some(address) =>
+            case Some(address) if address.addressLine4.nonEmpty && address.country.code != "GB" =>
+              renderErrorPage(
+                boundForm.withError(FormError(
+                  "addressLine4",
+                  "membersLastUKAddress.error.postcode.incorrect"
+                )),
+                mode
+              )
+            case Some(address)                                                                  =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSAddressPage, address))
                 savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
