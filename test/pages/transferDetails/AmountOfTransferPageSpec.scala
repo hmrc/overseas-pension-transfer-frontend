@@ -21,12 +21,15 @@ import controllers.transferDetails.routes
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 
 class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
     val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
+    val amount       = BigDecimal(1000)
 
     "in Normal Mode" - {
 
@@ -54,6 +57,38 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
       "must go to Final Check Answers page" in {
         AmountOfTransferPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+      }
+
+      "cleanup must" - {
+        "set the cash amount and remove version queries when transfer is cash only" in {
+          val userAnswers = emptyUserAnswers
+            .set(IsTransferCashOnlyPage, true)
+            .flatMap(_.set(TransferDetailsRecordVersionQuery, "1"))
+            .flatMap(_.set(TypeOfAssetsRecordVersionQuery, "1"))
+            .toOption.get
+
+          val result = AmountOfTransferPage.cleanup(Some(amount), userAnswers).get
+
+          result.get(IsTransferCashOnlyPage) mustBe Some(true)
+          result.get(CashAmountInTransferPage) mustBe Some(amount)
+          result.get(TransferDetailsRecordVersionQuery) mustBe None
+          result.get(TypeOfAssetsRecordVersionQuery) mustBe None
+        }
+
+        "only remove transfer details version when the transfer is not cash only" in {
+          val userAnswers = emptyUserAnswers
+            .set(IsTransferCashOnlyPage, false)
+            .flatMap(_.set(TransferDetailsRecordVersionQuery, "1"))
+            .flatMap(_.set(TypeOfAssetsRecordVersionQuery, "1"))
+            .toOption.get
+
+          val result = AmountOfTransferPage.cleanup(Some(amount), userAnswers).get
+
+          result.get(IsTransferCashOnlyPage) mustBe Some(false)
+          result.get(CashAmountInTransferPage) mustBe None
+          result.get(TransferDetailsRecordVersionQuery) mustBe None
+          result.get(TypeOfAssetsRecordVersionQuery) mustBe Some("1")
+        }
       }
     }
   }

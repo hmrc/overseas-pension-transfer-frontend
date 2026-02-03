@@ -132,7 +132,7 @@ item.qtStatus match {
     }
 
     @if(allTransfersViewModel.table.rows.nonEmpty) {
-        <div role="region" tabindex="0">
+        <div>
         @if(isSearch) {
             <h2 class="govuk-heading-m">@messages("dashboard.search.results.heading")</h2>
             <p class="govuk-body">
@@ -141,7 +141,7 @@ item.qtStatus match {
         } else {
             <h2 class="govuk-heading-m">@messages("dashboard.allTransfers.heading")</h2>
         }
-        <div role="region" tabindex="0">
+        <div>
             @govukTable(allTransfersViewModel.table)
         </div>
         @allTransfersViewModel.pagination.map(govukPagination(_))
