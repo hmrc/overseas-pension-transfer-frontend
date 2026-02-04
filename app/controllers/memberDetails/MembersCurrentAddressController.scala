@@ -85,11 +85,11 @@ class MembersCurrentAddressController @Inject() (
         formWithErrors => renderErrorPage(formWithErrors, mode),
         formData =>
           addressService.membersCurrentAddress(formData) match {
-            case None                                                                                         =>
+            case None                                                                                                                                  =>
               Future.successful(
                 Redirect(MembersCurrentAddressPage.nextPageRecovery(Some(MembersCurrentAddressPage.recoveryModeReturnUrl)))
               )
-            case Some(addressToSave) if addressToSave.postcode.nonEmpty && addressToSave.country.code != "GB" =>
+            case Some(addressToSave) if addressToSave.postcode.nonEmpty && addressToSave.country.code != "GB" && appConfig.accessibilityAddressChanges =>
               renderErrorPage(
                 boundForm.withError(
                   "postcode",
@@ -97,7 +97,7 @@ class MembersCurrentAddressController @Inject() (
                 ),
                 mode
               )
-            case Some(addressToSave)                                                                          =>
+            case Some(addressToSave)                                                                                                                   =>
               for {
                 userAnswers   <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
                 savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers)

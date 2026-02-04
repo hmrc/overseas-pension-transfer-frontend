@@ -216,7 +216,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         .overrides(
           bind[CountryService].toInstance(mockCountryService),
           bind[AddressService].toInstance(mockAddressService)
-        ).configure("features.accessibility-address-changes" -> false).build()
+        ).configure("features.accessibility-address-changes" -> true).build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
       when(mockAddressService.membersCurrentAddress(any())).thenReturn(Some(
@@ -242,7 +242,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
         val form      = formProvider()
         val boundForm = form.bind(Map(data: _*)).withError("postcode", "membersLastUkAddressLookup.error.pattern")
-        val view      = application.injector.instanceOf[MembersCurrentAddressView]
+        val view      = application.injector.instanceOf[MembersCurrentAddressAccessibleView]
         val result    = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
