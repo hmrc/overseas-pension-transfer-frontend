@@ -84,14 +84,14 @@ class PropertyAddressController @Inject() (
         formWithErrors => renderErrorPage(formWithErrors, mode, index),
         formData =>
           addressService.propertyAddress(formData) match {
-            case None                                                                                         =>
+            case None                                                                                                                                  =>
               Future.successful(
                 Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
               )
-            case Some(addressToSave) if addressToSave.country.code != "GB" && addressToSave.postcode.nonEmpty =>
+            case Some(addressToSave) if addressToSave.country.code != "GB" && addressToSave.postcode.nonEmpty && appConfig.accessibilityAddressChanges =>
               // TODO Update with a more accurate message, and maybe have it focus the country field rather than postcode
               renderErrorPage(boundForm.withError("postcode", "membersLastUKAddress.error.postcode.incorrect"), mode, index)
-            case Some(addressToSave)                                                                          =>
+            case Some(addressToSave)                                                                                                                   =>
               def setAnswers(): Try[UserAnswers] =
                 if (mode == AmendCheckMode) {
                   for {
