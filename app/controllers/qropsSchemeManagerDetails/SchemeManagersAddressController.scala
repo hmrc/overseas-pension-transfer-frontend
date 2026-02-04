@@ -80,16 +80,16 @@ class SchemeManagersAddressController @Inject() (
         formWithErrors => returnErrorPage(formWithErrors, mode),
         formData => {
           addressService.schemeManagersAddress(formData) match {
-            case None                                                                           =>
+            case None                                                                                                                    =>
               Future.successful(
                 Redirect(SchemeManagersAddressPage.nextPageRecovery(Some(SchemeManagersAddressPage.recoveryModeReturnUrl)))
               )
-            case Some(address) if address.addressLine4.nonEmpty && address.country.code != "GB" =>
+            case Some(address) if address.addressLine4.nonEmpty && address.country.code != "GB" && appConfig.accessibilityAddressChanges =>
               returnErrorPage(
                 boundForm.withError("addressLine4", "membersLastUkAddressLookup.error.pattern"),
                 mode
               )
-            case Some(address)                                                                  =>
+            case Some(address)                                                                                                           =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersAddressPage, address))
                 savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
