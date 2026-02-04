@@ -79,11 +79,11 @@ class QROPSAddressController @Inject() (
         formWithErrors => renderErrorPage(formWithErrors, mode),
         formData =>
           addressService.qropsAddress(formData) match {
-            case None                                                                           =>
+            case None                                                                                                                    =>
               Future.successful(
                 Redirect(QROPSAddressPage.nextPageRecovery(Some(QROPSAddressPage.recoveryModeReturnUrl)))
               )
-            case Some(address) if address.addressLine4.nonEmpty && address.country.code != "GB" =>
+            case Some(address) if address.addressLine4.nonEmpty && address.country.code != "GB" && appConfig.accessibilityAddressChanges =>
               renderErrorPage(
                 boundForm.withError(FormError(
                   "addressLine4",
@@ -91,7 +91,7 @@ class QROPSAddressController @Inject() (
                 )),
                 mode
               )
-            case Some(address)                                                                  =>
+            case Some(address)                                                                                                           =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSAddressPage, address))
                 savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
