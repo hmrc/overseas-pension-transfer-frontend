@@ -315,7 +315,7 @@ qropsName.change.hidden = Scheme name
 
 qropsReference.title = What is the QROPS reference?
 qropsReference.heading = What is the QROPS reference?
-qropsReference.hint = For example, QROPS123456.
+qropsReference.hint = For example, QROPS936873.
 qropsReference.prefix = QROPS
 qropsReference.checkYourAnswersLabel = Reference
 qropsReference.error.required = Enter the QROPS Reference
@@ -790,6 +790,7 @@ submitToHMRC.amendHintYes = You will still be able to amend the report after it'
 
 transferSubmitted.title = Transfer submitted
 transferSubmitted.heading = Transfer submitted
+transferSubmitted.confirmationEmailSent.text = We have sent a confirmation email to <b>{0}</b>.
 transferSubmitted.referenceNumber.text = Your reference number
 transferSubmitted.dashboardLink.text = Return to Report a transfer to a QROPS
 transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme
