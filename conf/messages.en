@@ -133,7 +133,6 @@ common.addressInput.addressLine2 = Address line 2
 common.addressInput.addressLine3 = Address line 3 (optional)
 common.addressInput.townOrCity = Town or city
 common.addressInput.accessible.addressLine3 = Town or city (optional)
-common.addressInput.accessible.addressLine3 = Town or city (optional)
 common.addressInput.addressLine4 = Address line 4 (optional)
 common.addressInput.accessible.addressLine4 = County (optional)
 common.addressInput.addressLine5 = Address line 5 (optional)
