@@ -23,6 +23,7 @@ import models.requests.DisplayRequest
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.data.{FieldMapping, Form, Forms, Mapping}
+import utils.AppUtils
 
 import javax.inject.Inject
 
@@ -75,7 +76,7 @@ object PropertyAddressFormDataTrait {
     )
 }
 
-class PropertyAddressFormProvider @Inject() extends Mappings with Regex {
+class PropertyAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {
 
   private[property] def addressLineMapping(line: Int): (String, Mapping[String]) = {
     s"addressLine$line" -> text(s"propertyAddress.error.addressLine$line.required")
@@ -97,9 +98,25 @@ class PropertyAddressFormProvider @Inject() extends Mappings with Regex {
 
   private def postcodeMapping(): (String, Mapping[Option[String]]) = "postcode" -> optional(
     Forms.text
-      .transform[String](_.replaceAll("\\s+", ""), identity)
+      .transform[String](
+        raw => formatUkPostcode(raw),
+        formatted => formatted
+      )
       .verifying(maxLength(35, "common.addressInput.error.postcode.length"))
-      .verifying(regexp(internationalPostcodeRegex, "common.addressInput.error.postcode.pattern"))
+      .verifying(
+        "membersLastUKAddress.error.postcode.incorrect",
+        { postcode =>
+          val parts = postcode.split("\\s+")
+          if (parts.length == 2) {
+            val outcode = parts(0)
+            val incode  = parts(1)
+            (outcode.matches(postcodeOutcodeRegex) && incode.matches(postcodeIncodeRegex)) ||
+            postcode == "GIR 0AA"
+          } else {
+            false
+          }
+        }
+      )
   )
 
   def apply(newForm: Boolean): Form[PropertyAddressFormDataTrait] = {
