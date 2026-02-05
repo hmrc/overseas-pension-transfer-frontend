@@ -168,19 +168,33 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
   }
 
   "postcode" - {
-
     val fieldName   = "postcode"
     val lengthKey   = "membersLastUKAddress.error.postcode.length"
     val requiredKey = "membersLastUKAddress.error.postcode.required"
-    val patternKey  = "membersLastUKAddress.error.postcode.incorrect"
     val maxLength   = 16
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsMatchingRegex(postcodeRegex, maybeMaxLength = Some(maxLength))
-        .suchThat(_.trim.nonEmpty)
+    val validPostcodes = Table(
+      "postcode",
+      "M1 1AA",
+      "B33 8TH",
+      "CR2 6XH",
+      "DN55 1PT",
+      "W1A 1HQ",
+      "EC1A 1BB",
+      "GIR 0AA"
     )
+
+    "must bind valid postcodes" in {
+      forAll(validPostcodes) { postcode =>
+        val result = form.bind(Map(
+          "addressLine1" -> "1 Test",
+          "addressLine2" -> "Test",
+          "postcode"     -> postcode
+        ))
+        result.errors mustBe empty
+        result.value.flatMap(_.postcode) mustBe Some(postcode)
+      }
+    }
 
     behave like mandatoryField(
       form,
@@ -193,13 +207,6 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
       fieldName,
       maxLength   = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like fieldThatRejectsInvalidCharacters(
-      form,
-      fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(postcodeRegex)),
-      Option(maxLength)
     )
   }
 

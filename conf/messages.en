@@ -131,16 +131,13 @@ unauthorised.link = <a href="{0}" class="govuk-link">Find out more about access 
 common.addressInput.addressLine1 = Address line 1
 common.addressInput.addressLine2 = Address line 2
 common.addressInput.addressLine3 = Address line 3 (optional)
-common.addressInput.accessible.addressLine3 = Town or city (optional)
 common.addressInput.addressLine4 = Address line 4 (optional)
-common.addressInput.accessible.addressLine4 = County (optional)
 common.addressInput.addressLine5 = Address line 5 (optional)
 common.addressInput.addressLine1.change.hidden = Address line 1
 common.addressInput.addressLine2.change.hidden = Address line 2
 common.addressInput.addressLine3.change.hidden = Address line 3 (optional)
 common.addressInput.addressLine4.change.hidden = Address line 4 (optional)
 common.addressInput.postcode = UK Postcode (optional)
-common.addressInput.accessible.postcode = Postcode (optional)
 common.addressInput.poBox = PO Box (optional)
 common.addressInput.countryCode = Country
 common.addressInput.countryCode.select = Select a country
@@ -314,7 +311,7 @@ qropsName.change.hidden = Scheme name
 
 qropsReference.title = What is the QROPS reference?
 qropsReference.heading = What is the QROPS reference?
-qropsReference.hint = For example, QROPS123456.
+qropsReference.hint = For example, QROPS936873.
 qropsReference.prefix = QROPS
 qropsReference.checkYourAnswersLabel = Reference
 qropsReference.error.required = Enter the QROPS Reference
@@ -398,7 +395,7 @@ schemeManagersEmail.change.hidden = Manager email
 
 schemeManagersContact.title = What is the scheme manager''s telephone number?
 schemeManagersContact.heading = What is the scheme manager''s telephone number?
-schemeManagersContact.hint = All numbers should include the area, dialling or country code for example, +441234567890.
+schemeManagersContact.hint = All numbers should include the area, dialling or country code for example, +44 123 456 7890.
 schemeManagersContact.checkYourAnswersLabel = Manager telephone number
 schemeManagersContact.error.required = Enter the scheme manager''s telephone number
 schemeManagersContact.error.length = Telephone number must be 35 characters or less
@@ -789,6 +786,7 @@ submitToHMRC.amendHintYes = You will still be able to amend the report after it'
 
 transferSubmitted.title = Transfer submitted
 transferSubmitted.heading = Transfer submitted
+transferSubmitted.confirmationEmailSent.text = We have sent a confirmation email to <b>{0}</b>.
 transferSubmitted.referenceNumber.text = Your reference number
 transferSubmitted.dashboardLink.text = Return to Report a transfer to a QROPS
 transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme

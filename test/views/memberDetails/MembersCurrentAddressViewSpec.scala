@@ -28,6 +28,7 @@ class MembersCurrentAddressViewSpec extends ViewBaseSpec {
   private val view                   = applicationBuilder().injector().instanceOf[MembersCurrentAddressView]
   private val formProvider           = applicationBuilder().injector().instanceOf[MembersCurrentAddressFormProvider]
   private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
+
   "MembersCurrentAddressView" - {
 
     "show correct title" in {
@@ -46,8 +47,7 @@ class MembersCurrentAddressViewSpec extends ViewBaseSpec {
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
       ("addressLine3", "common.addressInput.addressLine3"),
-      ("addressLine4", "common.addressInput.addressLine4"),
-      ("postcode", "common.addressInput.postcode")
+      ("addressLine4", "common.addressInput.addressLine4")
     )
 
     behave like pageWithSubmitButton(

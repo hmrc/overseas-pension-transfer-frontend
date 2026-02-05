@@ -28,7 +28,7 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(qtNumber: String, list: SummaryList, mpsLink: String, appConfig: FrontendAppConfig)(implicit request: SchemeRequest[_], messages: Messages)
+@(qtNumber: String, list: SummaryList, mpsLink: String, email: String, appConfig: FrontendAppConfig)(implicit request: SchemeRequest[_], messages: Messages)
 @schemeName = @{request.schemeDetails.schemeName}
 
 @layout(pageTitle = titleNoForm(messages("transferSubmitted.title")), showPageFooter = false) {
@@ -40,7 +40,13 @@
         </div>
     </div>
 
+    @if(appConfig.submissionEmailEnabled){
+        <p class="govuk-body" id="email-submission-text">@Html(messages("transferSubmitted.confirmationEmailSent.text", email))</p>
+    }
+
+
     @govukSummaryList(list)
+
 
     @if(appConfig.allowPrintSubmittedTransfer){
         <h2 class="govuk-heading-m">@messages("transferSubmitted.nextInfo")</h2>

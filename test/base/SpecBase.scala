@@ -20,7 +20,20 @@ import controllers.actions._
 import models.address.{Countries, PropertyAddress}
 import models.authentication._
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
-import models.{AllTransfersItem, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import models.{
+  AllTransfersItem,
+  IndividualDetails,
+  MinimalDetails,
+  PensionSchemeDetails,
+  PersonName,
+  PstrNumber,
+  QtNumber,
+  QtStatus,
+  SessionData,
+  SrnNumber,
+  TransferNumber,
+  UserAnswers
+}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -46,6 +59,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.time.{Instant, LocalDate, ZoneId}
 import java.util.UUID
+import scala.util.Random
 
 trait SpecBase
     extends Matchers
@@ -100,6 +114,15 @@ trait SpecBase
     ),
     Json.obj()
   )
+
+  private def generateNino(prefix: String = "AA"): String = {
+    val num    = Random.nextInt(1000000)
+    val suffix = "C"
+    val nino   = f"$prefix$num%06d$suffix"
+    nino
+  }
+
+  val testNino = generateNino()
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
   def sessionDataMemberName: SessionData = emptySessionData.set(MemberNamePage, testMemberName).success.value
@@ -245,4 +268,9 @@ trait SpecBase
     pstrNumber      = Some(PstrNumber("12345678AB")),
     submissionDate  = None
   )
+
+  val individualSubmitterDetails = IndividualDetails("David", None, "Frost")
+
+  val minimalDetailsIndividual = MinimalDetails("d.frost@test.com", false, None, Some(individualSubmitterDetails), false, false)
+
 }
