@@ -20,12 +20,12 @@ import forms.memberDetails.MembersCurrentAddressFormProvider
 import models.NormalMode
 import play.api.data.FormError
 import viewmodels.CountrySelectViewModel
-import views.html.memberDetails.MembersCurrentAddressView
+import views.html.memberDetails.MembersCurrentAddressAccessibleView
 import views.utils.ViewBaseSpec
 
-class MembersCurrentAddressViewSpec extends ViewBaseSpec {
+class MembersCurrentAddressAccessibleViewSpec extends ViewBaseSpec {
 
-  private val view                   = applicationBuilder().injector().instanceOf[MembersCurrentAddressView]
+  private val view                   = applicationBuilder().injector().instanceOf[MembersCurrentAddressAccessibleView]
   private val formProvider           = applicationBuilder().injector().instanceOf[MembersCurrentAddressFormProvider]
   private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
   "MembersCurrentAddressView" - {
@@ -45,9 +45,9 @@ class MembersCurrentAddressViewSpec extends ViewBaseSpec {
       view(formProvider(), countrySelectViewModel, NormalMode),
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
-      ("addressLine3", "common.addressInput.addressLine3"),
-      ("addressLine4", "common.addressInput.addressLine4"),
-      ("postcode", "common.addressInput.postcode")
+      ("addressLine3", "common.addressInput.accessible.addressLine3"),
+      ("addressLine4", "common.addressInput.accessible.addressLine4"),
+      ("postcode", "common.addressInput.accessible.postcode")
     )
 
     behave like pageWithSubmitButton(
