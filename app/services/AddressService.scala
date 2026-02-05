@@ -20,7 +20,7 @@ import connectors.AddressLookupConnector
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
+import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormDataTrait}
 import models.address._
 import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,17 +34,19 @@ class AddressService @Inject() (
   )(implicit ex: ExecutionContext
   ) {
 
-  def propertyAddress(data: PropertyAddressFormData): Option[PropertyAddress] =
+  def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] = {
     countryService.find(data.countryCode).map { country =>
       PropertyAddress(
         data.addressLine1,
         data.addressLine2,
-        data.addressLine3,
-        data.addressLine4,
+        data.town,
+        data.county,
+        data.poBoxNumber,
         country,
         data.postcode
       )
     }
+  }
 
   def schemeManagersAddress(data: SchemeManagersAddressFormData): Option[SchemeManagersAddress] =
     countryService.find(data.countryCode).map { country =>
