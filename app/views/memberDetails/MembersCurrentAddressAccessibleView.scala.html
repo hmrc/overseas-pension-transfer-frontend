@@ -17,10 +17,11 @@
 @import models.requests.DisplayRequest
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
+@import viewmodels.CountrySelectViewModel
 @import viewmodels.InputWidth._
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
-@import views.html.components.{Link, QTNumber}
+@import views.html.components.{InputCountry, QTNumber}
 
 @this(
         layout: templates.Layout,
@@ -28,63 +29,72 @@
         govukErrorSummary: GovukErrorSummary,
         govukInput: GovukInput,
         govukButton: GovukButton,
-        link: Link,
-        qtNumber: QTNumber
+        qtNumber: QTNumber,
+        inputCountry: InputCountry
 )
 
 
-@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], countrySelectViewModel: CountrySelectViewModel, mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
+
 @memberName = @{request.memberName}
 
-@layout(pageTitle = title(form, messages("membersLastUKAddress.title"))) {
+@layout(pageTitle = title(form, messages("membersCurrentAddress.title"))) {
 
-    @formHelper(action = controllers.memberDetails.routes.MembersLastUKAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
+    @formHelper(action = controllers.memberDetails.routes.MembersCurrentAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("membersLastUKAddress.heading", memberName)</h1>
-
+        <h1 class="govuk-heading-l">@messages("membersCurrentAddress.heading", memberName)</h1>
         @govukInput(
             InputViewModel(
                 field = form("addressLine1"),
                 label = LabelViewModel(Text(messages("common.addressInput.addressLine1")))
             )
-            .withWidth(Fixed20)
+            .withWidth(Full)
         )
-
         @govukInput(
             InputViewModel(
                 field = form("addressLine2"),
                 label = LabelViewModel(Text(messages("common.addressInput.addressLine2")))
             )
-            .withWidth(Fixed20)
+            .withWidth(Full)
         )
-
         @govukInput(
             InputViewModel(
                 field = form("addressLine3"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine3")))
+                label = LabelViewModel(Text(messages("common.addressInput.accessible.addressLine3")))
             )
-            .withWidth(Fixed20)
+            .withWidth(Full)
         )
-
         @govukInput(
             InputViewModel(
                 field = form("addressLine4"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine4")))
+                label = LabelViewModel(Text(messages("common.addressInput.accessible.addressLine4")))
             )
-            .withWidth(Fixed20)
+            .withWidth(Full)
         )
-
         @govukInput(
             InputViewModel(
                 field = form("postcode"),
-                label = LabelViewModel(Text(messages("membersLastUKAddress.postcode")))
+                label = LabelViewModel(Text(messages("common.addressInput.postcode")))
             )
-            .withWidth(OneQuarter)
+            .withWidth(OneHalf)
+        )
+        @govukInput(
+            InputViewModel(
+                field = form("poBox"),
+                label = LabelViewModel(Text(messages("common.addressInput.poBox")))
+            )
+            .withWidth(OneHalf)
+        )
+        @inputCountry(
+            form,
+            field = "countryCode",
+            labelMsg = "common.addressInput.countryCode",
+            countries = countrySelectViewModel.items
         )
 
         @govukButton(

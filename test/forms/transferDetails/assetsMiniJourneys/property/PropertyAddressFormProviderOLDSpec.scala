@@ -22,9 +22,9 @@ import forms.mappings.Regex
 import play.api.data.FormError
 import utils.AppUtils
 
-class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex with SpecBase with AppUtils {
+class PropertyAddressFormProviderOLDSpec extends StringFieldBehaviours with Regex with SpecBase with AppUtils {
 
-  private val form = new PropertyAddressFormProvider()(true)
+  private val form = new PropertyAddressFormProvider()(false)
 
   ".addressLine1" - {
 
@@ -137,40 +137,6 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
     val fieldName  = "addressLine4"
     val lengthKey  = "common.addressInput.error.addressLine4.length"
     val patternKey = "common.addressInput.error.addressLine4.pattern"
-    val maxLength  = 35
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(maxLength)
-        .suchThat(_.trim.nonEmpty)
-    )
-
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
-
-    behave like optionalField(
-      form,
-      fieldName
-    )
-
-    behave like fieldThatRejectsInvalidCharacters(
-      form,
-      fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
-      Option(maxLength)
-    )
-  }
-
-  "addressLine5" - {
-
-    val fieldName  = "addressLine5"
-    val lengthKey  = "common.addressInput.error.addressLine5.length"
-    val patternKey = "common.addressInput.error.addressLine5.pattern"
     val maxLength  = 35
 
     behave like fieldThatBindsValidData(

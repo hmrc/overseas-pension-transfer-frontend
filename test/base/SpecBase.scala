@@ -207,7 +207,8 @@ trait SpecBase
             addressLine2 = s"Test address line ${idx + 1}",
             None,
             None,
-            country      = Countries.UK,
+            None,
+            Countries.UK,
             None
           )
         ).success.value
