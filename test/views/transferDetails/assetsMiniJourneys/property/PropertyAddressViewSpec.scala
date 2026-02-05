@@ -55,7 +55,7 @@ class PropertyAddressViewSpec extends ViewBaseSpec {
       ("addressLine3", "common.addressInput.townOrCity"),
       ("addressLine4", "common.addressInput.county"),
       ("addressLine5", "common.addressInput.poBox"),
-      ("postcode", "common.addressInput.accessible.postcode")
+      ("postcode", "common.addressInput.postcode")
     )
 
     behave like pageWithSubmitButton(

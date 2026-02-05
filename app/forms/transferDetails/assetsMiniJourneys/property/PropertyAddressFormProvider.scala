@@ -16,12 +16,9 @@
 
 package forms.transferDetails.assetsMiniJourneys.property
 
-import com.google.i18n.phonenumbers.PhoneNumberUtil.ValidationResult
 import forms.mappings.{Mappings, Regex}
 import models.address._
-import models.requests.DisplayRequest
 import play.api.data.Forms._
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.data.{FieldMapping, Form, Forms, Mapping}
 import utils.AppUtils
 

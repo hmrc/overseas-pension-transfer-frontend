@@ -22,7 +22,7 @@ import forms.mappings.Regex
 import play.api.data.FormError
 import utils.AppUtils
 
-class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex with SpecBase with AppUtils{
+class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex with SpecBase with AppUtils {
 
   private val form = new PropertyAddressFormProvider()(true)
 
