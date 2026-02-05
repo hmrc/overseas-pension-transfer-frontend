@@ -21,6 +21,7 @@ import models.address._
 import models.requests.DisplayRequest
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
+import utils.AppUtils
 
 import javax.inject.Inject
 
@@ -48,7 +49,7 @@ object MembersCurrentAddressFormData {
     )
 }
 
-class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
+class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {
 
   def apply()(implicit request: DisplayRequest[_]): Form[MembersCurrentAddressFormData] = {
     val memberName = request.memberName
@@ -77,9 +78,25 @@ class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex {
         "countryCode"  -> text("common.addressInput.error.countryCode.required"),
         "postcode"     -> optional(
           Forms.text
-            .transform[String](_.replaceAll("\\s+", ""), identity)
+            .transform[String](
+              raw => formatUkPostcode(raw),
+              formatted => formatted
+            )
             .verifying(maxLength(35, "common.addressInput.error.postcode.length"))
-            .verifying(regexp(internationalPostcodeRegex, "common.addressInput.error.postcode.pattern"))
+            .verifying(
+              "membersLastUKAddress.error.postcode.incorrect",
+              { postcode =>
+                val parts = postcode.split("\\s+")
+                if (parts.length == 2) {
+                  val outcode = parts(0)
+                  val incode  = parts(1)
+                  (outcode.matches(postcodeOutcodeRegex) && incode.matches(postcodeIncodeRegex)) ||
+                  postcode == "GIR 0AA"
+                } else {
+                  false
+                }
+              }
+            )
         ),
         "poBox"        -> optional(
           Forms.text
