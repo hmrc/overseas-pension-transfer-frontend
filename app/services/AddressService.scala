@@ -21,10 +21,8 @@ import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
-import models.{SessionData, UserAnswers}
 import models.address._
 import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
-import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -96,17 +94,4 @@ class AddressService @Inject() (
       case AddressLookupErrorResponse(_)                   =>
         None
     }
-
-  def addressIds(records: Seq[AddressRecord]): Seq[String] =
-    records.map(_.id)
-
-  def findAddressById(records: Seq[AddressRecord], selectedId: String): Option[AddressRecord] =
-    records.find(_.id == selectedId)
-
-  def clearAddressLookups(answers: SessionData): Future[SessionData] =
-    Future.fromTry(
-      answers
-        .remove(MembersLastUkAddressLookupPage)
-        .flatMap(_.remove(MembersLastUkAddressSelectPage))
-    )
 }

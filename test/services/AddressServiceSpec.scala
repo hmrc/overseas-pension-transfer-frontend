@@ -150,22 +150,4 @@ class AddressServiceSpec
       }
     }
   }
-
-  ".addressIds" - {
-
-    "must return the ids from the FoundAddressSet in order" in {
-      service.addressIds(addressRecordList) mustBe validIds
-    }
-  }
-
-  ".findAddressById" - {
-
-    "must return Some(address) when the id exists" in {
-      service.findAddressById(addressRecordList, selectedRecord.id).value mustBe selectedRecord
-    }
-
-    "must return None when the id does not exist" in {
-      service.findAddressById(addressRecordList, "missing") mustBe None
-    }
-  }
 }
