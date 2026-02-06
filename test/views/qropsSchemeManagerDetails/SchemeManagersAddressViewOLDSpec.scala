@@ -16,7 +16,6 @@
 
 package views.qropsSchemeManagerDetails
 
-import config.FrontendAppConfig
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormProvider
 import models.NormalMode
 import play.api.data.FormError
@@ -24,16 +23,16 @@ import viewmodels.CountrySelectViewModel
 import views.html.qropsSchemeManagerDetails.SchemeManagersAddressView
 import views.utils.ViewBaseSpec
 
-class SchemeManagersAddressViewSpec extends ViewBaseSpec {
+class SchemeManagersAddressViewOLDSpec extends ViewBaseSpec {
 
   private val application = applicationBuilder().configure(
-    "features.accessibility-address-changes" -> true
+    "features.accessibility-address-changes" -> false
   ).build()
 
-  private val view                                  = application.injector.instanceOf[SchemeManagersAddressView]
-  private val formProvider                          = application.injector.instanceOf[SchemeManagersAddressFormProvider]
-  private val countrySelectViewModel                = CountrySelectViewModel(Seq.empty)
-  implicit private val appConfig: FrontendAppConfig = application.injector.instanceOf[config.FrontendAppConfig]
+  private val view                   = application.injector.instanceOf[SchemeManagersAddressView]
+  private val formProvider           = application.injector.instanceOf[SchemeManagersAddressFormProvider]
+  private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
+  implicit private val appConfig     = application.injector.instanceOf[config.FrontendAppConfig]
 
   "SchemeManagersAddressView" - {
 
@@ -49,9 +48,9 @@ class SchemeManagersAddressViewSpec extends ViewBaseSpec {
       view(formProvider(), countrySelectViewModel, NormalMode),
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
-      ("addressLine3", "common.addressInput.townOrCity"),
-      ("addressLine4", "common.addressInput.postcode"),
-      ("addressLine5", "common.addressInput.poBox")
+      ("addressLine3", "common.addressInput.addressLine3"),
+      ("addressLine4", "common.addressInput.addressLine4"),
+      ("addressLine5", "common.addressInput.addressLine5")
     )
 
     behave like pageWithSubmitButton(
