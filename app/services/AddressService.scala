@@ -20,11 +20,9 @@ import connectors.AddressLookupConnector
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
-import models.{SessionData, UserAnswers}
+import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormDataTrait}
 import models.address._
 import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
-import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -36,17 +34,19 @@ class AddressService @Inject() (
   )(implicit ex: ExecutionContext
   ) {
 
-  def propertyAddress(data: PropertyAddressFormData): Option[PropertyAddress] =
+  def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] = {
     countryService.find(data.countryCode).map { country =>
       PropertyAddress(
         data.addressLine1,
         data.addressLine2,
-        data.addressLine3,
-        data.addressLine4,
+        data.town,
+        data.county,
+        data.poBoxNumber,
         country,
         data.postcode
       )
     }
+  }
 
   def schemeManagersAddress(data: SchemeManagersAddressFormData): Option[SchemeManagersAddress] =
     countryService.find(data.countryCode).map { country =>
@@ -96,17 +96,4 @@ class AddressService @Inject() (
       case AddressLookupErrorResponse(_)                   =>
         None
     }
-
-  def addressIds(records: Seq[AddressRecord]): Seq[String] =
-    records.map(_.id)
-
-  def findAddressById(records: Seq[AddressRecord], selectedId: String): Option[AddressRecord] =
-    records.find(_.id == selectedId)
-
-  def clearAddressLookups(answers: SessionData): Future[SessionData] =
-    Future.fromTry(
-      answers
-        .remove(MembersLastUkAddressLookupPage)
-        .flatMap(_.remove(MembersLastUkAddressSelectPage))
-    )
 }

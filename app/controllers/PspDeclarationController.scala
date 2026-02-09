@@ -16,18 +16,21 @@
 
 package controllers
 
+import cats.data.EitherT
+import connectors.MinimalDetailsConnector
 import controllers.actions._
 import forms.PspDeclarationFormProvider
-import models.authentication.PsaId
+import models.authentication.{PsaId, PspUser}
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
 import models.{Mode, PersonName}
 import pages.PspDeclarationPage
 import pages.memberDetails.MemberNamePage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{EmailService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PspDeclarationView
 
@@ -36,16 +39,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PspDeclarationController @Inject() (
     override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
     identify: IdentifierAction,
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     formProvider: PspDeclarationFormProvider,
     val controllerComponents: MessagesControllerComponents,
-    view: PspDeclarationView
+    view: PspDeclarationView,
+    emailService: EmailService,
+    minimalDetailsConnector: MinimalDetailsConnector,
+    sessionRepository: SessionRepository
   )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  ) extends FrontendBaseController with I18nSupport with Logging {
 
   val form = formProvider()
 
@@ -61,30 +66,35 @@ class PspDeclarationController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         psaIdString => {
           val psaId = PsaId(psaIdString)
-          userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId))
-            .flatMap {
-              case Right(SubmissionResponse(qtNumber, receiptDate)) =>
-                val name = request.sessionData.get(MemberNamePage) match {
-                  case Some(value) => value
-                  case None        =>
-                    request.userAnswers.get(MemberNamePage) match {
-                      case Some(value) => value
-                      case None        => PersonName("Undefined", "Undefined")
-                    }
-                }
-
-                for {
-                  updatedSessionData    <- Future.fromTry(request.sessionData.set(QtNumberQuery, qtNumber))
-                  updateWithReceiptDate <- Future.fromTry(updatedSessionData.set(DateSubmittedQuery, receiptDate))
-                  updateWithMemberName  <- Future.fromTry(updateWithReceiptDate.set(MemberNamePage, name))
-                  _                     <- sessionRepository.set(updateWithMemberName)
-                } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))
-              case Left(NotAuthorisingPsaIdErrorResponse(_, _))     =>
-                val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
-                Future.successful(BadRequest(view(formWithError, mode)))
-              case _                                                =>
-                Future.successful(Redirect(PspDeclarationPage.nextPageRecovery()))
-            }
+          (for {
+            submissionResponse      <-
+              EitherT(userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId))).leftMap {
+                case NotAuthorisingPsaIdErrorResponse(_, _) =>
+                  val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
+                  BadRequest(view(formWithError, mode))
+                case e                                      =>
+                  logger.warn(s"[PspDeclarationController][onSubmit] Failed to submit declaration: $e")
+                  Redirect(PspDeclarationPage.nextPageRecovery())
+              }
+            updateWithQTNumberSD    <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, submissionResponse.qtNumber)))
+            updateWithReceiptDateSD <- EitherT.right[Result](Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, submissionResponse.receiptDate)))
+            name                     = request.sessionData.get(MemberNamePage)
+                                         .orElse(request.userAnswers.get(MemberNamePage))
+                                         .getOrElse(PersonName("Undefined", "Undefined"))
+            updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
+            _                       <- EitherT.right[Result](sessionRepository.set(updateWithMemberNameSD))
+            pspId                    = request.authenticatedUser.asInstanceOf[PspUser].pspId
+            minimalDetails          <- EitherT(minimalDetailsConnector.fetch(pspId)).leftMap { e =>
+                                         logger.warn(s"[PspDeclarationController][onSubmit] Failed to fetch minimal details for pspId=${pspId.value}: $e")
+                                         Redirect(PspDeclarationPage.nextPageRecovery())
+                                       }
+            _                       <- EitherT.right[Result](
+                                         // Currently we do nothing with the return value from the email service. If we want to map the error we can do so here.
+                                         emailService
+                                           .sendConfirmationEmail(updateWithMemberNameSD, minimalDetails)
+                                           .map(_ => ())
+                                       )
+          } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge
         }
       )
   }

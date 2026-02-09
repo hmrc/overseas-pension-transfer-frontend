@@ -17,7 +17,9 @@
 package controllers.qropsDetails
 
 import base.AddressBase
-import controllers.routes.JourneyRecoveryController
+import config.FrontendAppConfig
+import controllers.qropsDetails.{routes => qropRoutes}
+import controllers.{routes => baseRoutes}
 import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
 import models.NormalMode
 import models.address.Country
@@ -33,7 +35,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{CountryService, UserAnswersService}
+import services.{AddressService, CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.qropsDetails.QROPSAddressView
 
@@ -45,7 +47,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
   private val form         = formProvider()
   private val formData     = QROPSAddressFormData.fromDomain(qropsAddress)
 
-  private lazy val qropsAddressRoute = routes.QROPSAddressController.onPageLoad(NormalMode).url
+  private lazy val qropsAddressRoute = qropRoutes.QROPSAddressController.onPageLoad(NormalMode).url
 
   private val userAnswers = emptyUserAnswers.set(QROPSAddressPage, qropsAddress).success.value
 
@@ -69,11 +71,15 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
+        .configure(
+          "features.accessibility-address-changes" -> true
+        )
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsAddressRoute)
-        val view    = application.injector.instanceOf[QROPSAddressView]
+        val request   = FakeRequest(GET, qropsAddressRoute)
+        val view      = application.injector.instanceOf[QROPSAddressView]
+        val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
         val result = route(application, request).value
 
@@ -82,7 +88,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
           form,
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application)).toString
+        )(request, messages(application), appConfig).toString
       }
     }
 
@@ -94,11 +100,15 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
+        .configure(
+          "features.accessibility-address-changes" -> true
+        )
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, qropsAddressRoute)
-        val view    = application.injector.instanceOf[QROPSAddressView]
+        val request   = FakeRequest(GET, qropsAddressRoute)
+        val view      = application.injector.instanceOf[QROPSAddressView]
+        val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
         val result = route(application, request).value
 
@@ -107,7 +117,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
           form.fill(formData),
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application)).toString
+        )(request, messages(application), appConfig).toString
       }
     }
 
@@ -158,6 +168,9 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
+        .configure(
+          "features.accessibility-address-changes" -> true
+        )
         .build()
 
       running(application) {
@@ -167,6 +180,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
         val view      = application.injector.instanceOf[QROPSAddressView]
+        val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
         val result = route(application, request).value
 
@@ -175,7 +189,53 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
           boundForm,
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application)).toString
+        )(request, messages(application), appConfig).toString
+      }
+    }
+
+    "must return a Bad Request and errors when the postcode is provided but the country is not the UK" in {
+
+      val mockAddressService = mock[AddressService]
+
+      when(mockCountryService.countries).thenReturn(testCountries)
+      when(mockAddressService.qropsAddress(any())).thenReturn(
+        Some(qropsAddress.copy(addressLine4 = Some("AA00AA"), country = Country("FR", "France")))
+      )
+
+      val application = applicationBuilder(emptyUserAnswers)
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService),
+          bind[AddressService].toInstance(mockAddressService)
+        )
+        .configure(
+          "features.accessibility-address-changes" -> true
+        )
+        .build()
+
+      val data = Seq(
+        ("addressLine1", "Some Street"),
+        ("addressLine2", "Some Area"),
+        ("addressLine4", "AA00AA"),
+        ("countryCode", "FR")
+      )
+
+      running(application) {
+        val request =
+          FakeRequest(POST, qropsAddressRoute)
+            .withFormUrlEncodedBody(data: _*)
+
+        val boundForm = form.bind(Map(data: _*))
+        val view      = application.injector.instanceOf[QROPSAddressView]
+        val appConfig = application.injector.instanceOf[FrontendAppConfig]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(
+          boundForm.withError("addressLine4", "membersLastUKAddress.error.postcode.incorrect"),
+          countrySelectViewModel,
+          NormalMode
+        )(request, messages(application), appConfig).toString
       }
     }
 
@@ -213,7 +273,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual baseRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

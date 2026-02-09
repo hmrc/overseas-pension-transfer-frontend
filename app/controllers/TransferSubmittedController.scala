@@ -17,17 +17,20 @@
 package controllers
 
 import config.FrontendAppConfig
+import connectors.{MinimalDetailsConnector, MinimalDetailsError}
 import controllers.actions._
+import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import views.html.TransferSubmittedView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class TransferSubmittedController @Inject() (
     override val messagesApi: MessagesApi,
@@ -36,24 +39,53 @@ class TransferSubmittedController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     view: TransferSubmittedView,
     sessionRepository: SessionRepository,
-    appConfig: FrontendAppConfig
+    appConfig: FrontendAppConfig,
+    minimalDetailsConnector: MinimalDetailsConnector
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async {
-    implicit request =>
-      sessionRepository.get(request.authenticatedUser.internalId) map {
-        case Some(sessionData) =>
-          val summaryList = TransferSubmittedSummary.rows(memberFullName(sessionData), dateTransferSubmitted(sessionData))
+  def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
+    sessionRepository.get(request.authenticatedUser.internalId).flatMap {
+      case Some(sessionData) =>
+        fetchMinimalDetails(request.authenticatedUser).map {
+          case Right(minimalDetails) =>
+            val summaryList = TransferSubmittedSummary.rows(
+              memberFullName(sessionData),
+              dateTransferSubmitted(sessionData)
+            )
 
-          val mpsLink = appConfig.getPensionSchemeUrl(
-            srn       = sessionData.schemeInformation.srnNumber.value,
-            isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
-          )
+            val srn     = sessionData.schemeInformation.srnNumber.value
+            val mpsLink = appConfig.getPensionSchemeUrl(
+              srn       = sessionData.schemeInformation.srnNumber.value,
+              isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
+            )
 
-          Ok(view(qtNumber(sessionData).value, summaryList, mpsLink, appConfig))
-        case None              =>
+            Ok(
+              view(
+                qtNumber(sessionData).value,
+                summaryList,
+                mpsLink,
+                minimalDetails.email,
+                appConfig
+              )
+            )
+          case Left(_)               =>
+            Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+        }
+
+      case None =>
+        scala.concurrent.Future.successful(
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-      }
+        )
+    }
   }
+
+  private def fetchMinimalDetails(
+      user: AuthenticatedUser
+    )(implicit hc: HeaderCarrier
+    ): Future[Either[MinimalDetailsError, models.MinimalDetails]] =
+    user match {
+      case u: PsaUser => minimalDetailsConnector.fetch(u.psaId)
+      case u: PspUser => minimalDetailsConnector.fetch(u.pspId)
+    }
 }

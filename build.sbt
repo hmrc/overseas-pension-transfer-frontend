@@ -8,6 +8,8 @@ lazy val appName: String = "overseas-pension-transfer-frontend"
 ThisBuild / majorVersion := 0
 ThisBuild / scalaVersion := "2.13.16"
 
+addCommandAlias("runAllChecks", ";clean;compile;scalafmtAll;scalastyle;coverage;test;it/test;coverageReport")
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
