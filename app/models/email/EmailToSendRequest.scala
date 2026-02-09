@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package forms.memberDetails
+package models.email
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.libs.json.{Json, Reads, Writes}
 
-import javax.inject.Inject
+case class EmailToSendRequest(
+    to: List[String],
+    templateId: String,
+    parameters: EmailParameters,
+    force: Boolean = false
+  )
 
-class MembersLastUkAddressSelectFormProvider @Inject() extends Mappings {
-
-  def apply(validIds: Seq[String]): Form[String] =
-    Form(
-      "value" -> text("memberSelectLastUkAddress.error.required")
-        .verifying(
-          "memberSelectLastUkAddress.error.invalid",
-          chosenId => validIds.contains(chosenId)
-        )
-    )
+object EmailToSendRequest {
+  implicit val reads: Reads[EmailToSendRequest]   = Json.reads[EmailToSendRequest]
+  implicit val writes: Writes[EmailToSendRequest] = Json.writes[EmailToSendRequest]
 }

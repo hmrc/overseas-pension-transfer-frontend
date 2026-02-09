@@ -55,7 +55,7 @@ object AddressViewModel {
       toOption(vm.addressLine2),
       toOption(vm.addressLine3),
       toOption(vm.addressLine4),
-      toOption(vm.addressLine5),
+      if (vm.poBox.isEmpty) toOption(vm.addressLine5) else None,
       toOption(vm.country).filterNot(_ => ukMode),
       toOption(vm.ukPostCode),
       toOption(vm.poBox)

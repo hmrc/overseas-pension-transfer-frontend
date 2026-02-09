@@ -20,8 +20,9 @@ import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
 import play.api.data.FormError
+import utils.AppUtils
 
-class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with Regex with SpecBase {
+class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with Regex with SpecBase with AppUtils {
 
   private val memberName = testDisplayRequest.memberName
   private val form       = new MembersCurrentAddressFormProvider()()
@@ -180,35 +181,55 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
 
   "postcode" - {
 
-    val fieldName  = "postcode"
-    val lengthKey  = "common.addressInput.error.postcode.length"
-    val patternKey = "common.addressInput.error.postcode.pattern"
-    val maxLength  = 35
-
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsMatchingRegex(internationalPostcodeRegex, maybeMaxLength = Some(maxLength))
-        .suchThat(_.trim.nonEmpty)
+    val fieldName      = "postcode"
+    val validPostcodes = Table(
+      "postcode",
+      "M1 1AA",
+      "B33 8TH",
+      "CR2 6XH",
+      "DN55 1PT",
+      "GIR 0AA"
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+    "must bind valid postcodes" in {
+      forAll(validPostcodes) { postcode =>
+        val result = form.bind(Map(
+          "addressLine1" -> "1 Test Lane",
+          "addressLine2" -> "Test",
+          "countryCode"  -> "GB",
+          "postcode"     -> postcode
+        ))
+        result.errors mustBe empty
+        result.value.flatMap(_.postcode) mustBe Some(formatUkPostcode(postcode))
+      }
+    }
+
+    "must reject invalid postcodes" in {
+      val invalidPostcodes = Table(
+        "postcode",
+        "INVALID",
+        "12345",
+        "SW1A",
+        "SW1A 2A",
+        "SW1A 2AAA",
+        "T11YEE0"
+      )
+
+      forAll(invalidPostcodes) { postcode =>
+        val result = form.bind(Map(
+          "addressLine1" -> "1 Test",
+          "addressLine2" -> "Test",
+          "countryCode"  -> "GB",
+          "postcode"     -> postcode
+        ))
+        result.errors must not be empty
+        result.errors.exists(_.message == "membersLastUKAddress.error.postcode.incorrect") mustBe true
+      }
+    }
 
     behave like optionalField(
       form,
       fieldName
-    )
-
-    behave like fieldThatRejectsInvalidCharacters(
-      form,
-      fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(internationalPostcodeRegex)),
-      Option(maxLength)
     )
   }
 
@@ -271,7 +292,7 @@ class MembersCurrentAddressFormProviderSpec extends StringFieldBehaviours with R
       bound.addressLine3.value mustBe "London"
       bound.addressLine4.value mustBe "Greater London"
       bound.countryCode mustBe "GB"
-      bound.postcode.value mustBe "SW1A2AA"
+      bound.postcode.value mustBe "SW1A 2AA"
       bound.poBox.value mustBe "PO Box 123"
     }
   }
