@@ -18,9 +18,9 @@ package controllers
 
 import controllers.actions._
 import forms.PspDeclarationFormProvider
-import models.{Mode, PersonName}
 import models.authentication.PsaId
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
+import models.{Mode, PersonName}
 import pages.PspDeclarationPage
 import pages.memberDetails.MemberNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -83,7 +83,7 @@ class PspDeclarationController @Inject() (
                 val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
                 Future.successful(BadRequest(view(formWithError, mode)))
               case _                                                =>
-                Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+                Future.successful(Redirect(PspDeclarationPage.nextPageRecovery()))
             }
         }
       )

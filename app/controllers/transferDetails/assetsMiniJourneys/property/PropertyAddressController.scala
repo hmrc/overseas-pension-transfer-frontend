@@ -72,7 +72,7 @@ class PropertyAddressController @Inject() (
           addressService.propertyAddress(formData) match {
             case None                =>
               Future.successful(
-                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                Redirect(PropertyAddressPage(index).nextPageRecovery())
               )
             case Some(addressToSave) =>
               def setAnswers(): Try[UserAnswers] =

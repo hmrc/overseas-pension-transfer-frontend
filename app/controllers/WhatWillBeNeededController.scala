@@ -80,7 +80,7 @@ class WhatWillBeNeededController @Inject() (
         Redirect(WhatWillBeNeededPage.nextPage(NormalMode, newUa))
       } else {
         logger.warn("SessionRepository.set returned false during SessionData initialisation")
-        Redirect(routes.JourneyRecoveryController.onPageLoad())
+        Redirect(WhatWillBeNeededPage.nextPageRecovery())
       }
     }
   }

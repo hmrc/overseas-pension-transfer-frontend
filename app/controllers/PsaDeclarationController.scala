@@ -17,8 +17,8 @@
 package controllers
 
 import controllers.actions._
-import models.{Mode, PersonName}
 import models.responses.SubmissionResponse
+import models.{Mode, PersonName}
 import pages.PsaDeclarationPage
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
@@ -69,7 +69,7 @@ class PsaDeclarationController @Inject() (
             updateWithMemberName  <- Future.fromTry(updateWithReceiptDate.set(MemberNamePage, name))
             _                     <- sessionRepository.set(updateWithMemberName)
           } yield Redirect(PsaDeclarationPage.nextPage(mode, request.userAnswers))
-        case _                                                => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+        case _                                                => Future.successful(Redirect(PsaDeclarationPage.nextPageRecovery()))
       }
   }
 }

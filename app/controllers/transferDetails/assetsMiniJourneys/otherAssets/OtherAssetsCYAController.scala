@@ -18,10 +18,9 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
+import models.Mode
 import models.assets.TypeOfAsset
-import models.{CheckMode, Mode, NormalMode}
 import org.apache.pekko.Done
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -64,7 +63,7 @@ class OtherAssetsCYAController @Inject() (
         case Right(Done) =>
           Redirect(OtherAssetsCYAPage(index).nextPage(mode, request.userAnswers))
         case _           =>
-          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          Redirect(OtherAssetsCYAPage(index).nextPageRecovery())
       }
     }
   }
