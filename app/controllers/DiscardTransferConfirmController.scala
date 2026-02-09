@@ -93,12 +93,7 @@ class DiscardTransferConfirmController @Inject() (
                 val versionNumber: String = request.sessionData.data.value.get("versionNumber").flatMap(_.asOpt[String]).getOrElse("001")
                 Future.successful(
                   Redirect(
-                    controllers.viewandamend.routes.ViewAmendSubmittedController.fromDraft(
-                      answers.id,
-                      answers.pstr,
-                      AmendInProgress,
-                      versionNumber
-                    )
+                    DiscardTransferConfirmPage.nextPageWith(NormalMode, answers, Some(versionNumber))
                   )
                 )
               }
