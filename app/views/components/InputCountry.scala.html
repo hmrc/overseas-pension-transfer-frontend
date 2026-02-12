@@ -34,23 +34,33 @@
 @{
     val baseLabel = LabelViewModel(Text(messages(labelMsg, labelMsgArgs)))
     val label = if (labelAsHeading) baseLabel.asPageHeading(size = Large) else baseLabel
+    val fieldValue = form(field).value.getOrElse("")
+
+val displayValue = countries
+        .find(_.value.contains(fieldValue))
+        .map(_.text)
+        .getOrElse("")
 
     val selectModel = SelectViewModel(
         field = form(field),
         items = {
-                val emptyOption = SelectItem(value = Some(""), text = messages("common.addressInput.countryCode.select"), selected = false)
-                emptyOption +: countries
-        },
-        label = label
-    )
+                val emptyOption = SelectItem(value = Some(""), text = messages("common.addressInput.countryCode.select"), selected = fieldValue.isEmpty
+)
+        emptyOption +: countries.map { country =>
+        country.copy(selected = country.value.contains(fieldValue))
+}
+},
+label = label
+)
     .asAccessibleAutocomplete(
         Some(
             AccessibleAutocomplete(
-                defaultValue = Some(""),
+                defaultValue = Some(displayValue),
                 showAllValues = true,
                 autoSelect = true
             )
         )
     ).withCssClass("govuk-!-width-three-quarters")
+    .withAttribute("autocomplete", "off")
     govukSelect(selectModel)
 }
