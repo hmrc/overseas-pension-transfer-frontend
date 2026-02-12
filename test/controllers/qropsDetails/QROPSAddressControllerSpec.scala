@@ -193,52 +193,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
       }
     }
 
-    "must return a Bad Request and errors when the postcode is provided but the country is not the UK" in {
-
-      val mockAddressService = mock[AddressService]
-
-      when(mockCountryService.countries).thenReturn(testCountries)
-      when(mockAddressService.qropsAddress(any())).thenReturn(
-        Some(qropsAddress.copy(addressLine4 = Some("AA00AA"), country = Country("FR", "France")))
-      )
-
-      val application = applicationBuilder(emptyUserAnswers)
-        .overrides(
-          bind[CountryService].toInstance(mockCountryService),
-          bind[AddressService].toInstance(mockAddressService)
-        )
-        .configure(
-          "features.accessibility-address-changes" -> true
-        )
-        .build()
-
-      val data = Seq(
-        ("addressLine1", "Some Street"),
-        ("addressLine2", "Some Area"),
-        ("addressLine4", "AA00AA"),
-        ("countryCode", "FR")
-      )
-
-      running(application) {
-        val request =
-          FakeRequest(POST, qropsAddressRoute)
-            .withFormUrlEncodedBody(data: _*)
-
-        val boundForm = form.bind(Map(data: _*))
-        val view      = application.injector.instanceOf[QROPSAddressView]
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(
-          boundForm.withError("addressLine4", "membersLastUKAddress.error.postcode.incorrect"),
-          countrySelectViewModel,
-          NormalMode
-        )(request, messages(application), appConfig).toString
-      }
-    }
-
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]

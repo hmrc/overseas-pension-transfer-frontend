@@ -47,7 +47,7 @@ class MembersCurrentAddressAccessibleViewSpec extends ViewBaseSpec {
       ("addressLine2", "common.addressInput.addressLine2"),
       ("addressLine3", "common.addressInput.accessible.addressLine3"),
       ("addressLine4", "common.addressInput.accessible.addressLine4"),
-      ("postcode", "common.addressInput.accessible.postcode")
+      ("postcode", "common.addressInput.postcode")
     )
 
     behave like pageWithSubmitButton(

@@ -67,7 +67,7 @@ class SchemeManagersAddressController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def returnErrorPage(formWithErrors: Form[SchemeManagersAddressFormData], mode: Mode)(implicit request: DisplayRequest[_]) = {
+  private def returnErrorPage(formWithErrors: Form[SchemeManagersAddressFormData], mode: Mode)(implicit request: DisplayRequest[_]) = {
     val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
     Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
   }
@@ -80,16 +80,11 @@ class SchemeManagersAddressController @Inject() (
         formWithErrors => returnErrorPage(formWithErrors, mode),
         formData => {
           addressService.schemeManagersAddress(formData) match {
-            case None                                                                                                                    =>
+            case None          =>
               Future.successful(
                 Redirect(SchemeManagersAddressPage.nextPageRecovery(Some(SchemeManagersAddressPage.recoveryModeReturnUrl)))
               )
-            case Some(address) if address.addressLine4.nonEmpty && address.country.code != "GB" && appConfig.accessibilityAddressChanges =>
-              returnErrorPage(
-                boundForm.withError("addressLine4", "membersLastUkAddressLookup.error.pattern"),
-                mode
-              )
-            case Some(address)                                                                                                           =>
+            case Some(address) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersAddressPage, address))
                 savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
