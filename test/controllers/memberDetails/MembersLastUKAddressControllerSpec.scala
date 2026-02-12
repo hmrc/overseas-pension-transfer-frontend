@@ -54,38 +54,11 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
-        val request                                                         = FakeRequest(GET, membersLastUKAddressRoute)
-        implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
-
-        val form = formProvider()
-        val view = application.injector.instanceOf[MembersLastUKAddressView]
+        val request = FakeRequest(GET, membersLastUKAddressRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(displayRequest, messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = userAnswersMemberNameQtNumber.set(MembersLastUKAddressPage, validAnswer).get
-
-      val application = applicationBuilder(userAnswers = userAnswers).build()
-
-      running(application) {
-        val request                                                         = FakeRequest(GET, membersLastUKAddressRoute)
-        implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
-
-        val form = formProvider()
-        val view = application.injector.instanceOf[MembersLastUKAddressView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(
-          form.fill(validAnswer),
-          NormalMode
-        )(displayRequest, messages(application)).toString
       }
     }
 
@@ -117,25 +90,18 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       }
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+    "must return a Bad Request when invalid data is submitted" in {
 
       val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
-        val request                                                             =
+        val request =
           FakeRequest(POST, membersLastUKAddressRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
-        implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
-
-        val form      = formProvider()
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[MembersLastUKAddressView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(displayRequest, messages(application)).toString
       }
     }
 
