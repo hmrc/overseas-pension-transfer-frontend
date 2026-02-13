@@ -23,6 +23,7 @@ import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json._
 import queries.TransferDetailsRecordVersionQuery
 import queries.assets._
+import validators.assetsValidators.AssetCompletionValidator
 
 import scala.util.{Failure, Success, Try}
 
@@ -143,11 +144,11 @@ object AssetsMiniJourneyService {
     val previous: Map[TypeOfAsset, SessionAssetTypeWithStatus] =
       sd.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty).map(a => a.assetType -> a).toMap
 
-    val removed: Set[TypeOfAsset] = previous.keySet.diff(selectedAssets.toSet)
+    val removed: Set[TypeOfAsset] = TypeOfAsset.values.toSet.diff(selectedAssets.toSet)
 
     val updated: Seq[SessionAssetTypeWithStatus] =
       selectedAssets.map { assetType =>
-        val completed = isAssetCompleted(assetType, ua)
+        val completed = AssetCompletionValidator.hasMandatoryFields(assetType, ua)
 
         previous
           .get(assetType)
@@ -175,34 +176,6 @@ object AssetsMiniJourneyService {
       ua  <- uaCleared
       ua1 <- setAnswers(ua)
     } yield (sd, ua1)
-  }
-
-  private def isAssetCompleted(assetType: TypeOfAsset, ua: UserAnswers): Boolean = {
-    val td = ua.data \ "transferDetails"
-
-    assetType match {
-
-      case TypeOfAsset.Cash =>
-        (td \ "cashValue").asOpt[JsValue].exists {
-          case JsNumber(_) => true
-          case _           => false
-        }
-
-      case TypeOfAsset.UnquotedShares =>
-        (td \ "unquotedShares").asOpt[JsArray].exists(_.value.nonEmpty)
-
-      case TypeOfAsset.QuotedShares =>
-        (td \ "quotedShares").asOpt[JsArray].exists(_.value.nonEmpty)
-
-      case TypeOfAsset.Property =>
-        (td \ "propertyAssets").asOpt[JsArray].exists(_.value.nonEmpty)
-
-      case TypeOfAsset.Other =>
-        (td \ "otherAssets").asOpt[JsArray].exists(_.value.nonEmpty)
-
-      case _ =>
-        false
-    }
   }
 
   private def clearAssetData(ua: UserAnswers, t: TypeOfAsset): Try[UserAnswers] =
