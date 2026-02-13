@@ -84,7 +84,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
       when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
-      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(play.twirl.api.Html("dashboard view"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(play.twirl.api.Html("dashboard view"))
 
       val application = applicationBuilder()
         .overrides(
@@ -234,7 +234,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(dd)))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
-      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(play.twirl.api.Html("dashboard"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(play.twirl.api.Html("dashboard"))
 
       when(mockLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
 
@@ -291,64 +291,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         status(result) mustBe SEE_OTHER
         verify(mockLockRepository, times(1)).takeLock(meq("QT654321"), any(), any())
-      }
-    }
-
-    "must display the 2 day expiry warning when repository returns expiring items" in {
-      val mockRepo    = mock[DashboardSessionRepository]
-      val mockService = mock[TransferService]
-      val mockSession = mock[SessionRepository]
-      val mockLock    = mock[LockRepository]
-      val mockView    = mock[DashboardView]
-
-      val pensionScheme = PensionSchemeDetails(SrnNumber("SEXP"), PstrNumber("PSTR-EXP"), "Expiring Scheme")
-
-      val expiringTransfer = AllTransfersItem(
-        transferId      = userAnswersTransferNumber,
-        qtVersion       = None,
-        qtStatus        = Some(QtStatus.InProgress),
-        nino            = None,
-        memberFirstName = Some("Alice"),
-        memberSurname   = Some("Smith"),
-        qtDate          = None,
-        lastUpdated     = Some(Instant.now),
-        pstrNumber      = Some(PstrNumber("PSTR-EXP")),
-        submissionDate  = None
-      )
-
-      val dd = DashboardData("id")
-        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
-        .set(TransfersOverviewQuery, Seq(expiringTransfer)).success.value
-
-      when(mockSession.clear(any())).thenReturn(Future.successful(true))
-      when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
-      when(mockRepo.set(any())).thenReturn(Future.successful(true))
-      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(dd)))
-
-      when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq(expiringTransfer))
-
-      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(
-        play.twirl.api.Html("expiring soon banner")
-      )
-
-      val application = applicationBuilder()
-        .overrides(
-          bind[DashboardSessionRepository].toInstance(mockRepo),
-          bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSession),
-          bind[LockRepository].toInstance(mockLock),
-          bind[DashboardView].toInstance(mockView)
-        )
-        .build()
-
-      running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onPageLoad(1).url)
-        val result  = route(application, request).value
-
-        status(result) mustBe OK
-        contentAsString(result) must include("expiring soon banner")
-        verify(mockRepo, times(1)).findExpiringWithin2Days(any())
       }
     }
 
