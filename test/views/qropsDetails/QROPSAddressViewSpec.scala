@@ -50,7 +50,7 @@ class QROPSAddressViewSpec extends ViewBaseSpec {
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
       ("addressLine3", "common.addressInput.accessible.addressLine3"),
-      ("addressLine4", "common.addressInput.postcode"),
+      ("addressLine4", "common.addressInput.accessible.postcode"),
       ("addressLine5", "common.addressInput.poBox")
     )
 
