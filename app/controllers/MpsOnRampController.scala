@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.PensionSchemeConnector
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.DashboardData
 import pages.MpsOnRampPage
@@ -48,12 +47,12 @@ class MpsOnRampController @Inject() (
           Redirect(MpsOnRampPage.nextPage(dd1))
         } else {
           logger.warn("[MpsOnRampController][onRamp] dashboardRepo.set returned false")
-          Redirect(routes.JourneyRecoveryController.onPageLoad())
+          Redirect(MpsOnRampPage.nextPageRecovery())
         }
       }
     }.recover { case t =>
       logger.error("[MpsOnRampController][onRamp] Failed while setting/persisting dashboard data", t)
-      Redirect(routes.JourneyRecoveryController.onPageLoad())
+      Redirect(MpsOnRampPage.nextPageRecovery())
     }
   }
 }

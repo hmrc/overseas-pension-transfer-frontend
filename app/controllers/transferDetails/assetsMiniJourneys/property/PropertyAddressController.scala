@@ -86,7 +86,7 @@ class PropertyAddressController @Inject() (
           addressService.propertyAddress(formData) match {
             case None                                                                                                                                  =>
               Future.successful(
-                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                Redirect(PropertyAddressPage(index).nextPageRecovery())
               )
             case Some(addressToSave) if addressToSave.country.code != "GB" && addressToSave.postcode.nonEmpty && appConfig.accessibilityAddressChanges =>
               // TODO Update with a more accurate message, and maybe have it focus the country field rather than postcode

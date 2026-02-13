@@ -63,12 +63,12 @@ class DashboardController @Inject() (
       repo.get(id).flatMap {
         case None =>
           logger.warn(s"[DashboardController][onPageLoad] No dashboard data found this customer")
-          Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+          Future.successful(Redirect(DashboardPage.nextPageRecovery()))
 
         case Some(dashboardData) =>
           dashboardData.get(PensionSchemeDetailsQuery).fold {
             logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for this customer")
-            Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+            Future.successful(Redirect(DashboardPage.nextPageRecovery()))
           } { pensionSchemeDetails =>
             dashboardData.get(TransfersOverviewQuery) match {
               case None            =>
@@ -155,7 +155,7 @@ class DashboardController @Inject() (
       _.fold(
         err => {
           logger.warn(s"[DashboardController] getAllTransfersData failed: $err")
-          Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+          Future.successful(Redirect(DashboardPage.nextPageRecovery()))
         },
         updatedData => {
 
