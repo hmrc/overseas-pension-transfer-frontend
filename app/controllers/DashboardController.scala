@@ -160,7 +160,6 @@ class DashboardController @Inject() (
         updatedData => {
 
           val allTransfers      = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-          val expiringItems     = repo.findExpiringWithin2Days(allTransfers)
           val filteredTransfers = getFilteredTransfers(allTransfers, search)
           val transfersVm       = buildTransfersVm(filteredTransfers, allTransfers.size, page, search, lockWarning)
           val searchBarVm       = buildSearchBarVm(search)
@@ -177,7 +176,6 @@ class DashboardController @Inject() (
                 DashboardPage.nextPage(updatedData, None, None).url,
                 transfersVm,
                 searchBarVm,
-                expiringItems,
                 mpsLink,
                 isSearch          = search.exists(_.trim.nonEmpty),
                 breadcrumbs       = appBreadcrumbs(mpsLink, pensionSchemeLink),
