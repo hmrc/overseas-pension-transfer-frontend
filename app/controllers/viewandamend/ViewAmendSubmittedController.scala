@@ -21,8 +21,11 @@ import config.FrontendAppConfig
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import models.audit.JourneyStartedType.ContinueAmendmentOfTransfer
 import models.authentication.{PsaUser, PspUser}
-import models.{AmendCheckMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
+import models.requests.SchemeRequest
+import models.responses.UserAnswersError
+import models.{AmendCheckMode, NormalMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
 import pages.memberDetails.MemberNamePage
+import pages.viewandamend.{ViewAmendSubmittedPage => page}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -82,9 +85,9 @@ class ViewAmendSubmittedController @Inject() (
 
                   Ok(renderView(sessionDataWithMemberName, userAnswers, isAmend = false))
                 case Left(_)            =>
-                  Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+                  Redirect(page.nextPageRecovery())
               }
-          case _           => Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
+          case _           => Future.successful(Redirect(page.nextPageRecovery()))
         }
 
     }
@@ -109,45 +112,53 @@ class ViewAmendSubmittedController @Inject() (
                                  ContinueAmendmentOfTransfer,
                                  allTransfersItem
                                )
-          result            <- (userAnswersResult, lockAcquired) match {
-                                 case (Right(userAnswers), true) =>
-                                   val sessionData = SessionData(
-                                     request.authenticatedUser.internalId,
-                                     qtReference,
-                                     request.schemeDetails,
-                                     request.authenticatedUser,
-                                     Json.obj(
-                                       "receiptDate"   -> userAnswers.lastUpdated,
-                                       "versionNumber" -> versionNumber
-                                     )
-                                   )
-
-                                   val sessionDataWithMemberName: SessionData =
-                                     userAnswers.get(MemberNamePage).fold(sessionData) { name =>
-                                       sessionData.set(MemberNamePage, name).getOrElse(sessionData)
-                                     }
-
-                                   sessionRepository.set(sessionDataWithMemberName).map { _ =>
-                                     Redirect(routes.ViewAmendSubmittedController.amend())
-                                   }
-
-                                 case (_, false) =>
-                                   Future.successful(
-                                     Redirect(
-                                       routes.SubmittedTransferSummaryController.onPageLoad(
-                                         qtReference,
-                                         pstr,
-                                         qtStatus,
-                                         versionNumber
-                                       )
-                                     ).flashing("lockWarning" -> "")
-                                   )
-
-                                 case _ =>
-                                   Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-                               }
+          result            <- handleResult(qtReference, pstr, qtStatus, versionNumber, request, userAnswersResult, lockAcquired)
         } yield result
     }
+
+  private def handleResult(
+      qtReference: TransferId,
+      pstr: PstrNumber,
+      qtStatus: QtStatus,
+      versionNumber: String,
+      request: SchemeRequest[AnyContent],
+      userAnswersResult: Either[UserAnswersError, UserAnswers],
+      lockAcquired: Boolean
+    ) = {
+
+    (userAnswersResult, lockAcquired) match {
+      case (Right(userAnswers), true) =>
+        val sessionData = SessionData(
+          request.authenticatedUser.internalId,
+          qtReference,
+          request.schemeDetails,
+          request.authenticatedUser,
+          Json.obj(
+            "receiptDate"   -> userAnswers.lastUpdated,
+            "versionNumber" -> versionNumber
+          )
+        )
+
+        val sessionDataWithMemberName: SessionData =
+          userAnswers.get(MemberNamePage).fold(sessionData) { name =>
+            sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+          }
+
+        sessionRepository.set(sessionDataWithMemberName).map { _ =>
+          Redirect(page.nextPage(NormalMode, userAnswers))
+        }
+
+      case (_, false) =>
+        Future.successful(
+          Redirect(
+            page.userAnswersError(qtReference, pstr, qtStatus, versionNumber)
+          ).flashing("lockWarning" -> "")
+        )
+
+      case _ =>
+        Future.successful(Redirect(page.nextPageRecovery()))
+    }
+  }
 
   def amend(): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit dr =>
