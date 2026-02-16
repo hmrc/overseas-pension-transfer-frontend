@@ -71,29 +71,30 @@ class IsTransferCashOnlyController @Inject() (
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            ua1           <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value, mode))
-            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
-            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
-            sd            <- Future.fromTry(updateCashOnlySession(request.sessionData, value))
-            _             <- sessionRepository.set(sd)
+            updatedUserAnswers    <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value, mode))
+            inProgressUserAnswers <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, updatedUserAnswers, taskCategory = TransferDetails))
+            savedForLater         <- userAnswersService.setExternalUserAnswers(inProgressUserAnswers)
+            sessionData           <- Future.fromTry(updateCashOnlySession(request.sessionData, value))
+            _                     <- sessionRepository.set(sessionData)
           } yield {
             savedForLater match {
-              case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, ua2))
+              case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, inProgressUserAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
           }
       )
   }
 
-  private def updateCashOnlySession(sessionData: SessionData, isCashOnly: Boolean): Try[SessionData] =
+  private def updateCashOnlySession(sessionData: SessionData, isCashOnly: Boolean): Try[SessionData] = {
     if (isCashOnly) {
       for {
-        sd  <- AssetsMiniJourneyService.clearAllAssetCompletionFlags(sessionData)
-        sd1 <- sd.set(SelectedAssetTypesWithStatus, SelectedAssetTypesWithStatus.fromTypes(Seq(Cash)))
-      } yield sd1
+        sessionDataClearedAssetCompletion <- AssetsMiniJourneyService.clearAllAssetCompletionFlags(sessionData)
+        sessionDataSetToCashOnly          <- sessionDataClearedAssetCompletion.set(SelectedAssetTypesWithStatus, SelectedAssetTypesWithStatus.fromTypes(Seq(Cash)))
+      } yield sessionDataSetToCashOnly
     } else {
       Success(sessionData)
     }
+  }
 
   private def updateCashOnlyAnswers(userAnswers: models.UserAnswers, isCashOnly: Boolean, mode: Mode): Try[models.UserAnswers] = {
     def setAnswers(ua: UserAnswers): Try[UserAnswers] =
@@ -109,17 +110,21 @@ class IsTransferCashOnlyController @Inject() (
     if (isCashOnly) {
       val netAmount = userAnswers.get(AmountOfTransferPage).getOrElse(BigDecimal(0))
       for {
-        ua1 <- AssetsMiniJourneyService.removeAllAssetEntriesExceptCash(userAnswers)
-        ua2 <- ua1.set(CashAmountInTransferPage, netAmount)
-        ua3 <- ua2.set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash))
-        ua4 <- setAnswers(ua3)
-      } yield ua4
+        userAnswersAssetEntriesRemoved <- AssetsMiniJourneyService.removeAllAssetEntriesExceptCash(userAnswers)
+        userAnswersCashAmountAdded     <- userAnswersAssetEntriesRemoved.set(CashAmountInTransferPage, netAmount)
+        userAnswersCastAssetAdded      <- userAnswersCashAmountAdded.set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash))
+        setUserAnswers                 <- setAnswers(userAnswersCastAssetAdded)
+      } yield setUserAnswers
     } else {
-      for {
-        ua1 <- userAnswers.remove(CashAmountInTransferPage)
-        ua2 <- ua1.remove(TypeOfAssetPage)
-        ua3 <- setAnswers(ua2)
-      } yield ua3
+      if (userAnswers.get(IsTransferCashOnlyPage).contains(isCashOnly)) {
+        setAnswers(userAnswers)
+      } else {
+        for {
+          clearedAssets      <- userAnswers.remove(AnswersSelectedAssetTypes)
+          clearedCashAmount  <- clearedAssets.remove(CashAmountInTransferPage)
+          updatedUserAnswers <- setAnswers(clearedCashAmount)
+        } yield updatedUserAnswers
+      }
     }
   }
 }
