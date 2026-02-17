@@ -17,6 +17,7 @@
 package viewmodels
 
 import controllers.routes
+import models.{AmendCheckMode, NormalMode}
 import play.api.i18n.Messages
 
 /** Builds a list of footer links for a page. Priority of footers:
@@ -43,10 +44,10 @@ object FooterLink {
       text = messages("footer.link.text.dashboard")
     )
 
-    val discardReportLink = FooterLink(
+    def discardReportLink(isAmend: Boolean) = FooterLink(
       id   = "discardReportLink",
-      href = routes.DiscardTransferConfirmController.onPageLoad().url,
-      text = if (showDiscardAmendmentFooter) messages("footer.link.text.discard.amendment") else messages("footer.link.text.discard.report")
+      href = routes.DiscardTransferConfirmController.onPageLoad(if (isAmend) AmendCheckMode else NormalMode).url,
+      text = if (isAmend) messages("footer.link.text.discard.amendment") else messages("footer.link.text.discard.report")
     )
 
     val taskListLink = FooterLink(
@@ -56,11 +57,11 @@ object FooterLink {
     )
 
     (showStartFooter, showCYAFooter, showTaskListFooter, showPageFooter, showDiscardAmendmentFooter) match {
-      case (_, true, _, _, true)                      => Seq(discardReportLink, dashboardLink)
-      case (true, _, _, _, _) | (_, true, _, _, _)    => Seq(dashboardLink)
-      case (_, _, true, _, _) | (_, true, _, _, true) => Seq(discardReportLink, dashboardLink)
-      case (_, _, _, true, _)                         => Seq(taskListLink)
-      case _                                          => Seq.empty
+      case (_, true, _, _, true)                   => Seq(discardReportLink(true), dashboardLink)
+      case (true, _, _, _, _) | (_, true, _, _, _) => Seq(dashboardLink)
+      case (_, _, true, _, _)                      => Seq(discardReportLink(false), dashboardLink)
+      case (_, _, _, true, _)                      => Seq(taskListLink)
+      case _                                       => Seq.empty
     }
   }
 }

@@ -32,8 +32,10 @@ GET        /view-submitted-transfer                                             
 GET        /amend-submitted-transfer                                                              controllers.viewandamend.ViewAmendSubmittedController.amend()
 GET        /amend-in-progress-draft                                                               controllers.viewandamend.ViewAmendSubmittedController.fromDraft(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
 
-GET        /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onPageLoad()
-POST       /discard-transfer-confirm                                                              controllers.DiscardTransferConfirmController.onSubmit()
+GET        /discard-transfer-confirm/view                                                         controllers.DiscardTransferConfirmController.onPageLoad(mode: Mode = NormalMode)
+GET        /discard-transfer-confirm/amend                                                        controllers.DiscardTransferConfirmController.onPageLoad(mode: Mode = AmendCheckMode)
+POST       /discard-transfer-confirm/view                                                         controllers.DiscardTransferConfirmController.onSubmit(mode: Mode = NormalMode)
+POST       /discard-transfer-confirm/amend                                                        controllers.DiscardTransferConfirmController.onSubmit(mode: Mode = AmendCheckMode)
 
 GET        /account/sign-out-survey                                                               controllers.auth.AuthController.signOut()
 GET        /account/sign-out                                                                      controllers.auth.AuthController.signOutNoSurvey()

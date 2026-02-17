@@ -19,7 +19,7 @@ package pages
 import base.SpecBase
 import controllers.routes
 import models.QtStatus.AmendInProgress
-import models.{NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -29,34 +29,38 @@ import scala.util.Try
 class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
+    Seq(
+      NormalMode     -> controllers.routes.TaskListController.onPageLoad(),
+      AmendCheckMode -> controllers.viewandamend.routes.ViewAmendSubmittedController.fromDraft(
+        qtReference   = userAnswersTransferNumber,
+        pstr          = PstrNumber("12345678AB"),
+        qtStatus      = AmendInProgress,
+        versionNumber = "1000"
+      )
+    ).foreach { case (mode, expectedRoute) =>
+      s"in $mode Mode" - {
 
-    "in Normal Mode" - {
+        "must go to Index when DiscardTransferConfirm in UserAnswers is true" in {
+          val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB")).set(DiscardTransferConfirmPage, true).success.value
 
-      "must go to Index when DiscardTransferConfirm in UserAnswers is true" in {
-        val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB")).set(DiscardTransferConfirmPage, true).success.value
+          DiscardTransferConfirmPage.nextPageWith(mode, userAnswers, None) mustEqual routes.DashboardController.onPageLoad()
+        }
 
-        DiscardTransferConfirmPage.nextPageWith(NormalMode, userAnswers, None) mustEqual routes.DashboardController.onPageLoad()
-      }
+        "must go to Task List page when DiscardTransferConfirm in UserAnswers is false" in {
+          val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB")).set(DiscardTransferConfirmPage, false).success.value
 
-      "must go to Task List page when DiscardTransferConfirm in UserAnswers is false" in {
-        val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB")).set(DiscardTransferConfirmPage, false).success.value
+          DiscardTransferConfirmPage.nextPageWith(
+            mode,
+            userAnswers,
+            Some("1000")
+          ) mustEqual expectedRoute
+        }
 
-        DiscardTransferConfirmPage.nextPageWith(
-          NormalMode,
-          userAnswers,
-          Some("1000")
-        ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.fromDraft(
-          qtReference   = userAnswersTransferNumber,
-          pstr          = PstrNumber("12345678AB"),
-          qtStatus      = AmendInProgress,
-          versionNumber = "1000"
-        )
-      }
+        "must got to Journey Recovery page when User Answers is empty" in {
+          val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
-      "must got to Journey Recovery page when User Answers is empty" in {
-        val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
-        DiscardTransferConfirmPage.nextPageWith(NormalMode, userAnswers, None) mustEqual routes.JourneyRecoveryController.onPageLoad()
+          DiscardTransferConfirmPage.nextPageWith(mode, userAnswers, None) mustEqual routes.JourneyRecoveryController.onPageLoad()
+        }
       }
     }
   }
