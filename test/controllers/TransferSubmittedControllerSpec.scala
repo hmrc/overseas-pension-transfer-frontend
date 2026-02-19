@@ -34,6 +34,7 @@ import utils.DateTimeFormats.localDateTimeFormatter
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import views.html.TransferSubmittedView
 
+import java.net.URLEncoder
 import java.time.ZoneId
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global

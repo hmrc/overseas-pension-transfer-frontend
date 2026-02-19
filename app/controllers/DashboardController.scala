@@ -164,10 +164,12 @@ class DashboardController @Inject() (
           val transfersVm       = buildTransfersVm(filteredTransfers, allTransfers.size, page, search, lockWarning)
           val searchBarVm       = buildSearchBarVm(search)
           val mpsLink           = appConfig.mpsHomeUrl
-          val pensionSchemeLink = appConfig.getPensionSchemeUrl(
-            srn       = pensionSchemeDetails.srnNumber.value,
-            isPspUser = authenticatedUser.isInstanceOf[models.authentication.PspUser]
-          )
+          val pensionSchemeLink = routes.DashboardController.clearAndExit(
+            appConfig.getPensionSchemeUrl(
+              srn       = pensionSchemeDetails.srnNumber.value,
+              isPspUser = authenticatedUser.isInstanceOf[models.authentication.PspUser]
+            )
+          ).url
 
           repo.set(updatedData).map { _ =>
             Ok(
@@ -231,6 +233,16 @@ class DashboardController @Inject() (
       case Some(term) => TransferSearch.filterTransfers(all, term)
       case None       => all
     }
+
+  def clearAndExit(redirect: String): Action[AnyContent] = identify.async { implicit request =>
+    val id = request.authenticatedUser.internalId
+    for {
+      _ <- repo.clear(id)
+      _ <- sessionRepository.clear(id)
+    } yield {
+      Redirect(redirect)
+    }
+  }
 
   private def pageUrl(search: Option[String])(p: Int): String =
     routes.DashboardController.onPageLoad(p, search).url

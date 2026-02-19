@@ -633,3 +633,5 @@ GET        /print-submitted-transfer                                            
 
 GET        /view-amend                                                                            controllers.viewandamend.ViewAmendSelectorController.onPageLoad(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
 POST       /view-amend                                                                            controllers.viewandamend.ViewAmendSelectorController.onSubmit(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String)
+
+GET         /clear-and-exit                                                                         controllers.DashboardController.clearAndExit(redirect: String)
