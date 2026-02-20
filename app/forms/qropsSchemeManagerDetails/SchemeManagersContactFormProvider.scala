@@ -29,8 +29,9 @@ class SchemeManagersContactFormProvider @Inject() extends Mappings with Regex {
       "contactNumber" -> text("schemeManagersContact.error.required")
         .transform[String](_.replaceAll("\\s+", ""), identity)
         .transform[String](s => if (s.startsWith("00")) "+" + s.substring(2) else s, identity)
-        .verifying("schemeManagersContact.error.pattern", _.matches("^[\\d+()\\-]*$"))
+        .transform[String](_.replaceAll("\\D+$", ""), identity)
         .verifying(maxLength(35, "schemeManagersContact.error.length"))
+        .verifying("schemeManagersContact.error.pattern", _.matches("^[\\d+()\\-]*$"))
         .verifying("schemeManagersContact.error.pattern", number => isValidPhoneNumber(number))
     )
 
