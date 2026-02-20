@@ -23,7 +23,9 @@ import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
-import utils.{DownstreamLogging, HttpResponseUtils}
+import utils.DownstreamLogging
+
+import scala.util.Try
 
 object UserAnswersParser {
   type GetUserAnswersType    = Either[UserAnswersError, UserAnswersDTO]
@@ -36,7 +38,7 @@ object UserAnswersParser {
     override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType =
       response.status match {
         case OK         =>
-          HttpResponseUtils.safeJson(response) match {
+          Try(response.json).toOption match {
             case Some(json) =>
               json.validate[UserAnswersDTO] match {
                 case JsSuccess(value, _) => Right(value)
