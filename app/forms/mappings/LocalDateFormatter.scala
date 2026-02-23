@@ -35,76 +35,87 @@ private[mappings] class LocalDateFormatter(
   ) extends Formatter[LocalDate] with Formatters {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
-  val monthFormatter                  = new MonthFormatter(invalidKey, realDateKey, args)
+
+  val monthFormatter = new MonthFormatter(
+    invalidKey,
+    invalidCharacter,
+    realDateKey,
+    args
+  )
+
+  def validMaxDay(isLeapYear: Boolean) = Map(
+    Month.JANUARY   -> 31,
+    Month.FEBRUARY  -> (if (isLeapYear) 29 else 28),
+    Month.MARCH     -> 31,
+    Month.APRIL     -> 30,
+    Month.MAY       -> 31,
+    Month.JUNE      -> 30,
+    Month.JULY      -> 31,
+    Month.AUGUST    -> 31,
+    Month.SEPTEMBER -> 30,
+    Month.OCTOBER   -> 31,
+    Month.NOVEMBER  -> 30,
+    Month.DECEMBER  -> 31
+  )
 
   private def toDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
     Try(data(s"$key.year").toIntOption, monthFormatter.bind(s"$key.month", data), data(s"$key.day").toIntOption) match {
-      case Success((Some(year), Right(month), Some(day))) =>
-        Try(LocalDate.of(year, month, day)) match {
-          case Success(date) =>
-            Right(date)
-          case Failure(_)    =>
-            val isLeapYear: Boolean = Seq(
-              year % 4 == 0,
-              year % 100 == 0 && year % 400 == 0
-            ).forall(check => check)
-
-            val validMaxDay = Map(
-              Month.JANUARY   -> 31,
-              Month.FEBRUARY  -> (if (isLeapYear) 29 else 28),
-              Month.MARCH     -> 31,
-              Month.APRIL     -> 30,
-              Month.MAY       -> 31,
-              Month.JUNE      -> 30,
-              Month.JULY      -> 31,
-              Month.AUGUST    -> 31,
-              Month.SEPTEMBER -> 30,
-              Month.OCTOBER   -> 31,
-              Month.NOVEMBER  -> 30,
-              Month.DECEMBER  -> 31
-            )
-
-            val validMonth       = month >= 1 && month <= 12
-            val validDay         = day >= 1 && day <= 31
-            val validDayForMonth = if (validMonth) {
-              day >= 1 && day <= validMaxDay(Month.of(month))
-            } else true
-
-            val dayError   = if (!validDay || !validDayForMonth) Some(FormError(key, realDateKey, Seq("day") ++ args)) else None
-            val monthError = if (!validMonth) Some(FormError(key, realDateKey, Seq("month") ++ args)) else None
-
-            Left(Seq(
-              dayError,
-              monthError
-            ).flatten)
-        }
+      case Success((Some(year), Right(month), Some(day))) => handleSuccess(key, year, month, day)
+      case Success((year, month, day))                    => handlePartErrors(key, day, month, year)
       case _                                              => Left(Seq(FormError(key, invalidKey, args)))
     }
   }
 
-  private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+  private def handleSuccess(key: String, year: Int, month: Int, day: Int) = {
+    Try(LocalDate.of(year, month, day)) match {
+      case Success(date) =>
+        Right(date)
+      case Failure(_)    =>
+        val isLeapYear: Boolean = Seq(
+          year % 4 == 0,
+          year % 100 == 0 && year % 400 == 0
+        ).forall(check => check)
 
-    val int = intFormatter(
-      requiredKey    = invalidKey,
-      wholeNumberKey = invalidKey,
-      nonNumericKey  = invalidCharacter,
-      args
-    )
+        val validMonth       = month >= 1 && month <= 12
+        val validDay         = day >= 1 && day <= 31
+        val validDayForMonth = if (validMonth) {
+          day >= 1 && day <= validMaxDay(isLeapYear)(Month.of(month))
+        } else true
 
-    val dayWithMaybeError   = int.bind(s"$key.day", data)
-    val monthWithMaybeError = monthFormatter.bind(s"$key.month", data)
-    val yearWithMaybeError  = int.bind(s"$key.year", data)
-    val dateWithMaybeError  = toDate(key, data)
+        val dayError   = if (!validDay || !validDayForMonth) Some(FormError(key, realDateKey, Seq("day") ++ args)) else None
+        val monthError = if (!validMonth) Some(FormError(key, realDateKey, Seq("month") ++ args)) else None
 
-    val allErrors = Seq(
-      dayWithMaybeError.left.getOrElse(Seq.empty),
-      monthWithMaybeError.left.getOrElse(Seq.empty),
-      yearWithMaybeError.left.getOrElse(Seq.empty),
-      dateWithMaybeError.left.getOrElse(Seq.empty)
-    ).flatten
-
-    if (allErrors.nonEmpty) Left(allErrors) else dateWithMaybeError
+        Left(Seq(
+          dayError,
+          monthError
+        ).flatten)
+    }
   }
+
+  private def handlePartErrors(key: String, day: Option[Int], month: Either[Seq[FormError], Int], year: Option[Int]): Left[Seq[FormError], Nothing] = {
+    val validDay = day.map(mappedDay => mappedDay >= 1 && mappedDay <= 31)
+    val dayError = if (validDay.contains(false)) {
+      Some(FormError(key, realDateKey, Seq("day") ++ args))
+    } else if (day.isEmpty) {
+      Some(FormError(key, invalidCharacter, Seq("day") ++ args))
+    } else {
+      None
+    }
+
+    val monthError = month.left.map { formErrors =>
+      formErrors.head
+    } match {
+      case Right(_)    => None
+      case Left(error) => Some(error)
+    }
+
+    val yearError = if (year.isEmpty) Some(FormError(key, invalidCharacter, Seq("year") ++ args)) else None
+
+    Left(Seq(dayError, monthError, yearError).flatten)
+  }
+
+  private def formatDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] =
+    toDate(key, data)
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
 
@@ -144,7 +155,8 @@ private[mappings] class LocalDateFormatter(
     )
 }
 
-private class MonthFormatter(invalidKey: String, realDateKey: String, args: Seq[String] = Seq.empty) extends Formatter[Int] with Formatters {
+private class MonthFormatter(invalidKey: String, invalidCharacter: String, realDateKey: String, args: Seq[String] = Seq.empty) extends Formatter[Int]
+    with Formatters {
 
   private val baseFormatter = stringFormatter(invalidKey, args)
 
@@ -155,11 +167,21 @@ private class MonthFormatter(invalidKey: String, realDateKey: String, args: Seq[
     baseFormatter
       .bind(key, data)
       .flatMap {
-        str =>
+        monthString =>
           months
-            .find(m => m.getValue.toString == str.replaceAll("^0+", "") || m.toString == str.toUpperCase || m.toString.take(3) == str.toUpperCase)
-            .map(x => Right(x.getValue))
-            .getOrElse(Left(List(FormError(key, realDateKey, Seq("month") ++ args))))
+            .find(month =>
+              month.getValue.toString == monthString.replaceAll("^0+", "") ||
+                month.toString == monthString.toUpperCase ||
+                month.toString.take(3) == monthString.toUpperCase
+            )
+            .map(parsedMonth => Right(parsedMonth.getValue))
+            .getOrElse(
+              if (monthString.toIntOption.nonEmpty) {
+                Left(List(FormError(key, realDateKey, Seq("month") ++ args)))
+              } else {
+                Left(List(FormError(key, invalidCharacter, Seq("month") ++ args)))
+              }
+            )
       }
   }
 
