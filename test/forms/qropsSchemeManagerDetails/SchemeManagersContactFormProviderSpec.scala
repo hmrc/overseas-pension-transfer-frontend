@@ -79,12 +79,12 @@ class SchemeManagersContactFormProviderSpec extends StringFieldBehaviours {
       result.value.value mustBe "+447911123456"
     }
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+    "not bind phone numbers longer than 35 characters" in {
+      val longPhoneNumber = "+" + "1" * 40
+
+      val result = form.bind(Map(fieldName -> longPhoneNumber)).apply(fieldName)
+      result.errors must contain(FormError(fieldName, lengthKey, Seq(maxLength)))
+    }
 
     behave like mandatoryField(
       form,
