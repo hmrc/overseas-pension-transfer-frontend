@@ -22,6 +22,7 @@ import models.{Mode, TaskCategory, UserAnswers}
 import pages.{MiniJourneyNextPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import validators.assetsValidators.AssetCompletionValidator
 
 case class UnquotedSharesValuePage(index: Int) extends QuestionPage[BigDecimal] with MiniJourneyNextPage {
 
@@ -30,9 +31,10 @@ case class UnquotedSharesValuePage(index: Int) extends QuestionPage[BigDecimal] 
   override def toString: String = UnquotedSharesEntry.ValueOfShares
 
   override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
-    answers.get(UnquotedSharesClassPage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index)
-      case None    => AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(mode, index)
+    if (AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.UnquotedShares, answers)) {
+      AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index)
+    } else {
+      AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(mode, index)
     }
   }
 
