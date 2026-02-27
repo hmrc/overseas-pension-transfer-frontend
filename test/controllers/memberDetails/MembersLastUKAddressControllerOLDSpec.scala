@@ -17,8 +17,8 @@
 package controllers.memberDetails
 
 import base.SpecBase
-import controllers.routes
 import controllers.memberDetails.{routes => memberRoutes}
+import controllers.routes
 import models.NormalMode
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
@@ -35,17 +35,21 @@ import services.UserAnswersService
 
 import scala.concurrent.Future
 
-class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MembersLastUKAddressControllerOLDSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val membersLastUKAddressRoute = memberRoutes.MembersLastUKAddressController.onPageLoad(NormalMode).url
 
   private val postCode = "AB1 2CD"
 
-  "MembersLastUKAddress Controller" - {
+  "MembersLastUKAddress Controller (OLD)" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber)
+        .configure(
+          "features.accessibility-address-changes" -> false
+        )
+        .build()
 
       running(application) {
         val request = FakeRequest(GET, membersLastUKAddressRoute)
@@ -66,6 +70,9 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(emptyUserAnswers)
+        .configure(
+          "features.accessibility-address-changes" -> false
+        )
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
@@ -86,7 +93,11 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must return a Bad Request when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber)
+        .configure(
+          "features.accessibility-address-changes" -> false
+        )
+        .build()
 
       running(application) {
         val request =
@@ -109,6 +120,9 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
+        .configure(
+          "features.accessibility-address-changes" -> false
+        )
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)

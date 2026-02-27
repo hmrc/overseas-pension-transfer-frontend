@@ -108,8 +108,12 @@ object UserAnswersParser {
 
     override def read(method: String, url: String, response: HttpResponse): DeleteUserAnswersType =
       response.status match {
-        case NO_CONTENT => Right(Done)
+        case NO_CONTENT =>
+          println(Console.YELLOW + "DeleteUserAnswersReads" + Console.RESET)
+          Right(Done)
         case statusCode =>
+          println(Console.YELLOW + "DeleteUserAnswersReads" + Console.RESET)
+
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
               logger.warn(s"[UserAnswersConnector][deleteAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")

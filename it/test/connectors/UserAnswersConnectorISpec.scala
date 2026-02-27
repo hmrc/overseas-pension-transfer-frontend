@@ -17,13 +17,14 @@
 package connectors
 
 import base.BaseISpec
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, delete, post, stubFor}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import models.QtStatus.{InProgress, Submitted}
-import models.{PstrNumber, QtNumber, TransferNumber}
 import models.authentication.{PsaId, Psp, PspId}
 import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import models.{PstrNumber, QtNumber, TransferNumber}
 import org.apache.pekko.Done
+import org.apache.pekko.http.scaladsl.model.HttpResponse
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting
@@ -251,7 +252,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     }
   }
 
-  "setAnswers" should {
+  "putAnswers" should {
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
       stubFor(post("/overseas-pension-transfer-backend/save-for-later")
         .willReturn(
@@ -288,6 +289,21 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         putAnswers shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
       }
+      
+      "there is an error, but the error Json cannot be parsed" in {
+        stubPost(
+          "/overseas-pension-transfer-backend/save-for-later",
+          Json.stringify(Json.obj("invalidField" -> "This is not the field you're looking for")),
+          INTERNAL_SERVER_ERROR
+        )
+        
+        val putAnswers = await(connector.putAnswers(userAnswersDTO))
+        
+        putAnswers match {
+          case Left(error: UserAnswersErrorResponse) => error.error should include("500 Unknown (correlationId=-)")
+          case error@_ => fail(s"Expected SubmissionErrorResponse -- $error")
+        }
+      }
     }
   }
 
@@ -309,6 +325,25 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
     "return SubmissionErrorResponse" when {
 
+      "the call is successful, but the response cannot be parsed" in {
+        stubFor(post(s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}")
+          .willReturn(
+            aResponse()
+              .withStatus(OK)
+              .withHeader("Content-Type", "application/json")
+              .withBody(Json.stringify(Json.obj(
+                "invalidField" -> "Fus Roh Dah"
+              )))
+          ))
+
+        val response = await(connector.postSubmission(submissionDTO))
+        
+        response match {
+          case Left(error: SubmissionErrorResponse) => error.error should include("Unable to parse Json as SubmissionResponse")
+          case _ => fail("Expected SubmissionErrorResponse")
+        }
+      }
+      
       "400 is returned" in {
         stubPost(
           s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}",
@@ -332,10 +367,30 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         response shouldBe Left(SubmissionErrorResponse("Failed to save answers", None))
       }
+
+      "an error is returned, but the error cannot be parsed" in {
+        stubFor(post(s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}")
+          .willReturn(
+            aResponse()
+              .withStatus(IM_A_TEAPOT)
+              .withHeader("Content-Type", "application/json")
+              .withBody(Json.stringify(Json.obj(
+                "invalidField" -> "I did not see the sun until I was already a man."
+              )))
+          ))
+
+        val response = await(connector.postSubmission(submissionDTO))
+
+        response match {
+          case Left(error: SubmissionErrorResponse) => error.error should include("418 Unknown (correlationId=-)")
+          case _ => fail("Expected SubmissionErrorResponse")
+        }
+      }
     }
   }
 
   "deleteAnswers" should {
+    
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
       stubFor(delete(s"/overseas-pension-transfer-backend/save-for-later/testId")
         .willReturn(
@@ -343,12 +398,13 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
             .withStatus(NO_CONTENT)
         ))
 
-      val putAnswers = await(connector.deleteAnswers("testId"))
+      val response = await(connector.deleteAnswers("testId"))
 
-      putAnswers shouldBe Right(Done)
+      response shouldBe Right(Done)
     }
 
     "return UserAnswersErrorResponse" when {
+      
       "500 is returned" in {
         stubFor(delete("/overseas-pension-transfer-backend/save-for-later/testId")
           .willReturn(
@@ -357,10 +413,43 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
               .withBody( """{ "error": "Failed to save answers" }""")
           ))
 
-        val putAnswers = await(connector.deleteAnswers("testId"))
+        val response = await(connector.deleteAnswers("testId"))
 
-        putAnswers shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
+        response shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
       }
+      
+      "500 is returned, but the error cannot be parsed" in {
+        stubFor(delete("/overseas-pension-transfer-backend/save-for-later/testId")
+          .willReturn(
+            aResponse()
+              .withStatus(INTERNAL_SERVER_ERROR)
+              .withBody(Json.stringify(Json.obj(
+                "invalidField" -> "For those who come after"
+              )))
+          ))
+
+        val response = await(connector.deleteAnswers("testId"))
+
+        response shouldBe Left(UserAnswersErrorResponse(
+          "Unable to parse Json as UserAnswersErrorResponse",
+          Some("/error")
+        ))
+      }
+    }
+  }
+
+  "resetDatabase" should {
+    
+    "return a HttpResponse with the returned code" in {
+      stubFor(delete(s"/test-only/reset-test-data")
+        .willReturn(
+          aResponse()
+            .withStatus(NO_CONTENT)
+        ))
+
+      val resetResponse = await(connector.resetDatabase)
+
+      resetResponse.status shouldBe NO_CONTENT
     }
   }
 
