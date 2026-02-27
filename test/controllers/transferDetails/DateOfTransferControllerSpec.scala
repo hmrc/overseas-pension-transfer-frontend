@@ -63,168 +63,209 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   "DateOfTransfer Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "onPageLoad (GET)" - {
 
-      val application = applicationBuilder().build()
+      "must return OK and the correct view for a GET" in {
 
-      running(application) {
-        val result  = route(application, getRequest()).value
-        val request = getRequest()
-        val view    = application.injector.instanceOf[DateOfTransferView]
+        val application = applicationBuilder().build()
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        running(application) {
+          val result  = route(application, getRequest()).value
+          val request = getRequest()
+          val view    = application.injector.instanceOf[DateOfTransferView]
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        }
+      }
+
+      "must populate the view correctly on a GET when the question has previously been answered" in {
+
+        val userAnswers = emptyUserAnswers.set(DateOfTransferPage, validAnswer).success.value
+
+        val application = applicationBuilder(userAnswers = userAnswers).build()
+
+        running(application) {
+          val view    = application.injector.instanceOf[DateOfTransferView]
+          val request = getRequest()
+          val result  = route(application, getRequest()).value
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        }
+      }
+
+      "must return OK and use the amend form when in AmendCheckMode" in {
+        val originalDate = LocalDate.of(2025, 1, 25)
+
+        val originalSubmission = emptyUserAnswers
+          .set(DateOfTransferPage, originalDate).success.value
+
+        val currentUserAnswers = emptyUserAnswers
+          .set(DateOfTransferPage, originalDate.minusDays(5)).success.value
+
+        val mockUserAnswersService = mock[UserAnswersService]
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+          .thenReturn(Future.successful(Right(originalSubmission)))
+
+        val application = applicationBuilder(userAnswers = currentUserAnswers)
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+        running(application) {
+          val request = FakeRequest(GET, routes.DateOfTransferController.onPageLoad(AmendCheckMode).url)
+          val result  = route(application, request).value
+          val view    = application.injector.instanceOf[DateOfTransferView]
+
+          val amendFormProvider = application.injector.instanceOf[forms.transferDetails.AmendDateOfTransferFormProvider]
+          val amendForm         = amendFormProvider(originalDate)
+
+          status(result) mustEqual OK
+          contentAsString(result) mustEqual view(amendForm.fill(originalDate.minusDays(5)), AmendCheckMode, isAmend = true)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
+        }
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "onSubmit (POST)" - {
 
-      val userAnswers = emptyUserAnswers.set(DateOfTransferPage, validAnswer).success.value
+      "must redirect to the next page when valid data is submitted" in {
+        val mockUserAnswersService = mock[UserAnswersService]
+        val mockSessionRepository  = mock[SessionRepository]
 
-      val application = applicationBuilder(userAnswers = userAnswers).build()
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      running(application) {
-        val view    = application.injector.instanceOf[DateOfTransferView]
-        val request = getRequest()
-        val result  = route(application, getRequest()).value
+        when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+          .thenReturn(Future.successful(Right(Done)))
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        val application = applicationBuilder(userAnswersMemberNameQtNumber)
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+        running(application) {
+          val result = route(application, postRequest()).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(NormalMode, emptyUserAnswers).url
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
+      "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+        val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+          .thenReturn(Future.successful(Right(emptyUserAnswers.set(DateOfTransferPage, validAnswer).success.value)))
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
+        when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+          .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(userAnswersMemberNameQtNumber)
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
+        val application = applicationBuilder(userAnswersMemberNameQtNumber)
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
-      running(application) {
-        val result = route(application, postRequest()).value
+        running(application) {
+          val request =
+            FakeRequest(POST, routes.DateOfTransferController.onSubmit(AmendCheckMode).url)
+              .withFormUrlEncodedBody(
+                "value.day"   -> validAnswer.minusDays(1).getDayOfMonth.toString,
+                "value.month" -> validAnswer.minusDays(1).getMonthValue.toString,
+                "value.year"  -> validAnswer.minusDays(1).getYear.toString
+              )
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(NormalMode, emptyUserAnswers).url
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(AmendCheckMode, emptyUserAnswers).url
+        }
       }
-    }
 
-    "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
+      "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
-        .thenReturn(Future.successful(Right(emptyUserAnswers.set(DateOfTransferPage, validAnswer).success.value)))
+        val application = applicationBuilder().build()
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
-
-      val application = applicationBuilder(userAnswersMemberNameQtNumber)
-        .overrides(
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
         val request =
-          FakeRequest(POST, routes.DateOfTransferController.onSubmit(AmendCheckMode).url)
-            .withFormUrlEncodedBody(
-              "value.day"   -> validAnswer.minusDays(1).getDayOfMonth.toString,
-              "value.month" -> validAnswer.minusDays(1).getMonthValue.toString,
-              "value.year"  -> validAnswer.minusDays(1).getYear.toString
-            )
+          FakeRequest(POST, dateOfTransferRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val result = route(application, request).value
+        running(application) {
+          val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual DateOfTransferPage.nextPage(AmendCheckMode, emptyUserAnswers).url
+          val view = application.injector.instanceOf[DateOfTransferView]
+
+          val result = route(application, request).value
+
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        }
       }
-    }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+      "must return a Bad Request when amending with a date after the original submission date" in {
+        val originalDate = LocalDate.of(2025, 1, 25)
+        val newDate      = originalDate.plusDays(1)
 
-      val application = applicationBuilder().build()
+        val originalSubmission = emptyUserAnswers
+          .set(DateOfTransferPage, originalDate).success.value
 
-      val request =
-        FakeRequest(POST, dateOfTransferRoute)
-          .withFormUrlEncodedBody(("value", "invalid value"))
+        val mockUserAnswersService = mock[UserAnswersService]
+        when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+          .thenReturn(Future.successful(Right(Done)))
 
-      running(application) {
-        val boundForm = form.bind(Map("value" -> "invalid value"))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+          .thenReturn(Future.successful(Right(originalSubmission)))
 
-        val view = application.injector.instanceOf[DateOfTransferView]
+        val application = applicationBuilder(userAnswers = emptyUserAnswers)
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
-        val result = route(application, request).value
+        running(application) {
+          val request =
+            FakeRequest(POST, routes.DateOfTransferController.onSubmit(models.AmendCheckMode).url)
+              .withFormUrlEncodedBody(
+                "value.day"   -> newDate.getDayOfMonth.toString,
+                "value.month" -> newDate.getMonthValue.toString,
+                "value.year"  -> newDate.getYear.toString
+              )
 
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+          val result = route(application, request).value
+          status(result) mustEqual BAD_REQUEST
+
+          contentAsString(result) must include(s"Date of transfer must be before your original submission date")
+        }
       }
-    }
 
-    "must return a Bad Request when amending with a date after the original submission date" in {
-      val originalDate = LocalDate.of(2025, 1, 25)
-      val newDate      = originalDate.plusDays(1)
+      "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
+        val mockUserAnswersService = mock[UserAnswersService]
+        val mockSessionRepository  = mock[SessionRepository]
 
-      val originalSubmission = emptyUserAnswers
-        .set(DateOfTransferPage, originalDate).success.value
+        when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val mockUserAnswersService = mock[UserAnswersService]
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Right(Done)))
+        when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+          .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
-      when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
-        .thenReturn(Future.successful(Right(originalSubmission)))
+        val application = applicationBuilder(userAnswersMemberNameQtNumber)
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
-      val application = applicationBuilder(userAnswers = emptyUserAnswers)
-        .overrides(
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
+        running(application) {
+          val result = route(application, postRequest()).value
 
-      running(application) {
-        val request =
-          FakeRequest(POST, routes.DateOfTransferController.onSubmit(models.AmendCheckMode).url)
-            .withFormUrlEncodedBody(
-              "value.day"   -> newDate.getDayOfMonth.toString,
-              "value.month" -> newDate.getMonthValue.toString,
-              "value.year"  -> newDate.getYear.toString
-            )
-
-        val result = route(application, request).value
-        status(result) mustEqual BAD_REQUEST
-
-        contentAsString(result) must include(s"Date of transfer must be before your original submission date")
-      }
-    }
-
-    "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
-        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
-
-      val application = applicationBuilder(userAnswersMemberNameQtNumber)
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[UserAnswersService].toInstance(mockUserAnswersService)
-        )
-        .build()
-
-      running(application) {
-        val result = route(application, postRequest()).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        }
       }
     }
   }

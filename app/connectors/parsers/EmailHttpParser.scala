@@ -24,14 +24,14 @@ object EmailHttpParser {
   implicit object EmailResponseReads extends HttpReads[EmailSendingResult] {
 
     override def read(method: String, url: String, response: HttpResponse): EmailSendingResult = {
-      response match {
-        case r if r.status >= 200 && r.status < 300 =>
+      response.status match {
+        case status if status >= 200 && status < 300 =>
           EmailAccepted
-        case r if r.status >= 400 && r.status < 500 =>
+        case status if status >= 400 && status < 500 =>
           EmailUnsendable
-        case r if r.status >= 500 && r.status < 600 =>
+        case status if status >= 500 && status < 600 =>
           EmailNotSent
-        case _                                      =>
+        case _                                       =>
           EmailAccepted
       }
     }

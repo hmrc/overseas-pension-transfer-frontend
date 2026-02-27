@@ -17,15 +17,13 @@
 package connectors
 
 import config.FrontendAppConfig
+import connectors.parsers.EmailHttpParser._
 import models.email.{EmailNotSent, EmailSendingResult, EmailToSendRequest}
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.writeableOf_JsValue
-import play.api.{Configuration, Logging}
-
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{BadGatewayException, GatewayTimeoutException, HeaderCarrier, StringContextOps}
-import connectors.parsers.EmailHttpParser._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
