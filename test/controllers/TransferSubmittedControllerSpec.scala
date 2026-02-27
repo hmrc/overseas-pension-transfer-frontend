@@ -36,7 +36,6 @@ import views.html.TransferSubmittedView
 
 import java.time.ZoneId
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 

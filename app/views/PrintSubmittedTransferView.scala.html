@@ -81,7 +81,7 @@
     </div>
 
     <div class="govuk-body">
-        <a class="govuk-link govuk-body" href="@mpsLink">@messages("transferSubmitted.pensionSchemeLink.text", schemeName)</a>
+        <a class="govuk-link govuk-body" href="@controllers.routes.DashboardController.clearAndExit(mpsLink)">@messages("transferSubmitted.pensionSchemeLink.text", schemeName)</a>
     </div>
 }
 
