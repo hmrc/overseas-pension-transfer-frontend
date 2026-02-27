@@ -22,6 +22,7 @@ import models.{Mode, TaskCategory, UserAnswers}
 import pages.{MiniJourneyNextPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import validators.assetsValidators.AssetCompletionValidator
 
 case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] with MiniJourneyNextPage {
 
@@ -30,9 +31,10 @@ case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] with M
   override def toString: String = PropertyEntry.PropValue
 
   override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
-    answers.get(PropertyDescriptionPage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(mode, index)
-      case None    => AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(mode, index)
+    if (AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.Property, answers)) {
+      AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(mode, index)
+    } else {
+      AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(mode, index)
     }
   }
 
