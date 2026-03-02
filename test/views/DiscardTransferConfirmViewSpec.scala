@@ -17,22 +17,29 @@
 package views
 
 import forms.DiscardTransferConfirmFormProvider
+import models.NormalMode
 import play.api.data.FormError
 import views.html.DiscardTransferConfirmView
 import views.utils.ViewBaseSpec
 
 class DiscardTransferConfirmViewSpec extends ViewBaseSpec {
 
-  private val view         = applicationBuilder().injector().instanceOf[DiscardTransferConfirmView]
   private val formProvider = applicationBuilder().injector().instanceOf[DiscardTransferConfirmFormProvider]
+  private val baseView     = applicationBuilder().injector().instanceOf[DiscardTransferConfirmView]
+  private val view         = baseView.apply(formProvider(), NormalMode)
 
   "DiscardTransferConfirmView" - {
-    behave like pageWithTitle(view(formProvider()), "discardTransferConfirm.title")
-    behave like pageWithH1(view(formProvider()), "discardTransferConfirm.heading")
-    behave like pageWithBackLink(view(formProvider()))
-    behave like pageWithRadioButtons(view(formProvider()), "site.yes", "site.no")
+    behave like pageWithTitle(view, "discardTransferConfirm.title")
+    behave like pageWithH1(view, "discardTransferConfirm.heading")
+    behave like pageWithBackLink(view)
+    behave like pageWithRadioButtons(view, "site.yes", "site.no")
     behave like pageWithErrors(
-      view(formProvider().withError(FormError.apply("discardTransfer", "discardTransferConfirm.error.required"))),
+      baseView(
+        formProvider().withError(
+          FormError.apply("discardTransfer", "discardTransferConfirm.error.required")
+        ),
+        NormalMode
+      ),
       "discardTransfer",
       "discardTransferConfirm.error.required"
     )
