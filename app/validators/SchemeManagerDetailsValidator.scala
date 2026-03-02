@@ -34,7 +34,7 @@ object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
     validateSchemeManagersAddress(user),
     validateSchemeManagersEmail(user),
     validateSchemeManagersPhoneNo(user)
-  ).mapN(SchemeManagerDetails)
+  ).mapN(SchemeManagerDetails.apply)
 
   def validateSchemeManagerType(answers: UserAnswers): ValidationResult[SchemeManagerType] =
     answers.get(SchemeManagerTypePage) match {

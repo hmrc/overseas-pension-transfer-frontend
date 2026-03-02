@@ -45,6 +45,9 @@ case class SessionAssetTypeWithStatus(
 
 object SessionAssetTypeWithStatus {
 
+  def unapply(assetTypeWithStatus: SessionAssetTypeWithStatus): Option[(TypeOfAsset, Boolean)] =
+    Some((assetTypeWithStatus.assetType, assetTypeWithStatus.isCompleted))
+
   implicit val format: Format[SessionAssetTypeWithStatus] = (
     (__ \ "type").format[TypeOfAsset] and
       (__ \ "isCompleted").format[Boolean]

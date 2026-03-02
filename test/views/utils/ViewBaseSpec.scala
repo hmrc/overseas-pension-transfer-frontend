@@ -34,7 +34,7 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
 
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-  implicit lazy val messagesApi: MessagesApi = applicationBuilder().injector.instanceOf(classOf[MessagesApi])
+  implicit lazy val messagesApi: MessagesApi = applicationBuilder().injector().instanceOf(classOf[MessagesApi])
   implicit lazy val messages: Messages       = messagesApi.preferred(FakeRequest())
 
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()

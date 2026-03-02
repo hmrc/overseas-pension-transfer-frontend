@@ -51,11 +51,11 @@
         .map(java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy").format(_))
         .getOrElse("")
 
-item.qtStatus match {
-    case Some(QtStatus.AmendInProgress) => messages("dashboard.banner.updateInProgress.text", fullName, expiryDate)
-    case Some(QtStatus.InProgress) => messages("dashboard.banner.inProgress.text", fullName, expiryDate)
-    case _ => ""
-  }
+    item.qtStatus match {
+        case Some(QtStatus.AmendInProgress) => messages("dashboard.banner.updateInProgress.text", fullName, expiryDate)
+        case Some(QtStatus.InProgress) => messages("dashboard.banner.inProgress.text", fullName, expiryDate)
+        case _ => ""
+    }
 }
 
 @pagePrefix: String = @{
