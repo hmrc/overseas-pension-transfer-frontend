@@ -25,6 +25,8 @@ import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.DownstreamLogging
 
+import scala.util.Try
+
 object UserAnswersParser {
   type GetUserAnswersType    = Either[UserAnswersError, UserAnswersDTO]
   type SetUserAnswersType    = Either[UserAnswersError, Done]
@@ -36,12 +38,18 @@ object UserAnswersParser {
     override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType =
       response.status match {
         case OK         =>
-          response.json.validate[UserAnswersDTO] match {
-            case JsSuccess(value, _) => Right(value)
-            case JsError(errors)     =>
-              val formatted = formatJsonErrors(errors)
-              logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: $formatted")
-              Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some(formatted)))
+          Try(response.json).toOption match {
+            case Some(json) =>
+              json.validate[UserAnswersDTO] match {
+                case JsSuccess(value, _) => Right(value)
+                case JsError(errors)     =>
+                  val formatted = formatJsonErrors(errors)
+                  logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersDTO: $formatted")
+                  Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersDTO", Some(formatted)))
+              }
+            case None       =>
+              logger.warn("[UserAnswersConnector][getAnswers] Empty response body")
+              Left(UserAnswersErrorResponse("Empty response body", None))
           }
         case NOT_FOUND  =>
           logger.warn("[UserAnswersConnector][getAnswers] No record was found in save for later}")

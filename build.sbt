@@ -6,7 +6,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 lazy val appName: String = "overseas-pension-transfer-frontend"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "2.13.18"
 
 addCommandAlias("runAllChecks", ";clean;compile;scalafmtAll;scalastyle;coverage;test;it/test;coverageReport")
 
