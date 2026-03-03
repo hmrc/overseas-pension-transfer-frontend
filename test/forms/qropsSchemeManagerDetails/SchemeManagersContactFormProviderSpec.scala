@@ -91,5 +91,31 @@ class SchemeManagersContactFormProviderSpec extends StringFieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must strip trailing non-digit characters before validating" in {
+
+      val input  = "+447911123456abc"
+      val result = form.bind(Map(fieldName -> input))
+
+      result.errors mustBe empty
+      result.value.value mustBe "+447911123456"
+    }
+
+    "must not allow phone numbers starting with double plus" in {
+
+      val input  = "++447911123456"
+      val result = form.bind(Map(fieldName -> input))
+
+      result.errors.map(_.message) must contain(patternKey)
+    }
+
+    "must still fail if stripping leaves an invalid number" in {
+
+      val input  = "+44abc"
+      val result = form.bind(Map(fieldName -> input))
+
+      result.errors.map(_.message) must contain(patternKey)
+    }
+
   }
 }
