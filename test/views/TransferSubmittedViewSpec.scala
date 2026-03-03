@@ -62,7 +62,7 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
       links.get(0).attr("href") mustBe routes.DashboardController.onPageLoad().url
 
       links.get(1).text() mustBe messages("transferSubmitted.pensionSchemeLink.text", schemeDetails.schemeName)
-      links.get(1).attr("href") mustBe mpsLink
+      links.get(1).attr("href") mustBe routes.DashboardController.clearAndExit(mpsLink).url
 
       if (appConfig.submissionEmailEnabled) {
         val email               = minimalDetailsIndividual.email
