@@ -16,10 +16,9 @@
 
 package validators.assetsValidators
 
-import cats.data.Validated.Valid
 import cats.implicits.{catsSyntaxTuple4Semigroupal, catsSyntaxValidatedIdBinCompat0}
-import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import models.assets.{TypeOfAsset, UnquotedSharesEntry}
+import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.transferDetails.TypeOfAssetPage
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
   UnquotedSharesClassPage,
@@ -61,20 +60,19 @@ object UnquotedSharesValidator {
         answers.get(UnquotedSharesQuery) match {
           case Some(shares) if shares.length > 5 => GenericError("Unquoted shares cannot hold more than 5 in list").invalidNec
           case Some(shares)                      =>
-            val validatedShares = shares.zipWithIndex map {
-              case (UnquotedSharesEntry(_, _, _, _), index) =>
-                (
-                  validateUnquotedSharesCompanyName(answers, index),
-                  validateUnquotedSharesValue(answers, index),
-                  validateUnquotedSharesNumber(answers, index),
-                  validateUnquotedSharesClass(answers, index)
-                ).mapN(UnquotedSharesEntry.apply)
-              case _                                        => GenericError("not recognised value as unquoted shares").invalidNec
+            val validatedShares = shares.zipWithIndex.map { case (_, index) =>
+              (
+                validateUnquotedSharesCompanyName(answers, index),
+                validateUnquotedSharesValue(answers, index),
+                validateUnquotedSharesNumber(answers, index),
+                validateUnquotedSharesClass(answers, index)
+              ).mapN(UnquotedSharesEntry.apply)
             }
 
-            validatedShares.filter(validatedShare => validatedShare == Valid(UnquotedSharesEntry(_, _, _, _))) match {
-              case Nil     => Some(shares).validNec
-              case List(_) => GenericError("errors found with validating UnquotedShares").invalidNec
+            if (validatedShares.exists(_.isInvalid)) {
+              GenericError("errors found with validating UnquotedShares").invalidNec
+            } else {
+              Some(shares).validNec
             }
 
           case None => DataMissingError(UnquotedSharesQuery).invalidNec
