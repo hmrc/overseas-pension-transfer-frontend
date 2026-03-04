@@ -18,6 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.assets.TypeOfAsset
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -59,6 +60,16 @@ class PropertyAddressPageSpec extends AnyFreeSpec with Matchers with SpecBase {
           index
         )
       }
+    }
+
+    "should go to CYA when complete" in {
+      val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.Property))
+      PropertyAddressPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(NormalMode, index)
+    }
+
+    "should go to PropertyValue when incomplete" in {
+      val ua = emptyUserAnswers.copy(data = incompleteJson())
+      PropertyAddressPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index)
     }
   }
 }
