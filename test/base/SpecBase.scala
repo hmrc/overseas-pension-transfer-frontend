@@ -18,6 +18,7 @@ package base
 
 import controllers.actions._
 import models.address.{Countries, PropertyAddress}
+import models.assets.TypeOfAsset
 import models.authentication._
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import models.{
@@ -51,7 +52,7 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
@@ -272,5 +273,67 @@ trait SpecBase
   val individualSubmitterDetails = IndividualDetails("David", None, "Frost")
 
   val minimalDetailsIndividual = MinimalDetails("d.frost@test.com", false, None, Some(individualSubmitterDetails), false, false)
+
+  def completeJson(assetType: TypeOfAsset): JsObject =
+    assetType match {
+
+      case TypeOfAsset.Other =>
+        Json.obj(
+          "transferDetails" -> Json.obj(
+            "otherAssets" -> Json.arr(
+              Json.obj(
+                "assetValue"       -> 1000,
+                "assetDescription" -> "Gold"
+              )
+            )
+          )
+        )
+
+      case TypeOfAsset.Property =>
+        Json.obj(
+          "transferDetails" -> Json.obj(
+            "propertyAssets" -> Json.arr(
+              Json.obj(
+                "propertyAddress" -> "Line 1",
+                "propValue"       -> 250000,
+                "propDescription" -> "Residential"
+              )
+            )
+          )
+        )
+
+      case TypeOfAsset.QuotedShares =>
+        Json.obj(
+          "transferDetails" -> Json.obj(
+            "quotedShares" -> Json.arr(
+              Json.obj(
+                "quotedValue"      -> 200,
+                "quotedShareTotal" -> 10,
+                "quotedCompany"    -> "ABC PLC",
+                "quotedClass"      -> "A"
+              )
+            )
+          )
+        )
+
+      case TypeOfAsset.UnquotedShares =>
+        Json.obj(
+          "transferDetails" -> Json.obj(
+            "unquotedShares" -> Json.arr(
+              Json.obj(
+                "unquotedValue"      -> 200,
+                "unquotedShareTotal" -> 10,
+                "unquotedCompany"    -> "ABC Ltd",
+                "unquotedClass"      -> "A"
+              )
+            )
+          )
+        )
+
+      case _ => Json.obj()
+    }
+
+  def incompleteJson(): JsObject =
+    Json.obj("transferDetails" -> Json.obj())
 
 }
