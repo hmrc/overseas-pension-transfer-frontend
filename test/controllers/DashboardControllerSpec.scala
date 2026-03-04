@@ -561,4 +561,32 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       }
     }
   }
+
+  "clearAndExit" - {
+    "must clear repositories and redirect to specified URL" in {
+      val mockRepo        = mock[DashboardSessionRepository]
+      val mockSessionRepo = mock[SessionRepository]
+
+      when(mockRepo.clear(any())).thenReturn(Future.successful(true))
+      when(mockSessionRepo.clear(any())).thenReturn(Future.successful(true))
+
+      val application = applicationBuilder()
+        .overrides(
+          bind[DashboardSessionRepository].toInstance(mockRepo),
+          bind[SessionRepository].toInstance(mockSessionRepo)
+        )
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.DashboardController.clearAndExit("/some-url").url)
+        val result  = route(application, request).value
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).value mustBe "/some-url"
+
+        verify(mockRepo, times(1)).clear(meq("id"))
+        verify(mockSessionRepo, times(1)).clear(meq("id"))
+      }
+    }
+  }
 }
