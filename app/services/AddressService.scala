@@ -16,21 +16,17 @@
 
 package services
 
-import connectors.AddressLookupConnector
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormDataTrait}
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataTrait
 import models.address._
-import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AddressService @Inject() (
-    countryService: CountryService,
-    addressLookupConnector: AddressLookupConnector
+    countryService: CountryService
   )(implicit ex: ExecutionContext
   ) {
 
@@ -83,17 +79,5 @@ class AddressService @Inject() (
         data.postcode,
         data.poBox
       )
-    }
-
-  def membersLastUkAddressLookup(postcode: String)(implicit hc: HeaderCarrier): Future[Option[AddressLookupResult]] =
-    addressLookupConnector.lookup(postcode).map {
-      case AddressLookupSuccessResponse(searched, records) =>
-        if (records.nonEmpty) {
-          Some(AddressRecords(searched, records))
-        } else {
-          Some(NoAddressFound(searched))
-        }
-      case AddressLookupErrorResponse(_)                   =>
-        None
     }
 }

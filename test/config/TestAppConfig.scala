@@ -54,8 +54,6 @@ class TestAppConfig
         Configuration(
           "microservice.services.overseas-pension-transfer-backend.host" -> "http://localhost",
           "microservice.services.overseas-pension-transfer-backend.port" -> 9999,
-          "microservice.services.address-lookup.host"                    -> "http://localhost",
-          "microservice.services.address-lookup.port"                    -> 9022,
           "microservice.services.pensions-scheme.host"                   -> "http://localhost",
           "microservice.services.pensions-scheme.port"                   -> 8203,
           "microservice.services.email.host"                             -> "http://localhost",
