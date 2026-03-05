@@ -21,6 +21,7 @@ import models.authentication._
 import models.responses.{PensionSchemeErrorResponse, PensionSchemeNotAssociated}
 import models.{PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
+import play.api.libs.json.Json
 import play.api.test.Injecting
 import stubs.PensionSchemeStub
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
@@ -37,7 +38,9 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
   val pspUser: AuthenticatedUser = PspUser(PspId("21000005"), "ext-psp", Individual)
 
   "PensionSchemeConnector.checkAssociation" when {
+    
     "checking association status" must {
+      
       "return true for PSA when downstream says associated and headers are present" in {
         PensionSchemeStub.checkAssociationPsaTrue(srn)
         await(connector.checkAssociation(srn, psaUser)) shouldBe true
@@ -51,7 +54,9 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
   }
 
   "PensionSchemeConnector.getSchemeDetails" when {
+    
     "fetching scheme details" must {
+      
       "return Right(PensionSchemeResponse) for PSA route" in {
         PensionSchemeStub.getSchemeDetailsForPsaSuccess(srn, pstr, schemeNm)
 
@@ -112,6 +117,24 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
         }
       }
 
+      "return Left(PensionSchemeErrorResponse) on 500 with JSON parsing errors, when the error cannot parse" in {
+        PensionSchemeStub.getSchemeDetailsErrorForPsp(
+          srn    = srn,
+          status = INTERNAL_SERVER_ERROR,
+          body   = Json.stringify(Json.obj(
+            "invalidField" -> 17
+          ))
+        )
+
+        val result = await(connector.getSchemeDetails(srn, pspUser))
+        result match {
+          case Left(PensionSchemeErrorResponse(msg, _)) =>
+            msg should include("500 Unknown (correlationId=-)")
+          case _                                        =>
+            fail(s"Expected PensionSchemeErrorResponse (500) but got: $result")
+        }
+      }
+
       "return Left(PensionSchemeErrorResponse) when a network fault occurs" in {
         PensionSchemeStub.faultGetSchemeDetailsForPsa(srn)
 
@@ -127,6 +150,7 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
   }
 
   "PensionSchemeConnector.getIsAuthorisingPsa" when {
+    
     "fetching the authorising PSA ID" must {
 
       "return Right(PsaId) when downstream returns valid JSON with authorisingPSAID" in {
@@ -189,6 +213,26 @@ class PensionSchemeConnectorISpec extends BaseISpec with Injecting {
         result match {
           case Left(PensionSchemeErrorResponse(msg, _)) =>
             msg should include("downstream boom")
+          case _                                        =>
+            fail(s"Expected PensionSchemeErrorResponse (500) but got: $result")
+        }
+      }
+
+      "return Left(PensionSchemeErrorResponse) on 500 with JSON parsing errors, when the error cannot parse" in {
+        PensionSchemeStub.getAuthorisingPsaError(
+          srn = srn
+        )(
+          status = INTERNAL_SERVER_ERROR,
+          body   = Json.stringify(Json.obj(
+            "invalidField" -> 42
+          ))
+        )
+
+        val result = await(connector.getAuthorisingPsa(srn))
+
+        result match {
+          case Left(PensionSchemeErrorResponse(msg, _)) =>
+            msg should include("500 Unknown (correlationId=-)")
           case _                                        =>
             fail(s"Expected PensionSchemeErrorResponse (500) but got: $result")
         }

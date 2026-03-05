@@ -116,7 +116,8 @@ object UserAnswersParser {
 
     override def read(method: String, url: String, response: HttpResponse): DeleteUserAnswersType =
       response.status match {
-        case NO_CONTENT => Right(Done)
+        case NO_CONTENT =>
+          Right(Done)
         case statusCode =>
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
