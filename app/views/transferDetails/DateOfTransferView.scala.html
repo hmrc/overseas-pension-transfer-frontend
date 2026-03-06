@@ -43,7 +43,13 @@
                 val fieldToHighlight = missingFields.find(List("month", "year", "day").contains).getOrElse("day")
                 val errorField = "value." + fieldToHighlight
 
-                govukErrorSummary(ErrorSummaryViewModel(form, errorLinkOverrides = Map("value" -> errorField)))
+                govukErrorSummary(ErrorSummary(
+                    title = Text(messages("error.summary.title")),
+                    errorList = Seq(ErrorLink(
+                        Some(s"#value.$fieldToHighlight"),
+                        content = Text(messages(form.errors.head.message))
+                    ))
+                ))
             }
         }
 
