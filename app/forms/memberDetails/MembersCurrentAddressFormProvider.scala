@@ -17,9 +17,9 @@
 package forms.memberDetails
 
 import forms.mappings.{Mappings, Regex}
-import models.address._
+import models.address.*
 import models.requests.DisplayRequest
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.{Form, Forms}
 import utils.AppUtils
 
@@ -47,6 +47,19 @@ object MembersCurrentAddressFormData {
       postcode     = address.postcode,
       poBox        = address.poBoxNumber
     )
+
+  def unapply(
+      addressFormData: MembersCurrentAddressFormData
+    ): Option[(String, String, Option[String], Option[String], String, Option[String], Option[String])] =
+    Some((
+      addressFormData.addressLine1,
+      addressFormData.addressLine2,
+      addressFormData.addressLine3,
+      addressFormData.addressLine4,
+      addressFormData.countryCode,
+      addressFormData.postcode,
+      addressFormData.poBox
+    ))
 }
 
 class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {

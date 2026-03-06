@@ -18,7 +18,7 @@ package validators.assetsValidators
 
 import models.UserAnswers
 import models.assets.TypeOfAsset
-import play.api.libs.json._
+import play.api.libs.json.*
 
 object AssetCompletionValidator {
 
@@ -36,7 +36,7 @@ object AssetCompletionValidator {
       (root \ key).toOption.exists(isNonEmpty)
     }
 
-  val mandatoryKeys: Map[TypeOfAsset, Seq[String]] = Map(
+  private val mandatoryKeys: Map[TypeOfAsset, Seq[String]] = Map(
     TypeOfAsset.Cash           -> Seq("cashValue"),
     TypeOfAsset.UnquotedShares -> Seq(
       "unquotedValue",
@@ -85,7 +85,6 @@ object AssetCompletionValidator {
         (td \ "otherAssets").asOpt[JsArray]
           .exists(arr => arr.value.nonEmpty && arr.value.forall(js => hasMandatoryKeys(js, mandatoryKeys(TypeOfAsset.Other))))
 
-      case _ => false
     }
   }
 }

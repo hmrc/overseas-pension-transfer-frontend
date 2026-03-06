@@ -18,7 +18,7 @@ package models.assets
 
 import models.address.PropertyAddress
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-import play.api.libs.json._
+import play.api.libs.json.*
 
 sealed trait AssetEntry
 
@@ -63,7 +63,7 @@ object QuotedSharesEntry {
       (__ \ ValueOfShares).write[BigDecimal] and
       (__ \ NumberOfShares).write[Int] and
       (__ \ ClassOfShares).write[String]
-  )(unlift(QuotedSharesEntry.unapply))
+  )(quotedSharesEntry => (quotedSharesEntry.companyName, quotedSharesEntry.valueOfShares, quotedSharesEntry.numberOfShares, quotedSharesEntry.classOfShares))
 
   implicit val format: OFormat[QuotedSharesEntry] = OFormat(reads, writes)
 }
@@ -93,7 +93,9 @@ object UnquotedSharesEntry {
       (__ \ ValueOfShares).write[BigDecimal] and
       (__ \ NumberOfShares).write[Int] and
       (__ \ ClassOfShares).write[String]
-  )(unlift(UnquotedSharesEntry.unapply))
+  )(unquotedSharesEntry =>
+    (unquotedSharesEntry.companyName, unquotedSharesEntry.valueOfShares, unquotedSharesEntry.numberOfShares, unquotedSharesEntry.classOfShares)
+  )
 
   implicit val format: OFormat[UnquotedSharesEntry] = OFormat(reads, writes)
 }
@@ -119,7 +121,7 @@ object PropertyEntry {
     (__ \ PropertyAddress).write[PropertyAddress] and
       (__ \ PropValue).write[BigDecimal] and
       (__ \ PropDescription).write[String]
-  )(unlift(PropertyEntry.unapply))
+  )(propertyEntry => (propertyEntry.propertyAddress, propertyEntry.propValue, propertyEntry.propDescription))
 
   implicit val format: OFormat[PropertyEntry] = OFormat(reads, writes)
 }
@@ -141,7 +143,7 @@ object OtherAssetsEntry {
   val writes: OWrites[OtherAssetsEntry] = (
     (__ \ AssetDescription).write[String] and
       (__ \ AssetValue).write[BigDecimal]
-  )(unlift(OtherAssetsEntry.unapply))
+  )(otherAssetsEntry => (otherAssetsEntry.assetDescription, otherAssetsEntry.assetValue))
 
   implicit val format: OFormat[OtherAssetsEntry] = OFormat(reads, writes)
 }

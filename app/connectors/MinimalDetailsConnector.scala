@@ -20,8 +20,10 @@ import config.FrontendAppConfig
 import models.MinimalDetails
 import models.authentication.{PsaId, PspId}
 import play.api.Logging
+import play.api.http.Status.NOT_FOUND
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, StringContextOps}
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -62,9 +64,9 @@ class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: Htt
       .execute[MinimalDetails]
       .map(Right(_))
       .recover {
-        case e: NotFoundException if e.message.contains("no match found") =>
-          Left(DetailsNotFound)
-        case e                                                            =>
+        case e: UpstreamErrorResponse
+            if e.statusCode == NOT_FOUND && e.message.contains("no match found") => Left(DetailsNotFound)
+        case e =>
           logger.error(s"[MinimalDetailsConnector][fetch] Upstream error occurred ${e.getMessage}", e)
           Left(UpstreamError)
       }

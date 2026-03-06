@@ -16,7 +16,6 @@
 
 package validators.assetsValidators
 
-import cats.data.Validated.Valid
 import cats.implicits.{catsSyntaxTuple4Semigroupal, catsSyntaxValidatedIdBinCompat0}
 import models.assets.{QuotedSharesEntry, TypeOfAsset}
 import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
@@ -56,20 +55,19 @@ object QuotedSharesValidator {
         answers.get(QuotedSharesQuery) match {
           case Some(shares) if shares.length > 5 => GenericError("Unquoted shares cannot hold more than 5 in list").invalidNec
           case Some(shares)                      =>
-            val validatedShares = shares.zipWithIndex map {
-              case (QuotedSharesEntry(_, _, _, _), index) =>
-                (
-                  validateQuotedSharesCompanyName(answers, index),
-                  validateQuotedSharesValue(answers, index),
-                  validateQuotedSharesNumber(answers, index),
-                  validateQuotedSharesClass(answers, index)
-                ).mapN(QuotedSharesEntry.apply)
-              case _                                      => GenericError("not recognised value as unquoted shares").invalidNec
+            val validatedShares = shares.zipWithIndex.map { case (_, index) =>
+              (
+                validateQuotedSharesCompanyName(answers, index),
+                validateQuotedSharesValue(answers, index),
+                validateQuotedSharesNumber(answers, index),
+                validateQuotedSharesClass(answers, index)
+              ).mapN(QuotedSharesEntry.apply)
             }
 
-            validatedShares.filter(validatedShare => validatedShare == Valid(QuotedSharesEntry(_, _, _, _))) match {
-              case Nil     => Some(shares).validNec
-              case List(_) => GenericError("errors found with validating UnquotedShares").invalidNec
+            if (validatedShares.exists(_.isInvalid)) {
+              GenericError("errors found with validating QuotedShares").invalidNec
+            } else {
+              Some(shares).validNec
             }
 
           case None => DataMissingError(QuotedSharesQuery).invalidNec

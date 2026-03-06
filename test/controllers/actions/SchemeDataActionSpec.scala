@@ -18,10 +18,10 @@ package controllers.actions
 
 import base.SpecBase
 import connectors.PensionSchemeConnector
-import models.{DashboardData, PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
 import models.authentication.{PsaId, PsaUser}
 import models.requests.{IdentifierRequest, SchemeRequest}
 import models.responses.PensionSchemeErrorResponse
+import models.{DashboardData, PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,6 +30,7 @@ import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
+import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
@@ -145,9 +146,15 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
     }
 
     "return Left Redirect to Unauthorised when checkAssociation returns false" in {
-      val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj("srnNumber" -> "S1234567", "pstrNumber" -> "12345678AB", "schemeName" -> "Scheme Name"))
+      val schemeDetails = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
-      when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
+      val dashboardData =
+        DashboardData("id", Json.obj())
+          .set(PensionSchemeDetailsQuery, schemeDetails)
+          .success
+          .value
+
+      when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(dashboardData))
       when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(false)
 
       val identifierRequest = IdentifierRequest(

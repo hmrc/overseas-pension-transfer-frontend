@@ -36,7 +36,7 @@
     val label = if (labelAsHeading) baseLabel.asPageHeading(size = Large) else baseLabel
     val fieldValue = form(field).value.getOrElse("")
 
-val displayValue = countries
+    val displayValue = countries
         .find(_.value.contains(fieldValue))
         .map(_.text)
         .getOrElse("")
@@ -44,14 +44,13 @@ val displayValue = countries
     val selectModel = SelectViewModel(
         field = form(field),
         items = {
-                val emptyOption = SelectItem(value = Some(""), text = messages("common.addressInput.countryCode.select"), selected = fieldValue.isEmpty
-)
-        emptyOption +: countries.map { country =>
-        country.copy(selected = country.value.contains(fieldValue))
-}
-},
-label = label
-)
+                val emptyOption = SelectItem(value = Some(""), text = messages("common.addressInput.countryCode.select"), selected = fieldValue.isEmpty)
+                emptyOption +: countries.map { country =>
+                    country.copy(selected = country.value.contains(fieldValue))
+                }
+        },
+        label = label
+    )
     .asAccessibleAutocomplete(
         Some(
             AccessibleAutocomplete(

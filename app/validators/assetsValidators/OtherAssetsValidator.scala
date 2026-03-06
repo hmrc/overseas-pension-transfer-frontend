@@ -16,7 +16,6 @@
 
 package validators.assetsValidators
 
-import cats.data.Validated.Valid
 import cats.implicits.{catsSyntaxTuple2Semigroupal, catsSyntaxValidatedIdBinCompat0}
 import models.assets.{OtherAssetsEntry, TypeOfAsset}
 import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
@@ -44,18 +43,17 @@ object OtherAssetsValidator {
         answers.get(OtherAssetsQuery) match {
           case Some(shares) if shares.length > 5 => GenericError("Other assets cannot hold more than 5 in list").invalidNec
           case Some(shares)                      =>
-            val validatedShares = shares.zipWithIndex map {
-              case (OtherAssetsEntry(_, _), index) =>
-                (
-                  validateOtherAssetsDescription(answers, index),
-                  validateOtherAssetsValue(answers, index)
-                ).mapN(OtherAssetsEntry.apply)
-              case _                               => GenericError("not recognised value as other assets entry").invalidNec
+            val validatedShares = shares.zipWithIndex.map { case (_, index) =>
+              (
+                validateOtherAssetsDescription(answers, index),
+                validateOtherAssetsValue(answers, index)
+              ).mapN(OtherAssetsEntry.apply)
             }
 
-            validatedShares.filter(validatedShare => validatedShare == Valid(OtherAssetsEntry(_, _))) match {
-              case Nil     => Some(shares).validNec
-              case List(_) => GenericError("errors found with validating other assets entry").invalidNec
+            if (validatedShares.exists(_.isInvalid)) {
+              GenericError("errors found with validating other assets entry").invalidNec
+            } else {
+              Some(shares).validNec
             }
 
           case None => DataMissingError(OtherAssetsQuery).invalidNec
