@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions.{IdentifierAction, SchemeDataAction}
 import models.audit.JourneyStartedType.ContinueTransfer
 import models.authentication.{PsaUser, PspUser}
+import models.requests.SchemeRequest
 import models.{AllTransfersItem, DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams, TransferSearch}
 import pages.DashboardPage
 import play.api.Logging
@@ -55,7 +56,7 @@ class DashboardController @Inject() (
 
   private val lockTtlSeconds: Long = appConfig.dashboardLockTtl
 
-  def onPageLoad(page: Int, search: Option[String]): Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(page: Int, search: Option[String]): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     val id          = request.authenticatedUser.internalId
     val lockWarning = request.flash.get("lockWarning") // flash for warning
 
@@ -111,7 +112,7 @@ class DashboardController @Inject() (
 
     if (params.qtStatus.contains(QtStatus.InProgress)) {
       for {
-        userAnswersResult <- userAnswersService.getExternalUserAnswers(transferId, pstr, QtStatus.InProgress, None)
+        userAnswersResult <- userAnswersService.getExternalUserAnswers(transferId, pstr, QtStatus.InProgress, None, request.schemeDetails.srnNumber)
         allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
         lockAcquired      <- lockService.takeLockWithAudit(
                                transferId,
@@ -147,11 +148,11 @@ class DashboardController @Inject() (
       pensionSchemeDetails: PensionSchemeDetails,
       lockWarning: Option[String],
       authenticatedUser: models.authentication.AuthenticatedUser
-    )(implicit request: Request[_],
+    )(implicit request: SchemeRequest[_],
       appConfig: FrontendAppConfig
     ): Future[Result] = {
 
-    transferService.getAllTransfersData(dashboardData, pensionSchemeDetails.pstrNumber).flatMap {
+    transferService.getAllTransfersData(dashboardData, pensionSchemeDetails.pstrNumber, request.schemeDetails.srnNumber).flatMap {
       _.fold(
         err => {
           logger.warn(s"[DashboardController] getAllTransfersData failed: $err")

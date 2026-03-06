@@ -29,7 +29,7 @@ import connectors.parsers.UserAnswersParser.{
 }
 import models.dtos.{SubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, UserAnswersErrorResponse}
-import models.{PstrNumber, QtStatus, TransferId}
+import models.{PstrNumber, QtStatus, SrnNumber, TransferId}
 import play.api.Logging
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -50,8 +50,9 @@ class UserAnswersConnector @Inject() (
     url"${appConfig.backendService}/submit-declaration/$id"
 
   // These two versions of getAnswers are purposely similar to one another as it is recommended to combine these two in a future refactor
-  def getAnswers(transferId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersType] = {
+  def getAnswers(transferId: String, srnNumber: SrnNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersType] = {
     http.get(url"${appConfig.backendService}/save-for-later/$transferId")
+      .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetUserAnswersType]
       .recover {
         case e: Exception =>
@@ -64,7 +65,8 @@ class UserAnswersConnector @Inject() (
       transferId: TransferId,
       pstrNumber: PstrNumber,
       qtStatus: QtStatus,
-      versionNumber: Option[String] = None
+      versionNumber: Option[String] = None,
+      srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
     ): Future[GetUserAnswersType] = {
@@ -78,6 +80,7 @@ class UserAnswersConnector @Inject() (
 
     http.get(url)
       .transform(_.addQueryStringParameters(queryStringParams: _*))
+      .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetUserAnswersType]
       .recover {
         case e: Exception =>
@@ -87,11 +90,13 @@ class UserAnswersConnector @Inject() (
   }
 
   def putAnswers(
-      userAnswersDTO: UserAnswersDTO
+      userAnswersDTO: UserAnswersDTO,
+      srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
     ): Future[SetUserAnswersType] = {
     http.post(url"${appConfig.backendService}/save-for-later")
+      .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .withBody(Json.toJson(userAnswersDTO))
       .execute[SetUserAnswersType](SetUserAnswersHttpReads, ec)
       .recover {
@@ -101,8 +106,9 @@ class UserAnswersConnector @Inject() (
       }
   }
 
-  def postSubmission(submissionDTO: SubmissionDTO)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionType] =
+  def postSubmission(submissionDTO: SubmissionDTO, srnNumber: SrnNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionType] =
     http.post(submissionUrl(submissionDTO.referenceId.value))
+      .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .withBody(Json.toJson(submissionDTO))
       .execute[SubmissionType]
       .recover {
