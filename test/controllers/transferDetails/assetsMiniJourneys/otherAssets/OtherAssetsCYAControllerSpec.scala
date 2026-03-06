@@ -19,7 +19,8 @@ package controllers.transferDetails.assetsMiniJourneys.otherAssets
 import base.SpecBase
 import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.responses.UserAnswersErrorResponse
+import models.{CheckMode, DownstreamError, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -30,7 +31,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.UserAnswersService
+import services.{DownstreamError, UserAnswersService}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAView
@@ -56,35 +57,35 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   "OtherAssetsCYA Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val ua  = userAnswersWithAssets(assetsCount = 5)
-      val app = applicationWithMocks(ua)
+      val userAnswers = userAnswersWithAssets(assetsCount = 5)
+      val application = applicationWithMocks(userAnswers)
 
-      running(app) {
+      running(application) {
         val request = FakeRequest(GET, otherAssetsCyaRoute)
 
-        val result                  = route(app, request).value
-        val view                    = app.injector.instanceOf[OtherAssetsCYAView]
-        implicit val msgs: Messages = messages(app)
+        val result                  = route(application, request).value
+        val view                    = application.injector.instanceOf[OtherAssetsCYAView]
+        implicit val msgs: Messages = messages(application)
 
-        val list = OtherAssetsSummary.rows(NormalMode, ua, 0)
+        val summaryList = OtherAssetsSummary.rows(NormalMode, userAnswers, 0)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(SummaryList(rows = list), NormalMode, 0)(fakeDisplayRequest(request, ua), msgs).toString
+          view(SummaryList(rows = summaryList), NormalMode, 0)(fakeDisplayRequest(request, userAnswers), msgs).toString
       }
     }
 
     "must redirect to MoreOtherAssetsDeclarationController when threshold (5 other assets) is reached" in {
-      val ua  = userAnswersWithAssets(assetsCount = 5)
-      val app = applicationWithMocks(ua)
+      val userAnswers = userAnswersWithAssets(assetsCount = 5)
+      val application = applicationWithMocks(userAnswers)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      running(app) {
+      running(application) {
         val request = FakeRequest(POST, otherAssetsCyaRoute)
-        val result  = route(app, request).value
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
@@ -95,20 +96,39 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     }
 
     "must redirect to OtherAssetsAmendContinueController when OtherAssets count is below threshold" in {
-      val ua  = userAnswersWithAssets(assetsCount = 4)
-      val app = applicationWithMocks(ua)
+      val userAnswers = userAnswersWithAssets(assetsCount = 4)
+      val application = applicationWithMocks(userAnswers)
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
-      running(app) {
+      running(application) {
         val request = FakeRequest(POST, otherAssetsCyaRoute)
-        val result  = route(app, request).value
+        val result  = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
           AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
+      }
+    }
+
+    "must redirect to recovery page when saved is a Left" in {
+      val userAnswers = userAnswersWithAssets(assetsCount = 4)
+      val application = applicationWithMocks(userAnswers)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("", None))))
+
+      running(application) {
+        val request = FakeRequest(POST, otherAssetsCyaRoute)
+        val result  = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual
+          pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAPage(0)
+            .nextPageRecovery()
+            .url
       }
     }
   }

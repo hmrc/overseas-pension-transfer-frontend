@@ -46,8 +46,6 @@ trait AddressBase extends SpecBase {
       )
     )
 
-  val addressRecords: AddressRecords = AddressRecords(postcode = "BB00 1BB", records = addressRecordList)
-
   val validIds: Seq[String] = addressRecordList.map(_.id)
 
   val selectedRecord: AddressRecord = addressRecordList.head

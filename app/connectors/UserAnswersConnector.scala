@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.parsers.UserAnswersParser.{
+  DeleteUserAnswersHttpReads,
   DeleteUserAnswersType,
   GetSubmissionResponseHttpReads,
   GetUserAnswersHttpReads,
@@ -94,7 +95,7 @@ class UserAnswersConnector @Inject() (
     ): Future[SetUserAnswersType] = {
     http.post(url"${appConfig.backendService}/save-for-later")
       .withBody(Json.toJson(userAnswersDTO))
-      .execute[SetUserAnswersType]
+      .execute[SetUserAnswersType](SetUserAnswersHttpReads, ec)
       .recover {
         case e: Exception =>
           val errMsg = logNonHttpError("[UserAnswersConnector][putAnswers]", hc, e)
@@ -116,7 +117,7 @@ class UserAnswersConnector @Inject() (
     def url: URL = url"${appConfig.backendService}/save-for-later/$id"
 
     http.delete(url)
-      .execute[DeleteUserAnswersType]
+      .execute[DeleteUserAnswersType](DeleteUserAnswersHttpReads, ec)
       .recover {
         case e: Exception =>
           logger.warn(s"Error deleting user answers for ID '$id': ${e.getMessage}", e)

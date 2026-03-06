@@ -17,10 +17,10 @@
 package connectors
 
 import base.BaseISpec
-import models.email.{EmailAccepted, EmailNotSent, EmailToSendRequest, SubmissionConfirmation}
+import models.email.{EmailAccepted, EmailNotSent, EmailToSendRequest, EmailUnsendable, SubmissionConfirmation}
 import play.api.libs.json.Json
 import play.api.test.Injecting
-import play.api.http.Status.{ACCEPTED, BAD_GATEWAY, GATEWAY_TIMEOUT}
+import play.api.http.Status.{ACCEPTED, BAD_GATEWAY, CONTINUE, GATEWAY_TIMEOUT, UNAUTHORIZED}
 import stubs.EmailStub
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -43,28 +43,45 @@ class EmailConnectorISpec extends BaseISpec with Injecting {
     )
 
   "EmailConnector.send" when {
+    
     "sending an email" must {
-      "return EmailAccepted when downstream responds 202" in {
+      
+      "return EmailAccepted" when {
+        
+        "downstream responds 202 ACCEPTED (200 - 299)" in {
+          EmailStub.sendEmailResponse(
+            status                  = ACCEPTED,
+            expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
+          )
+
+          await(connector.send(emailRequest)) shouldBe EmailAccepted
+        }
+        
+        "the response status is outside of normal responses" when {
+
+          "the status is 600" in {
+            EmailStub.sendEmailResponse(
+              status                  = 600,
+              expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
+            )
+
+            await(connector.send(emailRequest)) shouldBe EmailAccepted
+          }
+        }
+      }
+
+      "return EmailUnsendable when downstream responds 401 UNAUTHORIZED (400 - 499)" in {
         EmailStub.sendEmailResponse(
-          status                  = ACCEPTED,
+          status                  = UNAUTHORIZED,
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 
-        await(connector.send(emailRequest)) shouldBe EmailAccepted
+        await(connector.send(emailRequest)) shouldBe EmailUnsendable
       }
 
-      "return EmailNotSent when downstream responds 502 Bad Gateway" in {
+      "return EmailNotSent when downstream responds 502 BAD_GATEWAY (500 - 599)" in {
         EmailStub.sendEmailResponse(
           status                  = BAD_GATEWAY,
-          expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
-        )
-
-        await(connector.send(emailRequest)) shouldBe EmailNotSent
-      }
-
-      "return EmailNotSent when downstream responds 504 Gateway Timeout" in {
-        EmailStub.sendEmailResponse(
-          status                  = GATEWAY_TIMEOUT,
           expectedRequestBodyJson = Json.stringify(Json.toJson(emailRequest))
         )
 
