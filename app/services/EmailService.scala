@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDateTime, ZoneId}
+import java.util.Locale
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -96,8 +97,9 @@ class EmailService @Inject() (
   }
 
   private def format(instant: Instant): String = {
-    val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
-    val time = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("HH:mm"))
-    s"$date at ${time}pm"
+    val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+    val date          = localDateTime.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+    val time          = localDateTime.format(DateTimeFormatter.ofPattern("HH:mma", Locale.ENGLISH))
+    s"$date at ${time.toLowerCase}"
   }
 }
