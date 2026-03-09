@@ -192,8 +192,16 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
           .set(MemberNamePage, testMemberName).success.value
           .set(DateSubmittedQuery, submittedAtAM).success.value
 
-      val formattedAM = LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
-        .format(DateTimeFormatter.ofPattern("d MMMM yyyy 'at' HH:mma"))
+      val dateAM =
+        LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
+          .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+
+      val timeAM =
+        LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
+          .format(DateTimeFormatter.ofPattern("HH:mma"))
+          .toLowerCase
+
+      val formattedAM = s"$dateAM at $timeAM"
 
       val expectedRequestAM =
         EmailToSendRequest(
@@ -223,8 +231,16 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
           .set(MemberNamePage, testMemberName).success.value
           .set(DateSubmittedQuery, submittedAtPM).success.value
 
-      val formattedPM = LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
-        .format(DateTimeFormatter.ofPattern("d MMMM yyyy 'at' HH:mma"))
+      val datePM =
+        LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
+          .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+
+      val timePM =
+        LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
+          .format(DateTimeFormatter.ofPattern("HH:mma"))
+          .toLowerCase
+
+      val formattedPM = s"$datePM at $timePM"
 
       val expectedRequestPM =
         EmailToSendRequest(
