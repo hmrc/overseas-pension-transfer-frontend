@@ -46,6 +46,9 @@ case class QuotedSharesEntry(
   ) extends AssetEntry
 
 object QuotedSharesEntry {
+  def unapply(quotedSharesEntry: QuotedSharesEntry): (String, BigDecimal, Int, String) =
+    (quotedSharesEntry.companyName, quotedSharesEntry.valueOfShares, quotedSharesEntry.numberOfShares, quotedSharesEntry.classOfShares)
+  
   val CompanyName    = "quotedCompany"
   val ValueOfShares  = "quotedValue"
   val NumberOfShares = "quotedShareTotal"
@@ -63,7 +66,7 @@ object QuotedSharesEntry {
       (__ \ ValueOfShares).write[BigDecimal] and
       (__ \ NumberOfShares).write[Int] and
       (__ \ ClassOfShares).write[String]
-  )(quotedSharesEntry => (quotedSharesEntry.companyName, quotedSharesEntry.valueOfShares, quotedSharesEntry.numberOfShares, quotedSharesEntry.classOfShares))
+  )(QuotedSharesEntry.unapply _)
 
   implicit val format: OFormat[QuotedSharesEntry] = OFormat(reads, writes)
 }
@@ -76,6 +79,9 @@ case class UnquotedSharesEntry(
   ) extends AssetEntry
 
 object UnquotedSharesEntry {
+  def unapply(unquotedSharesEntry: UnquotedSharesEntry): (String, BigDecimal, Int, String) =
+    (unquotedSharesEntry.companyName, unquotedSharesEntry.valueOfShares, unquotedSharesEntry.numberOfShares, unquotedSharesEntry.classOfShares)
+  
   val CompanyName    = "unquotedCompany"
   val ValueOfShares  = "unquotedValue"
   val NumberOfShares = "unquotedShareTotal"
@@ -93,9 +99,7 @@ object UnquotedSharesEntry {
       (__ \ ValueOfShares).write[BigDecimal] and
       (__ \ NumberOfShares).write[Int] and
       (__ \ ClassOfShares).write[String]
-  )(unquotedSharesEntry =>
-    (unquotedSharesEntry.companyName, unquotedSharesEntry.valueOfShares, unquotedSharesEntry.numberOfShares, unquotedSharesEntry.classOfShares)
-  )
+  )(UnquotedSharesEntry.unapply _)
 
   implicit val format: OFormat[UnquotedSharesEntry] = OFormat(reads, writes)
 }
@@ -107,6 +111,9 @@ case class PropertyEntry(
   ) extends AssetEntry
 
 object PropertyEntry {
+  def unapply(propertyEntry: PropertyEntry): (PropertyAddress, BigDecimal, String) =
+    (propertyEntry.propertyAddress, propertyEntry.propValue, propertyEntry.propDescription)
+  
   val PropertyAddress = "propertyAddress"
   val PropValue       = "propValue"
   val PropDescription = "propDescription"
@@ -121,7 +128,7 @@ object PropertyEntry {
     (__ \ PropertyAddress).write[PropertyAddress] and
       (__ \ PropValue).write[BigDecimal] and
       (__ \ PropDescription).write[String]
-  )(propertyEntry => (propertyEntry.propertyAddress, propertyEntry.propValue, propertyEntry.propDescription))
+  )(PropertyEntry.unapply _)
 
   implicit val format: OFormat[PropertyEntry] = OFormat(reads, writes)
 }
@@ -132,6 +139,9 @@ case class OtherAssetsEntry(
   ) extends AssetEntry
 
 object OtherAssetsEntry {
+  def unapply(otherAssetsEntry: OtherAssetsEntry): (String, BigDecimal) =
+    (otherAssetsEntry.assetDescription, otherAssetsEntry.assetValue)
+  
   val AssetDescription = "assetDescription"
   val AssetValue       = "assetValue"
 
@@ -143,7 +153,7 @@ object OtherAssetsEntry {
   val writes: OWrites[OtherAssetsEntry] = (
     (__ \ AssetDescription).write[String] and
       (__ \ AssetValue).write[BigDecimal]
-  )(otherAssetsEntry => (otherAssetsEntry.assetDescription, otherAssetsEntry.assetValue))
+  )(OtherAssetsEntry.unapply _)
 
   implicit val format: OFormat[OtherAssetsEntry] = OFormat(reads, writes)
 }
