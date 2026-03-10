@@ -221,7 +221,7 @@ memberNino.error.required = Enter the member’'s National Insurance number
 memberNino.error.pattern = Enter the member’'s National Insurance number in the correct format
 memberNino.change.hidden = National Insurance number
 memberNino.hint = For example, QQ123456A.
-memberNino.doesNotHaveNino.link.text = Member doesn''t have a National Insurance number.
+memberNino.doesNotHaveNino.link.text = Member does not have a National Insurance number.
 
 memberDoesNotHaveNino.title = Why does the member not have a National Insurance number?
 memberDoesNotHaveNino.heading = Why does {0} not have a National Insurance number?
@@ -412,7 +412,7 @@ whyTransferIsTaxable.error.required = Select why this is a taxable overseas tran
 whyTransferIsTaxable.change.hidden = Why this transfer is taxable
 
 whyTransferIsNotTaxable.title = Why is this not a taxable overseas transfer?
-whyTransferIsNotTaxable.heading = Why isn''t this a taxable overseas transfer?
+whyTransferIsNotTaxable.heading = Why is this not a taxable overseas transfer?
 whyTransferIsNotTaxable.individualIsEmployeeOccupational = The QROPS is an occupational pension scheme and the individual is an employee of the sponsoring employer.
 whyTransferIsNotTaxable.individualIsEmployedPublicService = The QROPS is an overseas public service scheme and the individual is employed by the public service.
 whyTransferIsNotTaxable.individualIsEmployeeInternationalOrg = The QROPS is a pension scheme of an international organisation and the individual is employed by that international organisation.
