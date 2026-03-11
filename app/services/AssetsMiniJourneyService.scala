@@ -16,13 +16,13 @@
 
 package services
 
+import models.assets.*
 import models.assets.TypeOfAsset.Cash
-import models.assets._
 import models.{AmendCheckMode, Mode, SessionData, UserAnswers}
 import pages.transferDetails.TypeOfAssetPage
-import play.api.libs.json._
+import play.api.libs.json.*
 import queries.TransferDetailsRecordVersionQuery
-import queries.assets._
+import queries.assets.*
 import validators.assetsValidators.AssetCompletionValidator
 
 import scala.util.{Failure, Success, Try}
@@ -182,7 +182,6 @@ object AssetsMiniJourneyService {
     AssetsMiniJourneyRegistry.forType(t) match {
       case Some(s: SingleAssetsMiniJourney[_])    => ua.remove(s.query)
       case Some(r: RepeatingAssetsMiniJourney[_]) => ua.remove(r.query)
-      case Some(_: AssetsMiniJourneyBase)         => Success(ua)
       case None                                   => Success(ua)
     }
 

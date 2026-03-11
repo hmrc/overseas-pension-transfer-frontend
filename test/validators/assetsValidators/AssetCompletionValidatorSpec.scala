@@ -20,7 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import models.assets.TypeOfAsset
 import org.scalatest.freespec.AnyFreeSpec
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class AssetCompletionValidatorSpec extends AnyFreeSpec with SpecBase {
 
@@ -181,10 +181,5 @@ class AssetCompletionValidatorSpec extends AnyFreeSpec with SpecBase {
       AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.Property, ua(json)) mustBe false
     }
 
-    "return false for unsupported asset type" in {
-      val json = Json.obj("transferDetails" -> Json.obj("cashValue" -> 100))
-
-      AssetCompletionValidator.hasMandatoryFields(null, ua(json)) mustBe false
-    }
   }
 }

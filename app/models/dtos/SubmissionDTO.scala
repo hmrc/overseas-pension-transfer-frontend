@@ -16,9 +16,9 @@
 
 package models.dtos
 
-import models.authentication._
+import models.authentication.*
 import models.{SessionData, TransferId, UserAnswers}
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import java.time.Instant
 
@@ -55,7 +55,6 @@ object SubmissionDTO {
     val reads: Reads[SubmissionDTO] = (__ \ "userType").read[UserType].flatMap {
       case Psa => psaReads
       case Psp => pspReads
-      case _   => Reads(_ => JsError("Invalid userType"))
     }
 
     val writes: OWrites[SubmissionDTO] = {

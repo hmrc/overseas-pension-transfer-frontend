@@ -18,7 +18,7 @@ package models.assets
 
 import models.address.PropertyAddress
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-import play.api.libs.json._
+import play.api.libs.json.*
 
 sealed trait AssetEntry
 
@@ -46,6 +46,10 @@ case class QuotedSharesEntry(
   ) extends AssetEntry
 
 object QuotedSharesEntry {
+
+  def unapply(quotedSharesEntry: QuotedSharesEntry): Option[(String, BigDecimal, Int, String)] =
+    Some((quotedSharesEntry.companyName, quotedSharesEntry.valueOfShares, quotedSharesEntry.numberOfShares, quotedSharesEntry.classOfShares))
+
   val CompanyName    = "quotedCompany"
   val ValueOfShares  = "quotedValue"
   val NumberOfShares = "quotedShareTotal"
@@ -76,6 +80,10 @@ case class UnquotedSharesEntry(
   ) extends AssetEntry
 
 object UnquotedSharesEntry {
+
+  def unapply(unquotedSharesEntry: UnquotedSharesEntry): Option[(String, BigDecimal, Int, String)] =
+    Some((unquotedSharesEntry.companyName, unquotedSharesEntry.valueOfShares, unquotedSharesEntry.numberOfShares, unquotedSharesEntry.classOfShares))
+
   val CompanyName    = "unquotedCompany"
   val ValueOfShares  = "unquotedValue"
   val NumberOfShares = "unquotedShareTotal"
@@ -105,6 +113,10 @@ case class PropertyEntry(
   ) extends AssetEntry
 
 object PropertyEntry {
+
+  def unapply(propertyEntry: PropertyEntry): Option[(PropertyAddress, BigDecimal, String)] =
+    Some((propertyEntry.propertyAddress, propertyEntry.propValue, propertyEntry.propDescription))
+
   val PropertyAddress = "propertyAddress"
   val PropValue       = "propValue"
   val PropDescription = "propDescription"
@@ -130,6 +142,10 @@ case class OtherAssetsEntry(
   ) extends AssetEntry
 
 object OtherAssetsEntry {
+
+  def unapply(otherAssetsEntry: OtherAssetsEntry): Option[(String, BigDecimal)] =
+    Some((otherAssetsEntry.assetDescription, otherAssetsEntry.assetValue))
+
   val AssetDescription = "assetDescription"
   val AssetValue       = "assetValue"
 

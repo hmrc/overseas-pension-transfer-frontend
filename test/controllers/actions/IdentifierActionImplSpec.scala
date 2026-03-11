@@ -19,18 +19,18 @@ package controllers.actions
 import base.SpecBase
 import config.FrontendAppConfig
 import models.requests.IdentifierRequest
-import org.mockito.Mockito._
-import org.mockito.ArgumentMatchers._
-import play.api.mvc.Results._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc._
+import play.api.mvc.*
+import play.api.mvc.Results.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve._
+import uk.gov.hmrc.auth.core.retrieve.*
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -71,9 +71,7 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       val result = action.invokeBlock(
         fakeRequest,
-        { request: IdentifierRequest[AnyContent] =>
-          Future.successful(Ok(s"OK - ${request.authenticatedUser.internalId} - ${request.authenticatedUser}"))
-        }
+        (request: IdentifierRequest[AnyContent]) => Future.successful(Ok(s"OK - ${request.authenticatedUser.internalId} - ${request.authenticatedUser}"))
       )
 
       status(result) mustBe OK
