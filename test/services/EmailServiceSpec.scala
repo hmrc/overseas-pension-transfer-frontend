@@ -19,10 +19,10 @@ package services
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.EmailConnector
-import models.{IndividualDetails, MinimalDetails}
 import models.email.{EmailAccepted, EmailToSendRequest, SubmissionConfirmation}
+import models.{IndividualDetails, MinimalDetails}
 import org.mockito.ArgumentMatchers.{any, refEq}
-import org.mockito.Mockito.{never, verify, when}
+import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
@@ -109,7 +109,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val date                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
       val time                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("HH:mm"))
-      val expectedFormattedSubmittedAt = s"$date at ${time}pm"
+      val expectedFormattedSubmittedAt = s"$date at ${time}am"
 
       val expectedRequest =
         EmailToSendRequest(
@@ -166,6 +166,117 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       result.isLeft mustBe true
       result.left.toOption.get mustBe DownstreamError(nonAccepted.toString)
+    }
+
+    "must format date correctly for AM submission time" in {
+
+      val mockConnector = mock[EmailConnector]
+      val mockConfig    = mock[FrontendAppConfig]
+
+      when(mockConfig.submissionEmailEnabled).thenReturn(true)
+      when(mockConfig.submittedConfirmationTemplateId).thenReturn("submitted_confirmation_template")
+
+      implicit val appConfig: FrontendAppConfig = mockConfig
+      val service                               = new EmailService(mockConnector)
+
+      val minimalDetails = mock[MinimalDetails]
+      when(minimalDetails.email).thenReturn("test@example.com")
+      when(minimalDetails.organisationName).thenReturn(None)
+      when(minimalDetails.individualDetails).thenReturn(Some(IndividualDetails(firstName = "David", middleName = None, lastName = "Frost")))
+      when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier]))
+        .thenReturn(Future.successful(EmailAccepted))
+
+      val submittedAtAM: Instant = Instant.parse("2025-10-01T09:08:00Z")
+      val sessionDataAM          =
+        emptySessionData
+          .set(QtNumberQuery, testQtNumber).success.value
+          .set(MemberNamePage, testMemberName).success.value
+          .set(DateSubmittedQuery, submittedAtAM).success.value
+
+      val date =
+        LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
+          .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+
+      val time =
+        LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
+          .format(DateTimeFormatter.ofPattern("HH:mma"))
+          .toLowerCase
+
+      val formatted = s"$date at $time"
+
+      val expectedRequest =
+        EmailToSendRequest(
+          to         = List("test@example.com"),
+          templateId = "submitted_confirmation_template",
+          parameters = SubmissionConfirmation(
+            qtReference       = testQtNumber.value,
+            memberName        = testMemberName.fullName,
+            submitter         = individualSubmitterDetails.fullName,
+            submissionDate    = formatted,
+            pensionSchemeName = sessionDataAM.schemeInformation.schemeName
+          )
+        )
+
+      val result = await(service.sendConfirmationEmail(sessionDataAM, minimalDetails))
+
+      result mustBe Right(EmailSentSuccess)
+      verify(mockConnector).send(refEq(expectedRequest))(any[ExecutionContext], any[HeaderCarrier])
+    }
+
+    "must format date correctly for PM submission time" in {
+
+      val mockConnector = mock[EmailConnector]
+      val mockConfig    = mock[FrontendAppConfig]
+
+      when(mockConfig.submissionEmailEnabled).thenReturn(true)
+      when(mockConfig.submittedConfirmationTemplateId).thenReturn("submitted_confirmation_template")
+
+      implicit val appConfig: FrontendAppConfig = mockConfig
+      val service                               = new EmailService(mockConnector)
+
+      val minimalDetails = mock[MinimalDetails]
+      when(minimalDetails.email).thenReturn("test@example.com")
+      when(minimalDetails.organisationName).thenReturn(None)
+      when(minimalDetails.individualDetails)
+        .thenReturn(Some(IndividualDetails("David", None, "Frost")))
+      when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier]))
+        .thenReturn(Future.successful(EmailAccepted))
+
+      val submittedAtPM: Instant = Instant.parse("2025-10-01T15:45:00Z")
+      val sessionDataPM          =
+        emptySessionData
+          .set(QtNumberQuery, testQtNumber).success.value
+          .set(MemberNamePage, testMemberName).success.value
+          .set(DateSubmittedQuery, submittedAtPM).success.value
+
+      val date =
+        LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
+          .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+
+      val time =
+        LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
+          .format(DateTimeFormatter.ofPattern("HH:mma"))
+          .toLowerCase
+
+      val formatted = s"$date at $time"
+
+      val expectedRequest =
+        EmailToSendRequest(
+          to         = List("test@example.com"),
+          templateId = "submitted_confirmation_template",
+          parameters = SubmissionConfirmation(
+            qtReference       = testQtNumber.value,
+            memberName        = testMemberName.fullName,
+            submitter         = individualSubmitterDetails.fullName,
+            submissionDate    = formatted,
+            pensionSchemeName = sessionDataPM.schemeInformation.schemeName
+          )
+        )
+
+      val result = await(service.sendConfirmationEmail(sessionDataPM, minimalDetails))
+
+      result mustBe Right(EmailSentSuccess)
+      verify(mockConnector).send(refEq(expectedRequest))(any[ExecutionContext], any[HeaderCarrier])
     }
   }
 }
