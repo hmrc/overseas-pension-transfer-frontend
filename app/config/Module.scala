@@ -31,6 +31,8 @@ class Module extends AbstractModule {
     bind(classOf[IdentifierAction]).to(classOf[IdentifierActionImpl]).asEagerSingleton()
     bind(classOf[SchemeDataAction]).to(classOf[SchemeDataActionImpl]).asEagerSingleton()
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
+
+    bind(classOf[scheduler.jobs.LockCleanupJob]).asEagerSingleton()
   }
 
   @Provides
