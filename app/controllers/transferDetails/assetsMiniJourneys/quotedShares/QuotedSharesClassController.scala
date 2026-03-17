@@ -21,6 +21,7 @@ import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassFo
 import models.assets.TypeOfAsset.QuotedShares
 import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.AssetsRecordVersionQuery
@@ -45,7 +46,7 @@ class QuotedSharesClassController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -77,7 +78,7 @@ class QuotedSharesClassController @Inject() (
 
           for {
             updatedAnswers <- Future.fromTry(setAnswers())
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
           } yield Redirect(QuotedSharesClassPage(index).nextPage(mode, updatedAnswers))
         }
       )

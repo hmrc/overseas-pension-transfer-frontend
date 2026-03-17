@@ -89,7 +89,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
@@ -114,7 +114,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val previousAnswers        = emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
@@ -144,7 +144,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
@@ -164,7 +164,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockUserAnswersService).setExternalUserAnswers(captor.capture())(any)
+        verify(mockUserAnswersService).setExternalUserAnswers(captor.capture(), any())(any)
 
         val updatedAnswers = captor.getValue
         updatedAnswers.get(SchemeManagersNamePage) mustBe None
@@ -194,7 +194,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
@@ -206,7 +206,7 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
       running(application) {
         val req =
           FakeRequest(POST, schemeManagerTypeRoute)
-            .withFormUrlEncodedBody(("value" -> SchemeManagerType.Organisation.toString))
+            .withFormUrlEncodedBody("value" -> SchemeManagerType.Organisation.toString)
 
         val result = route(application, req).value
 

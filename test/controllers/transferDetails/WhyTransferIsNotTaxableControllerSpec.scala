@@ -89,7 +89,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
@@ -114,7 +114,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
@@ -161,7 +161,7 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)

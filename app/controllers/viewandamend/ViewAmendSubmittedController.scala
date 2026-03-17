@@ -65,7 +65,7 @@ class ViewAmendSubmittedController @Inject() (
         qtReference match {
           case QtNumber(_) =>
             userAnswersService
-              .getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber))
+              .getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber), request.schemeDetails.srnNumber)
               .map {
                 case Right(userAnswers) =>
                   val sessionData = SessionData(
@@ -101,7 +101,7 @@ class ViewAmendSubmittedController @Inject() (
         }
 
         for {
-          userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber))
+          userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber), request.schemeDetails.srnNumber)
           allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
           lockAcquired      <- lockService.takeLockWithAudit(
                                  qtReference,
@@ -163,7 +163,13 @@ class ViewAmendSubmittedController @Inject() (
   def amend(): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit dr =>
       val versionNumber = (dr.sessionData.data \ "versionNumber").asOpt[String].getOrElse("001")
-      userAnswersService.getExternalUserAnswers(dr.userAnswers.id, dr.userAnswers.pstr, QtStatus.Submitted, Some(versionNumber)).map {
+      userAnswersService.getExternalUserAnswers(
+        dr.userAnswers.id,
+        dr.userAnswers.pstr,
+        QtStatus.Submitted,
+        Some(versionNumber),
+        dr.sessionData.schemeInformation.srnNumber
+      ).map {
         case Right(externalUserAnswers) =>
           val isChanged: Boolean = externalUserAnswers.data != dr.userAnswers.data
           Ok(renderView(dr.sessionData, dr.userAnswers, isAmend = true, isChanged = isChanged))

@@ -23,6 +23,7 @@ import models.Mode
 import models.address.Country
 import org.apache.pekko.Done
 import pages.qropsDetails.QROPSCountryPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{CountryService, UserAnswersService}
@@ -46,7 +47,7 @@ class QROPSCountryController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -81,7 +82,7 @@ class QROPSCountryController @Inject() (
             case Some(country) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
-                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))

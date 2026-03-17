@@ -26,6 +26,7 @@ import models.{Mode, PersonName}
 import pages.PspDeclarationPage
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.{DateSubmittedQuery, QtNumberQuery}
@@ -52,7 +53,7 @@ class PspDeclarationController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -68,7 +69,13 @@ class PspDeclarationController @Inject() (
           val psaId = PsaId(psaIdString)
           (for {
             submissionResponse      <-
-              EitherT(userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData, Some(psaId))).leftMap {
+              EitherT(userAnswersService.submitDeclaration(
+                request.authenticatedUser,
+                request.userAnswers,
+                request.sessionData,
+                Some(psaId),
+                request.sessionData.schemeInformation.srnNumber
+              )).leftMap {
                 case NotAuthorisingPsaIdErrorResponse(_, _) =>
                   val formWithError = form.withError("value", "pspDeclaration.error.notAuthorisingPsaId")
                   BadRequest(view(formWithError, mode))

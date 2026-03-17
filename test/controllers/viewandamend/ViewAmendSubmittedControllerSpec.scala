@@ -18,7 +18,7 @@ package controllers.viewandamend
 
 import base.SpecBase
 import models.responses.UserAnswersErrorResponse
-import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, TransferId, UserAnswers}
+import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, SrnNumber, TransferId, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -107,7 +107,8 @@ class ViewAmendSubmittedControllerSpec
             any[TransferId],
             any[PstrNumber],
             any[QtStatus],
-            any[Option[String]]
+            any[Option[String]],
+            any[SrnNumber]
           )(any[HeaderCarrier])
         ).thenReturn(Future.successful(Right(userAnswersMemberNameQtNumber)))
 
@@ -152,7 +153,8 @@ class ViewAmendSubmittedControllerSpec
             any[TransferId],
             any[PstrNumber],
             any[QtStatus],
-            any[Option[String]]
+            any[Option[String]],
+            any[SrnNumber]
           )(any[HeaderCarrier])
         ).thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
 
@@ -172,7 +174,7 @@ class ViewAmendSubmittedControllerSpec
 
     "fromDraft" - {
       "redirect to amend page when user answers are fetched and lock acquired" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(userAnswersMemberNameQtNumber)))
         when(mockUserAnswersService.toAllTransfersItem(any())).thenReturn(transferItem)
         when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
@@ -196,7 +198,7 @@ class ViewAmendSubmittedControllerSpec
       }
 
       "redirect back to submitted summary when lock not acquired" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(userAnswersMemberNameQtNumber)))
         when(mockUserAnswersService.toAllTransfersItem(any())).thenReturn(transferItem)
         when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
@@ -221,7 +223,7 @@ class ViewAmendSubmittedControllerSpec
       }
 
       "redirect to JourneyRecovery when user answers retrieval fails" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Left(UserAnswersErrorResponse("boom", None))))
         when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(true))
@@ -248,7 +250,7 @@ class ViewAmendSubmittedControllerSpec
         val localUserAnswers    = userAnswersMemberNameQtNumber
         val externalUserAnswers = localUserAnswers.copy(data = localUserAnswers.data ++ play.api.libs.json.Json.obj("newField" -> "newValue"))
 
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(externalUserAnswers)))
         when(mockUserAnswersService.toAllTransfersItem(any())).thenReturn(transferItem)
         when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
@@ -274,7 +276,7 @@ class ViewAmendSubmittedControllerSpec
       "return Ok with isChanged = false when local and external user answers are same" in {
         val localUserAnswers = userAnswersMemberNameQtNumber
 
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(localUserAnswers)))
 
         val app = applicationBuilder(
@@ -288,13 +290,13 @@ class ViewAmendSubmittedControllerSpec
         val result  = route(app, request).value
 
         status(result) mustBe OK
-        contentAsString(result) must not include ("continue")
+        contentAsString(result) must not include "continue"
 
         app.stop()
       }
 
       "return InternalServerError when external answers lookup fails" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Left(UserAnswersErrorResponse("failure", None))))
 
         val app = applicationBuilder(

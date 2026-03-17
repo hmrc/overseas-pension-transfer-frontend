@@ -152,7 +152,7 @@ class DashboardController @Inject() (
       appConfig: FrontendAppConfig
     ): Future[Result] = {
 
-    transferService.getAllTransfersData(dashboardData, pensionSchemeDetails.pstrNumber, request.schemeDetails.srnNumber).flatMap {
+    transferService.getAllTransfersData(dashboardData, pensionSchemeDetails.pstrNumber, pensionSchemeDetails.srnNumber).flatMap {
       _.fold(
         err => {
           logger.warn(s"[DashboardController] getAllTransfersData failed: $err")
@@ -215,7 +215,7 @@ class DashboardController @Inject() (
     ): SearchBarViewModel = {
 
     val clearUrl: Option[String] =
-      search.map(_ => routes.DashboardController.onPageLoad(page = 1, search = None).url)
+      search.map(_ => routes.DashboardController.onPageLoad(search = None).url)
 
     SearchBarViewModel(
       label    = messages("dashboard.search.heading"),

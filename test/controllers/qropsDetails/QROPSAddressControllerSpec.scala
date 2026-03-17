@@ -127,7 +127,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       when(mockCountryService.countries).thenReturn(testCountries)
@@ -199,7 +199,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       when(mockCountryService.countries).thenReturn(testCountries)
