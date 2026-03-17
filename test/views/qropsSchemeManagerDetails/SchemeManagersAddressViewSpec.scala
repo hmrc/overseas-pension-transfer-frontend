@@ -26,9 +26,7 @@ import views.utils.ViewBaseSpec
 
 class SchemeManagersAddressViewSpec extends ViewBaseSpec {
 
-  private val application = applicationBuilder().configure(
-    "features.accessibility-address-changes" -> true
-  ).build()
+  private val application = applicationBuilder().build()
 
   private val view                                  = application.injector.instanceOf[SchemeManagersAddressView]
   private val formProvider                          = application.injector.instanceOf[SchemeManagersAddressFormProvider]

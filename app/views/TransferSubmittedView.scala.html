@@ -40,22 +40,17 @@
         </div>
     </div>
 
-    @if(appConfig.submissionEmailEnabled){
-        <p class="govuk-body" id="email-submission-text">@Html(messages("transferSubmitted.confirmationEmailSent.text", email))</p>
-    }
-
+    <p class="govuk-body" id="email-submission-text">@Html(messages("transferSubmitted.confirmationEmailSent.text", email))</p>
 
     @govukSummaryList(list)
 
 
-    @if(appConfig.allowPrintSubmittedTransfer){
-        <h2 class="govuk-heading-m">@messages("transferSubmitted.nextInfo")</h2>
-        <ul class="govuk-list govuk-list--bullet">
-            <li><a class="govuk-link govuk-body" href="@controllers.routes.PrintSubmittedTransferController.onPageLoad()">@messages("transferSubmitted.printLink")</a></li>
-            <li>@messages("transferSubmitted.start") <a class="govuk-link govuk-body" href="@controllers.routes.WhatWillBeNeededController.onPageLoad()">@messages("transferSubmitted.newTransfer")</a></li>
-        </ul>
-        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    }
+    <h2 class="govuk-heading-m">@messages("transferSubmitted.nextInfo")</h2>
+    <ul class="govuk-list govuk-list--bullet">
+        <li><a class="govuk-link govuk-body" href="@controllers.routes.PrintSubmittedTransferController.onPageLoad()">@messages("transferSubmitted.printLink")</a></li>
+        <li>@messages("transferSubmitted.start") <a class="govuk-link govuk-body" href="@controllers.routes.WhatWillBeNeededController.onPageLoad()">@messages("transferSubmitted.newTransfer")</a></li>
+    </ul>
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
     <div class="govuk-body">
         <a class="govuk-link govuk-body" href="@controllers.routes.DashboardController.onPageLoad()">@messages("transferSubmitted.dashboardLink.text")</a>

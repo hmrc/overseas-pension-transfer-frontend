@@ -34,7 +34,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{AddressService, CountryService, UserAnswersService}
+import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.qropsSchemeManagerDetails.SchemeManagersAddressView
 
@@ -70,9 +70,6 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
-        .configure(
-          "features.accessibility-address-changes" -> true
-        )
         .build()
 
       running(application) {
@@ -98,9 +95,6 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        )
-        .configure(
-          "features.accessibility-address-changes" -> true
         )
         .build()
 
@@ -166,9 +160,6 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(emptyUserAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        )
-        .configure(
-          "features.accessibility-address-changes" -> true
         )
         .build()
 

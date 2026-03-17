@@ -24,7 +24,7 @@ import utils.AppUtils
 
 class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex with SpecBase with AppUtils {
 
-  private val form = new PropertyAddressFormProvider()(true)
+  private val form = new PropertyAddressFormProvider().apply()
 
   ".addressLine1" - {
 

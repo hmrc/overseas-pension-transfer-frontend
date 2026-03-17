@@ -18,7 +18,7 @@ package controllers.transferDetails.assetsMiniJourneys.property
 
 import config.FrontendAppConfig
 import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormDataTrait, PropertyAddressFormProvider}
+import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormDataTrait, PropertyAddressFormProvider}
 import models.assets.TypeOfAsset.Property
 import models.requests.DisplayRequest
 import models.{AmendCheckMode, Mode, UserAnswers}
@@ -55,7 +55,7 @@ class PropertyAddressController @Inject() (
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val form                   = formProvider(appConfig.accessibilityAddressChanges)
+      val form                   = formProvider()
       val preparedForm           = request.userAnswers.get(PropertyAddressPage(index)) match {
         case None          => form
         case Some(address) => form.fill(PropertyAddressFormDataTrait.fromDomain(address))
@@ -66,7 +66,7 @@ class PropertyAddressController @Inject() (
   }
 
   def renderErrorPage(
-      formWithErrors: Form[PropertyAddressFormDataTrait],
+      formWithErrors: Form[PropertyAddressFormData],
       mode: Mode,
       index: Int
     )(implicit displayRequest: DisplayRequest[_]
@@ -77,21 +77,20 @@ class PropertyAddressController @Inject() (
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      val form      = formProvider(appConfig.accessibilityAddressChanges)
+      val form      = formProvider()
       val boundForm = form.bindFromRequest()
 
       boundForm.fold(
         formWithErrors => renderErrorPage(formWithErrors, mode, index),
         formData =>
           addressService.propertyAddress(formData) match {
-            case None                                                                                                                                  =>
+            case None                                                                                         =>
               Future.successful(
                 Redirect(PropertyAddressPage(index).nextPageRecovery())
               )
-            case Some(addressToSave) if addressToSave.country.code != "GB" && addressToSave.postcode.nonEmpty && appConfig.accessibilityAddressChanges =>
-              // TODO Update with a more accurate message, and maybe have it focus the country field rather than postcode
+            case Some(addressToSave) if addressToSave.country.code != "GB" && addressToSave.postcode.nonEmpty =>
               renderErrorPage(boundForm.withError("postcode", "membersLastUKAddress.error.postcode.incorrect"), mode, index)
-            case Some(addressToSave)                                                                                                                   =>
+            case Some(addressToSave)                                                                          =>
               def setAnswers(): Try[UserAnswers] =
                 if (mode == AmendCheckMode) {
                   for {

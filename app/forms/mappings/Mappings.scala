@@ -31,7 +31,7 @@ trait Mappings extends Formatters with Constraints {
   protected def int(
       requiredKey: String    = "error.required",
       wholeNumberKey: String = "error.wholeNumber",
-      nonNumericKey: String  = "error.nonNumeric", // todo check here??
+      nonNumericKey: String  = "error.nonNumeric",
       args: Seq[String]      = Seq.empty
     ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
