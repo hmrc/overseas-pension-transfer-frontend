@@ -36,7 +36,6 @@ case object SubmitToHMRCPage
         authenticatedUser.userType match {
           case Psa => routes.PsaDeclarationController.onPageLoad(AmendCheckMode)
           case Psp => routes.PspDeclarationController.onPageLoad(AmendCheckMode)
-          case _   => routes.JourneyRecoveryController.onPageLoad()
         }
       case Some(false) =>
         routes.DashboardController.onPageLoad()
@@ -50,7 +49,6 @@ case object SubmitToHMRCPage
         authenticatedUser.userType match {
           case Psa => routes.PsaDeclarationController.onPageLoad(NormalMode)
           case Psp => routes.PspDeclarationController.onPageLoad(NormalMode)
-          case _   => routes.JourneyRecoveryController.onPageLoad()
         }
       case Some(false) =>
         routes.DashboardController.onPageLoad()

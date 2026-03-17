@@ -43,6 +43,15 @@ object MembersLastUKAddress {
       ukPostCode   = address.postcode.getOrElse("")
     )
   }
+
+  def unapply(membersLastUKAddress: MembersLastUKAddress): Option[(String, String, Option[String], Option[String], String)] =
+    Some((
+      membersLastUKAddress.addressLine1,
+      membersLastUKAddress.addressLine2,
+      membersLastUKAddress.addressLine3,
+      membersLastUKAddress.addressLine4,
+      membersLastUKAddress.ukPostCode
+    ))
 }
 
 case class MembersLookupLastUkAddress(

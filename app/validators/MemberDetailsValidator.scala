@@ -110,6 +110,7 @@ object MemberDetailsValidator extends Validator[MemberDetails] {
       case (Some(hasEverBeenUkResident), Some(false)) => Some(hasEverBeenUkResident).validNec
       case (Some(_), Some(true))                      => GenericError("Cannot have valid payload with isUkResident = true and hasEverBeenUkResident").invalidNec
       case (None, None)                               => DataMissingError(MemberHasEverBeenResidentUKPage).invalidNec
+      case (Some(_), None)                            => DataMissingError(MemberIsResidentUKPage).invalidNec
     }
 
   private def validateLastPrincipalUkAddress(answers: UserAnswers): ValidationResult[Option[MembersLastUKAddress]] =

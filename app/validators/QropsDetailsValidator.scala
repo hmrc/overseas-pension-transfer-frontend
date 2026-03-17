@@ -33,7 +33,7 @@ object QropsDetailsValidator extends Validator[QropsDetails] {
       validateQropsCountry(user),
       validateQropsOtherCountry(user)
     ).mapN(
-      QropsDetails
+      QropsDetails.apply
     )
 
   private def validateQropsName(answers: UserAnswers): ValidationResult[String] =

@@ -16,6 +16,7 @@
 
 package views.qropsSchemeManagerDetails
 
+import config.FrontendAppConfig
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormProvider
 import models.NormalMode
 import play.api.data.FormError
@@ -29,10 +30,10 @@ class SchemeManagersAddressViewOLDSpec extends ViewBaseSpec {
     "features.accessibility-address-changes" -> false
   ).build()
 
-  private val view                   = application.injector.instanceOf[SchemeManagersAddressView]
-  private val formProvider           = application.injector.instanceOf[SchemeManagersAddressFormProvider]
-  private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
-  implicit private val appConfig     = application.injector.instanceOf[config.FrontendAppConfig]
+  private val view                                  = application.injector.instanceOf[SchemeManagersAddressView]
+  private val formProvider                          = application.injector.instanceOf[SchemeManagersAddressFormProvider]
+  private val countrySelectViewModel                = CountrySelectViewModel(Seq.empty)
+  implicit private val appConfig: FrontendAppConfig = application.injector.instanceOf[config.FrontendAppConfig]
 
   "SchemeManagersAddressView" - {
 

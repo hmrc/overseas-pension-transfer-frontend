@@ -18,7 +18,7 @@ package forms.qropsSchemeManagerDetails
 
 import forms.mappings.{Mappings, Regex}
 import models.address.SchemeManagersAddress
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.{Form, Forms}
 
 import javax.inject.Inject
@@ -43,6 +43,16 @@ object SchemeManagersAddressFormData {
       addressLine5 = address.addressLine5,
       countryCode  = address.country.code
     )
+
+  def unapply(addressFormData: SchemeManagersAddressFormData): Option[(String, String, Option[String], Option[String], Option[String], String)] =
+    Some((
+      addressFormData.addressLine1,
+      addressFormData.addressLine2,
+      addressFormData.addressLine3,
+      addressFormData.addressLine4,
+      addressFormData.addressLine5,
+      addressFormData.countryCode
+    ))
 }
 
 class SchemeManagersAddressFormProvider @Inject() extends Mappings with Regex {
