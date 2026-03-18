@@ -16,7 +16,7 @@
 
 package services
 
-import models.address.{Countries, Country}
+import models.address.Country
 import play.api.Environment
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
