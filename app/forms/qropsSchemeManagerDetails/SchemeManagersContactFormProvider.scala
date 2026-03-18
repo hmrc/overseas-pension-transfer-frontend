@@ -28,7 +28,10 @@ class SchemeManagersContactFormProvider @Inject() extends Mappings with Regex {
     Form(
       "contactNumber" -> text("schemeManagersContact.error.required")
         .transform[String](_.replaceAll("\\s+", ""), identity)
+        .transform[String](s => if (s.startsWith("00")) "+" + s.substring(2) else s, identity)
+        .transform[String](_.replaceAll("\\D+$", ""), identity)
         .verifying(maxLength(35, "schemeManagersContact.error.length"))
+        .verifying("schemeManagersContact.error.pattern", _.matches("^(?!\\+\\+)[\\d()+\\-]+$"))
         .verifying("schemeManagersContact.error.pattern", number => isValidPhoneNumber(number))
     )
 
@@ -41,15 +44,9 @@ class SchemeManagersContactFormProvider @Inject() extends Mappings with Regex {
       if (raw.isEmpty) {
         false
       } else {
-        val defaultRegion =
-          if (raw.startsWith("+")) {
-            "ZZ" // default
-          } else {
-            "GB"
-          }
-
-        val parsed = phoneUtil.parse(raw, defaultRegion)
-        phoneUtil.isValidNumber(parsed)
+        val defaultRegion = if (raw.startsWith("+")) "ZZ" else "GB"
+        val parsed        = phoneUtil.parse(raw, defaultRegion)
+        phoneUtil.isPossibleNumber(parsed)
       }
     } catch {
       case _: NumberParseException => false

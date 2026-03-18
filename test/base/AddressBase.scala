@@ -16,9 +16,7 @@
 
 package base
 
-import models.{SessionData, UserAnswers}
 import models.address._
-import pages.memberDetails.{MembersLastUkAddressLookupPage, MembersLastUkAddressSelectPage}
 
 trait AddressBase extends SpecBase {
 
@@ -48,27 +46,11 @@ trait AddressBase extends SpecBase {
       )
     )
 
-  val addressRecords: AddressRecords = AddressRecords(postcode = "BB00 1BB", records = addressRecordList)
-
   val validIds: Seq[String] = addressRecordList.map(_.id)
 
   val selectedRecord: AddressRecord = addressRecordList.head
 
   val selectedRecordId: String = selectedRecord.id
-
-  val addressFoundSessionData: SessionData =
-    sessionDataMemberNameQtNumber
-      .set(MembersLastUkAddressLookupPage, addressRecords).success.value
-
-  val addressSelectedSessionData: SessionData =
-    addressFoundSessionData
-      .set(MembersLastUkAddressSelectPage, (selectedRecordId, MembersLookupLastUkAddress.fromAddressRecord(selectedRecord))).success.value
-
-  val noAddressFound: NoAddressFound = NoAddressFound(postcode = "AB1 1CD")
-
-  val noAddressFoundSessionData: SessionData =
-    sessionDataMemberNameQtNumber
-      .set(MembersLastUkAddressLookupPage, noAddressFound).success.value
 
   val membersCurrentAddress: MembersCurrentAddress = MembersCurrentAddress(
     addressLine1 = "2 Other Place",
@@ -103,6 +85,7 @@ trait AddressBase extends SpecBase {
     addressLine2 = "Some District",
     addressLine3 = None,
     addressLine4 = None,
+    addressLine5 = None,
     ukPostCode   = Some("ZZ1 1ZZ"),
     country      = Countries.UK
   )

@@ -18,6 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.assets.TypeOfAsset
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -61,6 +62,16 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
           index
         )
       }
+    }
+
+    "should go to CYA when mandatory fields complete" in {
+      val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.Other))
+      OtherAssetsDescriptionPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(NormalMode, index)
+    }
+
+    "should go to Value page when incomplete" in {
+      val ua = emptyUserAnswers.copy(data = incompleteJson())
+      OtherAssetsDescriptionPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index)
     }
   }
 }

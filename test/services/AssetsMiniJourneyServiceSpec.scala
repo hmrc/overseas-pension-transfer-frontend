@@ -248,16 +248,18 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
                 "cashValue"      -> 1000,
                 "quotedShares"   -> Json.arr(
                   Json.obj(
-                    "quotedValue"   -> 100,
-                    "quotedCompany" -> "ABC",
-                    "quotedClass"   -> "A"
+                    "quotedValue"      -> 100,
+                    "quotedCompany"    -> "ABC",
+                    "quotedClass"      -> "A",
+                    "quotedShareTotal" -> 100
                   )
                 ),
                 "unquotedShares" -> Json.arr(),
                 "propertyAssets" -> Json.arr(
                   Json.obj(
                     "propValue"       -> 200,
-                    "propDescription" -> "House"
+                    "propDescription" -> "House",
+                    "propertyAddress" -> "00 ABC House"
                   )
                 )
               )

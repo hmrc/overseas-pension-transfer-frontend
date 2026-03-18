@@ -65,12 +65,12 @@ class DashboardController @Inject() (
       repo.get(id).flatMap {
         case None =>
           logger.warn(s"[DashboardController][onPageLoad] No dashboard data found this customer")
-          Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+          Future.successful(Redirect(DashboardPage.nextPageRecovery()))
 
         case Some(dashboardData) =>
           dashboardData.get(PensionSchemeDetailsQuery).fold {
             logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for this customer")
-            Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+            Future.successful(Redirect(DashboardPage.nextPageRecovery()))
           } { pensionSchemeDetails =>
             dashboardData.get(TransfersOverviewQuery) match {
               case None            =>
@@ -157,20 +157,21 @@ class DashboardController @Inject() (
       _.fold(
         err => {
           logger.warn(s"[DashboardController] getAllTransfersData failed: $err")
-          Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+          Future.successful(Redirect(DashboardPage.nextPageRecovery()))
         },
         updatedData => {
 
           val allTransfers      = updatedData.get(TransfersOverviewQuery).getOrElse(Seq.empty)
-          val expiringItems     = repo.findExpiringWithin2Days(allTransfers)
           val filteredTransfers = getFilteredTransfers(allTransfers, search)
           val transfersVm       = buildTransfersVm(filteredTransfers, allTransfers.size, page, search, lockWarning)
           val searchBarVm       = buildSearchBarVm(search)
           val mpsLink           = appConfig.mpsHomeUrl
-          val pensionSchemeLink = appConfig.getPensionSchemeUrl(
-            srn       = pensionSchemeDetails.srnNumber.value,
-            isPspUser = authenticatedUser.isInstanceOf[models.authentication.PspUser]
-          )
+          val pensionSchemeLink = routes.DashboardController.clearAndExit(
+            appConfig.getPensionSchemeUrl(
+              srn       = pensionSchemeDetails.srnNumber.value,
+              isPspUser = authenticatedUser.isInstanceOf[models.authentication.PspUser]
+            )
+          ).url
 
           repo.set(updatedData).map { _ =>
             Ok(
@@ -179,7 +180,6 @@ class DashboardController @Inject() (
                 DashboardPage.nextPage(updatedData, None, None).url,
                 transfersVm,
                 searchBarVm,
-                expiringItems,
                 mpsLink,
                 isSearch          = search.exists(_.trim.nonEmpty),
                 breadcrumbs       = appBreadcrumbs(mpsLink, pensionSchemeLink),
@@ -235,6 +235,16 @@ class DashboardController @Inject() (
       case Some(term) => TransferSearch.filterTransfers(all, term)
       case None       => all
     }
+
+  def clearAndExit(redirect: String): Action[AnyContent] = identify.async { implicit request =>
+    val id = request.authenticatedUser.internalId
+    for {
+      _ <- repo.clear(id)
+      _ <- sessionRepository.clear(id)
+    } yield {
+      Redirect(redirect)
+    }
+  }
 
   private def pageUrl(search: Option[String])(p: Int): String =
     routes.DashboardController.onPageLoad(p, search).url

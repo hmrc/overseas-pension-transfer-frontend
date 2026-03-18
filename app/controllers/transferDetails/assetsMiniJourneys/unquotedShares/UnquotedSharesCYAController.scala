@@ -18,16 +18,14 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
+import models.Mode
 import models.assets.TypeOfAsset
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.UnquotedSharesQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
@@ -35,7 +33,7 @@ import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCYAView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class UnquotedSharesCYAController @Inject() (
     override val messagesApi: MessagesApi,
@@ -65,7 +63,7 @@ class UnquotedSharesCYAController @Inject() (
         case Right(Done) =>
           Redirect(UnquotedSharesCYAPage(index).nextPage(mode, request.userAnswers))
         case _           =>
-          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          Redirect(UnquotedSharesCYAPage(index).nextPageRecovery())
       }
     }
   }

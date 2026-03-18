@@ -23,6 +23,7 @@
 @import views.ViewUtils.titleNoForm
 @import views.html.components.{CheckYourAnswersHeading, QTNumber}
 @import views.html.helper.form
+@import play.twirl.api.Html
 
 @this(
         layout: templates.Layout,
@@ -49,12 +50,14 @@
 @headingStr = @{if(isAmend) messages("viewSubmitted.amendHeading") else messages("viewSubmitted.heading", memberName)}
 
 @continueButton = @{
-    if (isAmend) {
-        govukButton(
-            ButtonViewModel(messages("site.continue"))
-            .asLink(routes.SubmitToHMRCController.onPageLoad(mode).url)
-        )
-    }
+  if (isAmend) {
+    govukButton(
+      ButtonViewModel(messages("site.continue"))
+        .asLink(routes.SubmitToHMRCController.onPageLoad(mode).url)
+    )
+  } else {
+    Html("")
+  }
 }
 
 @layout(pageTitle = titleNoForm(messages("viewSubmitted.amendTitle")), showCYAFooter = true, showDiscardAmendmentFooter = isAmend) {

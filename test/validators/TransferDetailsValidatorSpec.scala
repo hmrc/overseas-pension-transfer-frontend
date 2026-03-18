@@ -72,6 +72,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
     addressLine2 = "Line 2",
     addressLine3 = None,
     addressLine4 = None,
+    addressLine5 = None,
     country      = Country("GB", "United Kingdom"),
     ukPostCode   = None
   )

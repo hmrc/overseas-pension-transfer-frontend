@@ -29,7 +29,7 @@ object DashboardPage extends Page {
         params
           .flatMap(_.transferId)
           .map(transferId => routes.TaskListController.fromDashboard(transferId))
-          .getOrElse(routes.JourneyRecoveryController.onPageLoad())
+          .getOrElse(this.nextPageRecovery())
       case Some(s @ (QtStatus.Compiled | QtStatus.Submitted | QtStatus.AmendInProgress)) =>
         (for {
           p    <- params
@@ -37,7 +37,7 @@ object DashboardPage extends Page {
           pstr <- p.pstr
           ver  <- p.versionNumber
         } yield controllers.viewandamend.routes.SubmittedTransferSummaryController.onPageLoad(ref, pstr, s, ver))
-          .getOrElse(routes.JourneyRecoveryController.onPageLoad())
+          .getOrElse(this.nextPageRecovery())
       case _                                                                             =>
         dd.get(PensionSchemeDetailsQuery) match {
           case Some(_) =>

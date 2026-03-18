@@ -17,7 +17,8 @@
 package controllers.qropsSchemeManagerDetails
 
 import base.{AddressBase, SpecBase}
-import controllers.routes.JourneyRecoveryController
+import config.FrontendAppConfig
+import controllers.{routes => controllerRoutes}
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.NormalMode
 import models.address.Country
@@ -33,7 +34,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{CountryService, UserAnswersService}
+import services.{AddressService, CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.qropsSchemeManagerDetails.SchemeManagersAddressView
 
@@ -69,11 +70,15 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
+        .configure(
+          "features.accessibility-address-changes" -> true
+        )
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersAddressRoute)
-        val view    = application.injector.instanceOf[SchemeManagersAddressView]
+        val request                      = FakeRequest(GET, schemeManagersAddressRoute)
+        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
+        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
 
         val result = route(application, request).value
 
@@ -82,7 +87,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           form,
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application)).toString
+        )(request, messages(application), appConfig).toString
       }
     }
 
@@ -94,11 +99,15 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
+        .configure(
+          "features.accessibility-address-changes" -> true
+        )
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, schemeManagersAddressRoute)
-        val view    = application.injector.instanceOf[SchemeManagersAddressView]
+        val request                      = FakeRequest(GET, schemeManagersAddressRoute)
+        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
+        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
 
         val result = route(application, request).value
 
@@ -107,7 +116,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           form.fill(formData),
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application)).toString
+        )(request, messages(application), appConfig).toString
       }
     }
 
@@ -158,6 +167,9 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
+        .configure(
+          "features.accessibility-address-changes" -> true
+        )
         .build()
 
       running(application) {
@@ -165,8 +177,9 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           FakeRequest(POST, schemeManagersAddressRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-        val view      = application.injector.instanceOf[SchemeManagersAddressView]
+        val boundForm                    = form.bind(Map("value" -> "invalid value"))
+        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
+        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
 
         val result = route(application, request).value
 
@@ -175,7 +188,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           boundForm,
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application)).toString
+        )(request, messages(application), appConfig).toString
       }
     }
 
@@ -213,7 +226,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         val result = route(application, req).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllerRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

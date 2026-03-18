@@ -110,14 +110,6 @@ journeyRecovery.startAgain.title = Sorry, there is a problem with this service
 journeyRecovery.startAgain.heading = Sorry, there is a problem with this service
 journeyRecovery.startAgain.guidance = [Add content to explain why the user needs to start again.]
 
-addressLookupDown.title = Sorry, there is a problem with our address search
-addressLookupDown.heading = Sorry, there is a problem with our address search
-addressLookupDown.body = We cannot look up addresses at the moment.
-addressLookupDown.options.heading = You can try again later or:
-addressLookupDown.options.tryAgain = Try again in a few minutes
-addressLookupDown.options.dashboard = Return to Report a transfer to a QROPS
-addressLookupDown.options.enterManually = Enter the address manually
-
 signedOut.title = For your security, we signed you out
 signedOut.heading = For your security, we signed you out
 signedOut.guidance = We did not save your answers.
@@ -131,31 +123,43 @@ unauthorised.link = <a href="{0}" class="govuk-link">Find out more about access 
 common.addressInput.addressLine1 = Address line 1
 common.addressInput.addressLine2 = Address line 2
 common.addressInput.addressLine3 = Address line 3 (optional)
+common.addressInput.townOrCity = Town or city
+common.addressInput.accessible.addressLine3 = Town or city (optional)
 common.addressInput.addressLine4 = Address line 4 (optional)
+common.addressInput.accessible.addressLine4 = County (optional)
 common.addressInput.addressLine5 = Address line 5 (optional)
 common.addressInput.addressLine1.change.hidden = Address line 1
 common.addressInput.addressLine2.change.hidden = Address line 2
 common.addressInput.addressLine3.change.hidden = Address line 3 (optional)
 common.addressInput.addressLine4.change.hidden = Address line 4 (optional)
 common.addressInput.postcode = UK Postcode (optional)
+common.addressInput.accessible.postcode = Postal code (optional)
 common.addressInput.poBox = PO Box (optional)
+common.addressInput.townOrCity = Town or city (optional)
 common.addressInput.countryCode = Country
+common.addressInput.countryCode.select = Select a country
+common.addressInput.townOrCity = Town or city (optional)
+common.addressInput.county = County (optional)
+
 common.addressInput.error.addressLine1.length = Address line 1 must be 35 characters or less
 common.addressInput.error.addressLine2.length = Address line 2 must be 35 characters or less
 common.addressInput.error.addressLine3.length = Address line 3 must be 35 characters or less
+common.addressInput.error.townOrCity.length = Town or city must be 35 characters or less
 common.addressInput.error.addressLine4.length = Address line 4 must be 35 characters or less
+common.addressInput.error.county.length = County must be 35 characters or less
 common.addressInput.error.addressLine5.length = Address line 5 must be 35 characters or less
 common.addressInput.error.postcode.length = Postcode must be 35 characters or less
 common.addressInput.error.poBox.length = PO Box must be 35 characters or less
 common.addressInput.error.addressLine1.pattern = Address line 1 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 common.addressInput.error.addressLine2.pattern = Address line 2 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 common.addressInput.error.addressLine3.pattern = Address line 3 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+common.addressInput.error.townOrCity.pattern = Town or city must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 common.addressInput.error.addressLine4.pattern = Address line 4 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
+common.addressInput.error.county.pattern = County must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 common.addressInput.error.addressLine5.pattern = Address line 5 must only include letters, numbers, spaces, hyphens, commas, full stops, ampersands, apostrophes and forward slashes
 common.addressInput.error.postcode.pattern = Postcode must only include letters, numbers or spaces
 common.addressInput.error.poBox.pattern = PO Box must only include letters, numbers or spaces
-common.addressInput.error.countryCode.required = Enter a country
-common.addressInput.countryCode.select = Select a country
+common.addressInput.error.countryCode.required = Enter a valid country
 
 common.memberDetails.heading = Member details
 common.qropsDetails.heading = QROPS details
@@ -217,7 +221,7 @@ memberNino.error.required = Enter the member’'s National Insurance number
 memberNino.error.pattern = Enter the member’'s National Insurance number in the correct format
 memberNino.change.hidden = National Insurance number
 memberNino.hint = For example, QQ123456A.
-memberNino.doesNotHaveNino.link.text = Member doesn''t have a National Insurance number.
+memberNino.doesNotHaveNino.link.text = Member does not have a National Insurance number.
 
 memberDoesNotHaveNino.title = Why does the member not have a National Insurance number?
 memberDoesNotHaveNino.heading = Why does {0} not have a National Insurance number?
@@ -308,7 +312,7 @@ qropsName.change.hidden = Scheme name
 
 qropsReference.title = What is the QROPS reference?
 qropsReference.heading = What is the QROPS reference?
-qropsReference.hint = For example, QROPS123456.
+qropsReference.hint = For example, QROPS936873.
 qropsReference.prefix = QROPS
 qropsReference.checkYourAnswersLabel = Reference
 qropsReference.error.required = Enter the QROPS Reference
@@ -392,11 +396,11 @@ schemeManagersEmail.change.hidden = Manager email
 
 schemeManagersContact.title = What is the scheme manager''s telephone number?
 schemeManagersContact.heading = What is the scheme manager''s telephone number?
-schemeManagersContact.hint = All numbers should include the area, dialling or country code for example, +441234567890.
+schemeManagersContact.hint = For international numbers include the country code
 schemeManagersContact.checkYourAnswersLabel = Manager telephone number
 schemeManagersContact.error.required = Enter the scheme manager''s telephone number
 schemeManagersContact.error.length = Telephone number must be 35 characters or less
-schemeManagersContact.error.pattern = Telephone number must only include numbers or a + at the beginning
+schemeManagersContact.error.pattern = Enter a phone number, like 01632 960 001, +34 808 157 019 or 00 61 2 5550 4321
 schemeManagersContact.change.hidden = Manager phone number
 
 whyTransferIsTaxable.title = Why is this a taxable overseas transfer?
@@ -408,13 +412,13 @@ whyTransferIsTaxable.error.required = Select why this is a taxable overseas tran
 whyTransferIsTaxable.change.hidden = Why this transfer is taxable
 
 whyTransferIsNotTaxable.title = Why is this not a taxable overseas transfer?
-whyTransferIsNotTaxable.heading = Why isn''t this a taxable overseas transfer?
+whyTransferIsNotTaxable.heading = Why is this not a taxable overseas transfer?
 whyTransferIsNotTaxable.individualIsEmployeeOccupational = The QROPS is an occupational pension scheme and the individual is an employee of the sponsoring employer.
 whyTransferIsNotTaxable.individualIsEmployedPublicService = The QROPS is an overseas public service scheme and the individual is employed by the public service.
 whyTransferIsNotTaxable.individualIsEmployeeInternationalOrg = The QROPS is a pension scheme of an international organisation and the individual is employed by that international organisation.
 whyTransferIsNotTaxable.individualAndQROPSResidentSameCountry = Both the individual and QROPS are resident in the same country.
-whyTransferIsNotTaxable.checkYourAnswersLabel = Why transfer isn''t taxable
-whyTransferIsNotTaxable.error.required = Select at least one reason why the transfer isn''t taxable
+whyTransferIsNotTaxable.checkYourAnswersLabel = Why transfer is not taxable
+whyTransferIsNotTaxable.error.required = Select the reasons why the transfer is not taxable
 whyTransferIsNotTaxable.change.hidden = Why this transfer is not taxable
 whyTransferIsNotTaxable.paragraph = The transfer value does not exceed the members available overseas transfer allowance at the time of transfer and:
 whyTransferIsNotTaxable.hint = Select all that apply.
@@ -783,6 +787,7 @@ submitToHMRC.amendHintYes = You will still be able to amend the report after it'
 
 transferSubmitted.title = Transfer submitted
 transferSubmitted.heading = Transfer submitted
+transferSubmitted.confirmationEmailSent.text = We have sent a confirmation email to <b>{0}</b>.
 transferSubmitted.referenceNumber.text = Your reference number
 transferSubmitted.dashboardLink.text = Return to Report a transfer to a QROPS
 transferSubmitted.pensionSchemeLink.text = Return to {0} pension scheme

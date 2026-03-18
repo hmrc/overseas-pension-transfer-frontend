@@ -22,6 +22,7 @@ import models.{Mode, TaskCategory, UserAnswers}
 import pages.{MiniJourneyNextPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import validators.assetsValidators.AssetCompletionValidator
 
 case class OtherAssetsDescriptionPage(index: Int) extends QuestionPage[String] with MiniJourneyNextPage {
 
@@ -30,9 +31,10 @@ case class OtherAssetsDescriptionPage(index: Int) extends QuestionPage[String] w
   override def toString: String = OtherAssetsEntry.AssetDescription
 
   override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
-    answers.get(OtherAssetsValuePage(index)) match {
-      case Some(_) => AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(mode, index)
-      case None    => AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(mode, index)
+    if (AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.Other, answers)) {
+      AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(mode, index)
+    } else {
+      AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(mode, index)
     }
   }
 

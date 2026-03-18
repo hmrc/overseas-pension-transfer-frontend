@@ -39,5 +39,13 @@ class AmountOfTaxDeductedSummarySpec extends AnyFreeSpec with SpecBase {
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.AmountOfTaxDeductedController.onPageLoad(CheckMode).url
     }
+
+    "have no action if showChangeLink is false" in {
+
+      val answers = emptyUserAnswers.set(AmountOfTaxDeductedPage, BigDecimal(12345.33)).success.value
+      val result  = AmountOfTaxDeductedSummary.row(CheckMode, answers, showChangeLink = false)
+
+      result.get.actions.get.items mustBe List.empty
+    }
   }
 }

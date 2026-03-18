@@ -20,10 +20,11 @@ import base.SpecBase
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
 import play.api.data.FormError
+import utils.AppUtils
 
-class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex with SpecBase {
+class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex with SpecBase with AppUtils {
 
-  private val form = new PropertyAddressFormProvider()()
+  private val form = new PropertyAddressFormProvider()(true)
 
   ".addressLine1" - {
 
@@ -165,29 +166,17 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
     )
   }
 
-  "countryCode" - {
+  "addressLine5" - {
 
-    val fieldName   = "countryCode"
-    val requiredKey = "common.addressInput.error.countryCode.required"
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
-
-  "postcode" - {
-
-    val fieldName  = "postcode"
-    val lengthKey  = "common.addressInput.error.postcode.length"
-    val patternKey = "common.addressInput.error.postcode.pattern"
+    val fieldName  = "addressLine5"
+    val lengthKey  = "common.addressInput.error.addressLine5.length"
+    val patternKey = "common.addressInput.error.addressLine5.pattern"
     val maxLength  = 35
 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsMatchingRegex(internationalPostcodeRegex, maybeMaxLength = Some(maxLength))
+      stringsWithMaxLength(maxLength)
         .suchThat(_.trim.nonEmpty)
     )
 
@@ -206,8 +195,74 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
     behave like fieldThatRejectsInvalidCharacters(
       form,
       fieldName,
-      patternError = FormError(fieldName, patternKey, Seq(internationalPostcodeRegex)),
+      patternError = FormError(fieldName, patternKey, Seq(addressLinesRegex)),
       Option(maxLength)
+    )
+  }
+
+  "countryCode" - {
+
+    val fieldName   = "countryCode"
+    val requiredKey = "common.addressInput.error.countryCode.required"
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
+
+  "postcode" - {
+
+    val fieldName      = "postcode"
+    val validPostcodes = Table(
+      "postcode",
+      "M1 1AA",
+      "B33 8TH",
+      "CR2 6XH",
+      "DN55 1PT",
+      "GIR 0AA"
+    )
+
+    "must bind valid postcodes" in {
+      forAll(validPostcodes) { postcode =>
+        val result = form.bind(Map(
+          "addressLine1" -> "1 Test Lane",
+          "addressLine2" -> "Test",
+          "countryCode"  -> "GB",
+          "postcode"     -> postcode
+        ))
+        result.errors mustBe empty
+        result.value.flatMap(_.postcode) mustBe Some(formatUkPostcode(postcode))
+      }
+    }
+
+    "must reject invalid postcodes" in {
+      val invalidPostcodes = Table(
+        "postcode",
+        "INVALID",
+        "12345",
+        "SW1A",
+        "SW1A 2A",
+        "SW1A 2AAA",
+        "T11YEE0"
+      )
+
+      forAll(invalidPostcodes) { postcode =>
+        val result = form.bind(Map(
+          "addressLine1" -> "1 Test",
+          "addressLine2" -> "Test",
+          "countryCode"  -> "GB",
+          "postcode"     -> postcode
+        ))
+        result.errors must not be empty
+        result.errors.exists(_.message == "membersLastUKAddress.error.postcode.incorrect") mustBe true
+      }
+    }
+
+    behave like optionalField(
+      form,
+      fieldName
     )
   }
 
@@ -235,7 +290,7 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
       bound.addressLine3.value mustBe "London"
       bound.addressLine4.value mustBe "Greater London"
       bound.countryCode mustBe "GB"
-      bound.postcode.value mustBe "SW1A2AA"
+      bound.postcode.value mustBe "SW1A 2AA"
     }
   }
 }

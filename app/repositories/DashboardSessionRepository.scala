@@ -19,7 +19,7 @@ package repositories
 import config.FrontendAppConfig
 import models.{AllTransfersItem, DashboardData, QtStatus}
 import org.mongodb.scala.bson.conversions.Bson
-import org.mongodb.scala.model._
+import org.mongodb.scala.model.*
 import play.api.libs.json.Format
 import services.EncryptionService
 import uk.gov.hmrc.mdc.Mdc

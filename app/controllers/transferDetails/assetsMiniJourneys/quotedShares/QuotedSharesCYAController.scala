@@ -19,8 +19,8 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import handlers.AssetThresholdHandler
+import models.Mode
 import models.assets.TypeOfAsset
-import models.{CheckMode, Mode}
 import org.apache.pekko.Done
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -62,7 +62,7 @@ class QuotedSharesCYAController @Inject() (
         case Right(Done) =>
           Redirect(QuotedSharesCYAPage(index).nextPage(mode, request.userAnswers))
         case _           =>
-          Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          Redirect(QuotedSharesCYAPage(index).nextPageRecovery())
       }
     }
   }

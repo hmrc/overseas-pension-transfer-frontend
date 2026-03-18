@@ -22,8 +22,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.{Select, SelectItem}
 import viewmodels.ErrorMessageAwareness
-
-object select extends SelectFluency
+import viewmodels.InputWidth.TwoThirds
 
 trait SelectFluency {
 

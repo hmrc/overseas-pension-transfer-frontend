@@ -183,8 +183,8 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
           case None                                                     => DataMissingError(TypeOfAssetPage).invalidNec
         }
       case Some(false) => answers.get(TypeOfAssetPage) match {
-          case Some(asset) => asset.validNec
-          case None        => DataMissingError(TypeOfAssetPage).invalidNec
+          case Some(asset) if asset.nonEmpty => asset.validNec
+          case _                             => DataMissingError(TypeOfAssetPage).invalidNec
         }
       case None        => DataMissingError(TypeOfAssetPage).invalidNec
     }

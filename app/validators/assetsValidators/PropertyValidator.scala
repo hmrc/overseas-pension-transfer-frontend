@@ -16,7 +16,6 @@
 
 package validators.assetsValidators
 
-import cats.data.Validated.Valid
 import cats.implicits.{catsSyntaxTuple3Semigroupal, catsSyntaxValidatedIdBinCompat0}
 import models.address.PropertyAddress
 import models.assets.{PropertyEntry, TypeOfAsset}
@@ -51,19 +50,18 @@ object PropertyValidator {
         answers.get(PropertyQuery) match {
           case Some(shares) if shares.length > 5 => GenericError("Property cannot hold more than 5 in list").invalidNec
           case Some(shares)                      =>
-            val validatedShares = shares.zipWithIndex map {
-              case (PropertyEntry(_, _, _), index) =>
-                (
-                  validatePropertyAddress(answers, index),
-                  validatePropertyValue(answers, index),
-                  validatePropertyDescription(answers, index)
-                ).mapN(PropertyEntry.apply)
-              case _                               => GenericError("not recognised value as property entry").invalidNec
+            val validatedShares = shares.zipWithIndex.map { case (_, index) =>
+              (
+                validatePropertyAddress(answers, index),
+                validatePropertyValue(answers, index),
+                validatePropertyDescription(answers, index)
+              ).mapN(PropertyEntry.apply)
             }
 
-            validatedShares.filter(validatedShare => validatedShare == Valid(PropertyEntry(_, _, _))) match {
-              case Nil     => Some(shares).validNec
-              case List(_) => GenericError("errors found with validating property entry").invalidNec
+            if (validatedShares.exists(_.isInvalid)) {
+              GenericError("errors found with validating property entry").invalidNec
+            } else {
+              Some(shares).validNec
             }
 
           case None => DataMissingError(PropertyQuery).invalidNec

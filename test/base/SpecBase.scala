@@ -18,9 +18,23 @@ package base
 
 import controllers.actions._
 import models.address.{Countries, PropertyAddress}
+import models.assets.TypeOfAsset
 import models.authentication._
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
-import models.{AllTransfersItem, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import models.{
+  AllTransfersItem,
+  IndividualDetails,
+  MinimalDetails,
+  PensionSchemeDetails,
+  PersonName,
+  PstrNumber,
+  QtNumber,
+  QtStatus,
+  SessionData,
+  SrnNumber,
+  TransferNumber,
+  UserAnswers
+}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -38,7 +52,7 @@ import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
@@ -46,6 +60,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
+import scala.util.Random
 
 trait SpecBase
     extends Matchers
@@ -102,6 +117,15 @@ trait SpecBase
     Json.obj(),
     now
   )
+
+  private def generateNino(prefix: String = "AA"): String = {
+    val num    = Random.nextInt(1000000)
+    val suffix = "C"
+    val nino   = f"$prefix$num%06d$suffix"
+    nino
+  }
+
+  val testNino = generateNino()
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
   def sessionDataMemberName: SessionData = emptySessionData.set(MemberNamePage, testMemberName).success.value
@@ -186,7 +210,8 @@ trait SpecBase
             addressLine2 = s"Test address line ${idx + 1}",
             None,
             None,
-            country      = Countries.UK,
+            None,
+            Countries.UK,
             None
           )
         ).success.value
@@ -246,4 +271,71 @@ trait SpecBase
     pstrNumber      = Some(PstrNumber("12345678AB")),
     submissionDate  = None
   )
+
+  val individualSubmitterDetails = IndividualDetails("David", None, "Frost")
+
+  val minimalDetailsIndividual = MinimalDetails("d.frost@test.com", false, None, Some(individualSubmitterDetails), false, false)
+
+  def completeJson(assetType: TypeOfAsset): JsObject =
+    assetType match {
+
+      case TypeOfAsset.Other =>
+        Json.obj(
+          "transferDetails" -> Json.obj(
+            "otherAssets" -> Json.arr(
+              Json.obj(
+                "assetValue"       -> 1000,
+                "assetDescription" -> "Gold"
+              )
+            )
+          )
+        )
+
+      case TypeOfAsset.Property =>
+        Json.obj(
+          "transferDetails" -> Json.obj(
+            "propertyAssets" -> Json.arr(
+              Json.obj(
+                "propertyAddress" -> "Line 1",
+                "propValue"       -> 250000,
+                "propDescription" -> "Residential"
+              )
+            )
+          )
+        )
+
+      case TypeOfAsset.QuotedShares =>
+        Json.obj(
+          "transferDetails" -> Json.obj(
+            "quotedShares" -> Json.arr(
+              Json.obj(
+                "quotedValue"      -> 200,
+                "quotedShareTotal" -> 10,
+                "quotedCompany"    -> "ABC PLC",
+                "quotedClass"      -> "A"
+              )
+            )
+          )
+        )
+
+      case TypeOfAsset.UnquotedShares =>
+        Json.obj(
+          "transferDetails" -> Json.obj(
+            "unquotedShares" -> Json.arr(
+              Json.obj(
+                "unquotedValue"      -> 200,
+                "unquotedShareTotal" -> 10,
+                "unquotedCompany"    -> "ABC Ltd",
+                "unquotedClass"      -> "A"
+              )
+            )
+          )
+        )
+
+      case _ => Json.obj()
+    }
+
+  def incompleteJson(): JsObject =
+    Json.obj("transferDetails" -> Json.obj())
+
 }

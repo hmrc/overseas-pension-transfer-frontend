@@ -17,13 +17,11 @@
 package services
 
 import base.AddressBase
-import connectors.AddressLookupConnector
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataOld
 import models.address._
-import models.responses.{AddressLookupErrorResponse, AddressLookupSuccessResponse}
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -32,7 +30,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class AddressServiceSpec
     extends AnyFreeSpec
@@ -42,17 +39,17 @@ class AddressServiceSpec
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 
-  private val mockCountryService         = mock[CountryService]
-  private val mockAddressLookupConnector = mock[AddressLookupConnector]
+  private val mockCountryService = mock[CountryService]
 
-  private val service = new AddressService(mockCountryService, mockAddressLookupConnector)
+  private val service = new AddressService(mockCountryService)
 
   ".propertyAddress" - {
 
-    "must map the form data (including postcode and PO box)" in {
+    // TODO REMOVE
+    "must map the form data (including postcode and PO box) (OLD)" in {
       when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
 
-      val formData = PropertyAddressFormData(
+      val formData = PropertyAddressFormDataOld(
         addressLine1 = propertyAddress.addressLine1,
         addressLine2 = propertyAddress.addressLine2,
         addressLine3 = propertyAddress.addressLine3,
@@ -125,47 +122,6 @@ class AddressServiceSpec
       )
 
       service.membersCurrentAddress(formData).value mustBe membersCurrentAddress
-    }
-  }
-
-  ".membersLastUkAddressLookup" - {
-
-    "must return address records with searched postcode when the connector responds successfully" in {
-      val successResponse = AddressLookupSuccessResponse(connectorPostcode, addressRecordList)
-
-      when(mockAddressLookupConnector.lookup(connectorPostcode))
-        .thenReturn(Future.successful(successResponse))
-
-      whenReady(service.membersLastUkAddressLookup(connectorPostcode)) { maybe =>
-        maybe.value mustBe addressRecords
-      }
-    }
-
-    "must return None when the connector returns an error response" in {
-      when(mockAddressLookupConnector.lookup(connectorPostcode))
-        .thenReturn(Future.successful(AddressLookupErrorResponse(new RuntimeException("boom"))))
-
-      whenReady(service.membersLastUkAddressLookup(connectorPostcode)) { maybe =>
-        maybe mustBe None
-      }
-    }
-  }
-
-  ".addressIds" - {
-
-    "must return the ids from the FoundAddressSet in order" in {
-      service.addressIds(addressRecordList) mustBe validIds
-    }
-  }
-
-  ".findAddressById" - {
-
-    "must return Some(address) when the id exists" in {
-      service.findAddressById(addressRecordList, selectedRecord.id).value mustBe selectedRecord
-    }
-
-    "must return None when the id does not exist" in {
-      service.findAddressById(addressRecordList, "missing") mustBe None
     }
   }
 }

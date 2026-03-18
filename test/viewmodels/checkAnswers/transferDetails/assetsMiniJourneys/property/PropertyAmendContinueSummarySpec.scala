@@ -38,7 +38,7 @@ class PropertyAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
         PropertyQuery,
         List(
           PropertyEntry(
-            PropertyAddress("Line1", "Line2", None, None, Country("GB", "United Kingdom"), None),
+            PropertyAddress("Line1", "Line2", None, None, None, Country("GB", "United Kingdom"), None),
             BigDecimal(100000.99),
             "Big House"
           )

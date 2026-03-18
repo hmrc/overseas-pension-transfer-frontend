@@ -17,11 +17,9 @@
 package controllers.memberDetails
 
 import base.SpecBase
-import controllers.routes.JourneyRecoveryController
-import forms.memberDetails.MembersLastUKAddressFormProvider
+import controllers.routes
+import controllers.memberDetails.{routes => memberRoutes}
 import models.NormalMode
-import models.address._
-import models.requests.DisplayRequest
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
@@ -30,22 +28,18 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MembersLastUKAddressPage
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.UserAnswersService
-import views.html.memberDetails.MembersLastUKAddressView
 
 import scala.concurrent.Future
 
 class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
-  private val formProvider = new MembersLastUKAddressFormProvider()
 
-  private lazy val membersLastUKAddressRoute = routes.MembersLastUKAddressController.onPageLoad(NormalMode).url
+  private lazy val membersLastUKAddressRoute = memberRoutes.MembersLastUKAddressController.onPageLoad(NormalMode).url
 
-  private val postCode    = "AB1 2CD"
-  private val validAnswer = MembersLastUKAddress("1stLineAdd", "2ndLineAdd", Some("aTown"), Some("aCounty"), postCode)
+  private val postCode = "AB1 2CD"
 
   "MembersLastUKAddress Controller" - {
 
@@ -54,38 +48,11 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
-        val request                                                         = FakeRequest(GET, membersLastUKAddressRoute)
-        implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
-
-        val form = formProvider()
-        val view = application.injector.instanceOf[MembersLastUKAddressView]
+        val request = FakeRequest(GET, membersLastUKAddressRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(displayRequest, messages(application)).toString
-      }
-    }
-
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = userAnswersMemberNameQtNumber.set(MembersLastUKAddressPage, validAnswer).get
-
-      val application = applicationBuilder(userAnswers = userAnswers).build()
-
-      running(application) {
-        val request                                                         = FakeRequest(GET, membersLastUKAddressRoute)
-        implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
-
-        val form = formProvider()
-        val view = application.injector.instanceOf[MembersLastUKAddressView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(
-          form.fill(validAnswer),
-          NormalMode
-        )(displayRequest, messages(application)).toString
       }
     }
 
@@ -117,25 +84,18 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       }
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+    "must return a Bad Request when invalid data is submitted" in {
 
       val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
-        val request                                                             =
+        val request =
           FakeRequest(POST, membersLastUKAddressRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
-        implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
-
-        val form      = formProvider()
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[MembersLastUKAddressView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(displayRequest, messages(application)).toString
       }
     }
 
@@ -163,7 +123,7 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

@@ -16,47 +16,56 @@
 
 package views.transferDetails.assetsMiniJourneys.property
 
+import config.FrontendAppConfig
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormProvider
 import models.NormalMode
+import play.api.Application
 import play.api.data.FormError
+import play.api.inject.guice.GuiceApplicationBuilder
 import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
 import views.utils.ViewBaseSpec
 
 class PropertyAddressViewSpec extends ViewBaseSpec {
 
-  private val view                   = applicationBuilder().injector().instanceOf[PropertyAddressView]
-  private val formProvider           = applicationBuilder().injector().instanceOf[PropertyAddressFormProvider]
-  private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
-  private val testIndex              = 0
+  val application: Application = GuiceApplicationBuilder()
+    .configure("features.accessibility-address-changes" -> true)
+    .build()
+
+  private val view                                  = application.injector.instanceOf[PropertyAddressView]
+  private val formProvider                          = application.injector.instanceOf[PropertyAddressFormProvider]
+  private val countrySelectViewModel                = CountrySelectViewModel(Seq.empty)
+  private val testIndex                             = 0
+  implicit private val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
 
   "PropertyAddressView" - {
 
     "show correct title" in {
-      doc(view(formProvider(), countrySelectViewModel, NormalMode, testIndex).body)
+      doc(view(formProvider(true), countrySelectViewModel, NormalMode, testIndex).body)
         .getElementsByTag("title").eachText().get(0) mustBe
         s"${messages("propertyAddress.title")} - ${messages("service.name")} - GOV.UK"
     }
 
-    behave like pageWithH1(view(formProvider(), countrySelectViewModel, NormalMode, testIndex), "propertyAddress.heading")
+    behave like pageWithH1(view(formProvider(true), countrySelectViewModel, NormalMode, testIndex), "propertyAddress.heading")
 
     behave like pageWithMultipleInputFields(
-      view(formProvider(), countrySelectViewModel, NormalMode, testIndex),
+      view(formProvider(true), countrySelectViewModel, NormalMode, testIndex),
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
-      ("addressLine3", "common.addressInput.addressLine3"),
-      ("addressLine4", "common.addressInput.addressLine4"),
+      ("addressLine3", "common.addressInput.townOrCity"),
+      ("addressLine4", "common.addressInput.county"),
+      ("addressLine5", "common.addressInput.poBox"),
       ("postcode", "common.addressInput.postcode")
     )
 
     behave like pageWithSubmitButton(
-      view(formProvider(), countrySelectViewModel, NormalMode, testIndex),
+      view(formProvider(true), countrySelectViewModel, NormalMode, testIndex),
       "site.saveAndContinue"
     )
 
     behave like pageWithErrors(
       view(
-        formProvider().withError(FormError("addressLine1", "propertyAddress.error.addressLine1.required")),
+        formProvider(true).withError(FormError("addressLine1", "propertyAddress.error.addressLine1.required")),
         countrySelectViewModel,
         NormalMode,
         testIndex

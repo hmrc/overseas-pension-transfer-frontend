@@ -55,8 +55,10 @@ class SchemeManagersContactFormProviderSpec extends StringFieldBehaviours {
         "abc123",
         "+",
         "+++++++",
+        "+44+",
         "123",
-        "0000000000"
+        "+0000000000",
+        "+99999999999999999"
       )
 
       invalidNumbers.foreach { number =>
@@ -77,17 +79,43 @@ class SchemeManagersContactFormProviderSpec extends StringFieldBehaviours {
       result.value.value mustBe "+447911123456"
     }
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength   = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+    "not bind phone numbers longer than 35 characters" in {
+      val longPhoneNumber = "+" + "1" * 40
+
+      val result = form.bind(Map(fieldName -> longPhoneNumber)).apply(fieldName)
+      result.errors must contain(FormError(fieldName, lengthKey, Seq(maxLength)))
+    }
 
     behave like mandatoryField(
       form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
+
+    "must strip trailing non-digit characters before validating" in {
+
+      val input  = "+447911123456abc"
+      val result = form.bind(Map(fieldName -> input))
+
+      result.errors mustBe empty
+      result.value.value mustBe "+447911123456"
+    }
+
+    "must not allow phone numbers starting with double plus" in {
+
+      val input  = "++447911123456"
+      val result = form.bind(Map(fieldName -> input))
+
+      result.errors.map(_.message) must contain(patternKey)
+    }
+
+    "must still fail if stripping leaves an invalid number" in {
+
+      val input  = "+44abc"
+      val result = form.bind(Map(fieldName -> input))
+
+      result.errors.map(_.message) must contain(patternKey)
+    }
+
   }
 }
