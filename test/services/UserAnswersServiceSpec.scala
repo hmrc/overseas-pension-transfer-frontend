@@ -40,7 +40,6 @@ import scala.concurrent.Future
 
 class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val instant: Instant           = Instant.now
   private val mockUserAnswersConnector   = mock[UserAnswersConnector]
   private val mockPensionSchemeConnector = mock[PensionSchemeConnector]
   private val mockAuthService            = mock[AuthorisingPsaService]
@@ -49,8 +48,8 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val userAnswersDTO: UserAnswersDTO = UserAnswersDTO(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), instant)
-  private val userAnswers: UserAnswers       = UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), instant)
+  private val userAnswersDTO: UserAnswersDTO = UserAnswersDTO(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+  private val userAnswers: UserAnswers       = UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
 
   "getUserAnswers" - {
     "return prepopulated Right(UserAnswers) when Left(GetUserAnswersSuccessResponse) is returned" in {
@@ -130,7 +129,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
     val testPsaId          = Some(PsaId("PSAID"))
     val authenticatedUser  = PsaUser(PsaId("psaId"), "internalId", affinityGroup = Individual)
-    val submissionResponse = Right(SubmissionResponse(QtNumber("qtNumber"), Instant.now))
+    val submissionResponse = Right(SubmissionResponse(QtNumber("qtNumber"), now))
 
     "should post submission when PSA is associated with scheme and is the authorising PSA" in {
       val srn   = emptySessionData.schemeInformation.srnNumber.value
@@ -177,7 +176,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
         )
       )
 
-      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, instant)
+      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, now)
       val result = service.toAllTransfersItem(ua)
 
       result.transferId mustBe userAnswersTransferNumber
@@ -185,7 +184,7 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       result.memberFirstName mustBe Some("John")
       result.memberSurname mustBe Some("Doe")
       result.nino mustBe Some("AA123456A")
-      result.submissionDate mustBe Some(instant)
+      result.submissionDate mustBe Some(now)
       result.lastUpdated mustBe None
     }
 
@@ -198,11 +197,11 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
         )
       )
 
-      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, instant)
+      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, now)
       val result = service.toAllTransfersItem(ua)
 
       result.qtStatus mustBe Some(QtStatus.InProgress)
-      result.lastUpdated mustBe Some(instant)
+      result.lastUpdated mustBe Some(now)
       result.submissionDate mustBe None
       result.memberFirstName mustBe Some("Jane")
       result.memberSurname mustBe Some("Smith")
@@ -214,11 +213,11 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
         "memberDetails" -> Json.obj("nino" -> "AA000000A")
       )
 
-      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, instant)
+      val ua     = UserAnswers(userAnswersTransferNumber, pstr, userAnswersJson, now)
       val result = service.toAllTransfersItem(ua)
 
       result.qtStatus mustBe Some(QtStatus.InProgress)
-      result.lastUpdated mustBe Some(instant)
+      result.lastUpdated mustBe Some(now)
       result.submissionDate mustBe None
     }
   }

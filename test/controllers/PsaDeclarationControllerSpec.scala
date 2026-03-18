@@ -63,7 +63,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockSessionRepository  = mock[SessionRepository]
 
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456"), Instant.now))))
+        .thenReturn(Future.successful(Right(SubmissionResponse(QtNumber("QT123456"), now))))
 
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))

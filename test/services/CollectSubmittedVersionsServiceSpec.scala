@@ -37,9 +37,8 @@ import scala.concurrent.Future
 class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
 
   implicit val hc: HeaderCarrier             = HeaderCarrier()
-  private val instant: Instant               = Instant.now
-  private val userAnswersDTO: UserAnswersDTO = UserAnswersDTO(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), instant)
-  private val userAnswers                    = UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), instant)
+  private val userAnswersDTO: UserAnswersDTO = UserAnswersDTO(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+  private val userAnswers                    = UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
 
   private val mockUserAnswersConnector = mock[UserAnswersConnector]
 

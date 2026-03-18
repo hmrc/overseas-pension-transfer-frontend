@@ -27,8 +27,8 @@ import scala.util.{Failure, Success, Try}
 
 final case class DashboardData(
     id: String,
-    data: JsObject       = Json.obj(),
-    lastUpdated: Instant = Instant.now
+    data: JsObject,
+    lastUpdated: Instant
   ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
@@ -136,9 +136,11 @@ object DashboardData {
     OFormat(reads, writes)
   }
 
-  def empty: DashboardData = DashboardData(
-    id          = "unknown",
+  def create(id: String, now: Instant): DashboardData = DashboardData(
+    id          = id,
     data        = Json.obj(),
-    lastUpdated = Instant.now()
+    lastUpdated = now
   )
+
+  def empty(now: Instant): DashboardData = create("unknown", now)
 }

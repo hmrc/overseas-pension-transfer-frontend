@@ -31,8 +31,6 @@ import java.time.Instant
 
 class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
 
-  private val instant = Instant.now()
-
   "get" - {
     "should get Some value from data Json when value is present" in {
       emptyUserAnswers.copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value")).get(SubmitToHMRCPage) mustBe

@@ -38,6 +38,7 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.SummaryListFluency
 import views.html.viewandamend.ViewSubmittedView
 
+import java.time.Clock
 import scala.concurrent.Future
 
 class ViewAmendSubmittedControllerSpec
@@ -116,7 +117,8 @@ class ViewAmendSubmittedControllerSpec
             userAnswers = userAnswersMemberNameQtNumber,
             sessionData = sessionDataMemberNameQtNumber
           ).overrides(
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
+            bind[Clock].toInstance(clock)
           ).build()
 
         val req    = FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber, pstr, qtStatus, versionNumber).url)

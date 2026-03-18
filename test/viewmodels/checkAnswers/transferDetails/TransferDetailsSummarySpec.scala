@@ -56,7 +56,7 @@ class TransferDetailsSummarySpec extends AnyFreeSpec with SpecBase {
         .set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, Publicservice, Resident)).success.value
         .set(AmountOfTaxDeductedPage, BigDecimal(1000)).success.value
         .set(NetTransferAmountPage, BigDecimal(9000)).success.value
-        .set(DateOfTransferPage, LocalDate.now).success.value
+        .set(DateOfTransferPage, today).success.value
         .set(IsTransferCashOnlyPage, false).success.value
         .set(
           TypeOfAssetPage,
@@ -116,7 +116,7 @@ class TransferDetailsSummarySpec extends AnyFreeSpec with SpecBase {
         .set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, Publicservice, Resident)).success.value
         .set(AmountOfTaxDeductedPage, BigDecimal(1000)).success.value
         .set(NetTransferAmountPage, BigDecimal(9000)).success.value
-        .set(DateOfTransferPage, LocalDate.now).success.value
+        .set(DateOfTransferPage, today).success.value
         .set(IsTransferCashOnlyPage, false).success.value
         .set(
           TypeOfAssetPage,

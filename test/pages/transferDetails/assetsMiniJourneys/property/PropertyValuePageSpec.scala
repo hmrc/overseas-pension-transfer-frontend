@@ -27,12 +27,10 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        PropertyValuePage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+        PropertyValuePage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
           NormalMode,
           index
         )
@@ -42,7 +40,7 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
     "in CheckMode" - {
 
       "must go to the Next page" in {
-        PropertyValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+        PropertyValuePage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
           CheckMode,
           index
         )
@@ -51,7 +49,7 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        PropertyValuePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+        PropertyValuePage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -60,7 +58,7 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        PropertyValuePage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+        PropertyValuePage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
           AmendCheckMode,
           index
         )

@@ -44,10 +44,9 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   implicit private val messages: Messages = stubMessages()
 
-  private val formProvider = new DateOfTransferFormProvider()
+  private val formProvider = new DateOfTransferFormProvider(clock)
   private def form         = formProvider()
 
-  private val validAnswer              = LocalDate.now(ZoneOffset.UTC)
   private lazy val dateOfTransferRoute = routes.DateOfTransferController.onPageLoad(NormalMode).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
@@ -56,9 +55,9 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, dateOfTransferRoute)
       .withFormUrlEncodedBody(
-        "value.day"   -> validAnswer.getDayOfMonth.toString,
-        "value.month" -> validAnswer.getMonthValue.toString,
-        "value.year"  -> validAnswer.getYear.toString
+        "value.day"   -> today.getDayOfMonth.toString,
+        "value.month" -> today.getMonthValue.toString,
+        "value.year"  -> today.getYear.toString
       )
 
   "DateOfTransfer Controller" - {
@@ -79,7 +78,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(DateOfTransferPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(DateOfTransferPage, today).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -89,7 +88,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result  = route(application, getRequest()).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(today), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
     }
 
@@ -121,7 +120,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
-        .thenReturn(Future.successful(Right(emptyUserAnswers.set(DateOfTransferPage, validAnswer).success.value)))
+        .thenReturn(Future.successful(Right(emptyUserAnswers.set(DateOfTransferPage, today).success.value)))
 
       when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
         .thenReturn(Future.successful(Right(Done)))
@@ -136,9 +135,9 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val request =
           FakeRequest(POST, routes.DateOfTransferController.onSubmit(AmendCheckMode).url)
             .withFormUrlEncodedBody(
-              "value.day"   -> validAnswer.minusDays(1).getDayOfMonth.toString,
-              "value.month" -> validAnswer.minusDays(1).getMonthValue.toString,
-              "value.year"  -> validAnswer.minusDays(1).getYear.toString
+              "value.day"   -> today.minusDays(1).getDayOfMonth.toString,
+              "value.month" -> today.minusDays(1).getMonthValue.toString,
+              "value.year"  -> today.minusDays(1).getYear.toString
             )
 
         val result = route(application, request).value

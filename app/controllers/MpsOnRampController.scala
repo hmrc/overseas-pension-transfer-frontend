@@ -27,6 +27,7 @@ import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import java.time.{Clock, Instant}
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,12 +36,13 @@ class MpsOnRampController @Inject() (
     val controllerComponents: MessagesControllerComponents,
     dashboardRepo: DashboardSessionRepository,
     identify: IdentifierAction,
-    schemeData: SchemeDataAction
+    schemeData: SchemeDataAction,
+    clock: Clock
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
   def onRamp(srn: String): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
-    val dashboardData = DashboardData(request.authenticatedUser.internalId)
+    val dashboardData = DashboardData.create(request.authenticatedUser.internalId, Instant.now(clock))
 
     Future.fromTry(dashboardData.set(PensionSchemeDetailsQuery, request.schemeDetails)).flatMap { dd1 =>
       dashboardRepo.set(dd1).map { persisted =>

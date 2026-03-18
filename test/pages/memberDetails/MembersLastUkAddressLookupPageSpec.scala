@@ -26,13 +26,11 @@ class MembersLastUkAddressLookupPageSpec extends AnyFreeSpec with Matchers with 
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to select address page" in {
 
-        MembersLastUkAddressLookupPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
+        MembersLastUkAddressLookupPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
           NormalMode
         )
       }
@@ -41,7 +39,7 @@ class MembersLastUkAddressLookupPageSpec extends AnyFreeSpec with Matchers with 
     "in Check Mode" - {
 
       "must go to Check Answers" in {
-        MembersLastUkAddressLookupPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
+        MembersLastUkAddressLookupPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
           CheckMode
         )
       }
@@ -50,7 +48,7 @@ class MembersLastUkAddressLookupPageSpec extends AnyFreeSpec with Matchers with 
     "in FinalCheck Mode" - {
 
       "must go to FinalCheck Answers" in {
-        MembersLastUkAddressLookupPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
+        MembersLastUkAddressLookupPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
           FinalCheckMode
         )
       }
@@ -59,7 +57,7 @@ class MembersLastUkAddressLookupPageSpec extends AnyFreeSpec with Matchers with 
     "in AmendCheck Mode" - {
 
       "must go to AmendCheck Answers" in {
-        MembersLastUkAddressLookupPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
+        MembersLastUkAddressLookupPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.MembersLastUkAddressSelectController.onPageLoad(mode =
           AmendCheckMode
         )
       }

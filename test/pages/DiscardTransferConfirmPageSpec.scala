@@ -32,21 +32,19 @@ class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers with Spec
     "in Normal Mode" - {
 
       "must go to Index when DiscardTransferConfirm in UserAnswers is true" in {
-        val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB")).set(DiscardTransferConfirmPage, true).success.value
+        val userAnswers: UserAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
 
         DiscardTransferConfirmPage.nextPage(NormalMode, userAnswers) mustEqual routes.DashboardController.onPageLoad()
       }
 
       "must go to Task List page when DiscardTransferConfirm in UserAnswers is false" in {
-        val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB")).set(DiscardTransferConfirmPage, false).success.value
+        val userAnswers: UserAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, false).success.value
 
         DiscardTransferConfirmPage.nextPage(NormalMode, userAnswers) mustEqual routes.TaskListController.onPageLoad()
       }
 
       "must got to Journey Recovery page when User Answers is empty" in {
-        val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
-        DiscardTransferConfirmPage.nextPage(NormalMode, userAnswers) mustEqual routes.JourneyRecoveryController.onPageLoad()
+        DiscardTransferConfirmPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.JourneyRecoveryController.onPageLoad()
       }
     }
   }

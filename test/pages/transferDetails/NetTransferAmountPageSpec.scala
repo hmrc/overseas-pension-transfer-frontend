@@ -26,12 +26,10 @@ class NetTransferAmountPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        NetTransferAmountPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.DateOfTransferController.onPageLoad(NormalMode)
+        NetTransferAmountPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.DateOfTransferController.onPageLoad(NormalMode)
       }
     }
 
@@ -39,20 +37,20 @@ class NetTransferAmountPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to Check Answers" in {
 
-        NetTransferAmountPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        NetTransferAmountPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        NetTransferAmountPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        NetTransferAmountPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Amend Check Answers page" in {
-        NetTransferAmountPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        NetTransferAmountPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

@@ -27,11 +27,9 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in NormalMode" - {
       "must go to the Next page" in {
-        OtherAssetsDescriptionPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+        OtherAssetsDescriptionPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           NormalMode,
           index
         )
@@ -40,7 +38,7 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     "in CheckMode" - {
       "must go to the Next page" in {
-        OtherAssetsDescriptionPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+        OtherAssetsDescriptionPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           CheckMode,
           index
         )
@@ -49,7 +47,7 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        OtherAssetsDescriptionPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+        OtherAssetsDescriptionPage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -58,7 +56,7 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        OtherAssetsDescriptionPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+        OtherAssetsDescriptionPage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           AmendCheckMode,
           index
         )

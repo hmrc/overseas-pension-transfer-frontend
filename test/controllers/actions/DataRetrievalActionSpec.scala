@@ -50,7 +50,7 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     ),
     psaUser,
     Json.obj(),
-    Instant.now
+    now
   )
 
   class Harness(sessionRepository: SessionRepository, userAnswersService: UserAnswersService)
@@ -105,20 +105,18 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "when there is data in the cache" - {
 
       "must build a userAnswers, memberName, qtNumber and dateTransferSubmitted object and add it to the request" in {
-        val userAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
         val sessionRepository  = mock[SessionRepository]
         val userAnswersService = mock[UserAnswersService]
 
         when(sessionRepository.get("id")) thenReturn Future(Some(sessionData))
-        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Right(userAnswers)))
+        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Right(emptyUserAnswers)))
         val action = new Harness(sessionRepository, userAnswersService)
 
         val result = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
         result.map {
           displayRequest =>
-            displayRequest.userAnswers mustBe userAnswers
+            displayRequest.userAnswers mustBe emptyUserAnswers
         }
       }
     }

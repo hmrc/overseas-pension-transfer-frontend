@@ -44,7 +44,7 @@ import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 
 import java.time.format.{DateTimeFormatter, FormatStyle}
-import java.time.{Instant, LocalDate, ZoneId}
+import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
 
 trait SpecBase
@@ -54,15 +54,18 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience {
 
-  val now = Instant.now
+  private val clockMillis: Long = 1718118467838L
+  val clock: Clock              = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
+
+  val now: Instant     = Instant.now(clock)
+  val today: LocalDate = LocalDate.now(clock)
 
   val testMemberName: PersonName = PersonName("User", "McUser")
 
   val testQtNumber: QtNumber = QtNumber("QT123456")
 
   val userAnswersTransferNumber: TransferNumber = TransferNumber(UUID.randomUUID().toString)
-
-  val pstr: PstrNumber = PstrNumber("12345678AB")
+  val pstr: PstrNumber                          = PstrNumber("12345678AB")
 
   val psaId: PsaId = PsaId("A123456")
 
@@ -78,12 +81,10 @@ trait SpecBase
     "SchemeName"
   )
 
-  val testDateTransferSubmitted: Instant = Instant.now
-
   val formattedTestDateTransferSubmitted: String =
-    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT).withZone(ZoneId.systemDefault()).format(testDateTransferSubmitted)
+    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT).withZone(ZoneId.systemDefault()).format(now)
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr)
+  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr, Json.obj(), now)
 
   val emptySessionData: SessionData = SessionData(
     "sessionId",
@@ -98,7 +99,8 @@ trait SpecBase
       "internalId",
       Individual
     ),
-    Json.obj()
+    Json.obj(),
+    now
   )
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
@@ -109,15 +111,15 @@ trait SpecBase
   def userAnswersMemberNameQtNumber: UserAnswers = userAnswersMemberName.set(QtNumberQuery, testQtNumber).success.value
 
   def sessionDataMemberNameQtNumberTransferSubmitted: SessionData =
-    sessionDataMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
+    sessionDataMemberNameQtNumber.set(DateSubmittedQuery, now).success.value
 
   def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
-    userAnswersMemberNameQtNumber.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
+    userAnswersMemberNameQtNumber.set(DateSubmittedQuery, now).success.value
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   protected def applicationBuilder(
-      userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB")),
+      userAnswers: UserAnswers = emptyUserAnswers,
       sessionData: SessionData = sessionDataMemberNameQtNumber
     ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -239,8 +241,8 @@ trait SpecBase
     nino            = Some("AA123456A"),
     memberFirstName = Some("John"),
     memberSurname   = Some("Doe"),
-    qtDate          = Some(LocalDate.now),
-    lastUpdated     = Some(Instant.now),
+    qtDate          = Some(today),
+    lastUpdated     = Some(now),
     pstrNumber      = Some(PstrNumber("12345678AB")),
     submissionDate  = None
   )

@@ -26,13 +26,11 @@ class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to Members Current Address" in {
 
-        MemberDateOfBirthPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MembersCurrentAddressController.onPageLoad(
+        MemberDateOfBirthPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MembersCurrentAddressController.onPageLoad(
           NormalMode
         )
       }
@@ -42,13 +40,13 @@ class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to Check Answers" in {
 
-        MemberDateOfBirthPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDateOfBirthPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        MemberDateOfBirthPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        MemberDateOfBirthPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }

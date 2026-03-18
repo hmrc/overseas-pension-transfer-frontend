@@ -16,6 +16,7 @@
 
 package forms.memberDetails
 
+import base.SpecBase
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 import play.api.i18n.Messages
@@ -24,13 +25,13 @@ import play.api.test.Helpers.stubMessages
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZoneOffset}
 
-class MemberDateOfBirthFormProviderSpec extends DateBehaviours {
+class MemberDateOfBirthFormProviderSpec extends DateBehaviours with SpecBase {
 
   implicit private val messages: Messages = stubMessages()
-  private val form                        = new MemberDateOfBirthFormProvider()()
+  private val form                        = new MemberDateOfBirthFormProvider(clock)()
 
   private val minDate = LocalDate.of(1901, 1, 1)
-  private val maxDate = LocalDate.now(ZoneOffset.UTC)
+  private val maxDate = today
 
   private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 

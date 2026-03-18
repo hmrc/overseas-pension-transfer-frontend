@@ -43,10 +43,9 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
   implicit private val messages: Messages = stubMessages()
 
-  private val formProvider = new MemberDateOfLeavingUKFormProvider()
+  private val formProvider = new MemberDateOfLeavingUKFormProvider(clock)
   private def form         = formProvider()
 
-  private val validAnswer                     = LocalDate.now(ZoneOffset.UTC)
   private lazy val memberDateOfLeavingUKRoute = routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode).url
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
@@ -55,9 +54,9 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, memberDateOfLeavingUKRoute)
       .withFormUrlEncodedBody(
-        "value.day"   -> validAnswer.getDayOfMonth.toString,
-        "value.month" -> validAnswer.getMonthValue.toString,
-        "value.year"  -> validAnswer.getYear.toString
+        "value.day"   -> today.getDayOfMonth.toString,
+        "value.month" -> today.getMonthValue.toString,
+        "value.year"  -> today.getYear.toString
       )
 
   "MemberDateOfLeavingUK Controller" - {
@@ -80,7 +79,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = userAnswersMemberNameQtNumber.set(MemberDateOfLeavingUKPage, validAnswer).success.value
+      val userAnswers = userAnswersMemberNameQtNumber.set(MemberDateOfLeavingUKPage, today).success.value
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
@@ -89,7 +88,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
         val result  = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
+        contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
           fakeDisplayRequest(request),
           messages(application)
         ).toString

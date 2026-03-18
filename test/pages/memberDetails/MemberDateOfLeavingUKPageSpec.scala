@@ -26,13 +26,11 @@ class MemberDateOfLeavingUKPageSpec extends AnyFreeSpec with Matchers with SpecB
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to Check Answers page" in {
 
-        MemberDateOfLeavingUKPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDateOfLeavingUKPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
 
@@ -40,20 +38,20 @@ class MemberDateOfLeavingUKPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers" in {
 
-        MemberDateOfLeavingUKPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDateOfLeavingUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        MemberDateOfLeavingUKPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        MemberDateOfLeavingUKPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
-        MemberDateOfLeavingUKPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        MemberDateOfLeavingUKPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

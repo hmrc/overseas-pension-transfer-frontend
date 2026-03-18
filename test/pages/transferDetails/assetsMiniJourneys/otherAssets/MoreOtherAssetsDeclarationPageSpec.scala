@@ -28,17 +28,15 @@ class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with 
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in NormalMode" - {
 
       "must go to cya if no more assets" in {
-        MoreOtherAssetsDeclarationPage.nextPageWith(NormalMode, emptyAnswers, sessionDataMemberName) mustEqual
+        MoreOtherAssetsDeclarationPage.nextPageWith(NormalMode, emptyUserAnswers, sessionDataMemberName) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if more assets" in {
-        val userAnswers = emptyAnswers.set(MoreOtherAssetsDeclarationPage, false)
+        val userAnswers = emptyUserAnswers.set(MoreOtherAssetsDeclarationPage, false)
         val sessionData =
           emptySessionData.set(
             SelectedAssetTypesWithStatus,
@@ -55,12 +53,12 @@ class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with 
 
     "in CheckMode" - {
       "must go to cya if no more assets" in {
-        MoreOtherAssetsDeclarationPage.nextPageWith(CheckMode, emptyAnswers, sessionDataMemberName) mustEqual
+        MoreOtherAssetsDeclarationPage.nextPageWith(CheckMode, emptyUserAnswers, sessionDataMemberName) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if more assets" in {
-        val userAnswers = emptyAnswers.set(MoreOtherAssetsDeclarationPage, false)
+        val userAnswers = emptyUserAnswers.set(MoreOtherAssetsDeclarationPage, false)
         val sessionData =
           emptySessionData.set(
             SelectedAssetTypesWithStatus,
@@ -77,12 +75,12 @@ class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with 
 
     "in FinalCheckMode" - {
       "must go to cya if no more assets" in {
-        MoreOtherAssetsDeclarationPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        MoreOtherAssetsDeclarationPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
 
       "must go to the next asset page if more assets" in {
-        val userAnswers = emptyAnswers.set(MoreOtherAssetsDeclarationPage, false)
+        val userAnswers = emptyUserAnswers.set(MoreOtherAssetsDeclarationPage, false)
         val sessionData =
           emptySessionData.set(
             SelectedAssetTypesWithStatus,
@@ -99,12 +97,12 @@ class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with 
 
     "in AmendCheckMode" - {
       "must go to cya if no more assets" in {
-        MoreOtherAssetsDeclarationPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        MoreOtherAssetsDeclarationPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
       "must go to the next asset page if more assets" in {
-        val userAnswers = emptyAnswers.set(MoreOtherAssetsDeclarationPage, false)
+        val userAnswers = emptyUserAnswers.set(MoreOtherAssetsDeclarationPage, false)
         val sessionData =
           emptySessionData.set(
             SelectedAssetTypesWithStatus,

@@ -26,13 +26,11 @@ class MembersLastUkAddressSelectPageSpec extends AnyFreeSpec with Matchers with 
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to confirm address page" in {
 
-        MembersLastUkAddressSelectPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MembersLastUkAddressConfirmController.onPageLoad(
+        MembersLastUkAddressSelectPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MembersLastUkAddressConfirmController.onPageLoad(
           NormalMode
         )
       }
@@ -42,7 +40,7 @@ class MembersLastUkAddressSelectPageSpec extends AnyFreeSpec with Matchers with 
 
       "must go to confirm address page" in {
 
-        MembersLastUkAddressSelectPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressConfirmController.onPageLoad(
+        MembersLastUkAddressSelectPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MembersLastUkAddressConfirmController.onPageLoad(
           CheckMode
         )
       }
@@ -52,7 +50,7 @@ class MembersLastUkAddressSelectPageSpec extends AnyFreeSpec with Matchers with 
 
       "must go to confirm address page" in {
 
-        MembersLastUkAddressSelectPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressConfirmController.onPageLoad(
+        MembersLastUkAddressSelectPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual routes.MembersLastUkAddressConfirmController.onPageLoad(
           FinalCheckMode
         )
       }
@@ -62,7 +60,7 @@ class MembersLastUkAddressSelectPageSpec extends AnyFreeSpec with Matchers with 
 
       "must go to confirm address page" in {
 
-        MembersLastUkAddressSelectPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual routes.MembersLastUkAddressConfirmController.onPageLoad(
+        MembersLastUkAddressSelectPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.MembersLastUkAddressConfirmController.onPageLoad(
           AmendCheckMode
         )
       }

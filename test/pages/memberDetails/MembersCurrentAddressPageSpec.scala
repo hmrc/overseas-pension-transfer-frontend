@@ -26,13 +26,11 @@ class MembersCurrentAddressPageSpec extends AnyFreeSpec with Matchers with SpecB
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to Member Is UK Resident" in {
 
-        MembersCurrentAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberIsResidentUKController.onPageLoad(NormalMode)
+        MembersCurrentAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberIsResidentUKController.onPageLoad(NormalMode)
       }
     }
 
@@ -40,20 +38,20 @@ class MembersCurrentAddressPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers" in {
 
-        MembersCurrentAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MembersCurrentAddressPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        MembersCurrentAddressPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        MembersCurrentAddressPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Amend Answers page" in {
-        MembersCurrentAddressPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        MembersCurrentAddressPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

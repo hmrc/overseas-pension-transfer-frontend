@@ -62,7 +62,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
         val view = application.injector.instanceOf[TransferSubmittedView]
 
         val formattedInstant = {
-          val dateTime = testDateTransferSubmitted.atZone(ZoneId.systemDefault()).toLocalDateTime
+          val dateTime = now.atZone(ZoneId.systemDefault()).toLocalDateTime
           dateTime.format(localDateTimeFormatter)
         }
 

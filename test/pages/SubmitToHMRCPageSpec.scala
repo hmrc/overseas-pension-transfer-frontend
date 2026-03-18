@@ -26,22 +26,20 @@ class SubmitToHMRCPageSpec extends AnyFreeSpec with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to psa declaration if yes selected and user is psa" in {
-        val ua = emptyAnswers.set(SubmitToHMRCPage, true).success.value
+        val ua = emptyUserAnswers.set(SubmitToHMRCPage, true).success.value
         SubmitToHMRCPage.nextPageWith(NormalMode, ua, psaUser) mustEqual routes.PsaDeclarationController.onPageLoad(NormalMode)
       }
 
       "must go to psp declaration if yes selected and user is psp" in {
-        val ua = emptyAnswers.set(SubmitToHMRCPage, true).success.value
+        val ua = emptyUserAnswers.set(SubmitToHMRCPage, true).success.value
         SubmitToHMRCPage.nextPageWith(NormalMode, ua, pspUser) mustEqual routes.PspDeclarationController.onPageLoad(NormalMode)
       }
 
       "must go to dashboard if no selected" in {
-        val ua = emptyAnswers.set(SubmitToHMRCPage, false).success.value
+        val ua = emptyUserAnswers.set(SubmitToHMRCPage, false).success.value
         SubmitToHMRCPage.nextPageWith(NormalMode, ua, pspUser) mustEqual controllers.routes.DashboardController.onPageLoad()
       }
     }
@@ -49,17 +47,17 @@ class SubmitToHMRCPageSpec extends AnyFreeSpec with SpecBase {
     "in AmendCheck Mode" - {
 
       "must go to psa declaration if yes selected and user is psa" in {
-        val ua = emptyAnswers.set(SubmitToHMRCPage, true).success.value
+        val ua = emptyUserAnswers.set(SubmitToHMRCPage, true).success.value
         SubmitToHMRCPage.nextPageWith(AmendCheckMode, ua, psaUser) mustEqual routes.PsaDeclarationController.onPageLoad(AmendCheckMode)
       }
 
       "must go to psp declaration if yes selected and user is psp" in {
-        val ua = emptyAnswers.set(SubmitToHMRCPage, true).success.value
+        val ua = emptyUserAnswers.set(SubmitToHMRCPage, true).success.value
         SubmitToHMRCPage.nextPageWith(AmendCheckMode, ua, pspUser) mustEqual routes.PspDeclarationController.onPageLoad(AmendCheckMode)
       }
 
       "must go to dashboard if no selected" in {
-        val ua = emptyAnswers.set(SubmitToHMRCPage, false).success.value
+        val ua = emptyUserAnswers.set(SubmitToHMRCPage, false).success.value
         SubmitToHMRCPage.nextPageWith(AmendCheckMode, ua, pspUser) mustEqual controllers.routes.DashboardController.onPageLoad()
       }
     }
