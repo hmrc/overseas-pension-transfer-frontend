@@ -105,7 +105,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           when(mockLockService.isLocked(any(), any())) thenReturn Future.successful(true)
           when(mockLockService.releaseLock(any(), any())) thenReturn Future.successful(())
           when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
-          when(mockUserAnswersService.clearUserAnswers(any())(any())) thenReturn Future.successful(Right(Done))
+          when(mockUserAnswersService.clearUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
           val application =
             applicationBuilder(userAnswers = userAnswers)
@@ -129,7 +129,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
             verify(mockLockService, times(1)).isLocked(any(), any())
             verify(mockLockService, times(1)).releaseLock(any(), any())
             verify(mockSessionRepository, times(1)).clear(any())
-            verify(mockUserAnswersService, times(1)).clearUserAnswers(any())(any())
+            verify(mockUserAnswersService, times(1)).clearUserAnswers(any(), any())(any())
           }
         }
 
@@ -173,7 +173,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           when(mockLockService.isLocked(any(), any())) thenReturn Future.successful(true)
           when(mockLockService.releaseLock(any(), any())) thenReturn Future.successful(())
           when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
-          when(mockUserAnswersService.clearUserAnswers(any())(any())) thenReturn
+          when(mockUserAnswersService.clearUserAnswers(any(), any())(any())) thenReturn
             Future.successful(Left(UserAnswersErrorResponse("Error", None)))
 
           val application =

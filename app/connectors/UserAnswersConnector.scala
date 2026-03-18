@@ -119,10 +119,11 @@ class UserAnswersConnector @Inject() (
           Left(SubmissionErrorResponse(errMsg, None))
       }
 
-  def deleteAnswers(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteUserAnswersType] = {
+  def deleteAnswers(id: String, srnNumber: SrnNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteUserAnswersType] = {
     def url: URL = url"${appConfig.backendService}/save-for-later/$id"
 
     http.delete(url)
+      .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[DeleteUserAnswersType](DeleteUserAnswersHttpReads, ec)
       .recover {
         case e: Exception =>

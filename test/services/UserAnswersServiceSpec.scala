@@ -108,19 +108,19 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
   "clearUserAnswers" - {
     "return a Right(Done) status when Right(Done) is received from the connector" in {
-      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value))(any(), any()))
+      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value), any())(any(), any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value))
+      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value, SrnNumber("1234567890")))
 
       setUserAnswers mustBe Right(Done)
     }
 
     "Return Left(error) when Left(error) is received from the connector" in {
-      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value))(any(), any()))
+      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value), any())(any(), any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error Message", None))))
 
-      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value))
+      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value, SrnNumber("1234567890")))
 
       setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
     }

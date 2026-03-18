@@ -90,8 +90,8 @@ class UserAnswersService @Inject() (
     }
   }
 
-  def clearUserAnswers(id: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
-    connector.deleteAnswers(id)
+  def clearUserAnswers(id: String, srnNumber: SrnNumber)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
+    connector.deleteAnswers(id, srnNumber)
   }
 
   def toAllTransfersItem(userAnswers: UserAnswers): AllTransfersItem = {

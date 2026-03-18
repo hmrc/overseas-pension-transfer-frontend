@@ -97,7 +97,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onPageLoad(1, None).url)
+        val request = FakeRequest(GET, routes.DashboardController.onPageLoad().url)
         val result  = route(application, request).value
 
         status(result) mustBe OK
@@ -249,7 +249,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.DashboardController.onPageLoad(1, None).url)
+        val request = FakeRequest(GET, routes.DashboardController.onPageLoad().url)
         val result  = route(application, request).value
 
         status(result) mustBe OK
