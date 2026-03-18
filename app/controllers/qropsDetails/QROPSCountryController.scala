@@ -68,7 +68,7 @@ class QROPSCountryController @Inject() (
         },
         countryCode => {
           val maybeCountry: Option[Country] =
-            countryService.find(countryCode)
+            countryService.findByCode(countryCode)
           maybeCountry match {
             case None          =>
               Future.successful(

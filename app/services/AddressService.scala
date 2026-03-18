@@ -30,8 +30,8 @@ class AddressService @Inject() (
   )(implicit ex: ExecutionContext
   ) {
 
-  def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] = {
-    countryService.find(data.countryCode).map { country =>
+  def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] =
+    countryService.findByCode(data.countryCode).map { country =>
       PropertyAddress(
         data.addressLine1,
         data.addressLine2,
@@ -42,10 +42,9 @@ class AddressService @Inject() (
         data.postcode
       )
     }
-  }
 
   def schemeManagersAddress(data: SchemeManagersAddressFormData): Option[SchemeManagersAddress] =
-    countryService.find(data.countryCode).map { country =>
+    countryService.findByCode(data.countryCode).map { country =>
       SchemeManagersAddress(
         data.addressLine1,
         data.addressLine2,
@@ -57,7 +56,7 @@ class AddressService @Inject() (
     }
 
   def qropsAddress(data: QROPSAddressFormData): Option[QROPSAddress] =
-    countryService.find(data.countryCode).map { country =>
+    countryService.findByCode(data.countryCode).map { country =>
       QROPSAddress(
         data.addressLine1,
         data.addressLine2,
@@ -69,7 +68,7 @@ class AddressService @Inject() (
     }
 
   def membersCurrentAddress(data: MembersCurrentAddressFormData): Option[MembersCurrentAddress] =
-    countryService.find(data.countryCode).map { country =>
+    countryService.findByCode(data.countryCode).map { country =>
       MembersCurrentAddress(
         data.addressLine1,
         data.addressLine2,

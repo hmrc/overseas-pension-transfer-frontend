@@ -131,7 +131,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
-      when(mockCountryService.find("GB"))
+      when(mockCountryService.findByCode("GB"))
         .thenReturn(Some(Country("GB", "United Kingdom")))
 
       val application =
@@ -203,7 +203,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
-      when(mockCountryService.find("GB"))
+      when(mockCountryService.findByCode("GB"))
         .thenReturn(Some(Country("GB", "United Kingdom")))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)

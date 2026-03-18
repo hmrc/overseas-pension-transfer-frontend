@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.address.Country
+import models.address.{Countries, Country}
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 

@@ -47,7 +47,7 @@ class AddressServiceSpec
 
     // TODO REMOVE
     "must map the form data (including postcode and PO box) (OLD)" in {
-      when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
+      when(mockCountryService.findByCode(Countries.UK.code)).thenReturn(Some(Countries.UK))
 
       val formData = PropertyAddressFormDataOld(
         addressLine1 = propertyAddress.addressLine1,
@@ -73,7 +73,7 @@ class AddressServiceSpec
     )
 
     "must construct a SchemeManagersAddress when the country exists" in {
-      when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
+      when(mockCountryService.findByCode(Countries.UK.code)).thenReturn(Some(Countries.UK))
 
       val result = service.schemeManagersAddress(formData).value
 
@@ -81,7 +81,7 @@ class AddressServiceSpec
     }
 
     "must return None when the country code is unknown" in {
-      when(mockCountryService.find(anyString())).thenReturn(None)
+      when(mockCountryService.findByCode(anyString())).thenReturn(None)
 
       val formDataNoCountry = formData.copy(countryCode = "XX")
       service.schemeManagersAddress(formDataNoCountry) mustBe None
@@ -91,7 +91,7 @@ class AddressServiceSpec
   ".qropsAddress" - {
 
     "must construct a QROPSAddress when the country exists" in {
-      when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
+      when(mockCountryService.findByCode(Countries.UK.code)).thenReturn(Some(Countries.UK))
 
       val formData = QROPSAddressFormData(
         addressLine1 = qropsAddress.addressLine1,
@@ -109,7 +109,7 @@ class AddressServiceSpec
   ".membersCurrentAddress" - {
 
     "must map the form data (including postcode and PO box)" in {
-      when(mockCountryService.find(Countries.UK.code)).thenReturn(Some(Countries.UK))
+      when(mockCountryService.findByCode(Countries.UK.code)).thenReturn(Some(Countries.UK))
 
       val formData = MembersCurrentAddressFormData(
         addressLine1 = membersCurrentAddress.addressLine1,
