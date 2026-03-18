@@ -399,12 +399,13 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
       stubFor(delete(s"/overseas-pension-transfer-backend/save-for-later/testId")
+        .withHeader("schemeReferenceNumber", equalTo("1234567890"))
         .willReturn(
           aResponse()
             .withStatus(NO_CONTENT)
         ))
 
-      val response = await(connector.deleteAnswers("testId"))
+      val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")))
 
       response shouldBe Right(Done)
     }
@@ -413,19 +414,21 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
       
       "500 is returned" in {
         stubFor(delete("/overseas-pension-transfer-backend/save-for-later/testId")
+          .withHeader("schemeReferenceNumber", equalTo("1234567890"))
           .willReturn(
             aResponse()
               .withStatus(INTERNAL_SERVER_ERROR)
               .withBody( """{ "error": "Failed to save answers" }""")
           ))
 
-        val response = await(connector.deleteAnswers("testId"))
+        val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")))
 
         response shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
       }
       
       "500 is returned, but the error cannot be parsed" in {
         stubFor(delete("/overseas-pension-transfer-backend/save-for-later/testId")
+          .withHeader("schemeReferenceNumber", equalTo("1234567890"))
           .willReturn(
             aResponse()
               .withStatus(INTERNAL_SERVER_ERROR)
@@ -434,7 +437,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
               )))
           ))
 
-        val response = await(connector.deleteAnswers("testId"))
+        val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")))
 
         response shouldBe Left(UserAnswersErrorResponse(
           "Unable to parse Json as UserAnswersErrorResponse",
