@@ -38,7 +38,7 @@ case object DiscardTransferConfirmPage extends QuestionPage[Boolean] with NextPa
 
   override protected def nextPageWith(answers: UserAnswers, context: Option[String] = None): Call = {
     answers.get(DiscardTransferConfirmPage) match {
-      case Some(true)  => routes.DashboardController.onPageLoad()
+      case Some(true)  => routes.DashboardController.onPageLoad(1, None)
       case Some(false) => routes.TaskListController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
@@ -46,7 +46,7 @@ case object DiscardTransferConfirmPage extends QuestionPage[Boolean] with NextPa
 
   override protected def nextPageAmendCheckModeWith(answers: UserAnswers, context: Option[String] = None): Call = {
     answers.get(DiscardTransferConfirmPage) match {
-      case Some(true)                      => routes.DashboardController.onPageLoad()
+      case Some(true)                      => routes.DashboardController.onPageLoad(1, None)
       case Some(false) if context.nonEmpty =>
         controllers.viewandamend.routes.ViewAmendSubmittedController.fromDraft(
           answers.id,

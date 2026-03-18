@@ -40,7 +40,7 @@ object FooterLink {
 
     val dashboardLink = FooterLink(
       id   = "returnDashboardLink",
-      href = routes.DashboardController.onPageLoad().url,
+      href = routes.DashboardController.onPageLoad(1, None).url,
       text = messages("footer.link.text.dashboard")
     )
 

@@ -219,7 +219,7 @@ class DashboardController @Inject() (
 
     SearchBarViewModel(
       label    = messages("dashboard.search.heading"),
-      action   = routes.DashboardController.onPageLoad().url,
+      action   = routes.DashboardController.onPageLoad(1, None).url,
       value    = search.map(_.trim).filter(_.nonEmpty),
       hint     = Some(messages("dashboard.search.hintText")),
       clearUrl = clearUrl

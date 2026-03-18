@@ -38,7 +38,7 @@ case object SubmitToHMRCPage
           case Psp => routes.PspDeclarationController.onPageLoad(AmendCheckMode)
         }
       case Some(false) =>
-        routes.DashboardController.onPageLoad()
+        routes.DashboardController.onPageLoad(1, None)
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
   }
@@ -51,7 +51,7 @@ case object SubmitToHMRCPage
           case Psp => routes.PspDeclarationController.onPageLoad(NormalMode)
         }
       case Some(false) =>
-        routes.DashboardController.onPageLoad()
+        routes.DashboardController.onPageLoad(1, None)
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
   }
