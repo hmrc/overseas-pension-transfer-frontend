@@ -98,13 +98,11 @@ object AllTransfersTableViewModel {
       )
     }
 
-    val hideCaption = if (appConfig.allowDashboardSearch) "govuk-visually-hidden" else ""
-
     Table(
       head           = Some(head),
       rows           = rows,
       caption        = Some(messages("dashboard.search.results.heading")),
-      captionClasses = s"govuk-table__caption--m $hideCaption",
+      captionClasses = s"govuk-table__caption--m",
       attributes     = Map.empty
     )
   }

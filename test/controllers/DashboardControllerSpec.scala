@@ -325,7 +325,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
 
       val application = applicationBuilder()
-        .configure("features.allowDashboardSearch" -> true)
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockRepo),
           bind[TransferService].toInstance(mockService),
@@ -390,7 +389,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
 
       val application = applicationBuilder()
-        .configure("features.allowDashboardSearch" -> true)
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockRepo),
           bind[TransferService].toInstance(mockService),
@@ -470,7 +468,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
 
       val application = applicationBuilder()
-        .configure("features.allowDashboardSearch" -> true)
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockRepo),
           bind[TransferService].toInstance(mockService),

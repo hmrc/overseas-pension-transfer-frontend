@@ -42,30 +42,11 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
   "EmailService.sendConfirmationEmail" - {
 
-    "must return Right(EmailNotSentSuccess) when submissionEmailEnabled is false" in {
-
-      val mockConnector = mock[EmailConnector]
-      val mockConfig    = mock[FrontendAppConfig]
-
-      when(mockConfig.submissionEmailEnabled).thenReturn(false)
-
-      implicit val appConfig: FrontendAppConfig = mockConfig
-      val service                               = new EmailService(mockConnector)
-
-      val minimalDetails = mock[MinimalDetails]
-      when(minimalDetails.email).thenReturn("test@example.com")
-
-      val result = await(service.sendConfirmationEmail(sessionDataMemberNameQtNumberTransferSubmitted, minimalDetails))
-
-      result mustBe Right(EmailNotSentSuccess)
-    }
-
     "must return Left(SessionDataError) when required data is missing from session data" in {
 
       val mockConnector = mock[EmailConnector]
       val mockConfig    = mock[FrontendAppConfig]
 
-      when(mockConfig.submissionEmailEnabled).thenReturn(true)
       when(mockConfig.submittedConfirmationTemplateId).thenReturn("submitted_confirmation_template")
 
       implicit val appConfig: FrontendAppConfig = mockConfig
@@ -86,7 +67,6 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       val mockConnector = mock[EmailConnector]
       val mockConfig    = mock[FrontendAppConfig]
 
-      when(mockConfig.submissionEmailEnabled).thenReturn(true)
       when(mockConfig.submittedConfirmationTemplateId).thenReturn("submitted_confirmation_template")
 
       implicit val appConfig: FrontendAppConfig = mockConfig
@@ -138,7 +118,6 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       val mockConnector = mock[EmailConnector]
       val mockConfig    = mock[FrontendAppConfig]
 
-      when(mockConfig.submissionEmailEnabled).thenReturn(true)
       when(mockConfig.submittedConfirmationTemplateId).thenReturn("submitted_confirmation_template")
 
       implicit val appConfig: FrontendAppConfig = mockConfig
@@ -173,7 +152,6 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       val mockConnector = mock[EmailConnector]
       val mockConfig    = mock[FrontendAppConfig]
 
-      when(mockConfig.submissionEmailEnabled).thenReturn(true)
       when(mockConfig.submittedConfirmationTemplateId).thenReturn("submitted_confirmation_template")
 
       implicit val appConfig: FrontendAppConfig = mockConfig
@@ -228,7 +206,6 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       val mockConnector = mock[EmailConnector]
       val mockConfig    = mock[FrontendAppConfig]
 
-      when(mockConfig.submissionEmailEnabled).thenReturn(true)
       when(mockConfig.submittedConfirmationTemplateId).thenReturn("submitted_confirmation_template")
 
       implicit val appConfig: FrontendAppConfig = mockConfig

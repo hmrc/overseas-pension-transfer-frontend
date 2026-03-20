@@ -36,6 +36,8 @@
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 @memberName = @{request.memberName}
 
+@addressLookupPage = @{controllers.memberDetails.routes.MembersLastUKAddressController.onPageLoad(mode).url}
+
 @layout(pageTitle = title(form, messages("membersLastUKAddress.title"))) {
 
     @formHelper(action = controllers.memberDetails.routes.MembersLastUKAddressController.onSubmit(mode), Symbol("autoComplete") -> "on") {
@@ -65,16 +67,16 @@
 
         @govukInput(
             InputViewModel(
-                field = form("addressLine3"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine3")))
+                field = form("townOrCity"),
+                label = LabelViewModel(Text(messages("common.addressInput.townOrCity")))
             )
             .withWidth(Fixed20)
         )
 
         @govukInput(
             InputViewModel(
-                field = form("addressLine4"),
-                label = LabelViewModel(Text(messages("common.addressInput.addressLine4")))
+                field = form("county"),
+                label = LabelViewModel(Text(messages("common.addressInput.accessible.addressLine4")))
             )
             .withWidth(Fixed20)
         )

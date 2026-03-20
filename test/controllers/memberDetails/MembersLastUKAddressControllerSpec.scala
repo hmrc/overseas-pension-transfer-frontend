@@ -17,8 +17,8 @@
 package controllers.memberDetails
 
 import base.SpecBase
-import controllers.routes
 import controllers.memberDetails.{routes => memberRoutes}
+import controllers.routes
 import models.NormalMode
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
