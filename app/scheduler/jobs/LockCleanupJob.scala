@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package forms
+package scheduler.jobs
+
+import org.apache.pekko.actor.ActorSystem
 
 import javax.inject.Inject
-import forms.mappings.{Mappings, Regex}
-import play.api.data.Form
+import play.api.Configuration
+import scheduler.ScheduledJob
+import scheduler.SchedulingActor.LockCleanup
+import services.LockCleanupService
 
-class PspDeclarationFormProvider @Inject() extends Mappings with Regex {
+class LockCleanupJob @Inject() (val lockCleanupService: LockCleanupService, val config: Configuration) extends ScheduledJob {
+  override val jobName          = "LockCleanupJob"
+  override val actorSystem      = ActorSystem(jobName)
+  override val scheduledMessage = LockCleanup(lockCleanupService)
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("pspDeclaration.error.required")
-        .transform(_.trim, identity)
-        .verifying(regexp(psaIdRegex, "pspDeclaration.error.pattern"))
-    )
+  schedule
 }

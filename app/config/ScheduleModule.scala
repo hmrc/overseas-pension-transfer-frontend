@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package forms
+package config
 
-import javax.inject.Inject
-import forms.mappings.{Mappings, Regex}
-import play.api.data.Form
+import com.google.inject.AbstractModule
 
-class PspDeclarationFormProvider @Inject() extends Mappings with Regex {
+class ScheduleModule extends AbstractModule {
 
-  def apply(): Form[String] =
-    Form(
-      "value" -> text("pspDeclaration.error.required")
-        .transform(_.trim, identity)
-        .verifying(regexp(psaIdRegex, "pspDeclaration.error.pattern"))
-    )
+  override def configure(): Unit = {
+    bind(classOf[scheduler.jobs.LockCleanupJob]).asEagerSingleton()
+  }
+
 }

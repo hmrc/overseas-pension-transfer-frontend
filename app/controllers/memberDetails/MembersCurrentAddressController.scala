@@ -16,7 +16,6 @@
 
 package controllers.memberDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
@@ -32,7 +31,6 @@ import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.MembersCurrentAddressView
-import views.html.memberDetails.MembersCurrentAddressAccessibleView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,9 +45,7 @@ class MembersCurrentAddressController @Inject() (
     countryService: CountryService,
     addressService: AddressService,
     val controllerComponents: MessagesControllerComponents,
-    view: MembersCurrentAddressView,
-    accessibleView: MembersCurrentAddressAccessibleView,
-    appConfig: FrontendAppConfig
+    view: MembersCurrentAddressView
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging with ErrorHandling {
 
@@ -61,20 +57,12 @@ class MembersCurrentAddressController @Inject() (
         case Some(address) => form.fill(MembersCurrentAddressFormData.fromDomain(address))
       }
       val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-      if (appConfig.accessibilityAddressChanges) {
-        Ok(accessibleView(preparedForm, countrySelectViewModel, mode))
-      } else {
-        Ok(view(preparedForm, countrySelectViewModel, mode))
-      }
+      Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
   def renderErrorPage(formWithErrors: Form[MembersCurrentAddressFormData], mode: Mode)(implicit request: DisplayRequest[_]): Future[Result] = {
     val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-    if (appConfig.accessibilityAddressChanges) {
-      Future.successful(BadRequest(accessibleView(formWithErrors, countrySelectViewModel, mode)))
-    } else {
-      Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
-    }
+    Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
@@ -85,11 +73,11 @@ class MembersCurrentAddressController @Inject() (
         formWithErrors => renderErrorPage(formWithErrors, mode),
         formData =>
           addressService.membersCurrentAddress(formData) match {
-            case None                                                                                                                                  =>
+            case None                                                                                         =>
               Future.successful(
                 Redirect(MembersCurrentAddressPage.nextPageRecovery(Some(MembersCurrentAddressPage.recoveryModeReturnUrl)))
               )
-            case Some(addressToSave) if addressToSave.postcode.nonEmpty && addressToSave.country.code != "GB" && appConfig.accessibilityAddressChanges =>
+            case Some(addressToSave) if addressToSave.postcode.nonEmpty && addressToSave.country.code != "GB" =>
               renderErrorPage(
                 boundForm.withError(
                   "postcode",
@@ -97,7 +85,7 @@ class MembersCurrentAddressController @Inject() (
                 ),
                 mode
               )
-            case Some(addressToSave)                                                                                                                   =>
+            case Some(addressToSave)                                                                          =>
               for {
                 userAnswers   <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
                 savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)

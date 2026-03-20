@@ -35,7 +35,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{AddressService, CountryService, UserAnswersService}
+import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.qropsDetails.QROPSAddressView
 
@@ -71,9 +71,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
-        .configure(
-          "features.accessibility-address-changes" -> true
-        )
         .build()
 
       running(application) {
@@ -99,9 +96,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
       val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        )
-        .configure(
-          "features.accessibility-address-changes" -> true
         )
         .build()
 
@@ -167,9 +161,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
       val application = applicationBuilder(emptyUserAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        )
-        .configure(
-          "features.accessibility-address-changes" -> true
         )
         .build()
 

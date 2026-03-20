@@ -28,9 +28,7 @@ import views.utils.ViewBaseSpec
 
 class PropertyAddressViewSpec extends ViewBaseSpec {
 
-  val application: Application = GuiceApplicationBuilder()
-    .configure("features.accessibility-address-changes" -> true)
-    .build()
+  val application: Application = GuiceApplicationBuilder().build()
 
   private val view                                  = application.injector.instanceOf[PropertyAddressView]
   private val formProvider                          = application.injector.instanceOf[PropertyAddressFormProvider]
@@ -41,15 +39,15 @@ class PropertyAddressViewSpec extends ViewBaseSpec {
   "PropertyAddressView" - {
 
     "show correct title" in {
-      doc(view(formProvider(true), countrySelectViewModel, NormalMode, testIndex).body)
+      doc(view(formProvider(), countrySelectViewModel, NormalMode, testIndex).body)
         .getElementsByTag("title").eachText().get(0) mustBe
         s"${messages("propertyAddress.title")} - ${messages("service.name")} - GOV.UK"
     }
 
-    behave like pageWithH1(view(formProvider(true), countrySelectViewModel, NormalMode, testIndex), "propertyAddress.heading")
+    behave like pageWithH1(view(formProvider(), countrySelectViewModel, NormalMode, testIndex), "propertyAddress.heading")
 
     behave like pageWithMultipleInputFields(
-      view(formProvider(true), countrySelectViewModel, NormalMode, testIndex),
+      view(formProvider(), countrySelectViewModel, NormalMode, testIndex),
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
       ("addressLine3", "common.addressInput.townOrCity"),
@@ -59,13 +57,13 @@ class PropertyAddressViewSpec extends ViewBaseSpec {
     )
 
     behave like pageWithSubmitButton(
-      view(formProvider(true), countrySelectViewModel, NormalMode, testIndex),
+      view(formProvider(), countrySelectViewModel, NormalMode, testIndex),
       "site.saveAndContinue"
     )
 
     behave like pageWithErrors(
       view(
-        formProvider(true).withError(FormError("addressLine1", "propertyAddress.error.addressLine1.required")),
+        formProvider().withError(FormError("addressLine1", "propertyAddress.error.addressLine1.required")),
         countrySelectViewModel,
         NormalMode,
         testIndex
