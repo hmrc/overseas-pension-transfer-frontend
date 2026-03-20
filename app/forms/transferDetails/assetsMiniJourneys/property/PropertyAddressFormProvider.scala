@@ -38,17 +38,6 @@ sealed trait PropertyAddressFormDataTrait {
   def poBoxNumber: Option[String] = addressLine5
 }
 
-case class PropertyAddressFormDataOld(
-    addressLine1: String,
-    addressLine2: String,
-    addressLine3: Option[String],
-    addressLine4: Option[String],
-    countryCode: String,
-    postcode: Option[String]
-  ) extends PropertyAddressFormDataTrait {
-  val addressLine5: Option[String] = None
-}
-
 case class PropertyAddressFormData(
     addressLine1: String,
     addressLine2: String,
@@ -61,7 +50,7 @@ case class PropertyAddressFormData(
 
 object PropertyAddressFormDataTrait {
 
-  def fromDomain(address: PropertyAddress): PropertyAddressFormDataTrait =
+  def fromDomain(address: PropertyAddress): PropertyAddressFormData =
     PropertyAddressFormData(
       addressLine1 = address.addressLine1,
       addressLine2 = address.addressLine2,
@@ -116,43 +105,29 @@ class PropertyAddressFormProvider @Inject() extends Mappings with Regex with App
       )
   )
 
-  def apply(newForm: Boolean): Form[PropertyAddressFormDataTrait] = {
+  def apply(): Form[PropertyAddressFormData] = {
     Form(
       mapping(
         addressLineMapping(1),
         addressLineMapping(2),
         optionalAddressLineMapping(3),
         optionalAddressLineMapping(4),
+        postcodeMapping(),
         optionalAddressLineMapping(5),
-        countryMapping(),
-        postcodeMapping()
-      ) { (addressLine1, addressLine2, addressLine3, addressLine4, addressLine5, countryCode, postcode) =>
-        val form: PropertyAddressFormDataTrait = if (newForm) {
-          PropertyAddressFormData.apply(
-            addressLine1,
-            addressLine2,
-            addressLine3,
-            addressLine4,
-            postcode,
-            addressLine5,
-            countryCode
+        countryMapping()
+      )(PropertyAddressFormData.apply)(data =>
+        Some(
+          (
+            data.addressLine1,
+            data.addressLine2,
+            data.addressLine3,
+            data.addressLine4,
+            data.postcode,
+            data.addressLine5,
+            data.countryCode
           )
-        } else {
-          PropertyAddressFormDataOld.apply(
-            addressLine1,
-            addressLine2,
-            addressLine3,
-            addressLine4,
-            countryCode,
-            postcode
-          )
-        }
-
-        form
-      } {
-        case PropertyAddressFormData(al1, al2, town, county, postCode, poBox, countryCode) => Some(al1, al2, town, county, poBox, countryCode, postCode)
-        case PropertyAddressFormDataOld(al1, al2, town, county, countryCode, postCode)     => Some(al1, al2, town, county, None, countryCode, postCode)
-      }
+        )
+      )
     )
   }
 }

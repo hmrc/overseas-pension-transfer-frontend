@@ -26,9 +26,7 @@ import views.utils.ViewBaseSpec
 
 class QROPSAddressViewSpec extends ViewBaseSpec {
 
-  private val application = applicationBuilder().configure(
-    "features.accessibility-address-changes" -> true
-  ).build()
+  private val application = applicationBuilder().build()
 
   private val view                                  = application.injector.instanceOf[QROPSAddressView]
   private val formProvider                          = application.injector.instanceOf[QROPSAddressFormProvider]

@@ -42,17 +42,17 @@ class MembersLastUKAddressFormProvider @Inject() extends Mappings with Regex wit
           .transform[String](input => input.trim, identity)
           .verifying(maxLength(length35, "common.addressInput.error.addressLine2.length"))
           .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine2.pattern")),
-        "addressLine3" -> optional(
+        "townOrCity"   -> optional(
           Forms.text
             .transform[String](input => input.trim, identity)
-            .verifying(maxLength(length35, "common.addressInput.error.addressLine3.length"))
-            .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine3.pattern"))
+            .verifying(maxLength(length35, "common.addressInput.error.townOrCity.length"))
+            .verifying(regexp(addressLinesRegex, "common.addressInput.error.townOrCity.pattern"))
         ),
-        "addressLine4" -> optional(
+        "county"       -> optional(
           Forms.text
             .transform[String](input => input.trim, identity)
-            .verifying(maxLength(length35, "common.addressInput.error.addressLine4.length"))
-            .verifying(regexp(addressLinesRegex, "common.addressInput.error.addressLine4.pattern"))
+            .verifying(maxLength(length35, "common.addressInput.error.county.length"))
+            .verifying(regexp(addressLinesRegex, "common.addressInput.error.county.pattern"))
         ),
         "postcode"     -> text("membersLastUKAddress.error.postcode.required")
           .transform[String](
