@@ -84,7 +84,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any())) thenReturn Future.successful(Right(Done))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
         applicationBuilder()
@@ -131,7 +131,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any())) thenReturn
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn
         Future.successful(Left(UserAnswersErrorResponse("error", None)))
 
       val application =

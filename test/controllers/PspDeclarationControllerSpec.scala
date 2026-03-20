@@ -41,6 +41,7 @@ import org.apache.commons.text.StringEscapeUtils
 import connectors.MinimalDetailsConnector
 import models.authentication.PspId
 import play.api.i18n.Messages
+import play.api.mvc.ControllerComponents
 
 class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -51,11 +52,11 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   private lazy val pspDeclarationRoute = routes.PspDeclarationController.onPageLoad(NormalMode).url
 
-  val cc = stubControllerComponents()
+  val cc: ControllerComponents = stubControllerComponents()
 
   val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-  def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers) = new GuiceApplicationBuilder()
+  def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers): GuiceApplicationBuilder = new GuiceApplicationBuilder()
     .overrides(
       bind[IdentifierAction].toInstance(fakeIdentifierAction),
       bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionDataMemberNameQtNumber)),
@@ -91,7 +92,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val qtNumber       = QtNumber("QT123456")
       val minimalDetails = mock[MinimalDetails]
 
-      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
+      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, receiptDate))))
 
       when(mockMinimalDetailsConnector.fetch(any[PspId]())(any[HeaderCarrier], any[ExecutionContext]))
@@ -149,7 +150,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     "must return Bad Request with authorising psa error when not PSP authorising PSA" in {
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any())(any[HeaderCarrier]))
+      when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Left(NotAuthorisingPsaIdErrorResponse("PSA is not PSP authorising PSA", None))))
 
       val userAnswersWithPspDeclaration = emptyUserAnswers.set(PspDeclarationPage, "A1234567").success.value

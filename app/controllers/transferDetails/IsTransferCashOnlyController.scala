@@ -26,6 +26,7 @@ import models.assets.TypeOfAsset.Cash
 import org.apache.pekko.Done
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage, TypeOfAssetPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Writes._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,7 +54,7 @@ class IsTransferCashOnlyController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -73,7 +74,7 @@ class IsTransferCashOnlyController @Inject() (
           for {
             updatedUserAnswers    <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value, mode))
             inProgressUserAnswers <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, updatedUserAnswers, taskCategory = TransferDetails))
-            savedForLater         <- userAnswersService.setExternalUserAnswers(inProgressUserAnswers)
+            savedForLater         <- userAnswersService.setExternalUserAnswers(inProgressUserAnswers, request.sessionData.schemeInformation.srnNumber)
             sessionData           <- Future.fromTry(updateCashOnlySession(request.sessionData, value))
             _                     <- sessionRepository.set(sessionData)
           } yield {

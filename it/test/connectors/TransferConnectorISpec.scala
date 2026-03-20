@@ -20,7 +20,7 @@ import base.BaseISpec
 import connectors.parsers.TransferParser.GetAllTransfersType
 import models.QtStatus.Submitted
 import models.responses._
-import models.{PstrNumber, QtNumber}
+import models.{PstrNumber, QtNumber, SrnNumber}
 import org.scalatest.OptionValues
 import play.api.test.Injecting
 import stubs.TransferBackendStub
@@ -33,6 +33,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
   private val connector: TransferConnector = inject[TransferConnector]
 
   private val pstr = PstrNumber("12345678AB")
+  private val srn  = SrnNumber("1234567890")
 
   "TransferConnector.getAllTransfers" when {
 
@@ -42,7 +43,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
       "return Right(GetAllTransfersDTO) with the parsed transfers if payload valid" in {
         TransferBackendStub.getAllTransfersOk(pstr.value, testNino)
 
-        val result: GetAllTransfersType = await(connector.getAllTransfers(pstr))
+        val result: GetAllTransfersType = await(connector.getAllTransfers(srn, pstr))
 
         result match {
           case Right(dto) =>
@@ -69,7 +70,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
         // 3 items: 1 valid submitted, 1 valid in-progress, 1 invalid (has both dates)
         TransferBackendStub.getAllTransfersOkWithInvalidItems(pstr.value, testNino)
 
-        val result = await(connector.getAllTransfers(pstr))
+        val result = await(connector.getAllTransfers(srn, pstr))
 
         result match {
           case Right(dto) =>
@@ -85,7 +86,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
       "map to Left(AllTransfersUnexpectedError) if json malformed" in {
         TransferBackendStub.getAllTransfersMalformed(pstr.value)
 
-        val result = await(connector.getAllTransfers(pstr))
+        val result = await(connector.getAllTransfers(srn, pstr))
 
         result match {
           case Left(_: AllTransfersUnexpectedError) => succeed
@@ -98,7 +99,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
       "map to Left(NoTransfersFound)" in {
         TransferBackendStub.getAllTransfersNotFound(pstr.value)
 
-        val result = await(connector.getAllTransfers(pstr))
+        val result = await(connector.getAllTransfers(srn, pstr))
 
         result shouldBe Left(NoTransfersFound)
       }
@@ -108,7 +109,7 @@ class TransferConnectorISpec extends BaseISpec with Injecting with OptionValues 
       "map to Left(InternalServerError)" in {
         TransferBackendStub.getAllTransfersServerError(pstr.value)
 
-        val result = await(connector.getAllTransfers(pstr))
+        val result = await(connector.getAllTransfers(srn, pstr))
 
         result shouldBe Left(InternalServerError)
       }

@@ -46,7 +46,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
   ) extends FrontendBaseController with I18nSupport {
 
   private val form    = formProvider()
-  private val actions = (identify andThen schemeData andThen getData)
+  private val actions = identify andThen schemeData andThen getData
 
   def onPageLoad(index: Int): Action[AnyContent] = actions { implicit request =>
     Ok(view(form, index))
@@ -70,7 +70,7 @@ class UnquotedSharesConfirmRemovalController @Inject() (
         } else {
           (for {
             updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
             _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.UnquotedShares, completed = false)
           } yield {
             Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))

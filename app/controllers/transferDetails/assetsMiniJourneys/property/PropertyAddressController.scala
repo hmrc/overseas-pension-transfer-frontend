@@ -105,7 +105,7 @@ class PropertyAddressController @Inject() (
 
               for {
                 updatedAnswers <- Future.fromTry(setAnswers())
-                _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+                _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
               } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
           }
       )

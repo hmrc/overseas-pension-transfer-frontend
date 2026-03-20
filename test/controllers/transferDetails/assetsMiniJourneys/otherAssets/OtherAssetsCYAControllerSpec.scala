@@ -79,7 +79,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val userAnswers = userAnswersWithAssets(assetsCount = 5)
       val application = applicationWithMocks(userAnswers)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -99,7 +99,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val userAnswers = userAnswersWithAssets(assetsCount = 4)
       val application = applicationWithMocks(userAnswers)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -117,7 +117,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val userAnswers = userAnswersWithAssets(assetsCount = 4)
       val application = applicationWithMocks(userAnswers)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("", None))))
 
       running(application) {

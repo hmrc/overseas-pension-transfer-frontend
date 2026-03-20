@@ -85,7 +85,8 @@ class ViewAmendSelectorController @Inject() (
               case PspUser(pspId, _, _) => pspId.value
             }
             for {
-              userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber))
+              userAnswersResult <-
+                userAnswersService.getExternalUserAnswers(qtReference, pstr, AmendInProgress, Some(versionNumber), request.schemeDetails.srnNumber)
               allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
               lockResult        <-
                 lockService.takeLockWithAudit(

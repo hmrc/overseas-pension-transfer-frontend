@@ -20,9 +20,10 @@ import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.WhyTransferIsTaxableFormProvider
 import models.TaskCategory.TransferDetails
-import models.{AmendCheckMode, Mode, UserAnswers}
+import models.{AmendCheckMode, Mode, UserAnswers, WhyTransferIsTaxable}
 import org.apache.pekko.Done
 import pages.transferDetails.WhyTransferIsTaxablePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
@@ -46,7 +47,7 @@ class WhyTransferIsTaxableController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  val form = formProvider()
+  val form: Form[WhyTransferIsTaxable] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -77,7 +78,7 @@ class WhyTransferIsTaxableController @Inject() (
           for {
             ua1           <- Future.fromTry(setAnswers())
             ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
-            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua2, request.sessionData.schemeInformation.srnNumber)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(WhyTransferIsTaxablePage.nextPage(mode, ua2))

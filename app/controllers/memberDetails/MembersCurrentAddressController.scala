@@ -26,7 +26,7 @@ import pages.memberDetails.MembersCurrentAddressPage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{AddressService, CountryService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
@@ -60,7 +60,7 @@ class MembersCurrentAddressController @Inject() (
       Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  def renderErrorPage(formWithErrors: Form[MembersCurrentAddressFormData], mode: Mode)(implicit request: DisplayRequest[_]) = {
+  def renderErrorPage(formWithErrors: Form[MembersCurrentAddressFormData], mode: Mode)(implicit request: DisplayRequest[_]): Future[Result] = {
     val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
     Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
   }
@@ -88,7 +88,7 @@ class MembersCurrentAddressController @Inject() (
             case Some(addressToSave)                                                                          =>
               for {
                 userAnswers   <- Future.fromTry(request.userAnswers.set(MembersCurrentAddressPage, addressToSave))
-                savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers)
+                savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
               } yield {
                 savedForLater match {
                   case Right(Done) => Redirect(MembersCurrentAddressPage.nextPage(mode, userAnswers))

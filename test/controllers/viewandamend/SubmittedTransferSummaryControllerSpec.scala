@@ -44,7 +44,7 @@ class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
       when(mockLockService.isLocked(any(), any())).thenReturn(Future.successful(false))
       when(mockLockService.releaseLock(any(), any())).thenReturn(Future.unit)
 
-      when(mockCollectVersionsService.collectVersions(any(), any(), any(), any())(any()))
+      when(mockCollectVersionsService.collectVersions(any(), any(), any(), any(), any())(any()))
         .thenReturn(Future.successful(None, List(emptyUserAnswers)))
 
       val application  = applicationBuilder(userAnswers = emptyUserAnswers)
@@ -55,7 +55,7 @@ class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
         .build()
       val testMessages = messages(application)
 
-      when(mockCollectVersionsService.collectVersions(any(), any(), any(), any())(any()))
+      when(mockCollectVersionsService.collectVersions(any(), any(), any(), any(), any())(any()))
         .thenReturn(Future.successful(None, List(emptyUserAnswers)))
 
       running(application) {

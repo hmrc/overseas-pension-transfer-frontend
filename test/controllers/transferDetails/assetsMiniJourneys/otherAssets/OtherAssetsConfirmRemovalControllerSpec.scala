@@ -63,7 +63,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
       val userAnswers            = emptyUserAnswers.set(OtherAssetsQuery, entries).success.value
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(userAnswers = userAnswers)
@@ -109,7 +109,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
       val userAnswers            = emptyUserAnswers.set(OtherAssetsQuery, entries).success.value
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.failed(new Exception("Error")))
 
       val application = applicationBuilder(userAnswers = userAnswers)

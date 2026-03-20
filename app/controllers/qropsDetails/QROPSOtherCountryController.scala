@@ -21,6 +21,7 @@ import forms.qropsDetails.QROPSOtherCountryFormProvider
 import models.Mode
 import org.apache.pekko.Done
 import pages.qropsDetails.QROPSOtherCountryPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
@@ -42,7 +43,7 @@ class QROPSOtherCountryController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -62,7 +63,7 @@ class QROPSOtherCountryController @Inject() (
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSOtherCountryPage, value))
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(QROPSOtherCountryPage.nextPage(mode, updatedAnswers))

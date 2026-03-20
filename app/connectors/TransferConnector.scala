@@ -19,7 +19,7 @@ package connectors
 import config.FrontendAppConfig
 import connectors.parsers.TransferParser.{GetAllTransfersHttpReads, GetAllTransfersType}
 import connectors.parsers.UserAnswersParser._
-import models.PstrNumber
+import models.{PstrNumber, SrnNumber}
 import models.responses.{AllTransfersUnexpectedError, UserAnswersErrorResponse}
 import play.api.Logging
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -36,11 +36,12 @@ class TransferConnector @Inject() (
   )(implicit ec: ExecutionContext
   ) extends Logging with DownstreamLogging {
 
-  def getAllTransfers(pstrNumber: PstrNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetAllTransfersType] = {
+  def getAllTransfers(srnNumber: SrnNumber, pstrNumber: PstrNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetAllTransfersType] = {
     def allTransfersUrl: URL =
       url"${appConfig.backendService}/get-all-transfers/${pstrNumber.value}"
 
     http.get(allTransfersUrl)
+      .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetAllTransfersType]
       .recover {
         case e: Exception =>
