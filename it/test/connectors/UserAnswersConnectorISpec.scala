@@ -24,7 +24,6 @@ import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import models.{PstrNumber, QtNumber, SrnNumber, TransferNumber}
 import org.apache.pekko.Done
-import org.apache.pekko.http.scaladsl.model.HttpResponse
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting
@@ -37,11 +36,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
   private val transferId = TransferNumber(UUID.randomUUID().toString)
-  private val instant        = Instant.now()
   private val pstr = PstrNumber("12345678AB")
   private val srn  = SrnNumber("1234567890")
-  private val userAnswersDTO = UserAnswersDTO(QtNumber("QT975310"), pstr, JsObject(Map("field" -> JsString("value"))), instant)
-  private val submissionDTO  = PspSubmissionDTO(transferId, Psp, PspId("X1234567"), PsaId("a1234567"), instant)
+  private val userAnswersDTO = UserAnswersDTO(QtNumber("QT975310"), pstr, JsObject(Map("field" -> JsString("value"))), now)
+  private val submissionDTO  = PspSubmissionDTO(transferId, Psp, PspId("X1234567"), PsaId("a1234567"), now)
 
   val connector: UserAnswersConnector = inject[UserAnswersConnector]
 

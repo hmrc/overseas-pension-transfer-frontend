@@ -32,6 +32,7 @@ import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.viewandamend.ViewAmendSelectorView
 
+import java.time.{Clock, Instant}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +45,8 @@ class ViewAmendSelectorController @Inject() (
     appConfig: FrontendAppConfig,
     lockService: LockService,
     userAnswersService: UserAnswersService,
-    sessionRepository: SessionRepository
+    sessionRepository: SessionRepository,
+    clock: Clock
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
@@ -107,7 +109,8 @@ class ViewAmendSelectorController @Inject() (
                   request.authenticatedUser,
                   Json.obj(
                     "receiptDate" -> answers.lastUpdated
-                  )
+                  ),
+                  Instant.now(clock)
                 )
 
                 val sessionDataWithMemberName: SessionData = answers.get(MemberNamePage).fold(sessionData) {

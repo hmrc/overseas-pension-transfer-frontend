@@ -38,7 +38,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
     schemeInformation = schemeDetails,
     user              = psaUser,
     data              = Json.obj("memberDetails" -> Json.obj("status" -> "inProgress")),
-    lastUpdated       = Instant.now()
+    lastUpdated       = now
   )
 
   "get" - {

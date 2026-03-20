@@ -26,13 +26,11 @@ class ApplicableTaxExclusionsPageSpec extends AnyFreeSpec with Matchers with Spe
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to AmountOfTaxDeducted page" in {
 
-        ApplicableTaxExclusionsPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(NormalMode)
+        ApplicableTaxExclusionsPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(NormalMode)
       }
     }
 
@@ -40,19 +38,19 @@ class ApplicableTaxExclusionsPageSpec extends AnyFreeSpec with Matchers with Spe
 
       "must go to AmountOfTaxDeducted in CheckMode" in {
 
-        ApplicableTaxExclusionsPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(CheckMode)
+        ApplicableTaxExclusionsPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(CheckMode)
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        ApplicableTaxExclusionsPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(FinalCheckMode)
+        ApplicableTaxExclusionsPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(FinalCheckMode)
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
-        ApplicableTaxExclusionsPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(AmendCheckMode)
+        ApplicableTaxExclusionsPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(AmendCheckMode)
       }
     }
   }

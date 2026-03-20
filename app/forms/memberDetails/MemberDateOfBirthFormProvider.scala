@@ -21,13 +21,13 @@ import play.api.data.Form
 import play.api.i18n.Messages
 
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, ZoneOffset}
+import java.time.{Clock, LocalDate, ZoneOffset}
 import javax.inject.Inject
 
-class MemberDateOfBirthFormProvider @Inject() extends Mappings {
+class MemberDateOfBirthFormProvider @Inject() (clock: Clock) extends Mappings {
 
   def minDate: LocalDate    = LocalDate of (1901, 1, 1)
-  def maxDate: LocalDate    = LocalDate.now(ZoneOffset.UTC)
+  def maxDate: LocalDate    = LocalDate.now(clock)
   private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 
   def apply()(implicit messages: Messages): Form[LocalDate] =

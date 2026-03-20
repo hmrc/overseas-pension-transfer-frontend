@@ -27,19 +27,17 @@ class PsaDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to submission screen on successful submission" in {
-        PsaDeclarationPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
+        PsaDeclarationPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
       }
     }
 
     "in Amend Check Mode" - {
 
       "must go to submission screen on successful submission" in {
-        PsaDeclarationPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
+        PsaDeclarationPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
       }
     }
   }

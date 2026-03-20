@@ -26,12 +26,10 @@ class OverseasTransferAllowancePageSpec extends AnyFreeSpec with Matchers with S
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        OverseasTransferAllowancePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.AmountOfTransferController.onPageLoad(NormalMode)
+        OverseasTransferAllowancePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.AmountOfTransferController.onPageLoad(NormalMode)
       }
     }
 
@@ -39,20 +37,20 @@ class OverseasTransferAllowancePageSpec extends AnyFreeSpec with Matchers with S
 
       "must go to Check Answers" in {
 
-        OverseasTransferAllowancePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        OverseasTransferAllowancePage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        OverseasTransferAllowancePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        OverseasTransferAllowancePage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
-        OverseasTransferAllowancePage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        OverseasTransferAllowancePage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

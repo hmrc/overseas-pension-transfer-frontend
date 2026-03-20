@@ -28,13 +28,12 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-    val amount       = BigDecimal(1000)
+    val amount = BigDecimal(1000)
 
     "in Normal Mode" - {
 
       "must go to IsTransferTaxable page" in {
-        AmountOfTransferPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.IsTransferTaxableController.onPageLoad(NormalMode)
+        AmountOfTransferPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.IsTransferTaxableController.onPageLoad(NormalMode)
       }
     }
 
@@ -42,20 +41,20 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Check Answers" in {
 
-        AmountOfTransferPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        AmountOfTransferPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        AmountOfTransferPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        AmountOfTransferPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
-        AmountOfTransferPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        AmountOfTransferPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 

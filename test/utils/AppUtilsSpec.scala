@@ -41,7 +41,7 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
     }
 
     "must return full name from user answers when not present in session data" in {
-      val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))))
+      val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
         .set(MemberNamePage, testMemberName)
         .success
         .value
@@ -67,12 +67,12 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
   "dateTransferSubmitted" - {
     "must return date in String format when date is present" in {
       dateTransferSubmitted(
-        emptySessionData.set(DateSubmittedQuery, testDateTransferSubmitted).success.value
+        emptySessionData.set(DateSubmittedQuery, now).success.value
       ) mustBe
         DateTimeFormatter
           .ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
           .withZone(ZoneId.systemDefault()) // or ZoneOffset.UTC
-          .format(testDateTransferSubmitted)
+          .format(now)
     }
   }
 

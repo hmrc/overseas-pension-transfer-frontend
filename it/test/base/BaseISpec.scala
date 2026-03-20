@@ -25,7 +25,7 @@ import play.api.{Application, Environment, Mode}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-import java.time.Instant
+import java.time.{Clock, Instant, ZoneId}
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Awaitable}
 import scala.util.Random
@@ -33,7 +33,10 @@ import scala.util.Random
 trait BaseISpec extends AnyWordSpecLike with WireMockHelper with Matchers with OptionValues with BeforeAndAfterAll with BeforeAndAfterEach
   with GuiceOneServerPerSuite {
 
-  val now = Instant.now
+  private val clockMillis: Long = 1718118467838L
+  val clock: Clock      = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
+
+  val now: Instant = Instant.now(clock)
 
   def servicesConfig: Map[String, String] = Map(
     "play.filters.csrf.header.bypassHeaders.Csrf-Token"            -> "nocheck",

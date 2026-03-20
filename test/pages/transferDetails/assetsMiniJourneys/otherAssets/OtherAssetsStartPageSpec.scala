@@ -27,32 +27,30 @@ class OtherAssetsStartPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in NormalMode" - {
       "must go to the Next page" in {
-        OtherAssetsStartPage.nextPage(NormalMode, emptyAnswers) mustEqual
+        OtherAssetsStartPage.nextPage(NormalMode, emptyUserAnswers) mustEqual
           AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index)
       }
     }
 
     "in CheckMode" - {
       "must go to the Next page" in {
-        OtherAssetsStartPage.nextPage(CheckMode, emptyAnswers) mustEqual
+        OtherAssetsStartPage.nextPage(CheckMode, emptyUserAnswers) mustEqual
           AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(CheckMode, index)
       }
     }
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        OtherAssetsStartPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        OtherAssetsStartPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(FinalCheckMode, index)
       }
     }
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        OtherAssetsStartPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        OtherAssetsStartPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(AmendCheckMode, index)
       }
     }

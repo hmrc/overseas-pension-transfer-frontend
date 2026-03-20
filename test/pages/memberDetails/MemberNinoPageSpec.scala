@@ -25,17 +25,13 @@ import org.scalatest.matchers.must.Matchers
 
 class MemberNinoPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
-  private val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
   ".nextPage" - {
-
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
 
       "must go to Member Date of Birth" in {
 
-        MemberNinoPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode)
+        MemberNinoPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode)
       }
     }
 
@@ -43,13 +39,13 @@ class MemberNinoPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Check Answers" in {
 
-        MemberNinoPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberNinoPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        MemberNinoPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        MemberNinoPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
@@ -58,7 +54,7 @@ class MemberNinoPageSpec extends AnyFreeSpec with Matchers with SpecBase {
   "cleanup" - {
 
     "must remove MemberDoesNotHaveNinoPage when a NINO is supplied" in {
-      val noNinoUA = emptyAnswers
+      val noNinoUA = emptyUserAnswers
         .set(MemberDoesNotHaveNinoPage, "no nino")
         .success
         .value
@@ -69,7 +65,7 @@ class MemberNinoPageSpec extends AnyFreeSpec with Matchers with SpecBase {
     }
 
     "must not remove MemberDoesNotHaveNinoPage when NINO is not supplied" in {
-      val noNinoUA = emptyAnswers
+      val noNinoUA = emptyUserAnswers
         .set(MemberDoesNotHaveNinoPage, "no nino")
         .success
         .value

@@ -84,7 +84,7 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
         val result  = route(application, request).value
 
         val formattedInstant = {
-          val dateTime = testDateTransferSubmitted.atZone(ZoneId.systemDefault()).toLocalDateTime
+          val dateTime = now.atZone(ZoneId.systemDefault()).toLocalDateTime
           dateTime.format(localDateTimeFormatter)
         }
 

@@ -22,13 +22,14 @@ import models.{AllTransfersItem, DashboardData, PstrNumber, SrnNumber}
 import queries.dashboard.{TransfersDataUpdatedAtQuery, TransfersOverviewQuery, TransfersSyncedAtQuery}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.Instant
+import java.time.{Clock, Instant}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TransferService @Inject() (
-    connector: TransferConnector
+    connector: TransferConnector,
+    clock: Clock
   )(implicit ec: ExecutionContext
   ) {
 
@@ -42,7 +43,7 @@ class TransferService @Inject() (
       case Left(NoTransfersFound) =>
         (for {
           dd1 <- current.set(TransfersOverviewQuery, Seq.empty)
-          dd2 <- dd1.set(TransfersSyncedAtQuery, Instant.now())
+          dd2 <- dd1.set(TransfersSyncedAtQuery, Instant.now(clock))
         } yield dd2).fold(
           e => Left(AllTransfersUnexpectedError("Failed to update dashboard", Some(e.getMessage))),
           updated => Right(updated)
@@ -53,7 +54,7 @@ class TransferService @Inject() (
         val cleanedTransfers = filterTransfersWithValidNames(dto.transfers)
         (for {
           dd1 <- current.set(TransfersOverviewQuery, cleanedTransfers)
-          dd2 <- dd1.set(TransfersSyncedAtQuery, Instant.now())
+          dd2 <- dd1.set(TransfersSyncedAtQuery, Instant.now(clock))
           dd3 <- dd2.set(TransfersDataUpdatedAtQuery, dto.lastUpdated) // upstream timestamp
         } yield dd3).fold(
           e => Left(AllTransfersUnexpectedError("Failed to merge transfers", Some(e.getMessage))),

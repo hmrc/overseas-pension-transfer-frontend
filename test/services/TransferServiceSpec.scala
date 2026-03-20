@@ -43,12 +43,12 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
     "must clear transfers and set syncedAt when connector returns NoTransfersFound, and must NOT change dataUpdatedAt" in {
 
       val mockConnector = mock[TransferConnector]
-      val service       = new TransferService(mockConnector)
+      val service       = new TransferService(mockConnector, clock)
 
       val pstr = PstrNumber("12345678AB")
 
       val existingDataUpdatedAt = Instant.parse("2025-09-01T12:00:00Z")
-      val startDd               = DashboardData(id = "id")
+      val startDd               = DashboardData.create("id", now)
         .set(TransfersDataUpdatedAtQuery, existingDataUpdatedAt).success.value
         .set(TransfersOverviewQuery, Seq(AllTransfersItem(userAnswersTransferNumber, None, None, None, None, None, None, None, None, None))).success.value
 
@@ -68,7 +68,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
     "must merge transfers and set both syncedAt (now) and dataUpdatedAt (from DTO) when connector returns Right(dto)" in {
 
       val mockConnector = mock[TransferConnector]
-      val service       = new TransferService(mockConnector)
+      val service       = new TransferService(mockConnector, clock)
 
       val pstr = PstrNumber("12345678AB")
 
@@ -92,7 +92,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       when(mockConnector.getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(dto)))
 
-      val startDd = DashboardData(id = "id")
+      val startDd = DashboardData.create("id", now)
 
       val result = await(service.getAllTransfersData(startDd, pstr, SrnNumber("1234567890")))
 
@@ -107,7 +107,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
     "must remove transfers with missing first name or surname" in {
 
       val mockConnector = mock[TransferConnector]
-      val service       = new TransferService(mockConnector)
+      val service       = new TransferService(mockConnector, clock)
 
       val pstr = PstrNumber("12345678AB")
 
@@ -123,7 +123,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       when(mockConnector.getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(dto)))
 
-      val startDd = DashboardData(id = "id")
+      val startDd = DashboardData.create("id", now)
 
       val result = await(service.getAllTransfersData(startDd, pstr, SrnNumber("1234567890")))
 
@@ -136,7 +136,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
     "must pass through connector errors unchanged" in {
 
       val mockConnector = mock[TransferConnector]
-      val service       = new TransferService(mockConnector)
+      val service       = new TransferService(mockConnector, clock)
 
       val pstr = PstrNumber("12345678AB")
 
@@ -145,7 +145,7 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       when(mockConnector.getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Left(err)))
 
-      val startDd = DashboardData(id = "id")
+      val startDd = DashboardData.create("id", now)
 
       val result = await(service.getAllTransfersData(startDd, pstr, SrnNumber("1234567890")))
 

@@ -26,34 +26,32 @@ class WhyTransferIsNotTaxablePageSpec extends AnyFreeSpec with Matchers with Spe
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to DateOfTransfer page" in {
 
-        WhyTransferIsNotTaxablePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.DateOfTransferController.onPageLoad(NormalMode)
+        WhyTransferIsNotTaxablePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.DateOfTransferController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
 
       "must go to Check Answers" in {
-        WhyTransferIsNotTaxablePage.nextPage(CheckMode, emptyAnswers) mustEqual
+        WhyTransferIsNotTaxablePage.nextPage(CheckMode, emptyUserAnswers) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        WhyTransferIsNotTaxablePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        WhyTransferIsNotTaxablePage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
-        WhyTransferIsNotTaxablePage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        WhyTransferIsNotTaxablePage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

@@ -36,7 +36,7 @@ import uk.gov.hmrc.mdc.MdcExecutionContext
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.temporal.ChronoUnit
-import java.time.{Clock, Instant, ZoneId}
+import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
 class SessionRepositoryISpec
@@ -49,8 +49,7 @@ class SessionRepositoryISpec
     with MockitoSugar
     with SpecBase {
 
-  private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
-  private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
+  private val instant = now.truncatedTo(ChronoUnit.MILLIS)
 
   private val sessionData = SessionData(
     "id",
@@ -80,7 +79,7 @@ class SessionRepositoryISpec
     mongoComponent = mongoComponent,
     encryptionService = encryptionService,
     appConfig = mockAppConfig,
-    clock = stubClock
+    clock = clock
   )
 
   ".set" - {

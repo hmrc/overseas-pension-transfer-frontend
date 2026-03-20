@@ -28,17 +28,15 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBa
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
-        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+        val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
         WhyTransferIsTaxablePage.nextPage(NormalMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode)
       }
 
       "must go to amount of tax deducted page if NoExclusion selected" in {
-        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
+        val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
         WhyTransferIsTaxablePage.nextPage(NormalMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(NormalMode)
       }
     }
@@ -46,12 +44,12 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBa
     "in Check Mode" - {
 
       "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
-        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+        val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
         WhyTransferIsTaxablePage.nextPage(CheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(CheckMode)
       }
 
       "must go to amount of tax deducted page if NoExclusion selected" in {
-        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
+        val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
         WhyTransferIsTaxablePage.nextPage(CheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(CheckMode)
       }
     }
@@ -59,12 +57,12 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBa
     "in FinalCheckMode" - {
 
       "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
-        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+        val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
         WhyTransferIsTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(FinalCheckMode)
       }
 
       "must go to amount of tax deducted page if NoExclusion selected" in {
-        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
+        val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
         WhyTransferIsTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(FinalCheckMode)
       }
     }
@@ -72,12 +70,12 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBa
     "in AmendCheckMode" - {
 
       "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
-        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+        val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
         WhyTransferIsTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(AmendCheckMode)
       }
 
       "must go to amount of tax deducted page if NoExclusion selected" in {
-        val ua = emptyAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
+        val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
         WhyTransferIsTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(AmendCheckMode)
       }
     }

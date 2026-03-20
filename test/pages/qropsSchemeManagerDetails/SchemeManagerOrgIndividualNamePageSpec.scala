@@ -26,30 +26,28 @@ class SchemeManagerOrgIndividualNamePageSpec extends AnyFreeSpec with Matchers w
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
       "must go to Scheme manager address page" in {
-        SchemeManagerOrgIndividualNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.SchemeManagersAddressController.onPageLoad(NormalMode)
+        SchemeManagerOrgIndividualNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagersAddressController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
       "must go to Check your answers" in {
-        SchemeManagerOrgIndividualNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagerOrgIndividualNamePage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        SchemeManagerOrgIndividualNamePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        SchemeManagerOrgIndividualNamePage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
-        SchemeManagerOrgIndividualNamePage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        SchemeManagerOrgIndividualNamePage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

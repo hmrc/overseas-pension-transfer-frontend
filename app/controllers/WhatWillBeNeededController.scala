@@ -30,6 +30,7 @@ import services.{AuditService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WhatWillBeNeededView
 
+import java.time.{Clock, Instant}
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +43,8 @@ class WhatWillBeNeededController @Inject() (
     view: WhatWillBeNeededView,
     sessionRepository: SessionRepository,
     userAnswersService: UserAnswersService,
-    auditService: AuditService
+    auditService: AuditService,
+    clock: Clock
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -56,10 +58,11 @@ class WhatWillBeNeededController @Inject() (
       transferId = TransferNumber(UUID.randomUUID().toString),
       request.schemeDetails,
       request.authenticatedUser,
-      Json.obj()
+      Json.obj(),
+      Instant.now(clock)
     )
 
-    val newUa = UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber)
+    val newUa = UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber, Json.obj(), Instant.now(clock))
 
     for {
       updatedSessionData <- Future.fromTry(SessionData.initialise(sessionData))

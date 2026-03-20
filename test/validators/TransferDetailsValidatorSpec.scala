@@ -78,7 +78,6 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
   )
 
   private val validator = TransferDetailsValidator
-  private val today     = LocalDate.now
 
   private val baseTransferDetails = TransferDetails(
     allowanceBeforeTransfer = 1000.25,

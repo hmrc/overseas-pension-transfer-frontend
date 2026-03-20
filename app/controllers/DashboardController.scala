@@ -35,6 +35,7 @@ import viewmodels.{PaginatedAllTransfersViewModel, SearchBarViewModel}
 import views.html.DashboardView
 import views.html.components.AppBreadcrumbs
 
+import java.time.{Clock, Instant}
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,7 +50,8 @@ class DashboardController @Inject() (
     view: DashboardView,
     userAnswersService: UserAnswersService,
     lockService: LockService,
-    appBreadcrumbs: AppBreadcrumbs
+    appBreadcrumbs: AppBreadcrumbs,
+    clock: Clock
   )(implicit ec: ExecutionContext,
     appConfig: FrontendAppConfig
   ) extends FrontendBaseController with I18nSupport with Logging {
@@ -124,7 +126,7 @@ class DashboardController @Inject() (
                                allTransfersItem
                              )
         result            <- if (lockAcquired) {
-                               val dashboardData  = DashboardData.empty
+                               val dashboardData  = DashboardData.empty(Instant.now(clock))
                                val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus, Some(params))
                                Future.successful(Redirect(redirectTarget))
                              } else {
@@ -135,7 +137,7 @@ class DashboardController @Inject() (
                              }
       } yield result
     } else {
-      val dashboardData  = DashboardData.empty
+      val dashboardData  = DashboardData.empty(Instant.now(clock))
       val redirectTarget = DashboardPage.nextPage(dashboardData, params.qtStatus, Some(params))
       Future.successful(Redirect(redirectTarget))
     }

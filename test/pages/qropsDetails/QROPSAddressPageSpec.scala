@@ -26,13 +26,11 @@ class QROPSAddressPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to Index" in {
 
-        QROPSAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.QROPSCountryController.onPageLoad(NormalMode)
+        QROPSAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.QROPSCountryController.onPageLoad(NormalMode)
       }
     }
 
@@ -40,20 +38,20 @@ class QROPSAddressPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Check Answers" in {
 
-        QROPSAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
+        QROPSAddressPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.QROPSDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must got to Final Check Answers page" in {
-        QROPSAddressPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        QROPSAddressPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Amend Check Answers" in {
-        QROPSAddressPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        QROPSAddressPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

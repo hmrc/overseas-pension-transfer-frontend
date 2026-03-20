@@ -29,49 +29,47 @@ class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to Members Date of Leaving UK" in {
 
-        MembersLastUKAddressPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
+        MembersLastUKAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
 
       "must go to Check Answers if Members Date of Leaving UK present" in {
-        val ua = emptyAnswers.set(MemberDateOfLeavingUKPage, LocalDate.now()).success.value
+        val ua = emptyUserAnswers.set(MemberDateOfLeavingUKPage, today).success.value
         MembersLastUKAddressPage.nextPage(CheckMode, ua) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
 
       "must go to Members Date of Leaving UK in CheckMode if not present" in {
-        MembersLastUKAddressPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode)
+        MembersLastUKAddressPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode)
       }
     }
 
     "in FinalCheck Mode" - {
 
       "must go to FinalCheck Answers if Members Date of Leaving UK present" in {
-        val ua = emptyAnswers.set(MemberDateOfLeavingUKPage, LocalDate.now()).success.value
+        val ua = emptyUserAnswers.set(MemberDateOfLeavingUKPage, today).success.value
         MembersLastUKAddressPage.nextPage(FinalCheckMode, ua) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
 
       "must go to Members Date of Leaving UK in FinalCheckMode if not present" in {
-        MembersLastUKAddressPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(FinalCheckMode)
+        MembersLastUKAddressPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(FinalCheckMode)
       }
     }
 
     "in AmendCheck Mode" - {
 
       "must go to AmendCheck Answers if Members Date of Leaving UK present" in {
-        val ua = emptyAnswers.set(MemberDateOfLeavingUKPage, LocalDate.now()).success.value
+        val ua = emptyUserAnswers.set(MemberDateOfLeavingUKPage, today).success.value
         MembersLastUKAddressPage.nextPage(AmendCheckMode, ua) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
       "must go to Members Date of Leaving UK in AmendCheckMode if not present" in {
-        MembersLastUKAddressPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(AmendCheckMode)
+        MembersLastUKAddressPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(AmendCheckMode)
       }
     }
   }

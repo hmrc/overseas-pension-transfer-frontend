@@ -27,11 +27,9 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
       "must go to the cya page if no more assets" in {
-        CashAmountInTransferPage.nextPageWith(NormalMode, emptyAnswers, emptySessionData) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        CashAmountInTransferPage.nextPageWith(NormalMode, emptyUserAnswers, emptySessionData) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if more assets" in {
@@ -44,14 +42,14 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
             )
           )
 
-        val result = CashAmountInTransferPage.nextPageWith(NormalMode, emptyAnswers, sessionData.success.value)
+        val result = CashAmountInTransferPage.nextPageWith(NormalMode, emptyUserAnswers, sessionData.success.value)
         result mustBe QuotedSharesMiniJourney.call(NormalMode)
       }
     }
 
     "in Check Mode" - {
       "must go to the cya page if no more assets" in {
-        CashAmountInTransferPage.nextPageWith(CheckMode, emptyAnswers, emptySessionData) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        CashAmountInTransferPage.nextPageWith(CheckMode, emptyUserAnswers, emptySessionData) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if more assets" in {
@@ -64,7 +62,7 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
             )
           )
 
-        val result = CashAmountInTransferPage.nextPageWith(CheckMode, emptyAnswers, sessionData.success.value)
+        val result = CashAmountInTransferPage.nextPageWith(CheckMode, emptyUserAnswers, sessionData.success.value)
         result mustBe QuotedSharesMiniJourney.call(CheckMode)
       }
     }
@@ -73,7 +71,7 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
       "must go to the cya page if no more assets" in {
         CashAmountInTransferPage.nextPageWith(
           FinalCheckMode,
-          emptyAnswers,
+          emptyUserAnswers,
           emptySessionData
         ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
@@ -88,7 +86,7 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
             )
           )
 
-        val result = CashAmountInTransferPage.nextPageWith(FinalCheckMode, emptyAnswers, sessionData.success.value)
+        val result = CashAmountInTransferPage.nextPageWith(FinalCheckMode, emptyUserAnswers, sessionData.success.value)
         result mustBe QuotedSharesMiniJourney.call(FinalCheckMode)
       }
     }
@@ -97,7 +95,7 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
       "must go to the cya page if no more assets" in {
         CashAmountInTransferPage.nextPageWith(
           AmendCheckMode,
-          emptyAnswers,
+          emptyUserAnswers,
           emptySessionData
         ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
@@ -112,7 +110,7 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
             )
           )
 
-        val result = CashAmountInTransferPage.nextPageWith(AmendCheckMode, emptyAnswers, sessionData.success.value)
+        val result = CashAmountInTransferPage.nextPageWith(AmendCheckMode, emptyUserAnswers, sessionData.success.value)
         result mustBe QuotedSharesMiniJourney.call(AmendCheckMode)
       }
     }
