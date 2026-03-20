@@ -19,9 +19,10 @@ package controllers.qropsSchemeManagerDetails
 import controllers.actions._
 import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
-import models.Mode
+import models.{Mode, SchemeManagerType}
 import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
@@ -43,7 +44,7 @@ class SchemeManagerTypeController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  val form = formProvider()
+  val form: Form[SchemeManagerType] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData) {
@@ -64,7 +65,7 @@ class SchemeManagerTypeController @Inject() (
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagerTypePage, value))
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(SchemeManagerTypePage.nextPage(mode, updatedAnswers))

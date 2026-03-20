@@ -43,8 +43,8 @@ class MembersLastUKAddressViewSpec extends ViewBaseSpec {
       view(formProvider(), NormalMode),
       ("addressLine1", "common.addressInput.addressLine1"),
       ("addressLine2", "common.addressInput.addressLine2"),
-      ("addressLine3", "common.addressInput.addressLine3"),
-      ("addressLine4", "common.addressInput.addressLine4"),
+      ("townOrCity", "common.addressInput.townOrCity"),
+      ("county", "common.addressInput.accessible.addressLine4"),
       ("postcode", "membersLastUKAddress.postcode")
     )
 

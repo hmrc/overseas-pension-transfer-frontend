@@ -18,7 +18,7 @@ package services
 
 import connectors.TransferConnector
 import models.responses.{AllTransfersUnexpectedError, NoTransfersFound, TransferError}
-import models.{AllTransfersItem, DashboardData, PstrNumber}
+import models.{AllTransfersItem, DashboardData, PstrNumber, SrnNumber}
 import queries.dashboard.{TransfersDataUpdatedAtQuery, TransfersOverviewQuery, TransfersSyncedAtQuery}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -33,8 +33,13 @@ class TransferService @Inject() (
   )(implicit ec: ExecutionContext
   ) {
 
-  def getAllTransfersData(current: DashboardData, pstr: PstrNumber)(implicit hc: HeaderCarrier): Future[Either[TransferError, DashboardData]] =
-    connector.getAllTransfers(pstr).map {
+  def getAllTransfersData(
+      current: DashboardData,
+      pstr: PstrNumber,
+      srnNumber: SrnNumber
+    )(implicit hc: HeaderCarrier
+    ): Future[Either[TransferError, DashboardData]] =
+    connector.getAllTransfers(srnNumber, pstr).map {
       case Left(NoTransfersFound) =>
         (for {
           dd1 <- current.set(TransfersOverviewQuery, Seq.empty)

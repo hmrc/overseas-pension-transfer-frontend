@@ -21,6 +21,7 @@ import forms.transferDetails.CashAmountInTransferFormProvider
 import models.{AmendCheckMode, Mode, UserAnswers}
 import models.assets.TypeOfAsset
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
@@ -46,7 +47,7 @@ class CashAmountInTransferController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[BigDecimal] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -81,7 +82,7 @@ class CashAmountInTransferController @Inject() (
                                 AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Cash, completed = true)
                               )
             _              <- sessionRepository.set(updatedSession)
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
           } yield Redirect(CashAmountInTransferPage.nextPageWith(mode, updatedAnswers, updatedSession))
         }
       )

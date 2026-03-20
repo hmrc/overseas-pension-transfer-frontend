@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.UserAnswersConnector
-import models.{PstrNumber, QtNumber, UserAnswers}
+import models.{PstrNumber, QtNumber, SrnNumber, UserAnswers}
 import models.QtStatus.Submitted
 import models.dtos.UserAnswersDTO
 import models.responses.UserAnswersErrorResponse
@@ -47,11 +47,11 @@ class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
   "collectVersions" - {
     "Return a List of one UserAnswer for versionNumber 001" in {
 
-      when(mockUserAnswersConnector.getAnswers(any())(any(), any())).thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
-      when(mockUserAnswersConnector.getAnswers(any(), any(), any(), any())(any(), any()))
+      when(mockUserAnswersConnector.getAnswers(any(), any())(any(), any())).thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+      when(mockUserAnswersConnector.getAnswers(any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(Right(userAnswersDTO)))
 
-      val result = await(service.collectVersions(QtNumber("QT123456"), PstrNumber("12345678AB"), Submitted, "001"))
+      val result = await(service.collectVersions(QtNumber("QT123456"), PstrNumber("12345678AB"), Submitted, "001", SrnNumber("1234567890")))
 
       result mustBe (None, List(userAnswers))
     }
@@ -59,11 +59,13 @@ class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
 
   "Return a list of one Draft record and one from UserAnswer for versionNumber 001" in {
 
-    when(mockUserAnswersConnector.getAnswers(any())(any(), any())).thenReturn(Future.successful(Right(userAnswersDTO.copy(referenceId = QtNumber("QT123456")))))
-    when(mockUserAnswersConnector.getAnswers(any(), any(), any(), any())(any(), any()))
+    when(mockUserAnswersConnector.getAnswers(any(), any())(any(), any())).thenReturn(Future.successful(Right(userAnswersDTO.copy(referenceId =
+      QtNumber("QT123456")
+    ))))
+    when(mockUserAnswersConnector.getAnswers(any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(Right(userAnswersDTO)))
 
-    val result = await(service.collectVersions(QtNumber("QT123456"), PstrNumber("12345678AB"), Submitted, "001"))
+    val result = await(service.collectVersions(QtNumber("QT123456"), PstrNumber("12345678AB"), Submitted, "001", SrnNumber("1234567890")))
 
     result mustBe (Some(userAnswers.copy(id = QtNumber("QT123456"))), List(
       userAnswers
@@ -71,11 +73,13 @@ class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
   }
 
   "Return a list of one Draft and multiple UserAnswers for versionNumber 003" in {
-    when(mockUserAnswersConnector.getAnswers(any())(any(), any())).thenReturn(Future.successful(Right(userAnswersDTO.copy(referenceId = QtNumber("QT123456")))))
-    when(mockUserAnswersConnector.getAnswers(any(), any(), any(), any())(any(), any()))
+    when(mockUserAnswersConnector.getAnswers(any(), any())(any(), any())).thenReturn(Future.successful(Right(userAnswersDTO.copy(referenceId =
+      QtNumber("QT123456")
+    ))))
+    when(mockUserAnswersConnector.getAnswers(any(), any(), any(), any(), any())(any(), any()))
       .thenReturn(Future.successful(Right(userAnswersDTO)))
 
-    val result = await(service.collectVersions(QtNumber("QT123456"), PstrNumber("12345678AB"), Submitted, "003"))
+    val result = await(service.collectVersions(QtNumber("QT123456"), PstrNumber("12345678AB"), Submitted, "003", SrnNumber("1234567890")))
 
     result mustBe (Some(userAnswers.copy(id = QtNumber("QT123456"))), List(
       userAnswers,
@@ -85,13 +89,13 @@ class CollectSubmittedVersionsServiceSpec extends AnyFreeSpec with SpecBase {
   }
 
   List("010", "100") foreach {
-    case version =>
+    version =>
       s"Return a list of length ${version.toInt} when versionNumber = $version" in {
-        when(mockUserAnswersConnector.getAnswers(any())(any(), any())).thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
-        when(mockUserAnswersConnector.getAnswers(any(), any(), any(), any())(any(), any()))
+        when(mockUserAnswersConnector.getAnswers(any(), any())(any(), any())).thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+        when(mockUserAnswersConnector.getAnswers(any(), any(), any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(Right(userAnswersDTO)))
 
-        val result = await(service.collectVersions(QtNumber("QT123456"), PstrNumber("12345678AB"), Submitted, version))
+        val result = await(service.collectVersions(QtNumber("QT123456"), PstrNumber("12345678AB"), Submitted, version, SrnNumber("1234567890")))
 
         result._2.length mustBe version.toInt
       }

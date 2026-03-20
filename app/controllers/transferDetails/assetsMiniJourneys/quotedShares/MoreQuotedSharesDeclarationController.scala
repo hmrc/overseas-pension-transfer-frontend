@@ -101,7 +101,7 @@ class MoreQuotedSharesDeclarationController @Inject() (
 
           for {
             userAnswers            <- Future.fromTry(setAnswers())
-            _                      <- userAnswersService.setExternalUserAnswers(userAnswers)
+            _                      <- userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
             sessionAfterCompletion <-
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.QuotedShares, completed = true, Some(continue))
           } yield Redirect(MoreQuotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))

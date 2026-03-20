@@ -48,7 +48,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
   private lazy val memberDateOfLeavingUKRoute = routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode).url
 
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+  def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, memberDateOfLeavingUKRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -66,7 +66,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).build()
 
       running(application) {
-        val req    = getRequest()
+        val req    = getRequest
         val result = route(application, req).value
 
         val view = application.injector.instanceOf[MemberDateOfLeavingUKView]
@@ -83,7 +83,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
-        val request = getRequest()
+        val request = getRequest
         val view    = application.injector.instanceOf[MemberDateOfLeavingUKView]
         val result  = route(application, request).value
 
@@ -99,7 +99,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application =
@@ -144,7 +144,7 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(emptyUserAnswers)

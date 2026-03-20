@@ -16,20 +16,17 @@
 
 package controllers.memberDetails
 
-import config.FrontendAppConfig
 import controllers.actions._
 import controllers.helpers.ErrorHandling
-import forms.memberDetails.{MembersLastUKAddressFormProvider, MembersLastUKAddressNewFormProvider}
+import forms.memberDetails.MembersLastUKAddressFormProvider
 import models.Mode
-import models.address._
 import org.apache.pekko.Done
 import pages.memberDetails.MembersLastUKAddressPage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.memberDetails.{MembersLastUKAddressNewView, MembersLastUKAddressView}
+import views.html.memberDetails.MembersLastUKAddressView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,54 +37,35 @@ class MembersLastUKAddressController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     formProvider: MembersLastUKAddressFormProvider,
-    accessibleFormProvider: MembersLastUKAddressNewFormProvider,
     val controllerComponents: MessagesControllerComponents,
     view: MembersLastUKAddressView,
-    accessibleView: MembersLastUKAddressNewView,
-    userAnswersService: UserAnswersService,
-    appConfig: FrontendAppConfig
+    userAnswersService: UserAnswersService
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      val form = if (appConfig.accessibilityAddressChanges) {
-        accessibleFormProvider()
-      } else {
-        formProvider()
-      }
+      val form = formProvider()
 
       val preparedForm = request.userAnswers.get(MembersLastUKAddressPage) match {
         case None          => form
         case Some(address) => form.fill(address)
       }
 
-      if (appConfig.accessibilityAddressChanges) {
-        Ok(accessibleView(preparedForm, mode))
-      } else {
-        Ok(view(preparedForm, mode))
-      }
+      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      val form = if (appConfig.accessibilityAddressChanges) {
-        accessibleFormProvider()
-      } else {
-        formProvider()
-      }
+      val form = formProvider()
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          if (appConfig.accessibilityAddressChanges) {
-            Future.successful(BadRequest(accessibleView(formWithErrors, mode)))
-          } else {
-            Future.successful(BadRequest(view(formWithErrors, mode)))
-          },
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(MembersLastUKAddressPage, value))
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MembersLastUKAddressPage.nextPage(mode, updatedAnswers))

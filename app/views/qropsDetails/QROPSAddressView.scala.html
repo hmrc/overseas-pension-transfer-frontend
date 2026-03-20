@@ -54,19 +54,12 @@
 
         <h1 class="govuk-heading-l">@messages("qropsAddress.heading")</h1>
         
-        @if(!appConfig.accessibilityAddressChanges) {
-            @addressLine("addressLine1", "common.addressInput.addressLine1", Fixed20)
-            @addressLine("addressLine2", "common.addressInput.addressLine2", Fixed20)
-            @addressLine("addressLine3", "common.addressInput.addressLine3", Fixed20)
-            @addressLine("addressLine4", "common.addressInput.addressLine4", Fixed20)
-            @addressLine("addressLine5", "common.addressInput.addressLine5", Fixed20)
-        } else {
-            @addressLine("addressLine1", "common.addressInput.addressLine1")
-            @addressLine("addressLine2", "common.addressInput.addressLine2")
-            @addressLine("addressLine3", "common.addressInput.accessible.addressLine3")
-            @addressLine("addressLine4", "common.addressInput.accessible.postcode", OneHalf)
-            @addressLine("addressLine5", "common.addressInput.poBox", OneHalf)
-        }
+
+        @addressLine("addressLine1", "common.addressInput.addressLine1")
+        @addressLine("addressLine2", "common.addressInput.addressLine2")
+        @addressLine("addressLine3", "common.addressInput.accessible.addressLine3")
+        @addressLine("addressLine4", "common.addressInput.accessible.postcode", OneHalf)
+        @addressLine("addressLine5", "common.addressInput.poBox", OneHalf)
 
         @inputCountry(
             form,

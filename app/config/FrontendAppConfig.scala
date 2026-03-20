@@ -82,17 +82,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val dashboardLockTtl: Long = configuration.get[Long]("dashboard.lockTtlSeconds")
 
-  val allowDashboardSearch: Boolean = configuration.get[Boolean]("features.dashboard-search")
-
-  val allowPrintSubmittedTransfer: Boolean = configuration.get[Boolean]("features.print-submitted-transfer")
-
   val signedOutRedirectUrl: String = configuration.get[String]("urls.signedOutRedirectUrl")
 
   val submittedConfirmationTemplateId: String = configuration.get[String]("submission-confirmation-template-id")
-
-  val submissionEmailEnabled: Boolean = configuration.get[Boolean]("features.submission-email")
-
-  val accessibilityAddressChanges: Boolean = configuration.get[Boolean]("features.accessibility-address-changes")
 
   def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String = {
     if (isPspUser) {

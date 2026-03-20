@@ -35,7 +35,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{AddressService, CountryService, UserAnswersService}
+import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.qropsDetails.QROPSAddressView
 
@@ -71,9 +71,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
-        .configure(
-          "features.accessibility-address-changes" -> true
-        )
         .build()
 
       running(application) {
@@ -100,9 +97,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
-        .configure(
-          "features.accessibility-address-changes" -> true
-        )
         .build()
 
       running(application) {
@@ -127,7 +121,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       when(mockCountryService.countries).thenReturn(testCountries)
@@ -168,9 +162,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
-        .configure(
-          "features.accessibility-address-changes" -> true
-        )
         .build()
 
       running(application) {
@@ -199,7 +190,7 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       when(mockCountryService.countries).thenReturn(testCountries)

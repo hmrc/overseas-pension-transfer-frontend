@@ -55,19 +55,12 @@
 
         <h1 class="govuk-heading-l">@messages("schemeManagersAddress.heading")</h1>
 
-        @if(appConfig.accessibilityAddressChanges) {
-            @addresslineField(1)
-            @addresslineField(2)
-            @addresslineField(3, Some("common.addressInput.townOrCity"))
-            @addresslineField(4, Some("common.addressInput.accessible.postcode"), OneHalf)
-            @addresslineField(5, Some("common.addressInput.poBox"), OneHalf)
-        } else {
-            @addresslineField(1, width = Fixed20)
-            @addresslineField(2, width = Fixed20)
-            @addresslineField(3, width = Fixed20)
-            @addresslineField(4, width = Fixed20)
-            @addresslineField(5, width = Fixed20)
-        }
+        @addresslineField(1)
+        @addresslineField(2)
+        @addresslineField(3, Some("common.addressInput.townOrCity"))
+        @addresslineField(4, Some("common.addressInput.accessible.postcode"), OneHalf)
+        @addresslineField(5, Some("common.addressInput.poBox"), OneHalf)
+
 
         @inputCountry(
             form,

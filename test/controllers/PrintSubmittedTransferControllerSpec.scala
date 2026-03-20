@@ -73,6 +73,7 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
           any(),
           any(),
           any(),
+          any(),
           any()
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(Right(userAnswersMemberName)))

@@ -21,6 +21,7 @@ import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCom
 import models.assets.TypeOfAsset.UnquotedShares
 import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.AssetsRecordVersionQuery
@@ -45,7 +46,7 @@ class UnquotedSharesCompanyNameController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -77,7 +78,7 @@ class UnquotedSharesCompanyNameController @Inject() (
 
           for {
             updatedSession <- Future.fromTry(request.userAnswers.set(UnquotedSharesCompanyNamePage(index), value))
-            _              <- userAnswersService.setExternalUserAnswers(updatedSession)
+            _              <- userAnswersService.setExternalUserAnswers(updatedSession, request.sessionData.schemeInformation.srnNumber)
           } yield Redirect(UnquotedSharesCompanyNamePage(index).nextPage(mode, updatedSession))
         }
       )

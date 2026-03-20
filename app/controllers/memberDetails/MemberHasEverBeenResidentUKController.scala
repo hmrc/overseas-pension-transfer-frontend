@@ -66,7 +66,7 @@ class MemberHasEverBeenResidentUKController @Inject() (
           for {
             baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
             ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
-            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua2, request.sessionData.schemeInformation.srnNumber)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberHasEverBeenResidentUKPage.nextPage(mode, ua2))

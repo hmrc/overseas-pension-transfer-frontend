@@ -27,6 +27,7 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.AmountOfTransferPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,12 +39,12 @@ import scala.concurrent.Future
 
 class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  val formProvider = new AmountOfTransferFormProvider()
-  val form         = formProvider()
+  val formProvider           = new AmountOfTransferFormProvider()
+  val form: Form[BigDecimal] = formProvider()
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val amountOfTransferRoute = routes.AmountOfTransferController.onPageLoad(NormalMode).url
+  lazy val amountOfTransferRoute: String = routes.AmountOfTransferController.onPageLoad(NormalMode).url
 
   "AmountOfTransfer Controller" - {
 
@@ -87,7 +88,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
@@ -115,7 +116,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
@@ -163,7 +164,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)

@@ -93,7 +93,7 @@ class ViewAmendSelectorControllerSpec
   "onSubmit" - {
     "when 'View this overseas pension transfer' is selected on radio page" - {
       "user must be redirected to /view-submitted-transfer page" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
 
         val app     = buildApp
@@ -110,7 +110,7 @@ class ViewAmendSelectorControllerSpec
 
     "when 'Amend this overseas pension transfer' is selected on radio page" - {
       "user must be redirected to /amend-submitted-transfer page when lock acquired successfully" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
         when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(true))
@@ -128,7 +128,7 @@ class ViewAmendSelectorControllerSpec
       }
 
       "must redirect with lock warning when lock cannot be acquired" in {
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
         when(mockLockService.takeLockWithAudit(any(), any(), any(), any(), any(), any(), any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(false))

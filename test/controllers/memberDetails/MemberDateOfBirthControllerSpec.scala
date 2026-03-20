@@ -48,7 +48,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
   private lazy val memberDateOfBirthRoute = routes.MemberDateOfBirthController.onPageLoad(NormalMode).url
 
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+  def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, memberDateOfBirthRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -66,7 +66,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder().build()
 
       running(application) {
-        val request = getRequest()
+        val request = getRequest
         val result  = route(application, request).value
 
         val view = application.injector.instanceOf[MemberDateOfBirthView]
@@ -86,7 +86,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
-        val request = getRequest()
+        val request = getRequest
         val view    = application.injector.instanceOf[MemberDateOfBirthView]
         val result  = route(application, request).value
 
@@ -103,7 +103,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application =
@@ -148,7 +148,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)

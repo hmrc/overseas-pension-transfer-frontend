@@ -89,7 +89,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(emptyUserAnswers)
@@ -113,7 +113,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val previousAnswers        = emptyUserAnswers.set(MemberIsResidentUKPage, true).success.value
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
@@ -143,7 +143,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
       val application = applicationBuilder(previousAnswers)
@@ -163,7 +163,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
         redirectLocation(result).value mustEqual routes.MemberDetailsCYAController.onPageLoad().url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockUserAnswersService).setExternalUserAnswers(captor.capture())(any)
+        verify(mockUserAnswersService).setExternalUserAnswers(captor.capture(), any())(any)
 
         val updatedAnswers = captor.getValue
         updatedAnswers.get(MemberHasEverBeenResidentUKPage) mustBe None
@@ -193,7 +193,7 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
       val application = applicationBuilder(emptyUserAnswers)

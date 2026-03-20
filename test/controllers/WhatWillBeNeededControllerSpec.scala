@@ -62,7 +62,7 @@ class WhatWillBeNeededControllerSpec
       val mockAuditService                            = mock[AuditService]
       val eventCaptor: ArgumentCaptor[JsonAuditModel] = ArgumentCaptor.forClass(classOf[JsonAuditModel])
 
-      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers])(any())).thenReturn(Future.successful(Right(Done)))
+      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any())).thenReturn(Future.successful(Right(Done)))
       when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(true))
 
       val application =
@@ -93,7 +93,7 @@ class WhatWillBeNeededControllerSpec
       val mockRepo          = mock[SessionRepository]
       val mockUserAnswerSvc = mock[UserAnswersService]
 
-      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers])(any())).thenReturn(Future.successful(Right(Done)))
+      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any())).thenReturn(Future.successful(Right(Done)))
       when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(false))
 
       val application =

@@ -67,7 +67,7 @@ class WhatWillBeNeededController @Inject() (
     for {
       updatedSessionData <- Future.fromTry(SessionData.initialise(sessionData))
       persisted          <- sessionRepository.set(updatedSessionData)
-      _                  <- userAnswersService.setExternalUserAnswers(newUa)
+      _                  <- userAnswersService.setExternalUserAnswers(newUa, sessionData.schemeInformation.srnNumber)
     } yield {
       if (persisted) {
         auditService.audit(
