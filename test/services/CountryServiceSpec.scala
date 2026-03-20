@@ -27,7 +27,7 @@ import java.io.ByteArrayInputStream
 
 class CountryServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val countriesJsonPath = "public/countries.json"
+  private val countriesJsonPath = "countries.json"
 
   ".countries" - {
 
@@ -48,8 +48,7 @@ class CountryServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
       val loadedCountries = service.countries
 
-      loadedCountries.map(_.name) mustBe Seq("Canada", "France", "United Kingdom")
-      loadedCountries.map(_.code) mustBe Seq("CA", "FR", "GB")
+      loadedCountries mustBe Seq(Country("CA", "Canada"), Country("FR", "France"), Country("GB", "United Kingdom"))
     }
 
     "throw an exception if the JSON cannot be loaded" in {
@@ -77,7 +76,7 @@ class CountryServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
     }
   }
 
-  ".find" - {
+  ".findByCode" - {
 
     "return Some(country) if the code exists" in {
 
@@ -91,8 +90,8 @@ class CountryServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
       when(mockEnv.resourceAsStream(countriesJsonPath))
         .thenReturn(Some(new ByteArrayInputStream(countryJson.getBytes("UTF-8"))))
 
-      val service = new CountryService(mockEnv)
-      val result  = service.find("GB")
+      val countryService = new CountryService(mockEnv)
+      val result         = countryService.findByCode("GB")
 
       result mustBe Some(Country("GB", "United Kingdom"))
     }
@@ -108,8 +107,8 @@ class CountryServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
       when(mockEnv.resourceAsStream(countriesJsonPath))
         .thenReturn(Some(new ByteArrayInputStream(countryJson.getBytes("UTF-8"))))
 
-      val service = new CountryService(mockEnv)
-      val result  = service.find("GB")
+      val countryService = new CountryService(mockEnv)
+      val result         = countryService.findByCode("GB")
 
       result mustBe None
     }

@@ -20,7 +20,7 @@ import base.BaseISpec
 import models.email.{EmailAccepted, EmailNotSent, EmailToSendRequest, EmailUnsendable, SubmissionConfirmation}
 import play.api.libs.json.Json
 import play.api.test.Injecting
-import play.api.http.Status.{ACCEPTED, BAD_GATEWAY, CONTINUE, GATEWAY_TIMEOUT, UNAUTHORIZED}
+import play.api.http.Status.{ACCEPTED, BAD_GATEWAY, UNAUTHORIZED}
 import stubs.EmailStub
 
 import scala.concurrent.ExecutionContext.Implicits.global

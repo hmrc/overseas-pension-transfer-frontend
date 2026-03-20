@@ -24,7 +24,6 @@ import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import models.{PstrNumber, QtNumber, SrnNumber, TransferNumber}
 import org.apache.pekko.Done
-import org.apache.pekko.http.scaladsl.model.HttpResponse
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting

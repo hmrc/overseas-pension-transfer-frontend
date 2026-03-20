@@ -148,7 +148,7 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
-      when(mockCountryService.find("GB"))
+      when(mockCountryService.findByCode("GB"))
         .thenReturn(Some(Country("GB", "United Kingdom")))
 
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))

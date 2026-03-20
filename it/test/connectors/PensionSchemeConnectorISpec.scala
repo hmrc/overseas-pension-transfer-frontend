@@ -19,7 +19,7 @@ package connectors
 import base.BaseISpec
 import models.authentication._
 import models.responses.{PensionSchemeErrorResponse, PensionSchemeNotAssociated}
-import models.{PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
+import models.{PensionSchemeResponse, PstrNumber}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.Json
 import play.api.test.Injecting
