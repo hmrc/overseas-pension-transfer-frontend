@@ -25,6 +25,7 @@ class PspDeclarationFormProvider @Inject() extends Mappings with Regex {
   def apply(): Form[String] =
     Form(
       "value" -> text("pspDeclaration.error.required")
+        .transform(_.trim, identity)
         .verifying(regexp(psaIdRegex, "pspDeclaration.error.pattern"))
     )
 }

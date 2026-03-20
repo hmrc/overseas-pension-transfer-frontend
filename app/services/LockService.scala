@@ -20,17 +20,19 @@ import models.audit.JourneyStartedType.StartJourneyFailed
 import models.audit.{JourneyStartedType, ReportStartedAuditModel}
 import models.authentication.AuthenticatedUser
 import models.{AllTransfersItem, PensionSchemeDetails, TransferId}
+import org.mongodb.scala.result.DeleteResult
 import play.api.Logging
+import repositories.EnhancedLockRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.lock.LockRepository
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class LockService @Inject() (
-    lockRepository: LockRepository,
+    lockRepository: EnhancedLockRepository,
     auditService: AuditService
   )(implicit ec: ExecutionContext
   ) extends Logging {
@@ -85,5 +87,7 @@ class LockService @Inject() (
 
   def isLocked(lockId: String, owner: String): Future[Boolean] =
     lockRepository.isLocked(lockId, owner)
+
+  def removeAllExpiredLocks(): Future[DeleteResult] = lockRepository.removeAllExpiredLocks()
 
 }

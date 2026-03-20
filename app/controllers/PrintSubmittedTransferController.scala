@@ -60,7 +60,7 @@ class PrintSubmittedTransferController @Inject() (
           val versionNumber: Option[String] = Some((sessionData.data \ "versionNumber").asOpt[String].getOrElse("001"))
 
           userAnswersService
-            .getExternalUserAnswers(transferId, pstr, QtStatus.Submitted, versionNumber)
+            .getExternalUserAnswers(transferId, pstr, QtStatus.Submitted, versionNumber, request.schemeDetails.srnNumber)
             .map {
               case Right(userAnswers) =>
                 val overviewDetails =

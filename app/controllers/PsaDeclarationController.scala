@@ -58,7 +58,12 @@ class PsaDeclarationController @Inject() (
     implicit request =>
       (for {
         submissionResponse   <-
-          EitherT(userAnswersService.submitDeclaration(request.authenticatedUser, request.userAnswers, request.sessionData)).leftMap { e =>
+          EitherT(userAnswersService.submitDeclaration(
+            request.authenticatedUser,
+            request.userAnswers,
+            request.sessionData,
+            srnNumber = request.sessionData.schemeInformation.srnNumber
+          )).leftMap { e =>
             logger.warn(s"[PsaDeclarationController][onSubmit] Failed to submit declaration: $e")
             Redirect(PsaDeclarationPage.nextPageRecovery())
           }

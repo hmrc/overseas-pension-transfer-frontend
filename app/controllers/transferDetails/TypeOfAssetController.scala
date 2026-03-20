@@ -18,9 +18,11 @@ package controllers.transferDetails
 
 import controllers.actions._
 import forms.transferDetails.TypeOfAssetFormProvider
+import models.assets.TypeOfAsset
 import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.{AmountOfTransferPage, TypeOfAssetPage}
 import play.api.Logging
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,7 +50,7 @@ class TypeOfAssetController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with Logging {
 
-  val form = formProvider()
+  val form: Form[Seq[TypeOfAsset]] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -69,7 +71,7 @@ class TypeOfAssetController @Inject() (
           val orderedAssets = selectedAssets.toSeq.sorted
           for {
             (sd, ua) <- Future.fromTry(AssetsMiniJourneyService.handleTypeOfAssetStatusUpdate(request.sessionData, request.userAnswers, orderedAssets, mode))
-            _        <- userAnswersService.setExternalUserAnswers(ua)
+            _        <- userAnswersService.setExternalUserAnswers(ua, request.sessionData.schemeInformation.srnNumber)
             _        <- sessionRepository.set(sd)
           } yield Redirect(TypeOfAssetPage.nextPageWith(mode, ua, sd))
         }

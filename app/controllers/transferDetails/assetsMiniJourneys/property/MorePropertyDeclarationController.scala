@@ -101,7 +101,7 @@ class MorePropertyDeclarationController @Inject() (
 
           for {
             userAnswers            <- Future.fromTry(setAnswers())
-            _                      <- userAnswersService.setExternalUserAnswers(userAnswers)
+            _                      <- userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
             sessionAfterCompletion <-
               moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.Property, completed = true, Some(continue))
           } yield Redirect(MorePropertyDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))

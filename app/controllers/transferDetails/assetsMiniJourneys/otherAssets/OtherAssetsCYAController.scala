@@ -45,7 +45,7 @@ class OtherAssetsCYAController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils {
 
-  private val actions = (identify andThen schemeData andThen getData)
+  private val actions = identify andThen schemeData andThen getData
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = actions { implicit request =>
     val list = SummaryListViewModel(OtherAssetsSummary.rows(mode, request.userAnswers, index))
@@ -57,7 +57,7 @@ class OtherAssetsCYAController @Inject() (
     val updatedUserAnswers = AssetThresholdHandler.handle(request.userAnswers, TypeOfAsset.Other, userSelection = None)
 
     for {
-      saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers)
+      saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers, request.sessionData.schemeInformation.srnNumber)
     } yield {
       saved match {
         case Right(Done) =>

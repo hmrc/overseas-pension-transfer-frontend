@@ -20,6 +20,7 @@ import controllers.actions._
 import forms.transferDetails.AmountOfTaxDeductedFormProvider
 import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.AmountOfTaxDeductedPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
@@ -43,7 +44,7 @@ class AmountOfTaxDeductedController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[BigDecimal] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -73,7 +74,7 @@ class AmountOfTaxDeductedController @Inject() (
 
           for {
             updatedAnswers <- Future.fromTry(setAnswers())
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
           } yield Redirect(AmountOfTaxDeductedPage.nextPage(mode, updatedAnswers))
         }
       )

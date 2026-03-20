@@ -54,7 +54,10 @@ class MoreAssetCompletionService @Inject() (
       enrichedAnswers = AssetThresholdHandler.handle(userAnswers, assetType, userSelection)
 
       // Step 4: persist model SaveForLater + enriched full copy Session
-      _ <- userAnswersService.setExternalUserAnswers(AssetThresholdHandler.handle(enrichedAnswers, assetType, userSelection))
+      _ <- userAnswersService.setExternalUserAnswers(
+             AssetThresholdHandler.handle(enrichedAnswers, assetType, userSelection),
+             sessionData.schemeInformation.srnNumber
+           )
 
     } yield updatedSession
   }

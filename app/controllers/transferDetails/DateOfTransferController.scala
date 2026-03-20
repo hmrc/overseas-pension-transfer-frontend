@@ -22,7 +22,7 @@ import forms.transferDetails.{AmendDateOfTransferFormProvider, DateOfTransferFor
 import models.requests.DisplayRequest
 import models.{AmendCheckMode, Mode, UserAnswers}
 import org.apache.pekko.Done
-import pages.transferDetails.{AmountOfTransferPage, DateOfTransferPage}
+import pages.transferDetails.DateOfTransferPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -75,7 +75,7 @@ class DateOfTransferController @Inject() (
           }
         for {
           updatedAnswers <- Future.fromTry(setAnswers())
-          savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+          savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
         } yield savedForLater match {
           case Right(Done) => Redirect(DateOfTransferPage.nextPage(mode, updatedAnswers))
           case Left(err)   => onFailureRedirect(err)
@@ -91,7 +91,8 @@ class DateOfTransferController @Inject() (
           request.userAnswers.id,
           request.userAnswers.pstr,
           models.QtStatus.Submitted,
-          Some("001")
+          Some("001"),
+          request.sessionData.schemeInformation.srnNumber
         ).map {
           case Right(originalSubmission) =>
             val originalDate = originalSubmission.get(DateOfTransferPage)
@@ -113,7 +114,8 @@ class DateOfTransferController @Inject() (
           request.userAnswers.id,
           request.userAnswers.pstr,
           models.QtStatus.Submitted,
-          Some("001")
+          Some("001"),
+          request.sessionData.schemeInformation.srnNumber
         ).flatMap {
           case Right(originalSubmission) =>
             val originalDate = originalSubmission.get(DateOfTransferPage)

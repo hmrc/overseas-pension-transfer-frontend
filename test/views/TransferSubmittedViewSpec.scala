@@ -20,7 +20,6 @@ import config.TestAppConfig
 import controllers.routes
 import models.requests.SchemeRequest
 import play.api.test.FakeRequest
-import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import views.html.TransferSubmittedView
 import views.utils.ViewBaseSpec
@@ -58,17 +57,18 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
       val links =
         doc(view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email, appConfig).body).getElementById("main-content").getElementsByTag("a")
 
-      links.get(0).text() mustBe messages("transferSubmitted.dashboardLink.text")
-      links.get(0).attr("href") mustBe routes.DashboardController.onPageLoad().url
+      links.get(0).text() mustBe messages("transferSubmitted.printLink")
+      links.get(0).attr("href") mustBe routes.PrintSubmittedTransferController.onPageLoad().url
 
-      links.get(1).text() mustBe messages("transferSubmitted.pensionSchemeLink.text", schemeDetails.schemeName)
-      links.get(1).attr("href") mustBe routes.DashboardController.clearAndExit(mpsLink).url
+      links.get(2).text() mustBe messages("transferSubmitted.dashboardLink.text")
+      links.get(2).attr("href") mustBe routes.DashboardController.onPageLoad().url
 
-      if (appConfig.submissionEmailEnabled) {
-        val email               = minimalDetailsIndividual.email
-        val emailSubmissionText = doc(view(testQtNumberValue, summaryList, mpsLink, email, appConfig).body).getElementById("email-submission-text")
-        emailSubmissionText.html() mustBe messages("transferSubmitted.confirmationEmailSent.text", email)
-      }
+      links.get(3).text() mustBe messages("transferSubmitted.pensionSchemeLink.text", schemeDetails.schemeName)
+      links.get(3).attr("href") mustBe routes.DashboardController.clearAndExit(mpsLink).url
+
+      val email               = minimalDetailsIndividual.email
+      val emailSubmissionText = doc(view(testQtNumberValue, summaryList, mpsLink, email, appConfig).body).getElementById("email-submission-text")
+      emailSubmissionText.html() mustBe messages("transferSubmitted.confirmationEmailSent.text", email)
     }
   }
 }

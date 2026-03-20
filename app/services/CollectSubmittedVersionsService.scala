@@ -19,7 +19,7 @@ package services
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
 import models.QtStatus.Submitted
-import models.{PstrNumber, QtNumber, QtStatus, TransferId, UserAnswers}
+import models.{PstrNumber, QtNumber, QtStatus, SrnNumber, TransferId, UserAnswers}
 import models.dtos.UserAnswersDTO.toUserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -34,18 +34,19 @@ class CollectSubmittedVersionsService @Inject() (
       qtReference: TransferId,
       pstr: PstrNumber,
       qtStatus: QtStatus,
-      versionNumber: String
+      versionNumber: String,
+      srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier
     ): Future[(Option[UserAnswers], List[UserAnswers])] = {
 
-    def findDraft: Future[Option[UserAnswers]] = userAnswersConnector.getAnswers(qtReference.value).map {
+    def findDraft: Future[Option[UserAnswers]] = userAnswersConnector.getAnswers(qtReference.value, srnNumber).map {
       case Right(dto) => Some(toUserAnswers(dto))
       case Left(_)    => None
     }
 
     def collectVersions: Future[List[UserAnswers]] = {
       if (versionNumber == "001") {
-        userAnswersConnector.getAnswers(qtReference, pstr, Submitted, Some(versionNumber)) map {
+        userAnswersConnector.getAnswers(qtReference, pstr, Submitted, Some(versionNumber), srnNumber) map {
           case Right(dto) => List(toUserAnswers(dto))
           case Left(_)    => Nil
         }
@@ -60,7 +61,7 @@ class CollectSubmittedVersionsService @Inject() (
               case 2 => s"0$version"
               case _ => version.toString
             }
-            userAnswersConnector.getAnswers(qtReference, pstr, qtStatus, Some(stringifyVersion)) flatMap {
+            userAnswersConnector.getAnswers(qtReference, pstr, qtStatus, Some(stringifyVersion), srnNumber) flatMap {
               case Right(dto) =>
                 acc.map(currentList => toUserAnswers(dto) :: currentList)
               case Left(_)    => acc

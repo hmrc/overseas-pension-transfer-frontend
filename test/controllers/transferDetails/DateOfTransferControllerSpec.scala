@@ -50,7 +50,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   private val validAnswer              = LocalDate.now(ZoneOffset.UTC)
   private lazy val dateOfTransferRoute = routes.DateOfTransferController.onPageLoad(NormalMode).url
 
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+  def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfTransferRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -70,8 +70,8 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val application = applicationBuilder().build()
 
         running(application) {
-          val result  = route(application, getRequest()).value
-          val request = getRequest()
+          val result  = route(application, getRequest).value
+          val request = getRequest
           val view    = application.injector.instanceOf[DateOfTransferView]
 
           status(result) mustEqual OK
@@ -87,8 +87,8 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         running(application) {
           val view    = application.injector.instanceOf[DateOfTransferView]
-          val request = getRequest()
-          val result  = route(application, getRequest()).value
+          val request = getRequest
+          val result  = route(application, getRequest).value
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
@@ -105,7 +105,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           .set(DateOfTransferPage, originalDate.minusDays(5)).success.value
 
         val mockUserAnswersService = mock[UserAnswersService]
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(originalSubmission)))
 
         val application = applicationBuilder(userAnswers = currentUserAnswers)
@@ -139,7 +139,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
           .thenReturn(Future.successful(Right(Done)))
 
         val application = applicationBuilder(userAnswersMemberNameQtNumber)
@@ -160,10 +160,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
         val mockUserAnswersService = mock[UserAnswersService]
 
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(emptyUserAnswers.set(DateOfTransferPage, validAnswer).success.value)))
 
-        when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
           .thenReturn(Future.successful(Right(Done)))
 
         val application = applicationBuilder(userAnswersMemberNameQtNumber)
@@ -216,10 +216,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           .set(DateOfTransferPage, originalDate).success.value
 
         val mockUserAnswersService = mock[UserAnswersService]
-        when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
           .thenReturn(Future.successful(Right(Done)))
 
-        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any())(any()))
+        when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(originalSubmission)))
 
         val application = applicationBuilder(userAnswers = emptyUserAnswers)
@@ -250,7 +250,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-        when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+        when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
           .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
         val application = applicationBuilder(userAnswersMemberNameQtNumber)

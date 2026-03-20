@@ -71,7 +71,7 @@ class MoreAssetCompletionServiceSpec
           val updated: SessionData =
             AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
 
-          when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
+          when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any[HeaderCarrier]))
             .thenReturn(Future.successful(Right(Done)))
 
           when(mockSessionRepository.set(any()))
@@ -84,7 +84,7 @@ class MoreAssetCompletionServiceSpec
             val expectedTwice = AssetThresholdHandler.handle(expectedOnce, assetType, Some(true))
 
             val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture())(any[HeaderCarrier])
+            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture(), any())(any[HeaderCarrier])
             uaCaptor.getValue mustBe expectedTwice
             verify(mockSessionRepository, times(1)).set(updated)
 
@@ -97,7 +97,7 @@ class MoreAssetCompletionServiceSpec
           val updated: SessionData =
             AssetsMiniJourneyService.setAssetCompleted(emptySessionData, assetType, completed = true).success.value
 
-          when(mockUserAnswersService.setExternalUserAnswers(any())(any[HeaderCarrier]))
+          when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any[HeaderCarrier]))
             .thenReturn(Future.successful(Right(Done)))
 
           when(mockSessionRepository.set(any()))
@@ -110,7 +110,7 @@ class MoreAssetCompletionServiceSpec
             val expectedTwice = AssetThresholdHandler.handle(expectedOnce, assetType, None)
 
             val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture())(any[HeaderCarrier])
+            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture(), any())(any[HeaderCarrier])
             uaCaptor.getValue mustBe expectedTwice
             verify(mockSessionRepository, times(1)).set(updated)
             succeed

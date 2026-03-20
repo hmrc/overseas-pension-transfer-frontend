@@ -23,6 +23,7 @@ import models.Mode
 import models.TaskCategory.MemberDetails
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,7 +46,7 @@ class MemberIsResidentUKController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -66,7 +67,7 @@ class MemberIsResidentUKController @Inject() (
           for {
             baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberIsResidentUKPage, value))
             ua1           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
-            savedForLater <- userAnswersService.setExternalUserAnswers(ua1)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua1, request.sessionData.schemeInformation.srnNumber)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(MemberIsResidentUKPage.nextPage(mode, ua1))

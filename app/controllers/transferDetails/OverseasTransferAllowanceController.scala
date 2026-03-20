@@ -22,6 +22,7 @@ import forms.transferDetails.OverseasTransferAllowanceFormProvider
 import models.{AmendCheckMode, Mode, UserAnswers}
 import org.apache.pekko.Done
 import pages.transferDetails.OverseasTransferAllowancePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
@@ -45,7 +46,7 @@ class OverseasTransferAllowanceController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  val form = formProvider()
+  val form: Form[BigDecimal] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData) {
@@ -76,7 +77,7 @@ class OverseasTransferAllowanceController @Inject() (
 
           for {
             updatedAnswers <- Future.fromTry(setAnswers())
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers)
+            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
 
           } yield {
             savedForLater match {

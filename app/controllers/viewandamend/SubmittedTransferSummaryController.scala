@@ -54,7 +54,8 @@ class SubmittedTransferSummaryController @Inject() (
           _        <- if (isLocked) lockService.releaseLock(qtReference.value, owner) else Future.unit
 
           result <- qtReference match {
-                      case QtNumber(value) => collectSubmittedVersionsService.collectVersions(qtReference, pstr, qtStatus, versionNumber) map {
+                      case QtNumber(value) =>
+                        collectSubmittedVersionsService.collectVersions(qtReference, pstr, qtStatus, versionNumber, request.schemeDetails.srnNumber) map {
                           case (maybeDraft, userAnswers) =>
                             def createTableRows    = SubmittedTransferSummaryViewModel.rows(maybeDraft, userAnswers, versionNumber)
                             def memberName: String = if (userAnswers.nonEmpty) {

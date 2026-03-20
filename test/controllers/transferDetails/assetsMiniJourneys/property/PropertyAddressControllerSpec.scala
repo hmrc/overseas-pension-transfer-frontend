@@ -60,49 +60,12 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
   "PropertyAddress Controller" - {
 
-    // TODO REMOVE
-    "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber)
-        .overrides(
-          bind[CountryService].toInstance(mockCountryService)
-        )
-        .configure(
-          "features.accessibility-address-changes" -> true
-        )
-        .build()
-
-      when(mockCountryService.countries).thenReturn(testCountries)
-
-      running(application) {
-        val request = FakeRequest(GET, propertyAddressRoute)
-
-        val form      = formProvider(true)
-        val view      = application.injector.instanceOf[PropertyAddressView]
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual view(
-          form,
-          countrySelectViewModel,
-          NormalMode,
-          index
-        )(fakeDisplayRequest(request), messages(application), appConfig).toString
-      }
-    }
-
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers =
         userAnswersMemberNameQtNumber.set(PropertyAddressPage(index), propertyAddress).success.value
       val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        )
-        .configure(
-          "features.accessibility-address-changes" -> true
         )
         .build()
 
@@ -112,7 +75,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val request                                                         = FakeRequest(GET, propertyAddressRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
-        val form      = formProvider(true)
+        val form      = formProvider()
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
         val appConfig = application.injector.instanceOf[FrontendAppConfig]
@@ -171,7 +134,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[CountryService].toInstance(mockCountryService)
           )
           .build()
 
@@ -197,9 +161,6 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
         )
-        .configure(
-          "features.accessibility-address-changes" -> true
-        )
         .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
@@ -211,7 +172,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
         implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
 
-        val form      = formProvider(true)
+        val form      = formProvider()
         val boundForm = form.bind(Map("value" -> "invalid value"))
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
@@ -235,9 +196,6 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           bind[CountryService].toInstance(mockCountryService),
           bind[AddressService].toInstance(mockAddressService)
         )
-        .configure(
-          "features.accessibility-address-changes" -> true
-        )
         .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
@@ -259,7 +217,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
         implicit val displayRequest: DisplayRequest[AnyContentAsFormUrlEncoded] = fakeDisplayRequest(request)
 
-        val form      = formProvider(true)
+        val form      = formProvider()
         val boundForm = form.bind(
           Map(data: _*)
         ).withError("postcode", "membersLastUKAddress.error.postcode.incorrect")

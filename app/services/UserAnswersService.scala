@@ -22,7 +22,7 @@ import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
 import models.responses._
-import models.{AllTransfersItem, PstrNumber, QtStatus, SessionData, TransferId, UserAnswers}
+import models.{AllTransfersItem, PstrNumber, QtStatus, SessionData, SrnNumber, TransferId, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
 import play.api.libs.json._
@@ -38,7 +38,7 @@ class UserAnswersService @Inject() (
 
   // These two versions of getExternalUserAnswers are purposely similar to one another as it is recommended to combine them in a future refactor
   def getExternalUserAnswers(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
-    connector.getAnswers(sessionData.transferId.value) map {
+    connector.getAnswers(sessionData.transferId.value, sessionData.schemeInformation.srnNumber) map {
       case Right(userAnswersDTO) => Right(toUserAnswers(userAnswersDTO))
       case Left(error)           => Left(error)
     }
@@ -48,29 +48,32 @@ class UserAnswersService @Inject() (
       transferId: TransferId,
       pstr: PstrNumber,
       qtStatus: QtStatus,
-      versionNumber: Option[String]
+      versionNumber: Option[String],
+      srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier
     ): Future[Either[UserAnswersError, UserAnswers]] = {
     connector.getAnswers(
       transferId,
       pstr,
       qtStatus,
-      versionNumber
+      versionNumber,
+      srnNumber
     ).map {
       case Right(dto) => Right(toUserAnswers(dto))
       case Left(err)  => Left(err)
     }
   }
 
-  def setExternalUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
-    connector.putAnswers(fromUserAnswers(userAnswers))
+  def setExternalUserAnswers(userAnswers: UserAnswers, srnNumber: SrnNumber)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
+    connector.putAnswers(fromUserAnswers(userAnswers), srnNumber)
   }
 
   def submitDeclaration(
       authenticatedUser: AuthenticatedUser,
       userAnswers: UserAnswers,
       sessionData: SessionData,
-      maybePsaId: Option[PsaId] = None
+      maybePsaId: Option[PsaId] = None,
+      srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier
     ): Future[Either[UserAnswersError, SubmissionResponse]] = {
 
@@ -78,17 +81,17 @@ class UserAnswersService @Inject() (
     maybePsaId match {
       case Some(psaId) =>
         authService.checkIsAuthorisingPsa(sessionData.schemeInformation.srnNumber.value, psaId).flatMap {
-          case true  => connector.postSubmission(submissionDTO)
+          case true  => connector.postSubmission(submissionDTO, srnNumber)
           case false =>
             Future.successful(Left(NotAuthorisingPsaIdErrorResponse("PSA is not PSP authorising PSA", None)))
         }
       case None        =>
-        connector.postSubmission(submissionDTO)
+        connector.postSubmission(submissionDTO, srnNumber)
     }
   }
 
-  def clearUserAnswers(id: String)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
-    connector.deleteAnswers(id)
+  def clearUserAnswers(id: String, srnNumber: SrnNumber)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
+    connector.deleteAnswers(id, srnNumber)
   }
 
   def toAllTransfersItem(userAnswers: UserAnswers): AllTransfersItem = {

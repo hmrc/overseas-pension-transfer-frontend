@@ -755,6 +755,7 @@ cashAmountInTransfer.checkYourAnswersLabel = Amount of cash
 pspDeclaration.title = Declaration
 pspDeclaration.heading = Declaration
 pspDeclaration.label = What is the authorising scheme administrator''s ID?
+pspDeclaration.label.hint = Must begin with A followed by 7 numbers, like A1234567
 pspDeclaration.bySubmitting = By submitting I declare that:
 pspDeclaration.receivedAndChecked = I''ve received and checked the information and acknowledgement on behalf of the scheme administrator.
 pspDeclaration.correctAndComplete = to the best of my knowledge and belief the information given in this notification is correct and complete and that the content of this report has been approved by the scheme administrator named below has authorised me to submit this report.

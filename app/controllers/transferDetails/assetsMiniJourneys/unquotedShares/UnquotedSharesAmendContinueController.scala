@@ -21,6 +21,7 @@ import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAme
 import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueAssetPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
@@ -48,7 +49,7 @@ class UnquotedSharesAmendContinueController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
@@ -94,7 +95,7 @@ class UnquotedSharesAmendContinueController @Inject() (
             sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.UnquotedShares, completed = true))
             _   <- sessionRepository.set(sd)
             ua1 <- Future.fromTry(setAnswers())
-            _   <- userAnswersService.setExternalUserAnswers(ua1)
+            _   <- userAnswersService.setExternalUserAnswers(ua1, request.sessionData.schemeInformation.srnNumber)
           } yield {
             val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
             Redirect(UnquotedSharesAmendContinueAssetPage.nextPageWith(mode, ua1, (sd, nextIndex)))

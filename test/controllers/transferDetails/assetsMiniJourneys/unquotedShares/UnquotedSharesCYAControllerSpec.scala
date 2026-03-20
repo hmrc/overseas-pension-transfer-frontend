@@ -78,7 +78,7 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val ua  = userAnswersWithAssets(assetsCount = 5)
       val app = applicationWithMocks(ua)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
@@ -98,7 +98,7 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val ua  = userAnswersWithAssets(assetsCount = 4)
       val app = applicationWithMocks(ua)
 
-      when(mockUserAnswersService.setExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 

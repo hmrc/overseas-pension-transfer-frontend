@@ -20,7 +20,6 @@ import base.AddressBase
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataOld
 import models.address._
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
@@ -42,25 +41,6 @@ class AddressServiceSpec
   private val mockCountryService = mock[CountryService]
 
   private val service = new AddressService(mockCountryService)
-
-  ".propertyAddress" - {
-
-    // TODO REMOVE
-    "must map the form data (including postcode and PO box) (OLD)" in {
-      when(mockCountryService.findByCode(Countries.UK.code)).thenReturn(Some(Countries.UK))
-
-      val formData = PropertyAddressFormDataOld(
-        addressLine1 = propertyAddress.addressLine1,
-        addressLine2 = propertyAddress.addressLine2,
-        addressLine3 = propertyAddress.addressLine3,
-        addressLine4 = propertyAddress.addressLine4,
-        countryCode  = propertyAddress.country.code,
-        postcode     = propertyAddress.postcode
-      )
-
-      service.propertyAddress(formData).value mustBe propertyAddress
-    }
-  }
 
   ".schemeManagersAddress" - {
     val formData = SchemeManagersAddressFormData(

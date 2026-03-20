@@ -23,6 +23,7 @@ import models.Mode
 import models.TaskCategory.SchemeManagerDetails
 import org.apache.pekko.Done
 import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{TaskService, UserAnswersService}
@@ -44,7 +45,7 @@ class SchemeManagerOrganisationNameController @Inject() (
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -65,7 +66,7 @@ class SchemeManagerOrganisationNameController @Inject() (
           for {
             ua1           <- Future.fromTry(request.userAnswers.set(SchemeManagerOrganisationNamePage, value))
             ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = SchemeManagerDetails))
-            savedForLater <- userAnswersService.setExternalUserAnswers(ua2)
+            savedForLater <- userAnswersService.setExternalUserAnswers(ua2, request.sessionData.schemeInformation.srnNumber)
           } yield {
             savedForLater match {
               case Right(Done) => Redirect(SchemeManagerOrganisationNamePage.nextPage(mode, ua2))

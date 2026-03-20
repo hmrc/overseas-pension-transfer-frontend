@@ -99,11 +99,11 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     )
   }
 
-  "addressLine3" - {
+  ".townOrCity" - {
 
-    val fieldName  = "addressLine3"
-    val lengthKey  = "common.addressInput.error.addressLine3.length"
-    val patternKey = "common.addressInput.error.addressLine3.pattern"
+    val fieldName  = "townOrCity"
+    val lengthKey  = "common.addressInput.error.townOrCity.length"
+    val patternKey = "common.addressInput.error.townOrCity.pattern"
     val maxLength  = 35
 
     behave like fieldThatBindsValidData(
@@ -133,11 +133,11 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     )
   }
 
-  "addressLine4" - {
+  ".county" - {
 
-    val fieldName  = "addressLine4"
-    val lengthKey  = "common.addressInput.error.addressLine4.length"
-    val patternKey = "common.addressInput.error.addressLine4.pattern"
+    val fieldName  = "county"
+    val lengthKey  = "common.addressInput.error.county.length"
+    val patternKey = "common.addressInput.error.county.pattern"
     val maxLength  = 35
 
     behave like fieldThatBindsValidData(
@@ -218,8 +218,8 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
         Map(
           "addressLine1" -> "  10 Downing Street  ",
           "addressLine2" -> "  Westminster  ",
-          "addressLine3" -> "  London  ",
-          "addressLine4" -> "  Greater London  ",
+          "townOrCity"   -> "  London  ",
+          "county"       -> "  Greater London  ",
           "postcode"     -> "  SW1A 2AA  "
         )
       )

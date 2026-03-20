@@ -27,6 +27,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
+import repositories.EnhancedLockRepository
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
@@ -40,7 +41,7 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with Mocki
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
 
-  private val mockLockRepository = mock[LockRepository]
+  private val mockLockRepository = mock[EnhancedLockRepository]
   private val mockAuditService   = mock[AuditService]
 
   private val service = new LockService(mockLockRepository, mockAuditService)
