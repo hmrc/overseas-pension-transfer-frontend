@@ -88,12 +88,11 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
       val mockEmailService            = mock[EmailService]
 
-      val receiptDate    = Instant.now
       val qtNumber       = QtNumber("QT123456")
       val minimalDetails = mock[MinimalDetails]
 
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, receiptDate))))
+        .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, now))))
 
       when(mockMinimalDetailsConnector.fetch(any[PspId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(minimalDetails)))

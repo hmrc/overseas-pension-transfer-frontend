@@ -16,22 +16,23 @@
 
 package forms.memberDetails
 
+import base.SpecBase
 import forms.behaviours.DateBehaviours
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
 import java.time.{LocalDate, ZoneOffset}
 
-class MemberDateOfLeavingUKFormProviderSpec extends DateBehaviours {
+class MemberDateOfLeavingUKFormProviderSpec extends DateBehaviours with SpecBase {
 
   implicit private val messages: Messages = stubMessages()
-  private val form                        = new MemberDateOfLeavingUKFormProvider()()
+  private val form                        = new MemberDateOfLeavingUKFormProvider(clock)()
 
   ".value" - {
 
     val validData = datesBetween(
       min = LocalDate.of(1901, 1, 1),
-      max = LocalDate.now(ZoneOffset.UTC)
+      max = today
     )
 
     behave like dateField(form, "value", validData)

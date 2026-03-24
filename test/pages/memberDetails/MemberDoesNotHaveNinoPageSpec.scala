@@ -25,17 +25,13 @@ import org.scalatest.matchers.must.Matchers
 
 class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
-  private val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
   ".nextPage" - {
-
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
 
     "in Normal Mode" - {
 
       "must go to Member Date of Birth" in {
 
-        MemberDoesNotHaveNinoPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode)
+        MemberDoesNotHaveNinoPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode)
       }
     }
 
@@ -43,13 +39,13 @@ class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers" in {
 
-        MemberDoesNotHaveNinoPage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDoesNotHaveNinoPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        MemberDoesNotHaveNinoPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        MemberDoesNotHaveNinoPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
@@ -58,7 +54,7 @@ class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers with SpecB
   "cleanup" - {
 
     "must remove MemberNinoPage when a 'no NINO' reason is supplied" in {
-      val withNinoUA = emptyAnswers
+      val withNinoUA = emptyUserAnswers
         .set(MemberNinoPage, "AA123456A")
         .success
         .value
@@ -69,7 +65,7 @@ class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers with SpecB
     }
 
     "must not remove MemberNinoPage when a 'no NINO' reason is not supplied" in {
-      val withNinoUA = emptyAnswers
+      val withNinoUA = emptyUserAnswers
         .set(MemberNinoPage, "AA123456A")
         .success
         .value

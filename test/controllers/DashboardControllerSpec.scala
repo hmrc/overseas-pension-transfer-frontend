@@ -68,13 +68,13 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         nino            = Some("AA123456A"),
         memberFirstName = Some("John"),
         memberSurname   = Some("Doe"),
-        qtDate          = Some(LocalDate.now),
-        lastUpdated     = Some(Instant.now),
+        qtDate          = Some(today),
+        lastUpdated     = Some(now),
         pstrNumber      = Some(PstrNumber("12345678AB")),
         submissionDate  = None
       )
 
-      val dd = DashboardData("id")
+      val dd = DashboardData.create("id", now)
         .set(PensionSchemeDetailsQuery, pensionScheme).success.value
         .set(TransfersOverviewQuery, Seq(transferItem)).success.value
 
@@ -194,7 +194,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
           memberFirstName = None,
           memberSurname   = None,
           qtDate          = None,
-          lastUpdated     = Some(Instant.now),
+          lastUpdated     = Some(now),
           pstrNumber      = Some(PstrNumber("PSTR111")),
           submissionDate  = None
         ),
@@ -206,7 +206,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
           memberFirstName = None,
           memberSurname   = None,
           qtDate          = None,
-          lastUpdated     = Some(Instant.now),
+          lastUpdated     = Some(now),
           pstrNumber      = Some(PstrNumber("PSTR111")),
           submissionDate  = None
         ),
@@ -218,13 +218,13 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
           memberFirstName = None,
           memberSurname   = None,
           qtDate          = None,
-          lastUpdated     = Some(Instant.now),
+          lastUpdated     = Some(now),
           pstrNumber      = Some(PstrNumber("PSTR111")),
           submissionDate  = None
         )
       )
 
-      val dd = DashboardData("id")
+      val dd = DashboardData.create("id", now)
         .set(PensionSchemeDetailsQuery, pensionScheme).success.value
         .set(TransfersOverviewQuery, transfers).success.value
 
@@ -307,13 +307,13 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         nino            = Some("AA123456A"),
         memberFirstName = Some("John"),
         memberSurname   = Some("Doe"),
-        qtDate          = Some(LocalDate.now),
-        lastUpdated     = Some(Instant.now),
+        qtDate          = Some(today),
+        lastUpdated     = Some(now),
         pstrNumber      = Some(PstrNumber("12345678AB")),
         submissionDate  = None
       )
 
-      val dd = DashboardData("id")
+      val dd = DashboardData.create("id", now)
         .set(PensionSchemeDetailsQuery, pensionScheme).success.value
         .set(TransfersOverviewQuery, Seq(transferItem)).success.value
 
@@ -358,8 +358,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         nino            = Some("AA123456A"),
         memberFirstName = Some("John"),
         memberSurname   = Some("Doe"),
-        qtDate          = Some(LocalDate.now),
-        lastUpdated     = Some(Instant.now),
+        qtDate          = Some(today),
+        lastUpdated     = Some(now),
         pstrNumber      = Some(PstrNumber("12345678AB")),
         submissionDate  = None
       )
@@ -371,13 +371,13 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         nino            = Some("BB123456B"),
         memberFirstName = Some("Alice"),
         memberSurname   = Some("Smith"),
-        qtDate          = Some(LocalDate.now),
-        lastUpdated     = Some(Instant.now),
+        qtDate          = Some(today),
+        lastUpdated     = Some(now),
         pstrNumber      = Some(PstrNumber("12345678AB")),
         submissionDate  = None
       )
 
-      val dd = DashboardData("id")
+      val dd = DashboardData.create("id", now)
         .set(PensionSchemeDetailsQuery, pensionScheme).success.value
         .set(TransfersOverviewQuery, Seq(johnTransfer, aliceTransfer)).success.value
 
@@ -437,8 +437,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         nino            = Some("AA123456A"),
         memberFirstName = Some("John"),
         memberSurname   = Some("Doe"),
-        qtDate          = Some(LocalDate.now),
-        lastUpdated     = Some(Instant.now),
+        qtDate          = Some(today),
+        lastUpdated     = Some(now),
         pstrNumber      = Some(PstrNumber("12345678AB")),
         submissionDate  = None
       )
@@ -450,13 +450,13 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         nino            = Some("BB123456B"),
         memberFirstName = Some("Alice"),
         memberSurname   = Some("Smith"),
-        qtDate          = Some(LocalDate.now),
-        lastUpdated     = Some(Instant.now),
+        qtDate          = Some(today),
+        lastUpdated     = Some(now),
         pstrNumber      = Some(PstrNumber("12345678AB")),
         submissionDate  = None
       )
 
-      val dd = DashboardData("id")
+      val dd = DashboardData.create("id", now)
         .set(PensionSchemeDetailsQuery, pensionScheme).success.value
         .set(TransfersOverviewQuery, Seq(johnTransfer, aliceTransfer)).success.value
 
@@ -508,7 +508,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val emptyUserAnswers = UserAnswers(
         id          = transferId,
         pstr        = PstrNumber("PSTR000"),
-        lastUpdated = Instant.now(),
+        lastUpdated = now,
         data        = Json.obj()
       )
 

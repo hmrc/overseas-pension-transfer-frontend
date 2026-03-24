@@ -28,11 +28,9 @@ class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with S
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
       "must go to next page" in {
-        UnquotedSharesCompanyNamePage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
+        UnquotedSharesCompanyNamePage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
           NormalMode,
           index
         )
@@ -41,7 +39,7 @@ class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with S
 
     "in Check Mode" - {
       "must go to next page" in {
-        UnquotedSharesCompanyNamePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
+        UnquotedSharesCompanyNamePage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
           CheckMode,
           index
         )
@@ -50,7 +48,10 @@ class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with S
 
     "in FinalCheckMode" - {
       "must go to next page" in {
-        UnquotedSharesCompanyNamePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
+        UnquotedSharesCompanyNamePage(index).nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -59,7 +60,10 @@ class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with S
 
     "in AmendCheckMode" - {
       "must go to next page" in {
-        UnquotedSharesCompanyNamePage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
+        UnquotedSharesCompanyNamePage(index).nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
           AmendCheckMode,
           index
         )

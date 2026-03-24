@@ -44,16 +44,14 @@ class SessionRepositorySpec
 
   override val databaseName: String = "test-session"
 
-  override val now: Instant = Instant.parse("2025-01-01T00:00:00Z")
-  private val fixedClock    = Clock.fixed(now, ZoneOffset.UTC)
-  private val encryption    = new EncryptionService("test-master-key")
-  private val appConfig     = new TestAppConfig
+  private val encryption = new EncryptionService("test-master-key")
+  private val appConfig  = new TestAppConfig
 
   private val repository = new SessionRepository(
     mongoComponent    = mongoComponent,
     encryptionService = encryption,
     appConfig         = appConfig,
-    clock             = fixedClock
+    clock             = clock
   )
 
   private def sessionData(sessionId: String, transferId: TransferId) =

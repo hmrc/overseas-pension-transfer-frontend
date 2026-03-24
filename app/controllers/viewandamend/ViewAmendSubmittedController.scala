@@ -43,6 +43,7 @@ import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.summarylist._
 import views.html.viewandamend.ViewSubmittedView
 
+import java.time.{Clock, Instant}
 import scala.concurrent.{ExecutionContext, Future}
 
 class ViewAmendSubmittedController @Inject() (
@@ -55,7 +56,8 @@ class ViewAmendSubmittedController @Inject() (
     view: ViewSubmittedView,
     lockService: LockService,
     sessionRepository: SessionRepository,
-    appConfig: FrontendAppConfig
+    appConfig: FrontendAppConfig,
+    clock: Clock
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
 
@@ -75,7 +77,8 @@ class ViewAmendSubmittedController @Inject() (
                     request.authenticatedUser,
                     Json.obj(
                       "receiptDate" -> userAnswers.lastUpdated
-                    )
+                    ),
+                    Instant.now(clock)
                   )
 
                   val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) {
@@ -136,7 +139,8 @@ class ViewAmendSubmittedController @Inject() (
           Json.obj(
             "receiptDate"   -> userAnswers.lastUpdated,
             "versionNumber" -> versionNumber
-          )
+          ),
+          Instant.now(clock)
         )
 
         val sessionDataWithMemberName: SessionData =

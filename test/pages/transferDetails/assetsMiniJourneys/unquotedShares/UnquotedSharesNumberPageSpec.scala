@@ -28,11 +28,9 @@ class UnquotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
       "must go to the Next page" in {
-        UnquotedSharesNumberPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(
+        UnquotedSharesNumberPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(
           NormalMode,
           index
         )
@@ -41,7 +39,7 @@ class UnquotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
     "in CheckMode" - {
       "must go to the Next page" in {
-        UnquotedSharesNumberPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(
+        UnquotedSharesNumberPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(
           CheckMode,
           index
         )
@@ -50,7 +48,7 @@ class UnquotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        UnquotedSharesNumberPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(
+        UnquotedSharesNumberPage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -59,7 +57,7 @@ class UnquotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        UnquotedSharesNumberPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(
+        UnquotedSharesNumberPage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(
           AmendCheckMode,
           index
         )

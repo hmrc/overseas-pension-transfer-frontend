@@ -27,11 +27,9 @@ class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
       "must go to Index" in {
-        QuotedSharesClassPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
+        QuotedSharesClassPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
           NormalMode,
           index
         )
@@ -40,7 +38,7 @@ class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in CheckMode" - {
       "must go to Index" in {
-        QuotedSharesClassPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
+        QuotedSharesClassPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
           CheckMode,
           index
         )
@@ -49,7 +47,7 @@ class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in FinalCheckMode" - {
       "must go to Index" in {
-        QuotedSharesClassPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
+        QuotedSharesClassPage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -58,7 +56,7 @@ class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in AmendCheckMode" - {
       "must go to Index" in {
-        QuotedSharesClassPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
+        QuotedSharesClassPage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
           AmendCheckMode,
           index
         )

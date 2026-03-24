@@ -28,8 +28,8 @@ class DeserialisationException(message: String) extends RuntimeException(message
 final case class UserAnswers(
     id: TransferId,
     pstr: PstrNumber,
-    data: JsObject       = Json.obj(),
-    lastUpdated: Instant = Instant.now
+    data: JsObject,
+    lastUpdated: Instant
   ) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =

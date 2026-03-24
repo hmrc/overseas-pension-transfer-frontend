@@ -66,12 +66,11 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
       val mockEmailService            = mock[EmailService]
 
-      val receiptDate    = Instant.now
       val qtNumber       = QtNumber("QT123456")
       val minimalDetails = mock[MinimalDetails]
 
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, receiptDate))))
+        .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, now))))
 
       when(mockMinimalDetailsConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(minimalDetails)))
@@ -129,11 +128,10 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockEmailService            = mock[EmailService]
       val mockSessionRepository       = mock[SessionRepository]
 
-      val receiptDate = Instant.now
-      val qtNumber    = QtNumber("QT123456")
+      val qtNumber = QtNumber("QT123456")
 
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, receiptDate))))
+        .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, now))))
 
       when(mockMinimalDetailsConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Left(DetailsNotFound)))

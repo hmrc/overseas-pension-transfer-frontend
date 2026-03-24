@@ -43,22 +43,20 @@ class DashboardSessionRepositorySpec
 
   override val databaseName: String = "test-dashboard"
 
-  override val now: Instant = Instant.parse("2025-01-01T00:00:00Z")
-  private val fixedClock    = Clock.fixed(now, ZoneOffset.UTC)
-  private val encryption    = new EncryptionService("test-master-key")
-  private val appConfig     = new TestAppConfig
+  private val encryption = new EncryptionService("test-master-key")
+  private val appConfig  = new TestAppConfig
 
   private val repository = new DashboardSessionRepository(
     mongoComponent    = mongoComponent,
     encryptionService = encryption,
     appConfig         = appConfig,
-    clock             = fixedClock
+    clock             = clock
   )
 
   "DashboardSessionRepository" - {
 
     "must save and retrieve DashboardData with encryption" in {
-      val dashboard = DashboardData("id-1", data = DashboardData.empty.data, lastUpdated = now)
+      val dashboard = DashboardData.create("id-1", now)
       repository.set(dashboard).futureValue mustBe true
 
       val retrieved = repository.get("id-1").futureValue.value
@@ -67,7 +65,7 @@ class DashboardSessionRepositorySpec
     }
 
     "must update lastUpdated when keepAlive is called" in {
-      val dashboard = DashboardData("id-keepalive", data = DashboardData.empty.data, lastUpdated = now.minusSeconds(1000))
+      val dashboard = DashboardData.create("id-keepalive", now.minusSeconds(1000))
       repository.set(dashboard).futureValue mustBe true
 
       repository.keepAlive("id-keepalive").futureValue mustBe true
@@ -77,7 +75,7 @@ class DashboardSessionRepositorySpec
     }
 
     "must delete DashboardData when clear is called" in {
-      val dashboard = DashboardData("id-clear", data = DashboardData.empty.data, lastUpdated = now)
+      val dashboard = DashboardData.create("id-clear", now)
       repository.set(dashboard).futureValue mustBe true
 
       repository.clear("id-clear").futureValue mustBe true
@@ -117,7 +115,7 @@ class DashboardSessionRepositorySpec
     }
 
     "must handle empty ID gracefully" in {
-      val dashboard = DashboardData("", data = DashboardData.empty.data, lastUpdated = now)
+      val dashboard = DashboardData.create("", now)
       repository.set(dashboard).futureValue mustBe true
       repository.get("").futureValue.value.id mustBe ""
       repository.clear("").futureValue mustBe true

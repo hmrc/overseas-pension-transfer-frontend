@@ -28,11 +28,9 @@ class QuotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
       "must go to the Next page" in {
-        QuotedSharesNumberPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
+        QuotedSharesNumberPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
           NormalMode,
           index
         )
@@ -41,7 +39,7 @@ class QuotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
     "in CheckMode" - {
       "must go to the Next page" in {
-        QuotedSharesNumberPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
+        QuotedSharesNumberPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
           CheckMode,
           index
         )
@@ -50,7 +48,7 @@ class QuotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        QuotedSharesNumberPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
+        QuotedSharesNumberPage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -59,7 +57,7 @@ class QuotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        QuotedSharesNumberPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
+        QuotedSharesNumberPage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
           AmendCheckMode,
           index
         )

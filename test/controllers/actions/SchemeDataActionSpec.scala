@@ -52,7 +52,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
       "when authenticatedUser has NO existing pensionSchemeDetails and checkAssociation returns true" in {
         val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj("srnNumber" -> "S1234567", "pstrNumber" -> "12345678AB", "schemeName" -> "Scheme Name"))
 
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData.create("id", now).copy(data = dataJson)))
         when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
 
         val identifierRequest = IdentifierRequest(
@@ -149,7 +149,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
       val schemeDetails = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
       val dashboardData =
-        DashboardData("id", Json.obj())
+        DashboardData.create("id", now)
           .set(PensionSchemeDetailsQuery, schemeDetails)
           .success
           .value
@@ -179,7 +179,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
       "when there is no srn found" in {
         val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj())
 
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData("id", dataJson)))
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData.create("id", now).copy(data = dataJson)))
 
         val identifierRequest = IdentifierRequest(
           FakeRequest(),

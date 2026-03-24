@@ -16,40 +16,39 @@
 
 package models
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import base.SpecBase
+import org.scalatest.freespec.AnyFreeSpec
 import play.api.libs.json._
 import services.EncryptionService
-import java.time.Instant
 
-class DashboardDataSpec extends AnyWordSpec with Matchers {
+class DashboardDataSpec extends AnyFreeSpec with SpecBase {
 
   val encryptionService = new EncryptionService("F42sAkGScIpm4Vlui6XGpKW/zvmfyAYyoNHeLVQuoCk=")
 
   val testData = DashboardData(
     id          = "Int-123",
     data        = Json.obj("transfers" -> Json.obj("qtStatus" -> "InProgress")),
-    lastUpdated = Instant.now()
+    lastUpdated = now
   )
 
-  "DashboardData.encryptedFormat" should {
+  "DashboardData.encryptedFormat" - {
 
     "encrypt and decrypt DashboardData successfully" in {
       val format = DashboardData.encryptedFormat(encryptionService)
 
       val encryptedJson = format.writes(testData)
-      (encryptedJson \ "data").as[String] should not be empty
+      (encryptedJson \ "data").as[String] must not be empty
 
       val decrypted = format.reads(encryptedJson).get
-      (decrypted.data \ "transfers" \ "qtStatus").as[String] shouldEqual "InProgress"
-      decrypted.id shouldEqual testData.id
+      (decrypted.data \ "transfers" \ "qtStatus").as[String] mustEqual "InProgress"
+      decrypted.id mustEqual testData.id
     }
 
     "fail to decrypt if ciphertext is invalid" in {
       val invalidJson = Json.obj(
         "_id"         -> "Int-123",
         "data"        -> "invalid-encrypted-data",
-        "lastUpdated" -> Instant.now()
+        "lastUpdated" -> now
       )
 
       val format = DashboardData.encryptedFormat(encryptionService)
@@ -65,11 +64,11 @@ class DashboardDataSpec extends AnyWordSpec with Matchers {
       val decryptedWrapper = DecryptedDashboardData(Json.obj("foo" -> "bar"))
       val encryptedWrapper = decryptedWrapper.encrypt(encryptionService)
 
-      encryptedWrapper.encryptedString should not be JsObject.empty
+      encryptedWrapper.encryptedString must not be JsObject.empty
 
       val decryptedBack = encryptedWrapper.decrypt(encryptionService)
-      decryptedBack.isRight shouldBe true
-      decryptedBack.getOrElse(Json.obj()) shouldEqual Json.obj("foo" -> "bar")
+      decryptedBack.isRight mustBe true
+      decryptedBack.getOrElse(Json.obj()) mustEqual Json.obj("foo" -> "bar")
     }
   }
 }

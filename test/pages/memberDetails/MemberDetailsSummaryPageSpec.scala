@@ -26,11 +26,9 @@ class MemberDetailsSummaryPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
       "must go to Task List page" in {
-        MemberDetailsSummaryPage.nextPage(NormalMode, emptyAnswers) mustEqual routes.TaskListController.onPageLoad()
+        MemberDetailsSummaryPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.TaskListController.onPageLoad()
       }
     }
   }

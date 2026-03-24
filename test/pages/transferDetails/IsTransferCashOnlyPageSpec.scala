@@ -27,17 +27,15 @@ class IsTransferCashOnlyPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to cya page if true is selected" in {
-        val ua = emptyAnswers.set(IsTransferCashOnlyPage, true).success.value
+        val ua = emptyUserAnswers.set(IsTransferCashOnlyPage, true).success.value
         IsTransferCashOnlyPage.nextPage(NormalMode, ua) mustBe routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to type of asset page if false is selected" in {
-        val ua = emptyAnswers.set(IsTransferCashOnlyPage, false).success.value
+        val ua = emptyUserAnswers.set(IsTransferCashOnlyPage, false).success.value
         IsTransferCashOnlyPage.nextPage(NormalMode, ua) mustEqual routes.TypeOfAssetController.onPageLoad(NormalMode)
       }
     }
@@ -45,36 +43,36 @@ class IsTransferCashOnlyPageSpec extends AnyFreeSpec with Matchers with SpecBase
     "in Check Mode" - {
 
       "must go to cya page if true is selected" in {
-        val ua = emptyAnswers.set(IsTransferCashOnlyPage, true).success.value
+        val ua = emptyUserAnswers.set(IsTransferCashOnlyPage, true).success.value
         IsTransferCashOnlyPage.nextPage(CheckMode, ua) mustBe routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to type of asset page if false is selected" in {
-        val ua = emptyAnswers.set(IsTransferCashOnlyPage, false).success.value
+        val ua = emptyUserAnswers.set(IsTransferCashOnlyPage, false).success.value
         IsTransferCashOnlyPage.nextPage(CheckMode, ua) mustEqual routes.TypeOfAssetController.onPageLoad(CheckMode)
       }
     }
 
     "in FinalCheckMode" - {
       "must go to final cya page if true is selected" in {
-        val ua = emptyAnswers.set(IsTransferCashOnlyPage, true).success.value
+        val ua = emptyUserAnswers.set(IsTransferCashOnlyPage, true).success.value
         IsTransferCashOnlyPage.nextPage(FinalCheckMode, ua) mustBe controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
 
       "must go to type of asset page if false is selected" in {
-        val ua = emptyAnswers.set(IsTransferCashOnlyPage, false).success.value
+        val ua = emptyUserAnswers.set(IsTransferCashOnlyPage, false).success.value
         IsTransferCashOnlyPage.nextPage(FinalCheckMode, ua) mustEqual routes.TypeOfAssetController.onPageLoad(FinalCheckMode)
       }
     }
 
     "in AmendCheckMode" - {
       "must go to amend cya page if true is selected" in {
-        val ua = emptyAnswers.set(IsTransferCashOnlyPage, true).success.value
+        val ua = emptyUserAnswers.set(IsTransferCashOnlyPage, true).success.value
         IsTransferCashOnlyPage.nextPage(AmendCheckMode, ua) mustBe controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
       "must go to type of asset page if false is selected" in {
-        val ua = emptyAnswers.set(IsTransferCashOnlyPage, false).success.value
+        val ua = emptyUserAnswers.set(IsTransferCashOnlyPage, false).success.value
         IsTransferCashOnlyPage.nextPage(AmendCheckMode, ua) mustEqual routes.TypeOfAssetController.onPageLoad(AmendCheckMode)
       }
     }

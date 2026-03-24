@@ -60,7 +60,7 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with Mocki
       memberFirstName = Some("John"),
       memberSurname   = Some("Doe"),
       qtDate          = None,
-      lastUpdated     = Some(Instant.now()),
+      lastUpdated     = Some(now),
       pstrNumber      = None,
       submissionDate  = None
     )
@@ -73,7 +73,7 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with Mocki
   "LockService" - {
 
     "must acquire lock successfully and trigger StartJourney audit" in {
-      val fakeLock = Lock(transferId.value, owner, Instant.now(), Instant.now().plusSeconds(60))
+      val fakeLock = Lock(transferId.value, owner, now, now.plusSeconds(60))
       when(mockLockRepository.takeLock(eqTo(transferId.value), eqTo(owner), any[Duration]))
         .thenReturn(Future.successful(Some(fakeLock)))
 
@@ -102,7 +102,7 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with Mocki
     }
 
     "must acquire and release lock using simple takeLock and releaseLock methods" in {
-      val fakeLock = Lock("lock1", owner, Instant.now(), Instant.now().plusSeconds(60))
+      val fakeLock = Lock("lock1", owner, now, now.plusSeconds(60))
       when(mockLockRepository.takeLock(eqTo("lock1"), eqTo(owner), any()))
         .thenReturn(Future.successful(Some(fakeLock)))
       when(mockLockRepository.releaseLock(eqTo("lock1"), eqTo(owner)))

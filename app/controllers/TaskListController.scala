@@ -27,6 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.TaskListViewModel
 import views.html.TaskListView
 
+import java.time.{Clock, Instant}
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
@@ -36,7 +37,8 @@ class TaskListController @Inject() (
     getData: DataRetrievalAction,
     schemeData: SchemeDataAction,
     sessionRepository: SessionRepository,
-    view: TaskListView
+    view: TaskListView,
+    clock: Clock
   )(implicit ec: ExecutionContext
   ) extends FrontendBaseController with I18nSupport with ErrorHandling {
 
@@ -50,7 +52,8 @@ class TaskListController @Inject() (
       transferId,
       request.schemeDetails,
       request.authenticatedUser,
-      data = Json.obj()
+      Json.obj(),
+      Instant.now(clock)
     )
 
     sessionRepository.set(newSession) map {

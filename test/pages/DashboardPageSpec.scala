@@ -31,10 +31,10 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val internal = "internal-id"
 
   private def ddWithScheme: DashboardData =
-    DashboardData(internal).set(PensionSchemeDetailsQuery, scheme).success.value
+    DashboardData.create(internal, now).set(PensionSchemeDetailsQuery, scheme).success.value
 
   private def ddEmpty: DashboardData =
-    DashboardData(internal)
+    DashboardData.create(internal, now)
 
   private def inProgressParams(): TransferReportQueryParams =
     TransferReportQueryParams(

@@ -26,13 +26,11 @@ class QROPSOtherCountryPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to Index" in {
 
-        QROPSOtherCountryPage.nextPage(NormalMode, emptyAnswers) mustEqual controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
+        QROPSOtherCountryPage.nextPage(NormalMode, emptyUserAnswers) mustEqual controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
       }
     }
 
@@ -40,21 +38,21 @@ class QROPSOtherCountryPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to Check Answers" in {
 
-        QROPSOtherCountryPage.nextPage(CheckMode, emptyAnswers) mustEqual
+        QROPSOtherCountryPage.nextPage(CheckMode, emptyUserAnswers) mustEqual
           controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckAnswers" - {
       "must go to Final Check Answers" in {
-        QROPSOtherCountryPage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        QROPSOtherCountryPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Amend Check Answers" in {
-        QROPSOtherCountryPage.nextPage(AmendCheckMode, emptyAnswers) mustEqual
+        QROPSOtherCountryPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

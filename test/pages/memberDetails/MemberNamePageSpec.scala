@@ -26,13 +26,11 @@ class MemberNamePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to Member Nino" in {
 
-        MemberNamePage.nextPage(NormalMode, emptyAnswers) mustEqual routes.MemberNinoController.onPageLoad(NormalMode)
+        MemberNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberNinoController.onPageLoad(NormalMode)
       }
     }
 
@@ -40,13 +38,13 @@ class MemberNamePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Check Answers" in {
 
-        MemberNamePage.nextPage(CheckMode, emptyAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberNamePage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        MemberNamePage.nextPage(FinalCheckMode, emptyAnswers) mustEqual
+        MemberNamePage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }

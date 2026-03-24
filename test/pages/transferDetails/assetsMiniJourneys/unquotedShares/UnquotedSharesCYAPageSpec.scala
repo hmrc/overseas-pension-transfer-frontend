@@ -28,13 +28,11 @@ class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
-    val moreThan5Ua = (0 to 5).foldLeft(emptyAnswers)((ua, idx) => ua.withUnquotedSharesAsset(idx))
+    val moreThan5Ua = (0 to 5).foldLeft(emptyUserAnswers)((ua, idx) => ua.withUnquotedSharesAsset(idx))
 
     "in Normal Mode" - {
       "must go to AmendContinue" in {
-        UnquotedSharesCYAPage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
+        UnquotedSharesCYAPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
           NormalMode
         )
       }
@@ -47,7 +45,7 @@ class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in CheckMode" - {
       "must go to AmendContinue" in {
-        UnquotedSharesCYAPage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
+        UnquotedSharesCYAPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
           CheckMode
         )
       }
@@ -60,7 +58,10 @@ class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in FinalCheckMode" - {
       "must go to AmendContinue" in {
-        UnquotedSharesCYAPage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
+        UnquotedSharesCYAPage(index).nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
           FinalCheckMode
         )
       }
@@ -74,7 +75,10 @@ class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in AmendCheckMode" - {
       "must go to AmendContinue" in {
-        UnquotedSharesCYAPage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
+        UnquotedSharesCYAPage(index).nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
           AmendCheckMode
         )
       }

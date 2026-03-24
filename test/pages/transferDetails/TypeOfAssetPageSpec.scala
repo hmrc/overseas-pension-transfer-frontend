@@ -27,8 +27,6 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
   ".nextPageWith" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to the first incomplete asset journey when one exists" in {
@@ -40,7 +38,7 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
             )
           ).success.value
 
-        TypeOfAssetPage.nextPageWith(NormalMode, emptyAnswers, sessionData) mustEqual
+        TypeOfAssetPage.nextPageWith(NormalMode, emptyUserAnswers, sessionData) mustEqual
           UnquotedSharesMiniJourney.call(NormalMode)
       }
 
@@ -51,10 +49,10 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
             Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
           ).success.value
 
-        TypeOfAssetPage.nextPageWith(NormalMode, emptyAnswers, sessionDataAllCompleted) mustEqual
+        TypeOfAssetPage.nextPageWith(NormalMode, emptyUserAnswers, sessionDataAllCompleted) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
 
-        TypeOfAssetPage.nextPageWith(NormalMode, emptyAnswers, emptySessionData) mustEqual
+        TypeOfAssetPage.nextPageWith(NormalMode, emptyUserAnswers, emptySessionData) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
       }
     }
@@ -70,7 +68,7 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
             )
           ).success.value
 
-        TypeOfAssetPage.nextPageWith(CheckMode, emptyAnswers, sessionData) mustEqual
+        TypeOfAssetPage.nextPageWith(CheckMode, emptyUserAnswers, sessionData) mustEqual
           UnquotedSharesMiniJourney.call(CheckMode)
       }
 
@@ -81,10 +79,10 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
             Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
           ).success.value
 
-        TypeOfAssetPage.nextPageWith(CheckMode, emptyAnswers, sessionDataAllCompleted) mustEqual
+        TypeOfAssetPage.nextPageWith(CheckMode, emptyUserAnswers, sessionDataAllCompleted) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
 
-        TypeOfAssetPage.nextPageWith(CheckMode, emptyAnswers, emptySessionData) mustEqual
+        TypeOfAssetPage.nextPageWith(CheckMode, emptyUserAnswers, emptySessionData) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
       }
     }
@@ -100,7 +98,7 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
             )
           ).success.value
 
-        TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyAnswers, sessionData) mustEqual
+        TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyUserAnswers, sessionData) mustEqual
           QuotedSharesMiniJourney.call(FinalCheckMode)
       }
 
@@ -111,10 +109,10 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
             Seq(SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted = true))
           ).success.value
 
-        TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyAnswers, sessionDataAllCompleted) mustEqual
+        TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyUserAnswers, sessionDataAllCompleted) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
 
-        TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyAnswers, emptySessionData) mustEqual
+        TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyUserAnswers, emptySessionData) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
@@ -130,7 +128,7 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
             )
           ).success.value
 
-        TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyAnswers, sessionData) mustEqual
+        TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyUserAnswers, sessionData) mustEqual
           UnquotedSharesMiniJourney.call(AmendCheckMode)
       }
 
@@ -141,10 +139,10 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
             Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
           ).success.value
 
-        TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyAnswers, sessionDataAllCompleted) mustEqual
+        TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyUserAnswers, sessionDataAllCompleted) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
 
-        TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyAnswers, emptySessionData) mustEqual
+        TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyUserAnswers, emptySessionData) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }

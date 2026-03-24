@@ -25,23 +25,27 @@ import org.scalatest.matchers.must.Matchers
 class OtherAssetsValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val index = 0
   ".nextPage" - {
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in NormalMode" - {
       "must go to the Next page" in {
-        OtherAssetsValuePage(index).nextPage(NormalMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(NormalMode, index)
+        OtherAssetsValuePage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(
+          NormalMode,
+          index
+        )
       }
     }
 
     "in CheckMode" - {
       "must go to Check Answers" in {
-        OtherAssetsValuePage(index).nextPage(CheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(CheckMode, index)
+        OtherAssetsValuePage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(
+          CheckMode,
+          index
+        )
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Final Check Answers page" in {
-        OtherAssetsValuePage(index).nextPage(FinalCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(
+        OtherAssetsValuePage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -50,7 +54,7 @@ class OtherAssetsValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in AmendCheckMode" - {
       "must go to Final Check Answers page" in {
-        OtherAssetsValuePage(index).nextPage(AmendCheckMode, emptyAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(
+        OtherAssetsValuePage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(
           AmendCheckMode,
           index
         )

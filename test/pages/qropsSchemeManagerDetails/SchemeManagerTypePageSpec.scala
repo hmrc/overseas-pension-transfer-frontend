@@ -27,15 +27,13 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
   ".nextPage" - {
 
-    val emptyAnswers = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
-
     "in Normal Mode" - {
 
       "must go to Manger's name page when the type is 'Individual'" in {
 
         SchemeManagerTypePage.nextPage(
           NormalMode,
-          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+          emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         ) mustEqual routes.SchemeManagersNameController.onPageLoad(NormalMode)
       }
 
@@ -43,7 +41,7 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
         SchemeManagerTypePage.nextPage(
           NormalMode,
-          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+          emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
         ) mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode)
       }
     }
@@ -54,7 +52,7 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
         SchemeManagerTypePage.nextPage(
           CheckMode,
-          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+          emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         ) mustEqual routes.SchemeManagersNameController.onPageLoad(CheckMode)
       }
 
@@ -62,7 +60,7 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
         SchemeManagerTypePage.nextPage(
           CheckMode,
-          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+          emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
         ) mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode)
       }
     }
@@ -73,7 +71,7 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
         SchemeManagerTypePage.nextPage(
           FinalCheckMode,
-          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+          emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         ) mustEqual routes.SchemeManagersNameController.onPageLoad(FinalCheckMode)
       }
 
@@ -81,7 +79,7 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
         SchemeManagerTypePage.nextPage(
           FinalCheckMode,
-          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+          emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
         ) mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(FinalCheckMode)
       }
     }
@@ -92,7 +90,7 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
         SchemeManagerTypePage.nextPage(
           AmendCheckMode,
-          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
+          emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
         ) mustEqual routes.SchemeManagersNameController.onPageLoad(AmendCheckMode)
       }
 
@@ -100,7 +98,7 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
         SchemeManagerTypePage.nextPage(
           AmendCheckMode,
-          emptyAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
+          emptyUserAnswers.set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
         ) mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(AmendCheckMode)
       }
     }
@@ -108,14 +106,13 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
   "cleanup" - {
 
-    val emptyAnswers   = UserAnswers(userAnswersTransferNumber, PstrNumber("12345678AB"))
     val individualName = PersonName("Ada", "Lovelace")
     val orgName        = "Analytical Engines Ltd"
     val orgContact     = PersonName("Charles", "Babbage")
 
     "must remove SchemeManagersNamePage when SchemeManagerType is Organisation" in {
       val withBoth =
-        emptyAnswers
+        emptyUserAnswers
           .set(SchemeManagersNamePage, individualName).success.value
           .set(SchemeManagerOrganisationNamePage, orgName).success.value
           .set(SchemeManagerOrgIndividualNamePage, orgContact).success.value
@@ -129,7 +126,7 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "must remove SchemeManagerOrganisationNamePage and SchemeManagerOrgIndividualNamePage when SchemeManagerType is Individual" in {
       val withBoth =
-        emptyAnswers
+        emptyUserAnswers
           .set(SchemeManagersNamePage, individualName).success.value
           .set(SchemeManagerOrganisationNamePage, orgName).success.value
           .set(SchemeManagerOrgIndividualNamePage, orgContact).success.value
