@@ -27,7 +27,7 @@ object PensionSchemeStub {
       urlRegex: String,
       status: Int,
       responseBody: String,
-      requiredHeaders: Seq[(String, String)] = Seq.empty,
+      requiredHeaders: Seq[(String, String)],
       headerRegexes: Seq[(String, String)]   = Seq.empty,
       absentHeaders: Seq[String]             = Seq.empty
     ): StubMapping = {
