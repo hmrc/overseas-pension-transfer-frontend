@@ -28,10 +28,10 @@ import utils.DownstreamLogging
 import scala.concurrent.{ExecutionContext, Future}
 
 class PensionSchemeConnector @Inject() (
-  appConfig: FrontendAppConfig,
-  http: HttpClientV2
-)(implicit ec: ExecutionContext)
-    extends DownstreamLogging {
+    appConfig: FrontendAppConfig,
+    http: HttpClientV2
+  )(implicit ec: ExecutionContext
+  ) extends DownstreamLogging {
 
   def checkAssociation(srn: String, user: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url        = url"${appConfig.pensionSchemeService}/is-psa-associated"
@@ -55,9 +55,12 @@ class PensionSchemeConnector @Inject() (
       .execute[AuthorisingPsaIdType]
   }
 
-  def getSchemeDetails(srn: String, authenticatedUser: AuthenticatedUser)(implicit
-    hc: HeaderCarrier
-  ): Future[PensionSchemeDetailsType] = {
+  def getSchemeDetails(
+      srn: String,
+      authenticatedUser: AuthenticatedUser
+    )(implicit
+      hc: HeaderCarrier
+    ): Future[PensionSchemeDetailsType] = {
     val (url, headers) = authenticatedUser match {
       case PsaUser(_, _, _) =>
         (url"${appConfig.pensionSchemeService}/scheme/$srn", Seq("schemeIdType" -> "srn", "idNumber" -> srn))

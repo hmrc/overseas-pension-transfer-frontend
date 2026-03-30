@@ -33,10 +33,10 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersConnector @Inject() (
-  appConfig: FrontendAppConfig,
-  http: HttpClientV2
-)(implicit ec: ExecutionContext)
-    extends Logging
+    appConfig: FrontendAppConfig,
+    http: HttpClientV2
+  )(implicit ec: ExecutionContext
+  ) extends Logging
     with DownstreamLogging {
 
   private def submissionUrl(id: String): URL =
@@ -44,21 +44,25 @@ class UserAnswersConnector @Inject() (
 
   // These two versions of getAnswers are purposely similar to one another as it is recommended to combine these two in a future refactor
   def getAnswers(
-    transferId: String,
-    srnNumber: SrnNumber
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersType] =
+      transferId: String,
+      srnNumber: SrnNumber
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[GetUserAnswersType] =
     http
       .get(url"${appConfig.backendService}/save-for-later/$transferId")
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetUserAnswersType]
 
   def getAnswers(
-    transferId: TransferId,
-    pstrNumber: PstrNumber,
-    qtStatus: QtStatus,
-    versionNumber: Option[String] = None,
-    srnNumber: SrnNumber
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersType] = {
+      transferId: TransferId,
+      pstrNumber: PstrNumber,
+      qtStatus: QtStatus,
+      versionNumber: Option[String] = None,
+      srnNumber: SrnNumber
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[GetUserAnswersType] = {
 
     val url: URL =
       url"${appConfig.backendService}/get-transfer/${transferId.value}"
@@ -74,9 +78,11 @@ class UserAnswersConnector @Inject() (
   }
 
   def putAnswers(
-    userAnswersDTO: UserAnswersDTO,
-    srnNumber: SrnNumber
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SetUserAnswersType] =
+      userAnswersDTO: UserAnswersDTO,
+      srnNumber: SrnNumber
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[SetUserAnswersType] =
     http
       .post(url"${appConfig.backendService}/save-for-later")
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
@@ -84,9 +90,11 @@ class UserAnswersConnector @Inject() (
       .execute[SetUserAnswersType](SetUserAnswersHttpReads, ec)
 
   def postSubmission(
-    submissionDTO: SubmissionDTO,
-    srnNumber: SrnNumber
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionType] =
+      submissionDTO: SubmissionDTO,
+      srnNumber: SrnNumber
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[SubmissionType] =
     http
       .post(submissionUrl(submissionDTO.referenceId.value))
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
@@ -94,9 +102,11 @@ class UserAnswersConnector @Inject() (
       .execute[SubmissionType]
 
   def deleteAnswers(
-    id: String,
-    srnNumber: SrnNumber
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteUserAnswersType] = {
+      id: String,
+      srnNumber: SrnNumber
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[DeleteUserAnswersType] = {
     def url: URL = url"${appConfig.backendService}/save-for-later/$id"
 
     http
