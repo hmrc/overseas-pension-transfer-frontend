@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
@@ -37,7 +37,7 @@ final case class UserAnswers(
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
   }
 
-  import play.api.libs.json._
+  import play.api.libs.json.*
 
   def getWithLogging[A](page: Gettable[A])(implicit rds: Reads[A], mf: Manifest[A]): Either[Throwable, A] = {
     println("GETTING WITH LOGGING")
@@ -73,6 +73,7 @@ final case class UserAnswers(
       case JsError(errors)       =>
         Failure(JsResultException(errors))
     }
+    println(s"updated data completedL $updatedData")
 
     updatedData.flatMap {
       d =>
@@ -102,7 +103,7 @@ object UserAnswers {
 
   val reads: Reads[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").read[TransferId] and
@@ -114,7 +115,7 @@ object UserAnswers {
 
   val writes: OWrites[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").write[TransferId] and
