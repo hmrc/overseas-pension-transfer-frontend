@@ -16,7 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.actions._
+import controllers.actions.*
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassFormProvider
 import models.assets.TypeOfAsset.UnquotedShares
 import models.{AmendCheckMode, Mode, UserAnswers}
@@ -77,11 +77,11 @@ class UnquotedSharesClassController @Inject() (
             }
 
           for {
-            _ <- Future.successful(println("attempting to finish setAnswers"))
+            _              <- Future.successful(println("attempting to finish setAnswers"))
             updatedSession <- Future.fromTry(setAnswers())
-            _ <- Future.successful(println(s"updated session $updatedSession"))
+            _              <- Future.successful(println(s"updated session $updatedSession"))
             _              <- userAnswersService.setExternalUserAnswers(updatedSession, request.sessionData.schemeInformation.srnNumber)
-            _ <- Future.successful(println("finished setting external user answers"))
+            _              <- Future.successful(println("finished setting external user answers"))
           } yield Redirect(UnquotedSharesClassPage(index).nextPage(mode, updatedSession))
         }
       )
