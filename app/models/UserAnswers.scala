@@ -32,12 +32,15 @@ final case class UserAnswers(
     lastUpdated: Instant
   ) {
 
-  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
+  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
+    println("GETTING")
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+  }
 
   import play.api.libs.json._
 
   def getWithLogging[A](page: Gettable[A])(implicit rds: Reads[A], mf: Manifest[A]): Either[Throwable, A] = {
+    println("GETTING WITH LOGGING")
     val path     = page.path
     val rawValue = path.asSingleJson(data).getOrElse(JsNull)
     val result   = Reads.at(path).reads(data)
@@ -63,7 +66,7 @@ final case class UserAnswers(
   }
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
-
+    println("SETTING")
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
@@ -79,7 +82,7 @@ final case class UserAnswers(
   }
 
   def remove[A](page: Settable[A]): Try[UserAnswers] = {
-
+    println("REMOVING")
     val updatedData = data.removeObject(page.path) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
