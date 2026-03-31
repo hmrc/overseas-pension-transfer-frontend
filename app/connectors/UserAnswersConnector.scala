@@ -19,6 +19,7 @@ package connectors
 import config.FrontendAppConfig
 import connectors.parsers.UserAnswersParser.*
 import models.dtos.{SubmissionDTO, UserAnswersDTO}
+import models.responses.UserAnswersErrorResponse
 import models.{PstrNumber, QtStatus, SrnNumber, TransferId}
 import play.api.Logging
 import play.api.libs.json.Json
@@ -89,10 +90,10 @@ class UserAnswersConnector @Inject() (
       .withBody(Json.toJson(userAnswersDTO))
       .execute[SetUserAnswersType](SetUserAnswersHttpReads)
       .recover {
-        case e: Throwable => {
-          println(s"call failed with $e")
-          throw e
-        }
+        case e: Exception =>
+          val errMsg = logNonHttpError("[UserAnswersConnector][putAnswers]", hc, e)
+          println(errMsg)
+          Left(UserAnswersErrorResponse(errMsg, None))
       }
   }
 
