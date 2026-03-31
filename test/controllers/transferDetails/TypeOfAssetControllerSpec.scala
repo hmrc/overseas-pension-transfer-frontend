@@ -94,7 +94,6 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
           .build()
 
       running(application) {
-        println("application in")
         val onwardRoute = AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad(NormalMode)
         val unquoted    = UnquotedShares
 
@@ -102,10 +101,8 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
           FakeRequest(POST, typeOfAssetRoute)
             .withFormUrlEncodedBody("value[0]" -> unquoted.toString)
 
-        println(s"request $request")
         val result = route(application, request).value
 
-        println(s" result: $result")
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
       }
