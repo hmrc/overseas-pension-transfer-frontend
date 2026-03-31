@@ -53,13 +53,16 @@ class TypeOfAssetController @Inject() (
   val form: Form[Seq[TypeOfAsset]] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
+    implicit request => {
+      println(s"ATTEMPTING ONPAGELOAD, REQUEST: $request")
       val preparedForm = request.userAnswers.get(AnswersSelectedAssetTypes) match {
-        case None        => form
+        case None => form
         case Some(value) => form.fill(value)
       }
+      println(s"COMPLETED FORM PART $preparedForm")
 
       Ok(view(preparedForm, mode))
+    }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
