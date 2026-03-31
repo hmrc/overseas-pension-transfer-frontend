@@ -77,8 +77,11 @@ class UnquotedSharesClassController @Inject() (
             }
 
           for {
+            _ <- Future.successful(println("attempting to finish setAnswers"))
             updatedSession <- Future.fromTry(setAnswers())
+            _ <- Future.successful(println(s"updated session $updatedSession"))
             _              <- userAnswersService.setExternalUserAnswers(updatedSession, request.sessionData.schemeInformation.srnNumber)
+            _ <- Future.successful(println("finished setting external user answers"))
           } yield Redirect(UnquotedSharesClassPage(index).nextPage(mode, updatedSession))
         }
       )
