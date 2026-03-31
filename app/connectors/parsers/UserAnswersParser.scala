@@ -74,7 +74,10 @@ object UserAnswersParser {
 
   implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging with DownstreamLogging {
 
-    override def read(method: String, url: String, response: HttpResponse): SetUserAnswersType =
+    override def read(method: String, url: String, response: HttpResponse): SetUserAnswersType = {
+      println(method)
+      println(url)
+      println(response)
       response.status match {
         case NO_CONTENT                                                   => Right(Done)
         case INTERNAL_SERVER_ERROR if Try(response.json).toOption.isEmpty =>
@@ -93,6 +96,7 @@ object UserAnswersParser {
               Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
       }
+    }
   }
 
   implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging with DownstreamLogging {

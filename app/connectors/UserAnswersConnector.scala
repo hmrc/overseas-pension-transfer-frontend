@@ -82,12 +82,17 @@ class UserAnswersConnector @Inject() (
       srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[SetUserAnswersType] =
+    ): Future[SetUserAnswersType] = {
+    println(userAnswersDTO)
+    println(srnNumber)
+    println(appConfig.backendService)
+    println(Json.toJson(userAnswersDTO))
     http
       .post(url"${appConfig.backendService}/save-for-later")
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .withBody(Json.toJson(userAnswersDTO))
       .execute[SetUserAnswersType](SetUserAnswersHttpReads, ec)
+  }
 
   def postSubmission(
       submissionDTO: SubmissionDTO,
