@@ -38,6 +38,8 @@ class UserAnswersService @Inject() (
 
   // These two versions of getExternalUserAnswers are purposely similar to one another as it is recommended to combine them in a future refactor
   def getExternalUserAnswers(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
+    println("getExternalUserAnswers V2")
+
     connector.getAnswers(sessionData.transferId.value, sessionData.schemeInformation.srnNumber) map {
       case Right(userAnswersDTO) => Right(toUserAnswers(userAnswersDTO))
       case Left(error)           => Left(error)
@@ -52,6 +54,7 @@ class UserAnswersService @Inject() (
       srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier
     ): Future[Either[UserAnswersError, UserAnswers]] = {
+    println("getExternalUserAnswers")
     connector.getAnswers(
       transferId,
       pstr,
@@ -65,6 +68,7 @@ class UserAnswersService @Inject() (
   }
 
   def setExternalUserAnswers(userAnswers: UserAnswers, srnNumber: SrnNumber)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
+    println("setExternalUserAnswers")
     connector.putAnswers(fromUserAnswers(userAnswers), srnNumber)
   }
 
@@ -77,6 +81,7 @@ class UserAnswersService @Inject() (
     )(implicit hc: HeaderCarrier
     ): Future[Either[UserAnswersError, SubmissionResponse]] = {
 
+    println("SUBMIT DECLARATION")
     val submissionDTO = SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId, sessionData)
     maybePsaId match {
       case Some(psaId) =>

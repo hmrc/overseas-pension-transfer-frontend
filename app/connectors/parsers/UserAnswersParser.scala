@@ -35,7 +35,10 @@ object UserAnswersParser {
 
   implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging with DownstreamLogging {
 
-    override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType =
+    override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType = {
+      println(method)
+      println(url)
+      println(response)
       response.status match {
         case OK                                                           =>
           Try(response.json).toOption match {
@@ -70,6 +73,7 @@ object UserAnswersParser {
               Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
       }
+    }
   }
 
   implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging with DownstreamLogging {
@@ -101,7 +105,10 @@ object UserAnswersParser {
 
   implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging with DownstreamLogging {
 
-    override def read(method: String, url: String, response: HttpResponse): SubmissionType =
+    override def read(method: String, url: String, response: HttpResponse): SubmissionType = {
+      println(method)
+      println(url)
+      println(response)
       response.status match {
         case OK         =>
           response.json.validate[SubmissionResponse] match {
@@ -127,6 +134,7 @@ object UserAnswersParser {
               Left(SubmissionErrorResponse(err.message, Some(err.body)))
           }
       }
+    }
   }
 
   implicit object DeleteUserAnswersHttpReads

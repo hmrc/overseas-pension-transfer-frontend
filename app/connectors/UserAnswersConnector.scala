@@ -88,13 +88,8 @@ class UserAnswersConnector @Inject() (
       .post(url"${appConfig.backendService}/save-for-later")
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .withBody(Json.toJson(userAnswersDTO))
-      .execute[SetUserAnswersType](SetUserAnswersHttpReads)
-      .recover {
-        case e: Exception =>
-          val errMsg = logNonHttpError("[UserAnswersConnector][putAnswers]", hc, e)
-          println(errMsg)
-          Left(UserAnswersErrorResponse(errMsg, None))
-      }
+      .execute[SetUserAnswersType](SetUserAnswersHttpReads, ec)
+
   }
 
   def postSubmission(

@@ -81,14 +81,18 @@ class MoreUnquotedSharesDeclarationController @Inject() (
       }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] =
+  def onSubmit(mode: Mode): Action[AnyContent] = {
+    println("attempting on submit auth")
     (identify andThen schemeData andThen getData).async { implicit request =>
+      println(s"attempting bindfromrequest with $request")
       form.bindFromRequest().fold(
         formWithErrors => {
+          println("form with errors")
           val assets = UnquotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
           Future.successful(BadRequest(view(formWithErrors, assets, mode)))
         },
         continue => {
+          println("form without errors")
           def setAnswers(): Try[UserAnswers] =
             if (mode == AmendCheckMode) {
               for {
@@ -109,4 +113,5 @@ class MoreUnquotedSharesDeclarationController @Inject() (
         }
       )
     }
+  }
 }
