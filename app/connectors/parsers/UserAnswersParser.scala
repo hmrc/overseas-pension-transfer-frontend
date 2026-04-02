@@ -35,10 +35,7 @@ object UserAnswersParser {
 
   implicit object GetUserAnswersHttpReads extends HttpReads[GetUserAnswersType] with Logging with DownstreamLogging {
 
-    override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType = {
-      println(method)
-      println(url)
-      println(response)
+    override def read(method: String, url: String, response: HttpResponse): GetUserAnswersType =
       response.status match {
         case OK                                                           =>
           Try(response.json).toOption match {
@@ -73,15 +70,11 @@ object UserAnswersParser {
               Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
       }
-    }
   }
 
   implicit object SetUserAnswersHttpReads extends HttpReads[SetUserAnswersType] with Logging with DownstreamLogging {
 
-    override def read(method: String, url: String, response: HttpResponse): SetUserAnswersType = {
-      println(method)
-      println(url)
-      println(response)
+    override def read(method: String, url: String, response: HttpResponse): SetUserAnswersType =
       response.status match {
         case NO_CONTENT                                                   => Right(Done)
         case INTERNAL_SERVER_ERROR if Try(response.json).toOption.isEmpty =>
@@ -100,15 +93,11 @@ object UserAnswersParser {
               Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
       }
-    }
   }
 
   implicit object GetSubmissionResponseHttpReads extends HttpReads[SubmissionType] with Logging with DownstreamLogging {
 
-    override def read(method: String, url: String, response: HttpResponse): SubmissionType = {
-      println(method)
-      println(url)
-      println(response)
+    override def read(method: String, url: String, response: HttpResponse): SubmissionType =
       response.status match {
         case OK         =>
           response.json.validate[SubmissionResponse] match {
@@ -134,7 +123,6 @@ object UserAnswersParser {
               Left(SubmissionErrorResponse(err.message, Some(err.body)))
           }
       }
-    }
   }
 
   implicit object DeleteUserAnswersHttpReads

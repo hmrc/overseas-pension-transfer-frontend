@@ -24,11 +24,14 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
 import play.api.inject
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
+import views.html.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationView
 
 import scala.concurrent.Future
 
@@ -46,41 +49,42 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
   private lazy val moreUnquotedSharesDeclarationRouteFinalCheckMode =
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(FinalCheckMode).url
 
+  val testAssetCount = 5
+
   "MoreUnquotedSharesDeclaration Controller" - {
-//
-//    "must return OK and the correct view for a GET" in {
-//      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-//      running(application) {
-//        val request = FakeRequest(GET, moreUnquotedSharesDeclarationRoute)
-//
-//        val result = route(application, request).value
-//        val view   = application.injector.instanceOf[MoreUnquotedSharesDeclarationView]
-//
-//        val rows = UnquotedSharesAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = 5))
-//
-//        status(result) mustEqual OK
-//        contentAsString(result) mustEqual
-//          view(form, rows, NormalMode)(fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)), messages(application)).toString
-//      }
-//    }
-//
-//    "must populate the view correctly on a GET when the question has previously been answered" in {
-//      val userAnswers = emptyUserAnswers.set(MoreUnquotedSharesDeclarationPage, true).success.value
-//      val application = applicationBuilder(userAnswers = userAnswers).build()
-//
-//      running(application) {
-//        val request = FakeRequest(GET, moreUnquotedSharesDeclarationRoute)
-//
-//        val result = route(application, request).value
-//        val view   = application.injector.instanceOf[MoreUnquotedSharesDeclarationView]
-//
-//        status(result) mustEqual OK
-//        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
-//      }
-//    }
+
+    "must return OK and the correct view for a GET" in {
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetCount)).build()
+      running(application) {
+        val request = FakeRequest(GET, moreUnquotedSharesDeclarationRoute)
+
+        val result = route(application, request).value
+        val view   = application.injector.instanceOf[MoreUnquotedSharesDeclarationView]
+
+        val rows = UnquotedSharesAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = testAssetCount))
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual
+          view(form, rows, NormalMode)(fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = testAssetCount)), messages(application)).toString
+      }
+    }
+
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+      val userAnswers = emptyUserAnswers.set(MoreUnquotedSharesDeclarationPage, true).success.value
+      val application = applicationBuilder(userAnswers = userAnswers).build()
+
+      running(application) {
+        val request = FakeRequest(GET, moreUnquotedSharesDeclarationRoute)
+
+        val result = route(application, request).value
+        val view   = application.injector.instanceOf[MoreUnquotedSharesDeclarationView]
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+      }
+    }
 
     "must redirect to CYA page when valid data is submitted" in {
-
       val mockUserAnswersService = mock[UserAnswersService]
       val mockSessionRepository  = mock[SessionRepository]
 
@@ -89,85 +93,97 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5))
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetCount))
         .overrides(
           inject.bind[SessionRepository].toInstance(mockSessionRepository),
           inject.bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
 
-//
-//      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-//        .overrides(
-//          bind[SessionRepository].toInstance(mockSessionRepository),
-//          bind[UserAnswersService].toInstance(mockUserAnswersService)
-//        )
-//        .build()
-
       running(application) {
         val request =
           FakeRequest(POST, moreUnquotedSharesDeclarationRoute)
             .withFormUrlEncodedBody(("value", "true"))
 
-//        println(s"$request")
-
         val result = route(application, request).value
-
-        println(s"redirect: ${redirectLocation(result).value}")
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
       }
     }
-//
-//    "must redirect to CYA page when mode = CheckMode" in {
-//      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, moreUnquotedSharesDeclarationRouteCheckMode)
-//            .withFormUrlEncodedBody(("value", "true"))
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
-//      }
-//    }
-//
-//    "must redirect to Final CYA page when mode = FinalCheckMode" in {
-//      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, moreUnquotedSharesDeclarationRouteFinalCheckMode)
-//            .withFormUrlEncodedBody(("value", "true"))
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
-//      }
-//    }
-//
-//    "must return a Bad Request and errors when invalid data is submitted" in {
-//      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, moreUnquotedSharesDeclarationRoute)
-//            .withFormUrlEncodedBody(("value", ""))
-//
-//        println(s"$request")
-//        val boundForm = form.bind(Map("value" -> ""))
-//
-//        val view = application.injector.instanceOf[MoreUnquotedSharesDeclarationView]
-//
-//        val result = route(application, request).value
-//        println(s"${status(result)} ${contentAsString(result)}")
-//        status(result) mustEqual BAD_REQUEST
-//        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
-//      }
-//    }
+
+    "must redirect to CYA page when mode = CheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetCount))
+        .overrides(
+          inject.bind[SessionRepository].toInstance(mockSessionRepository),
+          inject.bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, moreUnquotedSharesDeclarationRouteCheckMode)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Final CYA page when mode = FinalCheckMode" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetCount))
+        .overrides(
+          inject.bind[SessionRepository].toInstance(mockSessionRepository),
+          inject.bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, moreUnquotedSharesDeclarationRouteFinalCheckMode)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
+      }
+    }
+
+    "must return a Bad Request and errors when invalid data is submitted" in {
+      val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, moreUnquotedSharesDeclarationRoute)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val boundForm = form.bind(Map("value" -> ""))
+
+        val view = application.injector.instanceOf[MoreUnquotedSharesDeclarationView]
+
+        val result = route(application, request).value
+        status(result) mustEqual BAD_REQUEST
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+      }
+    }
   }
 }

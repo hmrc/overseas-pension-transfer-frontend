@@ -19,7 +19,6 @@ package connectors
 import config.FrontendAppConfig
 import connectors.parsers.UserAnswersParser.*
 import models.dtos.{SubmissionDTO, UserAnswersDTO}
-import models.responses.UserAnswersErrorResponse
 import models.{PstrNumber, QtStatus, SrnNumber, TransferId}
 import play.api.Logging
 import play.api.libs.json.Json
@@ -83,14 +82,12 @@ class UserAnswersConnector @Inject() (
       srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[SetUserAnswersType] = {
+    ): Future[SetUserAnswersType] =
     http
       .post(url"${appConfig.backendService}/save-for-later")
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .withBody(Json.toJson(userAnswersDTO))
       .execute[SetUserAnswersType](SetUserAnswersHttpReads, ec)
-
-  }
 
   def postSubmission(
       submissionDTO: SubmissionDTO,

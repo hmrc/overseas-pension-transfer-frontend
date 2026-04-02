@@ -37,10 +37,6 @@ class UnquotedSharesStartController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
-      {
-        println(s"ON PAGE LOAD UNQUOTED SHARES START $request \n $mode")
-        Ok(view(UnquotedSharesStartPage.nextPage(mode, request.userAnswers).url))
-      }
-
+      Ok(view(UnquotedSharesStartPage.nextPage(mode, request.userAnswers).url))
   }
 }
