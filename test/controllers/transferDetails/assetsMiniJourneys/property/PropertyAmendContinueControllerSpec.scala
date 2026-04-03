@@ -21,6 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
 import models.assets.{PropertyEntry, PropertyMiniJourney, UnquotedSharesMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -29,9 +30,9 @@ import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAs
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
-import services.AssetsMiniJourneyService
+import services.{AssetsMiniJourneyService, UserAnswersService}
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
 
 import scala.concurrent.Future
@@ -48,12 +49,13 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(CheckMode).url
 
   private def uaWithProperties(n: Int): UserAnswers = {
-    val entry = PropertyEntry(
+    val testDecimal = 100000
+    val entry       = PropertyEntry(
       propertyAddress = propertyAddress,
-      propValue       = BigDecimal(100000),
+      propValue       = BigDecimal(testDecimal),
       propDescription = "Test property"
     )
-    val list  = List.fill(n)(entry)
+    val list        = List.fill(n)(entry)
     emptyUserAnswers.set(PropertyMiniJourney.query, list).success.value
   }
 
@@ -104,13 +106,19 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to the page's nextPageWith when valid data 'Yes' is submitted in NormalMode" in {
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val userAnswers = uaWithProperties(2)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
@@ -130,13 +138,19 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to the page's nextPageWith when valid data 'No' is submitted in NormalMode" in {
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val userAnswers = uaWithProperties(0)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
@@ -156,13 +170,19 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to CYA when valid data is submitted in CheckMode" in {
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val userAnswers = uaWithProperties(3)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
@@ -182,13 +202,19 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to Final CYA when valid data is submitted in FinalCheckMode" in {
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val userAnswers = uaWithProperties(3)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
@@ -208,16 +234,18 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val userAnswers = uaWithProperties(2)
       val application =
         applicationBuilder(userAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 

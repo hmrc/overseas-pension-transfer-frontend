@@ -19,6 +19,7 @@ package controllers.transferDetails
 import base.SpecBase
 import forms.transferDetails.AmountOfTaxDeductedFormProvider
 import models.{AmendCheckMode, NormalMode}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -26,8 +27,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.AmountOfTaxDeductedPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
+import services.UserAnswersService
 import views.html.transferDetails.AmountOfTaxDeductedView
 
 import scala.concurrent.Future
@@ -78,15 +80,17 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
@@ -103,15 +107,17 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
     }
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 

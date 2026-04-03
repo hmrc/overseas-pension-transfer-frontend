@@ -20,9 +20,10 @@ import base.AddressBase
 import config.FrontendAppConfig
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormDataTrait, PropertyAddressFormProvider}
-import models.address._
+import models.address.*
 import models.requests.DisplayRequest
 import models.{AmendCheckMode, NormalMode}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -32,9 +33,9 @@ import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
-import services.{AddressService, CountryService}
+import services.{AddressService, CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
 
@@ -91,12 +92,12 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
 
-      val mockSessionRepository = mock[SessionRepository]
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       when(mockCountryService.countries).thenReturn(testCountries)
-
       when(mockCountryService.findByCode("GB"))
         .thenReturn(Some(Country("GB", "United Kingdom")))
 
@@ -104,6 +105,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[CountryService].toInstance(mockCountryService)
           )
           .build()
@@ -126,16 +128,17 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
     }
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
-      val mockSessionRepository = mock[SessionRepository]
-
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder()
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[CountryService].toInstance(mockCountryService)
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 

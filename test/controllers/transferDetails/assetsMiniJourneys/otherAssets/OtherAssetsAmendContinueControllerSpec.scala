@@ -21,6 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueFormProvider
 import models.assets.{OtherAssetsEntry, OtherAssetsMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -28,9 +29,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
-import services.AssetsMiniJourneyService
+import services.{AssetsMiniJourneyService, UserAnswersService}
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
 
 import scala.concurrent.Future
@@ -47,11 +48,12 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(CheckMode).url
 
   private def uaWithOtherAssets(n: Int): UserAnswers = {
-    val entry = OtherAssetsEntry(
+    val testDecimal = 2500
+    val entry       = OtherAssetsEntry(
       assetDescription = "Antique vase",
-      assetValue       = BigDecimal(2500)
+      assetValue       = BigDecimal(testDecimal)
     )
-    val list  = List.fill(n)(entry)
+    val list        = List.fill(n)(entry)
     emptyUserAnswers.set(OtherAssetsMiniJourney.query, list).success.value
   }
 
@@ -102,13 +104,19 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must redirect to the page's nextPageWith when valid data 'Yes' is submitted in NormalMode" in {
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val userAnswers = uaWithOtherAssets(2)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
@@ -128,13 +136,20 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must redirect to the page's nextPageWith when valid data 'No' is submitted in NormalMode" in {
-      val mockSessionRepository = mock[SessionRepository]
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      val userAnswers = uaWithOtherAssets(2)
 
-      val userAnswers = uaWithOtherAssets(0)
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
@@ -154,16 +169,19 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       val userAnswers = uaWithOtherAssets(2)
+
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
       val application =
-        applicationBuilder(userAnswers)
+        applicationBuilder(userAnswers = userAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
@@ -184,13 +202,20 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must redirect to CYA when valid data is submitted in CheckMode" in {
-      val mockSessionRepository = mock[SessionRepository]
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-
       val userAnswers = uaWithOtherAssets(3)
+
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
@@ -210,13 +235,20 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     }
 
     "must redirect to Final CYA when valid data is submitted in FinalCheckMode" in {
-      val mockSessionRepository = mock[SessionRepository]
-      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-
       val userAnswers = uaWithOtherAssets(3)
+
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
