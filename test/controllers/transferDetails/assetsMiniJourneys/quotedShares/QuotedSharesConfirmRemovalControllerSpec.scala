@@ -21,12 +21,19 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesConfirmRemovalFormProvider
 import models.NormalMode
 import models.assets.QuotedSharesEntry
+import org.apache.pekko.Done
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import queries.assets.QuotedSharesQuery
+import services.UserAnswersService
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesConfirmRemovalView
+
+import scala.concurrent.Future
 
 class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -55,7 +62,16 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
       val entries     = List(QuotedSharesEntry("Company", 1000, 20, "Preferred"))
       val userAnswers = emptyUserAnswers.set(QuotedSharesQuery, entries).success.value
 
-      val application = applicationBuilder(userAnswers = userAnswers).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = userAnswers)
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request =
