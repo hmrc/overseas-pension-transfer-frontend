@@ -141,7 +141,16 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must redirect to Final CYA page when mode = FinalCheckMode" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetsCount))
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request =

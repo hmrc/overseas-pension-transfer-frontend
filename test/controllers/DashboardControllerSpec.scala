@@ -129,7 +129,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       running(application) {
         val request = FakeRequest(
           GET,
-          routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&name=SomeName&currentPage=1&pstr=PSTR123456"
+          routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&memberName=SomeName&currentPage=1&pstr=PSTR123456"
         )
 
         val result = route(application, request).value
@@ -284,7 +284,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val request = FakeRequest(
           GET,
-          routes.DashboardController.onTransferClick().url + "?transferId=QT654321&qtStatus=InProgress&name=ReAccess&currentPage=1&pstr=PSTR123456"
+          routes.DashboardController.onTransferClick().url + "?transferId=QT654321&qtStatus=InProgress&memberName=ReAccess&currentPage=1&pstr=PSTR123456"
         )
 
         val result = route(application, request).value
@@ -539,7 +539,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val request = FakeRequest(
           GET,
           routes.DashboardController.onTransferClick().url +
-            "?transferId=QT654321&qtStatus=InProgress&name=SchemeX&currentPage=1&pstr=PSTR123456"
+            "?transferId=QT654321&qtStatus=InProgress&memberName=SchemeX&currentPage=1&pstr=PSTR123456"
         )
 
         val result = route(application, request).value
