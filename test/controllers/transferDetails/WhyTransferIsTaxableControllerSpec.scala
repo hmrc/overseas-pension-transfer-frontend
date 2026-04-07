@@ -113,17 +113,14 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
     }
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-      val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
+      val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
-            bind[UserAnswersService].toInstance(mockUserAnswersService)
+            bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
 
