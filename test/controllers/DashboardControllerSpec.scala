@@ -17,26 +17,25 @@
 package controllers
 
 import base.SpecBase
-import models._
+import models.*
 import models.audit.JourneyStartedType.ContinueTransfer
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{atMostOnce, times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import services.{AuditService, LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
+import uk.gov.hmrc.mongo.lock.Lock
 import views.html.DashboardView
 
-import java.time.{Instant, LocalDate}
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
@@ -110,19 +109,20 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must acquire lock when accessing an InProgress transfer (onTransferClick) and redirect" in {
-      val mockRepo           = mock[DashboardSessionRepository]
-      val mockService        = mock[TransferService]
-      val mockSessionRepo    = mock[SessionRepository]
-      val mockLockRepository = mock[EnhancedLockRepository]
+      val mockLockRepository     = mock[EnhancedLockRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockLockRepository.takeLock(any(), any(), any())).thenReturn(Future.successful(Some(mock[Lock])))
+      when(
+        mockUserAnswersService
+          .getExternalUserAnswers(any(), any(), any(), any(), any())(any())
+      ).thenReturn(Future.successful(Right(emptyUserAnswers)))
+      when(mockUserAnswersService.toAllTransfersItem(emptyUserAnswers)).thenReturn(transferItem)
 
       val application = applicationBuilder()
         .overrides(
-          bind[DashboardSessionRepository].toInstance(mockRepo),
-          bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSessionRepo),
-          bind[EnhancedLockRepository].toInstance(mockLockRepository)
+          bind[EnhancedLockRepository].toInstance(mockLockRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
 
@@ -141,19 +141,20 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must show warning when trying to access a locked record (takeLock returns None)" in {
-      val mockRepo           = mock[DashboardSessionRepository]
-      val mockService        = mock[TransferService]
-      val mockSessionRepo    = mock[SessionRepository]
-      val mockLockRepository = mock[EnhancedLockRepository]
+      val mockLockRepository     = mock[EnhancedLockRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockLockRepository.takeLock(any(), any(), any())).thenReturn(Future.successful(None)) // lock already taken
+      when(
+        mockUserAnswersService
+          .getExternalUserAnswers(any(), any(), any(), any(), any())(any())
+      ).thenReturn(Future.successful(Right(emptyUserAnswers)))
+      when(mockUserAnswersService.toAllTransfersItem(emptyUserAnswers)).thenReturn(transferItem)
 
       val application = applicationBuilder()
         .overrides(
-          bind[DashboardSessionRepository].toInstance(mockRepo),
-          bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSessionRepo),
-          bind[EnhancedLockRepository].toInstance(mockLockRepository)
+          bind[EnhancedLockRepository].toInstance(mockLockRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
 
@@ -264,19 +265,20 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must be able to acquire lock after a release (simulate unlock then access)" in {
-      val mockRepo           = mock[DashboardSessionRepository]
-      val mockService        = mock[TransferService]
-      val mockSessionRepo    = mock[SessionRepository]
-      val mockLockRepository = mock[EnhancedLockRepository]
+      val mockLockRepository     = mock[EnhancedLockRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockLockRepository.takeLock(any[String], any[String], any[Duration])).thenReturn(Future.successful(Some(mock[Lock])))
+      when(
+        mockUserAnswersService
+          .getExternalUserAnswers(any(), any(), any(), any(), any())(any())
+      ).thenReturn(Future.successful(Right(emptyUserAnswers)))
+      when(mockUserAnswersService.toAllTransfersItem(emptyUserAnswers)).thenReturn(transferItem)
 
       val application = applicationBuilder()
         .overrides(
-          bind[DashboardSessionRepository].toInstance(mockRepo),
-          bind[SessionRepository].toInstance(mockSessionRepo),
-          bind[TransferService].toInstance(mockService),
-          bind[EnhancedLockRepository].toInstance(mockLockRepository)
+          bind[EnhancedLockRepository].toInstance(mockLockRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
 

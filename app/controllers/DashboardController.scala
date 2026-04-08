@@ -25,7 +25,7 @@ import models.{AllTransfersItem, DashboardData, PensionSchemeDetails, QtNumber, 
 import pages.DashboardPage
 import play.api.Logging
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc._
+import play.api.mvc.*
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, SessionRepository}
@@ -36,7 +36,7 @@ import views.html.DashboardView
 import views.html.components.AppBreadcrumbs
 
 import java.time.{Clock, Instant}
-import javax.inject._
+import javax.inject.*
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
