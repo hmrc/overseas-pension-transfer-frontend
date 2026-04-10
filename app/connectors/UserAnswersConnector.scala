@@ -64,7 +64,7 @@ class UserAnswersConnector @Inject() (
       ec: ExecutionContext
     ): Future[GetUserAnswersType] = {
 
-    val url: URL =
+    def url: URL =
       url"${appConfig.backendService}/get-transfer/${transferId.value}"
 
     val queryStringParams =

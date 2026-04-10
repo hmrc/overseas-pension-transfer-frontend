@@ -48,12 +48,11 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
     AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(CheckMode).url
 
   private def uaWithOtherAssets(n: Int): UserAnswers = {
-    val testDecimal = 2500
-    val entry       = OtherAssetsEntry(
+    val entry = OtherAssetsEntry(
       assetDescription = "Antique vase",
-      assetValue       = BigDecimal(testDecimal)
+      assetValue       = BigDecimal(2500)
     )
-    val list        = List.fill(n)(entry)
+    val list  = List.fill(n)(entry)
     emptyUserAnswers.set(OtherAssetsMiniJourney.query, list).success.value
   }
 

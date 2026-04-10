@@ -49,13 +49,12 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(CheckMode).url
 
   private def uaWithProperties(n: Int): UserAnswers = {
-    val testDecimal = 100000
-    val entry       = PropertyEntry(
+    val entry = PropertyEntry(
       propertyAddress = propertyAddress,
-      propValue       = BigDecimal(testDecimal),
+      propValue       = BigDecimal(100000),
       propDescription = "Test property"
     )
-    val list        = List.fill(n)(entry)
+    val list  = List.fill(n)(entry)
     emptyUserAnswers.set(PropertyMiniJourney.query, list).success.value
   }
 
