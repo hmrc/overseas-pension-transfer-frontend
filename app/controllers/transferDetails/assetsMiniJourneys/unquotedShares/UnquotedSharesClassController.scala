@@ -16,7 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.actions._
+import controllers.actions.*
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassFormProvider
 import models.assets.TypeOfAsset.UnquotedShares
 import models.{AmendCheckMode, Mode, UserAnswers}

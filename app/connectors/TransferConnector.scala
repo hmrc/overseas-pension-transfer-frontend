@@ -18,9 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.parsers.TransferParser.{GetAllTransfersHttpReads, GetAllTransfersType}
-import connectors.parsers.UserAnswersParser._
 import models.{PstrNumber, SrnNumber}
-import models.responses.{AllTransfersUnexpectedError, UserAnswersErrorResponse}
 import play.api.Logging
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
@@ -34,19 +32,21 @@ class TransferConnector @Inject() (
     appConfig: FrontendAppConfig,
     http: HttpClientV2
   )(implicit ec: ExecutionContext
-  ) extends Logging with DownstreamLogging {
+  ) extends Logging
+    with DownstreamLogging {
 
-  def getAllTransfers(srnNumber: SrnNumber, pstrNumber: PstrNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetAllTransfersType] = {
+  def getAllTransfers(
+      srnNumber: SrnNumber,
+      pstrNumber: PstrNumber
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[GetAllTransfersType] = {
     def allTransfersUrl: URL =
       url"${appConfig.backendService}/get-all-transfers/${pstrNumber.value}"
 
-    http.get(allTransfersUrl)
+    http
+      .get(allTransfersUrl)
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetAllTransfersType]
-      .recover {
-        case e: Exception =>
-          val errMsg = logNonHttpError("[TransferConnector][getAllTransfers]", hc, e)
-          Left(AllTransfersUnexpectedError(errMsg, None))
-      }
   }
 }

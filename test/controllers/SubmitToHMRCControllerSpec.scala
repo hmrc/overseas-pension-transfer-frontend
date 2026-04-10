@@ -17,10 +17,11 @@
 package controllers
 
 import base.SpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.SubmitToHMRCFormProvider
 import models.NormalMode
 import models.authentication.{PspId, PspUser}
+import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,8 +31,9 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import views.html.SubmitToHMRCView
 
@@ -81,15 +83,17 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
@@ -128,10 +132,19 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to PSA declaration screen for PSA when value is true" in {
-      val mockSessionRepository = mock[SessionRepository]
-      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
-      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = emptyUserAnswers)
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -146,8 +159,11 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to PSP declaration screen for PSP when value is true" in {
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)
 
@@ -158,6 +174,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val application = new GuiceApplicationBuilder()
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
           bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
           bind[SchemeDataAction].to[FakeSchemeDataAction]
@@ -178,8 +195,11 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to task list when value is false, regardless of user type" in {
-      val mockSessionRepository = mock[SessionRepository]
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)
 
@@ -190,6 +210,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val application = new GuiceApplicationBuilder()
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
           bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
           bind[SchemeDataAction].to[FakeSchemeDataAction]

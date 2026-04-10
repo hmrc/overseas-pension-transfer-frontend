@@ -30,7 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.WhyTransferIsTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.transferDetails.WhyTransferIsTaxableView
@@ -89,7 +89,6 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
       val ua                     = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
 
@@ -113,15 +112,18 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
     }
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-
-      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+      val ua                     = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
 
       val application =
-        applicationBuilder()
+        applicationBuilder(userAnswers = ua)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
 
@@ -133,7 +135,8 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual WhyTransferIsTaxablePage.nextPage(AmendCheckMode, emptyUserAnswers).url
+
+        redirectLocation(result).value mustEqual WhyTransferIsTaxablePage.nextPage(AmendCheckMode, ua).url
       }
     }
 
@@ -162,7 +165,6 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
       val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 

@@ -17,18 +17,8 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.parsers.UserAnswersParser.{
-  DeleteUserAnswersHttpReads,
-  DeleteUserAnswersType,
-  GetSubmissionResponseHttpReads,
-  GetUserAnswersHttpReads,
-  GetUserAnswersType,
-  SetUserAnswersHttpReads,
-  SetUserAnswersType,
-  SubmissionType
-}
+import connectors.parsers.UserAnswersParser.*
 import models.dtos.{SubmissionDTO, UserAnswersDTO}
-import models.responses.{SubmissionErrorResponse, UserAnswersErrorResponse}
 import models.{PstrNumber, QtStatus, SrnNumber, TransferId}
 import play.api.Logging
 import play.api.libs.json.Json
@@ -46,22 +36,23 @@ class UserAnswersConnector @Inject() (
     appConfig: FrontendAppConfig,
     http: HttpClientV2
   )(implicit ec: ExecutionContext
-  ) extends Logging with DownstreamLogging {
+  ) extends Logging
+    with DownstreamLogging {
 
   private def submissionUrl(id: String): URL =
     url"${appConfig.backendService}/submit-declaration/$id"
 
   // These two versions of getAnswers are purposely similar to one another as it is recommended to combine these two in a future refactor
-  def getAnswers(transferId: String, srnNumber: SrnNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetUserAnswersType] = {
-    http.get(url"${appConfig.backendService}/save-for-later/$transferId")
+  def getAnswers(
+      transferId: String,
+      srnNumber: SrnNumber
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[GetUserAnswersType] =
+    http
+      .get(url"${appConfig.backendService}/save-for-later/$transferId")
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetUserAnswersType]
-      .recover {
-        case e: Exception =>
-          val errMsg = logNonHttpError("[UserAnswersConnector][getAnswers]", hc, e)
-          Left(UserAnswersErrorResponse(errMsg, None))
-      }
-  }
 
   def getAnswers(
       transferId: TransferId,
@@ -76,19 +67,14 @@ class UserAnswersConnector @Inject() (
     def url: URL =
       url"${appConfig.backendService}/get-transfer/${transferId.value}"
 
-    val queryStringParams = {
+    val queryStringParams =
       Seq("pstr" -> pstrNumber.value, "qtStatus" -> qtStatus.toString) ++ versionNumber.toSeq.map("versionNumber" -> _)
-    }
 
-    http.get(url)
+    http
+      .get(url)
       .transform(_.addQueryStringParameters(queryStringParams: _*))
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetUserAnswersType]
-      .recover {
-        case e: Exception =>
-          val errMsg = logNonHttpError("[TransferConnector][getSpecificTransfer]", hc, e)
-          Left(UserAnswersErrorResponse(errMsg, None))
-      }
   }
 
   def putAnswers(
@@ -96,45 +82,44 @@ class UserAnswersConnector @Inject() (
       srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[SetUserAnswersType] = {
-    http.post(url"${appConfig.backendService}/save-for-later")
+    ): Future[SetUserAnswersType] =
+    http
+      .post(url"${appConfig.backendService}/save-for-later")
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .withBody(Json.toJson(userAnswersDTO))
       .execute[SetUserAnswersType](SetUserAnswersHttpReads, ec)
-      .recover {
-        case e: Exception =>
-          val errMsg = logNonHttpError("[UserAnswersConnector][putAnswers]", hc, e)
-          Left(UserAnswersErrorResponse(errMsg, None))
-      }
-  }
 
-  def postSubmission(submissionDTO: SubmissionDTO, srnNumber: SrnNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionType] =
-    http.post(submissionUrl(submissionDTO.referenceId.value))
+  def postSubmission(
+      submissionDTO: SubmissionDTO,
+      srnNumber: SrnNumber
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[SubmissionType] =
+    http
+      .post(submissionUrl(submissionDTO.referenceId.value))
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .withBody(Json.toJson(submissionDTO))
       .execute[SubmissionType]
-      .recover {
-        case e: Exception =>
-          val errMsg = logNonHttpError("[UserAnswersConnector][postSubmission]", hc, e)
-          Left(SubmissionErrorResponse(errMsg, None))
-      }
 
-  def deleteAnswers(id: String, srnNumber: SrnNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeleteUserAnswersType] = {
+  def deleteAnswers(
+      id: String,
+      srnNumber: SrnNumber
+    )(implicit hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[DeleteUserAnswersType] = {
     def url: URL = url"${appConfig.backendService}/save-for-later/$id"
 
-    http.delete(url)
+    http
+      .delete(url)
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[DeleteUserAnswersType](DeleteUserAnswersHttpReads, ec)
-      .recover {
-        case e: Exception =>
-          logger.warn(s"Error deleting user answers for ID '$id': ${e.getMessage}", e)
-          Left(SubmissionErrorResponse(e.getMessage, None))
-      }
   }
 
   def resetDatabase(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url = url"${appConfig.backendHost}/test-only/reset-test-data"
-    http.delete(url)
+    def url: URL = url"${appConfig.backendHost}/test-only/reset-test-data"
+
+    http
+      .delete(url)
       .execute[HttpResponse]
   }
 }

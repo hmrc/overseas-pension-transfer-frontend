@@ -81,7 +81,7 @@ class MoreUnquotedSharesDeclarationController @Inject() (
       }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] =
+  def onSubmit(mode: Mode): Action[AnyContent] = {
     (identify andThen schemeData andThen getData).async { implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
@@ -109,4 +109,5 @@ class MoreUnquotedSharesDeclarationController @Inject() (
         }
       )
     }
+  }
 }
