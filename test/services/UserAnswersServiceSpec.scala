@@ -17,19 +17,20 @@
 package services
 
 import base.SpecBase
+import cats.data.EitherT
 import connectors.{PensionSchemeConnector, UserAnswersConnector}
+import models.*
 import models.authentication.{PsaId, PsaUser}
 import models.dtos.UserAnswersDTO
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
-import models._
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
-import org.scalatest.RecoverMethods.recoverToExceptionIf
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString, Json}
+import play.api.mvc.Results.Ok
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.http.HeaderCarrier
@@ -107,19 +108,21 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
   "clearUserAnswers" - {
     "return a Right(Done) status when Right(Done) is received from the connector" in {
-      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value), any())(any(), any()))
-        .thenReturn(Future.successful(Right(Done)))
+      when(
+        mockUserAnswersConnector
+          .deleteAnswers(any(), any())(any(), any())
+      ).thenReturn(EitherT(Future.successful(Right(Ok))))
 
-      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value, SrnNumber("1234567890")))
+      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value, SrnNumber("1234567890")).value)
 
-      setUserAnswers mustBe Right(Done)
+      setUserAnswers mustBe Right(Ok)
     }
 
     "Return Left(error) when Left(error) is received from the connector" in {
-      when(mockUserAnswersConnector.deleteAnswers(ArgumentMatchers.eq(userAnswersTransferNumber.value), any())(any(), any()))
-        .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error Message", None))))
+      when(mockUserAnswersConnector.deleteAnswers(any(), any())(any(), any()))
+        .thenReturn(EitherT(Future.successful(Left(UserAnswersErrorResponse("Error Message", None)))))
 
-      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value, SrnNumber("1234567890")))
+      val setUserAnswers = await(service.clearUserAnswers(userAnswersTransferNumber.value, SrnNumber("1234567890")).value)
 
       setUserAnswers mustBe Left(UserAnswersErrorResponse("Error Message", None))
     }

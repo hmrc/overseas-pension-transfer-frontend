@@ -17,11 +17,13 @@
 package controllers
 
 import base.SpecBase
+import cats.data.EitherT
 import forms.DiscardTransferConfirmFormProvider
 import models.QtStatus.AmendInProgress
 import models.responses.UserAnswersErrorResponse
 import models.{AmendCheckMode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
+import org.apache.pekko.http.scaladsl.model.HttpHeader.ParsingResult.Ok
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,7 +32,7 @@ import pages.DiscardTransferConfirmPage
 import play.api.inject.bind
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import views.html.DiscardTransferConfirmView
@@ -105,7 +107,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           when(mockLockService.isLocked(any(), any())) thenReturn Future.successful(true)
           when(mockLockService.releaseLock(any(), any())) thenReturn Future.successful(())
           when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
-          when(mockUserAnswersService.clearUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+          when(mockUserAnswersService.clearUserAnswers(any(), any())(any())) thenReturn EitherT(Future.successful(Right(Ok)))
 
           val application =
             applicationBuilder(userAnswers = userAnswers)
@@ -174,7 +176,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           when(mockLockService.releaseLock(any(), any())) thenReturn Future.successful(())
           when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
           when(mockUserAnswersService.clearUserAnswers(any(), any())(any())) thenReturn
-            Future.successful(Left(UserAnswersErrorResponse("Error", None)))
+            EitherT(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
           val application =
             applicationBuilder(userAnswers = userAnswers)

@@ -17,17 +17,19 @@
 package connectors
 
 import base.BaseISpec
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.QtStatus.{InProgress, Submitted}
 import models.authentication.{PsaId, Psp, PspId}
 import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
-import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import models.responses.{InternalServerError, SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import models.{PstrNumber, QtNumber, SrnNumber, TransferNumber}
 import org.apache.pekko.Done
-import play.api.http.Status._
+import org.scalatest.matchers.must.Matchers.{mustBe, must}
+import play.api.http.Status.*
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting
 import stubs.TransferBackendStub
+import uk.gov.hmrc.http.{HttpResponse, UpstreamErrorResponse}
 
 import java.time.Instant
 import java.util.UUID
@@ -403,9 +405,9 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
             .withStatus(NO_CONTENT)
         ))
 
-      val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")))
+      val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")).value)
 
-      response shouldBe Right(Done)
+      response.map { x => x.status mustBe NO_CONTENT }
     }
 
     "return UserAnswersErrorResponse" when {
@@ -419,9 +421,13 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
               .withBody( """{ "error": "Failed to save answers" }""")
           ))
 
-        val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")))
-
-        response shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
+        val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")).value)
+        val upstreamResponse: UpstreamErrorResponse = response match {
+          case Left(r) => r
+          case Right(r) => fail("something went wrong" + r)
+        }
+        upstreamResponse.statusCode mustBe INTERNAL_SERVER_ERROR
+        upstreamResponse.message must include("Failed to save answers")
       }
       
       "500 is returned, but the error cannot be parsed" in {
@@ -435,12 +441,15 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
               )))
           ))
 
-        val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")))
+        val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")).value)
 
-        response shouldBe Left(UserAnswersErrorResponse(
-          "Unable to parse Json as UserAnswersErrorResponse",
-          Some("/error")
-        ))
+        val upstreamResponse: UpstreamErrorResponse = response match {
+          case Left(r) => r
+          case Right(r) => fail("something went wrong" + r)
+        }
+        upstreamResponse.statusCode mustBe INTERNAL_SERVER_ERROR
+        upstreamResponse.message must include("For those who come after")
+
       }
     }
   }

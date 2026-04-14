@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.EitherT
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
 import models.authentication.{AuthenticatedUser, PsaId}
@@ -24,9 +25,11 @@ import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
 import models.responses.*
 import models.{AllTransfersItem, PstrNumber, QtStatus, SessionData, SrnNumber, TransferId, UserAnswers}
 import org.apache.pekko.Done
+import uk.gov.hmrc.http.HttpResponse
+//import org.apache.pekko.http.scaladsl.model.HttpResponse
 import play.api.Logging
 import play.api.libs.json.*
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -90,7 +93,8 @@ class UserAnswersService @Inject() (
       id: String,
       srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier
-    ): Future[Either[UserAnswersError, Done]] =
+//    ): Future[Either[UpstreamErrorResponse, HttpResponse]] =
+    ): EitherT[Future, UpstreamErrorResponse, HttpResponse] =
     connector.deleteAnswers(id, srnNumber)
 
   def toAllTransfersItem(userAnswers: UserAnswers): AllTransfersItem = {

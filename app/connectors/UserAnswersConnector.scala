@@ -16,6 +16,7 @@
 
 package connectors
 
+import cats.data.EitherT
 import config.FrontendAppConfig
 import connectors.parsers.UserAnswersParser.*
 import models.dtos.{SubmissionDTO, UserAnswersDTO}
@@ -25,7 +26,7 @@ import play.api.libs.json.Json
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 import utils.DownstreamLogging
 
 import java.net.URL
@@ -34,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UserAnswersConnector @Inject() (
     appConfig: FrontendAppConfig,
-    http: HttpClientV2
+    http: HttpClientV2,
+    httpClientResponse: HttpClientResponse
   )(implicit ec: ExecutionContext
   ) extends Logging
     with DownstreamLogging {
@@ -106,13 +108,19 @@ class UserAnswersConnector @Inject() (
       srnNumber: SrnNumber
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[DeleteUserAnswersType] = {
+    ): EitherT[Future, UpstreamErrorResponse, HttpResponse] = {
     def url: URL = url"${appConfig.backendService}/save-for-later/$id"
 
-    http
-      .delete(url)
-      .setHeader("schemeReferenceNumber" -> srnNumber.value)
-      .execute[DeleteUserAnswersType](DeleteUserAnswersHttpReads, ec)
+//    http
+//      .delete(url)
+//      .setHeader("schemeReferenceNumber" -> srnNumber.value)
+//      .execute[DeleteUserAnswersType](DeleteUserAnswersHttpReads, ec)
+    httpClientResponse.read(
+      http
+        .delete(url)
+        .setHeader("schemeReferenceNumber" -> srnNumber.value)
+        .execute[Either[UpstreamErrorResponse, HttpResponse]]
+    )
   }
 
   def resetDatabase(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {

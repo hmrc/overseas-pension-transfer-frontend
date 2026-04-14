@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.DiscardTransferConfirmFormProvider
 import models.{AmendCheckMode, Mode, NormalMode, UserAnswers}
 import models.QtStatus.AmendInProgress
@@ -29,6 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
+import uk.gov.hmrc.http.{HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DiscardTransferConfirmView
 
@@ -87,11 +88,11 @@ class DiscardTransferConfirmController @Inject() (
     if (value) {
       for {
         _                  <- sessionRepository.clear(answers.id.value)
-        clearedUserAnswers <- userAnswersService.clearUserAnswers(answers.id.value, request.sessionData.schemeInformation.srnNumber)
+        clearedUserAnswers <- userAnswersService.clearUserAnswers(answers.id.value, request.sessionData.schemeInformation.srnNumber).value
       } yield {
         clearedUserAnswers match {
-          case Right(Done) => Redirect(DiscardTransferConfirmPage.nextPage(mode, answers))
-          case Left(_)     => InternalServerError
+          case Right(_) => Redirect(DiscardTransferConfirmPage.nextPage(mode, answers))
+          case Left(_)  => InternalServerError
         }
       }
     } else {
