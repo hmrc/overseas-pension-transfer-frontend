@@ -16,6 +16,7 @@
 
 package connectors
 
+import cats.data.EitherT
 import config.FrontendAppConfig
 import models.MinimalDetails
 import models.authentication.{PsaId, PspId}
@@ -23,17 +24,12 @@ import play.api.Logging
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait MinimalDetailsError
-
-case object UpstreamError   extends MinimalDetailsError
-case object DetailsNotFound extends MinimalDetailsError
-
-class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: HttpClientV2) extends Logging {
+class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: HttpClientV2, httpClientResponse: HttpClientResponse) extends Logging {
 
   private val url = url"${appConfig.pensionAdministratorHost}/pension-administrator/get-minimal-details-self"
 
@@ -41,14 +37,14 @@ class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: Htt
       psaId: PsaId
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[Either[MinimalDetailsError, MinimalDetails]] =
+    ): EitherT[Future, UpstreamErrorResponse, MinimalDetails] =
     fetch("psaId", psaId.value, loggedInAsPsa = true)
 
   def fetch(
       pspId: PspId
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[Either[MinimalDetailsError, MinimalDetails]] =
+    ): EitherT[Future, UpstreamErrorResponse, MinimalDetails] =
     fetch("pspId", pspId.value, loggedInAsPsa = false)
 
   private def fetch(
@@ -57,17 +53,11 @@ class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: Htt
       loggedInAsPsa: Boolean
     )(implicit hc: HeaderCarrier,
       ec: ExecutionContext
-    ): Future[Either[MinimalDetailsError, MinimalDetails]] =
+    ): EitherT[Future, UpstreamErrorResponse, MinimalDetails] = httpClientResponse.read(
     http
       .get(url)
       .setHeader(idType -> idValue, "loggedInAsPsa" -> loggedInAsPsa.toString)
-      .execute[MinimalDetails]
-      .map(Right(_))
-      .recover {
-        case e: UpstreamErrorResponse
-            if e.statusCode == NOT_FOUND && e.message.contains("no match found") => Left(DetailsNotFound)
-        case e =>
-          logger.error(s"[MinimalDetailsConnector][fetch] Upstream error occurred ${e.getMessage}", e)
-          Left(UpstreamError)
-      }
+      .execute[Either[UpstreamErrorResponse, HttpResponse]]
+  )
+    .map(_.json.as[MinimalDetails])
 }

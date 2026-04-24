@@ -16,14 +16,16 @@
 
 package controllers
 
+import cats.data.EitherT
 import config.FrontendAppConfig
 import connectors.{MinimalDetailsConnector, MinimalDetailsError}
-import controllers.actions._
+import controllers.actions.*
+import models.MinimalDetails
 import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.TransferSubmittedSummary
@@ -47,7 +49,7 @@ class TransferSubmittedController @Inject() (
   def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     sessionRepository.get(request.authenticatedUser.internalId).flatMap {
       case Some(sessionData) =>
-        fetchMinimalDetails(request.authenticatedUser).map {
+        fetchMinimalDetails(request.authenticatedUser).value map {
           case Right(minimalDetails) =>
             val summaryList = TransferSubmittedSummary.rows(
               memberFullName(sessionData),
@@ -69,11 +71,9 @@ class TransferSubmittedController @Inject() (
                 appConfig
               )
             )
-          case Left(_)               =>
-            Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+          case _                     => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
         }
-
-      case None =>
+      case None              =>
         scala.concurrent.Future.successful(
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
         )
@@ -83,7 +83,7 @@ class TransferSubmittedController @Inject() (
   private def fetchMinimalDetails(
       user: AuthenticatedUser
     )(implicit hc: HeaderCarrier
-    ): Future[Either[MinimalDetailsError, models.MinimalDetails]] =
+    ): EitherT[Future, UpstreamErrorResponse, MinimalDetails] =
     user match {
       case u: PsaUser => minimalDetailsConnector.fetch(u.psaId)
       case u: PspUser => minimalDetailsConnector.fetch(u.pspId)

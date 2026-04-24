@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import cats.data.EitherT
 import connectors.{DetailsNotFound, MinimalDetailsConnector}
 import models.authentication.PsaId
 import models.responses.{SubmissionErrorResponse, SubmissionResponse}
@@ -28,10 +29,10 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.PsaDeclarationPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{EmailSentSuccess, EmailService, UserAnswersService}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import views.html.PsaDeclarationView
 
 import java.time.Instant
@@ -73,7 +74,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, now))))
 
       when(mockMinimalDetailsConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(Right(minimalDetails)))
+        .thenReturn(EitherT(Future.successful(Right(minimalDetails))))
 
       when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(EmailSentSuccess)))
@@ -129,12 +130,13 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockSessionRepository       = mock[SessionRepository]
 
       val qtNumber = QtNumber("QT123456")
+      val mockDNF  = mock[UpstreamErrorResponse]
 
       when(mockUserAnswersService.submitDeclaration(any(), any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, now))))
 
       when(mockMinimalDetailsConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(Left(DetailsNotFound)))
+        .thenReturn(EitherT(Future.successful(Left(mockDNF))))
 
       when(mockSessionRepository.set(any()))
         .thenReturn(Future.successful(true))

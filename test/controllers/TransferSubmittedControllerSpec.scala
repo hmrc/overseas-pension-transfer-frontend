@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import cats.data.EitherT
 import config.FrontendAppConfig
 import connectors.MinimalDetailsConnector
 import models.authentication.PsaId
@@ -58,7 +59,9 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
       val testMessages = messages(application)
 
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(sessionDataMemberNameQtNumberTransferSubmitted)))
-      when(mockConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(Right(minimalDetailsIndividual)))
+      when(mockConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(EitherT(Future.successful(Right(minimalDetailsIndividual))))
+
       running(application) {
         val request = FakeRequest(GET, routes.TransferSubmittedController.onPageLoad().url)
 

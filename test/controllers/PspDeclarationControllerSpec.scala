@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import cats.data.EitherT
 import controllers.actions._
 import forms.PspDeclarationFormProvider
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
@@ -95,7 +96,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         .thenReturn(Future.successful(Right(SubmissionResponse(qtNumber, now))))
 
       when(mockMinimalDetailsConnector.fetch(any[PspId]())(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(Right(minimalDetails)))
+        .thenReturn(EitherT(Future.successful(Right(minimalDetails))))
 
       when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(EmailSentSuccess)))

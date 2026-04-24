@@ -18,7 +18,7 @@ package controllers
 
 import cats.data.EitherT
 import connectors.MinimalDetailsConnector
-import controllers.actions._
+import controllers.actions.*
 import forms.PspDeclarationFormProvider
 import models.authentication.{PsaId, PspUser}
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
@@ -91,7 +91,7 @@ class PspDeclarationController @Inject() (
             updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
             _                       <- EitherT.right[Result](sessionRepository.set(updateWithMemberNameSD))
             pspId                    = request.authenticatedUser.asInstanceOf[PspUser].pspId
-            minimalDetails          <- EitherT(minimalDetailsConnector.fetch(pspId)).leftMap { e =>
+            minimalDetails          <- minimalDetailsConnector.fetch(pspId).leftMap { e =>
                                          logger.warn(s"[PspDeclarationController][onSubmit] Failed to fetch minimal details for pspId=${pspId.value}: $e")
                                          Redirect(PspDeclarationPage.nextPageRecovery())
                                        }

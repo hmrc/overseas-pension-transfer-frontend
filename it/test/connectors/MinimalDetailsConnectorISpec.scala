@@ -18,13 +18,16 @@ package connectors
 
 import base.BaseISpec
 import models.authentication.{PsaId, PspId}
+import org.scalatest.EitherValues
 import play.api.libs.json.Json
 import play.api.test.Injecting
 import stubs.MinimalDetailsStub
 import models.{IndividualDetails, MinimalDetails}
+import uk.gov.hmrc.http.UpstreamErrorResponse
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class MinimalDetailsConnectorISpec extends BaseISpec with Injecting {
+class MinimalDetailsConnectorISpec extends BaseISpec with Injecting with EitherValues {
 
   val connector: MinimalDetailsConnector = inject[MinimalDetailsConnector]
 
@@ -52,25 +55,21 @@ class MinimalDetailsConnectorISpec extends BaseISpec with Injecting {
       "return Right(MinimalDetails) for PSA route" in {
         MinimalDetailsStub.psaSuccess(psaId.value, Json.stringify(Json.toJson(minimalDetails)))
 
-        await(connector.fetch(psaId)) shouldBe Right(minimalDetails)
+        await(connector.fetch(psaId).value) shouldBe Right(minimalDetails)
       }
 
       "return Right(MinimalDetails) for PSP route" in {
         MinimalDetailsStub.pspSuccess(pspId.value, Json.stringify(Json.toJson(minimalDetails)))
 
-        await(connector.fetch(pspId)) shouldBe Right(minimalDetails)
+        await(connector.fetch(pspId).value) shouldBe Right(minimalDetails)
       }
 
-      "return Left(DetailsNotFound) when 404 returned containing 'no match found'" in {
-        MinimalDetailsStub.psaNotFoundWithNoMatch(psaId.value)
-
-        await(connector.fetch(psaId)) shouldBe Left(DetailsNotFound)
-      }
-
-      "return Left(UpstreamError) when other upstream errors occur" in {
+      "return Left(UpstreamErrorResponse) when upstream errors occur" in {
         MinimalDetailsStub.psaForbiddenDelimited(psaId.value)
 
-        await(connector.fetch(psaId)) shouldBe Left(UpstreamError)
+        val res: Either[UpstreamErrorResponse, MinimalDetails] = await(connector.fetch(psaId).value)
+        res.left.value.message.contains("DELIMITED_PSAID")
+        res.left.value.statusCode shouldBe 403
       }
     }
   }

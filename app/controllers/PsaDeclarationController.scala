@@ -18,9 +18,9 @@ package controllers
 
 import cats.data.EitherT
 import connectors.MinimalDetailsConnector
-import controllers.actions._
+import controllers.actions.*
 import models.authentication.PsaUser
-import models.{Mode, PersonName}
+import models.{MinimalDetails, Mode, PersonName}
 import pages.memberDetails.MemberNamePage
 import pages.{PsaDeclarationPage, PspDeclarationPage}
 import play.api.Logging
@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.SessionRepository
 import services.{EmailService, UserAnswersService}
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.PsaDeclarationView
 
@@ -76,7 +77,7 @@ class PsaDeclarationController @Inject() (
         updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
         _                       <- EitherT.right[Result](sessionRepository.set(updateWithMemberNameSD))
         psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
-        minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
+        minimalDetails          <- minimalDetailsConnector.fetch(psaId).leftMap { e =>
                                      logger.warn(s"[PsaDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e")
                                      Redirect(PsaDeclarationPage.nextPageRecovery())
                                    }
