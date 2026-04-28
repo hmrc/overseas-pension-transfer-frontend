@@ -30,8 +30,8 @@ import pages.memberDetails.MemberNamePage
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.DateTimeFormats.{display12h, display24h, displayDate}
 
-import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDateTime, ZoneId}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -87,8 +87,8 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
           .set(MemberNamePage, testMemberName).success.value
           .set(DateSubmittedQuery, submittedAt).success.value
 
-      val date                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
-      val time                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("HH:mm"))
+      val date                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(displayDate)
+      val time                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(display24h)
       val expectedFormattedSubmittedAt = s"$date at ${time}am"
 
       val expectedRequest =
@@ -173,11 +173,11 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val date =
         LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
-          .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+          .format(displayDate)
 
       val time =
         LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
-          .format(DateTimeFormatter.ofPattern("HH:mma"))
+          .format(display12h)
           .toLowerCase
 
       val formatted = s"$date at $time"
@@ -228,11 +228,11 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val date =
         LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
-          .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+          .format(displayDate)
 
       val time =
         LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
-          .format(DateTimeFormatter.ofPattern("HH:mma"))
+          .format(display12h)
           .toLowerCase
 
       val formatted = s"$date at $time"

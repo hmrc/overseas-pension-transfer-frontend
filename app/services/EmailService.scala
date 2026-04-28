@@ -24,6 +24,7 @@ import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.DateTimeFormats.{display12h, displayDate}
 
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDateTime, ZoneId}
@@ -94,8 +95,8 @@ class EmailService @Inject() (
 
   private def format(instant: Instant): String = {
     val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-    val date          = localDateTime.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
-    val time          = localDateTime.format(DateTimeFormatter.ofPattern("HH:mma", Locale.ENGLISH))
+    val date          = localDateTime.format(displayDate)
+    val time          = localDateTime.format(display12h)
     s"$date at ${time.toLowerCase}"
   }
 }

@@ -69,8 +69,7 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
       dateTransferSubmitted(
         emptySessionData.set(DateSubmittedQuery, now).success.value
       ) mustBe
-        DateTimeFormatter
-          .ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+        DateTimeFormats.localDateTimeFormatter
           .withZone(ZoneId.systemDefault()) // or ZoneOffset.UTC
           .format(now)
     }

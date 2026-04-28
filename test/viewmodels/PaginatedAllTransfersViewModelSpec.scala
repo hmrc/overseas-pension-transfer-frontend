@@ -17,16 +17,16 @@
 package viewmodels
 
 import base.SpecBase
-import config.{FrontendAppConfig, TestAppConfig}
+import config.TestAppConfig
 import models.AllTransfersItem
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
+import utils.DateTimeFormats.{display12h, displayDateUuuu}
 
-import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
 class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
@@ -51,9 +51,6 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
   private def utc(y: Int, m: Int, d: Int, hh: Int = 0, mm: Int = 0): Instant =
     ZonedDateTime.of(y, m, d, hh, mm, 0, 0, ZoneOffset.UTC).toInstant
 
-  private val dateFmt = DateTimeFormatter.ofPattern("d MMMM uuuu")
-  private val timeFmt = DateTimeFormatter.ofPattern("h:mma")
-
   // This regex extracts the time and date from the paragraph structure of the lastUpdated call
   // capture group 1 == date, capture group 2 == time
   private val dateTimeR =
@@ -74,7 +71,7 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
 
   private def fmt(i: Instant): (String, String) = {
     val z = i.atZone(ZoneOffset.UTC)
-    (dateFmt.format(z), timeFmt.format(z).toLowerCase)
+    (displayDateUuuu.format(z), display12h.format(z).toLowerCase)
   }
 
   private def urlFor(n: Int): String = s"/dash?page=$n"

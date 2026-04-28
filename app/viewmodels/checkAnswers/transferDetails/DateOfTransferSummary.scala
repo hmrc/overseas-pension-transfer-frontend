@@ -16,8 +16,7 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -43,7 +42,7 @@ object DateOfTransferSummary {
 
       SummaryListRowViewModel(
         key     = "dateOfTransfer.checkYourAnswersLabel",
-        value   = ValueViewModel(answer.format(dateTimeFormat())),
+        value   = ValueViewModel(answer.format(dateTimeFormat)),
         actions = actions
       )
     }
