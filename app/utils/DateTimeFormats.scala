@@ -47,8 +47,11 @@ object DateTimeFormats {
 
   val display24h: DateTimeFormatter = {
     DateTimeFormatter.ofPattern("HH:mm")
-
   }
+
+  val emailDisplayDate: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+
+  val emailDisplayTime: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mma")
 
   val isoLocalDate: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 }

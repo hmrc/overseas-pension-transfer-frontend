@@ -30,7 +30,7 @@ import pages.memberDetails.MemberNamePage
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.DateTimeFormats.{display12h, display24h, displayDate}
+import utils.DateTimeFormats.{display24h, emailDisplayDate, emailDisplayTime}
 
 import java.time.{Instant, LocalDateTime, ZoneId}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -87,7 +87,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
           .set(MemberNamePage, testMemberName).success.value
           .set(DateSubmittedQuery, submittedAt).success.value
 
-      val date                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(displayDate)
+      val date                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(emailDisplayDate)
       val time                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(display24h)
       val expectedFormattedSubmittedAt = s"$date at ${time}am"
 
@@ -173,11 +173,11 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val date =
         LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
-          .format(displayDate)
+          .format(emailDisplayDate)
 
       val time =
         LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
-          .format(display12h)
+          .format(emailDisplayTime)
           .toLowerCase
 
       val formatted = s"$date at $time"
@@ -228,11 +228,11 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val date =
         LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
-          .format(displayDate)
+          .format(emailDisplayDate)
 
       val time =
         LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
-          .format(display12h)
+          .format(emailDisplayTime)
           .toLowerCase
 
       val formatted = s"$date at $time"

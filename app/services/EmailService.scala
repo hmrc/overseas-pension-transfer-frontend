@@ -95,8 +95,8 @@ class EmailService @Inject() (
 
   private def format(instant: Instant): String = {
     val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-    val date          = localDateTime.format(displayDate)
-    val time          = localDateTime.format(display12h)
+    val date          = localDateTime.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+    val time          = localDateTime.format(DateTimeFormatter.ofPattern("HH:mma", Locale.ENGLISH))
     s"$date at ${time.toLowerCase}"
   }
 }
