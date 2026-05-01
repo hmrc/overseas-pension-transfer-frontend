@@ -16,10 +16,10 @@
 
 package base
 
-import controllers.actions._
+import controllers.actions.*
 import models.address.{Countries, PropertyAddress}
 import models.assets.TypeOfAsset
-import models.authentication._
+import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import models.{
   AllTransfersItem,
@@ -56,8 +56,8 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import utils.DateTimeFormats.localDateTimeFormatter
 
-import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
 import scala.util.Random
@@ -97,7 +97,7 @@ trait SpecBase
   )
 
   val formattedTestDateTransferSubmitted: String =
-    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT).withZone(ZoneId.systemDefault()).format(now)
+    localDateTimeFormatter.withZone(ZoneId.systemDefault()).format(now)
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr, Json.obj(), now)
 
@@ -125,7 +125,7 @@ trait SpecBase
     nino
   }
 
-  val testNino = generateNino()
+  val testNino: String = generateNino()
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
   def sessionDataMemberName: SessionData = emptySessionData.set(MemberNamePage, testMemberName).success.value

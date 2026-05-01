@@ -18,6 +18,7 @@ package forms.behaviours
 
 import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
+import utils.DateTimeFormats.isoLocalDate
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -79,7 +80,7 @@ class DateBehaviours extends FieldBehaviours {
 
   def dateFieldWithMax(form: Form[_], key: String, max: LocalDate, formError: FormError): Unit = {
 
-    s"fail to bind a date greater than ${max.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
+    s"fail to bind a date greater than ${max.format(isoLocalDate)}" in {
 
       val generator = datesBetween(max.plusDays(1), max.plusYears(10))
 
@@ -100,7 +101,7 @@ class DateBehaviours extends FieldBehaviours {
 
   def dateFieldWithMin(form: Form[_], key: String, min: LocalDate, formError: FormError): Unit = {
 
-    s"fail to bind a date earlier than ${min.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
+    s"fail to bind a date earlier than ${min.format(isoLocalDate)}" in {
 
       val generator = datesBetween(min.minusYears(10), min.minusDays(1))
 

@@ -19,16 +19,14 @@ package forms.transferDetails
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
+import utils.DateTimeFormats.dateInput
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class AmendDateOfTransferFormProvider @Inject() extends Mappings {
 
   def minDate: LocalDate = LocalDate of (2012, 4, 6)
-
-  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 
   def apply(submissionDate: LocalDate)(implicit messages: Messages): Form[LocalDate] = {
 
@@ -42,8 +40,8 @@ class AmendDateOfTransferFormProvider @Inject() extends Mappings {
         realDateKey      = "dateOfTransfer.error.real.date"
       )
         .verifying(
-          minDate(minDate, "dateOfTransfer.amend.error.invalid.mindate", minDate.format(dateFormatter)),
-          maxDate(submissionDate, "dateOfTransfer.amend.error.afterSubmissionDate", submissionDate.format(dateFormatter))
+          minDate(minDate, "dateOfTransfer.amend.error.invalid.mindate", minDate.format(dateInput)),
+          maxDate(submissionDate, "dateOfTransfer.amend.error.afterSubmissionDate", submissionDate.format(dateInput))
         )
     )
   }

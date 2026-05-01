@@ -19,16 +19,15 @@ package forms.transferDetails
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
+import utils.DateTimeFormats.dateInput
 
-import java.time.format.DateTimeFormatter
-import java.time.{Clock, LocalDate, ZoneOffset}
+import java.time.{Clock, LocalDate}
 import javax.inject.Inject
 
 class DateOfTransferFormProvider @Inject() (clock: Clock) extends Mappings {
 
-  def minDate: LocalDate    = LocalDate of (2012, 4, 6)
-  def maxDate: LocalDate    = LocalDate.now(clock)
-  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+  def minDate: LocalDate = LocalDate of (2012, 4, 6)
+  def maxDate: LocalDate = LocalDate.now(clock)
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
@@ -41,8 +40,8 @@ class DateOfTransferFormProvider @Inject() (clock: Clock) extends Mappings {
         realDateKey      = "dateOfTransfer.error.real.date"
       )
         .verifying(
-          maxDate(maxDate, "dateOfTransfer.error.invalid.maxdate", maxDate.format(dateFormatter)),
-          minDate(minDate, "dateOfTransfer.error.invalid.mindate", minDate.format(dateFormatter))
+          maxDate(maxDate, "dateOfTransfer.error.invalid.maxdate", maxDate.format(dateInput)),
+          minDate(minDate, "dateOfTransfer.error.invalid.mindate", minDate.format(dateInput))
         )
     )
 }

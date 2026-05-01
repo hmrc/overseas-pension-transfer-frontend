@@ -22,15 +22,36 @@ import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.util.Locale
 
 object DateTimeFormats {
-  private val dateTimeFormatterNumeric = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
-  val localDateTimeFormatter           = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+
+  val displayDate: DateTimeFormatter            =
+    DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
+  val localDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
 
   private val localisedDateTimeFormatters = Map(
-    "en" -> dateTimeFormatterNumeric,
-    "cy" -> dateTimeFormatterNumeric.withLocale(Locale.forLanguageTag("cy"))
+    "en" -> displayDate,
+    "cy" -> displayDate.withLocale(Locale.forLanguageTag("cy"))
   )
 
-  def dateTimeFormat()(implicit lang: Lang): DateTimeFormatter = {
-    localisedDateTimeFormatters.getOrElse(lang.code, dateTimeFormatterNumeric)
+  def dateTimeFormat(implicit lang: Lang): DateTimeFormatter = {
+    localisedDateTimeFormatters.getOrElse(lang.code, displayDate)
   }
+
+  val dateInput: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("dd MM yyyy")
+
+  val displayDateUuuu: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("d MMMM uuuu", Locale.ENGLISH)
+
+  val display12h: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("h:mma", Locale.ENGLISH)
+
+  val display24h: DateTimeFormatter = {
+    DateTimeFormatter.ofPattern("HH:mm")
+  }
+
+  val emailDisplayDate: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+
+  val emailDisplayTime: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mma")
+
+  val isoLocalDate: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 }

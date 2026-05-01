@@ -24,16 +24,13 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
+import utils.DateTimeFormats.{display12h, displayDateUuuu}
 
-import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneOffset}
 
 final case class AllTransfersTableViewModel(table: Table)
 
 object AllTransfersTableViewModel {
-
-  private val dateFmt = DateTimeFormatter.ofPattern("d MMMM uuuu")
-  private val timeFmt = DateTimeFormatter.ofPattern("h:mma")
 
   private def dashIfEmpty(s: String): String =
     if (s.trim.isEmpty) "-" else s
@@ -48,8 +45,8 @@ object AllTransfersTableViewModel {
     oi match {
       case Some(i) =>
         val zdt     = i.atZone(ZoneOffset.UTC)
-        val dateStr = dateFmt.format(zdt)
-        val timeStr = timeFmt.format(zdt).toLowerCase
+        val dateStr = displayDateUuuu.format(zdt)
+        val timeStr = display12h.format(zdt).toLowerCase
         val html    = HtmlFormat.raw(
           s"""<p class="govuk-body govuk-!-margin-bottom-0">$dateStr</p><p class="govuk-body-s govuk-!-margin-bottom-0">$timeStr</p>"""
         )

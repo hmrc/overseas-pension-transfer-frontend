@@ -48,7 +48,7 @@ object MemberDateOfBirthSummary {
 
       SummaryListRowViewModel(
         key     = "memberDateOfBirth.checkYourAnswersLabel",
-        value   = ValueViewModel(answer.format(dateTimeFormat())),
+        value   = ValueViewModel(answer.format(dateTimeFormat)),
         actions = actions
       ).withCssClass(additionalClasses.getOrElse(""))
     }

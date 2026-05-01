@@ -19,16 +19,15 @@ package forms.memberDetails
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
+import utils.DateTimeFormats.dateInput
 
-import java.time.format.DateTimeFormatter
-import java.time.{Clock, LocalDate, ZoneOffset}
+import java.time.{Clock, LocalDate}
 import javax.inject.Inject
 
 class MemberDateOfBirthFormProvider @Inject() (clock: Clock) extends Mappings {
 
-  def minDate: LocalDate    = LocalDate of (1901, 1, 1)
-  def maxDate: LocalDate    = LocalDate.now(clock)
-  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+  def minDate: LocalDate = LocalDate of (1901, 1, 1)
+  def maxDate: LocalDate = LocalDate.now(clock)
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
@@ -40,8 +39,8 @@ class MemberDateOfBirthFormProvider @Inject() (clock: Clock) extends Mappings {
         requiredKey      = "common.dateInput.error.required",
         realDateKey      = "memberDateOfBirth.error.real.date"
       ).verifying(
-        maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateFormatter)),
-        minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateFormatter))
+        maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateInput)),
+        minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateInput))
       )
     )
 }

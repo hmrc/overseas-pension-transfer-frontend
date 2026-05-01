@@ -24,6 +24,7 @@ import pages.memberDetails.MemberNamePage
 import play.api.Logging
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.DateTimeFormats.{display12h, displayDate}
 
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDateTime, ZoneId}
