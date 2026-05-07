@@ -17,9 +17,10 @@
 package services
 
 import base.SpecBase
+import cats.data.EitherT
 import config.FrontendAppConfig
 import connectors.EmailConnector
-import models.email.{EmailAccepted, EmailToSendRequest, SubmissionConfirmation}
+import models.email.{EmailToSendRequest, SubmissionConfirmation}
 import models.{IndividualDetails, MinimalDetails}
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{verify, when}
@@ -27,9 +28,10 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberNamePage
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import queries.{DateSubmittedQuery, QtNumberQuery}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 
 import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDateTime, ZoneId}
@@ -62,7 +64,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       result mustBe Left(SessionDataError)
     }
 
-    "must send email and return Right(EmailSentSuccess) when enabled and connector returns EmailAccepted" in {
+    "must send email and return Right(EmailSentSuccess) when enabled and connector returns Ok" in {
 
       val mockConnector = mock[EmailConnector]
       val mockConfig    = mock[FrontendAppConfig]
@@ -105,7 +107,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
         )
 
       when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier]))
-        .thenReturn(Future.successful(EmailAccepted))
+        .thenReturn(EitherT(Future.successful(Right(HttpResponse(OK, "")))))
 
       val result = await(service.sendConfirmationEmail(sessionData, minimalDetails))
 
@@ -138,13 +140,14 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val nonAccepted = mock[models.email.EmailSendingResult]
 
-      when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier]))
-        .thenReturn(Future.successful(nonAccepted))
+      when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier])).thenReturn(
+        EitherT(Future.successful(Left(UpstreamErrorResponse("something went wrong", INTERNAL_SERVER_ERROR))))
+      )
 
-      val result = await(service.sendConfirmationEmail(sessionData, minimalDetails))
+      val result: Either[EmailServiceError, EmailSuccess] = await(service.sendConfirmationEmail(sessionData, minimalDetails))
 
       result.isLeft mustBe true
-      result.left.toOption.get mustBe DownstreamError(nonAccepted.toString)
+      result.left.toOption.get mustBe DownstreamError("something went wrong")
     }
 
     "must format date correctly for AM submission time" in {
@@ -162,7 +165,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       when(minimalDetails.organisationName).thenReturn(None)
       when(minimalDetails.individualDetails).thenReturn(Some(IndividualDetails(firstName = "David", middleName = None, lastName = "Frost")))
       when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier]))
-        .thenReturn(Future.successful(EmailAccepted))
+        .thenReturn(EitherT(Future.successful(Right(HttpResponse(OK, "")))))
 
       val submittedAtAM: Instant = Instant.parse("2025-10-01T09:08:00Z")
       val sessionDataAM          =
@@ -182,18 +185,17 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val formatted = s"$date at $time"
 
-      val expectedRequest =
-        EmailToSendRequest(
-          to         = List("test@example.com"),
-          templateId = "submitted_confirmation_template",
-          parameters = SubmissionConfirmation(
-            qtReference       = testQtNumber.value,
-            memberName        = testMemberName.fullName,
-            submitter         = individualSubmitterDetails.fullName,
-            submissionDate    = formatted,
-            pensionSchemeName = sessionDataAM.schemeInformation.schemeName
-          )
+      val expectedRequest = EmailToSendRequest(
+        to         = List("test@example.com"),
+        templateId = "submitted_confirmation_template",
+        parameters = SubmissionConfirmation(
+          qtReference       = testQtNumber.value,
+          memberName        = testMemberName.fullName,
+          submitter         = individualSubmitterDetails.fullName,
+          submissionDate    = formatted,
+          pensionSchemeName = sessionDataAM.schemeInformation.schemeName
         )
+      )
 
       val result = await(service.sendConfirmationEmail(sessionDataAM, minimalDetails))
 
@@ -217,7 +219,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       when(minimalDetails.individualDetails)
         .thenReturn(Some(IndividualDetails("David", None, "Frost")))
       when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier]))
-        .thenReturn(Future.successful(EmailAccepted))
+        .thenReturn(EitherT(Future.successful(Right(HttpResponse(OK, "")))))
 
       val submittedAtPM: Instant = Instant.parse("2025-10-01T15:45:00Z")
       val sessionDataPM          =

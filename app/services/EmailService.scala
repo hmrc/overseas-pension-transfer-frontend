@@ -18,7 +18,7 @@ package services
 
 import config.FrontendAppConfig
 import connectors.EmailConnector
-import models.email.{EmailAccepted, EmailToSendRequest, SubmissionConfirmation}
+import models.email.{EmailToSendRequest, SubmissionConfirmation}
 import models.{MinimalDetails, SessionData}
 import pages.memberDetails.MemberNamePage
 import play.api.Logging
@@ -76,11 +76,9 @@ class EmailService @Inject() (
               List(emailAddress),
               appConfig.submittedConfirmationTemplateId,
               emailParameters
-            )) flatMap {
-              case EmailAccepted => Future.successful(Right(EmailSentSuccess))
-              case err           =>
-                logger.warn(s"[EmailService][sendConfirmationEmail] Email not sent due to downstream error: ${err.toString}")
-                Future.successful(Left(DownstreamError(err.toString)))
+            )).value.flatMap {
+              case Right(_) => Future.successful(Right(EmailSentSuccess))
+              case Left(x)  => Future.successful(Left(DownstreamError(x.message)))
             }
           case _               =>
             logger.warn("[EmailService][sendConfirmationEmail] Email not sent due to missing data in minimal details")

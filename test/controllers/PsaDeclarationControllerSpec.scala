@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import cats.data.EitherT
-import connectors.{DetailsNotFound, MinimalDetailsConnector}
+import connectors.MinimalDetailsConnector
 import models.authentication.PsaId
 import models.responses.{SubmissionErrorResponse, SubmissionResponse}
 import models.{MinimalDetails, NormalMode, QtNumber, SessionData}
@@ -35,7 +35,6 @@ import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import views.html.PsaDeclarationView
 
-import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {

@@ -21,15 +21,15 @@ import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.QtStatus.{InProgress, Submitted}
 import models.authentication.{PsaId, Psp, PspId}
 import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
-import models.responses.{InternalServerError, SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
+import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import models.{PstrNumber, QtNumber, SrnNumber, TransferNumber}
 import org.apache.pekko.Done
-import org.scalatest.matchers.must.Matchers.{mustBe, must}
+import org.scalatest.matchers.must.Matchers.{must, mustBe}
 import play.api.http.Status.*
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting
 import stubs.TransferBackendStub
-import uk.gov.hmrc.http.{HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.UpstreamErrorResponse
 
 import java.time.Instant
 import java.util.UUID
@@ -37,9 +37,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
-  private val transferId = TransferNumber(UUID.randomUUID().toString)
-  private val pstr = PstrNumber("12345678AB")
-  private val srn  = SrnNumber("1234567890")
+  private val transferId     = TransferNumber(UUID.randomUUID().toString)
+  private val pstr           = PstrNumber("12345678AB")
+  private val srn            = SrnNumber("1234567890")
   private val userAnswersDTO = UserAnswersDTO(QtNumber("QT975310"), pstr, JsObject(Map("field" -> JsString("value"))), now)
   private val submissionDTO  = PspSubmissionDTO(transferId, Psp, PspId("X1234567"), PsaId("a1234567"), now)
 
@@ -117,7 +117,6 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     }
   }
 
-
   "getAnswers (getSpecific)" when {
 
     val referenceId = QtNumber("QT123456")
@@ -136,20 +135,20 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val result = await(
           connector.getAnswers(
-            transferId = referenceId,
-            pstrNumber        = pstr,
-            qtStatus          = InProgress,
-            versionNumber     = None,
-            srnNumber         = srn
+            transferId    = referenceId,
+            pstrNumber    = pstr,
+            qtStatus      = InProgress,
+            versionNumber = None,
+            srnNumber     = srn
           )
         )
 
         result match {
           case Right(dto) =>
-            dto.referenceId    shouldBe referenceId
-            dto.pstr.value     shouldBe pstr.value
-            dto.data.toString  should include ("foo")
-            dto.lastUpdated    shouldBe now
+            dto.referenceId shouldBe referenceId
+            dto.pstr.value  shouldBe pstr.value
+            dto.data.toString should include("foo")
+            dto.lastUpdated shouldBe now
           case Left(err)  =>
             fail(s"Expected Right(UserAnswersDTO) but got $err")
         }
@@ -167,18 +166,18 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val result = await(
           connector.getAnswers(
-            transferId = referenceId,
-            pstrNumber        = pstr,
-            qtStatus          = Submitted,
-            versionNumber     = Some("002"),
-            srnNumber         = srn
+            transferId    = referenceId,
+            pstrNumber    = pstr,
+            qtStatus      = Submitted,
+            versionNumber = Some("002"),
+            srnNumber     = srn
           )
         )
 
         result match {
           case Right(dto) =>
-            dto.referenceId   shouldBe referenceId
-            dto.data.toString should include ("hasVersion")
+            dto.referenceId shouldBe referenceId
+            dto.data.toString should include("hasVersion")
           case Left(err)  =>
             fail(s"Expected Right(UserAnswersDTO) but got $err")
         }
@@ -193,17 +192,17 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val result = await(
           connector.getAnswers(
-            transferId = referenceId,
-            pstrNumber        = pstr,
-            qtStatus          = Submitted,
-            versionNumber     = None,
-            srnNumber         = srn
+            transferId    = referenceId,
+            pstrNumber    = pstr,
+            qtStatus      = Submitted,
+            versionNumber = None,
+            srnNumber     = srn
           )
         )
 
         result match {
           case Left(_: UserAnswersErrorResponse) => succeed
-          case other                              => fail(s"Expected UserAnswersErrorResponse but got $other")
+          case other                             => fail(s"Expected UserAnswersErrorResponse but got $other")
         }
       }
     }
@@ -219,11 +218,11 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val result = await(
           connector.getAnswers(
-            transferId = referenceId,
-            pstrNumber        = pstr,
-            qtStatus          = Submitted,
-            versionNumber     = None,
-            srnNumber         = srn
+            transferId    = referenceId,
+            pstrNumber    = pstr,
+            qtStatus      = Submitted,
+            versionNumber = None,
+            srnNumber     = srn
           )
         )
 
@@ -242,11 +241,11 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         val result = await(
           connector.getAnswers(
-            transferId = referenceId,
-            pstrNumber        = pstr,
-            qtStatus          = InProgress,
-            versionNumber     = None,
-            srnNumber         = srn
+            transferId    = referenceId,
+            pstrNumber    = pstr,
+            qtStatus      = InProgress,
+            versionNumber = None,
+            srnNumber     = srn
           )
         )
 
@@ -295,19 +294,19 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         putAnswers shouldBe Left(UserAnswersErrorResponse("Failed to save answers", None))
       }
-      
+
       "there is an error, but the error Json cannot be parsed" in {
         stubPost(
           "/overseas-pension-transfer-backend/save-for-later",
           Json.stringify(Json.obj("invalidField" -> "This is not the field you're looking for")),
           INTERNAL_SERVER_ERROR
         )
-        
+
         val putAnswers = await(connector.putAnswers(userAnswersDTO, srn))
-        
+
         putAnswers match {
           case Left(error: UserAnswersErrorResponse) => error.error should include("500 Unknown (correlationId=-)")
-          case error@_ => fail(s"Expected SubmissionErrorResponse -- $error")
+          case error @ _                             => fail(s"Expected SubmissionErrorResponse -- $error")
         }
       }
     }
@@ -343,13 +342,13 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
           ))
 
         val response = await(connector.postSubmission(submissionDTO, srn))
-        
+
         response match {
           case Left(error: SubmissionErrorResponse) => error.error should include("Unable to parse Json as SubmissionResponse")
-          case _ => fail("Expected SubmissionErrorResponse")
+          case _                                    => fail("Expected SubmissionErrorResponse")
         }
       }
-      
+
       "400 is returned" in {
         stubPost(
           s"/overseas-pension-transfer-backend/submit-declaration/${transferId.value}",
@@ -389,14 +388,14 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
 
         response match {
           case Left(error: SubmissionErrorResponse) => error.error should include("418 Unknown (correlationId=-)")
-          case _ => fail("Expected SubmissionErrorResponse")
+          case _                                    => fail("Expected SubmissionErrorResponse")
         }
       }
     }
   }
 
   "deleteAnswers" should {
-    
+
     "return UserAnswerSaveSuccessfulResponse when 204 is returned" in {
       stubFor(delete(s"/overseas-pension-transfer-backend/save-for-later/testId")
         .withHeader("schemeReferenceNumber", equalTo("1234567890"))
@@ -411,25 +410,25 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     }
 
     "return UserAnswersErrorResponse" when {
-      
+
       "500 is returned" in {
         stubFor(delete("/overseas-pension-transfer-backend/save-for-later/testId")
           .withHeader("schemeReferenceNumber", equalTo("1234567890"))
           .willReturn(
             aResponse()
               .withStatus(INTERNAL_SERVER_ERROR)
-              .withBody( """{ "error": "Failed to save answers" }""")
+              .withBody("""{ "error": "Failed to save answers" }""")
           ))
 
-        val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")).value)
+        val response                                = await(connector.deleteAnswers("testId", SrnNumber("1234567890")).value)
         val upstreamResponse: UpstreamErrorResponse = response match {
-          case Left(r) => r
+          case Left(r)  => r
           case Right(r) => fail("something went wrong" + r)
         }
         upstreamResponse.statusCode mustBe INTERNAL_SERVER_ERROR
         upstreamResponse.message must include("Failed to save answers")
       }
-      
+
       "500 is returned, but the error cannot be parsed" in {
         stubFor(delete("/overseas-pension-transfer-backend/save-for-later/testId")
           .withHeader("schemeReferenceNumber", equalTo("1234567890"))
@@ -444,7 +443,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
         val response = await(connector.deleteAnswers("testId", SrnNumber("1234567890")).value)
 
         val upstreamResponse: UpstreamErrorResponse = response match {
-          case Left(r) => r
+          case Left(r)  => r
           case Right(r) => fail("something went wrong" + r)
         }
         upstreamResponse.statusCode mustBe INTERNAL_SERVER_ERROR
@@ -455,7 +454,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
   }
 
   "resetDatabase" should {
-    
+
     "return a HttpResponse with the returned code" in {
       stubFor(delete(s"/test-only/reset-test-data")
         .willReturn(

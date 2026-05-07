@@ -16,29 +16,36 @@
 
 package connectors
 
+import cats.data.EitherT
 import config.FrontendAppConfig
-import connectors.parsers.EmailHttpParser._
-import models.email.{EmailNotSent, EmailSendingResult, EmailToSendRequest}
+import models.email.EmailToSendRequest
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.libs.ws.writeableOf_JsValue
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{BadGatewayException, GatewayTimeoutException, HeaderCarrier, StringContextOps}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailConnector @Inject() (appConfig: FrontendAppConfig, httpClientV2: HttpClientV2) extends Logging {
+class EmailConnector @Inject() (
+    appConfig: FrontendAppConfig,
+    httpClientV2: HttpClientV2,
+    httpClientResponse: HttpClientResponse
+  ) extends Logging {
 
-  def send(email: EmailToSendRequest)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[EmailSendingResult] = {
-    httpClientV2.post(url"${appConfig.emailService}").withBody(Json.toJson(email)).execute[EmailSendingResult].recover {
-      case e: BadGatewayException     =>
-        logger.warn(s"[EmailConnector][send] Error sending email: ${e.message}")
-        EmailNotSent
-      case e: GatewayTimeoutException =>
-        logger.warn(s"[EmailConnector][send] Gateway timed out: ${e.message}")
-        EmailNotSent
-    }
+  def send(
+      email: EmailToSendRequest
+    )(implicit ec: ExecutionContext,
+      hc: HeaderCarrier
+    ): EitherT[Future, UpstreamErrorResponse, HttpResponse] = {
+    httpClientResponse.read(
+      httpClientV2
+        .post(url"${appConfig.emailService}")
+        .withBody(Json.toJson(email))
+        .execute[Either[UpstreamErrorResponse, HttpResponse]]
+    )
   }
 }

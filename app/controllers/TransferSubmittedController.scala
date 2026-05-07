@@ -18,12 +18,12 @@ package controllers
 
 import cats.data.EitherT
 import config.FrontendAppConfig
-import connectors.{MinimalDetailsConnector, MinimalDetailsError}
+import connectors.MinimalDetailsConnector
 import controllers.actions.*
 import models.MinimalDetails
 import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
