@@ -44,12 +44,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   private val exitSurveyBaseUrl: String = configuration.get[String]("feedback-frontend.host")
   val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/report-transfer-qualifying-recognised-overseas-pension-scheme"
 
-  val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("features.welsh-translation")
-
   def languageMap: Map[String, Lang] = Map(
-    "en" -> Lang("en"),
-    "cy" -> Lang("cy")
+    "en" -> Lang("en")
   )
 
   case class EnrolmentConfig(serviceName: String, identifierKey: String)

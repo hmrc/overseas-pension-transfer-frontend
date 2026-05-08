@@ -20,7 +20,6 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.AddToAList
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ItemType
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
@@ -37,27 +36,16 @@
 @(params: AddToAList, errorMessage: Option[ErrorMessage])(implicit messages: Messages, request: RequestHeader)
 @import params._
 
-@defining(if(params.language == Cy || messages.lang.code == "cy") Cy else En) { language =>
+@defining(ItemType(
+            singular = "item",
+            plural = "items"
+          )
+        ) { itemType =>
 
-    @defining(
-        itemType.getOrElse(language match {
-            case Cy => ItemType(
-                singular = "eitem",
-                plural = "o eitemau")
-            case _ => ItemType(
-                singular = "item",
-                plural = "items"
-            )
-        })
-    ) { itemType =>
-
-        <h1 class="govuk-heading-xl">@(language, itemList.length) match {
-            case (Cy, 0) => {Nid ydych wedi ychwanegu unrhyw eitemau }
-            case (_, 0) => {You have not added any items }
-            case (Cy, 1) => {Rydych wedi ychwanegu 1 @itemType.singular}
-            case (_, 1) => {You have added 1 @itemType.singular}
-            case (Cy, n) => {Rydych wedi ychwanegu @n @itemType.plural}
-            case (_, n) => {You have added @n @itemType.plural}
+        <h1 class="govuk-heading-xl">@itemList.length match {
+            case 0 => {You have not added any items }
+            case 1 => {You have added 1 @itemType.singular}
+            case n => {You have added @n @itemType.plural}
         }</h1>
 
         <div class="govuk-form-group">
@@ -65,13 +53,13 @@
             name = Text(item.name),
             actions = Seq(
                 ListWithActionsAction(
-                    content = Text(if (language == Cy) "Newid" else "Change"),
-                    visuallyHiddenText = Some(if (language == Cy) s"Newid ${item.name}" else s"Change ${item.name}"),
+                    content = Text("Change"),
+                    visuallyHiddenText = Some(s"Change ${item.name}"),
                     href= item.changeUrl
                 ),
                 ListWithActionsAction(
-                    content = Text(if (language == Cy) "Dileu" else "Remove"),
-                    visuallyHiddenText = Some(if (language == Cy) s"Dileu’r ${item.name} o’r rhestr" else s"Remove ${item.name} from the list"),
+                    content = Text("Remove"),
+                    visuallyHiddenText = Some(s"Remove ${item.name} from the list"),
                     href= item.removeUrl
                 )
             ))),
@@ -84,10 +72,7 @@
                 Radios(
                 fieldset = Some(Fieldset(
                     legend = Some(Legend(
-                        content = Text(language match {
-                            case Cy => s"Oes angen i chi ychwanegu ${itemType.singular} arall?"
-                            case _ => s"Do you need to add another ${itemType.singular}?"
-                        }),
+                        content = Text(s"Do you need to add another ${itemType.singular}?"),
                         classes = "govuk-fieldset__legend govuk-fieldset__legend--m",
                         isPageHeading = false
                     ))
@@ -98,28 +83,18 @@
                 name = "add-another",
                 items = Seq(
                     RadioItem(
-                        content = Text(language match {
-                            case Cy => "Iawn"
-                            case _ => "Yes"
-                        }),
+                        content = Text("Yes"),
                         value = Some("Yes")
                     ),
                     RadioItem(
-                        content = Text(language match {
-                            case Cy => "Na"
-                            case _ => "No"
-                        }),
+                        content = Text("No"),
                         value = Some("No")
                     )
                 ),
                 classes = "govuk-radios--inline"
             ))
 
-            @govukButton(Button(content = Text(language match {
-                case Cy => "Yn eich blaen"
-                case _ => "Continue"
-            })))
+            @govukButton(Button(content = Text("Continue")))
         }
-    }
     }
 }
