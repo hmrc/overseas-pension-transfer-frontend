@@ -109,6 +109,6 @@
         displayHmrcBanner = showHmrcBanner,
         phaseBanner = Some(betaBanner(appConfig.feedbackUrl))
     ),
-    isWelshTranslationAvailable = appConfig.languageTranslationEnabled,
+    isWelshTranslationAvailable = false,
     backLink = if (showBackLink) Some(BackLink.mimicsBrowserBackButtonViaJavaScript) else None
 ))(content)
