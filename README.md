@@ -73,8 +73,6 @@ This is an sbt command alias specific to this project. It will run a scala forma
 check, run a scala style check, run unit tests, run integration tests and produce a coverage report:
 > `sbt runAllChecks`
 
----
-
 ## Decrypt the MongoDB Values
 The script described below does not work. It is to be superseded soon by an encrypted flag in application.conf.
 
