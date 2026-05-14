@@ -17,16 +17,22 @@
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
-import controllers.routes
 import forms.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationFormProvider
 import models.{CheckMode, FinalCheckMode, NormalMode}
+import org.apache.pekko.Done
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
+import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import services.UserAnswersService
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationView
+
+import scala.concurrent.Future
 
 class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -41,6 +47,8 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
 
   private lazy val moreOtherAssetsDeclarationRouteFinalCheckMode =
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(FinalCheckMode).url
+
+  val testAssetsCount = 5
 
   "MoreOtherAssetsDeclaration Controller" - {
 
@@ -61,8 +69,17 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.set(MoreOtherAssetsDeclarationPage, true).success.value
-      val application = applicationBuilder(userAnswers = userAnswers).build()
+      val userAnswers            = emptyUserAnswers.set(MoreOtherAssetsDeclarationPage, true).success.value
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = userAnswers)
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request = FakeRequest(GET, moreOtherAssetsDeclarationRoute)
@@ -76,7 +93,16 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must redirect to CYA page when valid data is submitted" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetsCount))
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request =
@@ -91,7 +117,16 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must redirect to CYA page when mode = CheckMode" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetsCount))
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request =
@@ -106,7 +141,16 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must redirect to Final CYA page when mode = FinalCheckMode" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetsCount))
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request =

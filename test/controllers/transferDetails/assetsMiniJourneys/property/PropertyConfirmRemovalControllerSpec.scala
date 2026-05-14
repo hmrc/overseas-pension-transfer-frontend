@@ -21,12 +21,19 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
 import models.NormalMode
 import models.assets.PropertyEntry
+import org.apache.pekko.Done
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import queries.assets.PropertyQuery
+import services.UserAnswersService
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalView
+
+import scala.concurrent.Future
 
 class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase with MockitoSugar {
 
@@ -52,11 +59,19 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      val testPropValue = 1000
+      val entries       = List(PropertyEntry(propertyAddress, testPropValue, "description"))
+      val userAnswers   = emptyUserAnswers.set(PropertyQuery, entries).success.value
 
-      val entries     = List(PropertyEntry(propertyAddress, 1000, "description"))
-      val userAnswers = emptyUserAnswers.set(PropertyQuery, entries).success.value
+      val mockUserAnswersService = mock[UserAnswersService]
 
-      val application = applicationBuilder(userAnswers = userAnswers).build()
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application = applicationBuilder(userAnswers = userAnswers)
+        .overrides(
+          bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =

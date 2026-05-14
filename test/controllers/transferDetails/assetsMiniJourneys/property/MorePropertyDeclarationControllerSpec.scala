@@ -20,13 +20,20 @@ import base.SpecBase
 import controllers.routes
 import forms.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationFormProvider
 import models.{CheckMode, FinalCheckMode, NormalMode}
+import org.apache.pekko.Done
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
+import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import services.UserAnswersService
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationView
+
+import scala.concurrent.Future
 
 class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -41,6 +48,8 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
   private lazy val morePropertyDeclarationRouteFinalCheckMode =
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController.onPageLoad(FinalCheckMode).url
+
+  val testAssetsCount = 5
 
   "MorePropertyDeclaration Controller" - {
 
@@ -76,7 +85,16 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
     }
 
     "must redirect to CYA page when valid data is submitted" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetsCount))
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request =
@@ -91,7 +109,16 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
     }
 
     "must redirect to CYA page when mode = CheckMode" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetsCount))
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request =
@@ -106,7 +133,16 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
     }
 
     "must redirect to Final CYA page when mode = FinalCheckMode" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any())) thenReturn Future.successful(Right(Done))
+
+      val application =
+        applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetsCount))
+          .overrides(
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
 
       running(application) {
         val request =
@@ -121,6 +157,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {

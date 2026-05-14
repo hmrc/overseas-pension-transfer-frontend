@@ -17,16 +17,23 @@
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import base.SpecBase
-import controllers.routes
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationFormProvider
 import models.{CheckMode, FinalCheckMode, NormalMode}
+import org.apache.pekko.Done
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
+import play.api.inject
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import repositories.SessionRepository
+import services.UserAnswersService
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationView
+
+import scala.concurrent.Future
 
 class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -42,21 +49,23 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
   private lazy val moreUnquotedSharesDeclarationRouteFinalCheckMode =
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(FinalCheckMode).url
 
+  val testAssetCount = 5
+
   "MoreUnquotedSharesDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetCount)).build()
       running(application) {
         val request = FakeRequest(GET, moreUnquotedSharesDeclarationRoute)
 
         val result = route(application, request).value
         val view   = application.injector.instanceOf[MoreUnquotedSharesDeclarationView]
 
-        val rows = UnquotedSharesAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = 5))
+        val rows = UnquotedSharesAmendContinueSummary.rows(NormalMode, userAnswersWithAssets(assetsCount = testAssetCount))
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(form, rows, NormalMode)(fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)), messages(application)).toString
+          view(form, rows, NormalMode)(fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = testAssetCount)), messages(application)).toString
       }
     }
 
@@ -76,7 +85,20 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
     }
 
     "must redirect to CYA page when valid data is submitted" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetCount))
+        .overrides(
+          inject.bind[SessionRepository].toInstance(mockSessionRepository),
+          inject.bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -91,7 +113,20 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
     }
 
     "must redirect to CYA page when mode = CheckMode" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetCount))
+        .overrides(
+          inject.bind[SessionRepository].toInstance(mockSessionRepository),
+          inject.bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -106,7 +141,20 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
     }
 
     "must redirect to Final CYA page when mode = FinalCheckMode" in {
-      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
+      val mockUserAnswersService = mock[UserAnswersService]
+      val mockSessionRepository  = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
+
+      val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = testAssetCount))
+        .overrides(
+          inject.bind[SessionRepository].toInstance(mockSessionRepository),
+          inject.bind[UserAnswersService].toInstance(mockUserAnswersService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -133,7 +181,6 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
         val view = application.injector.instanceOf[MoreUnquotedSharesDeclarationView]
 
         val result = route(application, request).value
-
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
       }
