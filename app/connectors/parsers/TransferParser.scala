@@ -36,13 +36,17 @@ object TransferParser {
             case JsSuccess(dto, _) =>
               val (valid, notValid) = dto.transfers.partition(_.isValid)
               if (notValid.nonEmpty) {
-                logger.warn(s"[TransferConnector][getAllTransfers] Dropping ${notValid.size} " +
-                  s"invalid transfer items (must have exactly one of submissionDate or lastUpdated).")
+                logger.warn(
+                  s"[TransferConnector][getAllTransfers] Dropping ${notValid.size} " +
+                    s"invalid transfer items (must have exactly one of submissionDate or lastUpdated)."
+                )
               }
               Right(dto.copy(transfers = valid))
             case JsError(errors)   =>
               val formatted = formatJsonErrors(errors)
-              logger.warn(s"[TransferConnector][getAllTransfers] Unable to parse Json as GetAllTransfersDTO: $formatted")
+              logger.warn(
+                s"[TransferConnector][getAllTransfers] Unable to parse Json as GetAllTransfersDTO: $formatted"
+              )
               Left(AllTransfersUnexpectedError("Unable to parse Json as GetAllTransfersDTO", Some(formatted)))
           }
         case NOT_FOUND             =>

@@ -37,25 +37,25 @@ import views.html.memberDetails.MemberDetailsCYAView
 import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDetailsCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    sessionRepository: SessionRepository,
-    schemeData: SchemeDataAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: MemberDetailsCYAView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  sessionRepository: SessionRepository,
+  schemeData: SchemeDataAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: MemberDetailsCYAView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val list = SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, request.userAnswers))
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val list = SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, request.userAnswers))
 
-      Ok(view(list))
+    Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    Redirect(MemberDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
   }
 }

@@ -24,7 +24,8 @@ import scheduler.ScheduledJob
 import scheduler.SchedulingActor.LockCleanup
 import services.LockCleanupService
 
-class LockCleanupJob @Inject() (val lockCleanupService: LockCleanupService, val config: Configuration) extends ScheduledJob {
+class LockCleanupJob @Inject() (val lockCleanupService: LockCleanupService, val config: Configuration)
+    extends ScheduledJob {
   override val jobName          = "LockCleanupJob"
   override val actorSystem      = ActorSystem(jobName)
   override val scheduledMessage = LockCleanup(lockCleanupService)

@@ -30,20 +30,25 @@ sealed trait SubmissionDTO {
 
 object SubmissionDTO {
 
-  def fromRequest(authenticatedUser: AuthenticatedUser, userAnswers: UserAnswers, maybePsaId: Option[PsaId], sessionData: SessionData): SubmissionDTO =
+  def fromRequest(
+    authenticatedUser: AuthenticatedUser,
+    userAnswers: UserAnswers,
+    maybePsaId: Option[PsaId],
+    sessionData: SessionData
+  ): SubmissionDTO =
     authenticatedUser match {
       case PsaUser(psaId, _, _) =>
         PsaSubmissionDTO(
           referenceId = sessionData.transferId,
-          userId      = psaId,
+          userId = psaId,
           lastUpdated = userAnswers.lastUpdated
         )
 
       case PspUser(pspId, _, _s) =>
         PspSubmissionDTO(
           referenceId = sessionData.transferId,
-          userId      = pspId,
-          psaId       = maybePsaId.get,
+          userId = pspId,
+          psaId = maybePsaId.get,
           lastUpdated = userAnswers.lastUpdated
         )
     }
@@ -68,19 +73,19 @@ object SubmissionDTO {
 }
 
 case class PsaSubmissionDTO(
-    referenceId: TransferId,
-    userType: UserType = Psa,
-    userId: PsaId,
-    lastUpdated: Instant
-  ) extends SubmissionDTO
+  referenceId: TransferId,
+  userType: UserType = Psa,
+  userId: PsaId,
+  lastUpdated: Instant
+) extends SubmissionDTO
 
 case class PspSubmissionDTO(
-    referenceId: TransferId,
-    userType: UserType = Psp,
-    userId: PspId,
-    psaId: PsaId,
-    lastUpdated: Instant
-  ) extends SubmissionDTO
+  referenceId: TransferId,
+  userType: UserType = Psp,
+  userId: PspId,
+  psaId: PsaId,
+  lastUpdated: Instant
+) extends SubmissionDTO
 
 object PsaSubmissionDTO {
   implicit val format: OFormat[PsaSubmissionDTO] = Json.format

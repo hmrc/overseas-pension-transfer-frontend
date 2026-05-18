@@ -27,15 +27,14 @@ import viewmodels.implicits._
 object PropertyValueSummary {
 
   def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(PropertyValuePage(index)).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "propertyValue.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
-          actions = Seq(
-            ActionItemViewModel("site.change", PropertyValuePage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("propertyValue.change.hidden"))
-          )
+    userAnswers.get(PropertyValuePage(index)).map { answer =>
+      SummaryListRowViewModel(
+        key = "propertyValue.checkYourAnswersLabel",
+        value = ValueViewModel(currencyFormat(answer)),
+        actions = Seq(
+          ActionItemViewModel("site.change", PropertyValuePage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("propertyValue.change.hidden"))
         )
+      )
     }
 }

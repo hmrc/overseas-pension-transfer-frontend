@@ -41,10 +41,11 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
     }
 
     "must return full name from user answers when not present in session data" in {
-      val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
-        .set(MemberNamePage, testMemberName)
-        .success
-        .value
+      val userAnswers: UserAnswers =
+        UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+          .set(MemberNamePage, testMemberName)
+          .success
+          .value
 
       memberFullName(emptySessionData, Some(userAnswers)) mustBe "User McUser"
     }

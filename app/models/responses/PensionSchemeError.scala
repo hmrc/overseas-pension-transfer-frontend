@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, Reads}
 
 sealed trait PensionSchemeError
 
-case class PensionSchemeNotAssociated()                                       extends PensionSchemeError
+case class PensionSchemeNotAssociated() extends PensionSchemeError
 case class PensionSchemeErrorResponse(error: String, details: Option[String]) extends PensionSchemeError
 
 object PensionSchemeErrorResponse {

@@ -38,11 +38,7 @@ import models.responses.UserAnswersErrorResponse
 
 import scala.concurrent.Future
 
-class MemberDetailsCYAControllerSpec
-    extends AnyFreeSpec
-    with SpecBase
-    with SummaryListFluency
-    with MockitoSugar {
+class MemberDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency with MockitoSugar {
 
   "Check Your Answers Controller" - {
 

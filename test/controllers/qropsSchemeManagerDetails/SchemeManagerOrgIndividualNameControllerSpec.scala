@@ -60,7 +60,10 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -107,7 +110,9 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual SchemeManagerOrgIndividualNamePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual SchemeManagerOrgIndividualNamePage
+          .nextPage(NormalMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -127,7 +132,10 @@ class SchemeManagerOrgIndividualNameControllerSpec extends AnyFreeSpec with Spec
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

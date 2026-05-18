@@ -26,17 +26,17 @@ import validators.assetsValidators.AssetCompletionValidator
 
 case class UnquotedSharesCompanyNamePage(index: Int) extends QuestionPage[String] with MiniJourneyNextPage {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
+  override def path: JsPath =
+    JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
 
   override def toString: String = UnquotedSharesEntry.CompanyName
 
-  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call =
     if (AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.UnquotedShares, answers)) {
       AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index)
     } else {
       AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(mode, index)
     }
-  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(mode, index)

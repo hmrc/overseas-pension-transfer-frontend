@@ -35,62 +35,65 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class QROPSCountryController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: QROPSCountryFormProvider,
-    countryService: CountryService,
-    val controllerComponents: MessagesControllerComponents,
-    view: QROPSCountryView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: QROPSCountryFormProvider,
+  countryService: CountryService,
+  val controllerComponents: MessagesControllerComponents,
+  view: QROPSCountryView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSCountryPage) match {
-        case None          => form
-        case Some(country) => form.fill(country.code)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(QROPSCountryPage) match {
+      case None          => form
+      case Some(country) => form.fill(country.code)
+    }
 
-      val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-      Ok(view(preparedForm, countrySelectViewModel, mode))
+    val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+    Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
-        },
-        countryCode => {
-          val maybeCountry: Option[Country] =
-            countryService.findByCode(countryCode)
-          maybeCountry match {
-            case None          =>
-              Future.successful(
-                Redirect(
-                  QROPSCountryPage.nextPageRecovery(
-                    Some(QROPSCountryPage.recoveryModeReturnUrl)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+            Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+          },
+          countryCode => {
+            val maybeCountry: Option[Country] =
+              countryService.findByCode(countryCode)
+            maybeCountry match {
+              case None          =>
+                Future.successful(
+                  Redirect(
+                    QROPSCountryPage.nextPageRecovery(
+                      Some(QROPSCountryPage.recoveryModeReturnUrl)
+                    )
                   )
                 )
-              )
-            case Some(country) =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
-                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-              } yield {
-                savedForLater match {
+              case Some(country) =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
+                  savedForLater  <-
+                    userAnswersService
+                      .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+                } yield savedForLater match {
                   case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
                   case Left(err)   => onFailureRedirect(err)
                 }
-              }
+            }
           }
-        }
-      )
+        )
   }
 }

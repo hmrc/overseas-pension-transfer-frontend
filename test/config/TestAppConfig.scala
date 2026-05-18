@@ -21,7 +21,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class TestAppConfig
     extends FrontendAppConfig(
-      configuration  = Configuration(
+      configuration = Configuration(
         "appName"                             -> "test-frontend",
         "contact-frontend.host"               -> "http://localhost:9250",
         "contact-frontend.serviceId"          -> "test-service",

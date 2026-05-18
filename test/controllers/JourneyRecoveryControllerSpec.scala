@@ -43,7 +43,10 @@ class JourneyRecoveryControllerSpec extends AnyFreeSpec with SpecBase {
           val continueView = application.injector.instanceOf[JourneyRecoveryContinueView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual continueView(continueUrl.unsafeValue)(request, messages(application)).toString
+          contentAsString(result) mustEqual continueView(continueUrl.unsafeValue)(
+            request,
+            messages(application)
+          ).toString
         }
       }
     }

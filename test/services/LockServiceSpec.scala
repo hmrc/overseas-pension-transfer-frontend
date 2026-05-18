@@ -53,22 +53,21 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with Mocki
 
   private val allTransfersItem = Some(
     AllTransfersItem(
-      transferId      = transferId,
-      qtVersion       = Some("001"),
-      qtStatus        = None,
-      nino            = Some("AA123456A"),
+      transferId = transferId,
+      qtVersion = Some("001"),
+      qtStatus = None,
+      nino = Some("AA123456A"),
       memberFirstName = Some("John"),
-      memberSurname   = Some("Doe"),
-      qtDate          = None,
-      lastUpdated     = Some(now),
-      pstrNumber      = None,
-      submissionDate  = None
+      memberSurname = Some("Doe"),
+      qtDate = None,
+      lastUpdated = Some(now),
+      pstrNumber = None,
+      submissionDate = None
     )
   )
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(mockLockRepository, mockAuditService)
-  }
 
   "LockService" - {
 
@@ -78,7 +77,15 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with Mocki
         .thenReturn(Future.successful(Some(fakeLock)))
 
       val result = await(
-        service.takeLockWithAudit(transferId, owner, ttlSeconds, authenticatedUser, schemeDetails, StartNewTransfer, allTransfersItem)
+        service.takeLockWithAudit(
+          transferId,
+          owner,
+          ttlSeconds,
+          authenticatedUser,
+          schemeDetails,
+          StartNewTransfer,
+          allTransfersItem
+        )
       )
 
       result mustBe true
@@ -92,11 +99,20 @@ class LockServiceSpec extends AnyFreeSpec with Matchers with SpecBase with Mocki
         .thenReturn(Future.successful(None))
 
       val result = await(
-        service.takeLockWithAudit(transferId, owner, ttlSeconds, authenticatedUser, schemeDetails, StartNewTransfer, allTransfersItem)
+        service.takeLockWithAudit(
+          transferId,
+          owner,
+          ttlSeconds,
+          authenticatedUser,
+          schemeDetails,
+          StartNewTransfer,
+          allTransfersItem
+        )
       )
 
       result mustBe false
-      verify(mockAuditService).audit(argThat[ReportStartedAuditModel](_.journeyType == StartJourneyFailed))(any[HeaderCarrier])
+      verify(mockAuditService)
+        .audit(argThat[ReportStartedAuditModel](_.journeyType == StartJourneyFailed))(any[HeaderCarrier])
       verify(mockLockRepository).takeLock(eqTo(transferId.value), eqTo(owner), any())
       verifyNoMoreInteractions(mockAuditService)
     }

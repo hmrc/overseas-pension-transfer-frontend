@@ -62,9 +62,11 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).overrides(
-        bind[CountryService].toInstance(mockCountryService)
-      ).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber)
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService)
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -89,9 +91,11 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
     "must return OK and the correct view for a GET when accessible change feature is on" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).overrides(
-        bind[CountryService].toInstance(mockCountryService)
-      ).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber)
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService)
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -120,7 +124,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        ).build()
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -160,7 +165,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
-          ).build()
+          )
+          .build()
 
       running(application) {
         val request =
@@ -184,7 +190,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        ).build()
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -216,15 +223,18 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         .overrides(
           bind[CountryService].toInstance(mockCountryService),
           bind[AddressService].toInstance(mockAddressService)
-        ).build()
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
-      when(mockAddressService.membersCurrentAddress(any())).thenReturn(Some(
-        membersCurrentAddress.copy(
-          ukPostCode = Some("AA00AA"),
-          country    = Country("FR", "France")
+      when(mockAddressService.membersCurrentAddress(any())).thenReturn(
+        Some(
+          membersCurrentAddress.copy(
+            ukPostCode = Some("AA00AA"),
+            country = Country("FR", "France")
+          )
         )
-      ))
+      )
 
       val data = Seq(
         "addressLine1" -> "2 Other Place",

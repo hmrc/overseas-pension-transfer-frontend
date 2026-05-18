@@ -24,10 +24,9 @@ import viewmodels.implicits._
 
 object SchemeNameSummary {
 
-  def row(mode: Mode, schemeName: String)(implicit messages: Messages): SummaryListRow = {
+  def row(mode: Mode, schemeName: String)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
-      key   = "schemeName.label",
+      key = "schemeName.label",
       value = ValueViewModel(schemeName)
     )
-  }
 }

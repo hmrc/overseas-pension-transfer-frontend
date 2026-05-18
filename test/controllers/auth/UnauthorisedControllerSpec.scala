@@ -51,7 +51,9 @@ class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {
         val result = route(application, request).value
         val body   = contentAsString(result)
 
-        body must include("""<a href="https://www.gov.uk/guidance/manage-a-registered-pension-scheme" class="govuk-link">Find out more about access to Managing Pension Schemes.</a>""")
+        body must include(
+          """<a href="https://www.gov.uk/guidance/manage-a-registered-pension-scheme" class="govuk-link">Find out more about access to Managing Pension Schemes.</a>"""
+        )
       }
     }
   }

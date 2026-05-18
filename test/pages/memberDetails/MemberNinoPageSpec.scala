@@ -31,7 +31,9 @@ class MemberNinoPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Member Date of Birth" in {
 
-        MemberNinoPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode)
+        MemberNinoPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfBirthController.onPageLoad(
+          NormalMode
+        )
       }
     }
 

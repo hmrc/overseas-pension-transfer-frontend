@@ -40,11 +40,16 @@ class PropertyAddressViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(formProvider(), countrySelectViewModel, NormalMode, testIndex).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("propertyAddress.title")} - ${messages("service.name")} - GOV.UK"
     }
 
-    behave like pageWithH1(view(formProvider(), countrySelectViewModel, NormalMode, testIndex), "propertyAddress.heading")
+    behave like pageWithH1(
+      view(formProvider(), countrySelectViewModel, NormalMode, testIndex),
+      "propertyAddress.heading"
+    )
 
     behave like pageWithMultipleInputFields(
       view(formProvider(), countrySelectViewModel, NormalMode, testIndex),

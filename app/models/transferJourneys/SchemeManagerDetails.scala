@@ -20,11 +20,11 @@ import models.address.SchemeManagersAddress
 import models.{PersonName, SchemeManagerType}
 
 case class SchemeManagerDetails(
-    schemeManagerType: SchemeManagerType,
-    schemeManagersName: Option[PersonName],
-    schemeManagerOrgName: Option[String],
-    schemeOrgContact: Option[PersonName],
-    schemeManagersAddress: SchemeManagersAddress,
-    schemeManagersEmail: String,
-    schemeManagersPhoneNo: String
-  )
+  schemeManagerType: SchemeManagerType,
+  schemeManagersName: Option[PersonName],
+  schemeManagerOrgName: Option[String],
+  schemeOrgContact: Option[PersonName],
+  schemeManagersAddress: SchemeManagersAddress,
+  schemeManagersEmail: String,
+  schemeManagersPhoneNo: String
+)

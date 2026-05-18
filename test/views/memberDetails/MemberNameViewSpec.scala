@@ -45,7 +45,10 @@ class MemberNameViewSpec extends ViewBaseSpec {
     behave like pageWithSubmitButton(view(formProvider(), NormalMode), "site.saveAndContinue")
 
     behave like pageWithErrors(
-      view(formProvider().withError(FormError("memberFirstName", "memberName.error.memberFirstName.required")), NormalMode),
+      view(
+        formProvider().withError(FormError("memberFirstName", "memberName.error.memberFirstName.required")),
+        NormalMode
+      ),
       "memberFirstName",
       "memberName.error.memberFirstName.required"
     )

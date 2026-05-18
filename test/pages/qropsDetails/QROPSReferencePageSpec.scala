@@ -30,7 +30,9 @@ class QROPSReferencePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Index" in {
 
-        QROPSReferencePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.QROPSAddressController.onPageLoad(NormalMode)
+        QROPSReferencePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.QROPSAddressController.onPageLoad(
+          NormalMode
+        )
       }
     }
 

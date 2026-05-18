@@ -23,24 +23,23 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 
 object TaskListViewModel {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[TaskListItem] = {
+  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[TaskListItem] =
     TaskJourneyViewModels.valuesWithoutSubmissionJourney.map { journey =>
       TaskTileViewModel(
-        id       = journey.id,
+        id = journey.id,
         linkText = journey.linkText(userAnswers),
-        link     = journey.entry(userAnswers),
-        status   = journey.status(userAnswers)
+        link = journey.entry(userAnswers),
+        status = journey.status(userAnswers)
       ).toTaskListItem
     }
-  }
 
   def submissionRow(userAnswers: UserAnswers)(implicit messages: Messages): TaskListItem = {
     val journey = TaskJourneyViewModels.SubmissionDetailsJourneyViewModel
     TaskTileViewModel(
-      id       = journey.id,
+      id = journey.id,
       linkText = messages(journey.linkTextKey),
-      link     = journey.entry(userAnswers),
-      status   = journey.status(userAnswers)
+      link = journey.entry(userAnswers),
+      status = journey.status(userAnswers)
     ).toTaskListItem
   }
 }

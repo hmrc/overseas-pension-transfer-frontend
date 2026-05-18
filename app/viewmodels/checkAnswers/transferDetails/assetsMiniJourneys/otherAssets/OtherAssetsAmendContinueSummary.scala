@@ -34,7 +34,9 @@ object OtherAssetsAmendContinueSummary extends AppUtils {
 
   private val threshold = 5
 
-  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(OtherAssetsQuery)
     val count        = AssetThresholdHandler.getAssetCount(userAnswers, TypeOfAsset.Other)
     val valueText    = messages("otherAssetsAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
@@ -60,8 +62,8 @@ object OtherAssetsAmendContinueSummary extends AppUtils {
 
         Some(
           SummaryListRowViewModel(
-            key     = "otherAssetsAmendContinue.checkYourAnswersLabel",
-            value   = ValueViewModel(valueText),
+            key = "otherAssetsAmendContinue.checkYourAnswersLabel",
+            value = ValueViewModel(valueText),
             actions = actions
           )
         )
@@ -69,31 +71,35 @@ object OtherAssetsAmendContinueSummary extends AppUtils {
     }
   }
 
-  def moreThanFiveOtherAssetsRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+  def moreThanFiveOtherAssetsRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     userAnswers.get(MoreOtherAssetsDeclarationPage).filter(identity).map { _ =>
       SummaryListRowViewModel(
-        key     = Key(Text(messages("moreThanFive.otherAssets.checkYourAnswersLabel"))),
-        value   = ValueViewModel(HtmlContent(messages("site.yes"))),
+        key = Key(Text(messages("moreThanFive.otherAssets.checkYourAnswersLabel"))),
+        value = ValueViewModel(HtmlContent(messages("site.yes"))),
         actions = if (showChangeLinks) {
-          Seq(ActionItemViewModel(
-            content = Text(messages("site.change")),
-            href    = controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController
-              .onPageLoad(mode).url
-          ).withVisuallyHiddenText(messages("moreThanFive.otherAssets.change.hidden")))
+          Seq(
+            ActionItemViewModel(
+              content = Text(messages("site.change")),
+              href =
+                controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController
+                  .onPageLoad(mode)
+                  .url
+            ).withVisuallyHiddenText(messages("moreThanFive.otherAssets.change.hidden"))
+          )
         } else Nil
       )
     }
-  }
 
   def rows(mode: Mode, answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(OtherAssetsQuery)
-    maybeEntries.getOrElse(Nil).zipWithIndex.map {
-      case (entry, index) =>
-        ListItem(
-          name      = entry.assetDescription,
-          changeUrl = AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(mode, index).url,
-          removeUrl = AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(index).url
-        )
+    maybeEntries.getOrElse(Nil).zipWithIndex.map { case (entry, index) =>
+      ListItem(
+        name = entry.assetDescription,
+        changeUrl = AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(mode, index).url,
+        removeUrl = AssetsMiniJourneysRoutes.OtherAssetsConfirmRemovalController.onPageLoad(index).url
+      )
     }
   }
 }

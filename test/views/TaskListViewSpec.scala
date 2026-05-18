@@ -28,17 +28,17 @@ class TaskListViewSpec extends ViewBaseSpec {
 
   private val taskItems = Seq(
     TaskListItem(
-      title  = TaskListItemTitle(content = Text(messages("taskList.memberDetails.linkText"))),
+      title = TaskListItemTitle(content = Text(messages("taskList.memberDetails.linkText"))),
       status = TaskListItemStatus(content = Text(messages("taskList.taskStatus.completed")))
     ),
     TaskListItem(
-      title  = TaskListItemTitle(content = Text(messages("taskList.transferDetails.linkText"))),
+      title = TaskListItemTitle(content = Text(messages("taskList.transferDetails.linkText"))),
       status = TaskListItemStatus(content = Text(messages("taskList.taskStatus.inProgress")))
     )
   )
 
   private val submissionItem = TaskListItem(
-    title  = TaskListItemTitle(content = Text(messages("taskList.submit.linkText"))),
+    title = TaskListItemTitle(content = Text(messages("taskList.submit.linkText"))),
     status = TaskListItemStatus(content = Text(messages("taskList.taskStatus.cannotStart")))
   )
 

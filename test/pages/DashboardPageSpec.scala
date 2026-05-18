@@ -38,22 +38,22 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   private def inProgressParams(): TransferReportQueryParams =
     TransferReportQueryParams(
-      transferId    = Some(userAnswersTransferNumber),
-      qtStatus      = Some(InProgress),
-      pstr          = None,
+      transferId = Some(userAnswersTransferNumber),
+      qtStatus = Some(InProgress),
+      pstr = None,
       versionNumber = None,
-      memberName    = "Name",
-      currentPage   = 1
+      memberName = "Name",
+      currentPage = 1
     )
 
   private def submittedParams(qtRef: String = "QT123456", ver: String = "007"): TransferReportQueryParams =
     TransferReportQueryParams(
-      transferId    = Some(QtNumber(qtRef)),
-      qtStatus      = Some(Submitted),
-      pstr          = Some(pstr),
+      transferId = Some(QtNumber(qtRef)),
+      qtStatus = Some(Submitted),
+      pstr = Some(pstr),
       versionNumber = Some(ver),
-      memberName    = "Name",
-      currentPage   = 1
+      memberName = "Name",
+      currentPage = 1
     )
 
   ".nextPage" - {
@@ -77,12 +77,12 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "must go to JourneyRecovery when status is InProgress but transferReference is missing" in {
       val paramsMissingRef = TransferReportQueryParams(
-        transferId    = None,
-        qtStatus      = Some(InProgress),
-        pstr          = None,
+        transferId = None,
+        qtStatus = Some(InProgress),
+        pstr = None,
         versionNumber = None,
-        memberName    = "Name",
-        currentPage   = 1
+        memberName = "Name",
+        currentPage = 1
       )
 
       DashboardPage.nextPage(ddEmpty, Some(InProgress), Some(paramsMissingRef)) mustEqual

@@ -51,10 +51,10 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
   private def uaWithUnquotedShares(n: Int): UserAnswers = {
     val entry = UnquotedSharesEntry(
-      companyName    = "Acme Ltd",
-      valueOfShares  = BigDecimal(1234.56),
+      companyName = "Acme Ltd",
+      valueOfShares = BigDecimal(1234.56),
       numberOfShares = 100,
-      classOfShares  = "Ord"
+      classOfShares = "Ord"
     )
     val list  = List.fill(n)(entry)
     emptyUserAnswers.set(UnquotedSharesMiniJourney.query, list).success.value
@@ -71,7 +71,10 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val view    = application.injector.instanceOf[UnquotedSharesAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -85,7 +88,10 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val view    = application.injector.instanceOf[UnquotedSharesAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request, userAnswers), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
+          fakeDisplayRequest(request, userAnswers),
+          messages(application)
+        ).toString
       }
     }
 
@@ -142,7 +148,8 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
         val ua2       = userAnswers.set(UnquotedSharesAmendContinueAssetPage, value = true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
-        val expected  = UnquotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          UnquotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -165,7 +172,10 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
       running(application) {
         val request =
-          FakeRequest(POST, AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(AmendCheckMode).url)
+          FakeRequest(
+            POST,
+            AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(AmendCheckMode).url
+          )
             .withFormUrlEncodedBody(("add-another", "Yes"))
 
         val result = route(application, request).value
@@ -174,7 +184,9 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnquotedSharesAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
+        redirectLocation(result).value mustEqual UnquotedSharesAmendContinueAssetPage
+          .nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex))
+          .url
       }
     }
 
@@ -197,7 +209,8 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
         val ua2       = userAnswers.set(UnquotedSharesAmendContinueAssetPage, value = false).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
-        val expected  = UnquotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          UnquotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -223,7 +236,8 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
 
         val ua2       = userAnswers.set(UnquotedSharesAmendContinueAssetPage, value = true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(UnquotedSharesMiniJourney, ua2)
-        val expected  = UnquotedSharesAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          UnquotedSharesAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -244,7 +258,10 @@ class UnquotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBas
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

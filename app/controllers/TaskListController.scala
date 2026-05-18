@@ -32,33 +32,35 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class TaskListController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    sessionRepository: SessionRepository,
-    view: TaskListView,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  val controllerComponents: MessagesControllerComponents,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  sessionRepository: SessionRepository,
+  view: TaskListView,
+  clock: Clock
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
     Ok(view(TaskListViewModel.rows(request.userAnswers), TaskListViewModel.submissionRow(request.userAnswers)))
   }
 
-  def fromDashboard(transferId: TransferId): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
-    val newSession = SessionData(
-      request.authenticatedUser.internalId,
-      transferId,
-      request.schemeDetails,
-      request.authenticatedUser,
-      Json.obj(),
-      Instant.now(clock)
-    )
+  def fromDashboard(transferId: TransferId): Action[AnyContent] = (identify andThen schemeData).async {
+    implicit request =>
+      val newSession = SessionData(
+        request.authenticatedUser.internalId,
+        transferId,
+        request.schemeDetails,
+        request.authenticatedUser,
+        Json.obj(),
+        Instant.now(clock)
+      )
 
-    sessionRepository.set(newSession) map {
-      _ =>
+      sessionRepository.set(newSession) map { _ =>
         Redirect(controllers.routes.TaskListController.onPageLoad())
-    }
+      }
   }
 }

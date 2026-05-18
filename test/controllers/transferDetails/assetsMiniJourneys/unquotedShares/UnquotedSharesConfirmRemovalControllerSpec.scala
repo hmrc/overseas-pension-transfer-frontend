@@ -40,7 +40,8 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
       val application = applicationBuilder().build()
 
       running(application) {
-        val request = FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url)
+        val request =
+          FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(1).url)
 
         val result = route(application, request).value
 
@@ -65,7 +66,9 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController
+          .onPageLoad(NormalMode)
+          .url
       }
     }
 
@@ -85,7 +88,10 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, 1)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

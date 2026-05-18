@@ -32,24 +32,26 @@ object AssetsMiniJourneyService {
   // ----- Repeating-only helpers -----
 
   private def assetEntries[A <: AssetEntry: Reads](
-      journey: RepeatingAssetsMiniJourney[A],
-      userAnswers: UserAnswers
-    ): List[A] =
+    journey: RepeatingAssetsMiniJourney[A],
+    userAnswers: UserAnswers
+  ): List[A] =
     userAnswers.get(journey.query).getOrElse(Nil)
 
-  def assetCount[A <: AssetEntry: Reads](journey: RepeatingAssetsMiniJourney[A], userAnswers: UserAnswers): Int = {
+  def assetCount[A <: AssetEntry: Reads](journey: RepeatingAssetsMiniJourney[A], userAnswers: UserAnswers): Int =
     assetEntries(journey, userAnswers).size
-  }
 
-  def getAssetEntryAtIndex[A <: AssetEntry: Reads](journey: RepeatingAssetsMiniJourney[A], userAnswers: UserAnswers, index: Int): Option[A] = {
+  def getAssetEntryAtIndex[A <: AssetEntry: Reads](
+    journey: RepeatingAssetsMiniJourney[A],
+    userAnswers: UserAnswers,
+    index: Int
+  ): Option[A] =
     assetEntries(journey, userAnswers).lift(index)
-  }
 
   def removeAssetEntry[A <: AssetEntry: Format](
-      journey: RepeatingAssetsMiniJourney[A],
-      userAnswers: UserAnswers,
-      index: Int
-    ): Try[UserAnswers] = {
+    journey: RepeatingAssetsMiniJourney[A],
+    userAnswers: UserAnswers,
+    index: Int
+  ): Try[UserAnswers] = {
     val queryKey = journey.query
 
     userAnswers.get(queryKey) match {
@@ -68,10 +70,10 @@ object AssetsMiniJourneyService {
   }
 
   def removeAssetEntry[A <: AssetEntry: Format](
-      journey: RepeatingAssetsMiniJourney[A],
-      sessionData: SessionData,
-      index: Int
-    ): Try[SessionData] = {
+    journey: RepeatingAssetsMiniJourney[A],
+    sessionData: SessionData,
+    index: Int
+  ): Try[SessionData] = {
     val queryKey = journey.query
 
     sessionData.get(queryKey) match {
@@ -91,15 +93,14 @@ object AssetsMiniJourneyService {
     val journeysWithoutCash = AssetsMiniJourneyRegistry.all.filterNot(_.assetType == Cash)
 
     val clearedData =
-      journeysWithoutCash.foldLeft(Try(userAnswers)) {
-        case (acc, assetMiniJ) =>
-          acc.flatMap { ua =>
-            AssetsMiniJourneyRegistry.forType(assetMiniJ.assetType) match {
-              case Some(r: RepeatingAssetsMiniJourney[_]) => ua.remove(r.query)
-              case Some(s: SingleAssetsMiniJourney[_])    => ua.remove(s.query)
-              case _                                      => Success(ua)
-            }
+      journeysWithoutCash.foldLeft(Try(userAnswers)) { case (acc, assetMiniJ) =>
+        acc.flatMap { ua =>
+          AssetsMiniJourneyRegistry.forType(assetMiniJ.assetType) match {
+            case Some(r: RepeatingAssetsMiniJourney[_]) => ua.remove(r.query)
+            case Some(s: SingleAssetsMiniJourney[_])    => ua.remove(s.query)
+            case _                                      => Success(ua)
           }
+        }
       }
 
     for {
@@ -111,22 +112,22 @@ object AssetsMiniJourneyService {
   // ----- Single-asset helpers (Cash) -----
 
   def getSingle[A <: AssetEntry: Reads](
-      journey: SingleAssetsMiniJourney[A],
-      sessionData: SessionData
-    ): Option[A] =
+    journey: SingleAssetsMiniJourney[A],
+    sessionData: SessionData
+  ): Option[A] =
     sessionData.get(journey.query)
 
   def setSingle[A <: AssetEntry: Writes](
-      journey: SingleAssetsMiniJourney[A],
-      sessionData: SessionData,
-      value: A
-    ): Try[SessionData] =
+    journey: SingleAssetsMiniJourney[A],
+    sessionData: SessionData,
+    value: A
+  ): Try[SessionData] =
     sessionData.set(journey.query, value)
 
   def removeSingle[A <: AssetEntry](
-      journey: SingleAssetsMiniJourney[A],
-      sessionData: SessionData
-    ): Try[SessionData] =
+    journey: SingleAssetsMiniJourney[A],
+    sessionData: SessionData
+  ): Try[SessionData] =
     sessionData.remove(journey.query)
 
   // ----- Shared helpers -----
@@ -140,7 +141,12 @@ object AssetsMiniJourneyService {
     *   - Updates the SelectedAssetTypes entry in UserAnswers to reflect the new selection.
     *   - Updates the TypeOfAssetPage entry in SessionData to reflect the new set of assets and statuses.
     */
-  def handleTypeOfAssetStatusUpdate(sd: SessionData, ua: UserAnswers, selectedAssets: Seq[TypeOfAsset], mode: Mode): Try[(SessionData, UserAnswers)] = {
+  def handleTypeOfAssetStatusUpdate(
+    sd: SessionData,
+    ua: UserAnswers,
+    selectedAssets: Seq[TypeOfAsset],
+    mode: Mode
+  ): Try[(SessionData, UserAnswers)] = {
     val previous: Map[TypeOfAsset, SessionAssetTypeWithStatus] =
       sd.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty).map(a => a.assetType -> a).toMap
 
@@ -163,9 +169,8 @@ object AssetsMiniJourneyService {
 
     def setAnswers(userAnswers: UserAnswers): Try[UserAnswers] =
       if (mode == AmendCheckMode) {
-        userAnswers.set(TypeOfAssetPage, selectedAssets) flatMap {
-          answers =>
-            answers.remove(TransferDetailsRecordVersionQuery)
+        userAnswers.set(TypeOfAssetPage, selectedAssets) flatMap { answers =>
+          answers.remove(TransferDetailsRecordVersionQuery)
         }
       } else {
         userAnswers.set(TypeOfAssetPage, selectedAssets)
@@ -187,13 +192,12 @@ object AssetsMiniJourneyService {
 
   def setAssetCompleted(sessionData: SessionData, assetType: TypeOfAsset, completed: Boolean): Try[SessionData] = {
     val selectedAssetsWithStatuses = sessionData.get(SelectedAssetTypesWithStatus).getOrElse(Seq.empty)
-    val updated                    = {
+    val updated                    =
       if (completed) {
         SelectedAssetTypesWithStatus.markAsCompleted(selectedAssetsWithStatuses, assetType)
       } else {
         SelectedAssetTypesWithStatus.markAsIncomplete(selectedAssetsWithStatuses, assetType)
       }
-    }
     sessionData.set(SelectedAssetTypesWithStatus, updated)
   }
 
@@ -208,7 +212,10 @@ object AssetsMiniJourneyService {
         sessionData.set(SelectedAssetTypesWithStatus, updated)
     }
 
-  private def cleanupTypeOfAsset[A <: AssetEntry: Reads](journey: RepeatingAssetsMiniJourney[A], userAnswers: UserAnswers): UserAnswers = {
+  private def cleanupTypeOfAsset[A <: AssetEntry: Reads](
+    journey: RepeatingAssetsMiniJourney[A],
+    userAnswers: UserAnswers
+  ): UserAnswers = {
 
     val assetType = journey.assetType
     val remaining = userAnswers.get(journey.query).map(_.size).getOrElse(0)

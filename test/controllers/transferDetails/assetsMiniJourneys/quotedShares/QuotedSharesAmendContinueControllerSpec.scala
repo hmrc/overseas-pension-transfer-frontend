@@ -40,8 +40,10 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
   private val formProvider = new QuotedSharesAmendContinueFormProvider()
   private val form         = formProvider()
 
-  private lazy val quotedSharesAmendContinueRouteNormal = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(NormalMode).url
-  private lazy val quotedSharesAmendContinueRouteCheck  = AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(CheckMode).url
+  private lazy val quotedSharesAmendContinueRouteNormal =
+    AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(NormalMode).url
+  private lazy val quotedSharesAmendContinueRouteCheck  =
+    AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(CheckMode).url
 
   private def uaWithQuotedShares(n: Int): UserAnswers = {
     val entry = QuotedSharesEntry("Acme", BigDecimal(10), 100, "Ord")
@@ -60,7 +62,10 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val view    = application.injector.instanceOf[QuotedSharesAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -74,7 +79,10 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val view    = application.injector.instanceOf[QuotedSharesAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request, userAnswers), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
+          fakeDisplayRequest(request, userAnswers),
+          messages(application)
+        ).toString
       }
     }
 
@@ -115,7 +123,8 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinueAssetPage, true).success.value
         val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
-        val expected  = QuotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          QuotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -141,7 +150,8 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinueAssetPage, false).success.value
         val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
-        val expected  = QuotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          QuotedSharesAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -167,7 +177,8 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinueAssetPage, true).success.value
         val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
-        val expected  = QuotedSharesAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          QuotedSharesAmendContinueAssetPage.nextPageWith(CheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -193,7 +204,8 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
 
         val ua2       = userAnswers.set(QuotedSharesAmendContinueAssetPage, true).success.value
         val nextIndex = services.AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
-        val expected  = QuotedSharesAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          QuotedSharesAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -225,7 +237,9 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val nextIndex = AssetsMiniJourneyService.assetCount(QuotedSharesMiniJourney, ua2)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QuotedSharesAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
+        redirectLocation(result).value mustEqual QuotedSharesAmendContinueAssetPage
+          .nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex))
+          .url
       }
     }
 
@@ -243,7 +257,10 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

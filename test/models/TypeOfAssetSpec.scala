@@ -25,7 +25,12 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.OptionValues
 import play.api.libs.json.{JsError, JsString, Json}
 
-class TypeOfAssetSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with ModelGenerators {
+class TypeOfAssetSpec
+    extends AnyFreeSpec
+    with Matchers
+    with ScalaCheckPropertyChecks
+    with OptionValues
+    with ModelGenerators {
 
   "TypeOfAsset" - {
 
@@ -33,9 +38,8 @@ class TypeOfAssetSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       val gen = arbitrary[TypeOfAsset]
 
-      forAll(gen) {
-        typeOfAsset =>
-          JsString(typeOfAsset.toString).validate[TypeOfAsset].asOpt.value mustEqual typeOfAsset
+      forAll(gen) { typeOfAsset =>
+        JsString(typeOfAsset.toString).validate[TypeOfAsset].asOpt.value mustEqual typeOfAsset
       }
     }
 
@@ -43,9 +47,8 @@ class TypeOfAssetSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       val gen = arbitrary[String] suchThat (!TypeOfAsset.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[TypeOfAsset] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[TypeOfAsset] mustEqual JsError("error.invalid")
       }
     }
 
@@ -53,9 +56,8 @@ class TypeOfAssetSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
 
       val gen = arbitrary[TypeOfAsset]
 
-      forAll(gen) {
-        typeOfAsset =>
-          Json.toJson(typeOfAsset) mustEqual JsString(typeOfAsset.toString)
+      forAll(gen) { typeOfAsset =>
+        Json.toJson(typeOfAsset) mustEqual JsString(typeOfAsset.toString)
       }
     }
   }

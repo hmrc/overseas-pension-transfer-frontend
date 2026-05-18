@@ -38,7 +38,7 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine3 = Some("Line3"),
         addressLine4 = Some("Line4"),
         addressLine5 = Some("Line5"),
-        country      = Country("FI", "Finland")
+        country = Country("FI", "Finland")
       )
 
       val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
@@ -58,7 +58,7 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine3 = None,
         addressLine4 = None,
         addressLine5 = None,
-        country      = Country("FI", "Finland")
+        country = Country("FI", "Finland")
       )
 
       val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
@@ -77,7 +77,7 @@ class SchemeManagersAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine3 = Some("    "),
         addressLine4 = Some(""),
         addressLine5 = Some("  "),
-        country      = Country("FI", "Finland")
+        country = Country("FI", "Finland")
       )
       val answers = emptyUserAnswers.set(SchemeManagersAddressPage, address).success.value
 

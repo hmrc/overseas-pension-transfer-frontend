@@ -20,25 +20,23 @@ import play.api.data.{Form, FormError}
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
-  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit = {
+  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
 
-    s"not bind strings longer than $maxLength characters" in {
-
-      forAll(stringsLongerThan(maxLength) -> "longString") {
-        (string: String) =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors must contain(lengthError)
+    s"not bind strings longer than $maxLength characters" in
+      forAll(stringsLongerThan(maxLength) -> "longString") { (string: String) =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors must contain(lengthError)
       }
-    }
-  }
 
-  def fieldThatRejectsInvalidCharacters(form: Form[_], fieldName: String, patternError: FormError, maybeMaxLength: Option[Int] = None): Unit = {
-    s"not bind strings with invalid regex" in {
-      forAll(stringsWithInvalidCharacters(maybeMaxLength = maybeMaxLength) -> "invalidString") {
-        (string: String) =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors must contain(patternError)
+  def fieldThatRejectsInvalidCharacters(
+    form: Form[_],
+    fieldName: String,
+    patternError: FormError,
+    maybeMaxLength: Option[Int] = None
+  ): Unit =
+    s"not bind strings with invalid regex" in
+      forAll(stringsWithInvalidCharacters(maybeMaxLength = maybeMaxLength) -> "invalidString") { (string: String) =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors must contain(patternError)
       }
-    }
-  }
 }

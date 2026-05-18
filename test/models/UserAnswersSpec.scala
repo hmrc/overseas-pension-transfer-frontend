@@ -51,8 +51,12 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "remove" - {
     "should remove existing Json from data field" in {
-      emptyUserAnswers.copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
-        .remove(SubmitToHMRCPage).success.value.data mustBe
+      emptyUserAnswers
+        .copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
+        .remove(SubmitToHMRCPage)
+        .success
+        .value
+        .data mustBe
         Json.obj("key" -> "value")
     }
   }

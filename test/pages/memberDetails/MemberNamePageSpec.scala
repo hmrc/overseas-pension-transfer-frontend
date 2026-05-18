@@ -30,7 +30,9 @@ class MemberNamePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Member Nino" in {
 
-        MemberNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberNinoController.onPageLoad(NormalMode)
+        MemberNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberNinoController.onPageLoad(
+          NormalMode
+        )
       }
     }
 

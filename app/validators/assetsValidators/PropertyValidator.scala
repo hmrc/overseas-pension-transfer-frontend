@@ -44,7 +44,7 @@ object PropertyValidator {
       case None                      => DataMissingError(PropertyDescriptionPage(index)).invalidNec
     }
 
-  def validatePropertyDetails(answers: UserAnswers): ValidationResult[Option[List[PropertyEntry]]] = {
+  def validatePropertyDetails(answers: UserAnswers): ValidationResult[Option[List[PropertyEntry]]] =
     answers.get(TypeOfAssetPage) match {
       case Some(assets) if assets.contains(TypeOfAsset.Property) =>
         answers.get(PropertyQuery) match {
@@ -69,5 +69,4 @@ object PropertyValidator {
       case Some(_)                                               => None.validNec
       case None                                                  => DataMissingError(PropertyQuery).invalidNec
     }
-  }
 }

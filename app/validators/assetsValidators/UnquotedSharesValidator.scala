@@ -20,12 +20,7 @@ import cats.implicits.{catsSyntaxTuple4Semigroupal, catsSyntaxValidatedIdBinComp
 import models.assets.{TypeOfAsset, UnquotedSharesEntry}
 import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.transferDetails.TypeOfAssetPage
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
-  UnquotedSharesClassPage,
-  UnquotedSharesCompanyNamePage,
-  UnquotedSharesNumberPage,
-  UnquotedSharesValuePage
-}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
 import queries.assets.UnquotedSharesQuery
 
 object UnquotedSharesValidator {
@@ -54,11 +49,12 @@ object UnquotedSharesValidator {
       case None                     => DataMissingError(UnquotedSharesClassPage(index)).invalidNec
     }
 
-  def validateUnquotedShares(answers: UserAnswers): ValidationResult[Option[List[UnquotedSharesEntry]]] = {
+  def validateUnquotedShares(answers: UserAnswers): ValidationResult[Option[List[UnquotedSharesEntry]]] =
     answers.get(TypeOfAssetPage) match {
       case Some(assets) if assets.contains(TypeOfAsset.UnquotedShares) =>
         answers.get(UnquotedSharesQuery) match {
-          case Some(shares) if shares.length > 5 => GenericError("Unquoted shares cannot hold more than 5 in list").invalidNec
+          case Some(shares) if shares.length > 5 =>
+            GenericError("Unquoted shares cannot hold more than 5 in list").invalidNec
           case Some(shares)                      =>
             val validatedShares = shares.zipWithIndex.map { case (_, index) =>
               (
@@ -80,5 +76,4 @@ object UnquotedSharesValidator {
       case Some(_)                                                     => None.validNec
       case None                                                        => DataMissingError(UnquotedSharesQuery).invalidNec
     }
-  }
 }

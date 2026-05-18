@@ -26,10 +26,7 @@ import org.scalatest.matchers.must.Matchers
 import pages.qropsSchemeManagerDetails._
 import uaOps.UAOps.SchemeManagerAnswersOps
 
-final class SchemeManagerDetailsValidatorSpec
-    extends AnyFreeSpec
-    with Matchers
-    with OptionValues with AddressBase {
+final class SchemeManagerDetailsValidatorSpec extends AnyFreeSpec with Matchers with OptionValues with AddressBase {
 
   private val person: PersonName     = PersonName("Jane", "Doe")
   private val orgName: String        = "Acme Pensions Ltd"
@@ -53,12 +50,12 @@ final class SchemeManagerDetailsValidatorSpec
       V.fromUserAnswers(ua) match {
         case Valid(details) =>
           details mustBe SchemeManagerDetails(
-            schemeManagerType     = SchemeManagerType.Individual,
-            schemeManagersName    = Some(person),
-            schemeManagerOrgName  = None,
-            schemeOrgContact      = None,
+            schemeManagerType = SchemeManagerType.Individual,
+            schemeManagersName = Some(person),
+            schemeManagerOrgName = None,
+            schemeOrgContact = None,
             schemeManagersAddress = schemeManagersAddress,
-            schemeManagersEmail   = email,
+            schemeManagersEmail = email,
             schemeManagersPhoneNo = phoneNo
           )
         case Invalid(err)   =>
@@ -79,12 +76,12 @@ final class SchemeManagerDetailsValidatorSpec
       V.fromUserAnswers(ua) match {
         case Valid(details) =>
           details mustBe SchemeManagerDetails(
-            schemeManagerType     = SchemeManagerType.Organisation,
-            schemeManagersName    = None,
-            schemeManagerOrgName  = Some(orgName),
-            schemeOrgContact      = Some(orgContact),
+            schemeManagerType = SchemeManagerType.Organisation,
+            schemeManagersName = None,
+            schemeManagerOrgName = Some(orgName),
+            schemeOrgContact = Some(orgContact),
             schemeManagersAddress = schemeManagersAddress,
-            schemeManagersEmail   = email,
+            schemeManagersEmail = email,
             schemeManagersPhoneNo = phoneNo
           )
         case Invalid(err)   =>
@@ -301,7 +298,8 @@ final class SchemeManagerDetailsValidatorSpec
           .withSchemeManagerOrgContact(orgContact)
 
       V.validateSchemeManagersOrgName(ua) match {
-        case Invalid(nec) => nec.toNonEmptyList.toList must contain only GenericError(
+        case Invalid(nec) =>
+          nec.toNonEmptyList.toList must contain only GenericError(
             "Org name must be absent when manager type is individual"
           )
         case Valid(v)     => fail(s"Expected Invalid(must be absent), got Valid: $v")

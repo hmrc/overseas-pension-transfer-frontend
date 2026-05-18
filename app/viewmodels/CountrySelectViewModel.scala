@@ -26,14 +26,13 @@ object CountrySelectViewModel {
 
   def fromCountries(countries: Seq[Country])(implicit messages: Messages): CountrySelectViewModel = {
 
-    val selectItems = {
+    val selectItems =
       countries.map { country =>
         SelectItem(
           value = Some(country.code),
-          text  = country.name
+          text = country.name
         )
       }
-    }
 
     CountrySelectViewModel(selectItems)
   }

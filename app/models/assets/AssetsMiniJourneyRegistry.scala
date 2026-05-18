@@ -42,6 +42,7 @@ object AssetsMiniJourneyRegistry {
   }
 
   def startOf(assetType: TypeOfAsset, mode: Mode, index: Int): Call =
-    forType(assetType).map(_.call(mode, index))
+    forType(assetType)
+      .map(_.call(mode, index))
       .getOrElse(controllers.routes.JourneyRecoveryController.onPageLoad())
 }

@@ -71,7 +71,8 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       val result = action.invokeBlock(
         fakeRequest,
-        (request: IdentifierRequest[AnyContent]) => Future.successful(Ok(s"OK - ${request.authenticatedUser.internalId} - ${request.authenticatedUser}"))
+        (request: IdentifierRequest[AnyContent]) =>
+          Future.successful(Ok(s"OK - ${request.authenticatedUser.internalId} - ${request.authenticatedUser}"))
       )
 
       status(result) mustBe OK

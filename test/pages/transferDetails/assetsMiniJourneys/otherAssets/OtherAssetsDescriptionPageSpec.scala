@@ -30,7 +30,10 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     "in NormalMode" - {
       "must go to the Next page" in {
-        OtherAssetsDescriptionPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+        OtherAssetsDescriptionPage(index).nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           NormalMode,
           index
         )
@@ -39,7 +42,10 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     "in CheckMode" - {
       "must go to the Next page" in {
-        OtherAssetsDescriptionPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+        OtherAssetsDescriptionPage(index).nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           CheckMode,
           index
         )
@@ -48,7 +54,10 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        OtherAssetsDescriptionPage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+        OtherAssetsDescriptionPage(index).nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -57,7 +66,10 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        OtherAssetsDescriptionPage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
+        OtherAssetsDescriptionPage(index).nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(
           AmendCheckMode,
           index
         )
@@ -66,12 +78,16 @@ class OtherAssetsDescriptionPageSpec extends AnyFreeSpec with Matchers with Spec
 
     "should go to CYA when mandatory fields complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.Other))
-      OtherAssetsDescriptionPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(NormalMode, index)
+      OtherAssetsDescriptionPage(index)
+        .nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.OtherAssetsCYAController.onPageLoad(NormalMode, index)
     }
 
     "should go to Value page when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
-      OtherAssetsDescriptionPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index)
+      OtherAssetsDescriptionPage(index).nextPage(
+        NormalMode,
+        ua
+      ) mustBe AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index)
     }
   }
 }

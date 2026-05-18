@@ -35,57 +35,58 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class OverseasTransferAllowanceController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: OverseasTransferAllowanceFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: OverseasTransferAllowanceView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: OverseasTransferAllowanceFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: OverseasTransferAllowanceView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[BigDecimal] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData) {
-      implicit request =>
-        val preparedForm = request.userAnswers.get(OverseasTransferAllowancePage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-        Ok(view(preparedForm, mode))
+    (identify andThen schemeData andThen getData) { implicit request =>
+      val preparedForm = request.userAnswers.get(OverseasTransferAllowancePage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
+      Ok(view(preparedForm, mode))
 
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              request.userAnswers.set(OverseasTransferAllowancePage, value) flatMap {
-                answers =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                request.userAnswers.set(OverseasTransferAllowancePage, value) flatMap { answers =>
                   answers.remove(TransferDetailsRecordVersionQuery)
+                }
+              } else {
+                request.userAnswers.set(OverseasTransferAllowancePage, value)
               }
-            } else {
-              request.userAnswers.set(OverseasTransferAllowancePage, value)
-            }
 
-          for {
-            updatedAnswers <- Future.fromTry(setAnswers())
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            for {
+              updatedAnswers <- Future.fromTry(setAnswers())
+              savedForLater  <-
+                userAnswersService
+                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
 
-          } yield {
-            savedForLater match {
+            } yield savedForLater match {
               case Right(Done) => Redirect(OverseasTransferAllowancePage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
           }
-        }
-      )
+        )
   }
 }

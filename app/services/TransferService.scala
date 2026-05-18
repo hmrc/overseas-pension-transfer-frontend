@@ -28,17 +28,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TransferService @Inject() (
-    connector: TransferConnector,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) {
+  connector: TransferConnector,
+  clock: Clock
+)(implicit ec: ExecutionContext) {
 
   def getAllTransfersData(
-      current: DashboardData,
-      pstr: PstrNumber,
-      srnNumber: SrnNumber
-    )(implicit hc: HeaderCarrier
-    ): Future[Either[TransferError, DashboardData]] =
+    current: DashboardData,
+    pstr: PstrNumber,
+    srnNumber: SrnNumber
+  )(implicit hc: HeaderCarrier): Future[Either[TransferError, DashboardData]] =
     connector.getAllTransfers(srnNumber, pstr).map {
       case Left(NoTransfersFound) =>
         (for {
@@ -62,7 +60,8 @@ class TransferService @Inject() (
         )
     }
 
-  /** Filters out transfers missing a valid first name or surname. This prevents displaying incomplete member records on the dashboard.
+  /** Filters out transfers missing a valid first name or surname. This prevents displaying incomplete member records on
+    * the dashboard.
     */
   private def filterTransfersWithValidNames(transfers: Seq[AllTransfersItem]) =
     transfers.filter(t =>

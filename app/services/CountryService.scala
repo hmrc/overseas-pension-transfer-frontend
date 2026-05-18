@@ -31,23 +31,24 @@ class CountryService @Inject() (env: Environment) {
 
   lazy val countries: Seq[Country] = loadCountries()
 
-  def findByCode(code: String): Option[Country] = {
+  def findByCode(code: String): Option[Country] =
     countries.find(_.code == code)
-  }
 
   implicit private val codeCountryReads: Reads[Country] = (
     (JsPath \ "code").read[String] and
       (JsPath \ "country").read[String]
   )(Country.apply _)
 
-  private def loadCountries(): Seq[Country] = {
-    env.resourceAsStream(countriesJsonPath).flatMap { stream =>
-      Using(stream) { stream => Json.parse(Source.fromInputStream(stream).mkString) }.toOption
-    }.fold(throw new RuntimeException("Couldn't load country data")) {
-      _.validate[Seq[Country]] match {
-        case JsSuccess(countries, _) => countries.sortBy(_.name)
-        case JsError(errors)         => throw new RuntimeException(s"Failed to parse countries JSON: $errors")
+  private def loadCountries(): Seq[Country] =
+    env
+      .resourceAsStream(countriesJsonPath)
+      .flatMap { stream =>
+        Using(stream)(stream => Json.parse(Source.fromInputStream(stream).mkString)).toOption
       }
-    }
-  }
+      .fold(throw new RuntimeException("Couldn't load country data")) {
+        _.validate[Seq[Country]] match {
+          case JsSuccess(countries, _) => countries.sortBy(_.name)
+          case JsError(errors)         => throw new RuntimeException(s"Failed to parse countries JSON: $errors")
+        }
+      }
 }

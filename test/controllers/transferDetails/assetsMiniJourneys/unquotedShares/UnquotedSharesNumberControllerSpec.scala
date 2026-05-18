@@ -41,7 +41,8 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
   private val validAnswer = 10
   private val index       = 0
 
-  lazy val unquotedSharesNumberRoute = AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index).url
+  lazy val unquotedSharesNumberRoute =
+    AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(NormalMode, index).url
 
   "UnquotedSharesNumber Controller" - {
 
@@ -57,7 +58,10 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
         val view = application.injector.instanceOf[UnquotedSharesNumberView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -75,7 +79,10 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -100,7 +107,9 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnquotedSharesNumberPage(index).nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual UnquotedSharesNumberPage(index)
+          .nextPage(NormalMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -119,13 +128,18 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       running(application) {
         val request =
-          FakeRequest(POST, AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(AmendCheckMode, index).url)
+          FakeRequest(
+            POST,
+            AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(AmendCheckMode, index).url
+          )
             .withFormUrlEncodedBody(("value", validAnswer.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual UnquotedSharesNumberPage(index).nextPage(AmendCheckMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual UnquotedSharesNumberPage(index)
+          .nextPage(AmendCheckMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -145,7 +159,10 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

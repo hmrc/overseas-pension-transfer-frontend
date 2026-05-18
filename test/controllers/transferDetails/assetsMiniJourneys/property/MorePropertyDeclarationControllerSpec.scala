@@ -34,13 +34,19 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
   private val form         = formProvider()
 
   private lazy val morePropertyDeclarationRoute =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController.onPageLoad(NormalMode).url
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController
+      .onPageLoad(NormalMode)
+      .url
 
   private lazy val morePropertyDeclarationRouteCheckMode =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController.onPageLoad(CheckMode).url
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController
+      .onPageLoad(CheckMode)
+      .url
 
   private lazy val morePropertyDeclarationRouteFinalCheckMode =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController.onPageLoad(FinalCheckMode).url
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController
+      .onPageLoad(FinalCheckMode)
+      .url
 
   "MorePropertyDeclaration Controller" - {
 
@@ -56,13 +62,17 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(form, rows, NormalMode)(fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)), messages(application)).toString
+          view(form, rows, NormalMode)(
+            fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)),
+            messages(application)
+          ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val userAnswers = emptyUserAnswers.set(MorePropertyDeclarationPage, true).success.value
-      val application = applicationBuilder(userAnswers = userAnswers, sessionData = sessionDataMemberNameQtNumber).build()
+      val application =
+        applicationBuilder(userAnswers = userAnswers, sessionData = sessionDataMemberNameQtNumber).build()
 
       running(application) {
         val request = FakeRequest(GET, morePropertyDeclarationRoute)
@@ -71,7 +81,10 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
         val view   = application.injector.instanceOf[MorePropertyDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -86,7 +99,9 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -101,7 +116,9 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -116,7 +133,9 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -135,7 +154,10 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

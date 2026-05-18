@@ -27,7 +27,9 @@ import viewmodels.implicits._
 
 object MembersLastUKAddressSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(MembersLastUKAddressPage).map { address =>
       val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = true)
 
@@ -42,8 +44,8 @@ object MembersLastUKAddressSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "membersLastUKAddress.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlContent(value)),
+        key = "membersLastUKAddress.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(value)),
         actions = actions
       )
     }

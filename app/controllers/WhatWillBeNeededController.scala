@@ -37,16 +37,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatWillBeNeededController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    identify: IdentifierAction,
-    schemeData: SchemeDataAction,
-    view: WhatWillBeNeededView,
-    sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService,
-    auditService: AuditService,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  val controllerComponents: MessagesControllerComponents,
+  identify: IdentifierAction,
+  schemeData: SchemeDataAction,
+  view: WhatWillBeNeededView,
+  sessionRepository: SessionRepository,
+  userAnswersService: UserAnswersService,
+  auditService: AuditService,
+  clock: Clock
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData) { implicit request =>
     Ok(view())
@@ -62,13 +64,14 @@ class WhatWillBeNeededController @Inject() (
       Instant.now(clock)
     )
 
-    val newUa = UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber, Json.obj(), Instant.now(clock))
+    val newUa =
+      UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber, Json.obj(), Instant.now(clock))
 
     for {
       updatedSessionData <- Future.fromTry(SessionData.initialise(sessionData))
       persisted          <- sessionRepository.set(updatedSessionData)
       _                  <- userAnswersService.setExternalUserAnswers(newUa, sessionData.schemeInformation.srnNumber)
-    } yield {
+    } yield
       if (persisted) {
         auditService.audit(
           ReportStartedAuditModel(
@@ -85,6 +88,5 @@ class WhatWillBeNeededController @Inject() (
         logger.warn("SessionRepository.set returned false during SessionData initialisation")
         Redirect(WhatWillBeNeededPage.nextPageRecovery())
       }
-    }
   }
 }

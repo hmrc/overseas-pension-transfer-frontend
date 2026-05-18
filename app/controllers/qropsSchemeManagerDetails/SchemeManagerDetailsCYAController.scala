@@ -35,25 +35,25 @@ import views.html.qropsSchemeManagerDetails.SchemeManagerDetailsCYAView
 import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeManagerDetailsCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    sessionRepository: SessionRepository,
-    val controllerComponents: MessagesControllerComponents,
-    view: SchemeManagerDetailsCYAView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  sessionRepository: SessionRepository,
+  val controllerComponents: MessagesControllerComponents,
+  view: SchemeManagerDetailsCYAView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val list = SummaryListViewModel(SchemeManagerDetailsSummary.rows(CheckMode, request.userAnswers))
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val list = SummaryListViewModel(SchemeManagerDetailsSummary.rows(CheckMode, request.userAnswers))
 
-      Ok(view(list))
+    Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      Redirect(SchemeManagerDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    Redirect(SchemeManagerDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
   }
 }

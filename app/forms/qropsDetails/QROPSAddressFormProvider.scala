@@ -24,13 +24,13 @@ import play.api.data.{Form, Forms}
 import javax.inject.Inject
 
 case class QROPSAddressFormData(
-    addressLine1: String,
-    addressLine2: String,
-    addressLine3: Option[String],
-    addressLine4: Option[String],
-    addressLine5: Option[String],
-    countryCode: String
-  )
+  addressLine1: String,
+  addressLine2: String,
+  addressLine3: Option[String],
+  addressLine4: Option[String],
+  addressLine5: Option[String],
+  countryCode: String
+)
 
 object QROPSAddressFormData {
 
@@ -41,18 +41,22 @@ object QROPSAddressFormData {
       addressLine3 = address.addressLine3,
       addressLine4 = address.addressLine4,
       addressLine5 = address.addressLine5,
-      countryCode  = address.country.code
+      countryCode = address.country.code
     )
 
-  def unapply(addressFormData: QROPSAddressFormData): Option[(String, String, Option[String], Option[String], Option[String], String)] =
-    Some((
-      addressFormData.addressLine1,
-      addressFormData.addressLine2,
-      addressFormData.addressLine3,
-      addressFormData.addressLine4,
-      addressFormData.addressLine5,
-      addressFormData.countryCode
-    ))
+  def unapply(
+    addressFormData: QROPSAddressFormData
+  ): Option[(String, String, Option[String], Option[String], Option[String], String)] =
+    Some(
+      (
+        addressFormData.addressLine1,
+        addressFormData.addressLine2,
+        addressFormData.addressLine3,
+        addressFormData.addressLine4,
+        addressFormData.addressLine5,
+        addressFormData.countryCode
+      )
+    )
 }
 
 class QROPSAddressFormProvider @Inject() extends Mappings with Regex {

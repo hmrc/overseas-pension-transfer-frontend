@@ -27,7 +27,9 @@ import viewmodels.implicits._
 
 object AmountOfTaxDeductedSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(AmountOfTaxDeductedPage).map { answer =>
       val actions =
         if (showChangeLink) {
@@ -40,8 +42,8 @@ object AmountOfTaxDeductedSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "amountOfTaxDeducted.checkYourAnswersLabel",
-        value   = ValueViewModel(currencyFormat(answer)),
+        key = "amountOfTaxDeducted.checkYourAnswersLabel",
+        value = ValueViewModel(currencyFormat(answer)),
         actions = actions
       )
     }

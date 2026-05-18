@@ -31,7 +31,10 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        PropertyValuePage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+        PropertyValuePage(index).nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
           NormalMode,
           index
         )
@@ -41,7 +44,10 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
     "in CheckMode" - {
 
       "must go to the Next page" in {
-        PropertyValuePage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+        PropertyValuePage(index).nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
           CheckMode,
           index
         )
@@ -50,7 +56,10 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        PropertyValuePage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+        PropertyValuePage(index).nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -59,7 +68,10 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        PropertyValuePage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
+        PropertyValuePage(index).nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(
           AmendCheckMode,
           index
         )
@@ -68,12 +80,14 @@ class PropertyValuePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "should go to CYA when complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.Property))
-      PropertyValuePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(NormalMode, index)
+      PropertyValuePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyCYAController
+        .onPageLoad(NormalMode, index)
     }
 
     "should go to PropertyDescription when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
-      PropertyValuePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index)
+      PropertyValuePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.PropertyDescriptionController
+        .onPageLoad(NormalMode, index)
     }
   }
 }

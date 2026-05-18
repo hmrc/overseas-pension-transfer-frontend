@@ -26,17 +26,17 @@ import validators.assetsValidators.AssetCompletionValidator
 
 case class QuotedSharesNumberPage(index: Int) extends QuestionPage[Int] with MiniJourneyNextPage {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.entryName \ index \ toString
+  override def path: JsPath =
+    JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.entryName \ index \ toString
 
   override def toString: String = QuotedSharesEntry.NumberOfShares
 
-  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call =
     if (AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.QuotedShares, answers)) {
       AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(mode, index)
     } else {
       AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(mode, index)
     }
-  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.QuotedSharesNumberController.onPageLoad(mode, index)

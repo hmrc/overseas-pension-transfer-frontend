@@ -22,10 +22,10 @@ import play.api.libs.json._
 import java.time.Instant
 
 final case class GetAllTransfersDTO(
-    pstr: PstrNumber,
-    lastUpdated: Instant,
-    transfers: Seq[AllTransfersItem]
-  )
+  pstr: PstrNumber,
+  lastUpdated: Instant,
+  transfers: Seq[AllTransfersItem]
+)
 
 object GetAllTransfersDTO {
 

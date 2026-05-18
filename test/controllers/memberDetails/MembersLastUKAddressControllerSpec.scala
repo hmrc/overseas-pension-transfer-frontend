@@ -75,7 +75,11 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       running(application) {
         val request =
           FakeRequest(POST, membersLastUKAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdded"), ("postcode", postCode))
+            .withFormUrlEncodedBody(
+              ("addressLine1", "1stLineAdd"),
+              ("addressLine2", "2ndLineAdded"),
+              ("postcode", postCode)
+            )
 
         val result = route(application, request).value
 
@@ -118,7 +122,11 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
       running(application) {
         val request =
           FakeRequest(POST, membersLastUKAddressRoute)
-            .withFormUrlEncodedBody(("addressLine1", "1stLineAdd"), ("addressLine2", "2ndLineAdded"), ("postcode", postCode))
+            .withFormUrlEncodedBody(
+              ("addressLine1", "1stLineAdd"),
+              ("addressLine2", "2ndLineAdded"),
+              ("postcode", postCode)
+            )
 
         val result = route(application, request).value
 

@@ -28,29 +28,27 @@ import viewmodels.implicits._
 object MemberNameSummary {
 
   def row(
-      mode: Mode,
-      answers: UserAnswers,
-      showChangeLink: Boolean           = true,
-      additionalClasses: Option[String] = None
-    )(implicit messages: Messages
-    ): Option[SummaryListRow] =
-    answers.get(MemberNamePage).map {
-      answer =>
-        val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
+    mode: Mode,
+    answers: UserAnswers,
+    showChangeLink: Boolean = true,
+    additionalClasses: Option[String] = None
+  )(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(MemberNamePage).map { answer =>
+      val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
 
-        val actions = if (showChangeLink) {
-          Seq(
-            ActionItemViewModel("site.change", MemberNamePage.changeLink(mode).url)
-              .withVisuallyHiddenText(messages("memberName.checkYourAnswersLabel.hidden"))
-          )
-        } else {
-          Seq.empty
-        }
+      val actions = if (showChangeLink) {
+        Seq(
+          ActionItemViewModel("site.change", MemberNamePage.changeLink(mode).url)
+            .withVisuallyHiddenText(messages("memberName.checkYourAnswersLabel.hidden"))
+        )
+      } else {
+        Seq.empty
+      }
 
-        SummaryListRowViewModel(
-          key     = "memberName.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlContent(value)),
-          actions = actions
-        ).withCssClass(additionalClasses.getOrElse(""))
+      SummaryListRowViewModel(
+        key = "memberName.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(value)),
+        actions = actions
+      ).withCssClass(additionalClasses.getOrElse(""))
     }
 }

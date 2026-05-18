@@ -111,7 +111,9 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
     "must remove MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage and MemberDateOfLeavingUKPage when isResidentUk is true" in {
       val uaWithDeps =
         emptyUserAnswers
-          .set(MemberHasEverBeenResidentUKPage, true).success.value
+          .set(MemberHasEverBeenResidentUKPage, true)
+          .success
+          .value
           .set(
             MembersLastUKAddressPage,
             MembersLastUKAddress(
@@ -119,10 +121,14 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
               addressLine2 = "Test District",
               addressLine3 = None,
               addressLine4 = None,
-              ukPostCode   = "BB1 1BB"
+              ukPostCode = "BB1 1BB"
             )
-          ).success.value
-          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2)).success.value
+          )
+          .success
+          .value
+          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2))
+          .success
+          .value
 
       val cleaned = MemberIsResidentUKPage.cleanup(Some(true), uaWithDeps).success.value
 
@@ -134,7 +140,9 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
     "must not remove dependent pages when isResidentUk is false" in {
       val uaWithDeps =
         emptyUserAnswers
-          .set(MemberHasEverBeenResidentUKPage, false).success.value
+          .set(MemberHasEverBeenResidentUKPage, false)
+          .success
+          .value
           .set(
             MembersLastUKAddressPage,
             MembersLastUKAddress(
@@ -142,10 +150,14 @@ class MemberIsResidentUKPageSpec extends AnyFreeSpec with SpecBase with Matchers
               addressLine2 = "Test District",
               addressLine3 = None,
               addressLine4 = None,
-              ukPostCode   = "BB1 1BB"
+              ukPostCode = "BB1 1BB"
             )
-          ).success.value
-          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2)).success.value
+          )
+          .success
+          .value
+          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2))
+          .success
+          .value
 
       val cleaned = MemberIsResidentUKPage.cleanup(Some(false), uaWithDeps).success.value
 

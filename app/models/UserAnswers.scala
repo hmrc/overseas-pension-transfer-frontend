@@ -26,11 +26,11 @@ import scala.util.{Failure, Success, Try}
 class DeserialisationException(message: String) extends RuntimeException(message)
 
 final case class UserAnswers(
-    id: TransferId,
-    pstr: PstrNumber,
-    data: JsObject,
-    lastUpdated: Instant
-  ) {
+  id: TransferId,
+  pstr: PstrNumber,
+  data: JsObject,
+  lastUpdated: Instant
+) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
@@ -52,10 +52,11 @@ final case class UserAnswers(
              |Path     : $path
              |Expected : ${mf.runtimeClass.getSimpleName}
              |Actual   : ${Json.prettyPrint(rawValue)}
-             |Errors   : ${errors.map {
-              case (jsPath, validationErrors) =>
+             |Errors   : ${errors
+              .map { case (jsPath, validationErrors) =>
                 s"$jsPath -> ${validationErrors.map(_.message).mkString(", ")}"
-            }.mkString("\n           |           ")}
+              }
+              .mkString("\n           |           ")}
              |""".stripMargin
 
         Left(new DeserialisationException(errorMsg))
@@ -71,10 +72,9 @@ final case class UserAnswers(
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(Some(value), updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(Some(value), updatedAnswers)
     }
   }
 
@@ -87,10 +87,9 @@ final case class UserAnswers(
         Success(data)
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(None, updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(None, updatedAnswers)
     }
   }
 }

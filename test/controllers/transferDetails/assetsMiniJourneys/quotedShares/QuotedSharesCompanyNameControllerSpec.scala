@@ -40,7 +40,8 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
   private val form         = formProvider()
   private val index        = 0
 
-  private lazy val quotedSharesCompanyNameRoute = AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, index).url
+  private lazy val quotedSharesCompanyNameRoute =
+    AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, index).url
 
   "QuotedSharesCompanyName Controller" - {
 
@@ -78,7 +79,10 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -101,7 +105,9 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index).nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index)
+          .nextPage(NormalMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -120,13 +126,18 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
 
       running(application) {
         val request =
-          FakeRequest(POST, AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(AmendCheckMode, index).url)
+          FakeRequest(
+            POST,
+            AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(AmendCheckMode, index).url
+          )
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index).nextPage(AmendCheckMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index)
+          .nextPage(AmendCheckMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -146,7 +157,10 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

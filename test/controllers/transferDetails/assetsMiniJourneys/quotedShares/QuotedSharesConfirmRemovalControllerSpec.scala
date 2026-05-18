@@ -65,7 +65,9 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController
+          .onPageLoad(NormalMode)
+          .url
       }
     }
 
@@ -85,7 +87,10 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, 1)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

@@ -34,16 +34,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SessionRepository @Inject() (
-    mongoComponent: MongoComponent,
-    encryptionService: EncryptionService,
-    appConfig: FrontendAppConfig,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) extends PlayMongoRepository[SessionData](
+  mongoComponent: MongoComponent,
+  encryptionService: EncryptionService,
+  appConfig: FrontendAppConfig,
+  clock: Clock
+)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[SessionData](
       collectionName = "session-data",
       mongoComponent = mongoComponent,
-      domainFormat   = SessionData.encryptedFormat(encryptionService),
-      indexes        = Seq(
+      domainFormat = SessionData.encryptedFormat(encryptionService),
+      indexes = Seq(
         IndexModel(
           Indexes.ascending("lastUpdated"),
           IndexOptions()
@@ -71,11 +71,10 @@ class SessionRepository @Inject() (
   }
 
   def get(id: String): Future[Option[SessionData]] = Mdc.preservingMdc {
-    keepAlive(id).flatMap {
-      _ =>
-        collection
-          .find(byId(id))
-          .headOption()
+    keepAlive(id).flatMap { _ =>
+      collection
+        .find(byId(id))
+        .headOption()
     }
   }
 
@@ -85,9 +84,9 @@ class SessionRepository @Inject() (
 
     collection
       .replaceOne(
-        filter      = byId(updatedSession.sessionId),
+        filter = byId(updatedSession.sessionId),
         replacement = updatedSession,
-        options     = ReplaceOptions().upsert(true)
+        options = ReplaceOptions().upsert(true)
       )
       .toFuture()
       .map(_ => true)
@@ -101,7 +100,8 @@ class SessionRepository @Inject() (
   }
 
   def clear: Future[Boolean] = Mdc.preservingMdc {
-    collection.drop()
+    collection
+      .drop()
       .toFuture()
       .map(_ => true)
   }

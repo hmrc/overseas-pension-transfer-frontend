@@ -66,7 +66,9 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.PropertyAmendContinueController
+          .onPageLoad(NormalMode)
+          .url
       }
     }
 
@@ -86,7 +88,10 @@ class PropertyConfirmRemovalControllerSpec extends AnyFreeSpec with AddressBase 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, 1)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

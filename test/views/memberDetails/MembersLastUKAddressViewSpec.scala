@@ -51,7 +51,10 @@ class MembersLastUKAddressViewSpec extends ViewBaseSpec {
     behave like pageWithSubmitButton(view(formProvider(), NormalMode), "site.saveAndContinue")
 
     behave like pageWithErrors(
-      view(formProvider().withError(FormError("addressLine1", "membersLastUKAddress.error.addressLine1.required")), NormalMode),
+      view(
+        formProvider().withError(FormError("addressLine1", "membersLastUKAddress.error.addressLine1.required")),
+        NormalMode
+      ),
       "addressLine1",
       "membersLastUKAddress.error.addressLine1.required"
     )

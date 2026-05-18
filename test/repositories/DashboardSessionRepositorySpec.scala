@@ -47,10 +47,10 @@ class DashboardSessionRepositorySpec
   private val appConfig  = new TestAppConfig
 
   private val repository = new DashboardSessionRepository(
-    mongoComponent    = mongoComponent,
+    mongoComponent = mongoComponent,
     encryptionService = encryption,
-    appConfig         = appConfig,
-    clock             = clock
+    appConfig = appConfig,
+    clock = clock
   )
 
   "DashboardSessionRepository" - {
@@ -85,20 +85,21 @@ class DashboardSessionRepositorySpec
     "must find expiring transfers within 2 days" in {
       def makeTransfer(status: Option[QtStatus], lastUpdated: Option[Instant]) =
         AllTransfersItem(
-          transferId      = QtNumber("QT123456"),
-          qtVersion       = None,
-          qtStatus        = status,
-          nino            = None,
+          transferId = QtNumber("QT123456"),
+          qtVersion = None,
+          qtStatus = status,
+          nino = None,
           memberFirstName = None,
-          memberSurname   = None,
-          qtDate          = None,
-          lastUpdated     = lastUpdated,
-          pstrNumber      = None,
-          submissionDate  = None
+          memberSurname = None,
+          qtDate = None,
+          lastUpdated = lastUpdated,
+          pstrNumber = None,
+          submissionDate = None
         )
 
       val inProgress   = makeTransfer(Some(QtStatus.InProgress), Some(now.minus(Period.ofDays(24))))
-      val amendInProg  = makeTransfer(Some(QtStatus.AmendInProgress), Some(now.minus(Period.ofDays(23)).minus(Duration.ofHours(23))))
+      val amendInProg  =
+        makeTransfer(Some(QtStatus.AmendInProgress), Some(now.minus(Period.ofDays(23)).minus(Duration.ofHours(23))))
       val oldTransfer  = makeTransfer(Some(QtStatus.InProgress), Some(now.minus(Period.ofDays(10))))
       val complete     = makeTransfer(Some(QtStatus.Compiled), Some(now.minus(Period.ofDays(1))))
       val allTransfers = Seq(inProgress, amendInProg, oldTransfer, complete)

@@ -38,36 +38,40 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeManagersAddressController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: SchemeManagersAddressFormProvider,
-    countryService: CountryService,
-    addressService: AddressService,
-    val controllerComponents: MessagesControllerComponents,
-    view: SchemeManagersAddressView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext,
-    appConfig: FrontendAppConfig
-  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: SchemeManagersAddressFormProvider,
+  countryService: CountryService,
+  addressService: AddressService,
+  val controllerComponents: MessagesControllerComponents,
+  view: SchemeManagersAddressView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging
+    with AppUtils
+    with ErrorHandling {
 
   private def form: Form[SchemeManagersAddressFormData] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val userAnswers  = request.userAnswers
-      val preparedForm = userAnswers.get(SchemeManagersAddressPage) match {
-        case None          => form
-        case Some(address) => form.fill(SchemeManagersAddressFormData.fromDomain(address))
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val userAnswers  = request.userAnswers
+    val preparedForm = userAnswers.get(SchemeManagersAddressPage) match {
+      case None          => form
+      case Some(address) => form.fill(SchemeManagersAddressFormData.fromDomain(address))
+    }
 
-      val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+    val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
 
-      Ok(view(preparedForm, countrySelectViewModel, mode))
+    Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  private def returnErrorPage(formWithErrors: Form[SchemeManagersAddressFormData], mode: Mode)(implicit request: DisplayRequest[_]) = {
+  private def returnErrorPage(formWithErrors: Form[SchemeManagersAddressFormData], mode: Mode)(implicit
+    request: DisplayRequest[_]
+  ) = {
     val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
     Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
   }
@@ -78,24 +82,26 @@ class SchemeManagersAddressController @Inject() (
 
       boundForm.fold(
         formWithErrors => returnErrorPage(formWithErrors, mode),
-        formData => {
+        formData =>
           addressService.schemeManagersAddress(formData) match {
             case None          =>
               Future.successful(
-                Redirect(SchemeManagersAddressPage.nextPageRecovery(Some(SchemeManagersAddressPage.recoveryModeReturnUrl)))
+                Redirect(
+                  SchemeManagersAddressPage.nextPageRecovery(Some(SchemeManagersAddressPage.recoveryModeReturnUrl))
+                )
               )
             case Some(address) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(SchemeManagersAddressPage, address))
-                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-              } yield {
-                savedForLater match {
-                  case Right(Done) => Redirect(SchemeManagersAddressPage.nextPage(mode, updatedAnswers))
-                  case Left(err)   => onFailureRedirect(err)
-                }
+                savedForLater  <- userAnswersService.setExternalUserAnswers(
+                                    updatedAnswers,
+                                    request.sessionData.schemeInformation.srnNumber
+                                  )
+              } yield savedForLater match {
+                case Right(Done) => Redirect(SchemeManagersAddressPage.nextPage(mode, updatedAnswers))
+                case Left(err)   => onFailureRedirect(err)
               }
           }
-        }
       )
   }
 }

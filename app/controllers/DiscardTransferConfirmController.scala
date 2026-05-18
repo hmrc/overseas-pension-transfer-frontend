@@ -36,29 +36,29 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DiscardTransferConfirmController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: DiscardTransferConfirmFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: DiscardTransferConfirmView,
-    userAnswersService: UserAnswersService,
-    lockService: LockService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: DiscardTransferConfirmFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: DiscardTransferConfirmView,
+  userAnswersService: UserAnswersService,
+  lockService: LockService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(DiscardTransferConfirmPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(DiscardTransferConfirmPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
@@ -68,34 +68,35 @@ class DiscardTransferConfirmController @Inject() (
         case pspUser: PspUser => pspUser.pspId.value
       }
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            // Always release lock irrespective of YES or NO
-            isLocked <- lockService.isLocked(request.userAnswers.id.value, owner)
-            _        <- if (isLocked) lockService.releaseLock(request.userAnswers.id.value, owner) else Future.unit
-            // Answers updated in the request but not needed storing in session. Answers required in request for page based navigation
-            answers  <- Future.fromTry(request.userAnswers.set(DiscardTransferConfirmPage, value))
-            result   <- generateResult(value, answers, mode)
-          } yield result
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              // Always release lock irrespective of YES or NO
+              isLocked <- lockService.isLocked(request.userAnswers.id.value, owner)
+              _        <- if (isLocked) lockService.releaseLock(request.userAnswers.id.value, owner) else Future.unit
+              // Answers updated in the request but not needed storing in session. Answers required in request for page based navigation
+              answers  <- Future.fromTry(request.userAnswers.set(DiscardTransferConfirmPage, value))
+              result   <- generateResult(value, answers, mode)
+            } yield result
+        )
   }
 
-  private def generateResult(value: Boolean, answers: UserAnswers, mode: Mode)(implicit request: DisplayRequest[_]) = {
+  private def generateResult(value: Boolean, answers: UserAnswers, mode: Mode)(implicit request: DisplayRequest[_]) =
     if (value) {
       for {
         _                  <- sessionRepository.clear(answers.id.value)
-        clearedUserAnswers <- userAnswersService.clearUserAnswers(answers.id.value, request.sessionData.schemeInformation.srnNumber)
-      } yield {
-        clearedUserAnswers match {
-          case Right(Done) => Redirect(DiscardTransferConfirmPage.nextPage(mode, answers))
-          case Left(_)     => InternalServerError
-        }
+        clearedUserAnswers <-
+          userAnswersService.clearUserAnswers(answers.id.value, request.sessionData.schemeInformation.srnNumber)
+      } yield clearedUserAnswers match {
+        case Right(Done) => Redirect(DiscardTransferConfirmPage.nextPage(mode, answers))
+        case Left(_)     => InternalServerError
       }
     } else {
-      val versionNumber: String = request.sessionData.data.value.get("versionNumber").flatMap(_.asOpt[String]).getOrElse("001")
+      val versionNumber: String =
+        request.sessionData.data.value.get("versionNumber").flatMap(_.asOpt[String]).getOrElse("001")
 
       Future.successful(
         Redirect(
@@ -103,6 +104,5 @@ class DiscardTransferConfirmController @Inject() (
         )
       )
     }
-  }
 
 }

@@ -33,7 +33,8 @@ class OtherAssetsAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when OtherAssetsQuery has a value" in {
-      val answers = emptyUserAnswers.set(OtherAssetsQuery, List(OtherAssetsEntry("description", BigDecimal(1000.00)))).success.value
+      val answers =
+        emptyUserAnswers.set(OtherAssetsQuery, List(OtherAssetsEntry("description", BigDecimal(1000.00)))).success.value
       val result  = OtherAssetsAmendContinueSummary.row(CheckMode, answers)
 
       result mustBe defined

@@ -27,22 +27,20 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AuthController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    config: FrontendAppConfig,
-    sessionRepository: SessionRepository,
-    identify: IdentifierAction
-  )(implicit ec: ExecutionContext,
-    appConfig: FrontendAppConfig
-  ) extends FrontendBaseController with I18nSupport {
+  val controllerComponents: MessagesControllerComponents,
+  config: FrontendAppConfig,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def signOut(): Action[AnyContent] = identify.async {
-    implicit request =>
-      sessionRepository
-        .clear(request.authenticatedUser.internalId)
-        .map {
-          _ =>
-            Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
-        }
+  def signOut(): Action[AnyContent] = identify.async { implicit request =>
+    sessionRepository
+      .clear(request.authenticatedUser.internalId)
+      .map { _ =>
+        Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
+      }
   }
 
   def signOutNoSurvey(): Action[AnyContent] = Action {

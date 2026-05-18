@@ -26,8 +26,8 @@ class DashboardDataSpec extends AnyFreeSpec with SpecBase {
   val encryptionService = new EncryptionService("F42sAkGScIpm4Vlui6XGpKW/zvmfyAYyoNHeLVQuoCk=")
 
   val testData = DashboardData(
-    id          = "Int-123",
-    data        = Json.obj("transfers" -> Json.obj("qtStatus" -> "InProgress")),
+    id = "Int-123",
+    data = Json.obj("transfers" -> Json.obj("qtStatus" -> "InProgress")),
     lastUpdated = now
   )
 

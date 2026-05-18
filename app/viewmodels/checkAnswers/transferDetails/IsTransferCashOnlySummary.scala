@@ -26,7 +26,9 @@ import viewmodels.implicits._
 
 object IsTransferCashOnlySummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(IsTransferCashOnlyPage).map { answer =>
       val value   = if (answer) "site.yes" else "site.no"
       val actions =
@@ -40,8 +42,8 @@ object IsTransferCashOnlySummary {
         }
 
       SummaryListRowViewModel(
-        key     = "isTransferCashOnly.checkYourAnswersLabel",
-        value   = ValueViewModel(value),
+        key = "isTransferCashOnly.checkYourAnswersLabel",
+        value = ValueViewModel(value),
         actions = actions
       )
     }

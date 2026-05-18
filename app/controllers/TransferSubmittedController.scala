@@ -33,16 +33,18 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransferSubmittedController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    schemeData: SchemeDataAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: TransferSubmittedView,
-    sessionRepository: SessionRepository,
-    appConfig: FrontendAppConfig,
-    minimalDetailsConnector: MinimalDetailsConnector
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  schemeData: SchemeDataAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: TransferSubmittedView,
+  sessionRepository: SessionRepository,
+  appConfig: FrontendAppConfig,
+  minimalDetailsConnector: MinimalDetailsConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with AppUtils {
 
   def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     sessionRepository.get(request.authenticatedUser.internalId).flatMap {
@@ -56,7 +58,7 @@ class TransferSubmittedController @Inject() (
 
             val srn     = sessionData.schemeInformation.srnNumber.value
             val mpsLink = appConfig.getPensionSchemeUrl(
-              srn       = sessionData.schemeInformation.srnNumber.value,
+              srn = sessionData.schemeInformation.srnNumber.value,
               isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
             )
 
@@ -81,9 +83,8 @@ class TransferSubmittedController @Inject() (
   }
 
   private def fetchMinimalDetails(
-      user: AuthenticatedUser
-    )(implicit hc: HeaderCarrier
-    ): Future[Either[MinimalDetailsError, models.MinimalDetails]] =
+    user: AuthenticatedUser
+  )(implicit hc: HeaderCarrier): Future[Either[MinimalDetailsError, models.MinimalDetails]] =
     user match {
       case u: PsaUser => minimalDetailsConnector.fetch(u.psaId)
       case u: PspUser => minimalDetailsConnector.fetch(u.pspId)

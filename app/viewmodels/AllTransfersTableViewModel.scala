@@ -54,7 +54,10 @@ object AllTransfersTableViewModel {
       case None    => Text("-")
     }
 
-  def from(items: Seq[AllTransfersItem], currentPage: Int)(implicit messages: Messages, appConfig: FrontendAppConfig): Table = {
+  def from(items: Seq[AllTransfersItem], currentPage: Int)(implicit
+    messages: Messages,
+    appConfig: FrontendAppConfig
+  ): Table = {
     val head: Seq[HeadCell] = Seq(
       HeadCell(Text(messages("dashboard.allTransfers.head.member"))),
       HeadCell(Text(messages("dashboard.allTransfers.head.status"))),
@@ -64,23 +67,26 @@ object AllTransfersTableViewModel {
 
     val rows: Seq[Seq[TableRow]] = items.map { it =>
       val name = memberName(it.memberFirstName, it.memberSurname)
-      val stat = it.qtStatus.map {
-        case Compiled | Submitted => messages("dashboard.allTransfers.status.submitted")
-        case InProgress           => messages("dashboard.allTransfers.status.inProgress")
-        case AmendInProgress      => messages("dashboard.allTransfers.status.amendInProgress")
-      }.getOrElse("-")
+      val stat = it.qtStatus
+        .map {
+          case Compiled | Submitted => messages("dashboard.allTransfers.status.submitted")
+          case InProgress           => messages("dashboard.allTransfers.status.inProgress")
+          case AmendInProgress      => messages("dashboard.allTransfers.status.amendInProgress")
+        }
+        .getOrElse("-")
       val ref  = it.transferId
 
       val params = TransferReportQueryParams(
-        transferId    = Some(ref),
-        qtStatus      = it.qtStatus,
-        pstr          = it.pstrNumber,
+        transferId = Some(ref),
+        qtStatus = it.qtStatus,
+        pstr = it.pstrNumber,
         versionNumber = it.qtVersion,
-        memberName    = name,
-        currentPage   = currentPage
+        memberName = name,
+        currentPage = currentPage
       )
 
-      val linkHtml = HtmlFormat.raw(s"""<a href="${TransferReportQueryParams.toUrl(params)}" class="govuk-link">$name</a>""")
+      val linkHtml =
+        HtmlFormat.raw(s"""<a href="${TransferReportQueryParams.toUrl(params)}" class="govuk-link">$name</a>""")
       val refText  = if (params.qtStatus.contains(InProgress)) {
         Text(messages("dashboard.allTransfers.reference.inProgressText"))
       } else {
@@ -96,11 +102,11 @@ object AllTransfersTableViewModel {
     }
 
     Table(
-      head           = Some(head),
-      rows           = rows,
-      caption        = Some(messages("dashboard.search.results.heading")),
+      head = Some(head),
+      rows = rows,
+      caption = Some(messages("dashboard.search.results.heading")),
       captionClasses = s"govuk-table__caption--m",
-      attributes     = Map.empty
+      attributes = Map.empty
     )
   }
 }

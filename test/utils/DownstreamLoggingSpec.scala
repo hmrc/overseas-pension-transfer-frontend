@@ -64,8 +64,8 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
 
     "build BackendError with correlation ID from response" in {
       val response = HttpResponse(
-        status  = INTERNAL_SERVER_ERROR,
-        body    = "boom",
+        status = INTERNAL_SERVER_ERROR,
+        body = "boom",
         headers = Map(
           "X-Request-ID" -> Seq("corr-123"),
           "Status"       -> Seq("InternalServerError")
@@ -81,8 +81,8 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
 
     "fallback to '-' correlation ID if none found" in {
       val response = HttpResponse(
-        status  = BAD_REQUEST,
-        body    = "bad request",
+        status = BAD_REQUEST,
+        body = "bad request",
         headers = Map.empty
       )
 
@@ -129,13 +129,13 @@ class DownstreamLoggingSpec extends AnyWordSpec with Matchers {
 
     "include controller.method in logs if HandlerDef present" in {
       val handlerDef = HandlerDef(
-        classLoader    = getClass.getClassLoader,
-        routerPackage  = "router",
-        controller     = "TestController",
-        method         = "failingAction",
+        classLoader = getClass.getClassLoader,
+        routerPackage = "router",
+        controller = "TestController",
+        method = "failingAction",
         parameterTypes = Seq.empty,
-        verb           = "GET",
-        path           = "/test-url"
+        verb = "GET",
+        path = "/test-url"
       )
 
       val request = FakeRequest(GET, "/test-url")

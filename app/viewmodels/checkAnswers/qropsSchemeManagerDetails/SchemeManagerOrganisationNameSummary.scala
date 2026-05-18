@@ -26,7 +26,9 @@ import viewmodels.implicits._
 
 object SchemeManagerOrganisationNameSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(SchemeManagerOrganisationNamePage).map { answer =>
       val actions =
         if (showChangeLink) {
@@ -39,8 +41,8 @@ object SchemeManagerOrganisationNameSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "organisationName.checkYourAnswersLabel",
-        value   = ValueViewModel(answer),
+        key = "organisationName.checkYourAnswersLabel",
+        value = ValueViewModel(answer),
         actions = actions
       )
     }

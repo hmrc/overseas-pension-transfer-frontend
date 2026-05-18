@@ -32,7 +32,10 @@ class WhyTransferIsNotTaxableSummarySpec extends AnyFreeSpec with SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when WhyTransferIsNotTaxablePage has a value" in {
-      val answers = emptyUserAnswers.set(WhyTransferIsNotTaxablePage, Set[WhyTransferIsNotTaxable](IndividualIsEmployeeOccupational)).success.value
+      val answers = emptyUserAnswers
+        .set(WhyTransferIsNotTaxablePage, Set[WhyTransferIsNotTaxable](IndividualIsEmployeeOccupational))
+        .success
+        .value
       val result  = WhyTransferIsNotTaxableSummary.row(CheckMode, answers)
 
       result mustBe defined

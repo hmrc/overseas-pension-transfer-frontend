@@ -43,8 +43,8 @@ object PstrNumber {
     new QueryStringBindable[PstrNumber] {
 
       override def bind(key: String, params: Map[String, Seq[String]]) =
-        params.get(key).flatMap(_.headOption).map {
-          raw => Right(PstrNumber(raw.trim.toUpperCase))
+        params.get(key).flatMap(_.headOption).map { raw =>
+          Right(PstrNumber(raw.trim.toUpperCase))
         }
 
       override def unbind(key: String, value: PstrNumber): String = s"$key=${value.value}"

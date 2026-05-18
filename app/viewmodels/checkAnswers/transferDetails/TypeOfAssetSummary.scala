@@ -29,7 +29,9 @@ import viewmodels.implicits._
 
 object TypeOfAssetSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(AnswersSelectedAssetTypes).flatMap {
       case Seq(Cash)  => None
       case selections =>
@@ -53,8 +55,8 @@ object TypeOfAssetSummary {
 
         Some(
           SummaryListRowViewModel(
-            key     = "typeOfAsset.checkYourAnswersLabel",
-            value   = value,
+            key = "typeOfAsset.checkYourAnswersLabel",
+            value = value,
             actions = actions
           )
         )

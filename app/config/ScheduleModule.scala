@@ -20,8 +20,7 @@ import com.google.inject.AbstractModule
 
 class ScheduleModule extends AbstractModule {
 
-  override def configure(): Unit = {
+  override def configure(): Unit =
     bind(classOf[scheduler.jobs.LockCleanupJob]).asEagerSingleton()
-  }
 
 }

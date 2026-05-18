@@ -26,9 +26,8 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AddressService @Inject() (
-    countryService: CountryService
-  )(implicit ex: ExecutionContext
-  ) {
+  countryService: CountryService
+)(implicit ex: ExecutionContext) {
 
   def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] =
     countryService.findByCode(data.countryCode).map { country =>

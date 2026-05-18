@@ -31,24 +31,24 @@ import views.html.qropsDetails.QROPSDetailsCYAView
 import scala.concurrent.ExecutionContext
 
 class QROPSDetailsCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: QROPSDetailsCYAView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: QROPSDetailsCYAView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val list = SummaryListViewModel(QROPSDetailsSummary.rows(CheckMode, request.userAnswers))
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val list = SummaryListViewModel(QROPSDetailsSummary.rows(CheckMode, request.userAnswers))
 
-      Ok(view(list))
+    Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      Redirect(QROPSDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    Redirect(QROPSDetailsSummaryPage.nextPage(NormalMode, request.userAnswers))
   }
 }

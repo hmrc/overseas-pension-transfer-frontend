@@ -23,33 +23,32 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
 import scala.language.implicitConversions
 
 case class AddressViewModel(
-    addressLine1: String,
-    addressLine2: String,
-    addressLine3: Option[String],
-    addressLine4: Option[String],
-    addressLine5: Option[String],
-    country: String,
-    ukPostCode: Option[String],
-    poBox: Option[String]
-  )
+  addressLine1: String,
+  addressLine2: String,
+  addressLine3: Option[String],
+  addressLine4: Option[String],
+  addressLine5: Option[String],
+  country: String,
+  ukPostCode: Option[String],
+  poBox: Option[String]
+)
 
 object AddressViewModel {
   private def toOption[A](a: A)(implicit ev: AddressField[A]): Option[String] = ev.toOption(a)
 
-  implicit def fromAddress(address: Address): AddressViewModel = {
+  implicit def fromAddress(address: Address): AddressViewModel =
     AddressViewModel(
       addressLine1 = address.addressLine1,
       addressLine2 = address.addressLine2,
       addressLine3 = address.addressLine3,
       addressLine4 = address.addressLine4,
       addressLine5 = address.addressLine5,
-      ukPostCode   = address.postcode,
-      country      = address.country.name,
-      poBox        = address.poBoxNumber
+      ukPostCode = address.postcode,
+      country = address.country.name,
+      poBox = address.poBoxNumber
     )
-  }
 
-  def formatAddressAsLines(vm: AddressViewModel, ukMode: Boolean = false): List[String] = {
+  def formatAddressAsLines(vm: AddressViewModel, ukMode: Boolean = false): List[String] =
     List(
       toOption(vm.addressLine1),
       toOption(vm.addressLine2),
@@ -60,7 +59,6 @@ object AddressViewModel {
       toOption(vm.ukPostCode),
       toOption(vm.poBox)
     ).flatten.filterNot(_.isBlank)
-  }
 
   def formatAddressAsString(vm: AddressViewModel): String =
     formatAddressAsLines(vm).mkString(", ")
@@ -75,18 +73,17 @@ object AddressViewModel {
 
       RadioItem(
         content = Text(formatted),
-        value   = Some(id),
-        id      = Some(s"value_$index")
+        value = Some(id),
+        id = Some(s"value_$index")
       )
     }
 
   def formatAddressWithLineBreaks(vm: AddressViewModel, ukMode: Boolean): Html =
     HtmlFormat.fill {
       val lines = formatAddressAsLines(vm, ukMode)
-      lines.zipWithIndex.map {
-        case (line, idx) =>
-          val isLast = idx == lines.length - 1
-          if (isLast) Html(line) else Html(s"$line<br>")
+      lines.zipWithIndex.map { case (line, idx) =>
+        val isLast = idx == lines.length - 1
+        if (isLast) Html(line) else Html(s"$line<br>")
       }
     }
 }

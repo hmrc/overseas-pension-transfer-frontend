@@ -30,7 +30,8 @@ class WhyTransferIsNotTaxablePageSpec extends AnyFreeSpec with Matchers with Spe
 
       "must go to DateOfTransfer page" in {
 
-        WhyTransferIsNotTaxablePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.DateOfTransferController.onPageLoad(NormalMode)
+        WhyTransferIsNotTaxablePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.DateOfTransferController
+          .onPageLoad(NormalMode)
       }
     }
 

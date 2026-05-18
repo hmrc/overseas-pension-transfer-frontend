@@ -28,7 +28,8 @@ case class OtherAssetsCYAPage(index: Int) extends MiniJourneyNextPage {
   override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     val otherAssetsCount = AssetThresholdHandler.getAssetCount(answers, TypeOfAsset.Other)
     if (otherAssetsCount >= 5) {
-      controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController.onPageLoad(mode)
+      controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.MoreOtherAssetsDeclarationController
+        .onPageLoad(mode)
     } else {
       AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(mode)
     }

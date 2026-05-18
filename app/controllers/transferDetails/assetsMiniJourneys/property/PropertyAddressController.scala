@@ -39,19 +39,20 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class PropertyAddressController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: PropertyAddressFormProvider,
-    countryService: CountryService,
-    addressService: AddressService,
-    val controllerComponents: MessagesControllerComponents,
-    view: PropertyAddressView
-  )(implicit ec: ExecutionContext,
-    appConfig: FrontendAppConfig
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: PropertyAddressFormProvider,
+  countryService: CountryService,
+  addressService: AddressService,
+  val controllerComponents: MessagesControllerComponents,
+  view: PropertyAddressView
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -66,11 +67,10 @@ class PropertyAddressController @Inject() (
   }
 
   def renderErrorPage(
-      formWithErrors: Form[PropertyAddressFormData],
-      mode: Mode,
-      index: Int
-    )(implicit displayRequest: DisplayRequest[_]
-    ): Future[Result] = {
+    formWithErrors: Form[PropertyAddressFormData],
+    mode: Mode,
+    index: Int
+  )(implicit displayRequest: DisplayRequest[_]): Future[Result] = {
     val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
     Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, index)))
   }
@@ -89,15 +89,21 @@ class PropertyAddressController @Inject() (
                 Redirect(PropertyAddressPage(index).nextPageRecovery())
               )
             case Some(addressToSave) if addressToSave.country.code != "GB" && addressToSave.postcode.nonEmpty =>
-              renderErrorPage(boundForm.withError("postcode", "membersLastUKAddress.error.postcode.incorrect"), mode, index)
+              renderErrorPage(
+                boundForm.withError("postcode", "membersLastUKAddress.error.postcode.incorrect"),
+                mode,
+                index
+              )
             case Some(addressToSave)                                                                          =>
               def setAnswers(): Try[UserAnswers] =
                 if (mode == AmendCheckMode) {
                   for {
                     addCashAmount                      <- request.userAnswers.set(PropertyAddressPage(index), addressToSave)
                     removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                    removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-                    removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, Property))
+                    removeTypeOfAssetsRecordVersion    <-
+                      removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                    removeAssetRecordVersion           <-
+                      removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, Property))
                   } yield removeAssetRecordVersion
                 } else {
                   request.userAnswers.set(PropertyAddressPage(index), addressToSave)
@@ -105,7 +111,8 @@ class PropertyAddressController @Inject() (
 
               for {
                 updatedAnswers <- Future.fromTry(setAnswers())
-                _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+                _              <- userAnswersService
+                                    .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
               } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
           }
       )

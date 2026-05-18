@@ -29,14 +29,16 @@ class PspDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in Normal Mode" - {
       "must go to submission screen on successful submission" in {
-        PspDeclarationPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
+        PspDeclarationPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController
+          .onPageLoad()
       }
     }
 
     "in Amend Check Mode" - {
 
       "must go to submission screen on successful submission" in {
-        PspDeclarationPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
+        PspDeclarationPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController
+          .onPageLoad()
       }
     }
   }

@@ -46,7 +46,8 @@ class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with 
             )
           )
 
-        val result = MoreOtherAssetsDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
+        val result =
+          MoreOtherAssetsDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
         result mustBe QuotedSharesMiniJourney.call(NormalMode)
       }
     }
@@ -68,7 +69,8 @@ class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with 
             )
           )
 
-        val result = MoreOtherAssetsDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
+        val result =
+          MoreOtherAssetsDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
         result mustBe QuotedSharesMiniJourney.call(CheckMode)
       }
     }
@@ -90,7 +92,11 @@ class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with 
             )
           )
 
-        val result = MoreOtherAssetsDeclarationPage.nextPageWith(FinalCheckMode, userAnswers.success.value, sessionData.success.value)
+        val result = MoreOtherAssetsDeclarationPage.nextPageWith(
+          FinalCheckMode,
+          userAnswers.success.value,
+          sessionData.success.value
+        )
         result mustBe QuotedSharesMiniJourney.call(FinalCheckMode)
       }
     }
@@ -112,7 +118,11 @@ class MoreOtherAssetsDeclarationPageSpec extends AnyFreeSpec with Matchers with 
             )
           )
 
-        val result = MoreOtherAssetsDeclarationPage.nextPageWith(AmendCheckMode, userAnswers.success.value, sessionData.success.value)
+        val result = MoreOtherAssetsDeclarationPage.nextPageWith(
+          AmendCheckMode,
+          userAnswers.success.value,
+          sessionData.success.value
+        )
         result mustBe QuotedSharesMiniJourney.call(AmendCheckMode)
       }
     }

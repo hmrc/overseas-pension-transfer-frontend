@@ -59,7 +59,11 @@ case object IsTransferCashOnlyPage extends QuestionPage[Boolean] {
       case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
 
-  def cleanup(maybeTransferIsCashOnly: Option[Boolean], userAnswers: UserAnswers, sessionData: SessionData): Try[UserAnswers] =
+  def cleanup(
+    maybeTransferIsCashOnly: Option[Boolean],
+    userAnswers: UserAnswers,
+    sessionData: SessionData
+  ): Try[UserAnswers] =
     maybeTransferIsCashOnly match {
       case Some(true) =>
         AssetsMiniJourneyService.clearAllAssetCompletionFlags(sessionData)

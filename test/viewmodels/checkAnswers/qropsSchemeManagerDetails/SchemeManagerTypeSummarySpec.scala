@@ -36,7 +36,9 @@ class SchemeManagerTypeSummarySpec extends AnyFreeSpec with SpecBase {
 
       result mustBe defined
       result.get.key.content mustBe Text(messages("schemeManagerType.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages(s"schemeManagerType.${SchemeManagerType.Individual.toString}"))
+      result.get.value.content mustBe HtmlContent(
+        messages(s"schemeManagerType.${SchemeManagerType.Individual.toString}")
+      )
       result.get.actions.get.items.head.href mustBe
         controllers.qropsSchemeManagerDetails.routes.SchemeManagerTypeController.onPageLoad(CheckMode).url
     }
