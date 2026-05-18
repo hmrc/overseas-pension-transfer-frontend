@@ -17,7 +17,7 @@
 package connectors.parsers
 
 import models.dtos.UserAnswersDTO
-import models.responses._
+import models.responses.*
 import org.apache.pekko.Done
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}

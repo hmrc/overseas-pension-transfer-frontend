@@ -17,7 +17,7 @@
 package controllers.transferDetails.assetsMiniJourneys.property
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormDataTrait, PropertyAddressFormProvider}
 import models.assets.TypeOfAsset.Property
 import models.requests.DisplayRequest

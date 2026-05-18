@@ -16,7 +16,7 @@
 
 package controllers.memberDetails
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberDateOfLeavingUKFormProvider
 import models.Mode

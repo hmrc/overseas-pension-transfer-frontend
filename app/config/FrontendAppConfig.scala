@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
-  import servicesConfig._
+  import servicesConfig.*
 
   val appName: String = configuration.get[String]("appName")
 

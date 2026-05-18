@@ -20,7 +20,7 @@ import base.AddressBase
 import config.FrontendAppConfig
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormDataTrait, PropertyAddressFormProvider}
-import models.address._
+import models.address.*
 import models.requests.DisplayRequest
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -32,7 +32,7 @@ import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{AddressService, CountryService}
 import viewmodels.CountrySelectViewModel

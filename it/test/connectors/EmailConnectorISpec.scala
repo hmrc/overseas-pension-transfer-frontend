@@ -17,10 +17,10 @@
 package connectors
 
 import base.BaseISpec
-import models.email.{EmailAccepted, EmailNotSent, EmailToSendRequest, EmailUnsendable, SubmissionConfirmation}
+import models.email.*
+import play.api.http.Status.{ACCEPTED, BAD_GATEWAY, UNAUTHORIZED}
 import play.api.libs.json.Json
 import play.api.test.Injecting
-import play.api.http.Status.{ACCEPTED, BAD_GATEWAY, UNAUTHORIZED}
 import stubs.EmailStub
 
 import scala.concurrent.ExecutionContext.Implicits.global

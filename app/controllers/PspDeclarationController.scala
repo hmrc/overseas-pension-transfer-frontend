@@ -18,10 +18,10 @@ package controllers
 
 import cats.data.EitherT
 import connectors.MinimalDetailsConnector
-import controllers.actions._
+import controllers.actions.*
 import forms.PspDeclarationFormProvider
 import models.authentication.{PsaId, PspUser}
-import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
+import models.responses.NotAuthorisingPsaIdErrorResponse
 import models.{Mode, PersonName}
 import pages.PspDeclarationPage
 import pages.memberDetails.MemberNamePage

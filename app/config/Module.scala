@@ -17,7 +17,7 @@
 package config
 
 import com.google.inject.{AbstractModule, Provides, Singleton}
-import controllers.actions._
+import controllers.actions.*
 import play.api.Configuration
 import services.EncryptionService
 

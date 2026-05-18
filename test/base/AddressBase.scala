@@ -16,7 +16,7 @@
 
 package base
 
-import models.address._
+import models.address.*
 
 trait AddressBase extends SpecBase {
 

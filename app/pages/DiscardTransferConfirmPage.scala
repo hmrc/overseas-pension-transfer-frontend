@@ -18,7 +18,7 @@ package pages
 
 import controllers.routes
 import models.QtStatus.AmendInProgress
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 

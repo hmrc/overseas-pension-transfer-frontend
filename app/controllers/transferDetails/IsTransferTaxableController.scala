@@ -16,11 +16,11 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.IsTransferTaxableFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers}
 import models.TaskCategory.TransferDetails
+import models.{AmendCheckMode, Mode, UserAnswers}
 import org.apache.pekko.Done
 import pages.transferDetails.{AmountOfTransferPage, IsTransferTaxablePage}
 import play.api.data.Form

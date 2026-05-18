@@ -17,7 +17,7 @@
 package services
 
 import connectors.PensionSchemeConnector
-import models.authentication.{PsaId, PspId}
+import models.authentication.PsaId
 import models.responses.{PensionSchemeError, PensionSchemeNotAssociated}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier

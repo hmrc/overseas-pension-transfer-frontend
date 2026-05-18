@@ -17,8 +17,8 @@
 package forms.transferDetails.assetsMiniJourneys.property
 
 import forms.mappings.{Mappings, Regex}
-import models.address._
-import play.api.data.Forms._
+import models.address.*
+import play.api.data.Forms.*
 import play.api.data.{FieldMapping, Form, Forms, Mapping}
 import utils.AppUtils
 

@@ -16,10 +16,10 @@
 
 package controllers.transferDetails.assetsMiniJourneys.cash
 
-import controllers.actions._
+import controllers.actions.*
 import forms.transferDetails.CashAmountInTransferFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers}
 import models.assets.TypeOfAsset
+import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

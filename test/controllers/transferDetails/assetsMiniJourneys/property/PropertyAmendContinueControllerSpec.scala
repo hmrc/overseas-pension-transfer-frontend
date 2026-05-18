@@ -29,7 +29,7 @@ import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAs
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.AssetsMiniJourneyService
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView

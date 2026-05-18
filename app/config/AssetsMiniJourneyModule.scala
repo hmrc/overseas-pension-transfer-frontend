@@ -17,7 +17,7 @@
 package config
 
 import com.google.inject.AbstractModule
-import models.assets._
+import models.assets.*
 
 class AssetsMiniJourneyModule extends AbstractModule {
 

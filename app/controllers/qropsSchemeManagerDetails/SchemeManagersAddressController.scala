@@ -17,7 +17,7 @@
 package controllers.qropsSchemeManagerDetails
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.Mode

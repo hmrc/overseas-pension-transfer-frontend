@@ -19,7 +19,7 @@ package connectors
 import base.BaseISpec
 import connectors.parsers.TransferParser.GetAllTransfersType
 import models.QtStatus.Submitted
-import models.responses._
+import models.responses.*
 import models.{PstrNumber, QtNumber, SrnNumber}
 import org.scalatest.OptionValues
 import play.api.test.Injecting

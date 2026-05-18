@@ -16,12 +16,11 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import forms.DiscardTransferConfirmFormProvider
-import models.{AmendCheckMode, Mode, NormalMode, UserAnswers}
-import models.QtStatus.AmendInProgress
 import models.authentication.{PsaUser, PspUser}
 import models.requests.DisplayRequest
+import models.{Mode, UserAnswers}
 import org.apache.pekko.Done
 import pages.DiscardTransferConfirmPage
 import play.api.data.Form

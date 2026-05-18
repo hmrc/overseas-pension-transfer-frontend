@@ -24,8 +24,8 @@ import play.twirl.api.HtmlFormat
 import queries.assets.AnswersSelectedAssetTypes
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.govuk.summarylist.*
+import viewmodels.implicits.*
 
 object TypeOfAssetSummary {
 

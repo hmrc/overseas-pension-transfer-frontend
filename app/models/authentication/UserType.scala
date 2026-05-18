@@ -16,7 +16,7 @@
 
 package models.authentication
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 sealed trait UserType
 case object Psa extends UserType

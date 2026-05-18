@@ -17,19 +17,19 @@
 package validators
 
 import cats.data.Chain
-import cats.implicits._
+import cats.implicits.*
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
 import models.assets.TypeOfAsset
-import models.assets.TypeOfAsset._
-import models.transferJourneys._
+import models.assets.TypeOfAsset.*
+import models.transferJourneys.*
 import models.{ApplicableTaxExclusions, DataMissingError, GenericError, UserAnswers, ValidationResult, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
-import pages.transferDetails._
+import pages.transferDetails.*
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
-import queries.assets._
+import queries.assets.*
 import validators.assetsValidators.{OtherAssetsValidator, PropertyValidator, QuotedSharesValidator, UnquotedSharesValidator}
 
 import java.time.LocalDate

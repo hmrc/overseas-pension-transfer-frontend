@@ -17,19 +17,24 @@
 package controllers
 
 import base.SpecBase
-import controllers.actions._
+import connectors.MinimalDetailsConnector
+import controllers.actions.*
 import forms.PspDeclarationFormProvider
+import models.authentication.PspId
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
 import models.{MinimalDetails, NormalMode, QtNumber, SessionData, UserAnswers}
+import org.apache.commons.text.StringEscapeUtils
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.PspDeclarationPage
+import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,11 +42,6 @@ import views.html.PspDeclarationView
 
 import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
-import org.apache.commons.text.StringEscapeUtils
-import connectors.MinimalDetailsConnector
-import models.authentication.PspId
-import play.api.i18n.Messages
-import play.api.mvc.ControllerComponents
 
 class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 

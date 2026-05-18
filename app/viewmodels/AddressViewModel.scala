@@ -16,7 +16,7 @@
 
 package viewmodels
 
-import models.address._
+import models.address.*
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
 

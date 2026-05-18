@@ -16,7 +16,7 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.OverseasTransferAllowanceFormProvider
 import models.{AmendCheckMode, Mode, UserAnswers}

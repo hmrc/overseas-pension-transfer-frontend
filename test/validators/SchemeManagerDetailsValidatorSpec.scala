@@ -18,12 +18,12 @@ package validators
 
 import base.AddressBase
 import cats.data.Validated.{Invalid, Valid}
-import models._
+import models.*
 import models.transferJourneys.SchemeManagerDetails
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import pages.qropsSchemeManagerDetails._
+import pages.qropsSchemeManagerDetails.*
 import uaOps.UAOps.SchemeManagerAnswersOps
 
 final class SchemeManagerDetailsValidatorSpec extends AnyFreeSpec with Matchers with OptionValues with AddressBase {

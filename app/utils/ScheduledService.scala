@@ -16,7 +16,7 @@
 
 package utils
 
-import scala.concurrent.{ExecutionContext => ExC, Future}
+import scala.concurrent.{ExecutionContext as ExC, Future}
 
 trait ScheduledService[R] {
   def invoke(implicit ec: ExC): Future[R]

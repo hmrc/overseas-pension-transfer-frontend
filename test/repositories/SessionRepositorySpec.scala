@@ -29,7 +29,7 @@ import uk.gov.hmrc.mongo.test.CleanMongoCollectionSupport
 
 import java.time.{Clock, Instant, ZoneOffset}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 class SessionRepositorySpec
     extends AnyFreeSpec

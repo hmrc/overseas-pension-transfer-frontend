@@ -25,7 +25,7 @@ import models.requests.SchemeRequest
 import models.responses.UserAnswersError
 import models.{AmendCheckMode, NormalMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
 import pages.memberDetails.MemberNamePage
-import pages.viewandamend.{ViewAmendSubmittedPage => page}
+import pages.viewandamend.ViewAmendSubmittedPage as page
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -40,7 +40,7 @@ import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
 import viewmodels.checkAnswers.schemeOverview.SchemeDetailsSummary
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.summarylist._
+import viewmodels.govuk.summarylist.*
 import views.html.viewandamend.ViewSubmittedView
 
 import java.time.{Clock, Instant}

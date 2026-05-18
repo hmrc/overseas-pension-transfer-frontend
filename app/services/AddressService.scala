@@ -20,7 +20,7 @@ import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataTrait
-import models.address._
+import models.address.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

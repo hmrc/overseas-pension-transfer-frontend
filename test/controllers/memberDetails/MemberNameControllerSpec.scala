@@ -30,7 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import queries.TaskStatusQuery
 import repositories.SessionRepository
 import services.UserAnswersService

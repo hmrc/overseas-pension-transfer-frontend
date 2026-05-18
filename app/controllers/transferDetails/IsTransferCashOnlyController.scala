@@ -16,21 +16,21 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.helpers.ErrorHandling
 import forms.transferDetails.IsTransferCashOnlyFormProvider
-import models.{AmendCheckMode, Mode, SessionData, UserAnswers}
 import models.TaskCategory.TransferDetails
 import models.assets.TypeOfAsset
 import models.assets.TypeOfAsset.Cash
+import models.{AmendCheckMode, Mode, SessionData, UserAnswers}
 import org.apache.pekko.Done
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage, TypeOfAssetPage}
+import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Writes._
+import play.api.libs.json.Writes.*
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
+import queries.TransferDetailsRecordVersionQuery
 import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 import repositories.SessionRepository
 import services.{AssetsMiniJourneyService, TaskService, UserAnswersService}

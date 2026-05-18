@@ -16,7 +16,7 @@
 
 package controllers.qropsDetails
 
-import controllers.actions._
+import controllers.actions.*
 import forms.qropsDetails.QROPSOtherCountryFormProvider
 import models.Mode
 import org.apache.pekko.Done

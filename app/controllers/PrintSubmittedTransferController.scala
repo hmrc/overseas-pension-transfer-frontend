@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import models.{CheckMode, QtNumber, QtStatus}
 import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.{I18nSupport, MessagesApi}

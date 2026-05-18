@@ -18,11 +18,11 @@ package viewmodels.checkAnswers.transferDetails
 
 import models.{Mode, UserAnswers}
 import pages.transferDetails.OverseasTransferAllowancePage
-import utils.CurrencyFormats.currencyFormat
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import utils.CurrencyFormats.currencyFormat
+import viewmodels.govuk.summarylist.*
+import viewmodels.implicits.*
 
 object OverseasTransferAllowanceSummary {
 

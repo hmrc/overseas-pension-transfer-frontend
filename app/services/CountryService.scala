@@ -19,7 +19,7 @@ package services
 import models.address.Country
 import play.api.Environment
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import javax.inject.{Inject, Singleton}
 import scala.io.Source

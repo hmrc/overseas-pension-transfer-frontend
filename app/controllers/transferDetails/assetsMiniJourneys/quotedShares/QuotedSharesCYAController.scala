@@ -29,7 +29,7 @@ import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesSummary
-import viewmodels.govuk.summarylist._
+import viewmodels.govuk.summarylist.*
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAView
 
 import scala.concurrent.ExecutionContext

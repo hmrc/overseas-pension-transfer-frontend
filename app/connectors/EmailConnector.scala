@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.parsers.EmailHttpParser._
+import connectors.parsers.EmailHttpParser.*
 import models.email.{EmailNotSent, EmailSendingResult, EmailToSendRequest}
 import play.api.Logging
 import play.api.libs.json.Json

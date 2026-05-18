@@ -16,7 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import controllers.actions._
+import controllers.actions.*
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
 import models.assets.{PropertyMiniJourney, TypeOfAsset}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}

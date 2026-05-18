@@ -17,7 +17,7 @@
 package stubs
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.TransferNumber
 
 import java.util.UUID

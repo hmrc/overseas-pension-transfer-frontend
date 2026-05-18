@@ -16,7 +16,7 @@
 
 package controllers.qropsDetails
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.helpers.ErrorHandling
 import forms.qropsDetails.QROPSNameFormProvider
 import models.Mode

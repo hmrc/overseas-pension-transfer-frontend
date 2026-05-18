@@ -17,7 +17,7 @@
 package connectors.parsers
 
 import models.dtos.GetAllTransfersDTO
-import models.responses._
+import models.responses.*
 import play.api.Logging
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, NOT_FOUND, OK}
 import play.api.libs.json.{JsError, JsSuccess}

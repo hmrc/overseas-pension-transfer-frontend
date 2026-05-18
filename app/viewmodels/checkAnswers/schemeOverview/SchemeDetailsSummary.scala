@@ -20,8 +20,6 @@ import models.Mode
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-import java.time.LocalDateTime
-
 case object SchemeDetailsSummary {
 
   def rows(mode: Mode, schemeName: String, dateSubmitted: String)(implicit messages: Messages): Seq[SummaryListRow] = {

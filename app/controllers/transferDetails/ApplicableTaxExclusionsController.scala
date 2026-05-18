@@ -16,7 +16,7 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
+import controllers.actions.*
 import forms.transferDetails.ApplicableTaxExclusionsFormProvider
 import models.{AmendCheckMode, ApplicableTaxExclusions, Mode, UserAnswers}
 import pages.transferDetails.ApplicableTaxExclusionsPage
@@ -24,7 +24,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
-import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.ApplicableTaxExclusionsView

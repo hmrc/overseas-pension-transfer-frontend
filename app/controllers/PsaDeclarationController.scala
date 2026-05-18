@@ -18,7 +18,7 @@ package controllers
 
 import cats.data.EitherT
 import connectors.MinimalDetailsConnector
-import controllers.actions._
+import controllers.actions.*
 import models.authentication.PsaUser
 import models.{Mode, PersonName}
 import pages.memberDetails.MemberNamePage

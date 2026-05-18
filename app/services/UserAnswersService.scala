@@ -17,15 +17,15 @@
 package services
 
 import com.google.inject.Inject
-import connectors.{PensionSchemeConnector, UserAnswersConnector}
+import connectors.UserAnswersConnector
 import models.authentication.{AuthenticatedUser, PsaId}
 import models.dtos.SubmissionDTO
 import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
-import models.responses._
+import models.responses.*
 import models.{AllTransfersItem, PstrNumber, QtStatus, SessionData, SrnNumber, TransferId, UserAnswers}
 import org.apache.pekko.Done
 import play.api.Logging
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

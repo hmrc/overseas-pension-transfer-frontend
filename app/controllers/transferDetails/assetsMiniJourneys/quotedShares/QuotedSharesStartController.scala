@@ -16,7 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
-import controllers.actions._
+import controllers.actions.*
 import models.Mode
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartPage
 import play.api.i18n.I18nSupport

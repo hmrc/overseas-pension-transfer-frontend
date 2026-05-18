@@ -21,7 +21,7 @@ import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import models.responses.UserAnswersErrorResponse
 import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.SEE_OTHER

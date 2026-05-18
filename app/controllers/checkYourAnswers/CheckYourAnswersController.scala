@@ -18,7 +18,7 @@ package controllers.checkYourAnswers
 
 import com.google.inject.Inject
 import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import models.{FinalCheckMode, Mode, NormalMode}
+import models.{FinalCheckMode, NormalMode}
 import pages.checkYourAnswers.CheckYourAnswersPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,7 +27,7 @@ import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
 import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.summarylist._
+import viewmodels.govuk.summarylist.*
 import views.html.checkYourAnswers.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject() (

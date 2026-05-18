@@ -19,15 +19,14 @@ package models
 import models.TaskCategory.{MemberDetails, QROPSDetails, SchemeManagerDetails, SubmissionDetails, TransferDetails}
 import models.authentication.AuthenticatedUser
 import models.taskList.TaskStatus.{CannotStart, NotStarted}
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import queries.{Gettable, Settable, TaskStatusQuery}
+import services.EncryptionService
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
-import uk.gov.hmrc.play.audit.model.TransactionFailure
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
-import services.EncryptionService
 
 case class SessionData(
   sessionId: String,
@@ -41,7 +40,7 @@ case class SessionData(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  import play.api.libs.json._
+  import play.api.libs.json.*
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[SessionData] = {
 

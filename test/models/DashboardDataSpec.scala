@@ -18,7 +18,7 @@ package models
 
 import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
-import play.api.libs.json._
+import play.api.libs.json.*
 import services.EncryptionService
 
 class DashboardDataSpec extends AnyFreeSpec with SpecBase {
@@ -59,7 +59,7 @@ class DashboardDataSpec extends AnyFreeSpec with SpecBase {
     }
 
     "correctly encrypt using wrapper classes" in {
-      import DashboardData._
+      import DashboardData.*
 
       val decryptedWrapper = DecryptedDashboardData(Json.obj("foo" -> "bar"))
       val encryptedWrapper = decryptedWrapper.encrypt(encryptionService)

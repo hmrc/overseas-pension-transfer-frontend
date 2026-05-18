@@ -19,7 +19,7 @@ package viewmodels
 import config.FrontendAppConfig
 import models.AllTransfersItem
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
 import utils.{Paging, PagingRequest}
 

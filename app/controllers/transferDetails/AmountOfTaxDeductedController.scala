@@ -16,7 +16,7 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
+import controllers.actions.*
 import forms.transferDetails.AmountOfTaxDeductedFormProvider
 import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.AmountOfTaxDeductedPage

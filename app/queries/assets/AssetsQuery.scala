@@ -17,7 +17,7 @@
 package queries.assets
 
 import models.TaskCategory
-import models.assets._
+import models.assets.*
 import play.api.libs.json.JsPath
 import queries.{Gettable, Settable}
 

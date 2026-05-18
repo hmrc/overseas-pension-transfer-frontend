@@ -1,7 +1,4 @@
-import play.sbt.routes.RoutesKeys
-import sbt.Def
-import scoverage.ScoverageKeys
-import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+
 
 lazy val appName: String = "overseas-pension-transfer-frontend"
 

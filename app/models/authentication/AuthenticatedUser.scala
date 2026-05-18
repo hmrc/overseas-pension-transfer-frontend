@@ -17,8 +17,8 @@
 package models.authentication
 
 import models.PensionSchemeDetails
+import play.api.libs.json.*
 import uk.gov.hmrc.auth.core.AffinityGroup
-import play.api.libs.json._
 
 sealed trait AuthenticatedUser {
   def internalId: String

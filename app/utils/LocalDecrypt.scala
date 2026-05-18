@@ -18,7 +18,7 @@ package utils
 
 import com.typesafe.config.{ConfigFactory, ConfigValueType}
 import play.api.Logging
-import play.api.libs.json._
+import play.api.libs.json.*
 import services.EncryptionService
 
 import java.util.Base64

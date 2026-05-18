@@ -18,9 +18,8 @@ package forms.transferDetails
 
 import forms.mappings.Mappings
 import models.assets.TypeOfAsset
-import play.api.data.Form
-import play.api.data._
-import play.api.data.Forms._
+import play.api.data.*
+import play.api.data.Forms.*
 
 import javax.inject.Inject
 

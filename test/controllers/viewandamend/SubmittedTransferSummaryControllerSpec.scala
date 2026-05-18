@@ -26,7 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.{CollectSubmittedVersionsService, LockService}
 import viewmodels.SubmittedTransferSummaryViewModel
 import views.html.viewandamend.SubmittedTransferSummaryView

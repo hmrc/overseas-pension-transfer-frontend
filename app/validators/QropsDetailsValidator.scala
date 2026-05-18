@@ -21,7 +21,7 @@ import cats.implicits.{catsSyntaxTuple5Semigroupal, catsSyntaxValidatedIdBinComp
 import models.address.{Country, QROPSAddress}
 import models.transferJourneys.QropsDetails
 import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
-import pages.qropsDetails._
+import pages.qropsDetails.*
 
 object QropsDetailsValidator extends Validator[QropsDetails] {
 

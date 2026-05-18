@@ -24,7 +24,6 @@ import org.mongodb.scala.result.DeleteResult
 import play.api.Logging
 import repositories.EnhancedLockRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.lock.LockRepository
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.*

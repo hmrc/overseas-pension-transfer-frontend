@@ -16,10 +16,10 @@
 
 package stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.http.Fault
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 object PensionSchemeStub {
 

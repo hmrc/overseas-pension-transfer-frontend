@@ -18,7 +18,7 @@ package controllers.qropsSchemeManagerDetails
 
 import base.{AddressBase, SpecBase}
 import config.FrontendAppConfig
-import controllers.{routes => controllerRoutes}
+import controllers.routes as controllerRoutes
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.NormalMode
 import models.address.Country
@@ -32,7 +32,7 @@ import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel

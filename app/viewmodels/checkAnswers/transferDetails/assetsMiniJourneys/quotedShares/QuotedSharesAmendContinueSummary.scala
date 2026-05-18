@@ -20,15 +20,15 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
 import models.{Mode, UserAnswers}
+import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import play.api.i18n.Messages
 import queries.assets.QuotedSharesQuery
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AppUtils
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
-import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
+import viewmodels.govuk.summarylist.*
+import viewmodels.implicits.*
 
 object QuotedSharesAmendContinueSummary extends AppUtils {
   private val threshold = 5

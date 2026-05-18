@@ -21,7 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartView
 
 class UnquotedShareStartControllerSpec extends AnyFreeSpec with SpecBase {

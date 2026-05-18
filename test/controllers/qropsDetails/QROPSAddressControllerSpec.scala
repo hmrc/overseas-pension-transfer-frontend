@@ -18,8 +18,8 @@ package controllers.qropsDetails
 
 import base.AddressBase
 import config.FrontendAppConfig
-import controllers.qropsDetails.{routes => qropRoutes}
-import controllers.{routes => baseRoutes}
+import controllers.qropsDetails.routes as qropRoutes
+import controllers.routes as baseRoutes
 import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
 import models.NormalMode
 import models.address.Country
@@ -33,7 +33,7 @@ import pages.qropsDetails.QROPSAddressPage
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel

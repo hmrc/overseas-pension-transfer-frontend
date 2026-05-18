@@ -16,13 +16,12 @@
 
 package connectors.parsers
 
+import models.PensionSchemeResponse
 import models.authentication.PsaId
 import models.responses.{PensionSchemeError, PensionSchemeErrorResponse, PensionSchemeNotAssociated}
-import models.{PensionSchemeDetails, PensionSchemeResponse, PstrNumber, SrnNumber}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{JsError, JsSuccess, Json, Reads, __}
+import play.api.libs.json.*
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 import utils.DownstreamLogging
 

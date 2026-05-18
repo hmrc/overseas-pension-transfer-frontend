@@ -16,7 +16,7 @@
 
 package controllers.qropsSchemeManagerDetails
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.helpers.ErrorHandling
 import forms.qropsSchemeManagerDetails.SchemeManagersEmailFormProvider
 import models.Mode

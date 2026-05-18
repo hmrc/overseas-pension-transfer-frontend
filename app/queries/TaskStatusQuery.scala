@@ -17,7 +17,7 @@
 package queries
 
 import models.TaskCategory
-import models.taskList._
+import models.taskList.*
 import play.api.libs.json.JsPath
 
 final case class TaskStatusQuery(category: TaskCategory) extends Gettable[TaskStatus] with Settable[TaskStatus] {

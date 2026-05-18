@@ -19,7 +19,7 @@ package forms.memberDetails
 import forms.mappings.{Mappings, Regex}
 import models.PersonName
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 
 import javax.inject.Inject
 

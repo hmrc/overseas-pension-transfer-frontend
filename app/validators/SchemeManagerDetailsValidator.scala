@@ -22,7 +22,7 @@ import models.SchemeManagerType.{Individual, Organisation}
 import models.address.SchemeManagersAddress
 import models.transferJourneys.SchemeManagerDetails
 import models.{DataMissingError, GenericError, PersonName, SchemeManagerType, UserAnswers, ValidationResult}
-import pages.qropsSchemeManagerDetails._
+import pages.qropsSchemeManagerDetails.*
 
 object SchemeManagerDetailsValidator extends Validator[SchemeManagerDetails] {
 

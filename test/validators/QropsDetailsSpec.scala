@@ -18,13 +18,13 @@ package validators
 
 import base.AddressBase
 import cats.data.Validated.{Invalid, Valid}
-import models._
+import models.*
 import models.address.Country
 import models.transferJourneys.QropsDetails
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import pages.qropsDetails._
+import pages.qropsDetails.*
 import uaOps.UAOps.QropsAnswersOps
 
 final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues with AddressBase {

@@ -16,13 +16,12 @@
 
 package controllers.memberDetails
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.helpers.ErrorHandling
 import forms.memberDetails.MemberNameFormProvider
 import models.{Mode, PersonName}
 import org.apache.pekko.Done
 import pages.memberDetails.MemberNamePage
-import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

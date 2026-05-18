@@ -16,7 +16,7 @@
 
 package models.address
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class RawAddress(lines: List[String], town: String, postcode: String, country: Country)
 

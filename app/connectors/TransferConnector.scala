@@ -18,8 +18,8 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.parsers.TransferParser.{GetAllTransfersHttpReads, GetAllTransfersType}
+import models.responses.AllTransfersUnexpectedError
 import models.{PstrNumber, SrnNumber}
-import models.responses.{AllTransfersUnexpectedError, UserAnswersErrorResponse}
 import play.api.Logging
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}

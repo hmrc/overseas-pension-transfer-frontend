@@ -17,10 +17,10 @@
 package models
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
+import play.api.libs.json.*
 import queries.{Gettable, Settable}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import services.EncryptionService
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.Instant
 import scala.util.{Failure, Success, Try}
@@ -67,7 +67,7 @@ object DashboardData {
 
   val reads: Reads[DashboardData] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").read[String] and
@@ -78,7 +78,7 @@ object DashboardData {
 
   val writes: OWrites[DashboardData] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").write[String] and

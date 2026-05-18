@@ -16,7 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import controllers.actions._
+import controllers.actions.*
 import forms.transferDetails.assetsMiniJourneys.property.PropertyValueFormProvider
 import models.assets.TypeOfAsset.Property
 import models.{AmendCheckMode, Mode, UserAnswers}

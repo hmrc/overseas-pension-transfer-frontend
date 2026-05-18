@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.SubmitToHMRCFormProvider
 import models.NormalMode
 import models.authentication.{PspId, PspUser}
@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import views.html.SubmitToHMRCView

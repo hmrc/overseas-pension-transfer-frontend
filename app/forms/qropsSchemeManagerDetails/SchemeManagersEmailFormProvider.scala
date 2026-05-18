@@ -17,7 +17,7 @@
 package forms.qropsSchemeManagerDetails
 
 import forms.mappings.Mappings
-import play.api.data._
+import play.api.data.*
 
 import javax.inject.Inject
 

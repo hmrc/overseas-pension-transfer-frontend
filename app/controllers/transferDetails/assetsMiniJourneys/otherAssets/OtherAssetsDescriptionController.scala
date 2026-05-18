@@ -16,7 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.actions._
+import controllers.actions.*
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionFormProvider
 import models.assets.TypeOfAsset.Other
 import models.{AmendCheckMode, Mode, UserAnswers}

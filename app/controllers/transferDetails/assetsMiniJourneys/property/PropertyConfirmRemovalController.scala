@@ -16,7 +16,7 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import controllers.actions._
+import controllers.actions.*
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyConfirmRemovalFormProvider
 import handlers.AssetThresholdHandler

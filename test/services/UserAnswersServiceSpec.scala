@@ -18,13 +18,13 @@ package services
 
 import base.SpecBase
 import connectors.{PensionSchemeConnector, UserAnswersConnector}
+import models.*
 import models.authentication.{PsaId, PsaUser}
 import models.dtos.UserAnswersDTO
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
-import models._
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.RecoverMethods.recoverToExceptionIf
 import org.scalatest.freespec.AnyFreeSpec

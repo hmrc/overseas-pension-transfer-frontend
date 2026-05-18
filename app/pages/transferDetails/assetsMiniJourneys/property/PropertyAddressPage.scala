@@ -17,7 +17,7 @@
 package pages.transferDetails.assetsMiniJourneys.property
 
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.address._
+import models.address.*
 import models.assets.{PropertyEntry, TypeOfAsset}
 import models.{Mode, TaskCategory, UserAnswers}
 import pages.{MiniJourneyNextPage, QuestionPage}

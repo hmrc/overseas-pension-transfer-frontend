@@ -19,7 +19,7 @@ package viewmodels
 import models.taskList.TaskStatus
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.Aliases.*
 import viewmodels.govuk.all.HintViewModel
 
 final case class TaskTileViewModel(

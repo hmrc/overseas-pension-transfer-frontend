@@ -29,7 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.TypeOfAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 import repositories.SessionRepository
 import views.html.transferDetails.TypeOfAssetView

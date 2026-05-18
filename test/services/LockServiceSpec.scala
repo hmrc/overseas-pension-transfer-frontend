@@ -21,8 +21,8 @@ import models.audit.JourneyStartedType.{StartJourneyFailed, StartNewTransfer}
 import models.audit.ReportStartedAuditModel
 import models.authentication.{PsaId, PsaUser}
 import models.{AllTransfersItem, TransferId}
-import org.mockito.ArgumentMatchers.{any, argThat, eq => eqTo}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{any, argThat, eq as eqTo}
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers

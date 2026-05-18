@@ -16,7 +16,7 @@
 
 package controllers.viewandamend
 
-import controllers.actions._
+import controllers.actions.*
 import models.authentication.{PsaUser, PspUser}
 import models.{PstrNumber, QtNumber, QtStatus, TransferId}
 import pages.memberDetails.MemberNamePage

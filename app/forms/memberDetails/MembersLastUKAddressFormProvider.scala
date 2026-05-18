@@ -17,9 +17,9 @@
 package forms.memberDetails
 
 import forms.mappings.{Mappings, Regex}
-import models.address._
+import models.address.*
 import models.requests.DisplayRequest
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.{Form, Forms}
 import utils.AppUtils
 

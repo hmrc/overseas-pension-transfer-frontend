@@ -16,11 +16,11 @@
 
 package uaOps
 
-import pages.qropsDetails._
-import models.address.{Countries, Country, PropertyAddress, QROPSAddress, SchemeManagersAddress}
+import models.address.*
 import models.{PersonName, SchemeManagerType, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
-import pages.qropsSchemeManagerDetails._
+import pages.qropsDetails.*
+import pages.qropsSchemeManagerDetails.*
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
