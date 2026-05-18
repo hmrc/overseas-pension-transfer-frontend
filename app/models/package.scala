@@ -15,7 +15,7 @@
  */
 
 import cats.data.ValidatedNec
-import play.api.libs.json._
+import play.api.libs.json.*
 
 package object models {
 
@@ -146,6 +146,7 @@ package object models {
                   }
                 }
             }
+        case (a, b)                                                                    => JsError(s"Invalid removal request for path $path")
       }
   }
 }

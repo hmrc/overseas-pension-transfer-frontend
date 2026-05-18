@@ -150,6 +150,10 @@ class ViewAmendSelectorController @Inject() (
             case Some("amend") =>
               lockAndStartAmend(qtReference, pstr, qtStatus, versionNumber)
             case _             =>
+              Future.successful(
+                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              )
+
           }
         )
     }
