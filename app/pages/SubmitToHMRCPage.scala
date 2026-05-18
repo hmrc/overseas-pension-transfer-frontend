@@ -23,14 +23,12 @@ import play.api.Logging
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object SubmitToHMRCPage
-    extends QuestionPage[Boolean]
-    with NextPageWith[AuthenticatedUser] with Logging {
+case object SubmitToHMRCPage extends QuestionPage[Boolean] with NextPageWith[AuthenticatedUser] with Logging {
 
   override def path: JsPath     = JsPath \ toString
   override def toString: String = "submitToHMRC"
 
-  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call = {
+  override protected def nextPageAmendCheckModeWith(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call =
     answers.get(SubmitToHMRCPage) match {
       case Some(true)  =>
         authenticatedUser.userType match {
@@ -41,9 +39,8 @@ case object SubmitToHMRCPage
         routes.DashboardController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
-  }
 
-  override protected def nextPageWith(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call = {
+  override protected def nextPageWith(answers: UserAnswers, authenticatedUser: AuthenticatedUser): Call =
     answers.get(SubmitToHMRCPage) match {
       case Some(true)  =>
         authenticatedUser.userType match {
@@ -54,5 +51,4 @@ case object SubmitToHMRCPage
         routes.DashboardController.onPageLoad()
       case _           => routes.JourneyRecoveryController.onPageLoad()
     }
-  }
 }

@@ -24,11 +24,12 @@ object EmailParameters {
 
   implicit val reads: Reads[EmailParameters] = new Reads[EmailParameters] {
 
-    override def reads(json: JsValue): JsResult[EmailParameters] = {
-      json.validate[SubmissionConfirmation].orElse(
-        json.validate[SubmissionConfirmation]
-      )
-    }
+    override def reads(json: JsValue): JsResult[EmailParameters] =
+      json
+        .validate[SubmissionConfirmation]
+        .orElse(
+          json.validate[SubmissionConfirmation]
+        )
   }
 
   implicit val writes: Writes[EmailParameters] = Writes[EmailParameters] {
@@ -38,12 +39,12 @@ object EmailParameters {
 }
 
 case class SubmissionConfirmation(
-    qtReference: String,
-    memberName: String,
-    submitter: String,
-    submissionDate: String,
-    pensionSchemeName: String
-  ) extends EmailParameters
+  qtReference: String,
+  memberName: String,
+  submitter: String,
+  submissionDate: String,
+  pensionSchemeName: String
+) extends EmailParameters
 
 object SubmissionConfirmation {
 

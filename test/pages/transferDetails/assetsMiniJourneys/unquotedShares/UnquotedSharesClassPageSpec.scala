@@ -30,7 +30,10 @@ class UnquotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
     "in Normal Mode" - {
       "must go to Index" in {
-        UnquotedSharesClassPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(
+        UnquotedSharesClassPage(index).nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(
           NormalMode,
           index
         )
@@ -39,7 +42,10 @@ class UnquotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
     "in CheckMode" - {
       "must go to Index" in {
-        UnquotedSharesClassPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(
+        UnquotedSharesClassPage(index).nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(
           CheckMode,
           index
         )
@@ -48,7 +54,10 @@ class UnquotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
     "in FinalCheckMode" - {
       "must go to Index" in {
-        UnquotedSharesClassPage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(
+        UnquotedSharesClassPage(index).nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -57,7 +66,10 @@ class UnquotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
     "in AmendCheckMode" - {
       "must go to Index" in {
-        UnquotedSharesClassPage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(
+        UnquotedSharesClassPage(index).nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(
           AmendCheckMode,
           index
         )

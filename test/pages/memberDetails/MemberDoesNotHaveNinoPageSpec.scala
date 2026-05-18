@@ -31,7 +31,8 @@ class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Member Date of Birth" in {
 
-        MemberDoesNotHaveNinoPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode)
+        MemberDoesNotHaveNinoPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfBirthController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -39,7 +40,8 @@ class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers" in {
 
-        MemberDoesNotHaveNinoPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDoesNotHaveNinoPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController
+          .onPageLoad()
       }
     }
 

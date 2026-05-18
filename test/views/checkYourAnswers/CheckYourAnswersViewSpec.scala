@@ -33,7 +33,9 @@ class CheckYourAnswersViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(memberDetails, transferDetails, qropsDetails, schemeManagerDetails).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("checkYourAnswers.title")} - ${messages("service.name")} - GOV.UK"
     }
 

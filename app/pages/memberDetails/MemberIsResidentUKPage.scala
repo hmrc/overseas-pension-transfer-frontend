@@ -62,13 +62,13 @@ case object MemberIsResidentUKPage extends QuestionPage[Boolean] with Logging {
   final def changeLink(mode: Mode): Call =
     memberDetails.routes.MemberIsResidentUKController.onPageLoad(mode)
 
-  override def cleanup(maybeIsResidentUk: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(maybeIsResidentUk: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     maybeIsResidentUk match {
-      case Some(true) => userAnswers
+      case Some(true) =>
+        userAnswers
           .remove(MemberHasEverBeenResidentUKPage)
           .flatMap(_.remove(MembersLastUKAddressPage))
           .flatMap(_.remove(MemberDateOfLeavingUKPage))
       case _          => super.cleanup(maybeIsResidentUk, userAnswers)
     }
-  }
 }

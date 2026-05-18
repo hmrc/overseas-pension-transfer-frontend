@@ -21,11 +21,11 @@ import models.authentication.AuthenticatedUser
 import play.api.mvc.{Request, WrappedRequest}
 
 case class DisplayRequest[A](
-    request: Request[A],
-    authenticatedUser: AuthenticatedUser,
-    userAnswers: UserAnswers,
-    sessionData: SessionData,
-    memberName: String,
-    qtNumber: QtNumber,
-    dateTransferSubmitted: String
-  ) extends WrappedRequest[A](request)
+  request: Request[A],
+  authenticatedUser: AuthenticatedUser,
+  userAnswers: UserAnswers,
+  sessionData: SessionData,
+  memberName: String,
+  qtNumber: QtNumber,
+  dateTransferSubmitted: String
+) extends WrappedRequest[A](request)

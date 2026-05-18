@@ -29,8 +29,10 @@ import views.html.qropsSchemeManagerDetails.SchemeManagerDetailsCYAView
 
 class SchemeManagerDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val onPageLoadRoute = controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad().url
-  private lazy val onSubmitRoute   = controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onSubmit().url
+  private lazy val onPageLoadRoute =
+    controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad().url
+  private lazy val onSubmitRoute   =
+    controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onSubmit().url
 
   "SchemeManagerDetailsCYAController" - {
 

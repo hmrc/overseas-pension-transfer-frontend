@@ -45,7 +45,11 @@ class SubmittedTransferSummaryViewModelSpec extends AnyFreeSpec with SpecBase {
     }
 
     "return 2 rows with draft and View changeLink as the first row when draft is defined" in {
-      SubmittedTransferSummaryViewModel.rows(Some(userAnswers.copy(lastUpdated = now)), List(userAnswers.copy(lastUpdated = now)), "001") mustBe
+      SubmittedTransferSummaryViewModel.rows(
+        Some(userAnswers.copy(lastUpdated = now)),
+        List(userAnswers.copy(lastUpdated = now)),
+        "001"
+      ) mustBe
         Html(s""" <tr class="govuk-table__row">
                 |            <td class="govuk-table__cell">Draft</th>
                 |            <td class="govuk-table__cell">In progress</td>

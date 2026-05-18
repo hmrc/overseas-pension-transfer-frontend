@@ -37,20 +37,26 @@ class PropertyAmendContinueViewSpec extends ViewBaseSpec {
 
     "show correct title with no items" in {
       doc(view(formProvider(), Seq.empty, NormalMode).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("propertyAmendContinue.text.title.noItems")} - ${messages("service.name")} - GOV.UK"
     }
 
     "show correct title with one item" in {
       val oneItem = Seq(ListItem("Property 1", "change-url-1", "remove-url-1"))
       doc(view(formProvider(), oneItem, NormalMode).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("propertyAmendContinue.text.title.oneItem")} - ${messages("service.name")} - GOV.UK"
     }
 
     "show correct title with multiple items" in {
       doc(view(formProvider(), testProperties, NormalMode).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("propertyAmendContinue.text.title.multipleItems", testProperties.length)} - ${messages("service.name")} - GOV.UK"
     }
 
@@ -62,7 +68,11 @@ class PropertyAmendContinueViewSpec extends ViewBaseSpec {
     }
 
     behave like pageWithErrors(
-      view(formProvider().withError(FormError("add-another", "propertyAmendContinue.error.required")), testProperties, NormalMode),
+      view(
+        formProvider().withError(FormError("add-another", "propertyAmendContinue.error.required")),
+        testProperties,
+        NormalMode
+      ),
       "add-another",
       "propertyAmendContinue.error.required"
     )

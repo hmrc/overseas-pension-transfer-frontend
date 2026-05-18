@@ -35,7 +35,9 @@ class ViewAmendSubmittedPageSpec extends AnyWordSpec with SpecBase {
     "in normal mode" should {
 
       "redirect to the view and amend page" in {
-        ViewAmendSubmittedPage.nextPage(NormalMode, userAnswersMemberName).url mustBe controllers.viewandamend.routes.ViewAmendSubmittedController.amend().url
+        ViewAmendSubmittedPage
+          .nextPage(NormalMode, userAnswersMemberName)
+          .url mustBe controllers.viewandamend.routes.ViewAmendSubmittedController.amend().url
       }
     }
   }
@@ -43,17 +45,21 @@ class ViewAmendSubmittedPageSpec extends AnyWordSpec with SpecBase {
   ".userAnswersError" should {
 
     "redirect the user to SubmittedTransferSummaryController.onPageLoad" in {
-      ViewAmendSubmittedPage.userAnswersError(
-        transferId,
-        pstrNumber,
-        qtStatus,
-        versionNumber
-      ).url mustBe controllers.viewandamend.routes.SubmittedTransferSummaryController.onPageLoad(
-        transferId,
-        pstrNumber,
-        qtStatus,
-        versionNumber
-      ).url
+      ViewAmendSubmittedPage
+        .userAnswersError(
+          transferId,
+          pstrNumber,
+          qtStatus,
+          versionNumber
+        )
+        .url mustBe controllers.viewandamend.routes.SubmittedTransferSummaryController
+        .onPageLoad(
+          transferId,
+          pstrNumber,
+          qtStatus,
+          versionNumber
+        )
+        .url
     }
   }
 

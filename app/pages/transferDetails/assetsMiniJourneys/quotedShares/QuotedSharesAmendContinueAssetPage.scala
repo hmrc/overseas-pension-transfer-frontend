@@ -23,13 +23,21 @@ import pages.{MiniJourneyNextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object QuotedSharesAmendContinueAssetPage extends QuestionPage[Boolean] with MiniJourneyNextPageWith[AmendContinueContext] with NextAssetMiniJourney {
+case object QuotedSharesAmendContinueAssetPage
+    extends QuestionPage[Boolean]
+    with MiniJourneyNextPageWith[AmendContinueContext]
+    with NextAssetMiniJourney {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "quotedSharesAmendContinue"
 
-  override def decideNextPage(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext, mode: Mode, modeCall: Call): Call = {
+  override def decideNextPage(
+    answers: UserAnswers,
+    sessionDataWithIndex: AmendContinueContext,
+    mode: Mode,
+    modeCall: Call
+  ): Call = {
     val (sessionData, nextIndex) = sessionDataWithIndex
     answers.get(QuotedSharesAmendContinueAssetPage) match {
       case Some(true)  => AssetsMiniJourneyRegistry.startOf(TypeOfAsset.QuotedShares, mode, nextIndex)

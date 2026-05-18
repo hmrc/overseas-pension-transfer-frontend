@@ -26,9 +26,9 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisingPsaService @Inject() (
-    pensionSchemeConnector: PensionSchemeConnector
-  )(implicit ex: ExecutionContext
-  ) extends Logging {
+  pensionSchemeConnector: PensionSchemeConnector
+)(implicit ex: ExecutionContext)
+    extends Logging {
 
   def checkIsAuthorisingPsa(srn: String, psaId: PsaId)(implicit hc: HeaderCarrier): Future[Boolean] =
     pensionSchemeConnector
@@ -42,7 +42,9 @@ class AuthorisingPsaService @Inject() (
           false
 
         case Left(err: PensionSchemeError) =>
-          logger.warn(s"[AuthService][checkIsAuthorisingPsa] Error while checking authorising PSA for for this request - $err")
+          logger.warn(
+            s"[AuthService][checkIsAuthorisingPsa] Error while checking authorising PSA for for this request - $err"
+          )
           false
       }
 }

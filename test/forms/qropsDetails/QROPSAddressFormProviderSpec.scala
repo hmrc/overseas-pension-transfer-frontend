@@ -43,7 +43,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -79,7 +79,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -114,7 +114,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -148,7 +148,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -182,7 +182,7 @@ class QROPSAddressFormProviderSpec extends StringFieldBehaviours with SpecBase w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

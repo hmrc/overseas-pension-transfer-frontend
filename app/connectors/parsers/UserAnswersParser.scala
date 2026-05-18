@@ -62,7 +62,9 @@ object UserAnswersParser {
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)
               val err       = logBackendError("[UserAnswersConnector][getAnswers]", response)
-              logger.warn(s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted")
+              logger.warn(
+                s"[UserAnswersConnector][getAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted"
+              )
               Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
       }
@@ -81,7 +83,9 @@ object UserAnswersParser {
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)
               val err       = logBackendError("[UserAnswersConnector][putAnswers]", response)
-              logger.warn(s"[UserAnswersConnector][putAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted")
+              logger.warn(
+                s"[UserAnswersConnector][putAnswers] Unable to parse Json as UserAnswersErrorResponse: $formatted"
+              )
               Left(UserAnswersErrorResponse(err.message, Some(err.body)))
           }
       }
@@ -91,11 +95,14 @@ object UserAnswersParser {
 
     override def read(method: String, url: String, response: HttpResponse): SubmissionType =
       response.status match {
-        case OK         => response.json.validate[SubmissionResponse] match {
+        case OK         =>
+          response.json.validate[SubmissionResponse] match {
             case JsSuccess(value, _) => Right(value)
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)
-              logger.warn(s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionResponse: $formatted")
+              logger.warn(
+                s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionResponse: $formatted"
+              )
               Left(SubmissionErrorResponse("Unable to parse Json as SubmissionResponse", Some(formatted)))
           }
         case statusCode =>
@@ -106,13 +113,18 @@ object UserAnswersParser {
             case JsError(errors)     =>
               val formatted = formatJsonErrors(errors)
               val err       = logBackendError("[SubmissionConnector][postSubmission]", response)
-              logger.warn(s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionErrorResponse: $formatted")
+              logger.warn(
+                s"[SubmissionConnector][postSubmission] Unable to parse Json as SubmissionErrorResponse: $formatted"
+              )
               Left(SubmissionErrorResponse(err.message, Some(err.body)))
           }
       }
   }
 
-  implicit object DeleteUserAnswersHttpReads extends HttpReads[DeleteUserAnswersType] with Logging with DownstreamLogging {
+  implicit object DeleteUserAnswersHttpReads
+      extends HttpReads[DeleteUserAnswersType]
+      with Logging
+      with DownstreamLogging {
 
     override def read(method: String, url: String, response: HttpResponse): DeleteUserAnswersType =
       response.status match {
@@ -121,11 +133,20 @@ object UserAnswersParser {
         case statusCode =>
           response.json.validate[UserAnswersErrorResponse] match {
             case JsSuccess(value, _) =>
-              logger.warn(s"[UserAnswersConnector][deleteAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}")
+              logger.warn(
+                s"[UserAnswersConnector][deleteAnswers] Error returned: downstreamStatus: $statusCode, error: ${value.error}"
+              )
               Left(value)
             case JsError(errors)     =>
-              logger.warn(s"[UserAnswersConnector][deleteAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}")
-              Left(UserAnswersErrorResponse("Unable to parse Json as UserAnswersErrorResponse", Some(formatJsonErrors(errors))))
+              logger.warn(
+                s"[UserAnswersConnector][deleteAnswers] Unable to parse Json as UserAnswersDTO: ${formatJsonErrors(errors)}"
+              )
+              Left(
+                UserAnswersErrorResponse(
+                  "Unable to parse Json as UserAnswersErrorResponse",
+                  Some(formatJsonErrors(errors))
+                )
+              )
           }
       }
   }

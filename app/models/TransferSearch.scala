@@ -21,9 +21,9 @@ import scala.util.matching.Regex
 object TransferSearch {
 
   def filterTransfers(
-      transfers: Seq[AllTransfersItem],
-      rawTerm: String
-    ): Seq[AllTransfersItem] = {
+    transfers: Seq[AllTransfersItem],
+    rawTerm: String
+  ): Seq[AllTransfersItem] = {
 
     val term = rawTerm.trim
 
@@ -63,9 +63,9 @@ object TransferSearch {
   }
 
   private def filterByQtRef(
-      transfers: Seq[AllTransfersItem],
-      normalisedRef: String
-    ): Seq[AllTransfersItem] = {
+    transfers: Seq[AllTransfersItem],
+    normalisedRef: String
+  ): Seq[AllTransfersItem] = {
 
     def normaliseRef(value: String): String =
       TransferSearch.normaliseForId(value)
@@ -81,9 +81,9 @@ object TransferSearch {
   }
 
   private def filterByNino(
-      transfers: Seq[AllTransfersItem],
-      normalisedNino: String
-    ): Seq[AllTransfersItem] = {
+    transfers: Seq[AllTransfersItem],
+    normalisedNino: String
+  ): Seq[AllTransfersItem] = {
 
     def normaliseNino(n: String): String =
       TransferSearch.normaliseForId(n)
@@ -96,9 +96,9 @@ object TransferSearch {
   }
 
   private def filterByName(
-      transfers: Seq[AllTransfersItem],
-      parts: List[String]
-    ): Seq[AllTransfersItem] = {
+    transfers: Seq[AllTransfersItem],
+    parts: List[String]
+  ): Seq[AllTransfersItem] = {
 
     def norm(s: String): String = s.trim.toLowerCase
 
@@ -142,6 +142,6 @@ object TransferSearch {
 }
 
 sealed private trait SearchMode
-private case class QtRefSearch(normalisedRef: String)               extends SearchMode
-private case class NinoSearch(normalisedNino: String)               extends SearchMode
+private case class QtRefSearch(normalisedRef: String) extends SearchMode
+private case class NinoSearch(normalisedNino: String) extends SearchMode
 private case class NameSearch(rawTerm: String, parts: List[String]) extends SearchMode

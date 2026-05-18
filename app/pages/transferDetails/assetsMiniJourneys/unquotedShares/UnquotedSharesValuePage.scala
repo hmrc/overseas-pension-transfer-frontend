@@ -26,17 +26,17 @@ import validators.assetsValidators.AssetCompletionValidator
 
 case class UnquotedSharesValuePage(index: Int) extends QuestionPage[BigDecimal] with MiniJourneyNextPage {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
+  override def path: JsPath =
+    JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
 
   override def toString: String = UnquotedSharesEntry.ValueOfShares
 
-  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call =
     if (AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.UnquotedShares, answers)) {
       AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index)
     } else {
       AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(mode, index)
     }
-  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(mode, index)

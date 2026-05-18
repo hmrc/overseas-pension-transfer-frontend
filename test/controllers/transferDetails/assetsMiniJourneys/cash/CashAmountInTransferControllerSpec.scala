@@ -40,7 +40,8 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
   val validAnswer = BigDecimal(0.01)
 
-  lazy val cashAmountInTransferRoute = AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(NormalMode).url
+  lazy val cashAmountInTransferRoute =
+    AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(NormalMode).url
 
   "CashAmountInTransfer Controller" - {
 
@@ -56,7 +57,10 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
         val view = application.injector.instanceOf[CashAmountInTransferView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -74,7 +78,10 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -99,7 +106,9 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CashAmountInTransferPage.nextPageWith(NormalMode, emptyUserAnswers, emptySessionData).url
+        redirectLocation(result).value mustEqual CashAmountInTransferPage
+          .nextPageWith(NormalMode, emptyUserAnswers, emptySessionData)
+          .url
       }
     }
 
@@ -124,7 +133,9 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual CashAmountInTransferPage.nextPageWith(AmendCheckMode, emptyUserAnswers, emptySessionData).url
+        redirectLocation(result).value mustEqual CashAmountInTransferPage
+          .nextPageWith(AmendCheckMode, emptyUserAnswers, emptySessionData)
+          .url
       }
     }
 
@@ -144,7 +155,10 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

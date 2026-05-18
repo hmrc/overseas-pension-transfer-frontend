@@ -37,7 +37,9 @@ class QROPSAddressViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(formProvider(), countrySelectViewModel, NormalMode).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("qropsAddress.title")} - ${messages("service.name")} - GOV.UK"
     }
 

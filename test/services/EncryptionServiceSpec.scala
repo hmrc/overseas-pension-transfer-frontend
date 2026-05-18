@@ -70,7 +70,7 @@ class EncryptionServiceSpec extends AnyFreeSpec with Matchers {
       val encrypted = service.encrypt(text)
       val bytes     = Base64.getDecoder.decode(encrypted)
       bytes(bytes.length - 1) = (bytes(bytes.length - 1) ^ 0xff).toByte
-      val tampered = Base64.getEncoder.encodeToString(bytes)
+      val tampered  = Base64.getEncoder.encodeToString(bytes)
 
       service.decrypt(tampered).isLeft mustBe true
     }
@@ -80,7 +80,7 @@ class EncryptionServiceSpec extends AnyFreeSpec with Matchers {
       val encrypted = service.encrypt(text)
       val bytes     = Base64.getDecoder.decode(encrypted)
       bytes(0) = (bytes(0) ^ 0xff).toByte
-      val tampered = Base64.getEncoder.encodeToString(bytes)
+      val tampered  = Base64.getEncoder.encodeToString(bytes)
 
       service.decrypt(tampered).isLeft mustBe true
     }

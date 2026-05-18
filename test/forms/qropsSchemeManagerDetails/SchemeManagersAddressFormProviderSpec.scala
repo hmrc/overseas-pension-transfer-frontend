@@ -42,7 +42,7 @@ class SchemeManagersAddressFormProviderSpec extends StringFieldBehaviours with S
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -77,7 +77,7 @@ class SchemeManagersAddressFormProviderSpec extends StringFieldBehaviours with S
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -111,7 +111,7 @@ class SchemeManagersAddressFormProviderSpec extends StringFieldBehaviours with S
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -144,7 +144,7 @@ class SchemeManagersAddressFormProviderSpec extends StringFieldBehaviours with S
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -177,7 +177,7 @@ class SchemeManagersAddressFormProviderSpec extends StringFieldBehaviours with S
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

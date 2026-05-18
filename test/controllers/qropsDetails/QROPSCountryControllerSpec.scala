@@ -65,7 +65,8 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
       val application = applicationBuilder(userAnswers = emptyUserAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        ).build()
+        )
+        .build()
 
       running(application) {
         val request = FakeRequest(GET, qropsCountryRoute)
@@ -75,7 +76,10 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         val view = application.injector.instanceOf[QROPSCountryView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, countrySelectViewModel, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form, countrySelectViewModel, NormalMode)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -97,7 +101,10 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(testCountries.head.code), countrySelectViewModel, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(testCountries.head.code), countrySelectViewModel, NormalMode)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 
@@ -125,18 +132,22 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QROPSCountryPage.nextPage(
-          NormalMode,
-          emptyUserAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
-        ).url
+        redirectLocation(result).value mustEqual QROPSCountryPage
+          .nextPage(
+            NormalMode,
+            emptyUserAnswers.set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+          )
+          .url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = emptyUserAnswers).overrides(
-        bind[CountryService].toInstance(mockCountryService)
-      ).build()
+      val application = applicationBuilder(userAnswers = emptyUserAnswers)
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService)
+        )
+        .build()
 
       running(application) {
         val request =
@@ -150,7 +161,10 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

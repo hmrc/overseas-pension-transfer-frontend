@@ -33,7 +33,6 @@ class TypeOfAssetFormProvider @Inject() extends Mappings {
         .verifying("typeOfAsset.error.cashOnly", selection => !isOnlyCashSelected(selection))
     )
 
-  private def isOnlyCashSelected(selection: Seq[TypeOfAsset]): Boolean = {
+  private def isOnlyCashSelected(selection: Seq[TypeOfAsset]): Boolean =
     selection.size == 1 && selection.head == TypeOfAsset.Cash
-  }
 }

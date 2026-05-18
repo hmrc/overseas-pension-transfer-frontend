@@ -19,13 +19,13 @@ package models
 import play.api.libs.json.{Json, Reads, Writes}
 
 case class MinimalDetails(
-    email: String,
-    isPsaSuspended: Boolean,
-    organisationName: Option[String],
-    individualDetails: Option[IndividualDetails],
-    rlsFlag: Boolean,
-    deceasedFlag: Boolean
-  )
+  email: String,
+  isPsaSuspended: Boolean,
+  organisationName: Option[String],
+  individualDetails: Option[IndividualDetails],
+  rlsFlag: Boolean,
+  deceasedFlag: Boolean
+)
 
 object MinimalDetails {
   implicit val reads: Reads[MinimalDetails]   = Json.reads[MinimalDetails]
@@ -33,10 +33,10 @@ object MinimalDetails {
 }
 
 case class IndividualDetails(
-    firstName: String,
-    middleName: Option[String],
-    lastName: String
-  ) {
+  firstName: String,
+  middleName: Option[String],
+  lastName: String
+) {
   val fullName = s"$firstName${middleName.map(_.prepended(' ')).mkString} $lastName"
 }
 

@@ -61,12 +61,12 @@ case object MemberHasEverBeenResidentUKPage extends QuestionPage[Boolean] {
   final def changeLink(mode: Mode): Call =
     memberDetails.routes.MemberHasEverBeenResidentUKController.onPageLoad(mode)
 
-  override def cleanup(maybeHasEverBeenResidentUk: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(maybeHasEverBeenResidentUk: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     maybeHasEverBeenResidentUk match {
-      case Some(false) => userAnswers
+      case Some(false) =>
+        userAnswers
           .remove(MembersLastUKAddressPage)
           .flatMap(_.remove(MemberDateOfLeavingUKPage))
       case _           => super.cleanup(maybeHasEverBeenResidentUk, userAnswers)
     }
-  }
 }

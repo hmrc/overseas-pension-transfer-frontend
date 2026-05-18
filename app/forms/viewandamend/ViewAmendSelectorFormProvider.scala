@@ -24,14 +24,16 @@ object ViewAmendSelectorFormProvider {
   val ViewOrAmend = "viewOrAmend"
 
   def form(): Form[Option[String]] = Form[Option[String]](
-    single(ViewOrAmend -> optional(text).verifying(
-      "viewAmend.error.required",
-      {
-        case Some("view")  => true
-        case Some("amend") => true
-        case _             => false
+    single(
+      ViewOrAmend -> optional(text).verifying(
+        "viewAmend.error.required",
+        {
+          case Some("view")  => true
+          case Some("amend") => true
+          case _             => false
 
-      }
-    ))
+        }
+      )
+    )
   )
 }

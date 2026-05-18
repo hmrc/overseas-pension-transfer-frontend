@@ -27,7 +27,9 @@ import viewmodels.implicits._
 
 object CashAmountInTransferSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(CashAmountInTransferPage).map { answer =>
       val actions =
         if (showChangeLink)
@@ -40,8 +42,8 @@ object CashAmountInTransferSummary {
         else Seq.empty
 
       SummaryListRowViewModel(
-        key     = "cashAmountInTransfer.checkYourAnswersLabel",
-        value   = ValueViewModel(currencyFormat(answer)),
+        key = "cashAmountInTransfer.checkYourAnswersLabel",
+        value = ValueViewModel(currencyFormat(answer)),
         actions = actions
       )
     }

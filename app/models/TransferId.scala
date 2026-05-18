@@ -39,9 +39,8 @@ object TransferId {
     case _               => JsError("Unable to parse as TransferId")
   }
 
-  implicit val writes: Writes[TransferId] = Writes {
-    transferId =>
-      JsString(transferId.value)
+  implicit val writes: Writes[TransferId] = Writes { transferId =>
+    JsString(transferId.value)
   }
 
   implicit val format: Format[TransferId] = Format(reads, writes)

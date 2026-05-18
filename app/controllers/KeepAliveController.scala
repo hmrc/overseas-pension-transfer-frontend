@@ -28,21 +28,24 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationLong
 
 class KeepAliveController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    appConfig: FrontendAppConfig,
-    identify: IdentifierAction,
-    getScheme: SchemeDataAction,
-    getData: DataRetrievalAction,
-    sessionRepository: SessionRepository,
-    lockRepository: LockRepository
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController {
+  val controllerComponents: MessagesControllerComponents,
+  appConfig: FrontendAppConfig,
+  identify: IdentifierAction,
+  getScheme: SchemeDataAction,
+  getData: DataRetrievalAction,
+  sessionRepository: SessionRepository,
+  lockRepository: LockRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController {
 
-  def keepAlive(): Action[AnyContent] = (identify andThen getScheme andThen getData).async {
-    implicit request =>
-      for {
-        _         <- lockRepository.refreshExpiry(request.authenticatedUser.internalId, request.sessionData.transferId.value, appConfig.dashboardLockTtl.seconds)
-        keepAlive <- sessionRepository.keepAlive(request.userAnswers.id.value).map(_ => Ok)
-      } yield keepAlive
+  def keepAlive(): Action[AnyContent] = (identify andThen getScheme andThen getData).async { implicit request =>
+    for {
+      _         <- lockRepository.refreshExpiry(
+                     request.authenticatedUser.internalId,
+                     request.sessionData.transferId.value,
+                     appConfig.dashboardLockTtl.seconds
+                   )
+      keepAlive <- sessionRepository.keepAlive(request.userAnswers.id.value).map(_ => Ok)
+    } yield keepAlive
   }
 }

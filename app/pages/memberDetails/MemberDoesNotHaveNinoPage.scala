@@ -39,11 +39,11 @@ case object MemberDoesNotHaveNinoPage extends QuestionPage[String] {
   final def changeLink(mode: Mode): Call =
     routes.MemberDoesNotHaveNinoController.onPageLoad(mode)
 
-  override def cleanup(memberDoesNotHaveNinoPage: Option[String], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(memberDoesNotHaveNinoPage: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
     memberDoesNotHaveNinoPage match {
-      case Some(_) => userAnswers
+      case Some(_) =>
+        userAnswers
           .remove(MemberNinoPage)
       case _       => super.cleanup(memberDoesNotHaveNinoPage, userAnswers)
     }
-  }
 }

@@ -24,15 +24,16 @@ import java.time.{LocalDate, Month}
 import scala.util.{Failure, Success, Try}
 
 private[mappings] class LocalDateFormatter(
-    invalidCharacter: String,
-    invalidKey: String,
-    allRequiredKey: String,
-    twoRequiredKey: String,
-    requiredKey: String,
-    realDateKey: String,
-    args: Seq[String] = Seq.empty
-  )(implicit messages: Messages
-  ) extends Formatter[LocalDate] with Formatters {
+  invalidCharacter: String,
+  invalidKey: String,
+  allRequiredKey: String,
+  twoRequiredKey: String,
+  requiredKey: String,
+  realDateKey: String,
+  args: Seq[String] = Seq.empty
+)(implicit messages: Messages)
+    extends Formatter[LocalDate]
+    with Formatters {
 
   private val fieldKeys: List[String] = List("day", "month", "year")
 
@@ -58,15 +59,14 @@ private[mappings] class LocalDateFormatter(
     Month.DECEMBER  -> 31
   )
 
-  private def toDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
+  private def toDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] =
     Try(data(s"$key.year").toIntOption, monthFormatter.bind(s"$key.month", data), data(s"$key.day").toIntOption) match {
       case Success((Some(year), Right(month), Some(day))) => handleSuccess(key, year, month, day)
       case Success((year, month, day))                    => handlePartErrors(key, day, month, year)
       case _                                              => Left(Seq(FormError(key, invalidKey, args)))
     }
-  }
 
-  private def handleSuccess(key: String, year: Int, month: Int, day: Int) = {
+  private def handleSuccess(key: String, year: Int, month: Int, day: Int) =
     Try(LocalDate.of(year, month, day)) match {
       case Success(date) =>
         Right(date)
@@ -82,17 +82,24 @@ private[mappings] class LocalDateFormatter(
           day >= 1 && day <= validMaxDay(isLeapYear)(Month.of(month))
         } else true
 
-        val dayError   = if (!validDay || !validDayForMonth) Some(FormError(key, realDateKey, Seq("day") ++ args)) else None
+        val dayError   =
+          if (!validDay || !validDayForMonth) Some(FormError(key, realDateKey, Seq("day") ++ args)) else None
         val monthError = if (!validMonth) Some(FormError(key, realDateKey, Seq("month") ++ args)) else None
 
-        Left(Seq(
-          dayError,
-          monthError
-        ).flatten)
+        Left(
+          Seq(
+            dayError,
+            monthError
+          ).flatten
+        )
     }
-  }
 
-  private def handlePartErrors(key: String, day: Option[Int], month: Either[Seq[FormError], Int], year: Option[Int]): Left[Seq[FormError], Nothing] = {
+  private def handlePartErrors(
+    key: String,
+    day: Option[Int],
+    month: Either[Seq[FormError], Int],
+    year: Option[Int]
+  ): Left[Seq[FormError], Nothing] = {
     val validDay = day.map(mappedDay => mappedDay >= 1 && mappedDay <= 31)
     val dayError = if (validDay.contains(false)) {
       Some(FormError(key, realDateKey, Seq("day") ++ args))
@@ -155,7 +162,12 @@ private[mappings] class LocalDateFormatter(
     )
 }
 
-private class MonthFormatter(invalidKey: String, invalidCharacter: String, realDateKey: String, args: Seq[String] = Seq.empty) extends Formatter[Int]
+private class MonthFormatter(
+  invalidKey: String,
+  invalidCharacter: String,
+  realDateKey: String,
+  args: Seq[String] = Seq.empty
+) extends Formatter[Int]
     with Formatters {
 
   private val baseFormatter = stringFormatter(invalidKey, args)
@@ -166,22 +178,21 @@ private class MonthFormatter(invalidKey: String, invalidCharacter: String, realD
 
     baseFormatter
       .bind(key, data)
-      .flatMap {
-        monthString =>
-          months
-            .find(month =>
-              month.getValue.toString == monthString.replaceAll("^0+", "") ||
-                month.toString == monthString.toUpperCase ||
-                month.toString.take(3) == monthString.toUpperCase
-            )
-            .map(parsedMonth => Right(parsedMonth.getValue))
-            .getOrElse(
-              if (monthString.toIntOption.nonEmpty) {
-                Left(List(FormError(key, realDateKey, Seq("month") ++ args)))
-              } else {
-                Left(List(FormError(key, invalidCharacter, Seq("month") ++ args)))
-              }
-            )
+      .flatMap { monthString =>
+        months
+          .find(month =>
+            month.getValue.toString == monthString.replaceAll("^0+", "") ||
+              month.toString == monthString.toUpperCase ||
+              month.toString.take(3) == monthString.toUpperCase
+          )
+          .map(parsedMonth => Right(parsedMonth.getValue))
+          .getOrElse(
+            if (monthString.toIntOption.nonEmpty) {
+              Left(List(FormError(key, realDateKey, Seq("month") ++ args)))
+            } else {
+              Left(List(FormError(key, invalidCharacter, Seq("month") ++ args)))
+            }
+          )
       }
   }
 

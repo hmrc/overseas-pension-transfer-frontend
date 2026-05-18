@@ -45,7 +45,10 @@ class SchemeManagerOrgIndividualNameViewSpec extends ViewBaseSpec {
     behave like pageWithSubmitButton(view(formProvider(), NormalMode), "site.saveAndContinue")
 
     behave like pageWithErrors(
-      view(formProvider().withError(FormError("orgIndFirstName", "orgIndividualName.error.orgIndFirstName.required")), NormalMode),
+      view(
+        formProvider().withError(FormError("orgIndFirstName", "orgIndividualName.error.orgIndFirstName.required")),
+        NormalMode
+      ),
       "orgIndFirstName",
       "orgIndividualName.error.orgIndFirstName.required"
     )

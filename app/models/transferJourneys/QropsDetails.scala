@@ -19,9 +19,9 @@ package models.transferJourneys
 import models.address.{Country, QROPSAddress}
 
 case class QropsDetails(
-    qropsName: String,
-    qropsReference: String,
-    qropsAddress: QROPSAddress,
-    qropsCountry: Option[Country],
-    qropsOtherCountry: Option[String]
-  )
+  qropsName: String,
+  qropsReference: String,
+  qropsAddress: QROPSAddress,
+  qropsCountry: Option[Country],
+  qropsOtherCountry: Option[String]
+)

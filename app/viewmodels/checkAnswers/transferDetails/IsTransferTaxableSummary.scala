@@ -25,7 +25,9 @@ import viewmodels.implicits._
 
 object IsTransferTaxableSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(IsTransferTaxablePage).map { answer =>
       val value   = if (answer) "site.yes" else "site.no"
       val actions =
@@ -39,8 +41,8 @@ object IsTransferTaxableSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "isTransferTaxable.checkYourAnswersLabel",
-        value   = ValueViewModel(value),
+        key = "isTransferTaxable.checkYourAnswersLabel",
+        value = ValueViewModel(value),
         actions = actions
       )
     }

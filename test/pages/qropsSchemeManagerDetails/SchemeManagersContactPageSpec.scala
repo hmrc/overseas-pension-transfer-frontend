@@ -30,7 +30,10 @@ class SchemeManagersContactPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Scheme manager's details CYA" in {
 
-        SchemeManagersContactPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagersContactPage.nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
 
@@ -38,7 +41,10 @@ class SchemeManagersContactPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers" in {
 
-        SchemeManagersContactPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagersContactPage.nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
 

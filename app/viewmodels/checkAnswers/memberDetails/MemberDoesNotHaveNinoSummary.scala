@@ -26,12 +26,11 @@ import viewmodels.implicits._
 object MemberDoesNotHaveNinoSummary {
 
   def row(
-      mode: Mode,
-      answers: UserAnswers,
-      showChangeLink: Boolean           = true,
-      additionalClasses: Option[String] = None
-    )(implicit messages: Messages
-    ): Option[SummaryListRow] =
+    mode: Mode,
+    answers: UserAnswers,
+    showChangeLink: Boolean = true,
+    additionalClasses: Option[String] = None
+  )(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberDoesNotHaveNinoPage).map {
 
       val actions = if (showChangeLink) {
@@ -45,8 +44,8 @@ object MemberDoesNotHaveNinoSummary {
 
       answer =>
         SummaryListRowViewModel(
-          key     = "memberDoesNotHaveNino.checkYourAnswersLabel",
-          value   = ValueViewModel(answer),
+          key = "memberDoesNotHaveNino.checkYourAnswersLabel",
+          value = ValueViewModel(answer),
           actions = actions
         ).withCssClass(additionalClasses.getOrElse(""))
     }

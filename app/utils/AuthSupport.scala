@@ -25,26 +25,28 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 
 trait AuthSupport extends Logging {
 
-  def buildPredicate(config: FrontendAppConfig): Predicate = {
+  def buildPredicate(config: FrontendAppConfig): Predicate =
     AuthProviders(GovernmentGateway) and
       (Enrolment(config.psaEnrolment.serviceName)
         or Enrolment(config.pspEnrolment.serviceName))
-  }
 
   def extractUser(
-      enrolments: Enrolments,
-      config: FrontendAppConfig,
-      internalId: String,
-      affinityGroup: AffinityGroup
-    ): AuthenticatedUser = {
-    val matched = enrolments.enrolments.collectFirst {
-      case e if e.key == config.psaEnrolment.serviceName => (e, config.psaEnrolment, Psa)
-      case e if e.key == config.pspEnrolment.serviceName => (e, config.pspEnrolment, Psp)
-    }.getOrElse(throw new RuntimeException("Unable to retrieve matching PSA or PSP enrolment"))
+    enrolments: Enrolments,
+    config: FrontendAppConfig,
+    internalId: String,
+    affinityGroup: AffinityGroup
+  ): AuthenticatedUser = {
+    val matched = enrolments.enrolments
+      .collectFirst {
+        case e if e.key == config.psaEnrolment.serviceName => (e, config.psaEnrolment, Psa)
+        case e if e.key == config.pspEnrolment.serviceName => (e, config.pspEnrolment, Psp)
+      }
+      .getOrElse(throw new RuntimeException("Unable to retrieve matching PSA or PSP enrolment"))
 
     val (enrolment, enrolmentConfig, userType) = matched
 
-    val id = enrolment.getIdentifier(enrolmentConfig.identifierKey)
+    val id = enrolment
+      .getIdentifier(enrolmentConfig.identifierKey)
       .map(_.value)
       .getOrElse(throw new RuntimeException(s"Missing identifier for ${enrolment.key}"))
 
@@ -54,10 +56,9 @@ trait AuthSupport extends Logging {
     }
   }
 
-  def getOrElseFailWithUnauthorised[T](opt: Option[T], message: String): T = {
+  def getOrElseFailWithUnauthorised[T](opt: Option[T], message: String): T =
     opt.getOrElse {
       logger.warn(message)
       throw new IllegalStateException(message)
     }
-  }
 }

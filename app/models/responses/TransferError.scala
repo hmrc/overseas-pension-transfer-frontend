@@ -18,6 +18,6 @@ package models.responses
 
 trait TransferError
 
-case object NoTransfersFound                                                 extends TransferError
-case object InternalServerError                                              extends TransferError
+case object NoTransfersFound extends TransferError
+case object InternalServerError extends TransferError
 case class AllTransfersUnexpectedError(msg: String, details: Option[String]) extends TransferError

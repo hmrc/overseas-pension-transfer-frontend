@@ -31,7 +31,10 @@ class QROPSAddressSummarySpec extends AnyFreeSpec with SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when QROPSAddressPage has a value" in {
-      val answers = emptyUserAnswers.set(QROPSAddressPage, QROPSAddress("Line1", "Line2", None, None, None, Country("GB", "United Kingdom"))).success.value
+      val answers = emptyUserAnswers
+        .set(QROPSAddressPage, QROPSAddress("Line1", "Line2", None, None, None, Country("GB", "United Kingdom")))
+        .success
+        .value
       val result  = QROPSAddressSummary.row(CheckMode, answers)
 
       result mustBe defined

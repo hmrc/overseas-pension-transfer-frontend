@@ -33,11 +33,11 @@ class DateOfTransferFormProvider @Inject() (clock: Clock) extends Mappings {
     Form(
       "value" -> localDate(
         invalidCharacter = "common.dateInput.error.invalid.character",
-        invalidKey       = "dateOfTransfer.error.invalid",
-        requiredKey      = "common.dateInput.error.required",
-        twoRequiredKey   = "common.dateInput.error.required.two",
-        allRequiredKey   = "dateOfTransfer.error.required.all",
-        realDateKey      = "dateOfTransfer.error.real.date"
+        invalidKey = "dateOfTransfer.error.invalid",
+        requiredKey = "common.dateInput.error.required",
+        twoRequiredKey = "common.dateInput.error.required.two",
+        allRequiredKey = "dateOfTransfer.error.required.all",
+        realDateKey = "dateOfTransfer.error.real.date"
       )
         .verifying(
           maxDate(maxDate, "dateOfTransfer.error.invalid.maxdate", maxDate.format(dateInput)),

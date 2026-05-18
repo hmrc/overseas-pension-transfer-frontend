@@ -29,17 +29,19 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class EnhancedLockRepository @Inject() (
-    mongoComponent: MongoComponent,
-    timestampSupport: TimestampSupport
-  )(implicit ec: ExecutionContext
-  ) extends MongoLockRepository(mongoComponent, timestampSupport) {
+  mongoComponent: MongoComponent,
+  timestampSupport: TimestampSupport
+)(implicit ec: ExecutionContext)
+    extends MongoLockRepository(mongoComponent, timestampSupport) {
 
   def removeAllExpiredLocks(): Future[DeleteResult] = {
     val now: Instant = timestampSupport.timestamp()
 
-    collection.deleteMany(
-      lte(Lock.expiryTime, now)
-    ).toFuture()
+    collection
+      .deleteMany(
+        lte(Lock.expiryTime, now)
+      )
+      .toFuture()
   }
 
 }

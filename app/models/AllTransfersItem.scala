@@ -20,20 +20,21 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.{Instant, LocalDate}
 
-/** Exactly one of `submissionDate` or `lastUpdated` should be defined. Submitted/Compiled => submissionDate InProgress => lastUpdated
+/** Exactly one of `submissionDate` or `lastUpdated` should be defined. Submitted/Compiled => submissionDate InProgress =>
+  * lastUpdated
   */
 case class AllTransfersItem(
-    transferId: TransferId,
-    qtVersion: Option[String],
-    qtStatus: Option[QtStatus],
-    nino: Option[String],
-    memberFirstName: Option[String],
-    memberSurname: Option[String],
-    qtDate: Option[LocalDate],
-    lastUpdated: Option[Instant],
-    pstrNumber: Option[PstrNumber],
-    submissionDate: Option[Instant]
-  ) {
+  transferId: TransferId,
+  qtVersion: Option[String],
+  qtStatus: Option[QtStatus],
+  nino: Option[String],
+  memberFirstName: Option[String],
+  memberSurname: Option[String],
+  qtDate: Option[LocalDate],
+  lastUpdated: Option[Instant],
+  pstrNumber: Option[PstrNumber],
+  submissionDate: Option[Instant]
+) {
 
   def isValid: Boolean =
     submissionDate.isDefined ^ lastUpdated.isDefined
@@ -43,12 +44,12 @@ case class AllTransfersItem(
   def viewExpiringTransferUrl: String = {
     val baseUrl = "/report-transfer-qualifying-recognised-overseas-pension-scheme/dashboard/transfer-report"
     val params  = TransferReportQueryParams(
-      transferId    = Some(transferId),
-      qtStatus      = qtStatus,
-      pstr          = pstrNumber,
+      transferId = Some(transferId),
+      qtStatus = qtStatus,
+      pstr = pstrNumber,
       versionNumber = qtVersion,
-      memberName    = s"${memberFirstName.getOrElse("")} ${memberSurname.getOrElse("")}".trim,
-      currentPage   = 1
+      memberName = s"${memberFirstName.getOrElse("")} ${memberSurname.getOrElse("")}".trim,
+      currentPage = 1
     )
     s"$baseUrl?${TransferReportQueryParams.toQueryString(params).drop(1)}"
   }

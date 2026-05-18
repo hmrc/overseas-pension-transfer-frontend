@@ -31,7 +31,10 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers wi
 
       "must go to Organisation individual name page" in {
 
-        SchemeManagerOrganisationNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode)
+        SchemeManagerOrganisationNamePage.nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode)
       }
     }
 
@@ -39,12 +42,16 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers wi
 
       "must go to Organisation individual name page in CheckMode" in {
 
-        SchemeManagerOrganisationNamePage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
+        SchemeManagerOrganisationNamePage.nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
       }
 
       "must go to CYA if Organisation individual name exists in mongo" in {
         val ua = emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("Bill", "Withers")).success.value
-        SchemeManagerOrganisationNamePage.nextPage(CheckMode, ua) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagerOrganisationNamePage.nextPage(CheckMode, ua) mustEqual routes.SchemeManagerDetailsCYAController
+          .onPageLoad()
       }
     }
 
@@ -52,14 +59,20 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers wi
 
       "must go to Organisation individual name page in FinalCheckMode" in {
 
-        SchemeManagerOrganisationNamePage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(
+        SchemeManagerOrganisationNamePage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(
           FinalCheckMode
         )
       }
 
       "must go to CYA if Organisation individual name exists in mongo" in {
         val ua = emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("Bill", "Withers")).success.value
-        SchemeManagerOrganisationNamePage.nextPage(FinalCheckMode, ua) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+        SchemeManagerOrganisationNamePage.nextPage(
+          FinalCheckMode,
+          ua
+        ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
     }
 
@@ -67,14 +80,20 @@ class SchemeManagerOrganisationNamePageSpec extends AnyFreeSpec with Matchers wi
 
       "must go to Organisation individual name page in AmendCheckMode" in {
 
-        SchemeManagerOrganisationNamePage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(
+        SchemeManagerOrganisationNamePage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual routes.SchemeManagerOrgIndividualNameController.onPageLoad(
           AmendCheckMode
         )
       }
 
       "must go to Amend if Organisation individual name exists in mongo" in {
         val ua = emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("Bill", "Withers")).success.value
-        SchemeManagerOrganisationNamePage.nextPage(AmendCheckMode, ua) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+        SchemeManagerOrganisationNamePage.nextPage(
+          AmendCheckMode,
+          ua
+        ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
     }
   }

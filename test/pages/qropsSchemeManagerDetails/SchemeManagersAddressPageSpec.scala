@@ -30,7 +30,8 @@ class SchemeManagersAddressPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Index" in {
 
-        SchemeManagersAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagersEmailController.onPageLoad(NormalMode)
+        SchemeManagersAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagersEmailController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -38,7 +39,10 @@ class SchemeManagersAddressPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers" in {
 
-        SchemeManagersAddressPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagersAddressPage.nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
 

@@ -23,11 +23,11 @@ import play.api.libs.json._
 import java.time.Instant
 
 final case class UserAnswersDTO(
-    referenceId: TransferId,
-    pstr: PstrNumber,
-    data: JsObject,
-    lastUpdated: Instant
-  )
+  referenceId: TransferId,
+  pstr: PstrNumber,
+  data: JsObject,
+  lastUpdated: Instant
+)
 
 object UserAnswersDTO {
 
@@ -54,16 +54,16 @@ object UserAnswersDTO {
       // The reference id WILL NOT be the user answers id. I only put this here because
       // the actual implementation is outside the scope of my ticket.
       referenceId = ua.id,
-      pstr        = ua.pstr,
-      data        = ua.data,
+      pstr = ua.pstr,
+      data = ua.data,
       lastUpdated = ua.lastUpdated
     )
 
   def toUserAnswers(dto: UserAnswersDTO): UserAnswers =
     UserAnswers(
-      id          = dto.referenceId,
-      pstr        = dto.pstr,
-      data        = dto.data,
+      id = dto.referenceId,
+      pstr = dto.pstr,
+      data = dto.data,
       lastUpdated = dto.lastUpdated
     )
 }

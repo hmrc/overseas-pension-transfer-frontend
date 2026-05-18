@@ -29,21 +29,21 @@ import utils.DownstreamLogging
 import scala.concurrent.{ExecutionContext, Future}
 
 class PensionSchemeConnector @Inject() (
-    appConfig: FrontendAppConfig,
-    http: HttpClientV2
-  )(implicit ec: ExecutionContext
-  ) extends DownstreamLogging {
+  appConfig: FrontendAppConfig,
+  http: HttpClientV2
+)(implicit ec: ExecutionContext)
+    extends DownstreamLogging {
 
   def checkAssociation(srn: String, user: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url        = url"${appConfig.pensionSchemeService}/is-psa-associated"
-    val userHeader = {
+    val userHeader =
       user match {
         case PsaUser(psaId, _, _) => "psaId" -> psaId.value
         case PspUser(pspId, _, _) => "pspId" -> pspId.value
       }
-    }
 
-    http.get(url)
+    http
+      .get(url)
       .setHeader(
         "schemeReferenceNumber" -> srn,
         userHeader
@@ -53,33 +53,36 @@ class PensionSchemeConnector @Inject() (
 
   def getAuthorisingPsa(srn: String)(implicit hc: HeaderCarrier): Future[AuthorisingPsaIdType] = {
     val url = url"${appConfig.pensionSchemeService}/psp-scheme/$srn"
-    http.get(url)
+    http
+      .get(url)
       .setHeader(
         "srn" -> srn
       )
       .execute[AuthorisingPsaIdType]
-      .recover {
-        case e: Exception =>
-          val errMsg = logNonHttpError("[PensionSchemeConnector][getAuthorisingPsa]", hc, e)
-          Left(PensionSchemeErrorResponse(errMsg, None))
+      .recover { case e: Exception =>
+        val errMsg = logNonHttpError("[PensionSchemeConnector][getAuthorisingPsa]", hc, e)
+        Left(PensionSchemeErrorResponse(errMsg, None))
       }
   }
 
-  def getSchemeDetails(srn: String, authenticatedUser: AuthenticatedUser)(implicit hc: HeaderCarrier): Future[PensionSchemeDetailsType] = {
+  def getSchemeDetails(srn: String, authenticatedUser: AuthenticatedUser)(implicit
+    hc: HeaderCarrier
+  ): Future[PensionSchemeDetailsType] = {
     val (url, headers) = authenticatedUser match {
-      case PsaUser(_, _, _) => (url"${appConfig.pensionSchemeService}/scheme/$srn", Seq("schemeIdType" -> "srn", "idNumber" -> srn))
+      case PsaUser(_, _, _) =>
+        (url"${appConfig.pensionSchemeService}/scheme/$srn", Seq("schemeIdType" -> "srn", "idNumber" -> srn))
       case PspUser(_, _, _) => (url"${appConfig.pensionSchemeService}/psp-scheme/$srn", Seq("srn" -> srn))
     }
 
-    http.get(url)
+    http
+      .get(url)
       .setHeader(
         headers: _*
       )
       .execute[PensionSchemeDetailsType]
-      .recover {
-        case e: Exception =>
-          val errMsg = logNonHttpError("[PensionSchemeConnector][getSchemeDetails]", hc, e)
-          Left(PensionSchemeErrorResponse(errMsg, None))
+      .recover { case e: Exception =>
+        val errMsg = logNonHttpError("[PensionSchemeConnector][getSchemeDetails]", hc, e)
+        Left(PensionSchemeErrorResponse(errMsg, None))
       }
   }
 }

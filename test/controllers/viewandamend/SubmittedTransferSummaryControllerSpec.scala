@@ -59,7 +59,12 @@ class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
         .thenReturn(Future.successful(None, List(emptyUserAnswers)))
 
       running(application) {
-        val request = FakeRequest(GET, routes.SubmittedTransferSummaryController.onPageLoad(testQtNumber, PstrNumber("12345678AB"), Submitted, "001").url)
+        val request = FakeRequest(
+          GET,
+          routes.SubmittedTransferSummaryController
+            .onPageLoad(testQtNumber, PstrNumber("12345678AB"), Submitted, "001")
+            .url
+        )
 
         val result = route(application, request).value
 
@@ -69,7 +74,10 @@ class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
           SubmittedTransferSummaryViewModel.rows(None, List(emptyUserAnswers), "001")(testMessages)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("", testQtNumber.value, summaryList)(fakeSchemeRequest(request), testMessages).toString
+        contentAsString(result) mustEqual view("", testQtNumber.value, summaryList)(
+          fakeSchemeRequest(request),
+          testMessages
+        ).toString
       }
     }
   }

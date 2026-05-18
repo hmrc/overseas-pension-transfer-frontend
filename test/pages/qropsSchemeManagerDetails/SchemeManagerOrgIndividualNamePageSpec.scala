@@ -28,13 +28,19 @@ class SchemeManagerOrgIndividualNamePageSpec extends AnyFreeSpec with Matchers w
 
     "in Normal Mode" - {
       "must go to Scheme manager address page" in {
-        SchemeManagerOrgIndividualNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagersAddressController.onPageLoad(NormalMode)
+        SchemeManagerOrgIndividualNamePage.nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual routes.SchemeManagersAddressController.onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
       "must go to Check your answers" in {
-        SchemeManagerOrgIndividualNamePage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagerOrgIndividualNamePage.nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
       }
     }
 

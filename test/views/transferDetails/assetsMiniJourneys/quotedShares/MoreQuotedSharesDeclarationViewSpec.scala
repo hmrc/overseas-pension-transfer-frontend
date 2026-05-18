@@ -37,15 +37,22 @@ class MoreQuotedSharesDeclarationViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(formProvider(), testAssets, NormalMode).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("moreQuotedSharesDeclaration.title")} - ${messages("service.name")} - GOV.UK"
     }
 
     "display dynamic heading with asset count" in {
       val heading = doc(view(formProvider(), testAssets, NormalMode).body)
-        .getElementsByTag("h1").first()
+        .getElementsByTag("h1")
+        .first()
 
-      heading.text() mustBe messages("additionalAsset.common.title", testAssets.length, messages("quotedSharesAmendContinue.text.plural"))
+      heading.text() mustBe messages(
+        "additionalAsset.common.title",
+        testAssets.length,
+        messages("quotedSharesAmendContinue.text.plural")
+      )
     }
 
     "display list with actions" in {
@@ -65,7 +72,11 @@ class MoreQuotedSharesDeclarationViewSpec extends ViewBaseSpec {
     behave like pageWithSubmitButton(view(formProvider(), testAssets, NormalMode), "site.saveAndContinue")
 
     behave like pageWithErrors(
-      view(formProvider().withError(FormError("value", "moreQuotedSharesDeclaration.error.required")), testAssets, NormalMode),
+      view(
+        formProvider().withError(FormError("value", "moreQuotedSharesDeclaration.error.required")),
+        testAssets,
+        NormalMode
+      ),
       "value",
       "moreQuotedSharesDeclaration.error.required"
     )

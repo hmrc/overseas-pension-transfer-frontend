@@ -49,11 +49,12 @@ object QuotedSharesValidator {
       case None                   => DataMissingError(QuotedSharesClassPage(index)).invalidNec
     }
 
-  def validateQuotedShares(answers: UserAnswers): ValidationResult[Option[List[QuotedSharesEntry]]] = {
+  def validateQuotedShares(answers: UserAnswers): ValidationResult[Option[List[QuotedSharesEntry]]] =
     answers.get(TypeOfAssetPage) match {
       case Some(assets) if assets.contains(TypeOfAsset.QuotedShares) =>
         answers.get(QuotedSharesQuery) match {
-          case Some(shares) if shares.length > 5 => GenericError("Unquoted shares cannot hold more than 5 in list").invalidNec
+          case Some(shares) if shares.length > 5 =>
+            GenericError("Unquoted shares cannot hold more than 5 in list").invalidNec
           case Some(shares)                      =>
             val validatedShares = shares.zipWithIndex.map { case (_, index) =>
               (
@@ -75,5 +76,4 @@ object QuotedSharesValidator {
       case Some(_)                                                   => None.validNec
       case None                                                      => DataMissingError(QuotedSharesQuery).invalidNec
     }
-  }
 }

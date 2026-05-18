@@ -27,15 +27,14 @@ import viewmodels.implicits._
 object UnquotedSharesCompanyNameSummary {
 
   def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(UnquotedSharesCompanyNamePage(index)).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "unquotedSharesCompanyName.checkYourAnswersLabel",
-          value   = ValueViewModel(answer),
-          actions = Seq(
-            ActionItemViewModel("site.change", UnquotedSharesCompanyNamePage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("unquotedSharesCompanyName.change.hidden"))
-          )
+    userAnswers.get(UnquotedSharesCompanyNamePage(index)).map { answer =>
+      SummaryListRowViewModel(
+        key = "unquotedSharesCompanyName.checkYourAnswersLabel",
+        value = ValueViewModel(answer),
+        actions = Seq(
+          ActionItemViewModel("site.change", UnquotedSharesCompanyNamePage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("unquotedSharesCompanyName.change.hidden"))
         )
+      )
     }
 }

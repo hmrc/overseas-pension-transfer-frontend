@@ -32,9 +32,11 @@ class WhyTransferIsTaxableSpec extends AnyFreeSpec with Matchers with ScalaCheck
 
       val gen = Gen.oneOf(WhyTransferIsTaxable.values.toSeq)
 
-      forAll(gen) {
-        whyTransferIsTaxable =>
-          JsString(whyTransferIsTaxable.toString).validate[WhyTransferIsTaxable].asOpt.value mustEqual whyTransferIsTaxable
+      forAll(gen) { whyTransferIsTaxable =>
+        JsString(whyTransferIsTaxable.toString)
+          .validate[WhyTransferIsTaxable]
+          .asOpt
+          .value mustEqual whyTransferIsTaxable
       }
     }
 
@@ -42,9 +44,8 @@ class WhyTransferIsTaxableSpec extends AnyFreeSpec with Matchers with ScalaCheck
 
       val gen = arbitrary[String] suchThat (!WhyTransferIsTaxable.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[WhyTransferIsTaxable] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[WhyTransferIsTaxable] mustEqual JsError("error.invalid")
       }
     }
 
@@ -52,9 +53,8 @@ class WhyTransferIsTaxableSpec extends AnyFreeSpec with Matchers with ScalaCheck
 
       val gen = Gen.oneOf(WhyTransferIsTaxable.values.toSeq)
 
-      forAll(gen) {
-        whyTransferIsTaxable =>
-          Json.toJson(whyTransferIsTaxable) mustEqual JsString(whyTransferIsTaxable.toString)
+      forAll(gen) { whyTransferIsTaxable =>
+        Json.toJson(whyTransferIsTaxable) mustEqual JsString(whyTransferIsTaxable.toString)
       }
     }
   }

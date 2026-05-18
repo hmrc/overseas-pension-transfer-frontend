@@ -43,14 +43,14 @@ class SchemeManagerOrganisationNameFormProviderSpec extends StringFieldBehaviour
     behave like fieldThatRejectsInvalidCharacters(
       form,
       fieldName,
-      patternError   = FormError(fieldName, patternKey, Seq(nameRegex)),
+      patternError = FormError(fieldName, patternKey, Seq(nameRegex)),
       maybeMaxLength = Some(maxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

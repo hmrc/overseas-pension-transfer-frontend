@@ -120,10 +120,14 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
               addressLine2 = "Test District",
               addressLine3 = None,
               addressLine4 = None,
-              ukPostCode   = "BB1 1BB"
+              ukPostCode = "BB1 1BB"
             )
-          ).success.value
-          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2)).success.value
+          )
+          .success
+          .value
+          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2))
+          .success
+          .value
 
       val cleaned = MemberHasEverBeenResidentUKPage.cleanup(Some(false), uaWithDeps).success.value
 
@@ -141,10 +145,14 @@ class MemberHasEverBeenResidentUKPageSpec extends AnyFreeSpec with SpecBase with
               addressLine2 = "Test District",
               addressLine3 = None,
               addressLine4 = None,
-              ukPostCode   = "BB1 1BB"
+              ukPostCode = "BB1 1BB"
             )
-          ).success.value
-          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2)).success.value
+          )
+          .success
+          .value
+          .set(MemberDateOfLeavingUKPage, LocalDate.of(2020, 1, 2))
+          .success
+          .value
 
       val cleaned = MemberHasEverBeenResidentUKPage.cleanup(Some(true), uaWithDeps).success.value
 

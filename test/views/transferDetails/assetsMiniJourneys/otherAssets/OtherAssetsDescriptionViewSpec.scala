@@ -33,13 +33,19 @@ class OtherAssetsDescriptionViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(formProvider(), NormalMode, testIndex).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("assetValueDescription.title")} - ${messages("service.name")} - GOV.UK"
     }
 
     behave like pageWithH1(view(formProvider(), NormalMode, testIndex), "assetValueDescription.heading")
 
-    behave like pageWithInputField(view(formProvider(), NormalMode, testIndex), "value", "assetValueDescription.heading")
+    behave like pageWithInputField(
+      view(formProvider(), NormalMode, testIndex),
+      "value",
+      "assetValueDescription.heading"
+    )
 
     behave like pageWithSubmitButton(view(formProvider(), NormalMode, testIndex), "site.saveAndContinue")
 

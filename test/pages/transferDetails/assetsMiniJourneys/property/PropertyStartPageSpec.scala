@@ -30,19 +30,28 @@ class PropertyStartPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in Normal Mode" - {
       "must go to the Next page" in {
-        PropertyStartPage.nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index)
+        PropertyStartPage.nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index)
       }
     }
 
     "in CheckMode" - {
       "must go to the Next page" in {
-        PropertyStartPage.nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, index)
+        PropertyStartPage.nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, index)
       }
     }
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        PropertyStartPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
+        PropertyStartPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -51,7 +60,10 @@ class PropertyStartPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        PropertyStartPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
+        PropertyStartPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
           AmendCheckMode,
           index
         )

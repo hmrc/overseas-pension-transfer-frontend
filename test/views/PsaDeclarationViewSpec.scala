@@ -27,14 +27,21 @@ class PsaDeclarationViewSpec extends ViewBaseSpec {
   "PsaDeclarationView" - {
 
     "show correct title" in {
-      doc(view(NormalMode).body).getElementsByTag("title").eachText().get(0) mustBe s"${messages("psaDeclaration.title")} - Report a transfer to a qualifying recognised overseas pension scheme - GOV.UK"
+      doc(view(NormalMode).body)
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe s"${messages("psaDeclaration.title")} - Report a transfer to a qualifying recognised overseas pension scheme - GOV.UK"
     }
 
     behave like pageWithH1(view(NormalMode), "psaDeclaration.heading")
 
     behave like pageWithText(view(NormalMode), "psaDeclaration.bySubmitting")
 
-    behave like pageWithBulletList(view(NormalMode), "psaDeclaration.receivedAndChecked", "psaDeclaration.correctAndComplete")
+    behave like pageWithBulletList(
+      view(NormalMode),
+      "psaDeclaration.receivedAndChecked",
+      "psaDeclaration.correctAndComplete"
+    )
 
     behave like pageWithSubmitButton(view(NormalMode), "site.agreeAndSubmit")
   }

@@ -29,7 +29,8 @@ class NetTransferAmountPageSpec extends AnyFreeSpec with Matchers with SpecBase 
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        NetTransferAmountPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.DateOfTransferController.onPageLoad(NormalMode)
+        NetTransferAmountPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.DateOfTransferController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -37,7 +38,8 @@ class NetTransferAmountPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to Check Answers" in {
 
-        NetTransferAmountPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        NetTransferAmountPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController
+          .onPageLoad()
       }
     }
 

@@ -113,9 +113,15 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
     "must remove SchemeManagersNamePage when SchemeManagerType is Organisation" in {
       val withBoth =
         emptyUserAnswers
-          .set(SchemeManagersNamePage, individualName).success.value
-          .set(SchemeManagerOrganisationNamePage, orgName).success.value
-          .set(SchemeManagerOrgIndividualNamePage, orgContact).success.value
+          .set(SchemeManagersNamePage, individualName)
+          .success
+          .value
+          .set(SchemeManagerOrganisationNamePage, orgName)
+          .success
+          .value
+          .set(SchemeManagerOrgIndividualNamePage, orgContact)
+          .success
+          .value
 
       val cleaned = SchemeManagerTypePage.cleanup(Some(SchemeManagerType.Organisation), withBoth).success.value
 
@@ -127,9 +133,15 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
     "must remove SchemeManagerOrganisationNamePage and SchemeManagerOrgIndividualNamePage when SchemeManagerType is Individual" in {
       val withBoth =
         emptyUserAnswers
-          .set(SchemeManagersNamePage, individualName).success.value
-          .set(SchemeManagerOrganisationNamePage, orgName).success.value
-          .set(SchemeManagerOrgIndividualNamePage, orgContact).success.value
+          .set(SchemeManagersNamePage, individualName)
+          .success
+          .value
+          .set(SchemeManagerOrganisationNamePage, orgName)
+          .success
+          .value
+          .set(SchemeManagerOrgIndividualNamePage, orgContact)
+          .success
+          .value
 
       val cleaned = SchemeManagerTypePage.cleanup(Some(SchemeManagerType.Individual), withBoth).success.value
 

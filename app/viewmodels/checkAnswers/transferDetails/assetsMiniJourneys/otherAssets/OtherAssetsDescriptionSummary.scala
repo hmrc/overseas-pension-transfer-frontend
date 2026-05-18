@@ -27,15 +27,14 @@ import viewmodels.implicits._
 object OtherAssetsDescriptionSummary {
 
   def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(OtherAssetsDescriptionPage(index)).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "assetValueDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(answer),
-          actions = Seq(
-            ActionItemViewModel("site.change", OtherAssetsDescriptionPage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("assetValueDescription.change.hidden"))
-          )
+    userAnswers.get(OtherAssetsDescriptionPage(index)).map { answer =>
+      SummaryListRowViewModel(
+        key = "assetValueDescription.checkYourAnswersLabel",
+        value = ValueViewModel(answer),
+        actions = Seq(
+          ActionItemViewModel("site.change", OtherAssetsDescriptionPage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("assetValueDescription.change.hidden"))
         )
+      )
     }
 }

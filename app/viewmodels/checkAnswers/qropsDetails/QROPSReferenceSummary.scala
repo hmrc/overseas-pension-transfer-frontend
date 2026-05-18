@@ -26,7 +26,9 @@ import viewmodels.implicits._
 
 object QROPSReferenceSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(QROPSReferencePage).map { answer =>
       val actions =
         if (showChangeLink) {
@@ -39,8 +41,8 @@ object QROPSReferenceSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "qropsReference.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+        key = "qropsReference.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = actions
       )
     }

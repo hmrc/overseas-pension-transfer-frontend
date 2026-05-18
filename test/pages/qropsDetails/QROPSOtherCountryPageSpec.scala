@@ -30,7 +30,10 @@ class QROPSOtherCountryPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to Index" in {
 
-        QROPSOtherCountryPage.nextPage(NormalMode, emptyUserAnswers) mustEqual controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
+        QROPSOtherCountryPage.nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual controllers.qropsDetails.routes.QROPSDetailsCYAController.onPageLoad()
       }
     }
 

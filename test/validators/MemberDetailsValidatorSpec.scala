@@ -53,91 +53,105 @@ class MemberDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
   "fromUserAnswers" - {
     "return valid MemberDetails" - {
       "isUkResident = true with memberNino" in {
-        val validJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "AA000000A",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> true
-        ))
+        val validJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "nino"                   -> "AA000000A",
+            "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+            "principalResAddDetails" -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+            ),
+            "memUkResident"          -> true
+          )
+        )
 
         MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = validJson)) mustBe
           Valid(memberDetails.copy(memberNino = Some("AA000000A")))
       }
 
       "isUkResident = true with reasonNoNino" in {
-        val validJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "reasonNoNINO"           -> "Forgot it",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> true
-        ))
+        val validJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "reasonNoNINO"           -> "Forgot it",
+            "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+            "principalResAddDetails" -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+            ),
+            "memUkResident"          -> true
+          )
+        )
 
         MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = validJson)) mustBe
           Valid(memberDetails.copy(reasonNoNino = Some("Forgot it")))
       }
 
       "isUkResident = false with hasEverBeenUkResident = false" in {
-        val validJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "AA000000A",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> false,
-          "memEverUkResident"      -> false
-        ))
+        val validJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "nino"                   -> "AA000000A",
+            "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+            "principalResAddDetails" -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+            ),
+            "memUkResident"          -> false,
+            "memEverUkResident"      -> false
+          )
+        )
 
         MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = validJson)) mustBe
-          Valid(memberDetails.copy(memberNino = Some("AA000000A"), isUkResident = false, hasBeenUkResident = Some(false)))
+          Valid(
+            memberDetails.copy(memberNino = Some("AA000000A"), isUkResident = false, hasBeenUkResident = Some(false))
+          )
       }
 
       "isUkResident = false with hasEverBeenUkResident = true" in {
-        val validJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                    -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                    -> "AA000000A",
-          "dateOfBirth"             -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails"  -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"           -> false,
-          "memEverUkResident"       -> true,
-          "lastPrincipalAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "ukPostCode"   -> "AA11 1AA"
-          ),
-          "dateMemberLeftUk"        -> LocalDate.of(2023, 6, 27)
-        ))
+        val validJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"                    -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "nino"                    -> "AA000000A",
+            "dateOfBirth"             -> LocalDate.of(1993, 11, 11),
+            "principalResAddDetails"  -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+            ),
+            "memUkResident"           -> false,
+            "memEverUkResident"       -> true,
+            "lastPrincipalAddDetails" -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "ukPostCode"   -> "AA11 1AA"
+            ),
+            "dateMemberLeftUk"        -> LocalDate.of(2023, 6, 27)
+          )
+        )
 
         MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = validJson)) mustBe
-          Valid(memberDetails.copy(
-            memberNino           = Some("AA000000A"),
-            isUkResident         = false,
-            hasBeenUkResident    = Some(true),
-            lastPrincipalAddress = Some(MembersLastUKAddress(
-              "line1",
-              "line2",
-              None,
-              None,
-              "AA11 1AA"
-            )),
-            dateLeftUk           = Some(LocalDate.of(2023, 6, 27))
-          ))
+          Valid(
+            memberDetails.copy(
+              memberNino = Some("AA000000A"),
+              isUkResident = false,
+              hasBeenUkResident = Some(true),
+              lastPrincipalAddress = Some(
+                MembersLastUKAddress(
+                  "line1",
+                  "line2",
+                  None,
+                  None,
+                  "AA11 1AA"
+                )
+              ),
+              dateLeftUk = Some(LocalDate.of(2023, 6, 27))
+            )
+          )
       }
     }
 
@@ -162,18 +176,20 @@ class MemberDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
       }
 
       "when memberNino and reasonNoNino are both present" in {
-        val invalidJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "AA000000A",
-          "reasonNoNINO"           -> "Forgot it",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> true
-        ))
+        val invalidJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "nino"                   -> "AA000000A",
+            "reasonNoNINO"           -> "Forgot it",
+            "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+            "principalResAddDetails" -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+            ),
+            "memUkResident"          -> true
+          )
+        )
 
         MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = invalidJson)) mustBe
           Invalid(
@@ -185,17 +201,19 @@ class MemberDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
       }
 
       "isUkResident = false and rest of journey is none" in {
-        val invalidJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "AA000000A",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> false
-        ))
+        val invalidJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "nino"                   -> "AA000000A",
+            "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+            "principalResAddDetails" -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+            ),
+            "memUkResident"          -> false
+          )
+        )
 
         MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = invalidJson)) mustBe
           Invalid(
@@ -208,18 +226,20 @@ class MemberDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
       }
 
       "isUkResident = false, hasEverBeenUkResident = true and rest of journey is none" in {
-        val invalidJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "AA000000A",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> false,
-          "memEverUkResident"      -> true
-        ))
+        val invalidJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "nino"                   -> "AA000000A",
+            "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+            "principalResAddDetails" -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+            ),
+            "memUkResident"          -> false,
+            "memEverUkResident"      -> true
+          )
+        )
 
         MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = invalidJson)) mustBe
           Invalid(
@@ -231,24 +251,26 @@ class MemberDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
       }
 
       "GenericError for having both memUkResident = true and rest of journey present" in {
-        val invalidJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                    -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                    -> "AA000000A",
-          "dateOfBirth"             -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails"  -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"           -> true,
-          "memEverUkResident"       -> true,
-          "lastPrincipalAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "ukPostCode"   -> "AA11 1AA"
-          ),
-          "dateMemberLeftUk"        -> LocalDate.of(2023, 6, 27)
-        ))
+        val invalidJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"                    -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "nino"                    -> "AA000000A",
+            "dateOfBirth"             -> LocalDate.of(1993, 11, 11),
+            "principalResAddDetails"  -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+            ),
+            "memUkResident"           -> true,
+            "memEverUkResident"       -> true,
+            "lastPrincipalAddDetails" -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "ukPostCode"   -> "AA11 1AA"
+            ),
+            "dateMemberLeftUk"        -> LocalDate.of(2023, 6, 27)
+          )
+        )
 
         MemberDetailsValidator.fromUserAnswers(emptyUserAnswers.copy(data = invalidJson)) mustBe
           Invalid(

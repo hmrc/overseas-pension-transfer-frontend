@@ -59,7 +59,7 @@ class EncryptionService(masterKey: String, random: SecureRandom = new SecureRand
     Base64.getEncoder.encodeToString(payload)
   }
 
-  def decrypt(encoded: String): Either[Throwable, String] = {
+  def decrypt(encoded: String): Either[Throwable, String] =
     Try {
       val payload = Base64.getDecoder.decode(encoded)
       val buf     = ByteBuffer.wrap(payload)
@@ -75,5 +75,4 @@ class EncryptionService(masterKey: String, random: SecureRandom = new SecureRand
 
       new String(cipher.doFinal(cipherBytes), StandardCharsets.UTF_8)
     }.toEither
-  }
 }

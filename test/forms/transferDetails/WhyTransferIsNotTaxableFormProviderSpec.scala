@@ -32,7 +32,7 @@ class WhyTransferIsNotTaxableFormProviderSpec extends CheckboxFieldBehaviours {
     behave like checkboxField[WhyTransferIsNotTaxable](
       form,
       fieldName,
-      validValues  = WhyTransferIsNotTaxable.values,
+      validValues = WhyTransferIsNotTaxable.values,
       invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
 

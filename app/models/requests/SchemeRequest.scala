@@ -20,4 +20,8 @@ import models.PensionSchemeDetails
 import models.authentication.AuthenticatedUser
 import play.api.mvc.{Request, WrappedRequest}
 
-case class SchemeRequest[A](request: Request[A], authenticatedUser: AuthenticatedUser, schemeDetails: PensionSchemeDetails) extends WrappedRequest[A](request)
+case class SchemeRequest[A](
+  request: Request[A],
+  authenticatedUser: AuthenticatedUser,
+  schemeDetails: PensionSchemeDetails
+) extends WrappedRequest[A](request)

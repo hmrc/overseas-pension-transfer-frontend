@@ -26,15 +26,14 @@ import viewmodels.implicits._
 object QuotedSharesNumberSummary {
 
   def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(QuotedSharesNumberPage(index)).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "quotedSharesNumber.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", QuotedSharesNumberPage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("quotedSharesNumber.change.hidden"))
-          )
+    userAnswers.get(QuotedSharesNumberPage(index)).map { answer =>
+      SummaryListRowViewModel(
+        key = "quotedSharesNumber.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", QuotedSharesNumberPage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("quotedSharesNumber.change.hidden"))
         )
+      )
     }
 }

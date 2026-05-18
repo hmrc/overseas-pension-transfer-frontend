@@ -27,26 +27,24 @@ import viewmodels.implicits._
 object MemberNinoSummary {
 
   def row(
-      mode: Mode,
-      answers: UserAnswers,
-      showChangeLink: Boolean           = true,
-      additionalClasses: Option[String] = None
-    )(implicit messages: Messages
-    ): Option[SummaryListRow] =
-    answers.get(MemberNinoPage).map {
-      answer =>
-        val actions = if (showChangeLink) {
-          Seq(
-            ActionItemViewModel("site.change", MemberNinoPage.changeLink(mode).url)
-              .withVisuallyHiddenText(messages("memberNino.change.hidden"))
-          )
-        } else {
-          Seq.empty
-        }
-        SummaryListRowViewModel(
-          key     = "memberNino.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = actions
-        ).withCssClass(additionalClasses.getOrElse(""))
+    mode: Mode,
+    answers: UserAnswers,
+    showChangeLink: Boolean = true,
+    additionalClasses: Option[String] = None
+  )(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(MemberNinoPage).map { answer =>
+      val actions = if (showChangeLink) {
+        Seq(
+          ActionItemViewModel("site.change", MemberNinoPage.changeLink(mode).url)
+            .withVisuallyHiddenText(messages("memberNino.change.hidden"))
+        )
+      } else {
+        Seq.empty
+      }
+      SummaryListRowViewModel(
+        key = "memberNino.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = actions
+      ).withCssClass(additionalClasses.getOrElse(""))
     }
 }

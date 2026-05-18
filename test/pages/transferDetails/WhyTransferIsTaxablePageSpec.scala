@@ -32,12 +32,16 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBa
 
       "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
         val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
-        WhyTransferIsTaxablePage.nextPage(NormalMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(NormalMode)
+        WhyTransferIsTaxablePage.nextPage(NormalMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(
+          NormalMode
+        )
       }
 
       "must go to amount of tax deducted page if NoExclusion selected" in {
         val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
-        WhyTransferIsTaxablePage.nextPage(NormalMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(NormalMode)
+        WhyTransferIsTaxablePage.nextPage(NormalMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(
+          NormalMode
+        )
       }
     }
 
@@ -45,12 +49,16 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBa
 
       "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
         val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
-        WhyTransferIsTaxablePage.nextPage(CheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(CheckMode)
+        WhyTransferIsTaxablePage.nextPage(CheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(
+          CheckMode
+        )
       }
 
       "must go to amount of tax deducted page if NoExclusion selected" in {
         val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
-        WhyTransferIsTaxablePage.nextPage(CheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(CheckMode)
+        WhyTransferIsTaxablePage.nextPage(CheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(
+          CheckMode
+        )
       }
     }
 
@@ -58,12 +66,15 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBa
 
       "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
         val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
-        WhyTransferIsTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(FinalCheckMode)
+        WhyTransferIsTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController
+          .onPageLoad(FinalCheckMode)
       }
 
       "must go to amount of tax deducted page if NoExclusion selected" in {
         val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
-        WhyTransferIsTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(FinalCheckMode)
+        WhyTransferIsTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(
+          FinalCheckMode
+        )
       }
     }
 
@@ -71,12 +82,15 @@ class WhyTransferIsTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBa
 
       "must go to applicable tax exclusion page if TransferExceedsOTCAllowance selected" in {
         val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
-        WhyTransferIsTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController.onPageLoad(AmendCheckMode)
+        WhyTransferIsTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.ApplicableTaxExclusionsController
+          .onPageLoad(AmendCheckMode)
       }
 
       "must go to amount of tax deducted page if NoExclusion selected" in {
         val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, NoExclusion).success.value
-        WhyTransferIsTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(AmendCheckMode)
+        WhyTransferIsTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.AmountOfTaxDeductedController.onPageLoad(
+          AmendCheckMode
+        )
       }
     }
   }

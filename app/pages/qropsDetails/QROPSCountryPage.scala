@@ -31,13 +31,12 @@ case object QROPSCountryPage extends QuestionPage[Country] {
 
   override def toString: String = "qropsEstablished"
 
-  override protected def nextPageNormalMode(answers: UserAnswers): Call = {
+  override protected def nextPageNormalMode(answers: UserAnswers): Call =
     answers.get(QROPSCountryPage) match {
       case Some(Country("ZZ", "Other")) => routes.QROPSOtherCountryController.onPageLoad(NormalMode)
       case Some(Country(_, _))          => routes.QROPSDetailsCYAController.onPageLoad()
       case _                            => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
-  }
 
   override protected def nextPageCheckMode(answers: UserAnswers): Call =
     answers.get(QROPSCountryPage) match {
@@ -46,31 +45,28 @@ case object QROPSCountryPage extends QuestionPage[Country] {
       case _                            => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
     answers.get(QROPSCountryPage) match {
       case Some(Country("ZZ", "Other")) => routes.QROPSOtherCountryController.onPageLoad(FinalCheckMode)
       case Some(Country(_, _))          => controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       case _                            => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
-  }
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
     answers.get(QROPSCountryPage) match {
       case Some(Country("ZZ", "Other")) => routes.QROPSOtherCountryController.onPageLoad(AmendCheckMode)
       case Some(Country(_, _))          => controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       case _                            => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
-  }
 
   final def changeLink(mode: Mode): Call =
     routes.QROPSCountryController.onPageLoad(mode)
 
-  override def cleanup(value: Option[Country], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Country], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(Country("ZZ", "Other")) => super.cleanup(value, userAnswers)
       case _                            => userAnswers.remove(QROPSOtherCountryPage)
     }
-  }
 
   val recoveryModeReturnUrl: String = routes.QROPSCountryController.onPageLoad(NormalMode).url
 }

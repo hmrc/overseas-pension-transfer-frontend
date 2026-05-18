@@ -30,9 +30,10 @@ class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to Members Current Address" in {
 
-        MemberDateOfBirthPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MembersCurrentAddressController.onPageLoad(
-          NormalMode
-        )
+        MemberDateOfBirthPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MembersCurrentAddressController
+          .onPageLoad(
+            NormalMode
+          )
       }
     }
 
@@ -40,7 +41,8 @@ class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to Check Answers" in {
 
-        MemberDateOfBirthPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDateOfBirthPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController
+          .onPageLoad()
       }
     }
 

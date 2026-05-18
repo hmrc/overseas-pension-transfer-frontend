@@ -24,10 +24,9 @@ import play.api.Logging
 class SchedulingActor extends Actor with ActorLogging with Logging {
   import context.dispatcher
 
-  override def receive: Receive = {
-    case message: ScheduledMessage[_] =>
-      logger.info(s"Received ${message.getClass.getSimpleName}")
-      message.service.invoke
+  override def receive: Receive = { case message: ScheduledMessage[_] =>
+    logger.info(s"Received ${message.getClass.getSimpleName}")
+    message.service.invoke
   }
 }
 

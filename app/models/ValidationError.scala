@@ -29,5 +29,5 @@ case class DataMissingError(page: Gettable[_]) extends ValidationError {
 
 case class GenericError(error: String) extends ValidationError {
 
-  override val errorMessage: String = s"Generic Error ${error}"
+  override val errorMessage: String = s"Generic Error $error"
 }

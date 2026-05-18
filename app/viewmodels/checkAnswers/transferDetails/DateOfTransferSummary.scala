@@ -26,7 +26,9 @@ import viewmodels.implicits._
 
 object DateOfTransferSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(DateOfTransferPage).map { answer =>
       implicit val lang: Lang = messages.lang
 
@@ -41,8 +43,8 @@ object DateOfTransferSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "dateOfTransfer.checkYourAnswersLabel",
-        value   = ValueViewModel(answer.format(dateTimeFormat)),
+        key = "dateOfTransfer.checkYourAnswersLabel",
+        value = ValueViewModel(answer.format(dateTimeFormat)),
         actions = actions
       )
     }

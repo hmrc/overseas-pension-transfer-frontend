@@ -39,7 +39,8 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
   private val form         = formProvider()
   private val index        = 0
 
-  private lazy val propertyDescriptionRoute = AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index).url
+  private lazy val propertyDescriptionRoute =
+    AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(NormalMode, index).url
 
   "propertyDescription Controller" - {
 
@@ -55,7 +56,10 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
         val view = application.injector.instanceOf[PropertyDescriptionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -73,7 +77,10 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -96,7 +103,9 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PropertyDescriptionPage(index).nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual PropertyDescriptionPage(index)
+          .nextPage(NormalMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -115,13 +124,18 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
 
       running(application) {
         val request =
-          FakeRequest(POST, AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(AmendCheckMode, index).url)
+          FakeRequest(
+            POST,
+            AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(AmendCheckMode, index).url
+          )
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PropertyDescriptionPage(index).nextPage(AmendCheckMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual PropertyDescriptionPage(index)
+          .nextPage(AmendCheckMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -141,7 +155,10 @@ class PropertyDescriptionControllerSpec extends AnyFreeSpec with SpecBase with M
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

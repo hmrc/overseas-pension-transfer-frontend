@@ -37,20 +37,26 @@ class OtherAssetsAmendContinueViewSpec extends ViewBaseSpec {
 
     "show correct title with no items" in {
       doc(view(formProvider(), Seq.empty, NormalMode).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("otherAssetsAmendContinue.text.title.noItems")} - ${messages("service.name")} - GOV.UK"
     }
 
     "show correct title with one item" in {
       val oneItem = Seq(ListItem("Asset 1", "change-url-1", "remove-url-1"))
       doc(view(formProvider(), oneItem, NormalMode).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("otherAssetsAmendContinue.text.title.oneItem")} - ${messages("service.name")} - GOV.UK"
     }
 
     "show correct title with multiple items" in {
       doc(view(formProvider(), testAssets, NormalMode).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("otherAssetsAmendContinue.text.title.multipleItems", testAssets.length)} - ${messages("service.name")} - GOV.UK"
     }
 
@@ -62,7 +68,11 @@ class OtherAssetsAmendContinueViewSpec extends ViewBaseSpec {
     }
 
     behave like pageWithErrors(
-      view(formProvider().withError(FormError("add-another", "otherAssetsAmendContinue.error.required")), testAssets, NormalMode),
+      view(
+        formProvider().withError(FormError("add-another", "otherAssetsAmendContinue.error.required")),
+        testAssets,
+        NormalMode
+      ),
       "add-another",
       "otherAssetsAmendContinue.error.required"
     )

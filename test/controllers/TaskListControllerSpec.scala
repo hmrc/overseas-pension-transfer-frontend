@@ -24,11 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.govuk.SummaryListFluency
 
-class TaskListControllerSpec
-    extends AnyFreeSpec
-    with SpecBase
-    with SummaryListFluency
-    with MockitoSugar {
+class TaskListControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency with MockitoSugar {
 
   "TaskListController" - {
 

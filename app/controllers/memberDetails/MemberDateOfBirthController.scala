@@ -32,46 +32,48 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDateOfBirthController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: MemberDateOfBirthFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: MemberDateOfBirthView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: MemberDateOfBirthFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: MemberDateOfBirthView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val form = formProvider()
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val form = formProvider()
 
-      val preparedForm = request.userAnswers.get(MemberDateOfBirthPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+    val preparedForm = request.userAnswers.get(MemberDateOfBirthPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       val form = formProvider()
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfBirthPage, value))
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield {
-            savedForLater match {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDateOfBirthPage, value))
+              savedForLater  <-
+                userAnswersService
+                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield savedForLater match {
               case Right(Done) => Redirect(MemberDateOfBirthPage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
-          }
-      )
+        )
   }
 }

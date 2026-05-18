@@ -43,7 +43,8 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
   private val formProvider = new MemberHasEverBeenResidentUKFormProvider()
   private val form         = formProvider()
 
-  private lazy val memberHasEverBeenResidentUKRoute = routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode).url
+  private lazy val memberHasEverBeenResidentUKRoute =
+    routes.MemberHasEverBeenResidentUKController.onPageLoad(NormalMode).url
 
   "memberHasEverBeenResidentUK Controller" - {
 
@@ -159,8 +160,12 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
 
       val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
       val previousAnswers = emptyUserAnswers
-        .set(MemberHasEverBeenResidentUKPage, true).success.value
-        .set(MembersLastUKAddressPage, lastUkAdd).success.value
+        .set(MemberHasEverBeenResidentUKPage, true)
+        .success
+        .value
+        .set(MembersLastUKAddressPage, lastUkAdd)
+        .success
+        .value
 
       val mockUserAnswersService = mock[UserAnswersService]
 

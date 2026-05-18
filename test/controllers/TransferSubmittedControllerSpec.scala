@@ -57,8 +57,10 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
         .build()
       val testMessages = messages(application)
 
-      when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(sessionDataMemberNameQtNumberTransferSubmitted)))
-      when(mockConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext])).thenReturn(Future.successful(Right(minimalDetailsIndividual)))
+      when(mockSessionRepository.get(any()))
+        .thenReturn(Future.successful(Some(sessionDataMemberNameQtNumberTransferSubmitted)))
+      when(mockConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(Right(minimalDetailsIndividual)))
       running(application) {
         val request = FakeRequest(GET, routes.TransferSubmittedController.onPageLoad().url)
 
@@ -83,7 +85,13 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
           )
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view("QT123456", summaryList, expectedMpsLink, minimalDetailsIndividual.email, appConfig)(
+        contentAsString(result) mustEqual view(
+          "QT123456",
+          summaryList,
+          expectedMpsLink,
+          minimalDetailsIndividual.email,
+          appConfig
+        )(
           fakeSchemeRequest(request),
           testMessages
         ).toString

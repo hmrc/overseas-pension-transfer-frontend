@@ -32,18 +32,19 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyConfirmRemovalController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: PropertyConfirmRemovalFormProvider,
-    miniJourney: PropertyMiniJourney.type,
-    userAnswersService: UserAnswersService,
-    val controllerComponents: MessagesControllerComponents,
-    view: PropertyConfirmRemovalView,
-    moreAssetCompletionService: MoreAssetCompletionService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: PropertyConfirmRemovalFormProvider,
+  miniJourney: PropertyMiniJourney.type,
+  userAnswersService: UserAnswersService,
+  val controllerComponents: MessagesControllerComponents,
+  view: PropertyConfirmRemovalView,
+  moreAssetCompletionService: MoreAssetCompletionService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val form    = formProvider()
   private val actions = identify andThen schemeData andThen getData
@@ -53,30 +54,36 @@ class PropertyConfirmRemovalController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
-    form.bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
-      confirmRemoval =>
-        if (!confirmRemoval) {
-          val propertyCount  = AssetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.Property)
-          val redirectTarget =
-            if (propertyCount >= 5) {
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
+        confirmRemoval =>
+          if (!confirmRemoval) {
+            val propertyCount  = AssetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.Property)
+            val redirectTarget =
+              if (propertyCount >= 5) {
 
-              controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController.onPageLoad(mode = NormalMode)
-            } else {
-              AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)
-            }
+                controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
+                  .onPageLoad(mode = NormalMode)
+              } else {
+                AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)
+              }
 
-          Future.successful(Redirect(redirectTarget))
-        } else {
-          (for {
-            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.Property, completed = false)
-          } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
-            .recover {
-              case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-            }
-        }
-    )
+            Future.successful(Redirect(redirectTarget))
+          } else {
+            (for {
+              updatedAnswers <-
+                Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+              _              <- moreAssetCompletionService
+                                  .completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.Property, completed = false)
+            } yield Redirect(AssetsMiniJourneysRoutes.PropertyAmendContinueController.onPageLoad(mode = NormalMode)))
+              .recover { case _ =>
+                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              }
+          }
+      )
   }
 }
