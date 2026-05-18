@@ -52,14 +52,15 @@ case object SchemeManagerTypePage extends QuestionPage[SchemeManagerType] {
   final def changeLink(mode: Mode): Call =
     routes.SchemeManagerTypeController.onPageLoad(mode)
 
-  override def cleanup(maybeSchemeManagerType: Option[SchemeManagerType], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(maybeSchemeManagerType: Option[SchemeManagerType], userAnswers: UserAnswers): Try[UserAnswers] =
     maybeSchemeManagerType match {
-      case Some(SchemeManagerType.Organisation) => userAnswers
+      case Some(SchemeManagerType.Organisation) =>
+        userAnswers
           .remove(SchemeManagersNamePage)
-      case Some(SchemeManagerType.Individual)   => userAnswers
+      case Some(SchemeManagerType.Individual)   =>
+        userAnswers
           .remove(SchemeManagerOrganisationNamePage)
           .flatMap(_.remove(SchemeManagerOrgIndividualNamePage))
       case _                                    => super.cleanup(maybeSchemeManagerType, userAnswers)
     }
-  }
 }

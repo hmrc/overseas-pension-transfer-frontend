@@ -48,20 +48,20 @@ class SessionRepositorySpec
   private val appConfig  = new TestAppConfig
 
   private val repository = new SessionRepository(
-    mongoComponent    = mongoComponent,
+    mongoComponent = mongoComponent,
     encryptionService = encryption,
-    appConfig         = appConfig,
-    clock             = clock
+    appConfig = appConfig,
+    clock = clock
   )
 
   private def sessionData(sessionId: String, transferId: TransferId) =
     SessionData(
-      sessionId         = sessionId,
-      transferId        = transferId,
+      sessionId = sessionId,
+      transferId = transferId,
       schemeInformation = schemeDetails,
-      user              = psaUser,
-      data              = Json.obj(),
-      lastUpdated       = now
+      user = psaUser,
+      data = Json.obj(),
+      lastUpdated = now
     )
 
   "SessionRepository" - {

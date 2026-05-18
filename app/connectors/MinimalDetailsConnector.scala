@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait MinimalDetailsError
 
-case object UpstreamError   extends MinimalDetailsError
+case object UpstreamError extends MinimalDetailsError
 case object DetailsNotFound extends MinimalDetailsError
 
 class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: HttpClientV2) extends Logging {
@@ -38,35 +38,29 @@ class MinimalDetailsConnector @Inject() (appConfig: FrontendAppConfig, http: Htt
   private val url = url"${appConfig.pensionAdministratorHost}/pension-administrator/get-minimal-details-self"
 
   def fetch(
-      psaId: PsaId
-    )(implicit hc: HeaderCarrier,
-      ec: ExecutionContext
-    ): Future[Either[MinimalDetailsError, MinimalDetails]] =
+    psaId: PsaId
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]] =
     fetch("psaId", psaId.value, loggedInAsPsa = true)
 
   def fetch(
-      pspId: PspId
-    )(implicit hc: HeaderCarrier,
-      ec: ExecutionContext
-    ): Future[Either[MinimalDetailsError, MinimalDetails]] =
+    pspId: PspId
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]] =
     fetch("pspId", pspId.value, loggedInAsPsa = false)
 
   private def fetch(
-      idType: String,
-      idValue: String,
-      loggedInAsPsa: Boolean
-    )(implicit hc: HeaderCarrier,
-      ec: ExecutionContext
-    ): Future[Either[MinimalDetailsError, MinimalDetails]] =
+    idType: String,
+    idValue: String,
+    loggedInAsPsa: Boolean
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[MinimalDetailsError, MinimalDetails]] =
     http
       .get(url)
       .setHeader(idType -> idValue, "loggedInAsPsa" -> loggedInAsPsa.toString)
       .execute[MinimalDetails]
       .map(Right(_))
       .recover {
-        case e: UpstreamErrorResponse
-            if e.statusCode == NOT_FOUND && e.message.contains("no match found") => Left(DetailsNotFound)
-        case e =>
+        case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND && e.message.contains("no match found") =>
+          Left(DetailsNotFound)
+        case e                                                                                             =>
           logger.error(s"[MinimalDetailsConnector][fetch] Upstream error occurred ${e.getMessage}", e)
           Left(UpstreamError)
       }

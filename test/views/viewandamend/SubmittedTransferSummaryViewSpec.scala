@@ -37,25 +37,30 @@ class SubmittedTransferSummaryViewSpec extends ViewBaseSpec {
 
     "show correct title with member name" in {
       doc(view(memberName, qtNumber, tableRows).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("submittedTransferSummary.title", memberName)} - ${messages("service.name")} - GOV.UK"
     }
 
     "display correct heading with member name" in {
       val heading = doc(view(memberName, qtNumber, tableRows).body)
-        .getElementsByTag("h1").first()
+        .getElementsByTag("h1")
+        .first()
       heading.text() mustBe messages("submittedTransferSummary.heading", memberName)
     }
 
     "display QT number as caption" in {
       val caption = doc(view(memberName, qtNumber, tableRows).body)
-        .getElementsByClass("govuk-caption-l").first()
+        .getElementsByClass("govuk-caption-l")
+        .first()
       caption.text() mustBe qtNumber
     }
 
     "display table structure" in {
       val table = doc(view(memberName, qtNumber, tableRows).body)
-        .getElementsByClass("govuk-table").first()
+        .getElementsByClass("govuk-table")
+        .first()
 
       table must not be null
 
@@ -65,7 +70,8 @@ class SubmittedTransferSummaryViewSpec extends ViewBaseSpec {
 
     "display table with provided rows" in {
       val tableBody = doc(view(memberName, qtNumber, tableRows).body)
-        .getElementsByClass("govuk-table__body").first()
+        .getElementsByClass("govuk-table__body")
+        .first()
 
       tableBody.html() must include("Test")
     }

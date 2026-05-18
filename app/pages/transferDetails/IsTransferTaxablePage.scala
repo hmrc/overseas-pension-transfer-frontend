@@ -52,7 +52,7 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
   final def changeLink(mode: Mode): Call =
     routes.IsTransferTaxableController.onPageLoad(mode)
 
-  override def cleanup(maybeTransferIsTaxable: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(maybeTransferIsTaxable: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     maybeTransferIsTaxable match {
       case Some(false) =>
         for {
@@ -65,5 +65,4 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
         userAnswers.remove(WhyTransferIsNotTaxablePage)
       case _           => super.cleanup(maybeTransferIsTaxable, userAnswers)
     }
-  }
 }

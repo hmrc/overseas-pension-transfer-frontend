@@ -26,17 +26,17 @@ import validators.assetsValidators.AssetCompletionValidator
 
 case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] with MiniJourneyNextPage {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.entryName \ index \ toString
+  override def path: JsPath =
+    JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.entryName \ index \ toString
 
   override def toString: String = PropertyEntry.PropValue
 
-  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call =
     if (AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.Property, answers)) {
       AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(mode, index)
     } else {
       AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(mode, index)
     }
-  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(mode, index)

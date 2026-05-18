@@ -25,20 +25,19 @@ sealed trait WhyTransferIsTaxable
 object WhyTransferIsTaxable extends Enumerable.Implicits {
 
   case object TransferExceedsOTCAllowance extends WithName("transferExceedsOTCAllowance") with WhyTransferIsTaxable
-  case object NoExclusion                 extends WithName("noExclusion") with WhyTransferIsTaxable
+  case object NoExclusion extends WithName("noExclusion") with WhyTransferIsTaxable
 
   val values: Seq[WhyTransferIsTaxable] = Seq(
     TransferExceedsOTCAllowance,
     NoExclusion
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"whyTransferIsTaxable.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"whyTransferIsTaxable.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[WhyTransferIsTaxable] =

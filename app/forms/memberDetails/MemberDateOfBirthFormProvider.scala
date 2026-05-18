@@ -33,11 +33,11 @@ class MemberDateOfBirthFormProvider @Inject() (clock: Clock) extends Mappings {
     Form(
       "value" -> localDate(
         invalidCharacter = "common.dateInput.error.invalid.character",
-        invalidKey       = "common.dateInput.error.invalid",
-        allRequiredKey   = "memberDateOfBirth.error.required.all",
-        twoRequiredKey   = "common.dateInput.error.required.two",
-        requiredKey      = "common.dateInput.error.required",
-        realDateKey      = "memberDateOfBirth.error.real.date"
+        invalidKey = "common.dateInput.error.invalid",
+        allRequiredKey = "memberDateOfBirth.error.required.all",
+        twoRequiredKey = "common.dateInput.error.required.two",
+        requiredKey = "common.dateInput.error.required",
+        realDateKey = "memberDateOfBirth.error.real.date"
       ).verifying(
         maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateInput)),
         minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateInput))

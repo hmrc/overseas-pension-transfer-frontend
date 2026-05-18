@@ -28,7 +28,9 @@ import viewmodels.implicits._
 
 object ApplicableTaxExclusionsSummary {
 
-  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     userAnswers.get(ApplicableTaxExclusionsPage).map { selections =>
       val value = ValueViewModel(
         HtmlContent(
@@ -49,8 +51,8 @@ object ApplicableTaxExclusionsSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "applicableTaxExclusions.checkYourAnswersLabel",
-        value   = value,
+        key = "applicableTaxExclusions.checkYourAnswersLabel",
+        value = value,
         actions = actions
       )
     }

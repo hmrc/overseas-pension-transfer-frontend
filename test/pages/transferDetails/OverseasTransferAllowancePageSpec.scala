@@ -29,7 +29,8 @@ class OverseasTransferAllowancePageSpec extends AnyFreeSpec with Matchers with S
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        OverseasTransferAllowancePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.AmountOfTransferController.onPageLoad(NormalMode)
+        OverseasTransferAllowancePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.AmountOfTransferController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -37,7 +38,10 @@ class OverseasTransferAllowancePageSpec extends AnyFreeSpec with Matchers with S
 
       "must go to Check Answers" in {
 
-        OverseasTransferAllowancePage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        OverseasTransferAllowancePage.nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
     }
 

@@ -34,13 +34,19 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
   private val form         = formProvider()
 
   private lazy val moreOtherAssetsDeclarationRoute =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(NormalMode).url
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController
+      .onPageLoad(NormalMode)
+      .url
 
   private lazy val moreOtherAssetsDeclarationRouteCheckMode =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(CheckMode).url
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController
+      .onPageLoad(CheckMode)
+      .url
 
   private lazy val moreOtherAssetsDeclarationRouteFinalCheckMode =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(FinalCheckMode).url
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController
+      .onPageLoad(FinalCheckMode)
+      .url
 
   "MoreOtherAssetsDeclaration Controller" - {
 
@@ -56,7 +62,10 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(form, rows, NormalMode)(fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)), messages(application)).toString
+          view(form, rows, NormalMode)(
+            fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)),
+            messages(application)
+          ).toString
       }
     }
 
@@ -71,7 +80,10 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
         val view   = application.injector.instanceOf[MoreOtherAssetsDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -86,7 +98,9 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -101,7 +115,9 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -116,7 +132,9 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -135,7 +153,10 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

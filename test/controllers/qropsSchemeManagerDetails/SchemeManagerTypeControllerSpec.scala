@@ -59,7 +59,10 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val view = application.injector.instanceOf[SchemeManagerTypeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -131,7 +134,9 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode).url
+        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController
+          .onPageLoad(CheckMode)
+          .url
       }
     }
 
@@ -139,8 +144,12 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
       implicit val hc: HeaderCarrier = HeaderCarrier()
       val mngrName                   = PersonName("FirstNameMngr", "LastNameMngr")
       val previousAnswers            = emptyUserAnswers
-        .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-        .set(SchemeManagersNamePage, mngrName).success.value
+        .set(SchemeManagerTypePage, SchemeManagerType.Individual)
+        .success
+        .value
+        .set(SchemeManagersNamePage, mngrName)
+        .success
+        .value
 
       val mockUserAnswersService = mock[UserAnswersService]
 
@@ -161,7 +170,9 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController
+          .onPageLoad(NormalMode)
+          .url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockUserAnswersService).setExternalUserAnswers(captor.capture(), any())(any)
@@ -187,7 +198,10 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

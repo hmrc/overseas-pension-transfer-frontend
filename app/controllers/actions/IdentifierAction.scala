@@ -37,12 +37,14 @@ import scala.concurrent.{ExecutionContext, Future}
 trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent]
 
 class IdentifierActionImpl @Inject() (
-    override val authConnector: AuthConnector,
-    config: FrontendAppConfig,
-    val parser: BodyParsers.Default
-  )(implicit val executionContext: ExecutionContext
-  ) extends IdentifierAction
-    with AuthorisedFunctions with AuthSupport with Logging {
+  override val authConnector: AuthConnector,
+  config: FrontendAppConfig,
+  val parser: BodyParsers.Default
+)(implicit val executionContext: ExecutionContext)
+    extends IdentifierAction
+    with AuthorisedFunctions
+    with AuthSupport
+    with Logging {
 
   private def predicate: Predicate = buildPredicate(config)
 
@@ -78,6 +80,6 @@ class IdentifierActionImpl @Inject() (
   }
 
   private case object AgentAffinityGroupNotAllowed extends RuntimeException("Agent affinity group is not supported")
-  private case object MissingAffinityGroup         extends RuntimeException("Affinity group is missing")
+  private case object MissingAffinityGroup extends RuntimeException("Affinity group is missing")
 
 }

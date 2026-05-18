@@ -54,14 +54,17 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   val cc: ControllerComponents = stubControllerComponents()
 
-  val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
+  val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(
+    cc.executionContext
+  )
 
-  def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers): GuiceApplicationBuilder = new GuiceApplicationBuilder()
-    .overrides(
-      bind[IdentifierAction].toInstance(fakeIdentifierAction),
-      bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionDataMemberNameQtNumber)),
-      bind[SchemeDataAction].to[FakeSchemeDataAction]
-    )
+  def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[IdentifierAction].toInstance(fakeIdentifierAction),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionDataMemberNameQtNumber)),
+        bind[SchemeDataAction].to[FakeSchemeDataAction]
+      )
 
   "PspDeclaration Controller" - {
 
@@ -77,7 +80,10 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val view = application.injector.instanceOf[PspDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -142,7 +148,10 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

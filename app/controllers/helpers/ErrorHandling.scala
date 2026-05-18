@@ -23,7 +23,8 @@ import play.api.routing.Router
 trait ErrorHandling extends Logging {
 
   protected def onFailureRedirect(err: Any)(implicit rh: RequestHeader): Result = {
-    val (controller, method) = rh.attrs.get(Router.Attrs.HandlerDef)
+    val (controller, method) = rh.attrs
+      .get(Router.Attrs.HandlerDef)
       .map(hd => (hd.controller, hd.method))
       .getOrElse(("UnknownController", "UnknownMethod"))
 

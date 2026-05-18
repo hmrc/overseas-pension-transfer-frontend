@@ -39,7 +39,9 @@ import scala.concurrent.Future
 class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val quotedSharesCyaRoute =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController.onPageLoad(NormalMode, 0).url
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController
+      .onPageLoad(NormalMode, 0)
+      .url
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]

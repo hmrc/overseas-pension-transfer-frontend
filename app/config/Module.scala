@@ -36,7 +36,8 @@ class Module extends AbstractModule {
   @Provides
   @Singleton
   def provideEncryptionService(config: Configuration): EncryptionService = {
-    val master = config.getOptional[String]("encryption.masterKey")
+    val master = config
+      .getOptional[String]("encryption.masterKey")
       .getOrElse(throw new IllegalStateException("encryption.masterKey missing"))
     new EncryptionService(master)
   }

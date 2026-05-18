@@ -21,9 +21,9 @@ import play.api.libs.json.{Json, Reads}
 
 sealed trait UserAnswersError
 
-case object UserAnswersNotFoundResponse                                             extends UserAnswersError
-case class UserAnswersErrorResponse(error: String, details: Option[String])         extends UserAnswersError
-case class SubmissionErrorResponse(error: String, details: Option[String])          extends UserAnswersError
+case object UserAnswersNotFoundResponse extends UserAnswersError
+case class UserAnswersErrorResponse(error: String, details: Option[String]) extends UserAnswersError
+case class SubmissionErrorResponse(error: String, details: Option[String]) extends UserAnswersError
 case class NotAuthorisingPsaIdErrorResponse(error: String, details: Option[String]) extends UserAnswersError
 
 object UserAnswersErrorResponse {

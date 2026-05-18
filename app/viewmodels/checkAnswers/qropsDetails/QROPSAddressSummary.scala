@@ -27,7 +27,9 @@ import viewmodels.implicits._
 
 object QROPSAddressSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(QROPSAddressPage).map { answer =>
       val value = AddressViewModel.formatAddressWithLineBreaks(answer, ukMode = false)
 
@@ -42,8 +44,8 @@ object QROPSAddressSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "qropsAddress.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlContent(value)),
+        key = "qropsAddress.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(value)),
         actions = actions
       )
     }

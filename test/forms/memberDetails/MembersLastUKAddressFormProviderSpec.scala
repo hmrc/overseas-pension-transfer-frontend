@@ -45,7 +45,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -81,7 +81,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -116,7 +116,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -150,7 +150,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -184,17 +184,18 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
       "GIR 0AA"
     )
 
-    "must bind valid postcodes" in {
+    "must bind valid postcodes" in
       forAll(validPostcodes) { postcode =>
-        val result = form.bind(Map(
-          "addressLine1" -> "1 Test",
-          "addressLine2" -> "Test",
-          "postcode"     -> postcode
-        ))
+        val result = form.bind(
+          Map(
+            "addressLine1" -> "1 Test",
+            "addressLine2" -> "Test",
+            "postcode"     -> postcode
+          )
+        )
         result.errors mustBe empty
         result.value.flatMap(_.postcode) mustBe Some(postcode)
       }
-    }
 
     behave like mandatoryField(
       form,
@@ -205,7 +206,7 @@ class MembersLastUKAddressFormProviderSpec extends StringFieldBehaviours with Sp
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
   }

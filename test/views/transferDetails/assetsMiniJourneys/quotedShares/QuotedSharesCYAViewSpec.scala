@@ -32,7 +32,9 @@ class QuotedSharesCYAViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(summaryList, NormalMode, testIndex).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("checkYourAnswers.title")} - ${messages("service.name")} - GOV.UK"
     }
 

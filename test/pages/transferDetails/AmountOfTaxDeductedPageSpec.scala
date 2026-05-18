@@ -29,7 +29,8 @@ class AmountOfTaxDeductedPageSpec extends AnyFreeSpec with Matchers with SpecBas
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        AmountOfTaxDeductedPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.NetTransferAmountController.onPageLoad(NormalMode)
+        AmountOfTaxDeductedPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.NetTransferAmountController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -37,20 +38,23 @@ class AmountOfTaxDeductedPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
       "must go to Check Net Transfer amount in checkMode" in {
 
-        AmountOfTaxDeductedPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.NetTransferAmountController.onPageLoad(CheckMode)
+        AmountOfTaxDeductedPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.NetTransferAmountController
+          .onPageLoad(CheckMode)
       }
     }
 
     "in FinalCheckMode" - {
       "must go to Check Net Transfer amount in FinalCheckMode" in {
 
-        AmountOfTaxDeductedPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual routes.NetTransferAmountController.onPageLoad(FinalCheckMode)
+        AmountOfTaxDeductedPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual routes.NetTransferAmountController
+          .onPageLoad(FinalCheckMode)
       }
     }
 
     "in AmendCheckMode" - {
       "must go to Check Net Transfer amount in AmendCheckMode" in {
-        AmountOfTaxDeductedPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.NetTransferAmountController.onPageLoad(AmendCheckMode)
+        AmountOfTaxDeductedPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.NetTransferAmountController
+          .onPageLoad(AmendCheckMode)
       }
     }
   }

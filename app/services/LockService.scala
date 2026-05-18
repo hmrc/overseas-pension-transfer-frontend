@@ -32,21 +32,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class LockService @Inject() (
-    lockRepository: EnhancedLockRepository,
-    auditService: AuditService
-  )(implicit ec: ExecutionContext
-  ) extends Logging {
+  lockRepository: EnhancedLockRepository,
+  auditService: AuditService
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
   def takeLockWithAudit(
-      transferId: TransferId,
-      owner: String,
-      ttlSeconds: Long,
-      authenticatedUser: AuthenticatedUser,
-      schemeDetails: PensionSchemeDetails,
-      journeyType: JourneyStartedType,
-      allTransfersItem: Option[AllTransfersItem]
-    )(implicit hc: HeaderCarrier
-    ): Future[Boolean] = {
+    transferId: TransferId,
+    owner: String,
+    ttlSeconds: Long,
+    authenticatedUser: AuthenticatedUser,
+    schemeDetails: PensionSchemeDetails,
+    journeyType: JourneyStartedType,
+    allTransfersItem: Option[AllTransfersItem]
+  )(implicit hc: HeaderCarrier): Future[Boolean] =
 
     lockRepository.takeLock(transferId.value, owner, ttlSeconds.seconds).flatMap {
       case Some(_) =>
@@ -77,7 +76,6 @@ class LockService @Inject() (
         )
         Future.successful(false)
     }
-  }
 
   def takeLock(lockId: String, owner: String, ttlSeconds: Long): Future[Boolean] =
     lockRepository.takeLock(lockId, owner, ttlSeconds.seconds).map(_.isDefined)

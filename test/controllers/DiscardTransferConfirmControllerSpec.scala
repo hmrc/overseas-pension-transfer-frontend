@@ -45,12 +45,14 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
   lazy val viewRedirect: UserAnswers => String = _ => controllers.routes.TaskListController.onPageLoad().url
 
   lazy val amendRedirect: UserAnswers => String = userAnswers =>
-    controllers.viewandamend.routes.ViewAmendSubmittedController.fromDraft(
-      userAnswers.id,
-      userAnswers.pstr,
-      AmendInProgress,
-      "002"
-    ).url
+    controllers.viewandamend.routes.ViewAmendSubmittedController
+      .fromDraft(
+        userAnswers.id,
+        userAnswers.pstr,
+        AmendInProgress,
+        "002"
+      )
+      .url
 
   "DiscardTransferConfirm Controller" - {
 
@@ -141,7 +143,8 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           when(mockLockService.isLocked(any(), any())) thenReturn Future.successful(true)
           when(mockLockService.releaseLock(any(), any())) thenReturn Future.successful(())
 
-          val sessionDataWithVersion = emptySessionData.copy(data = emptySessionData.data ++ JsObject(Map("versionNumber" -> JsString("002"))))
+          val sessionDataWithVersion =
+            emptySessionData.copy(data = emptySessionData.data ++ JsObject(Map("versionNumber" -> JsString("002"))))
 
           val application =
             applicationBuilder(userAnswers = userAnswers, sessionData = sessionDataWithVersion)

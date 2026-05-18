@@ -30,28 +30,28 @@ case class FooterLink(id: String, href: String, text: String)
 object FooterLink {
 
   def build(
-      showCYAFooter: Boolean              = false,
-      showStartFooter: Boolean            = false,
-      showPageFooter: Boolean             = true,
-      showTaskListFooter: Boolean         = false,
-      showDiscardAmendmentFooter: Boolean = false
-    )(implicit messages: Messages
-    ): Seq[FooterLink] = {
+    showCYAFooter: Boolean = false,
+    showStartFooter: Boolean = false,
+    showPageFooter: Boolean = true,
+    showTaskListFooter: Boolean = false,
+    showDiscardAmendmentFooter: Boolean = false
+  )(implicit messages: Messages): Seq[FooterLink] = {
 
     val dashboardLink = FooterLink(
-      id   = "returnDashboardLink",
+      id = "returnDashboardLink",
       href = routes.DashboardController.onPageLoad().url,
       text = messages("footer.link.text.dashboard")
     )
 
     def discardReportLink(isAmend: Boolean) = FooterLink(
-      id   = "discardReportLink",
+      id = "discardReportLink",
       href = routes.DiscardTransferConfirmController.onPageLoad(if (isAmend) AmendCheckMode else NormalMode).url,
-      text = if (isAmend) messages("footer.link.text.discard.amendment") else messages("footer.link.text.discard.report")
+      text =
+        if (isAmend) messages("footer.link.text.discard.amendment") else messages("footer.link.text.discard.report")
     )
 
     val taskListLink = FooterLink(
-      id   = "returnTaskListLink",
+      id = "returnTaskListLink",
       href = routes.TaskListController.onPageLoad().url,
       text = messages("footer.link.text.tasklist")
     )

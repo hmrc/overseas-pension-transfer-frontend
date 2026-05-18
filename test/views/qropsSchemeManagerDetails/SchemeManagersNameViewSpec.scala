@@ -45,7 +45,12 @@ class SchemeManagersNameViewSpec extends ViewBaseSpec {
     behave like pageWithSubmitButton(view(formProvider(), NormalMode), "site.saveAndContinue")
 
     behave like pageWithErrors(
-      view(formProvider().withError(FormError("schemeManagersFirstName", "schemeManagersName.error.schemeManagersFirstName.required")), NormalMode),
+      view(
+        formProvider().withError(
+          FormError("schemeManagersFirstName", "schemeManagersName.error.schemeManagersFirstName.required")
+        ),
+        NormalMode
+      ),
       "schemeManagersFirstName",
       "schemeManagersName.error.schemeManagersFirstName.required"
     )

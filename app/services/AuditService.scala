@@ -27,19 +27,17 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AuditService @Inject() (
-    appConfig: FrontendAppConfig,
-    auditConnector: AuditConnector
-  )(implicit ec: ExecutionContext
-  ) {
+  appConfig: FrontendAppConfig,
+  auditConnector: AuditConnector
+)(implicit ec: ExecutionContext) {
 
-  def audit(eventData: JsonAuditModel)(implicit hc: HeaderCarrier): Unit = {
+  def audit(eventData: JsonAuditModel)(implicit hc: HeaderCarrier): Unit =
     auditConnector.sendExtendedEvent(
       ExtendedDataEvent(
         auditSource = appConfig.appName,
-        auditType   = eventData.auditType,
-        detail      = eventData.detail,
-        tags        = AuditExtensions.auditHeaderCarrier(hc).toAuditTags()
+        auditType = eventData.auditType,
+        detail = eventData.detail,
+        tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags()
       )
     )
-  }
 }

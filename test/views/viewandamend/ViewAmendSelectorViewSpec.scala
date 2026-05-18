@@ -35,19 +35,24 @@ class ViewAmendSelectorViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(qtReference, pstrNumber, qtStatusValue, versionNumber, ViewAmendSelectorFormProvider.form()).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("viewAmend.title")} - ${messages("service.name")} - GOV.UK"
     }
 
     "display correct heading" in {
-      val heading = doc(view(qtReference, pstrNumber, qtStatusValue, versionNumber, ViewAmendSelectorFormProvider.form()).body)
-        .getElementsByTag("h1").first()
+      val heading =
+        doc(view(qtReference, pstrNumber, qtStatusValue, versionNumber, ViewAmendSelectorFormProvider.form()).body)
+          .getElementsByTag("h1")
+          .first()
       heading.text() mustBe messages("viewAmend.title")
     }
 
     "display view and amend radio options with correct values" in {
-      val radios = doc(view(qtReference, pstrNumber, qtStatusValue, versionNumber, ViewAmendSelectorFormProvider.form()).body)
-        .select("input[type=radio][name=viewOrAmend]")
+      val radios =
+        doc(view(qtReference, pstrNumber, qtStatusValue, versionNumber, ViewAmendSelectorFormProvider.form()).body)
+          .select("input[type=radio][name=viewOrAmend]")
 
       radios.size() mustBe 2
       radios.get(0).attr("value") mustBe "view"
@@ -55,8 +60,9 @@ class ViewAmendSelectorViewSpec extends ViewBaseSpec {
     }
 
     "display correct labels for radio options" in {
-      val labels = doc(view(qtReference, pstrNumber, qtStatusValue, versionNumber, ViewAmendSelectorFormProvider.form()).body)
-        .getElementsByClass("govuk-radios__label")
+      val labels =
+        doc(view(qtReference, pstrNumber, qtStatusValue, versionNumber, ViewAmendSelectorFormProvider.form()).body)
+          .getElementsByClass("govuk-radios__label")
 
       labels.get(0).text() mustBe messages("viewAmend.radio1")
       labels.get(1).text() mustBe messages("viewAmend.radio2")

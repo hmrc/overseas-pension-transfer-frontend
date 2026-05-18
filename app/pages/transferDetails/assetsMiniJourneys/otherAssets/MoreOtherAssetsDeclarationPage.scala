@@ -22,7 +22,10 @@ import pages.{MiniJourneyNextPageWith, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object MoreOtherAssetsDeclarationPage extends QuestionPage[Boolean] with MiniJourneyNextPageWith[SessionData] with NextAssetMiniJourney {
+case object MoreOtherAssetsDeclarationPage
+    extends QuestionPage[Boolean]
+    with MiniJourneyNextPageWith[SessionData]
+    with NextAssetMiniJourney {
 
   override def path: JsPath =
     JsPath \ "transferDetails" \ "moreAsset"

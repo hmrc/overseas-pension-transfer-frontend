@@ -33,44 +33,47 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDoesNotHaveNinoController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: MemberDoesNotHaveNinoFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: MemberDoesNotHaveNinoView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: MemberDoesNotHaveNinoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: MemberDoesNotHaveNinoView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(MemberDoesNotHaveNinoPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, mode))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(MemberDoesNotHaveNinoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value).flatMap(_.remove(MemberNinoPage)))
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield {
-            savedForLater match {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              updatedAnswers <-
+                Future
+                  .fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value).flatMap(_.remove(MemberNinoPage)))
+              savedForLater  <-
+                userAnswersService
+                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield savedForLater match {
               case Right(Done) => Redirect(MemberDoesNotHaveNinoPage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
-
-          }
-      )
+        )
   }
 }

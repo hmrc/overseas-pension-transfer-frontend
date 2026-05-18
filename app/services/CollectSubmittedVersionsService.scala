@@ -26,25 +26,23 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 class CollectSubmittedVersionsService @Inject() (
-    userAnswersConnector: UserAnswersConnector
-  )(implicit ec: ExecutionContext
-  ) {
+  userAnswersConnector: UserAnswersConnector
+)(implicit ec: ExecutionContext) {
 
   def collectVersions(
-      qtReference: TransferId,
-      pstr: PstrNumber,
-      qtStatus: QtStatus,
-      versionNumber: String,
-      srnNumber: SrnNumber
-    )(implicit hc: HeaderCarrier
-    ): Future[(Option[UserAnswers], List[UserAnswers])] = {
+    qtReference: TransferId,
+    pstr: PstrNumber,
+    qtStatus: QtStatus,
+    versionNumber: String,
+    srnNumber: SrnNumber
+  )(implicit hc: HeaderCarrier): Future[(Option[UserAnswers], List[UserAnswers])] = {
 
     def findDraft: Future[Option[UserAnswers]] = userAnswersConnector.getAnswers(qtReference.value, srnNumber).map {
       case Right(dto) => Some(toUserAnswers(dto))
       case Left(_)    => None
     }
 
-    def collectVersions: Future[List[UserAnswers]] = {
+    def collectVersions: Future[List[UserAnswers]] =
       if (versionNumber == "001") {
         userAnswersConnector.getAnswers(qtReference, pstr, Submitted, Some(versionNumber), srnNumber) map {
           case Right(dto) => List(toUserAnswers(dto))
@@ -54,27 +52,23 @@ class CollectSubmittedVersionsService @Inject() (
 
         val versions = (1 to versionNumber.toInt).toList
 
-        versions.foldLeft(Future.successful(List[UserAnswers]())) {
-          case (acc, version) =>
-            val stringifyVersion = version.toString.length match {
-              case 1 => s"00$version"
-              case 2 => s"0$version"
-              case _ => version.toString
-            }
-            userAnswersConnector.getAnswers(qtReference, pstr, qtStatus, Some(stringifyVersion), srnNumber) flatMap {
-              case Right(dto) =>
-                acc.map(currentList => toUserAnswers(dto) :: currentList)
-              case Left(_)    => acc
-            }
+        versions.foldLeft(Future.successful(List[UserAnswers]())) { case (acc, version) =>
+          val stringifyVersion = version.toString.length match {
+            case 1 => s"00$version"
+            case 2 => s"0$version"
+            case _ => version.toString
+          }
+          userAnswersConnector.getAnswers(qtReference, pstr, qtStatus, Some(stringifyVersion), srnNumber) flatMap {
+            case Right(dto) =>
+              acc.map(currentList => toUserAnswers(dto) :: currentList)
+            case Left(_)    => acc
+          }
         }
       }
-    }
 
     for {
       maybeDraft  <- findDraft
       versionList <- collectVersions
-    } yield {
-      (maybeDraft, versionList)
-    }
+    } yield (maybeDraft, versionList)
   }
 }

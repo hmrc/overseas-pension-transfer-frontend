@@ -29,7 +29,8 @@ class DateOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
     "in Normal Mode" - {
 
       "must go to the Next page" in {
-        DateOfTransferPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.IsTransferCashOnlyController.onPageLoad(NormalMode)
+        DateOfTransferPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.IsTransferCashOnlyController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -37,7 +38,8 @@ class DateOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Check Answers" in {
 
-        DateOfTransferPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        DateOfTransferPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController
+          .onPageLoad()
       }
     }
 

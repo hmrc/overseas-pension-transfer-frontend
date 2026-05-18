@@ -23,12 +23,11 @@ import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
 
 class FakeIdentifierActionWithUserType(
-    user: AuthenticatedUser,
-    val parser: BodyParser[AnyContent]
-  )(implicit val executionContext: ExecutionContext
-  ) extends IdentifierAction {
+  user: AuthenticatedUser,
+  val parser: BodyParser[AnyContent]
+)(implicit val executionContext: ExecutionContext)
+    extends IdentifierAction {
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] =
     block(IdentifierRequest(request, user))
-  }
 }

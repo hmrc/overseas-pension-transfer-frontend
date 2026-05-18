@@ -34,16 +34,19 @@ class PropertyAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when PropertyAmendContinueQuery has a value" in {
-      val answers = emptyUserAnswers.set(
-        PropertyQuery,
-        List(
-          PropertyEntry(
-            PropertyAddress("Line1", "Line2", None, None, None, Country("GB", "United Kingdom"), None),
-            BigDecimal(100000.99),
-            "Big House"
+      val answers = emptyUserAnswers
+        .set(
+          PropertyQuery,
+          List(
+            PropertyEntry(
+              PropertyAddress("Line1", "Line2", None, None, None, Country("GB", "United Kingdom"), None),
+              BigDecimal(100000.99),
+              "Big House"
+            )
           )
         )
-      ).success.value
+        .success
+        .value
 
       val result = PropertyAmendContinueSummary.row(CheckMode, answers)
 

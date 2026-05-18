@@ -33,7 +33,9 @@ class QuotedSharesClassViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(formProvider(), NormalMode, testIndex).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("quotedSharesClass.title")} - ${messages("service.name")} - GOV.UK"
     }
 

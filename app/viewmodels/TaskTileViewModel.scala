@@ -23,12 +23,12 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.all.HintViewModel
 
 final case class TaskTileViewModel(
-    id: String,
-    linkText: String,
-    link: Call,
-    status: TaskStatus,
-    hint: Option[String] = None
-  ) {
+  id: String,
+  linkText: String,
+  link: Call,
+  status: TaskStatus,
+  hint: Option[String] = None
+) {
 
   def toTaskListItem(implicit messages: Messages): TaskListItem = {
     val statusBlock: TaskListItemStatus = {
@@ -41,8 +41,8 @@ final case class TaskTileViewModel(
       TaskListItemStatus(tag =
         Some(
           Tag(
-            content    = Text(messages(msgKey)),
-            classes    = extraClasses,
+            content = Text(messages(msgKey)),
+            classes = extraClasses,
             attributes = Map("id" -> s"$id-status")
           )
         )
@@ -50,9 +50,9 @@ final case class TaskTileViewModel(
     }
 
     TaskListItem(
-      title  = TaskListItemTitle(Text(linkText)),
-      href   = if (status != TaskStatus.CannotStart) Some(link.url) else None,
-      hint   = hint.map(h => HintViewModel(Text(h))),
+      title = TaskListItemTitle(Text(linkText)),
+      href = if (status != TaskStatus.CannotStart) Some(link.url) else None,
+      hint = hint.map(h => HintViewModel(Text(h))),
       status = statusBlock
     )
   }

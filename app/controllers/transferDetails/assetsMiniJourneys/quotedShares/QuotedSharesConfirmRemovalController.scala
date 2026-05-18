@@ -32,18 +32,19 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class QuotedSharesConfirmRemovalController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: QuotedSharesConfirmRemovalFormProvider,
-    userAnswersService: UserAnswersService,
-    val controllerComponents: MessagesControllerComponents,
-    miniJourney: QuotedSharesMiniJourney.type,
-    view: QuotedSharesConfirmRemovalView,
-    moreAssetCompletionService: MoreAssetCompletionService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: QuotedSharesConfirmRemovalFormProvider,
+  userAnswersService: UserAnswersService,
+  val controllerComponents: MessagesControllerComponents,
+  miniJourney: QuotedSharesMiniJourney.type,
+  view: QuotedSharesConfirmRemovalView,
+  moreAssetCompletionService: MoreAssetCompletionService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val form    = formProvider()
   private val actions = identify andThen schemeData andThen getData
@@ -53,30 +54,38 @@ class QuotedSharesConfirmRemovalController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
-    form.bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
-      confirmRemoval =>
-        if (!confirmRemoval) {
-          val quotedSharesCount = AssetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.QuotedShares)
-          val redirectTarget    =
-            if (quotedSharesCount >= 5) {
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
+        confirmRemoval =>
+          if (!confirmRemoval) {
+            val quotedSharesCount = AssetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.QuotedShares)
+            val redirectTarget    =
+              if (quotedSharesCount >= 5) {
 
-              controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.MoreQuotedSharesDeclarationController.onPageLoad(mode = NormalMode)
-            } else {
+                controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.MoreQuotedSharesDeclarationController
+                  .onPageLoad(mode = NormalMode)
+              } else {
+                AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)
+              }
+
+            Future.successful(Redirect(redirectTarget))
+          } else {
+            (for {
+              updatedAnswers <-
+                Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+              _              <- moreAssetCompletionService
+                                  .completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.QuotedShares, completed = false)
+            } yield Redirect(
               AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)
-            }
-
-          Future.successful(Redirect(redirectTarget))
-        } else {
-          (for {
-            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.QuotedShares, completed = false)
-          } yield Redirect(AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = NormalMode)))
-            .recover {
-              case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-            }
-        }
-    )
+            ))
+              .recover { case _ =>
+                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              }
+          }
+      )
   }
 }

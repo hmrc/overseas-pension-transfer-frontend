@@ -30,13 +30,13 @@ import scala.util.{Failure, Success, Try}
 import services.EncryptionService
 
 case class SessionData(
-    sessionId: String,
-    transferId: TransferId,
-    schemeInformation: PensionSchemeDetails,
-    user: AuthenticatedUser,
-    data: JsObject,
-    lastUpdated: Instant
-  ) {
+  sessionId: String,
+  transferId: TransferId,
+  schemeInformation: PensionSchemeDetails,
+  user: AuthenticatedUser,
+  data: JsObject,
+  lastUpdated: Instant
+) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
@@ -52,10 +52,9 @@ case class SessionData(
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedSession = copy(data = d)
-        Success(updatedSession)
+    updatedData.flatMap { d =>
+      val updatedSession = copy(data = d)
+      Success(updatedSession)
     }
   }
 
@@ -68,10 +67,9 @@ case class SessionData(
         Success(data)
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedSession = copy(data = d)
-        Success(updatedSession)
+    updatedData.flatMap { d =>
+      val updatedSession = copy(data = d)
+      Success(updatedSession)
     }
   }
 }
@@ -94,7 +92,9 @@ object SessionData {
       (__ \ "user").write[AuthenticatedUser] and
       (__ \ "data").write[JsObject] and
       (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
-  )(session => (session.sessionId, session.transferId, session.schemeInformation, session.user, session.data, session.lastUpdated))
+  )(session =>
+    (session.sessionId, session.transferId, session.schemeInformation, session.user, session.data, session.lastUpdated)
+  )
 
   implicit val format: Format[SessionData] = Format[SessionData](reads, writes)
 
@@ -138,8 +138,8 @@ object SessionData {
     )(SessionData.apply _)
 
     val writes: OWrites[SessionData] = OWrites { sd =>
-      implicit val es: EncryptionService  = encryptionService
-      val encrypted: EncryptedSessionData = DecryptedSessionData(sd.data).encrypt
+      implicit val es: EncryptionService                = encryptionService
+      val encrypted: EncryptedSessionData               = DecryptedSessionData(sd.data).encrypt
       Json.obj(
         "_id"               -> sd.sessionId,
         "transferId"        -> sd.transferId,

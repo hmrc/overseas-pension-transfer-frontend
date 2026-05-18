@@ -28,16 +28,16 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class QuotedSharesStartController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    view: QuotedSharesStartView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  val controllerComponents: MessagesControllerComponents,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  view: QuotedSharesStartView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      Ok(view(QuotedSharesStartPage.nextPage(mode, request.userAnswers).url))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    Ok(view(QuotedSharesStartPage.nextPage(mode, request.userAnswers).url))
   }
 }

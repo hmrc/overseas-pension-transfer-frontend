@@ -74,12 +74,12 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers with SpecB
 
     "must correctly build encoded query string (including pstr & versionNumber)" in {
       val params = TransferReportQueryParams(
-        transferId    = Some(QtNumber("QT123456")),
-        qtStatus      = Some(QtStatus.Submitted),
-        pstr          = Some(PstrNumber("12345678AB")),
+        transferId = Some(QtNumber("QT123456")),
+        qtStatus = Some(QtStatus.Submitted),
+        pstr = Some(PstrNumber("12345678AB")),
         versionNumber = Some("v 7"),
-        memberName    = "John Doe",
-        currentPage   = 2
+        memberName = "John Doe",
+        currentPage = 2
       )
 
       val result = TransferReportQueryParams.toQueryString(params)
@@ -95,12 +95,12 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers with SpecB
 
     "must omit missing optional fields but always include memberName and currentPage" in {
       val params = TransferReportQueryParams(
-        transferId    = None,
-        qtStatus      = None,
-        pstr          = None,
+        transferId = None,
+        qtStatus = None,
+        pstr = None,
         versionNumber = None,
-        memberName    = "Jane",
-        currentPage   = 1
+        memberName = "Jane",
+        currentPage = 1
       )
 
       val result = TransferReportQueryParams.toQueryString(params)
@@ -113,12 +113,12 @@ class TransferReportQueryParamsSpec extends AnyFreeSpec with Matchers with SpecB
 
     "must build full URL to DashboardController.onTransferClick with query params" in {
       val params = TransferReportQueryParams(
-        transferId    = Some(QtNumber("QT002007")),
-        qtStatus      = Some(QtStatus.AmendInProgress),
-        pstr          = Some(PstrNumber("12345678AB")),
+        transferId = Some(QtNumber("QT002007")),
+        qtStatus = Some(QtStatus.AmendInProgress),
+        pstr = Some(PstrNumber("12345678AB")),
         versionNumber = Some("7"),
-        memberName    = "Malcolm Mendes",
-        currentPage   = 4
+        memberName = "Malcolm Mendes",
+        currentPage = 4
       )
 
       val result = TransferReportQueryParams.toUrl(params)

@@ -42,7 +42,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val mpsHomeUrl: String              = configuration.get[String]("urls.mpsHomeUrl")
 
   private val exitSurveyBaseUrl: String = configuration.get[String]("feedback-frontend.host")
-  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/report-transfer-qualifying-recognised-overseas-pension-scheme"
+  val exitSurveyUrl: String             =
+    s"$exitSurveyBaseUrl/feedback/report-transfer-qualifying-recognised-overseas-pension-scheme"
 
   def languageMap: Map[String, Lang] = Map(
     "en" -> Lang("en")
@@ -82,11 +83,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val submittedConfirmationTemplateId: String = configuration.get[String]("submission-confirmation-template-id")
 
-  def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String = {
+  def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String =
     if (isPspUser) {
       s"${mpsHomeUrl.dropRight("/overview".length)}/$srn/dashboard/pension-scheme-details"
     } else {
       s"$pensionSchemeSummaryUrl$srn"
     }
-  }
 }

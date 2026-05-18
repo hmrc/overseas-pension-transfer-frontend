@@ -33,50 +33,51 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class AmountOfTaxDeductedController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: AmountOfTaxDeductedFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: AmountOfTaxDeductedView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: AmountOfTaxDeductedFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AmountOfTaxDeductedView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[BigDecimal] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AmountOfTaxDeductedPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(AmountOfTaxDeductedPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              request.userAnswers.set(AmountOfTaxDeductedPage, value) flatMap {
-                answers =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                request.userAnswers.set(AmountOfTaxDeductedPage, value) flatMap { answers =>
                   answers.remove(TransferDetailsRecordVersionQuery)
+                }
+              } else {
+                request.userAnswers.set(AmountOfTaxDeductedPage, value)
               }
-            } else {
-              request.userAnswers.set(AmountOfTaxDeductedPage, value)
-            }
 
-          for {
-            updatedAnswers <- Future.fromTry(setAnswers())
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield Redirect(AmountOfTaxDeductedPage.nextPage(mode, updatedAnswers))
-        }
-      )
+            for {
+              updatedAnswers <- Future.fromTry(setAnswers())
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield Redirect(AmountOfTaxDeductedPage.nextPage(mode, updatedAnswers))
+          }
+        )
   }
 }

@@ -34,7 +34,9 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
 
   private val threshold = 5
 
-  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(UnquotedSharesQuery)
     val count        = AssetThresholdHandler.getAssetCount(userAnswers, TypeOfAsset.UnquotedShares)
     val valueText    = messages("unquotedSharesAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
@@ -60,8 +62,8 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
 
         Some(
           SummaryListRowViewModel(
-            key     = "unquotedSharesAmendContinue.checkYourAnswersLabel",
-            value   = ValueViewModel(valueText),
+            key = "unquotedSharesAmendContinue.checkYourAnswersLabel",
+            value = ValueViewModel(valueText),
             actions = actions
           )
         )
@@ -69,31 +71,35 @@ object UnquotedSharesAmendContinueSummary extends AppUtils {
     }
   }
 
-  def moreThanFiveUnquotedSharesRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+  def moreThanFiveUnquotedSharesRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     userAnswers.get(MoreUnquotedSharesDeclarationPage).filter(identity).map { _ =>
       SummaryListRowViewModel(
-        key     = Key(Text(messages("moreThanFive.unquotedShares.checkYourAnswersLabel"))),
-        value   = ValueViewModel(HtmlContent(messages("site.yes"))),
+        key = Key(Text(messages("moreThanFive.unquotedShares.checkYourAnswersLabel"))),
+        value = ValueViewModel(HtmlContent(messages("site.yes"))),
         actions = if (showChangeLinks) {
-          Seq(ActionItemViewModel(
-            content = Text(messages("site.change")),
-            href    = controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController
-              .onPageLoad(mode).url
-          ).withVisuallyHiddenText(messages("moreThanFive.unquotedShares.change.hidden")))
+          Seq(
+            ActionItemViewModel(
+              content = Text(messages("site.change")),
+              href =
+                controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController
+                  .onPageLoad(mode)
+                  .url
+            ).withVisuallyHiddenText(messages("moreThanFive.unquotedShares.change.hidden"))
+          )
         } else Nil
       )
     }
-  }
 
   def rows(mode: Mode, answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(UnquotedSharesQuery)
-    maybeEntries.getOrElse(Nil).zipWithIndex.map {
-      case (entry, index) =>
-        ListItem(
-          name      = entry.companyName,
-          changeUrl = AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index).url,
-          removeUrl = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url
-        )
+    maybeEntries.getOrElse(Nil).zipWithIndex.map { case (entry, index) =>
+      ListItem(
+        name = entry.companyName,
+        changeUrl = AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index).url,
+        removeUrl = AssetsMiniJourneysRoutes.UnquotedSharesConfirmRemovalController.onPageLoad(index).url
+      )
     }
   }
 }

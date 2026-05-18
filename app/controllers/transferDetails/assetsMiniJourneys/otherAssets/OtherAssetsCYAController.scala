@@ -35,15 +35,17 @@ import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAV
 import scala.concurrent.ExecutionContext
 
 class OtherAssetsCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    userAnswersService: UserAnswersService,
-    val controllerComponents: MessagesControllerComponents,
-    view: OtherAssetsCYAView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  userAnswersService: UserAnswersService,
+  val controllerComponents: MessagesControllerComponents,
+  view: OtherAssetsCYAView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with AppUtils {
 
   private val actions = identify andThen schemeData andThen getData
 
@@ -57,14 +59,13 @@ class OtherAssetsCYAController @Inject() (
     val updatedUserAnswers = AssetThresholdHandler.handle(request.userAnswers, TypeOfAsset.Other, userSelection = None)
 
     for {
-      saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers, request.sessionData.schemeInformation.srnNumber)
-    } yield {
-      saved match {
-        case Right(Done) =>
-          Redirect(OtherAssetsCYAPage(index).nextPage(mode, request.userAnswers))
-        case _           =>
-          Redirect(OtherAssetsCYAPage(index).nextPageRecovery())
-      }
+      saved <-
+        userAnswersService.setExternalUserAnswers(updatedUserAnswers, request.sessionData.schemeInformation.srnNumber)
+    } yield saved match {
+      case Right(Done) =>
+        Redirect(OtherAssetsCYAPage(index).nextPage(mode, request.userAnswers))
+      case _           =>
+        Redirect(OtherAssetsCYAPage(index).nextPageRecovery())
     }
   }
 }

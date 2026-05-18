@@ -32,11 +32,13 @@ class SchemeManagerTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPro
 
       val gen = Gen.oneOf(SchemeManagerType.values.toSeq)
 
-      forAll(gen) {
-        schemeManagerType =>
-          JsString(schemeManagerType.toString).validate[
+      forAll(gen) { schemeManagerType =>
+        JsString(schemeManagerType.toString)
+          .validate[
             SchemeManagerType
-          ].asOpt.value mustEqual schemeManagerType
+          ]
+          .asOpt
+          .value mustEqual schemeManagerType
       }
     }
 
@@ -44,9 +46,8 @@ class SchemeManagerTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPro
 
       val gen = arbitrary[String] suchThat (!SchemeManagerType.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[SchemeManagerType] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[SchemeManagerType] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,9 +55,8 @@ class SchemeManagerTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPro
 
       val gen = Gen.oneOf(SchemeManagerType.values.toSeq)
 
-      forAll(gen) {
-        schemeManagerType =>
-          Json.toJson(schemeManagerType) mustEqual JsString(schemeManagerType.toString)
+      forAll(gen) { schemeManagerType =>
+        Json.toJson(schemeManagerType) mustEqual JsString(schemeManagerType.toString)
       }
     }
   }

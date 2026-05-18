@@ -19,11 +19,11 @@ package models.email
 import play.api.libs.json.{Json, Reads, Writes}
 
 case class EmailToSendRequest(
-    to: List[String],
-    templateId: String,
-    parameters: EmailParameters,
-    force: Boolean = false
-  )
+  to: List[String],
+  templateId: String,
+  parameters: EmailParameters,
+  force: Boolean = false
+)
 
 object EmailToSendRequest {
   implicit val reads: Reads[EmailToSendRequest]   = Json.reads[EmailToSendRequest]

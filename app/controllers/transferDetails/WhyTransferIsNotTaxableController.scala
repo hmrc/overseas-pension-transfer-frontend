@@ -35,55 +35,56 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class WhyTransferIsNotTaxableController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: WhyTransferIsNotTaxableFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: WhyTransferIsNotTaxableView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: WhyTransferIsNotTaxableFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: WhyTransferIsNotTaxableView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[Set[WhyTransferIsNotTaxable]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(WhyTransferIsNotTaxablePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(WhyTransferIsNotTaxablePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              request.userAnswers.set(WhyTransferIsNotTaxablePage, value) flatMap {
-                answers =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                request.userAnswers.set(WhyTransferIsNotTaxablePage, value) flatMap { answers =>
                   answers.remove(TransferDetailsRecordVersionQuery)
+                }
+              } else {
+                request.userAnswers.set(WhyTransferIsNotTaxablePage, value)
               }
-            } else {
-              request.userAnswers.set(WhyTransferIsNotTaxablePage, value)
-            }
 
-          for {
-            updatedAnswers <- Future.fromTry(setAnswers())
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield {
-            savedForLater match {
+            for {
+              updatedAnswers <- Future.fromTry(setAnswers())
+              savedForLater  <-
+                userAnswersService
+                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield savedForLater match {
               case Right(Done) => Redirect(WhyTransferIsNotTaxablePage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
           }
-        }
-      )
+        )
   }
 }

@@ -32,7 +32,7 @@ class TypeOfAssetFormProviderSpec extends CheckboxFieldBehaviours {
     behave like checkboxFieldSeq[TypeOfAsset](
       form,
       fieldName,
-      validValues  = TypeOfAsset.values.filterNot(_ == TypeOfAsset.Cash),
+      validValues = TypeOfAsset.values.filterNot(_ == TypeOfAsset.Cash),
       invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
 
@@ -50,7 +50,12 @@ class TypeOfAssetFormProviderSpec extends CheckboxFieldBehaviours {
     }
   }
 
-  private def checkboxFieldSeq[T](form: Form[_], fieldName: String, validValues: Seq[T], invalidError: FormError): Unit = {
+  private def checkboxFieldSeq[T](
+    form: Form[_],
+    fieldName: String,
+    validValues: Seq[T],
+    invalidError: FormError
+  ): Unit = {
     for {
       (value, i) <- validValues.zipWithIndex
     } yield s"binds `$value` successfully" in {

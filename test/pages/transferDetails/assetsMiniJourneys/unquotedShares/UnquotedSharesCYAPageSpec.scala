@@ -32,12 +32,18 @@ class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in Normal Mode" - {
       "must go to AmendContinue" in {
-        UnquotedSharesCYAPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
+        UnquotedSharesCYAPage(index).nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
           NormalMode
         )
       }
       "must go to more page if more than 5 assets" in {
-        UnquotedSharesCYAPage(index).nextPage(NormalMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(
+        UnquotedSharesCYAPage(index).nextPage(
+          NormalMode,
+          moreThan5Ua
+        ) mustEqual AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(
           NormalMode
         )
       }
@@ -45,12 +51,18 @@ class UnquotedSharesCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in CheckMode" - {
       "must go to AmendContinue" in {
-        UnquotedSharesCYAPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
+        UnquotedSharesCYAPage(index).nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(
           CheckMode
         )
       }
       "must go to more page if more than 5 assets" in {
-        UnquotedSharesCYAPage(index).nextPage(CheckMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(
+        UnquotedSharesCYAPage(index).nextPage(
+          CheckMode,
+          moreThan5Ua
+        ) mustEqual AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(
           CheckMode
         )
       }

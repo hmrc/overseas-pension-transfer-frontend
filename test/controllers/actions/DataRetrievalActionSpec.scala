@@ -73,10 +73,11 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val futureResult = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
-        futureResult.left.map {
-          result =>
-            result.header.status mustBe SEE_OTHER
-            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        futureResult.left.map { result =>
+          result.header.status mustBe SEE_OTHER
+          result.header.headers.get("Location") mustBe Some(
+            controllers.routes.JourneyRecoveryController.onPageLoad().url
+          )
         }
       }
     }
@@ -88,16 +89,18 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val userAnswersService = mock[UserAnswersService]
 
         when(sessionRepository.get(any())).thenReturn(Future.successful(Some(sessionData)))
-        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
+        when(userAnswersService.getExternalUserAnswers(any())(any()))
+          .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 
         val action = new Harness(sessionRepository, userAnswersService)
 
         val futureResult = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
-        futureResult.left.map {
-          result =>
-            result.header.status mustBe SEE_OTHER
-            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        futureResult.left.map { result =>
+          result.header.status mustBe SEE_OTHER
+          result.header.headers.get("Location") mustBe Some(
+            controllers.routes.JourneyRecoveryController.onPageLoad().url
+          )
         }
       }
     }
@@ -109,14 +112,14 @@ class DataRetrievalActionSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val userAnswersService = mock[UserAnswersService]
 
         when(sessionRepository.get("id")) thenReturn Future(Some(sessionData))
-        when(userAnswersService.getExternalUserAnswers(any())(any())).thenReturn(Future.successful(Right(emptyUserAnswers)))
+        when(userAnswersService.getExternalUserAnswers(any())(any()))
+          .thenReturn(Future.successful(Right(emptyUserAnswers)))
         val action = new Harness(sessionRepository, userAnswersService)
 
         val result = action.callRefine(SchemeRequest(FakeRequest(), psaUser, schemeDetails)).futureValue
 
-        result.map {
-          displayRequest =>
-            displayRequest.userAnswers mustBe emptyUserAnswers
+        result.map { displayRequest =>
+          displayRequest.userAnswers mustBe emptyUserAnswers
         }
       }
     }

@@ -40,9 +40,9 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours with SpecBase {
     behave like dateField(form, "value", validData)
 
     behave like dateFieldWithMax(
-      form      = form,
-      key       = "value",
-      max       = maxDate,
+      form = form,
+      key = "value",
+      max = maxDate,
       formError = FormError(
         "value",
         "common.dateInput.error.invalid.timeFrame",
@@ -51,9 +51,9 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours with SpecBase {
     )
 
     behave like dateFieldWithMin(
-      form      = form,
-      key       = "value",
-      min       = minDate,
+      form = form,
+      key = "value",
+      min = minDate,
       formError = FormError(
         "value",
         "common.dateInput.error.invalid.timeFrame",

@@ -24,26 +24,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
 import utils.{Paging, PagingRequest}
 
 final case class PaginatedAllTransfersViewModel(
-    table: Table,
-    pagination: Option[Pagination],
-    lockWarning: Option[String] = None,
-    currentPage: Int            = 1,
-    totalPages: Int             = 1,
-    totalItems: Int             = 0
-  )
+  table: Table,
+  pagination: Option[Pagination],
+  lockWarning: Option[String] = None,
+  currentPage: Int = 1,
+  totalPages: Int = 1,
+  totalItems: Int = 0
+)
 
 object PaginatedAllTransfersViewModel {
 
   def build(
-      items: Seq[AllTransfersItem],
-      page: Int,
-      pageSize: Int,
-      urlForPage: Int => String,
-      lockWarning: Option[String] = None,
-      totalItems: Option[Int]     = None
-    )(implicit messages: Messages,
-      appConfig: FrontendAppConfig
-    ): PaginatedAllTransfersViewModel = {
+    items: Seq[AllTransfersItem],
+    page: Int,
+    pageSize: Int,
+    urlForPage: Int => String,
+    lockWarning: Option[String] = None,
+    totalItems: Option[Int] = None
+  )(implicit messages: Messages, appConfig: FrontendAppConfig): PaginatedAllTransfersViewModel = {
 
     val sorted      = items.sorted
     val paging      = Paging.fromSeq(sorted, PagingRequest(page, pageSize))
@@ -53,7 +51,7 @@ object PaginatedAllTransfersViewModel {
     PaginatedAllTransfersViewModel(table, pager, lockWarning, paging.page, paging.totalPages, actualTotal)
   }
 
-  private def paginationFrom[A](p: Paging[A], urlForPage: Int => String)(implicit m: Messages): Option[Pagination] = {
+  private def paginationFrom[A](p: Paging[A], urlForPage: Int => String)(implicit m: Messages): Option[Pagination] =
     if (p.totalPages <= 1) {
       None
     } else {
@@ -73,29 +71,26 @@ object PaginatedAllTransfersViewModel {
 
       Some(
         Pagination(
-          items         = Some(items),
-          previous      = prev,
-          next          = next,
+          items = Some(items),
+          previous = prev,
+          next = next,
           landmarkLabel = Some(m("pagination.landmark"))
         )
       )
     }
-  }
 
   private def createSmartPaginationItems(
-      currentPage: Int,
-      totalPages: Int,
-      urlForPage: Int => String
-    ): Seq[PaginationItem] = {
+    currentPage: Int,
+    totalPages: Int,
+    urlForPage: Int => String
+  ): Seq[PaginationItem] = {
     val mustShow = Set(
       1,
       currentPage,
       totalPages,
       currentPage - 1,
       currentPage + 1
-    ).filter(p => p >= 1 && p <= totalPages)
-      .toSeq
-      .sorted
+    ).filter(p => p >= 1 && p <= totalPages).toSeq.sorted
 
     val itemsWithEllipsis = mustShow.foldLeft(Seq.empty[Either[Unit, Int]]) { (acc, page) =>
       acc.lastOption match {
@@ -109,16 +104,16 @@ object PaginatedAllTransfersViewModel {
     itemsWithEllipsis.map {
       case Right(pageNum) =>
         PaginationItem(
-          href     = urlForPage(pageNum),
-          number   = Some(pageNum.toString),
-          current  = Some(pageNum == currentPage),
+          href = urlForPage(pageNum),
+          number = Some(pageNum.toString),
+          current = Some(pageNum == currentPage),
           ellipsis = None
         )
       case Left(_)        =>
         PaginationItem(
-          href     = "",
-          number   = None,
-          current  = None,
+          href = "",
+          number = None,
+          current = None,
           ellipsis = Some(true)
         )
     }

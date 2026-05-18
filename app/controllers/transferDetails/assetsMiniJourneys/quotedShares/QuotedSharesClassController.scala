@@ -35,16 +35,17 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class QuotedSharesClassController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: QuotedSharesClassFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: QuotedSharesClassView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: QuotedSharesClassFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: QuotedSharesClassView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[String] = formProvider()
 
@@ -60,27 +61,31 @@ class QuotedSharesClassController @Inject() (
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              for {
-                addCashAmount                      <- request.userAnswers.set(QuotedSharesClassPage(index), value)
-                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, QuotedShares))
-              } yield removeAssetRecordVersion
-            } else {
-              request.userAnswers.set(QuotedSharesClassPage(index), value)
-            }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, index))),
+          value => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                for {
+                  addCashAmount                      <- request.userAnswers.set(QuotedSharesClassPage(index), value)
+                  removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                  removeTypeOfAssetsRecordVersion    <-
+                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                  removeAssetRecordVersion           <-
+                    removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, QuotedShares))
+                } yield removeAssetRecordVersion
+              } else {
+                request.userAnswers.set(QuotedSharesClassPage(index), value)
+              }
 
-          for {
-            updatedAnswers <- Future.fromTry(setAnswers())
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield Redirect(QuotedSharesClassPage(index).nextPage(mode, updatedAnswers))
-        }
-      )
+            for {
+              updatedAnswers <- Future.fromTry(setAnswers())
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield Redirect(QuotedSharesClassPage(index).nextPage(mode, updatedAnswers))
+          }
+        )
   }
 }

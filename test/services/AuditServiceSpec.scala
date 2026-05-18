@@ -64,34 +64,32 @@ class AuditServiceSpec extends AnyFreeSpec with Matchers with MockitoSugar with 
     super.beforeEach()
   }
 
-  ".sendAudit" - {
+  ".sendAudit" -
+    JourneyStartedType.values.foreach { journey =>
+      s"must send an event to the audit connector for $journey event type" in {
+        val eventModel =
+          ReportStartedAuditModel.build(transferNumber, authenticatedUser, schemeDetails, journey, None, None)
 
-    JourneyStartedType.values.foreach {
-      journey =>
-        s"must send an event to the audit connector for $journey event type" in {
-          val eventModel = ReportStartedAuditModel.build(transferNumber, authenticatedUser, schemeDetails, journey, None, None)
+        when(mockAppConfig.appName).thenReturn(appName)
+        service.audit(eventModel)
+        val eventCaptor: ArgumentCaptor[ExtendedDataEvent] = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
 
-          when(mockAppConfig.appName).thenReturn(appName)
-          service.audit(eventModel)
-          val eventCaptor: ArgumentCaptor[ExtendedDataEvent] = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+        verify(mockAuditConnector, times(1)).sendExtendedEvent(eventCaptor.capture())(any(), any())
 
-          verify(mockAuditConnector, times(1)).sendExtendedEvent(eventCaptor.capture())(any(), any())
+        val expectedJson = Json.obj(
+          "journeyType"               -> journey.toString,
+          "internalReportReferenceId" -> transferNumber.value,
+          "roleLoggedInAs"            -> "Psa",
+          "affinityGroup"             -> "Individual",
+          "requesterIdentifier"       -> "21000005",
+          "pensionSchemeName"         -> "SchemeName",
+          "pensionSchemeTaxReference" -> "12345678AB"
+        )
 
-          val expectedJson = Json.obj(
-            "journeyType"               -> journey.toString,
-            "internalReportReferenceId" -> transferNumber.value,
-            "roleLoggedInAs"            -> "Psa",
-            "affinityGroup"             -> "Individual",
-            "requesterIdentifier"       -> "21000005",
-            "pensionSchemeName"         -> "SchemeName",
-            "pensionSchemeTaxReference" -> "12345678AB"
-          )
-
-          val event = eventCaptor.getValue
-          event.auditSource mustEqual appName
-          event.auditType mustEqual "OverseasPensionTransferReportStarted"
-          event.detail mustEqual expectedJson
-        }
+        val event = eventCaptor.getValue
+        event.auditSource mustEqual appName
+        event.auditType mustEqual "OverseasPensionTransferReportStarted"
+        event.detail mustEqual expectedJson
+      }
     }
-  }
 }

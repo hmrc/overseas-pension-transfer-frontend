@@ -35,18 +35,19 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class MoreUnquotedSharesDeclarationController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: MoreUnquotedSharesDeclarationFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: MoreUnquotedSharesDeclarationView,
-    moreAssetCompletionService: MoreAssetCompletionService,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: MoreUnquotedSharesDeclarationFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: MoreUnquotedSharesDeclarationView,
+  moreAssetCompletionService: MoreAssetCompletionService,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val form = formProvider()
 
@@ -83,30 +84,40 @@ class MoreUnquotedSharesDeclarationController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val assets = UnquotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
-          Future.successful(BadRequest(view(formWithErrors, assets, mode)))
-        },
-        continue => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              for {
-                addCashAmount                      <- request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue)
-                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-              } yield removeTypeOfAssetsRecordVersion
-            } else {
-              request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue)
-            }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val assets = UnquotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
+            Future.successful(BadRequest(view(formWithErrors, assets, mode)))
+          },
+          continue => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                for {
+                  addCashAmount                      <- request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue)
+                  removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                  removeTypeOfAssetsRecordVersion    <-
+                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                } yield removeTypeOfAssetsRecordVersion
+              } else {
+                request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue)
+              }
 
-          for {
-            userAnswers            <- Future.fromTry(setAnswers())
-            _                      <- userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
-            sessionAfterCompletion <-
-              moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.UnquotedShares, completed = true, Some(continue))
-          } yield Redirect(MoreUnquotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
-        }
-      )
+            for {
+              userAnswers            <- Future.fromTry(setAnswers())
+              _                      <-
+                userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
+              sessionAfterCompletion <-
+                moreAssetCompletionService.completeAsset(
+                  userAnswers,
+                  request.sessionData,
+                  TypeOfAsset.UnquotedShares,
+                  completed = true,
+                  Some(continue)
+                )
+            } yield Redirect(MoreUnquotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
+          }
+        )
     }
 }

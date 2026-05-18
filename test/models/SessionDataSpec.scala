@@ -33,12 +33,12 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val encryptionService = new EncryptionService("F42sAkGScIpm4Vlui6XGpKW/zvmfyAYyoNHeLVQuoCk=")
 
   private val sessionData = SessionData(
-    sessionId         = "Int-8d355b23-d997-4ea4-b766-c547334f313a",
-    transferId        = TransferNumber("5772e197-70ff-4767-8409-44f18774eb75"),
+    sessionId = "Int-8d355b23-d997-4ea4-b766-c547334f313a",
+    transferId = TransferNumber("5772e197-70ff-4767-8409-44f18774eb75"),
     schemeInformation = schemeDetails,
-    user              = psaUser,
-    data              = Json.obj("memberDetails" -> Json.obj("status" -> "inProgress")),
-    lastUpdated       = now
+    user = psaUser,
+    data = Json.obj("memberDetails" -> Json.obj("status" -> "inProgress")),
+    lastUpdated = now
   )
 
   "get" - {
@@ -61,8 +61,12 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "remove" - {
     "should remove existing Json from data field" in {
-      emptySessionData.copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
-        .remove(SubmitToHMRCPage).success.value.data mustBe
+      emptySessionData
+        .copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
+        .remove(SubmitToHMRCPage)
+        .success
+        .value
+        .data mustBe
         Json.obj("key" -> "value")
     }
   }
@@ -121,7 +125,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
       val written = format.writes(sessionData)
 
       (written \ "data").as[String] must not be empty
-      (written \ "data").as[String] must not include ("memberDetails")
+      (written \ "data").as[String] must not include "memberDetails"
 
       val readBack = format.reads(written).get
 

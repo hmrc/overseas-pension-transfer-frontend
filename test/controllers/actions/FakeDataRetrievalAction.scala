@@ -23,20 +23,25 @@ import utils.AppUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataRetrievalAction(answers: UserAnswers, sessionData: SessionData) extends DataRetrievalAction with AppUtils {
+class FakeDataRetrievalAction(answers: UserAnswers, sessionData: SessionData)
+    extends DataRetrievalAction
+    with AppUtils {
 
-  override protected def refine[A](request: SchemeRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
+  override protected def refine[A](request: SchemeRequest[A]): Future[Either[Result, DisplayRequest[A]]] =
 
-    Future(Right(DisplayRequest(
-      request.request,
-      request.authenticatedUser,
-      answers,
-      sessionData,
-      memberFullName(sessionData),
-      qtNumber(sessionData),
-      dateTransferSubmitted(sessionData)
-    )))
-  }
+    Future(
+      Right(
+        DisplayRequest(
+          request.request,
+          request.authenticatedUser,
+          answers,
+          sessionData,
+          memberFullName(sessionData),
+          qtNumber(sessionData),
+          dateTransferSubmitted(sessionData)
+        )
+      )
+    )
 
   implicit override protected val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global

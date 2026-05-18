@@ -49,7 +49,7 @@ class MembersLastUKAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine2 = "Line2",
         addressLine3 = None,
         addressLine4 = None,
-        ukPostCode   = "Postcode"
+        ukPostCode = "Postcode"
       )
 
       val answers = emptyUserAnswers.set(MembersLastUKAddressPage, address).success.value
@@ -67,7 +67,7 @@ class MembersLastUKAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine2 = "Line2",
         addressLine3 = Some("    "),
         addressLine4 = Some(""),
-        ukPostCode   = "Postcode"
+        ukPostCode = "Postcode"
       )
 
       val answers = emptyUserAnswers.set(MembersLastUKAddressPage, address).success.value

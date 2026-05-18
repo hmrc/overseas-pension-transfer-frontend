@@ -36,18 +36,19 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class QuotedSharesAmendContinueController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: QuotedSharesAmendContinueFormProvider,
-    userAnswersService: UserAnswersService,
-    sessionRepository: SessionRepository,
-    val controllerComponents: MessagesControllerComponents,
-    miniJourney: QuotedSharesMiniJourney.type,
-    view: QuotedSharesAmendContinueView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: QuotedSharesAmendContinueFormProvider,
+  userAnswersService: UserAnswersService,
+  sessionRepository: SessionRepository,
+  val controllerComponents: MessagesControllerComponents,
+  miniJourney: QuotedSharesMiniJourney.type,
+  view: QuotedSharesAmendContinueView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
@@ -60,7 +61,10 @@ class QuotedSharesAmendContinueController @Inject() (
       mode match {
         case CheckMode | FinalCheckMode | AmendCheckMode =>
           for {
-            updatedSession <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.QuotedShares, completed = false))
+            updatedSession <- Future.fromTry(
+                                AssetsMiniJourneyService
+                                  .setAssetCompleted(request.sessionData, TypeOfAsset.QuotedShares, completed = false)
+                              )
             _              <- sessionRepository.set(updatedSession)
           } yield {
             val shares = QuotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
@@ -74,33 +78,39 @@ class QuotedSharesAmendContinueController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val shares = QuotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
-          Future.successful(BadRequest(view(formWithErrors, shares, mode)))
-        },
-        continue => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode && continue) {
-              for {
-                addContinue                        <- request.userAnswers.set(QuotedSharesAmendContinueAssetPage, continue)
-                removeTransferDetailsRecordVersion <- addContinue.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-              } yield removeTypeOfAssetsRecordVersion
-            } else {
-              request.userAnswers.set(QuotedSharesAmendContinueAssetPage, continue)
-            }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val shares = QuotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
+            Future.successful(BadRequest(view(formWithErrors, shares, mode)))
+          },
+          continue => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode && continue) {
+                for {
+                  addContinue                        <- request.userAnswers.set(QuotedSharesAmendContinueAssetPage, continue)
+                  removeTransferDetailsRecordVersion <- addContinue.remove(TransferDetailsRecordVersionQuery)
+                  removeTypeOfAssetsRecordVersion    <-
+                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                } yield removeTypeOfAssetsRecordVersion
+              } else {
+                request.userAnswers.set(QuotedSharesAmendContinueAssetPage, continue)
+              }
 
-          for {
-            sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.QuotedShares, completed = true))
-            _   <- sessionRepository.set(sd)
-            ua1 <- Future.fromTry(setAnswers())
-            _   <- userAnswersService.setExternalUserAnswers(ua1, request.sessionData.schemeInformation.srnNumber)
-          } yield {
-            val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(QuotedSharesAmendContinueAssetPage.nextPageWith(mode, ua1, (sd, nextIndex)))
+            for {
+              sd  <- Future.fromTry(
+                       AssetsMiniJourneyService
+                         .setAssetCompleted(request.sessionData, TypeOfAsset.QuotedShares, completed = true)
+                     )
+              _   <- sessionRepository.set(sd)
+              ua1 <- Future.fromTry(setAnswers())
+              _   <- userAnswersService.setExternalUserAnswers(ua1, request.sessionData.schemeInformation.srnNumber)
+            } yield {
+              val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
+              Redirect(QuotedSharesAmendContinueAssetPage.nextPageWith(mode, ua1, (sd, nextIndex)))
+            }
           }
-        }
-      )
+        )
   }
 }

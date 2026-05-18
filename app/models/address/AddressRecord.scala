@@ -25,10 +25,10 @@ object RawAddress {
 }
 
 case class AddressRecord(
-    id: String,
-    address: RawAddress,
-    poBox: Option[String] = None
-  )
+  id: String,
+  address: RawAddress,
+  poBox: Option[String] = None
+)
 
 object AddressRecord {
   implicit val format: OFormat[AddressRecord] = Json.format

@@ -30,7 +30,8 @@ class MemberDateOfLeavingUKPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers page" in {
 
-        MemberDateOfLeavingUKPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDateOfLeavingUKPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController
+          .onPageLoad()
       }
     }
 
@@ -38,7 +39,8 @@ class MemberDateOfLeavingUKPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers" in {
 
-        MemberDateOfLeavingUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDateOfLeavingUKPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController
+          .onPageLoad()
       }
     }
 

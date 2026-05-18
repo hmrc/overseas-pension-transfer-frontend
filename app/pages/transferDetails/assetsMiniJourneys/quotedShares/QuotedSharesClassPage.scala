@@ -25,7 +25,8 @@ import play.api.mvc.Call
 
 case class QuotedSharesClassPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.entryName \ index \ toString
+  override def path: JsPath =
+    JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.QuotedShares.entryName \ index \ toString
 
   override def toString: String = QuotedSharesEntry.ClassOfShares
 

@@ -41,7 +41,7 @@ case object AmountOfTransferPage extends QuestionPage[BigDecimal] {
   final def changeLink(mode: Mode): Call =
     routes.AmountOfTransferController.onPageLoad(mode)
 
-  override def cleanup(value: Option[BigDecimal], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[BigDecimal], userAnswers: UserAnswers): Try[UserAnswers] =
     userAnswers.get(IsTransferCashOnlyPage) match {
       case Some(true) =>
         userAnswers
@@ -51,5 +51,4 @@ case object AmountOfTransferPage extends QuestionPage[BigDecimal] {
       case _          =>
         userAnswers.remove(TransferDetailsRecordVersionQuery)
     }
-  }
 }

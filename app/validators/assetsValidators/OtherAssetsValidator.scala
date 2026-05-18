@@ -37,11 +37,12 @@ object OtherAssetsValidator {
       case None                   => DataMissingError(OtherAssetsValuePage(index)).invalidNec
     }
 
-  def validateOtherAssetsDetails(answers: UserAnswers): ValidationResult[Option[List[OtherAssetsEntry]]] = {
+  def validateOtherAssetsDetails(answers: UserAnswers): ValidationResult[Option[List[OtherAssetsEntry]]] =
     answers.get(TypeOfAssetPage) match {
       case Some(assets) if assets.contains(TypeOfAsset.Other) =>
         answers.get(OtherAssetsQuery) match {
-          case Some(shares) if shares.length > 5 => GenericError("Other assets cannot hold more than 5 in list").invalidNec
+          case Some(shares) if shares.length > 5 =>
+            GenericError("Other assets cannot hold more than 5 in list").invalidNec
           case Some(shares)                      =>
             val validatedShares = shares.zipWithIndex.map { case (_, index) =>
               (
@@ -61,6 +62,5 @@ object OtherAssetsValidator {
       case Some(_)                                            => None.validNec
       case None                                               => DataMissingError(OtherAssetsQuery).invalidNec
     }
-  }
 
 }

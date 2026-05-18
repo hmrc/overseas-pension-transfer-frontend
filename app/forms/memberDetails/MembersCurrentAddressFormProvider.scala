@@ -26,14 +26,14 @@ import utils.AppUtils
 import javax.inject.Inject
 
 case class MembersCurrentAddressFormData(
-    addressLine1: String,
-    addressLine2: String,
-    addressLine3: Option[String],
-    addressLine4: Option[String],
-    countryCode: String,
-    postcode: Option[String],
-    poBox: Option[String]
-  )
+  addressLine1: String,
+  addressLine2: String,
+  addressLine3: Option[String],
+  addressLine4: Option[String],
+  countryCode: String,
+  postcode: Option[String],
+  poBox: Option[String]
+)
 
 object MembersCurrentAddressFormData {
 
@@ -43,23 +43,25 @@ object MembersCurrentAddressFormData {
       addressLine2 = address.addressLine2,
       addressLine3 = address.addressLine3,
       addressLine4 = address.addressLine4,
-      countryCode  = address.country.code,
-      postcode     = address.postcode,
-      poBox        = address.poBoxNumber
+      countryCode = address.country.code,
+      postcode = address.postcode,
+      poBox = address.poBoxNumber
     )
 
   def unapply(
-      addressFormData: MembersCurrentAddressFormData
-    ): Option[(String, String, Option[String], Option[String], String, Option[String], Option[String])] =
-    Some((
-      addressFormData.addressLine1,
-      addressFormData.addressLine2,
-      addressFormData.addressLine3,
-      addressFormData.addressLine4,
-      addressFormData.countryCode,
-      addressFormData.postcode,
-      addressFormData.poBox
-    ))
+    addressFormData: MembersCurrentAddressFormData
+  ): Option[(String, String, Option[String], Option[String], String, Option[String], Option[String])] =
+    Some(
+      (
+        addressFormData.addressLine1,
+        addressFormData.addressLine2,
+        addressFormData.addressLine3,
+        addressFormData.addressLine4,
+        addressFormData.countryCode,
+        addressFormData.postcode,
+        addressFormData.poBox
+      )
+    )
 }
 
 class MembersCurrentAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {

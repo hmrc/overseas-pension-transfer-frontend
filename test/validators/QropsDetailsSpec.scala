@@ -47,10 +47,10 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
       QropsDetailsValidator.fromUserAnswers(ua) match {
         case Valid(details) =>
           details mustBe QropsDetails(
-            qropsName         = name,
-            qropsReference    = ref,
-            qropsAddress      = qropsAddress,
-            qropsCountry      = Some(country),
+            qropsName = name,
+            qropsReference = ref,
+            qropsAddress = qropsAddress,
+            qropsCountry = Some(country),
             qropsOtherCountry = None
           )
 
@@ -60,15 +60,20 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
     }
 
     "must succeed when name, reference, address, country IS 'Other' and otherCountry are provided" in {
-      val ua = emptyUserAnswers.withName(name).withRef(ref).withAddress(qropsAddress).withCountry(Country("ZZ", "Other")).withOtherCountry(otherCountry)
+      val ua = emptyUserAnswers
+        .withName(name)
+        .withRef(ref)
+        .withAddress(qropsAddress)
+        .withCountry(Country("ZZ", "Other"))
+        .withOtherCountry(otherCountry)
 
       QropsDetailsValidator.fromUserAnswers(ua) match {
         case Valid(details) =>
           details mustBe QropsDetails(
-            qropsName         = name,
-            qropsReference    = ref,
-            qropsAddress      = qropsAddress,
-            qropsCountry      = Some(Country("ZZ", "Other")),
+            qropsName = name,
+            qropsReference = ref,
+            qropsAddress = qropsAddress,
+            qropsCountry = Some(Country("ZZ", "Other")),
             qropsOtherCountry = Some(otherCountry)
           )
 
@@ -78,14 +83,21 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
     }
 
     "must fail (and accumulate) when both country and otherCountry are present and country is NOT 'Other'" in {
-      val ua = emptyUserAnswers.withName(name).withRef(ref).withAddress(qropsAddress).withCountry(country).withOtherCountry(otherCountry)
+      val ua = emptyUserAnswers
+        .withName(name)
+        .withRef(ref)
+        .withAddress(qropsAddress)
+        .withCountry(country)
+        .withOtherCountry(otherCountry)
 
       val res = QropsDetailsValidator.fromUserAnswers(ua)
 
       res match {
         case Invalid(nec) =>
           nec.toNonEmptyList.toList must have size 1
-          nec.toNonEmptyList.toList.head mustBe GenericError("Cannot have valid payload value of QROPS Country is not 'Other'")
+          nec.toNonEmptyList.toList.head mustBe GenericError(
+            "Cannot have valid payload value of QROPS Country is not 'Other'"
+          )
 
         case Valid(v) =>
           fail(s"Expected Invalid with 1 GenericError, but got Valid: $v")
@@ -101,7 +113,9 @@ final class QropsDetailsSpec extends AnyFreeSpec with Matchers with OptionValues
         case Invalid(nec) =>
           nec.toNonEmptyList.toList must have size 2
           nec.toNonEmptyList.toList.head mustBe DataMissingError(QROPSCountryPage)
-          nec.toNonEmptyList.toList(1) mustBe GenericError("Cannot have a value for other Country where value of QROPS Country is None")
+          nec.toNonEmptyList.toList(1) mustBe GenericError(
+            "Cannot have a value for other Country where value of QROPS Country is None"
+          )
 
         case Valid(v) =>
           fail(s"Expected Invalid with 1 GenericError and DataMissingError, but got Valid: $v")

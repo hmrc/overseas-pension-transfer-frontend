@@ -25,26 +25,25 @@ import java.time.ZoneId
 
 trait AppUtils {
 
-  def memberFullName(sessionData: SessionData, userAnswers: Option[UserAnswers] = None): String = {
-    sessionData.get(MemberNamePage)
+  def memberFullName(sessionData: SessionData, userAnswers: Option[UserAnswers] = None): String =
+    sessionData
+      .get(MemberNamePage)
       .map(_.fullName)
       .orElse {
         userAnswers.flatMap(_.get(pages.memberDetails.MemberNamePage).map(_.fullName))
       }
       .getOrElse("Undefined Undefined")
-  }
 
-  def qtNumber(sessionData: SessionData): QtNumber = {
-    sessionData.get(QtNumberQuery)
+  def qtNumber(sessionData: SessionData): QtNumber =
+    sessionData
+      .get(QtNumberQuery)
       .getOrElse(QtNumber.empty)
-  }
 
-  def dateTransferSubmitted(sessionData: SessionData): String = {
+  def dateTransferSubmitted(sessionData: SessionData): String =
     sessionData.get(DateSubmittedQuery).fold("Transfer not submitted") { instant =>
       val dateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime
       dateTime.format(localDateTimeFormatter)
     }
-  }
 
   def formatUkPostcode(raw: String): String = {
     val formated          = raw.trim.toUpperCase.replaceAll("\\s+", "")

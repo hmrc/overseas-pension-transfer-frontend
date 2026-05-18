@@ -45,7 +45,11 @@ class MoreUnquotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers wi
             )
           )
 
-        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
+        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(
+          NormalMode,
+          userAnswers.success.value,
+          sessionData.success.value
+        )
         result mustBe QuotedSharesMiniJourney.call(NormalMode)
       }
     }
@@ -67,7 +71,11 @@ class MoreUnquotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers wi
             )
           )
 
-        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
+        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(
+          CheckMode,
+          userAnswers.success.value,
+          sessionData.success.value
+        )
         result mustBe QuotedSharesMiniJourney.call(CheckMode)
       }
     }
@@ -89,7 +97,11 @@ class MoreUnquotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers wi
             )
           )
 
-        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(FinalCheckMode, userAnswers.success.value, sessionData.success.value)
+        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(
+          FinalCheckMode,
+          userAnswers.success.value,
+          sessionData.success.value
+        )
         result mustBe QuotedSharesMiniJourney.call(FinalCheckMode)
       }
     }
@@ -111,7 +123,11 @@ class MoreUnquotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers wi
             )
           )
 
-        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(AmendCheckMode, userAnswers.success.value, sessionData.success.value)
+        val result = MoreUnquotedSharesDeclarationPage.nextPageWith(
+          AmendCheckMode,
+          userAnswers.success.value,
+          sessionData.success.value
+        )
         result mustBe QuotedSharesMiniJourney.call(AmendCheckMode)
       }
     }

@@ -66,7 +66,9 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = userAnswersMemberNameQtNumber
-        .set(MemberDoesNotHaveNinoPage, "answer").success.value
+        .set(MemberDoesNotHaveNinoPage, "answer")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 

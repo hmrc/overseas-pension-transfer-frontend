@@ -28,7 +28,8 @@ case class UnquotedSharesCYAPage(index: Int) extends MiniJourneyNextPage {
   override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     val unquotedSharesCount = AssetThresholdHandler.getAssetCount(answers, TypeOfAsset.UnquotedShares)
     if (unquotedSharesCount >= 5) {
-      controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController.onPageLoad(mode = mode)
+      controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController
+        .onPageLoad(mode = mode)
     } else {
       AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = mode)
     }

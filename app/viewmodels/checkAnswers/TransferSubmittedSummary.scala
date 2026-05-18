@@ -26,10 +26,13 @@ import viewmodels.implicits._
 
 case object TransferSubmittedSummary {
 
-  def rows(memberName: String, dateTransferSubmitted: String)(implicit request: SchemeRequest[AnyContent], messages: Messages): SummaryList = {
+  def rows(memberName: String, dateTransferSubmitted: String)(implicit
+    request: SchemeRequest[AnyContent],
+    messages: Messages
+  ): SummaryList = {
     val memberNameRow: SummaryListRow =
       SummaryListRowViewModel(
-        key   = "transferSubmitted.memberName.key",
+        key = "transferSubmitted.memberName.key",
         value = ValueViewModel(HtmlContent(memberName))
       )
 
@@ -38,13 +41,13 @@ case object TransferSubmittedSummary {
 
     val schemeNameRow: SummaryListRow =
       SummaryListRowViewModel(
-        key   = "transferSubmitted.pensionScheme.key",
+        key = "transferSubmitted.pensionScheme.key",
         value = ValueViewModel(HtmlContent(schemeName))
       )
 
     val timeSubmittedRow: SummaryListRow =
       SummaryListRowViewModel(
-        key   = "transferSubmitted.dateSubmitted.key",
+        key = "transferSubmitted.dateSubmitted.key",
         value = ValueViewModel(HtmlContent(dateTransferSubmitted))
       )
 

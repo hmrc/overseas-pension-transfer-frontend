@@ -20,5 +20,6 @@ import models.address.AddressRecord
 
 sealed trait AddressLookupResponse
 
-case class AddressLookupSuccessResponse(searchedPostcode: String, records: Seq[AddressRecord]) extends AddressLookupResponse
-case class AddressLookupErrorResponse(cause: Exception)                                        extends AddressLookupResponse
+case class AddressLookupSuccessResponse(searchedPostcode: String, records: Seq[AddressRecord])
+    extends AddressLookupResponse
+case class AddressLookupErrorResponse(cause: Exception) extends AddressLookupResponse

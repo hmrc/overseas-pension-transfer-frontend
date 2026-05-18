@@ -28,7 +28,9 @@ import viewmodels.implicits._
 
 object SchemeManagersAddressSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(SchemeManagersAddressPage).map { address =>
       val value = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
 
@@ -43,8 +45,8 @@ object SchemeManagersAddressSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "schemeManagersAddress.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlContent(value)),
+        key = "schemeManagersAddress.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(value)),
         actions = actions
       )
     }

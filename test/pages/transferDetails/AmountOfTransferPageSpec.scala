@@ -33,7 +33,8 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
     "in Normal Mode" - {
 
       "must go to IsTransferTaxable page" in {
-        AmountOfTransferPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.IsTransferTaxableController.onPageLoad(NormalMode)
+        AmountOfTransferPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.IsTransferTaxableController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -41,7 +42,8 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Check Answers" in {
 
-        AmountOfTransferPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        AmountOfTransferPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.TransferDetailsCYAController
+          .onPageLoad()
       }
     }
 
@@ -64,7 +66,8 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
             .set(IsTransferCashOnlyPage, true)
             .flatMap(_.set(TransferDetailsRecordVersionQuery, "1"))
             .flatMap(_.set(TypeOfAssetsRecordVersionQuery, "1"))
-            .toOption.get
+            .toOption
+            .get
 
           val result = AmountOfTransferPage.cleanup(Some(amount), userAnswers).get
 
@@ -79,7 +82,8 @@ class AmountOfTransferPageSpec extends AnyFreeSpec with Matchers with SpecBase {
             .set(IsTransferCashOnlyPage, false)
             .flatMap(_.set(TransferDetailsRecordVersionQuery, "1"))
             .flatMap(_.set(TypeOfAssetsRecordVersionQuery, "1"))
-            .toOption.get
+            .toOption
+            .get
 
           val result = AmountOfTransferPage.cleanup(Some(amount), userAnswers).get
 

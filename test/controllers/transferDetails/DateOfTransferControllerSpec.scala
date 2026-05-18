@@ -74,7 +74,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val view    = application.injector.instanceOf[DateOfTransferView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(form, NormalMode)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
         }
       }
 
@@ -90,7 +93,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val result  = route(application, getRequest).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(today), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
         }
       }
 
@@ -98,10 +104,14 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val originalDate = LocalDate.of(2025, 1, 25)
 
         val originalSubmission = emptyUserAnswers
-          .set(DateOfTransferPage, originalDate).success.value
+          .set(DateOfTransferPage, originalDate)
+          .success
+          .value
 
         val currentUserAnswers = emptyUserAnswers
-          .set(DateOfTransferPage, originalDate.minusDays(5)).success.value
+          .set(DateOfTransferPage, originalDate.minusDays(5))
+          .success
+          .value
 
         val mockUserAnswersService = mock[UserAnswersService]
         when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
@@ -122,7 +132,11 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val amendForm         = amendFormProvider(originalDate)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(amendForm.fill(originalDate.minusDays(5)), AmendCheckMode, isAmend = true)(
+          contentAsString(result) mustEqual view(
+            amendForm.fill(originalDate.minusDays(5)),
+            AmendCheckMode,
+            isAmend = true
+          )(
             fakeDisplayRequest(request),
             messages(application)
           ).toString
@@ -203,7 +217,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, NormalMode)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
         }
       }
 
@@ -212,7 +229,9 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val newDate      = originalDate.plusDays(1)
 
         val originalSubmission = emptyUserAnswers
-          .set(DateOfTransferPage, originalDate).success.value
+          .set(DateOfTransferPage, originalDate)
+          .success
+          .value
 
         val mockUserAnswersService = mock[UserAnswersService]
         when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))

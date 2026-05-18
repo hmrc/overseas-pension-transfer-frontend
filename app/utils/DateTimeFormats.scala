@@ -25,15 +25,15 @@ object DateTimeFormats {
 
   val displayDate: DateTimeFormatter            =
     DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH)
-  val localDateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+  val localDateTimeFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
 
   private val localisedDateTimeFormatters = Map(
     "en" -> displayDate
   )
 
-  def dateTimeFormat(implicit lang: Lang): DateTimeFormatter = {
+  def dateTimeFormat(implicit lang: Lang): DateTimeFormatter =
     localisedDateTimeFormatters.getOrElse(lang.code, displayDate)
-  }
 
   val dateInput: DateTimeFormatter =
     DateTimeFormatter.ofPattern("dd MM yyyy")
@@ -44,9 +44,8 @@ object DateTimeFormats {
   val display12h: DateTimeFormatter =
     DateTimeFormatter.ofPattern("h:mma", Locale.ENGLISH)
 
-  val display24h: DateTimeFormatter = {
+  val display24h: DateTimeFormatter =
     DateTimeFormatter.ofPattern("HH:mm")
-  }
 
   val emailDisplayDate: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 

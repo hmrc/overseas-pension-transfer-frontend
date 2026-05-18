@@ -27,12 +27,11 @@ import viewmodels.implicits._
 object MemberDateOfBirthSummary {
 
   def row(
-      mode: Mode,
-      answers: UserAnswers,
-      showChangeLink: Boolean           = true,
-      additionalClasses: Option[String] = None
-    )(implicit messages: Messages
-    ): Option[SummaryListRow] =
+    mode: Mode,
+    answers: UserAnswers,
+    showChangeLink: Boolean = true,
+    additionalClasses: Option[String] = None
+  )(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberDateOfBirthPage).map { answer =>
       implicit val lang: Lang = messages.lang
 
@@ -47,8 +46,8 @@ object MemberDateOfBirthSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "memberDateOfBirth.checkYourAnswersLabel",
-        value   = ValueViewModel(answer.format(dateTimeFormat)),
+        key = "memberDateOfBirth.checkYourAnswersLabel",
+        value = ValueViewModel(answer.format(dateTimeFormat)),
         actions = actions
       ).withCssClass(additionalClasses.getOrElse(""))
     }

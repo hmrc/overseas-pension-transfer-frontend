@@ -34,16 +34,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DashboardSessionRepository @Inject() (
-    mongoComponent: MongoComponent,
-    encryptionService: EncryptionService,
-    appConfig: FrontendAppConfig,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) extends PlayMongoRepository[DashboardData](
+  mongoComponent: MongoComponent,
+  encryptionService: EncryptionService,
+  appConfig: FrontendAppConfig,
+  clock: Clock
+)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[DashboardData](
       collectionName = "dashboard-data",
       mongoComponent = mongoComponent,
-      domainFormat   = DashboardData.encryptedFormat(encryptionService),
-      indexes        = Seq(
+      domainFormat = DashboardData.encryptedFormat(encryptionService),
+      indexes = Seq(
         IndexModel(
           Indexes.ascending("lastUpdated"),
           IndexOptions()
@@ -83,11 +83,10 @@ class DashboardSessionRepository @Inject() (
   }
 
   def get(id: String): Future[Option[DashboardData]] = Mdc.preservingMdc {
-    keepAlive(id).flatMap {
-      _ =>
-        collection
-          .find(byId(id))
-          .headOption()
+    keepAlive(id).flatMap { _ =>
+      collection
+        .find(byId(id))
+        .headOption()
     }
   }
 
@@ -97,9 +96,9 @@ class DashboardSessionRepository @Inject() (
 
     collection
       .replaceOne(
-        filter      = byId(updatedData.id),
+        filter = byId(updatedData.id),
         replacement = updatedData,
-        options     = ReplaceOptions().upsert(true)
+        options = ReplaceOptions().upsert(true)
       )
       .toFuture()
       .map(_ => true)

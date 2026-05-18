@@ -31,22 +31,26 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TransferConnector @Inject() (
-    appConfig: FrontendAppConfig,
-    http: HttpClientV2
-  )(implicit ec: ExecutionContext
-  ) extends Logging with DownstreamLogging {
+  appConfig: FrontendAppConfig,
+  http: HttpClientV2
+)(implicit ec: ExecutionContext)
+    extends Logging
+    with DownstreamLogging {
 
-  def getAllTransfers(srnNumber: SrnNumber, pstrNumber: PstrNumber)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetAllTransfersType] = {
+  def getAllTransfers(srnNumber: SrnNumber, pstrNumber: PstrNumber)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[GetAllTransfersType] = {
     def allTransfersUrl: URL =
       url"${appConfig.backendService}/get-all-transfers/${pstrNumber.value}"
 
-    http.get(allTransfersUrl)
+    http
+      .get(allTransfersUrl)
       .setHeader("schemeReferenceNumber" -> srnNumber.value)
       .execute[GetAllTransfersType]
-      .recover {
-        case e: Exception =>
-          val errMsg = logNonHttpError("[TransferConnector][getAllTransfers]", hc, e)
-          Left(AllTransfersUnexpectedError(errMsg, None))
+      .recover { case e: Exception =>
+        val errMsg = logNonHttpError("[TransferConnector][getAllTransfers]", hc, e)
+        Left(AllTransfersUnexpectedError(errMsg, None))
       }
   }
 }

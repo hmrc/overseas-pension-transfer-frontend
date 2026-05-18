@@ -32,29 +32,34 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MpsOnRampController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    dashboardRepo: DashboardSessionRepository,
-    identify: IdentifierAction,
-    schemeData: SchemeDataAction,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  val controllerComponents: MessagesControllerComponents,
+  dashboardRepo: DashboardSessionRepository,
+  identify: IdentifierAction,
+  schemeData: SchemeDataAction,
+  clock: Clock
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   def onRamp(srn: String): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     val dashboardData = DashboardData.create(request.authenticatedUser.internalId, Instant.now(clock))
 
-    Future.fromTry(dashboardData.set(PensionSchemeDetailsQuery, request.schemeDetails)).flatMap { dd1 =>
-      dashboardRepo.set(dd1).map { persisted =>
-        if (persisted) {
-          Redirect(MpsOnRampPage.nextPage(dd1))
-        } else {
-          logger.warn("[MpsOnRampController][onRamp] dashboardRepo.set returned false")
-          Redirect(MpsOnRampPage.nextPageRecovery())
+    Future
+      .fromTry(dashboardData.set(PensionSchemeDetailsQuery, request.schemeDetails))
+      .flatMap { dd1 =>
+        dashboardRepo.set(dd1).map { persisted =>
+          if (persisted) {
+            Redirect(MpsOnRampPage.nextPage(dd1))
+          } else {
+            logger.warn("[MpsOnRampController][onRamp] dashboardRepo.set returned false")
+            Redirect(MpsOnRampPage.nextPageRecovery())
+          }
         }
       }
-    }.recover { case t =>
-      logger.error("[MpsOnRampController][onRamp] Failed while setting/persisting dashboard data", t)
-      Redirect(MpsOnRampPage.nextPageRecovery())
-    }
+      .recover { case t =>
+        logger.error("[MpsOnRampController][onRamp] Failed while setting/persisting dashboard data", t)
+        Redirect(MpsOnRampPage.nextPageRecovery())
+      }
   }
 }

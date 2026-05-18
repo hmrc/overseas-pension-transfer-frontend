@@ -28,21 +28,20 @@ class AmendDateOfTransferFormProvider @Inject() extends Mappings {
 
   def minDate: LocalDate = LocalDate of (2012, 4, 6)
 
-  def apply(submissionDate: LocalDate)(implicit messages: Messages): Form[LocalDate] = {
+  def apply(submissionDate: LocalDate)(implicit messages: Messages): Form[LocalDate] =
 
     Form(
       "value" -> localDate(
         invalidCharacter = "common.dateInput.error.invalid.character",
-        invalidKey       = "dateOfTransfer.error.invalid",
-        requiredKey      = "common.dateInput.error.required",
-        twoRequiredKey   = "common.dateInput.error.required.two",
-        allRequiredKey   = "dateOfTransfer.error.required.all",
-        realDateKey      = "dateOfTransfer.error.real.date"
+        invalidKey = "dateOfTransfer.error.invalid",
+        requiredKey = "common.dateInput.error.required",
+        twoRequiredKey = "common.dateInput.error.required.two",
+        allRequiredKey = "dateOfTransfer.error.required.all",
+        realDateKey = "dateOfTransfer.error.real.date"
       )
         .verifying(
           minDate(minDate, "dateOfTransfer.amend.error.invalid.mindate", minDate.format(dateInput)),
           maxDate(submissionDate, "dateOfTransfer.amend.error.afterSubmissionDate", submissionDate.format(dateInput))
         )
     )
-  }
 }

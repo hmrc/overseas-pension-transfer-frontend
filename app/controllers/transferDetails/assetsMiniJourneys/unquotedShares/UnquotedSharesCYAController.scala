@@ -36,15 +36,18 @@ import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedShar
 import scala.concurrent.ExecutionContext
 
 class UnquotedSharesCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    userAnswersService: UserAnswersService,
-    val controllerComponents: MessagesControllerComponents,
-    view: UnquotedSharesCYAView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  userAnswersService: UserAnswersService,
+  val controllerComponents: MessagesControllerComponents,
+  view: UnquotedSharesCYAView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with AppUtils
+    with Logging {
 
   private val actions = identify andThen schemeData andThen getData
 
@@ -55,16 +58,16 @@ class UnquotedSharesCYAController @Inject() (
   }
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = actions.async { implicit request =>
-    val updatedUserAnswers = AssetThresholdHandler.handle(request.userAnswers, TypeOfAsset.UnquotedShares, userSelection = None)
+    val updatedUserAnswers =
+      AssetThresholdHandler.handle(request.userAnswers, TypeOfAsset.UnquotedShares, userSelection = None)
     for {
-      saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers, request.sessionData.schemeInformation.srnNumber)
-    } yield {
-      saved match {
-        case Right(Done) =>
-          Redirect(UnquotedSharesCYAPage(index).nextPage(mode, request.userAnswers))
-        case _           =>
-          Redirect(UnquotedSharesCYAPage(index).nextPageRecovery())
-      }
+      saved <-
+        userAnswersService.setExternalUserAnswers(updatedUserAnswers, request.sessionData.schemeInformation.srnNumber)
+    } yield saved match {
+      case Right(Done) =>
+        Redirect(UnquotedSharesCYAPage(index).nextPage(mode, request.userAnswers))
+      case _           =>
+        Redirect(UnquotedSharesCYAPage(index).nextPageRecovery())
     }
   }
 }

@@ -36,18 +36,19 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
 class PropertyAmendContinueController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: PropertyAmendContinueFormProvider,
-    sessionRepository: SessionRepository,
-    val controllerComponents: MessagesControllerComponents,
-    miniJourney: PropertyMiniJourney.type,
-    view: PropertyAmendContinueView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: PropertyAmendContinueFormProvider,
+  sessionRepository: SessionRepository,
+  val controllerComponents: MessagesControllerComponents,
+  miniJourney: PropertyMiniJourney.type,
+  view: PropertyAmendContinueView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[Boolean] = formProvider()
 
@@ -60,7 +61,10 @@ class PropertyAmendContinueController @Inject() (
       mode match {
         case CheckMode | FinalCheckMode | AmendCheckMode =>
           for {
-            updatedSession <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Property, completed = false))
+            updatedSession <-
+              Future.fromTry(
+                AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Property, completed = false)
+              )
             _              <- sessionRepository.set(updatedSession)
           } yield {
             val shares = PropertyAmendContinueSummary.rows(mode, request.userAnswers)
@@ -74,33 +78,39 @@ class PropertyAmendContinueController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val shares = PropertyAmendContinueSummary.rows(mode, request.userAnswers)
-          Future.successful(BadRequest(view(formWithErrors, shares, mode)))
-        },
-        continue => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode && continue) {
-              for {
-                addContinue                        <- request.userAnswers.set(PropertyAmendContinueAssetPage, continue)
-                removeTransferDetailsRecordVersion <- addContinue.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-              } yield removeTypeOfAssetsRecordVersion
-            } else {
-              request.userAnswers.set(PropertyAmendContinueAssetPage, continue)
-            }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val shares = PropertyAmendContinueSummary.rows(mode, request.userAnswers)
+            Future.successful(BadRequest(view(formWithErrors, shares, mode)))
+          },
+          continue => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode && continue) {
+                for {
+                  addContinue                        <- request.userAnswers.set(PropertyAmendContinueAssetPage, continue)
+                  removeTransferDetailsRecordVersion <- addContinue.remove(TransferDetailsRecordVersionQuery)
+                  removeTypeOfAssetsRecordVersion    <-
+                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                } yield removeTypeOfAssetsRecordVersion
+              } else {
+                request.userAnswers.set(PropertyAmendContinueAssetPage, continue)
+              }
 
-          for {
-            sd  <- Future.fromTry(AssetsMiniJourneyService.setAssetCompleted(request.sessionData, TypeOfAsset.Property, completed = true))
-            _   <- sessionRepository.set(sd)
-            ua1 <- Future.fromTry(setAnswers())
-            _   <- userAnswersService.setExternalUserAnswers(ua1, request.sessionData.schemeInformation.srnNumber)
-          } yield {
-            val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
-            Redirect(PropertyAmendContinueAssetPage.nextPageWith(mode, ua1, (sd, nextIndex)))
+            for {
+              sd  <- Future.fromTry(
+                       AssetsMiniJourneyService
+                         .setAssetCompleted(request.sessionData, TypeOfAsset.Property, completed = true)
+                     )
+              _   <- sessionRepository.set(sd)
+              ua1 <- Future.fromTry(setAnswers())
+              _   <- userAnswersService.setExternalUserAnswers(ua1, request.sessionData.schemeInformation.srnNumber)
+            } yield {
+              val nextIndex = AssetsMiniJourneyService.assetCount(miniJourney, request.userAnswers)
+              Redirect(PropertyAmendContinueAssetPage.nextPageWith(mode, ua1, (sd, nextIndex)))
+            }
           }
-        }
-      )
+        )
   }
 }

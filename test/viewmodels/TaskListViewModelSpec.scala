@@ -46,7 +46,7 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
         val rows = TaskListViewModel.rows(emptyUserAnswers)
 
-        rows must not be empty
+        rows                                               must not be empty
         rows.head.href mustBe Some(controllers.memberDetails.routes.MemberNameController.onPageLoad(NormalMode).url)
         all(rows.tail.map(_.href)) mustBe None
         all(rows.tail.map(_.status.tag.value.classes.contains("govuk-tag--grey"))) mustBe true
@@ -58,17 +58,19 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
       val application = applicationBuilder().build()
       running(application) {
 
-        val validJson = Json.obj("memberDetails" -> Json.obj(
-          "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"                   -> "AA000000A",
-          "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
-          "principalResAddDetails" -> Json.obj(
-            "addressLine1" -> "line1",
-            "addressLine2" -> "line2",
-            "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-          ),
-          "memUkResident"          -> true
-        ))
+        val validJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "nino"                   -> "AA000000A",
+            "dateOfBirth"            -> LocalDate.of(1993, 11, 11),
+            "principalResAddDetails" -> Json.obj(
+              "addressLine1" -> "line1",
+              "addressLine2" -> "line2",
+              "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+            ),
+            "memUkResident"          -> true
+          )
+        )
 
         val userAnswersWithMemberDetails = emptyUserAnswers.copy(data = validJson)
 
@@ -76,8 +78,8 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
         val memberRow = findRowById(rows, TaskJourneyViewModels.MemberDetailsJourneyViewModel.id)
 
         memberRow.href.value mustEqual controllers.memberDetails.routes.MemberDetailsCYAController.onPageLoad().url
-        memberRow.status.tag.value.classes must not include ("govuk-tag--grey")
-        memberRow.status.tag.value.classes must not include ("govuk-tag--blue")
+        memberRow.status.tag.value.classes must not include "govuk-tag--grey"
+        memberRow.status.tag.value.classes must not include "govuk-tag--blue"
       }
     }
 
@@ -88,7 +90,9 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
         val rows      = TaskListViewModel.rows(emptyUserAnswers)
         val memberRow = findRowById(rows, TaskJourneyViewModels.MemberDetailsJourneyViewModel.id)
 
-        memberRow.href.value mustEqual controllers.memberDetails.routes.MemberNameController.onPageLoad(models.NormalMode).url
+        memberRow.href.value mustEqual controllers.memberDetails.routes.MemberNameController
+          .onPageLoad(models.NormalMode)
+          .url
         memberRow.status.tag.value.classes must include("govuk-tag--blue")
       }
     }
@@ -96,16 +100,20 @@ class TaskListViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
     "uses start(NormalMode) link when InProgress and shows blue tag" in {
       val application = applicationBuilder().build()
       running(application) {
-        val incomplete = Json.obj("memberDetails" -> Json.obj(
-          "name"        -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-          "nino"        -> "AA000000A",
-          "dateOfBirth" -> LocalDate.of(1993, 11, 11)
-        ))
+        val incomplete = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name"        -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+            "nino"        -> "AA000000A",
+            "dateOfBirth" -> LocalDate.of(1993, 11, 11)
+          )
+        )
 
         val rows     = TaskListViewModel.rows(emptyUserAnswers.copy(data = incomplete))
         val transfer = findRowById(rows, TaskJourneyViewModels.MemberDetailsJourneyViewModel.id)
 
-        transfer.href.value mustEqual controllers.memberDetails.routes.MemberNameController.onPageLoad(models.NormalMode).url
+        transfer.href.value mustEqual controllers.memberDetails.routes.MemberNameController
+          .onPageLoad(models.NormalMode)
+          .url
         transfer.status.tag.value.classes must include("govuk-tag--light-blue")
       }
     }

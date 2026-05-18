@@ -30,7 +30,10 @@ class QuotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
     "in Normal Mode" - {
       "must go to the Next page" in {
-        QuotedSharesNumberPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
+        QuotedSharesNumberPage(index).nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
           NormalMode,
           index
         )
@@ -39,7 +42,10 @@ class QuotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
     "in CheckMode" - {
       "must go to the Next page" in {
-        QuotedSharesNumberPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
+        QuotedSharesNumberPage(index).nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
           CheckMode,
           index
         )
@@ -48,7 +54,10 @@ class QuotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        QuotedSharesNumberPage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
+        QuotedSharesNumberPage(index).nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -57,7 +66,10 @@ class QuotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        QuotedSharesNumberPage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
+        QuotedSharesNumberPage(index).nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(
           AmendCheckMode,
           index
         )
@@ -66,12 +78,14 @@ class QuotedSharesNumberPageSpec extends AnyFreeSpec with Matchers with SpecBase
 
     "should go to CYA when complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.QuotedShares))
-      QuotedSharesNumberPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(NormalMode, index)
+      QuotedSharesNumberPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.QuotedSharesCYAController
+        .onPageLoad(NormalMode, index)
     }
 
     "should go to Shares Number page when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
-      QuotedSharesNumberPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.QuotedSharesClassController.onPageLoad(NormalMode, index)
+      QuotedSharesNumberPage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.QuotedSharesClassController
+        .onPageLoad(NormalMode, index)
     }
   }
 }

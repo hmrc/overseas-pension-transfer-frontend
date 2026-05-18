@@ -23,11 +23,11 @@ sealed trait JourneyStartedType
 
 object JourneyStartedType {
 
-  case object StartNewTransfer            extends WithName("startNewTransferReport") with JourneyStartedType
-  case object ContinueTransfer            extends WithName("continueTransferReportInProgress") with JourneyStartedType
-  case object StartAmendmentOfTransfer    extends WithName("amendSubmittedTransferReport") with JourneyStartedType
+  case object StartNewTransfer extends WithName("startNewTransferReport") with JourneyStartedType
+  case object ContinueTransfer extends WithName("continueTransferReportInProgress") with JourneyStartedType
+  case object StartAmendmentOfTransfer extends WithName("amendSubmittedTransferReport") with JourneyStartedType
   case object ContinueAmendmentOfTransfer extends WithName("progressAmendedSubmission") with JourneyStartedType
-  case object StartJourneyFailed          extends WithName("startJourneyFailed") with JourneyStartedType
+  case object StartJourneyFailed extends WithName("startJourneyFailed") with JourneyStartedType
 
   val values: Seq[JourneyStartedType] =
     Seq(StartNewTransfer, ContinueTransfer, StartAmendmentOfTransfer, ContinueAmendmentOfTransfer, StartJourneyFailed)
@@ -44,7 +44,6 @@ object JourneyStartedType {
     case _                                              => JsError("error.invalid")
   }
 
-  implicit def writes: Writes[JourneyStartedType] = {
+  implicit def writes: Writes[JourneyStartedType] =
     Writes(value => JsString(value.toString))
-  }
 }

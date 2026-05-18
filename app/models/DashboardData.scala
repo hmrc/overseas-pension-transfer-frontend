@@ -26,10 +26,10 @@ import java.time.Instant
 import scala.util.{Failure, Success, Try}
 
 final case class DashboardData(
-    id: String,
-    data: JsObject,
-    lastUpdated: Instant
-  ) {
+  id: String,
+  data: JsObject,
+  lastUpdated: Instant
+) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
@@ -43,9 +43,8 @@ final case class DashboardData(
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
-      d =>
-        Success(copy(data = d))
+    updatedData.flatMap { d =>
+      Success(copy(data = d))
     }
   }
 
@@ -58,9 +57,8 @@ final case class DashboardData(
         Success(data)
     }
 
-    updatedData.flatMap {
-      d =>
-        Success(copy(data = d))
+    updatedData.flatMap { d =>
+      Success(copy(data = d))
     }
   }
 }
@@ -124,8 +122,8 @@ object DashboardData {
     )(DashboardData.apply _)
 
     val writes: OWrites[DashboardData] = OWrites { dd =>
-      implicit val es: EncryptionService    = encryptionService
-      val encrypted: EncryptedDashboardData = DecryptedDashboardData(dd.data).encrypt
+      implicit val es: EncryptionService            = encryptionService
+      val encrypted: EncryptedDashboardData         = DecryptedDashboardData(dd.data).encrypt
       Json.obj(
         "_id"         -> dd.id,
         "data"        -> encrypted.encryptedString,
@@ -137,8 +135,8 @@ object DashboardData {
   }
 
   def create(id: String, now: Instant): DashboardData = DashboardData(
-    id          = id,
-    data        = Json.obj(),
+    id = id,
+    data = Json.obj(),
     lastUpdated = now
   )
 
