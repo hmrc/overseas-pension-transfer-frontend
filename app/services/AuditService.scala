@@ -31,7 +31,7 @@ class AuditService @Inject() (
   auditConnector: AuditConnector
 )(implicit ec: ExecutionContext) {
 
-  def audit(eventData: JsonAuditModel)(implicit hc: HeaderCarrier): Unit =
+  def audit(eventData: JsonAuditModel)(implicit hc: HeaderCarrier): Unit = {
     auditConnector.sendExtendedEvent(
       ExtendedDataEvent(
         auditSource = appConfig.appName,
@@ -40,4 +40,6 @@ class AuditService @Inject() (
         tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags()
       )
     )
+    ()
+  }
 }

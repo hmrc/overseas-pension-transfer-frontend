@@ -31,7 +31,7 @@ class MemberDateOfLeavingUKFormProviderSpec extends DateBehaviours with SpecBase
   ".value" - {
 
     val validData = datesBetween(
-      min = LocalDate.of(1901, 1, 1),
+      min = LocalDate.of(minYear, 1, 1),
       max = today
     )
 

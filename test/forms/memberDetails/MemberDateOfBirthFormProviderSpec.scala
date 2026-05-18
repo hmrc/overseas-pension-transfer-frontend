@@ -30,7 +30,7 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours with SpecBase {
   implicit private val messages: Messages = stubMessages()
   private val form                        = new MemberDateOfBirthFormProvider(clock)()
 
-  private val minDate = LocalDate.of(1901, 1, 1)
+  private val minDate = LocalDate.of(minYear, 1, 1)
   private val maxDate = today
 
   ".value" - {

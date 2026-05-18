@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class AmendDateOfTransferFormProvider @Inject() extends Mappings {
 
-  def minDate: LocalDate = LocalDate of (2012, 4, 6)
+  def minDate: LocalDate = LocalDate.of(minAmendDate, 4, 6)
 
   def apply(submissionDate: LocalDate)(implicit messages: Messages): Form[LocalDate] =
 

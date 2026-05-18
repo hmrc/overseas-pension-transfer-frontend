@@ -25,6 +25,8 @@ import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
+  protected final val minAmendDate: Int                                                                        = 2012
+  protected final val minYear: Int                                                                             = 1901
   protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
 

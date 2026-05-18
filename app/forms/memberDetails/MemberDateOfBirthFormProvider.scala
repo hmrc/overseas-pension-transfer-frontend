@@ -25,8 +25,7 @@ import java.time.{Clock, LocalDate}
 import javax.inject.Inject
 
 class MemberDateOfBirthFormProvider @Inject() (clock: Clock) extends Mappings {
-
-  def minDate: LocalDate = LocalDate of (1901, 1, 1)
+  def minDate: LocalDate = LocalDate.of(minYear, 1, 1)
   def maxDate: LocalDate = LocalDate.now(clock)
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
