@@ -146,7 +146,7 @@ package object models {
                   }
                 }
             }
-        case (a, b)                                                                    => JsError(s"Invalid removal request for path $path")
+        case _                                                                         => JsError(s"Invalid removal request for path $path")
       }
   }
 }
