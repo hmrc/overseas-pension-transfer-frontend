@@ -34,10 +34,12 @@ object AddressLookupStub {
 
   def responsePostPostcode(postcode: String)(status: Int, body: String): Unit = {
     stubPost("/lookup", Some(s"""{ "postcode": "$postcode" }"""), status, body)
+    ()
   }
 
   def errorResponsePostPostcode(postcode: String)(status: Int, body: String): Unit = {
     stubPost("/lookup", Some(s"""{ "postcode": "$postcode" }"""), status, body)
+    ()
   }
 
   val noAddressesFoundResponseJson: String =

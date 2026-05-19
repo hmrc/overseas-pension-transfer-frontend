@@ -17,7 +17,6 @@
 package models
 
 import base.SpecBase
-import models.TaskCategory.*
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.SubmitToHMRCPage

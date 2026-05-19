@@ -34,35 +34,45 @@ object TransferBackendStub extends SpecBase{
 
   // ----- get all -----
 
-  def getAllTransfersOk(pstr: String, nino: String): Unit =
+  def stubGetAllTransfersOk(pstr: String, nino: String): Unit = {
     stubFor(
       get(urlEqualTo(allTransfersUrl(pstr)))
         .willReturn(okJson(successJson(pstr, nino)))
     )
+    ()
+  }
 
-  def getAllTransfersOkWithInvalidItems(pstr: String, nino: String): Unit =
+  def stubGetAllTransfersOkWithInvalidItems(pstr: String, nino: String): Unit = {
     stubFor(
       get(urlEqualTo(allTransfersUrl(pstr)))
         .willReturn(okJson(successJsonWithInvalidItem(pstr, nino)))
     )
+    ()
+  }
 
-  def getAllTransfersNotFound(pstr: String): Unit =
+  def stubGetAllTransfersNotFound(pstr: String): Unit = {
     stubFor(
       get(urlEqualTo(allTransfersUrl(pstr)))
         .willReturn(notFound())
     )
+    ()
+  }
 
-  def getAllTransfersServerError(pstr: String): Unit =
+  def stubGetAllTransfersServerError(pstr: String): Unit = {
     stubFor(
       get(urlEqualTo(allTransfersUrl(pstr)))
         .willReturn(serverError())
     )
+    ()
+  }
 
-  def getAllTransfersMalformed(pstr: String): Unit =
+  def stubGetAllTransfersMalformed(pstr: String): Unit = {
     stubFor(
       get(urlEqualTo(allTransfersUrl(pstr)))
         .willReturn(okJson("""{ "this": "is-not-a-valid-dto" }"""))
     )
+    ()
+  }
 
   // ----- JSON fixtures (get all) -----
 
@@ -138,7 +148,7 @@ object TransferBackendStub extends SpecBase{
 
   // ----- get specific -----
 
-  def getSpecificTransferOk(
+  def stubGetSpecificTransferOk(
                              referenceId: String,
                              pstr: String,
                              qtStatus: String,
@@ -168,9 +178,10 @@ object TransferBackendStub extends SpecBase{
         )
       )
     )
+    ()
   }
 
-  def getSpecificTransferMalformed(
+  def stubGetSpecificTransferMalformed(
                                     referenceId: String,
                                     pstr: String,
                                     qtStatus: String,
@@ -187,9 +198,10 @@ object TransferBackendStub extends SpecBase{
     stubFor(
       withVersion.willReturn(okJson("""{ "bad": "shape" }"""))
     )
+    ()
   }
 
-  def getSpecificTransferNotFound(
+  def stubGetSpecificTransferNotFound(
                                    referenceId: String,
                                    pstr: String,
                                    qtStatus: String,
@@ -206,9 +218,10 @@ object TransferBackendStub extends SpecBase{
     stubFor(
       withVersion.willReturn(notFound())
     )
+    ()
   }
 
-  def getSpecificTransferServerError(
+  def stubGetSpecificTransferServerError(
                                       referenceId: String,
                                       pstr: String,
                                       qtStatus: String,
@@ -225,5 +238,6 @@ object TransferBackendStub extends SpecBase{
     stubFor(
       withVersion.willReturn(serverError())
     )
+    ()
   }
 }

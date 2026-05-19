@@ -60,10 +60,7 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged := true,
     pipelineStages := Seq(digest),
     Assets / pipelineStages := Seq(concat),
-    scalafmtOnCompile := true,
-    semanticdbEnabled := true,
-    semanticdbVersion := scalafixSemanticdb.revision,
-    scalafixOnCompile := true
+    scalafmtOnCompile := true
   )
 
 lazy val testSettings: Seq[Def.Setting[?]] = Seq(

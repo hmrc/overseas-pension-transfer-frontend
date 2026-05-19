@@ -59,8 +59,10 @@ class TypeOfAssetController @Inject() (
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
     val preparedForm = request.userAnswers.get(AnswersSelectedAssetTypes) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+      case None        =>
+        form
+      case Some(value) =>
+        form.fill(value)
     }
 
     Ok(view(preparedForm, mode))
