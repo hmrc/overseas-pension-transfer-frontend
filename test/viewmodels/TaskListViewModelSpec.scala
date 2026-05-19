@@ -17,14 +17,12 @@
 package viewmodels
 
 import base.SpecBase
-import models.taskList.TaskStatus
-import models.{NormalMode, TaskCategory, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.Helpers.*
-import queries.TaskStatusQuery
 import uk.gov.hmrc.govukfrontend.views.Aliases.TaskListItem
 
 import java.time.LocalDate

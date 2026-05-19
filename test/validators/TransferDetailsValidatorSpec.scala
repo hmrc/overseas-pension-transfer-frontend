@@ -24,9 +24,9 @@ import models.WhyTransferIsNotTaxable.IndividualIsEmployeeOccupational
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
 import models.address.{Country, PropertyAddress}
 import models.assets.*
-import models.assets.TypeOfAsset.{Cash, Other, Property}
+import models.assets.TypeOfAsset.{Cash, Other}
 import models.transferJourneys.*
-import models.{ApplicableTaxExclusions, DataMissingError, GenericError, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
+import models.{ApplicableTaxExclusions, DataMissingError, GenericError, WhyTransferIsTaxable}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.*
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
@@ -36,8 +36,6 @@ import pages.transferDetails.assetsMiniJourneys.quotedShares.*
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.*
 import play.api.libs.json.Json
 import queries.assets.{OtherAssetsQuery, PropertyQuery, QuotedSharesQuery, UnquotedSharesQuery}
-
-import java.time.LocalDate
 
 class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 

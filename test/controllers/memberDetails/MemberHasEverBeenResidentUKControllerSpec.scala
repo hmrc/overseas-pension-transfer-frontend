@@ -156,7 +156,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must remove MembersLastUKAddressPage if changed from true to false in CheckMode" in {
-      implicit val hc: HeaderCarrier = HeaderCarrier()
+      HeaderCarrier()
 
       val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
       val previousAnswers = emptyUserAnswers

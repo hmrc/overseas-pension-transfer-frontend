@@ -29,7 +29,6 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.PspDeclarationPage
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.ControllerComponents
@@ -40,7 +39,6 @@ import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PspDeclarationView
 
-import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
 class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {

@@ -18,16 +18,10 @@ package models
 
 import base.SpecBase
 import models.TaskCategory.*
-import models.assets.{QuotedSharesEntry, UnquotedSharesEntry}
-import models.taskList.TaskStatus
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.SubmitToHMRCPage
 import play.api.libs.json.*
-import queries.TaskStatusQuery
-import queries.assets.{QuotedSharesQuery, UnquotedSharesQuery}
-
-import java.time.Instant
 
 class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
 

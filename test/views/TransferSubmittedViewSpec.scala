@@ -26,8 +26,8 @@ import views.utils.ViewBaseSpec
 
 class TransferSubmittedViewSpec extends ViewBaseSpec {
 
-  private val appConfig = new TestAppConfig
-  private val view      = applicationBuilder().injector().instanceOf[TransferSubmittedView]
+  new TestAppConfig
+  private val view = applicationBuilder().injector().instanceOf[TransferSubmittedView]
 
   implicit val schemeRequest: SchemeRequest[_] = SchemeRequest(
     request = FakeRequest(),

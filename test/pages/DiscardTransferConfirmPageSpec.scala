@@ -20,11 +20,8 @@ import base.SpecBase
 import controllers.routes
 import models.QtStatus.AmendInProgress
 import models.{AmendCheckMode, NormalMode, PstrNumber, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-
-import scala.util.Try
 
 class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 

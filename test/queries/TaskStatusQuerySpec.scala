@@ -18,10 +18,9 @@ package queries
 
 import base.SpecBase
 import models.taskList.TaskStatus
-import models.{PstrNumber, TaskCategory, UserAnswers}
+import models.TaskCategory
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import play.api.libs.json.Json
 
 class TaskStatusQuerySpec extends AnyFreeSpec with Matchers with SpecBase {
 

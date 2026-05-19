@@ -26,8 +26,6 @@ import play.api.libs.json.*
 import queries.TaskStatusQuery
 import services.EncryptionService
 
-import java.time.Instant
-
 class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   private val encryptionService = new EncryptionService("F42sAkGScIpm4Vlui6XGpKW/zvmfyAYyoNHeLVQuoCk=")

@@ -28,10 +28,10 @@ class QROPSAddressViewSpec extends ViewBaseSpec {
 
   private val application = applicationBuilder().build()
 
-  private val view                                  = application.injector.instanceOf[QROPSAddressView]
-  private val formProvider                          = application.injector.instanceOf[QROPSAddressFormProvider]
-  private val countrySelectViewModel                = CountrySelectViewModel(Seq.empty)
-  implicit private val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+  private val view                   = application.injector.instanceOf[QROPSAddressView]
+  private val formProvider           = application.injector.instanceOf[QROPSAddressFormProvider]
+  private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
+  application.injector.instanceOf[FrontendAppConfig]
 
   "QROPSAddressView" - {
 

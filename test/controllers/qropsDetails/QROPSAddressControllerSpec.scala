@@ -30,7 +30,6 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsDetails.QROPSAddressPage
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -56,8 +55,8 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
     Country("FR", "France")
   )
 
-  implicit private val messages: Messages = stubMessages()
-  private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
+  stubMessages()
+  private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
 
   private val mockCountryService = mock[CountryService]
 
@@ -99,9 +98,9 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
         .build()
 
       running(application) {
-        val request   = FakeRequest(GET, qropsAddressRoute)
-        val view      = application.injector.instanceOf[QROPSAddressView]
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
+        val request = FakeRequest(GET, qropsAddressRoute)
+        val view    = application.injector.instanceOf[QROPSAddressView]
+        application.injector.instanceOf[FrontendAppConfig]
 
         val result = route(application, request).value
 

@@ -29,7 +29,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.Messages
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -37,7 +36,7 @@ import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.transferDetails.DateOfTransferView
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {

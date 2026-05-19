@@ -18,9 +18,8 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{AmendCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
 class SubmitToHMRCPageSpec extends AnyFreeSpec with SpecBase {
 

@@ -17,7 +17,6 @@
 package controllers.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
-import controllers.routes
 import forms.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationFormProvider
 import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec

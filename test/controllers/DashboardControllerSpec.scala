@@ -33,10 +33,9 @@ import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import services.{AuditService, LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.lock.{Lock}
+import uk.gov.hmrc.mongo.lock.Lock
 import views.html.DashboardView
 
-import java.time.{Instant, LocalDate}
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 

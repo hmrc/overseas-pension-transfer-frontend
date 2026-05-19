@@ -28,11 +28,9 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class AddressServiceSpec extends AnyFreeSpec with AddressBase with MockitoSugar with ScalaFutures {
 
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
+  HeaderCarrier()
 
   private val mockCountryService = mock[CountryService]
 

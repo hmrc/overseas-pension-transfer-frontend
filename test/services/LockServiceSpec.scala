@@ -30,9 +30,8 @@ import org.scalatestplus.mockito.MockitoSugar
 import repositories.EnhancedLockRepository
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
+import uk.gov.hmrc.mongo.lock.Lock
 
-import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}

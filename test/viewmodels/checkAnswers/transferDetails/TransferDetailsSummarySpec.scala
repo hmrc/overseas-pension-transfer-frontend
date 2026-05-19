@@ -34,8 +34,6 @@ import play.api.test.Helpers.stubMessages
 import queries.assets.{OtherAssetsQuery, PropertyQuery, QuotedSharesQuery, UnquotedSharesQuery}
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary.rows
 
-import java.time.LocalDate
-
 class TransferDetailsSummarySpec extends AnyFreeSpec with SpecBase {
 
   implicit val messages: Messages = stubMessages()

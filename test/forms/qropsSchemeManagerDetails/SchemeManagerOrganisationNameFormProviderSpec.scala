@@ -18,7 +18,6 @@ package forms.qropsSchemeManagerDetails
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
-import models.PersonName
 import play.api.data.FormError
 
 class SchemeManagerOrganisationNameFormProviderSpec extends StringFieldBehaviours with Regex {

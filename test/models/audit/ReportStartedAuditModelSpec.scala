@@ -27,13 +27,13 @@ import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
 
 class ReportStartedAuditModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 
-  private val pensionSchemeDetails = PensionSchemeDetails(
+  PensionSchemeDetails(
     SrnNumber("SRN123"),
     PstrNumber("PSTR123"),
     "Pension Scheme A"
   )
-  private val authenticatedPsa     = PsaUser(PsaId("21000005"), "internalId", Individual)
-  private val authenticatedPsp     = PspUser(PspId("21000005"), "internalId", Individual)
+  private val authenticatedPsa = PsaUser(PsaId("21000005"), "internalId", Individual)
+  private val authenticatedPsp = PspUser(PspId("21000005"), "internalId", Individual)
 
   private val allTransfersItem = AllTransfersItem(
     userAnswersTransferNumber,

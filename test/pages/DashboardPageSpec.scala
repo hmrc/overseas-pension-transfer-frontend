@@ -24,6 +24,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.mvc.Call
 import queries.PensionSchemeDetailsQuery
+import annotation.nowarn
 
 class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
@@ -46,6 +47,7 @@ class DashboardPageSpec extends AnyFreeSpec with Matchers with SpecBase {
       currentPage = 1
     )
 
+  @nowarn
   private def submittedParams(qtRef: String = "QT123456", ver: String = "007"): TransferReportQueryParams =
     TransferReportQueryParams(
       transferId = Some(QtNumber(qtRef)),

@@ -36,7 +36,6 @@ import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.memberDetails.MemberDateOfBirthView
 
-import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {

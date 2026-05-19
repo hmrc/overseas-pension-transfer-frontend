@@ -28,10 +28,10 @@ class SchemeManagersAddressViewSpec extends ViewBaseSpec {
 
   private val application = applicationBuilder().build()
 
-  private val view                                  = application.injector.instanceOf[SchemeManagersAddressView]
-  private val formProvider                          = application.injector.instanceOf[SchemeManagersAddressFormProvider]
-  private val countrySelectViewModel                = CountrySelectViewModel(Seq.empty)
-  implicit private val appConfig: FrontendAppConfig = application.injector.instanceOf[config.FrontendAppConfig]
+  private val view                   = application.injector.instanceOf[SchemeManagersAddressView]
+  private val formProvider           = application.injector.instanceOf[SchemeManagersAddressFormProvider]
+  private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
+  application.injector.instanceOf[config.FrontendAppConfig]
 
   "SchemeManagersAddressView" - {
 

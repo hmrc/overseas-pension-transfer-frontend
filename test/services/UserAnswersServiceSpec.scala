@@ -26,7 +26,6 @@ import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
-import org.scalatest.RecoverMethods.recoverToExceptionIf
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -40,9 +39,9 @@ import scala.concurrent.Future
 
 class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private val mockUserAnswersConnector   = mock[UserAnswersConnector]
-  private val mockPensionSchemeConnector = mock[PensionSchemeConnector]
-  private val mockAuthService            = mock[AuthorisingPsaService]
+  private val mockUserAnswersConnector = mock[UserAnswersConnector]
+  mock[PensionSchemeConnector]
+  private val mockAuthService          = mock[AuthorisingPsaService]
 
   val service: UserAnswersService = new UserAnswersService(mockUserAnswersConnector, mockAuthService)
 

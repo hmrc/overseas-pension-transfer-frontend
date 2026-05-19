@@ -34,7 +34,6 @@ import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PsaDeclarationView
 
-import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {

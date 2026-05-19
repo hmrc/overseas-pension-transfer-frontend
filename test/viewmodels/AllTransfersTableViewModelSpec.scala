@@ -18,7 +18,7 @@ package viewmodels
 
 import base.SpecBase
 import config.TestAppConfig
-import models.{AllTransfersItem, QtNumber, QtStatus}
+import models.{AllTransfersItem, QtStatus}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
@@ -30,8 +30,8 @@ import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
 class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
-  implicit val messages: Messages               = stubMessagesApi().preferred(Seq.empty)
-  implicit private val appConfig: TestAppConfig = new TestAppConfig
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
+  new TestAppConfig
 
   private def textOfHead(h: HeadCell): String = h.content match {
     case Text(s) => s

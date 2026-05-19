@@ -26,13 +26,14 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
 import utils.DateTimeFormats.{display12h, displayDateUuuu}
+import annotation.nowarn
 
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
 class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
-  implicit val messages: Messages               = stubMessagesApi().preferred(Seq.empty)
-  implicit private val appConfig: TestAppConfig = new TestAppConfig
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
+  new TestAppConfig
 
   private def mkItem(idx: Int, when: Instant): AllTransfersItem =
     AllTransfersItem(
@@ -48,6 +49,7 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       qtDate = None
     )
 
+  @nowarn
   private def utc(y: Int, m: Int, d: Int, hh: Int = 0, mm: Int = 0): Instant =
     ZonedDateTime.of(y, m, d, hh, mm, 0, 0, ZoneOffset.UTC).toInstant
 
