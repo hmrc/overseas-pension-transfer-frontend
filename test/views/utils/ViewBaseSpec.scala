@@ -169,6 +169,8 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
         label.text() mustBe messages(labelKey)
         if (hint != null) {
           hint.text() mustBe messages(hintKey)
+        } else {
+          assert(true)
         }
       }
     }

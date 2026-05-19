@@ -76,10 +76,9 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val request                                                         = FakeRequest(GET, propertyAddressRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
-        val form      = formProvider()
-        val view      = application.injector.instanceOf[PropertyAddressView]
-        val result    = route(application, request).value
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
+        val form   = formProvider()
+        val view   = application.injector.instanceOf[PropertyAddressView]
+        val result = route(application, request).value
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
@@ -87,7 +86,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           countrySelectViewModel,
           NormalMode,
           index
-        )(displayRequest, messages(application), appConfig).toString
+        )(displayRequest, messages(application)).toString
       }
     }
 
@@ -179,13 +178,11 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val boundForm = form.bind(Map("value" -> "invalid value"))
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
           displayRequest,
-          messages(application),
-          appConfig
+          messages(application)
         ).toString
       }
     }
@@ -230,13 +227,11 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           .withError("postcode", "membersLastUKAddress.error.postcode.incorrect")
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
           displayRequest,
-          messages(application),
-          appConfig
+          messages(application)
         ).toString
       }
     }

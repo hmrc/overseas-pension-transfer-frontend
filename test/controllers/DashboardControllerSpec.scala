@@ -33,7 +33,7 @@ import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import services.{AuditService, LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
+import uk.gov.hmrc.mongo.lock.{Lock}
 import views.html.DashboardView
 
 import java.time.{Instant, LocalDate}
@@ -93,7 +93,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         )
       )
         .thenReturn(Future.successful(Right(dd)))
-      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(play.twirl.api.Html("dashboard view"))
 
       val application = applicationBuilder()
@@ -259,7 +259,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       )
         .thenReturn(Future.successful(Right(dd)))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
-      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(play.twirl.api.Html("dashboard"))
 
       when(mockLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))

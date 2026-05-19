@@ -114,8 +114,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
             SchemeManagerDetailsSummary.rows(CheckMode, userAnswersMemberName, showChangeLinks = false)
           )
 
-        val managerEmail: String = userAnswersMemberName.get(SchemeManagersEmailPage).getOrElse("")
-
         val expectedMpsLink =
           s"${appConfig.pensionSchemeSummaryUrl}1234567890"
 
@@ -131,7 +129,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
             transferDetails,
             qropsDetails,
             schemeManagerDetails,
-            managerEmail,
             expectedMpsLink
           )(fakeSchemeRequest(request), testMessages).toString
       }

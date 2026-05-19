@@ -229,7 +229,7 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
         val refine =
           new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-        refine.left.map { result =>
+        refine.left.foreach { result =>
           result.header.status mustBe SEE_OTHER
           result.header.headers.get("Location") mustBe Some(
             controllers.routes.JourneyRecoveryController.onPageLoad().url

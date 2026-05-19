@@ -89,8 +89,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
           "QT123456",
           summaryList,
           expectedMpsLink,
-          minimalDetailsIndividual.email,
-          appConfig
+          minimalDetailsIndividual.email
         )(
           fakeSchemeRequest(request),
           testMessages

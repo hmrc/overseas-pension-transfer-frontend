@@ -73,9 +73,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .build()
 
       running(application) {
-        val request                      = FakeRequest(GET, schemeManagersAddressRoute)
-        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
-        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val view    = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
 
@@ -84,7 +83,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           form,
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application), appConfig).toString
+        )(request, messages(application)).toString
       }
     }
 
@@ -99,9 +98,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .build()
 
       running(application) {
-        val request                      = FakeRequest(GET, schemeManagersAddressRoute)
-        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
-        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val view    = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
 
@@ -110,7 +108,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           form.fill(formData),
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application), appConfig).toString
+        )(request, messages(application)).toString
       }
     }
 
@@ -168,9 +166,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           FakeRequest(POST, schemeManagersAddressRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm                    = form.bind(Map("value" -> "invalid value"))
-        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
-        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+        val boundForm = form.bind(Map("value" -> "invalid value"))
+        val view      = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
 
@@ -179,7 +176,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           boundForm,
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application), appConfig).toString
+        )(request, messages(application)).toString
       }
     }
 

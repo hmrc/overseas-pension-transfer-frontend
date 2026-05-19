@@ -29,7 +29,7 @@ class MpsOnRampPageSpec extends AnyFreeSpec with SpecBase {
     "must go to the dashboard" in {
       val dd = DashboardData.create("internal-id", now)
 
-      MpsOnRampPage.nextPage(dd) mustEqual routes.DashboardController.onPageLoad()
+      MpsOnRampPage.nextPage() mustEqual routes.DashboardController.onPageLoad()
     }
   }
 }

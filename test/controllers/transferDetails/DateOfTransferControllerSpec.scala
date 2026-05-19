@@ -134,8 +134,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(
             amendForm.fill(originalDate.minusDays(5)),
-            AmendCheckMode,
-            isAmend = true
+            AmendCheckMode
           )(
             fakeDisplayRequest(request),
             messages(application)
