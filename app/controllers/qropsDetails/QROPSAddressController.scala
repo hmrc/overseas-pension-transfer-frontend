@@ -23,7 +23,6 @@ import utils.AppUtils
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
-import config.FrontendAppConfig
 import controllers.actions._
 import play.api.Logging
 import controllers.helpers.ErrorHandling
@@ -56,7 +55,7 @@ class QROPSAddressController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: QROPSAddressView,
   userAnswersService: UserAnswersService
-)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging

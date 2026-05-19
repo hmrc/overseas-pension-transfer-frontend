@@ -74,8 +74,7 @@ class TransferSubmittedController @Inject() (
                 qtNumber(sessionData).value,
                 summaryList,
                 mpsLink,
-                minimalDetails.email,
-                appConfig
+                minimalDetails.email
               )
             )
           case Left(_)               =>

@@ -25,7 +25,6 @@ import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataTrait
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormProvider
 import play.api.mvc._
-import config.FrontendAppConfig
 import controllers.actions._
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.Logging
@@ -59,7 +58,7 @@ class PropertyAddressController @Inject() (
   addressService: AddressService,
   val controllerComponents: MessagesControllerComponents,
   view: PropertyAddressView
-)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

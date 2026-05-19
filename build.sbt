@@ -18,9 +18,6 @@ val commonSettings: Seq[String] = Seq(
   "-Wvalue-discard",
   "-Wunused:imports",
   "-Wconf:msg=unused import&src=views/.*:s", // False positives found in Twirl views
-  "-Wconf:msg=unused explicit parameter&src=views/.*:s", // 35 errors
-//  "-Wconf:msg=unused implicit parameter&src=views/.*:s",
-  
   "-Wconf:msg=unused explicit parameter&src=pages/.*:s", // NextPageWith
   "-Wconf:msg=unused private member&src=validators/.*:s", // False negative fixed in scala 3.7.0: see https://github.com/scala/scala3/issues/19998
   "-Werror",

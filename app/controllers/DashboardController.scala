@@ -213,7 +213,6 @@ class DashboardController @Inject() (
                   DashboardPage.nextPage(updatedData, None, None).url,
                   transfersVm,
                   searchBarVm,
-                  mpsLink,
                   isSearch = search.exists(_.trim.nonEmpty),
                   breadcrumbs = appBreadcrumbs(mpsLink, pensionSchemeLink),
                   pensionSchemeLink = pensionSchemeLink

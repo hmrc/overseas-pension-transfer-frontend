@@ -25,7 +25,6 @@ import play.api.mvc.MessagesControllerComponents
 import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
 import config.FrontendAppConfig
 import views.html.PrintSubmittedTransferView
-import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
 import repositories.SessionRepository
 import models.CheckMode
@@ -94,8 +93,6 @@ class PrintSubmittedTransferController @Inject() (
                   SchemeManagerDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false)
                 )
 
-                val managerEmail: String = userAnswers.get(SchemeManagersEmailPage).getOrElse("")
-
                 val mpsLink = appConfig.getPensionSchemeUrl(
                   srn = sessionData.schemeInformation.srnNumber.value,
                   isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
@@ -109,7 +106,6 @@ class PrintSubmittedTransferController @Inject() (
                     transferDetails,
                     qropsDetails,
                     schemeManagerDetails,
-                    managerEmail,
                     mpsLink
                   )
                 )

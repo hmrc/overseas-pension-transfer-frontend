@@ -16,7 +16,7 @@
 
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 @import models.requests.DisplayRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukRadios}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukErrorSummary}
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.ItemType
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcAddToAList
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.{AddToAList, ListItem}
@@ -31,8 +31,6 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukButton: GovukButton,
         hmrcAddToAList : AmendContinueList,
         qtNumber: QTNumber
 )

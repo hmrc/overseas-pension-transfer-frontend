@@ -73,7 +73,7 @@ class DateOfTransferController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, isAmend(mode)))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           def setAnswers(): Try[UserAnswers] =
             if (mode == AmendCheckMode) {
@@ -111,7 +111,7 @@ class DateOfTransferController @Inject() (
                 .get(DateOfTransferPage)
                 .getOrElse(throw new IllegalStateException("Original submission date has not been found"))
               val form         = amendDateOfTransferFormProvider(originalDate)
-              Ok(view(prepareForm(form, request.userAnswers), mode, isAmend = true))
+              Ok(view(prepareForm(form, request.userAnswers), mode))
             case _                         =>
               Ok(view(prepareForm(formProvider(), request.userAnswers), mode))
           }

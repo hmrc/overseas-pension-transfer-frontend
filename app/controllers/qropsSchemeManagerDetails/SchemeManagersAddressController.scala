@@ -25,7 +25,6 @@ import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormProvider
-import config.FrontendAppConfig
 import controllers.actions._
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
 import play.api.Logging
@@ -56,7 +55,7 @@ class SchemeManagersAddressController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: SchemeManagersAddressView,
   userAnswersService: UserAnswersService
-)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging
