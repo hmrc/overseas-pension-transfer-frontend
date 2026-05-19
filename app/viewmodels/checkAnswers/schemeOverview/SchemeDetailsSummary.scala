@@ -17,15 +17,14 @@
 package viewmodels.checkAnswers.schemeOverview
 
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import models.Mode
 import play.api.i18n.Messages
 
 case object SchemeDetailsSummary {
 
-  def rows(mode: Mode, schemeName: String, dateSubmitted: String)(implicit messages: Messages): Seq[SummaryListRow] = {
+  def rows(schemeName: String, dateSubmitted: String)(implicit messages: Messages): Seq[SummaryListRow] = {
 
-    val schemeNameRow       = SchemeNameSummary.row(mode, schemeName)
-    val dateOfSubmissionRow = DateOfSubmissionSummary.row(mode, dateSubmitted)
+    val schemeNameRow       = SchemeNameSummary.row(schemeName)
+    val dateOfSubmissionRow = DateOfSubmissionSummary.row(dateSubmitted)
 
     Seq(schemeNameRow, dateOfSubmissionRow)
   }

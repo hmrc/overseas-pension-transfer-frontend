@@ -52,7 +52,6 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private def schemeSummaryList =
     SummaryListViewModel(
       SchemeDetailsSummary.rows(
-        FinalCheckMode,
         schemeDetails.schemeName,
         formattedTestDateTransferSubmitted
       )(messages(applicationBuilder().build()))

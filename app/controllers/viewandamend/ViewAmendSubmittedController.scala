@@ -207,7 +207,7 @@ class ViewAmendSubmittedController @Inject() (
 
     val schemeName                      = sessionData.schemeInformation.schemeName
     val schemeSummaryList               = SummaryListViewModel(
-      SchemeDetailsSummary.rows(AmendCheckMode, schemeName, dateTransferSubmitted(sessionData))
+      SchemeDetailsSummary.rows(schemeName, dateTransferSubmitted(sessionData))
     )
     val memberDetailsSummaryList        = if (isAmend) {
       SummaryListViewModel(MemberDetailsSummary.amendRows(AmendCheckMode, userAnswers))

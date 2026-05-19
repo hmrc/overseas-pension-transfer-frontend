@@ -16,23 +16,16 @@
 
 package viewmodels
 
-import models.QtStatus._
-import utils.DateTimeFormats.display12h
-import utils.DateTimeFormats.displayDateUuuu
-import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import models.AllTransfersItem
-import models.TransferReportQueryParams
+import models.QtStatus.*
+import models.{AllTransfersItem, TransferReportQueryParams}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-import config.FrontendAppConfig
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
+import utils.DateTimeFormats.{display12h, displayDateUuuu}
 
-import java.time.Instant
-import java.time.ZoneOffset
+import java.time.{Instant, ZoneOffset}
 
 final case class AllTransfersTableViewModel(table: Table)
 
@@ -61,8 +54,7 @@ object AllTransfersTableViewModel {
     }
 
   def from(items: Seq[AllTransfersItem], currentPage: Int)(implicit
-    messages: Messages,
-    appConfig: FrontendAppConfig
+    messages: Messages
   ): Table = {
     val head: Seq[HeadCell] = Seq(
       HeadCell(Text(messages("dashboard.allTransfers.head.member"))),

@@ -21,6 +21,7 @@ import models.UserAnswers
 
 import scala.util.Success
 import scala.util.Try
+import scala.annotation.nowarn
 
 sealed trait Query {
 
@@ -31,6 +32,7 @@ trait Gettable[A] extends Query
 
 trait Settable[A] extends Query {
 
+  @nowarn
   def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
     Success(userAnswers)
 }
