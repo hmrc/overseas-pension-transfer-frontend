@@ -16,37 +16,26 @@
 
 package controllers.memberDetails
 
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
 import com.google.inject.Inject
-import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
-import controllers.actions.DataRetrievalAction
-import controllers.actions.IdentifierAction
-import controllers.actions.SchemeDataAction
-import pages.memberDetails.MemberDetailsSummaryPage
-import viewmodels.govuk.summarylist._
-import repositories.SessionRepository
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
-import models.CheckMode
-import models.NormalMode
-import views.html.memberDetails.MemberDetailsCYAView
-import play.api.i18n.I18nSupport
-import play.api.i18n.MessagesApi
+import models.{CheckMode, NormalMode}
+import pages.memberDetails.MemberDetailsSummaryPage
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
-import scala.concurrent.ExecutionContext
+import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
+import viewmodels.govuk.summarylist.*
+import views.html.memberDetails.MemberDetailsCYAView
 
 class MemberDetailsCYAController @Inject() (
   override val messagesApi: MessagesApi,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
-  sessionRepository: SessionRepository,
   schemeData: SchemeDataAction,
   val controllerComponents: MessagesControllerComponents,
   view: MemberDetailsCYAView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport
     with ErrorHandling {
 

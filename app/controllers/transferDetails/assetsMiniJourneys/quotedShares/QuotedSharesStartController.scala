@@ -16,17 +16,13 @@
 
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
-import controllers.actions._
-import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartPage
+import controllers.actions.*
 import models.Mode
-import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartView
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartPage
 import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
-import scala.concurrent.ExecutionContext
+import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartView
 
 import javax.inject.Inject
 
@@ -36,8 +32,7 @@ class QuotedSharesStartController @Inject() (
   getData: DataRetrievalAction,
   schemeData: SchemeDataAction,
   view: QuotedSharesStartView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>

@@ -42,8 +42,7 @@ import java.net.URL
 class UserAnswersConnector @Inject() (
   appConfig: FrontendAppConfig,
   http: HttpClientV2
-)(implicit ec: ExecutionContext)
-    extends Logging
+) extends Logging
     with DownstreamLogging {
 
   private def submissionUrl(id: String): URL =

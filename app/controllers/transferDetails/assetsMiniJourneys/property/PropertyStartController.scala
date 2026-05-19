@@ -16,17 +16,13 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
-import controllers.actions._
-import pages.transferDetails.assetsMiniJourneys.property.PropertyStartPage
+import controllers.actions.*
 import models.Mode
+import pages.transferDetails.assetsMiniJourneys.property.PropertyStartPage
 import play.api.i18n.I18nSupport
-import views.html.transferDetails.assetsMiniJourneys.property.PropertyStartView
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
-import scala.concurrent.ExecutionContext
+import views.html.transferDetails.assetsMiniJourneys.property.PropertyStartView
 
 import javax.inject.Inject
 
@@ -36,8 +32,7 @@ class PropertyStartController @Inject() (
   getData: DataRetrievalAction,
   schemeData: SchemeDataAction,
   view: PropertyStartView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>

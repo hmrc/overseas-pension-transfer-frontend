@@ -22,13 +22,11 @@ import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import forms.memberDetails.MembersCurrentAddressFormData
 
-import scala.concurrent.ExecutionContext
-
 import javax.inject.Inject
 
 class AddressService @Inject() (
   countryService: CountryService
-)(implicit ex: ExecutionContext) {
+) {
 
   def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] =
     countryService.findByCode(data.countryCode).map { country =>

@@ -41,7 +41,6 @@
 
 @singularTxt = @{messages("otherAssetsAmendContinue.text.singular")}
 @pluralTxt = @{messages("otherAssetsAmendContinue.text.plural")}
-@partTxt = @{if (shares.size == 1) singularTxt else pluralTxt}
 @titleTxt = @{
     shares.length match {
         case 0 => messages("otherAssetsAmendContinue.text.title.noItems")

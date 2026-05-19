@@ -46,7 +46,7 @@ object SubmissionDTO {
           lastUpdated = userAnswers.lastUpdated
         )
 
-      case PspUser(pspId, _, _s) =>
+      case PspUser(pspId, _, _) =>
         PspSubmissionDTO(
           referenceId = sessionData.transferId,
           userId = pspId,

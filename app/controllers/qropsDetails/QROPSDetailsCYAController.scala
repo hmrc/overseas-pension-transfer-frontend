@@ -16,25 +16,17 @@
 
 package controllers.qropsDetails
 
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
 import com.google.inject.Inject
-import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import controllers.actions.DataRetrievalAction
-import controllers.actions.IdentifierAction
-import controllers.actions.SchemeDataAction
+import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
 import controllers.helpers.ErrorHandling
-import models.CheckMode
-import models.NormalMode
-import views.html.qropsDetails.QROPSDetailsCYAView
-import viewmodels.govuk.summarylist._
+import models.{CheckMode, NormalMode}
 import pages.qropsDetails.QROPSDetailsSummaryPage
-import play.api.i18n.I18nSupport
-import play.api.i18n.MessagesApi
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
-import scala.concurrent.ExecutionContext
+import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
+import viewmodels.govuk.summarylist.*
+import views.html.qropsDetails.QROPSDetailsCYAView
 
 class QROPSDetailsCYAController @Inject() (
   override val messagesApi: MessagesApi,
@@ -43,8 +35,7 @@ class QROPSDetailsCYAController @Inject() (
   schemeData: SchemeDataAction,
   val controllerComponents: MessagesControllerComponents,
   view: QROPSDetailsCYAView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport
     with ErrorHandling {
 

@@ -17,20 +17,14 @@
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import services.UserAnswersService
-import queries.TransferDetailsRecordVersionQuery
-import queries.TypeOfAssetsRecordVersionQuery
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
 import controllers.actions._
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberPage
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberFormProvider
-import models.assets.TypeOfAsset.QuotedShares
-import models.AmendCheckMode
 import models.Mode
-import models.UserAnswers
 import play.api.data.Form
-import queries.assets.AssetsRecordVersionQuery
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberView
 import play.api.i18n.I18nSupport
 import play.api.i18n.MessagesApi
@@ -38,7 +32,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.util.Try
 
 import javax.inject.Inject
 
@@ -73,28 +66,13 @@ class QuotedSharesNumberController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, index))),
-          value => {
-            def setAnswers(): Try[UserAnswers] =
-              if (mode == AmendCheckMode) {
-                for {
-                  addCashAmount                      <- request.userAnswers.set(QuotedSharesNumberPage(index), value)
-                  removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                  removeTypeOfAssetsRecordVersion    <-
-                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-                  removeAssetRecordVersion           <-
-                    removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, QuotedShares))
-                } yield removeAssetRecordVersion
-              } else {
-                request.userAnswers.set(QuotedSharesNumberPage(index), value)
-              }
-
+          value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesNumberPage(index), value))
               _              <- userAnswersService
                                   .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
 
             } yield Redirect(QuotedSharesNumberPage(index).nextPage(mode, updatedAnswers))
-          }
         )
   }
 }

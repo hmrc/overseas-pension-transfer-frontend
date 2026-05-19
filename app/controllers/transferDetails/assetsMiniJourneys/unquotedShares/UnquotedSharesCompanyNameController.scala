@@ -17,18 +17,12 @@
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import services.UserAnswersService
-import queries.TransferDetailsRecordVersionQuery
-import queries.TypeOfAssetsRecordVersionQuery
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
 import controllers.actions._
-import models.assets.TypeOfAsset.UnquotedShares
-import models.AmendCheckMode
 import models.Mode
-import models.UserAnswers
 import play.api.data.Form
-import queries.assets.AssetsRecordVersionQuery
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameView
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameFormProvider
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
@@ -38,7 +32,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.util.Try
 
 import javax.inject.Inject
 
@@ -73,27 +66,12 @@ class UnquotedSharesCompanyNameController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, index))),
-          value => {
-            def setAnswers(): Try[UserAnswers] =
-              if (mode == AmendCheckMode) {
-                for {
-                  addCashAmount                      <- request.userAnswers.set(UnquotedSharesCompanyNamePage(index), value)
-                  removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                  removeTypeOfAssetsRecordVersion    <-
-                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-                  removeAssetRecordVersion           <-
-                    removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, UnquotedShares))
-                } yield removeAssetRecordVersion
-              } else {
-                request.userAnswers.set(UnquotedSharesCompanyNamePage(index), value)
-              }
-
+          value =>
             for {
               updatedSession <- Future.fromTry(request.userAnswers.set(UnquotedSharesCompanyNamePage(index), value))
               _              <- userAnswersService
                                   .setExternalUserAnswers(updatedSession, request.sessionData.schemeInformation.srnNumber)
             } yield Redirect(UnquotedSharesCompanyNamePage(index).nextPage(mode, updatedSession))
-          }
         )
   }
 }

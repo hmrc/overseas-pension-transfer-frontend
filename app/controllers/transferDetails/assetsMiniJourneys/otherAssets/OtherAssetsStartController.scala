@@ -16,17 +16,13 @@
 
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
-import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartView
+import controllers.actions.*
 import models.Mode
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartPage
-import controllers.actions._
 import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
-import scala.concurrent.ExecutionContext
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartView
 
 import javax.inject.Inject
 
@@ -36,8 +32,7 @@ class OtherAssetsStartController @Inject() (
   getData: DataRetrievalAction,
   schemeData: SchemeDataAction,
   view: OtherAssetsStartView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
