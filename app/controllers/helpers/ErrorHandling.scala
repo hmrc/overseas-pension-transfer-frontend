@@ -16,9 +16,11 @@
 
 package controllers.helpers
 
-import play.api.Logging
-import play.api.mvc.{RequestHeader, Result, Results}
 import play.api.routing.Router
+import play.api.mvc.RequestHeader
+import play.api.mvc.Result
+import play.api.mvc.Results
+import play.api.Logging
 
 trait ErrorHandling extends Logging {
 

@@ -16,14 +16,18 @@
 
 package models
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.*
-import queries.{Gettable, Settable}
 import services.EncryptionService
+import queries.Gettable
+import queries.Settable
+import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 import java.time.Instant
-import scala.util.{Failure, Success, Try}
 
 final case class DashboardData(
   id: String,
@@ -65,27 +69,19 @@ final case class DashboardData(
 
 object DashboardData {
 
-  val reads: Reads[DashboardData] = {
-
-    import play.api.libs.functional.syntax.*
-
+  val reads: Reads[DashboardData] =
     (
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
     )(DashboardData.apply _)
-  }
 
-  val writes: OWrites[DashboardData] = {
-
-    import play.api.libs.functional.syntax.*
-
+  val writes: OWrites[DashboardData] =
     (
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
     )(ua => (ua.id, ua.data, ua.lastUpdated))
-  }
 
   implicit val format: OFormat[DashboardData] = OFormat(reads, writes)
 

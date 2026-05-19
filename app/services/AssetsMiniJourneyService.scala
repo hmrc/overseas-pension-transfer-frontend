@@ -16,16 +16,18 @@
 
 package services
 
-import models.assets.*
-import models.assets.TypeOfAsset.Cash
-import models.{AmendCheckMode, Mode, SessionData, UserAnswers}
 import pages.transferDetails.TypeOfAssetPage
-import play.api.libs.json.*
 import queries.TransferDetailsRecordVersionQuery
-import queries.assets.*
+import models.assets.TypeOfAsset.Cash
+import models._
 import validators.assetsValidators.AssetCompletionValidator
+import queries.assets._
+import play.api.libs.json._
+import models.assets._
 
-import scala.util.{Failure, Success, Try}
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 object AssetsMiniJourneyService {
 

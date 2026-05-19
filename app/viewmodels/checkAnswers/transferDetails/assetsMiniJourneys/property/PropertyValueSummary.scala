@@ -16,13 +16,14 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import models.{Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
 import utils.CurrencyFormats.currencyFormat
-import viewmodels.govuk.summarylist.*
-import viewmodels.implicits.*
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object PropertyValueSummary {
 

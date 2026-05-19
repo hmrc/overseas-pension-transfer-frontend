@@ -16,13 +16,17 @@
 
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.assets.{OtherAssetsEntry, TypeOfAsset}
-import models.{Mode, TaskCategory, UserAnswers}
-import pages.{MiniJourneyNextPage, QuestionPage}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.MiniJourneyNextPage
+import pages.QuestionPage
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.Mode
+import models.TaskCategory
+import models.UserAnswers
 import validators.assetsValidators.AssetCompletionValidator
+import play.api.libs.json.JsPath
+import models.assets.OtherAssetsEntry
+import models.assets.TypeOfAsset
 
 case class OtherAssetsDescriptionPage(index: Int) extends QuestionPage[String] with MiniJourneyNextPage {
 

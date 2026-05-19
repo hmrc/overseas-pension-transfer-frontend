@@ -16,24 +16,31 @@
 
 package controllers
 
-import cats.data.EitherT
-import connectors.MinimalDetailsConnector
-import controllers.actions.*
 import models.authentication.PsaUser
-import models.{Mode, PersonName}
-import pages.memberDetails.MemberNamePage
-import pages.{PsaDeclarationPage, PspDeclarationPage}
+import services.EmailService
+import services.UserAnswersService
+import queries.DateSubmittedQuery
+import queries.QtNumberQuery
+import play.api.mvc._
+import connectors.MinimalDetailsConnector
+import pages.PsaDeclarationPage
+import pages.PspDeclarationPage
+import controllers.actions._
 import play.api.Logging
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.SessionRepository
-import services.{EmailService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.Mode
+import models.PersonName
+import pages.memberDetails.MemberNamePage
+import cats.data.EitherT
 import views.html.PsaDeclarationView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDeclarationController @Inject() (
   override val messagesApi: MessagesApi,

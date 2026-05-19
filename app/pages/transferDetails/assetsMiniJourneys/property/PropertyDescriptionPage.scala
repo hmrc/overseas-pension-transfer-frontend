@@ -16,12 +16,13 @@
 
 package pages.transferDetails.assetsMiniJourneys.property
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.QuestionPage
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models._
+import play.api.libs.json.JsPath
+import models.assets.PropertyEntry
+import models.assets.TypeOfAsset
 
 case class PropertyDescriptionPage(index: Int) extends QuestionPage[String] {
 

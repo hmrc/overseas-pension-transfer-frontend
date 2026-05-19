@@ -16,27 +16,34 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import controllers.actions.*
-import models.{CheckMode, QtNumber, QtStatus}
-import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.QtNumberQuery
-import repositories.SessionRepository
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
+import queries.QtNumberQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
+import config.FrontendAppConfig
+import views.html.PrintSubmittedTransferView
+import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
+import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
+import repositories.SessionRepository
+import models.CheckMode
+import models.QtNumber
+import models.QtStatus
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
-import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
-import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.all.SummaryListViewModel
-import views.html.PrintSubmittedTransferView
+import controllers.actions._
+import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class PrintSubmittedTransferController @Inject() (
   override val messagesApi: MessagesApi,

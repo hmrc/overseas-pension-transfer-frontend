@@ -16,8 +16,9 @@
 
 package models.responses
 
+import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 import models.QtNumber
-import play.api.libs.json.{Json, OFormat}
 
 import java.time.Instant
 

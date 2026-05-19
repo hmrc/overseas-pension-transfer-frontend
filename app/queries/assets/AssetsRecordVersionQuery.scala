@@ -16,10 +16,11 @@
 
 package queries.assets
 
+import queries.Gettable
+import queries.Settable
 import models.TaskCategory.TransferDetails
-import models.assets.TypeOfAsset
 import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
+import models.assets.TypeOfAsset
 
 case class AssetsRecordVersionQuery(index: Int, asset: TypeOfAsset) extends Gettable[String] with Settable[String] {
 

@@ -16,7 +16,8 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 
 case class PensionSchemeDetails(srnNumber: SrnNumber, pstrNumber: PstrNumber, schemeName: String)
 

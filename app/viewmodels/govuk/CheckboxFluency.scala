@@ -16,14 +16,16 @@
 
 package viewmodels.govuk
 
-import play.api.data.Form
-import play.api.i18n.Messages
-import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.{CheckboxItem, Checkboxes}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
+import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.Checkboxes
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
+import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
+import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Legend
+import play.api.data.Form
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import play.twirl.api.Html
+import play.api.i18n.Messages
 import viewmodels.ErrorMessageAwareness
 
 object checkbox extends CheckboxFluency

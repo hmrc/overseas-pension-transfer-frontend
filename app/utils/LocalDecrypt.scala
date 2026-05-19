@@ -16,10 +16,11 @@
 
 package utils
 
-import com.typesafe.config.{ConfigFactory, ConfigValueType}
-import play.api.Logging
-import play.api.libs.json.*
 import services.EncryptionService
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigValueType
+import play.api.Logging
+import play.api.libs.json._
 
 import java.util.Base64
 

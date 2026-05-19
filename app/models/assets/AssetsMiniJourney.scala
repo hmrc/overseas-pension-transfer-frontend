@@ -16,12 +16,13 @@
 
 package models.assets
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.*
-import models.{Mode, SessionData}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes._
+import play.api.mvc.Call
+import models.Mode
+import models.SessionData
+import queries.assets._
 import play.api.Logging
 import play.api.libs.json.OFormat
-import play.api.mvc.Call
-import queries.assets.*
 
 sealed trait AssetsMiniJourneyBase {
   def assetType: TypeOfAsset

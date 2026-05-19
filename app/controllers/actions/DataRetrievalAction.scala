@@ -16,19 +16,23 @@
 
 package controllers.actions
 
+import services.UserAnswersService
+import utils.AppUtils
+import play.api.mvc.ActionRefiner
+import play.api.mvc.Result
 import controllers.routes
-import models.requests.{DisplayRequest, SchemeRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
-import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.AppUtils
+import models.requests.DisplayRequest
+import models.requests.SchemeRequest
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class DataRetrievalActionImpl @Inject() (
   sessionRepository: SessionRepository,

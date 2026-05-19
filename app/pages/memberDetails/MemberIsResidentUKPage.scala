@@ -16,12 +16,13 @@
 
 package pages.memberDetails
 
-import controllers.{memberDetails, routes}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import play.api.mvc.Call
 import pages.QuestionPage
+import controllers.memberDetails
+import controllers.routes
+import models._
 import play.api.Logging
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
 import scala.util.Try
 

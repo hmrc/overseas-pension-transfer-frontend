@@ -16,12 +16,16 @@
 
 package forms.mappings
 
-import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.i18n.Messages
+import play.api.data.FormError
 
-import java.time.{LocalDate, Month}
-import scala.util.{Failure, Success, Try}
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
+import java.time.LocalDate
+import java.time.Month
 
 private[mappings] class LocalDateFormatter(
   invalidCharacter: String,

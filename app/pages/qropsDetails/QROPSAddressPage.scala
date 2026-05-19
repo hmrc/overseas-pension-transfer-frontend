@@ -16,12 +16,12 @@
 
 package pages.qropsDetails
 
-import controllers.qropsDetails.routes
-import models.address.{Address, QROPSAddress}
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.QuestionPage
+import controllers.qropsDetails.routes
+import models._
+import models.address.QROPSAddress
+import play.api.libs.json.JsPath
 
 case object QROPSAddressPage extends QuestionPage[QROPSAddress] {
 

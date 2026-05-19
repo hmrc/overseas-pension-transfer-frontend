@@ -16,19 +16,23 @@
 
 package controllers
 
-import controllers.actions.{IdentifierAction, SchemeDataAction}
-import models.DashboardData
-import pages.MpsOnRampPage
-import play.api.Logging
-import play.api.i18n.I18nSupport
-import play.api.mvc.*
 import queries.PensionSchemeDetailsQuery
+import play.api.mvc._
+import pages.MpsOnRampPage
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import play.api.Logging
 import repositories.DashboardSessionRepository
+import models.DashboardData
+import play.api.i18n.I18nSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import java.time.{Clock, Instant}
-import javax.inject.*
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
+import javax.inject._
 
 @Singleton
 class MpsOnRampController @Inject() (

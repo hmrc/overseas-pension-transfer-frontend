@@ -16,12 +16,13 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
-import models.{Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist.*
-import viewmodels.implicits.*
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object OtherAssetsDescriptionSummary {
 

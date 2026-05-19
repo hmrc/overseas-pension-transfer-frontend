@@ -16,13 +16,14 @@
 
 package pages.transferDetails
 
-import controllers.transferDetails.routes
-import models.{Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import play.api.libs.json.JsPath
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
 import play.api.mvc.Call
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
+import controllers.transferDetails.routes
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import models._
 
 import scala.util.Try
 

@@ -16,9 +16,10 @@
 
 package models.assets
 
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.functional.syntax.unlift
 import models.address.PropertyAddress
-import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-import play.api.libs.json.*
+import play.api.libs.json._
 
 sealed trait AssetEntry
 

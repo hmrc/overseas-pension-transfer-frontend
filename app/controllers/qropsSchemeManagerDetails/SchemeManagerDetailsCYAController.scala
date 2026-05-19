@@ -16,18 +16,24 @@
 
 package controllers.qropsSchemeManagerDetails
 
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import controllers.helpers.ErrorHandling
-import models.{CheckMode, NormalMode}
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
 import pages.qropsSchemeManagerDetails.SchemeManagerDetailsSummaryPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
-import viewmodels.govuk.summarylist.*
+import models.CheckMode
+import models.NormalMode
 import views.html.qropsSchemeManagerDetails.SchemeManagerDetailsCYAView
+import viewmodels.govuk.summarylist._
+import repositories.SessionRepository
+import controllers.helpers.ErrorHandling
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 

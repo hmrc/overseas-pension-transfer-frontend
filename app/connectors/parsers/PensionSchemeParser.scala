@@ -16,14 +16,18 @@
 
 package connectors.parsers
 
-import models.PensionSchemeResponse
 import models.authentication.PsaId
-import models.responses.{PensionSchemeError, PensionSchemeErrorResponse, PensionSchemeNotAssociated}
-import play.api.Logging
-import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.libs.json.*
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import models.responses.PensionSchemeError
+import models.responses.PensionSchemeErrorResponse
+import models.responses.PensionSchemeNotAssociated
 import utils.DownstreamLogging
+import models.PensionSchemeResponse
+import play.api.Logging
+import play.api.libs.json._
+import play.api.http.Status.NOT_FOUND
+import play.api.http.Status.OK
+import uk.gov.hmrc.http.HttpReads
+import uk.gov.hmrc.http.HttpResponse
 
 object PensionSchemeParser {
   type PensionSchemeDetailsType = Either[PensionSchemeError, PensionSchemeResponse]

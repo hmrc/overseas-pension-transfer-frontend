@@ -16,12 +16,15 @@
 
 package config
 
-import com.google.inject.{AbstractModule, Provides, Singleton}
-import controllers.actions.*
-import play.api.Configuration
 import services.EncryptionService
+import com.google.inject.AbstractModule
+import com.google.inject.Provides
+import com.google.inject.Singleton
+import controllers.actions._
+import play.api.Configuration
 
-import java.time.{Clock, ZoneOffset}
+import java.time.Clock
+import java.time.ZoneOffset
 
 class Module extends AbstractModule {
 

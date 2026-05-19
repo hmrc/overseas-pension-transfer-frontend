@@ -16,21 +16,25 @@
 
 package repositories
 
-import config.FrontendAppConfig
-import models.SessionData
-import org.mongodb.scala.bson.conversions.Bson
-import org.mongodb.scala.model.*
-import play.api.libs.json.Format
 import services.EncryptionService
-import uk.gov.hmrc.mdc.Mdc
 import uk.gov.hmrc.mongo.MongoComponent
-import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import org.mongodb.scala.model._
+import uk.gov.hmrc.mdc.Mdc
+import org.mongodb.scala.bson.conversions.Bson
+import play.api.libs.json.Format
+import models.SessionData
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import config.FrontendAppConfig
 
-import java.time.{Clock, Instant}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
 import java.util.concurrent.TimeUnit
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class SessionRepository @Inject() (

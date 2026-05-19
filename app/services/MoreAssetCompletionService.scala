@@ -17,13 +17,16 @@
 package services
 
 import handlers.AssetThresholdHandler
-import models.assets.*
-import models.{SessionData, UserAnswers}
+import models.assets._
+import models.SessionData
+import models.UserAnswers
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class MoreAssetCompletionService @Inject() (
   sessionRepository: SessionRepository,

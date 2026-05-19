@@ -16,10 +16,12 @@
 
 package scheduler
 
-import org.apache.pekko.actor.{ActorRef, ActorSystem}
 import org.apache.pekko.extension.quartz.QuartzSchedulerExtension
-import play.api.{Configuration, Logging}
 import scheduler.SchedulingActor.ScheduledMessage
+import org.apache.pekko.actor.ActorRef
+import org.apache.pekko.actor.ActorSystem
+import play.api.Configuration
+import play.api.Logging
 
 trait ScheduledJob extends Logging {
 

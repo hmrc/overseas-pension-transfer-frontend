@@ -16,14 +16,15 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.{Mode, UserAnswers}
-import pages.memberDetails.MemberNamePage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist.*
-import viewmodels.implicits.*
+import models.Mode
+import models.UserAnswers
+import pages.memberDetails.MemberNamePage
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object MemberNameSummary {
 

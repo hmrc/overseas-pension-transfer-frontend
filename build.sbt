@@ -16,20 +16,13 @@ val commonSettings: Seq[String] = Seq(
   "-deprecation",
   "-language:noAutoTupling",
   "-Wvalue-discard",
+  "-Wunused:imports",
+  "-Wconf:msg=unused import&src=views/.*:s",
   "-Werror",
   "-Wconf:src=routes/.*:s",
   "-Wunused:unsafe-warn-patvars",
   "-Wconf:msg=Flag.*repeatedly:s"
 )
-
-/*
-Seq(
-      "-feature",
-      "-Wconf:cat=deprecation:ws,cat=feature:ws,cat=optimizer:ws,src=target/.*:s"
-    )
-    
-Seq("-unchecked", "-deprecation")
- */
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
@@ -65,7 +58,10 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged := true,
     pipelineStages := Seq(digest),
     Assets / pipelineStages := Seq(concat),
-    scalafmtOnCompile := true
+    scalafmtOnCompile := true,
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision,
+    scalafixOnCompile := true
   )
 
 lazy val testSettings: Seq[Def.Setting[?]] = Seq(

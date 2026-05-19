@@ -16,9 +16,9 @@
 
 package viewmodels
 
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import models.UserAnswers
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.*
 
 object TaskListViewModel {
 

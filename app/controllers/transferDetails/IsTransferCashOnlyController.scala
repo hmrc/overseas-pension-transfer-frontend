@@ -16,30 +16,41 @@
 
 package controllers.transferDetails
 
-import controllers.actions.*
-import controllers.helpers.ErrorHandling
-import forms.transferDetails.IsTransferCashOnlyFormProvider
-import models.TaskCategory.TransferDetails
-import models.assets.TypeOfAsset
-import models.assets.TypeOfAsset.Cash
-import models.{AmendCheckMode, Mode, SessionData, UserAnswers}
-import org.apache.pekko.Done
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage}
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Writes.*
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.libs.json.Writes._
 import queries.TransferDetailsRecordVersionQuery
-import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
-import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, TaskService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import controllers.actions._
 import views.html.transferDetails.IsTransferCashOnlyView
+import forms.transferDetails.IsTransferCashOnlyFormProvider
+import models.assets.TypeOfAsset
+import models._
+import org.apache.pekko.Done
+import play.api.data.Form
+import models.TaskCategory.TransferDetails
+import queries.assets.AnswersSelectedAssetTypes
+import queries.assets.SelectedAssetTypesWithStatus
+import queries.assets.SessionAssetTypeWithStatus
+import pages.transferDetails.AmountOfTransferPage
+import pages.transferDetails.IsTransferCashOnlyPage
+import services.AssetsMiniJourneyService
+import services.TaskService
+import services.UserAnswersService
+import repositories.SessionRepository
+import controllers.helpers.ErrorHandling
+import models.assets.TypeOfAsset.Cash
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Success
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
 
 class IsTransferCashOnlyController @Inject() (
   override val messagesApi: MessagesApi,

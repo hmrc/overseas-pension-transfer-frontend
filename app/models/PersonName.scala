@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.*
+import play.api.libs.json._
 
 case class PersonName(firstName: String, lastName: String) {
   def fullName: String = s"$firstName $lastName".trim

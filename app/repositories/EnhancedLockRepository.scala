@@ -16,14 +16,19 @@
 
 package repositories
 
-import org.mongodb.scala.model.Filters.lte
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.TimestampSupport
 import org.mongodb.scala.result.DeleteResult
-import uk.gov.hmrc.mongo.lock.{Lock, MongoLockRepository}
-import uk.gov.hmrc.mongo.{MongoComponent, TimestampSupport}
+import uk.gov.hmrc.mongo.lock.Lock
+import uk.gov.hmrc.mongo.lock.MongoLockRepository
+import org.mongodb.scala.model.Filters.lte
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import java.time.Instant
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class EnhancedLockRepository @Inject() (

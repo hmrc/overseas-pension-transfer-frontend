@@ -16,35 +16,43 @@
 
 package controllers.viewandamend
 
-import com.google.inject.Inject
-import config.FrontendAppConfig
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import models.audit.JourneyStartedType.ContinueAmendmentOfTransfer
-import models.authentication.{PsaUser, PspUser}
-import models.requests.SchemeRequest
-import models.responses.UserAnswersError
-import models.{AmendCheckMode, NormalMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
-import pages.memberDetails.MemberNamePage
-import pages.viewandamend.ViewAmendSubmittedPage as page
-import play.api.Logging
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.HtmlFormat
-import repositories.SessionRepository
-import services.{LockService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.authentication.PsaUser
+import models.authentication.PspUser
 import utils.AppUtils
-import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
+import play.api.mvc._
+import com.google.inject.Inject
 import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
+import config.FrontendAppConfig
+import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import repositories.SessionRepository
+import pages.memberDetails.MemberNamePage
+import services.LockService
+import services.UserAnswersService
+import models.responses.UserAnswersError
 import viewmodels.checkAnswers.schemeOverview.SchemeDetailsSummary
-import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.summarylist.*
+import play.twirl.api.HtmlFormat
+import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
 import views.html.viewandamend.ViewSubmittedView
+import play.api.Logging
+import play.api.libs.json.Json
+import models._
+import models.audit.JourneyStartedType.ContinueAmendmentOfTransfer
+import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.govuk.summarylist._
+import models.requests.SchemeRequest
+import pages.viewandamend.{ViewAmendSubmittedPage => page}
 
-import java.time.{Clock, Instant}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
 
 class ViewAmendSubmittedController @Inject() (
   override val messagesApi: MessagesApi,

@@ -16,11 +16,13 @@
 
 package validators.assetsValidators
 
-import cats.implicits.{catsSyntaxTuple4Semigroupal, catsSyntaxValidatedIdBinCompat0}
-import models.assets.{QuotedSharesEntry, TypeOfAsset}
-import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.transferDetails.TypeOfAssetPage
-import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
+import cats.implicits.catsSyntaxTuple4Semigroupal
+import cats.implicits.catsSyntaxValidatedIdBinCompat0
+import pages.transferDetails.assetsMiniJourneys.quotedShares._
+import models.assets.QuotedSharesEntry
+import models.assets.TypeOfAsset
+import models._
 import queries.assets.QuotedSharesQuery
 
 object QuotedSharesValidator {

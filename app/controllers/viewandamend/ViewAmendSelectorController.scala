@@ -16,26 +16,34 @@
 
 package controllers.viewandamend
 
-import config.FrontendAppConfig
-import controllers.actions.*
-import forms.viewandamend.ViewAmendSelectorFormProvider
+import models.authentication.PsaUser
+import models.authentication.PspUser
+import services.LockService
+import services.UserAnswersService
 import models.QtStatus.AmendInProgress
-import models.audit.JourneyStartedType.StartAmendmentOfTransfer
-import models.authentication.{PsaUser, PspUser}
-import models.requests.SchemeRequest
-import models.{PstrNumber, QtStatus, SessionData, TransferId}
-import pages.memberDetails.MemberNamePage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.{LockService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import config.FrontendAppConfig
+import controllers.actions._
 import views.html.viewandamend.ViewAmendSelectorView
+import play.api.libs.json.Json
+import repositories.SessionRepository
+import pages.memberDetails.MemberNamePage
+import models._
+import models.audit.JourneyStartedType.StartAmendmentOfTransfer
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import forms.viewandamend.ViewAmendSelectorFormProvider
+import models.requests.SchemeRequest
 
-import java.time.{Clock, Instant}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class ViewAmendSelectorController @Inject() (
   override val messagesApi: MessagesApi,

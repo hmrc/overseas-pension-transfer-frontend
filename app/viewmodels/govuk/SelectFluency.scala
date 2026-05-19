@@ -16,11 +16,12 @@
 
 package viewmodels.govuk
 
+import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.Select
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import play.api.data.Field
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
-import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
-import uk.gov.hmrc.govukfrontend.views.viewmodels.select.{Select, SelectItem}
 import viewmodels.ErrorMessageAwareness
 
 trait SelectFluency {

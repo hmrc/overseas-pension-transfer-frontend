@@ -16,11 +16,12 @@
 
 package viewmodels.checkAnswers.schemeOverview
 
-import models.Mode
-import play.api.i18n.{Lang, Messages}
+import viewmodels.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist.*
-import viewmodels.implicits.*
+import models.Mode
+import play.api.i18n.Lang
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object DateOfSubmissionSummary {
 

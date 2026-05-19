@@ -16,7 +16,7 @@
 
 package models.address
 
-import play.api.libs.json.*
+import play.api.libs.json._
 
 case class MembersLastUKAddress(
   addressLine1: String,

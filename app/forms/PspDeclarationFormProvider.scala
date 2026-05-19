@@ -16,7 +16,8 @@
 
 package forms
 
-import forms.mappings.{Mappings, Regex}
+import forms.mappings.Mappings
+import forms.mappings.Regex
 import play.api.data.Form
 
 import javax.inject.Inject

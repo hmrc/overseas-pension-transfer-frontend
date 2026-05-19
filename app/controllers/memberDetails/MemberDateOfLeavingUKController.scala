@@ -16,20 +16,25 @@
 
 package controllers.memberDetails
 
-import controllers.actions.*
-import controllers.helpers.ErrorHandling
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import forms.memberDetails.MemberDateOfLeavingUKFormProvider
-import models.Mode
+import controllers.actions._
+import controllers.helpers.ErrorHandling
 import org.apache.pekko.Done
 import pages.memberDetails.MemberDateOfLeavingUKPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.Mode
 import views.html.memberDetails.MemberDateOfLeavingUKView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDateOfLeavingUKController @Inject() (
   override val messagesApi: MessagesApi,

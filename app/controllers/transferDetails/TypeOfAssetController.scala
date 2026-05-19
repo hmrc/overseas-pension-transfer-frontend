@@ -16,23 +16,29 @@
 
 package controllers.transferDetails
 
-import controllers.actions.*
-import forms.transferDetails.TypeOfAssetFormProvider
-import models.Mode
-import models.assets.TypeOfAsset
-import pages.transferDetails.TypeOfAssetPage
-import play.api.Logging
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.AnswersSelectedAssetTypes
-import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
 import views.html.transferDetails.TypeOfAssetView
+import forms.transferDetails.TypeOfAssetFormProvider
+import repositories.SessionRepository
+import models.Mode
+import play.api.data.Form
+import queries.assets.AnswersSelectedAssetTypes
+import pages.transferDetails.TypeOfAssetPage
+import services.AssetsMiniJourneyService
+import services.UserAnswersService
+import play.api.Logging
+import models.assets.TypeOfAsset
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class TypeOfAssetController @Inject() (
   override val messagesApi: MessagesApi,

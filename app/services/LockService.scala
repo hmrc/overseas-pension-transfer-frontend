@@ -16,18 +16,24 @@
 
 package services
 
-import models.audit.JourneyStartedType.StartJourneyFailed
-import models.audit.{JourneyStartedType, ReportStartedAuditModel}
 import models.authentication.AuthenticatedUser
-import models.{AllTransfersItem, PensionSchemeDetails, TransferId}
+import models.audit.JourneyStartedType
+import models.audit.ReportStartedAuditModel
 import org.mongodb.scala.result.DeleteResult
 import play.api.Logging
 import repositories.EnhancedLockRepository
 import uk.gov.hmrc.http.HeaderCarrier
+import models.AllTransfersItem
+import models.PensionSchemeDetails
+import models.TransferId
+import models.audit.JourneyStartedType.StartJourneyFailed
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.*
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.concurrent.duration._
+
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class LockService @Inject() (

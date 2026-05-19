@@ -16,12 +16,13 @@
 
 package forms.transferDetails
 
-import forms.mappings.Mappings
-import play.api.data.Form
-import play.api.i18n.Messages
 import utils.DateTimeFormats.dateInput
+import forms.mappings.Mappings
+import play.api.i18n.Messages
+import play.api.data.Form
 
-import java.time.{Clock, LocalDate}
+import java.time.Clock
+import java.time.LocalDate
 import javax.inject.Inject
 
 class DateOfTransferFormProvider @Inject() (clock: Clock) extends Mappings {

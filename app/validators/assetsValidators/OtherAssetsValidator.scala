@@ -16,11 +16,14 @@
 
 package validators.assetsValidators
 
-import cats.implicits.{catsSyntaxTuple2Semigroupal, catsSyntaxValidatedIdBinCompat0}
-import models.assets.{OtherAssetsEntry, TypeOfAsset}
-import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.transferDetails.TypeOfAssetPage
-import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
+import cats.implicits.catsSyntaxTuple2Semigroupal
+import cats.implicits.catsSyntaxValidatedIdBinCompat0
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
+import models.assets.OtherAssetsEntry
+import models.assets.TypeOfAsset
+import models._
 import queries.assets.OtherAssetsQuery
 
 object OtherAssetsValidator {

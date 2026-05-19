@@ -16,18 +16,23 @@
 
 package connectors
 
-import config.FrontendAppConfig
-import connectors.parsers.TransferParser.{GetAllTransfersHttpReads, GetAllTransfersType}
 import models.responses.AllTransfersUnexpectedError
-import models.{PstrNumber, SrnNumber}
-import play.api.Logging
-import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import utils.DownstreamLogging
+import config.FrontendAppConfig
+import play.api.Logging
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.StringContextOps
+import models.PstrNumber
+import models.SrnNumber
+import uk.gov.hmrc.http.client.HttpClientV2
+import connectors.parsers.TransferParser.GetAllTransfersHttpReads
+import connectors.parsers.TransferParser.GetAllTransfersType
 
-import java.net.URL
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import java.net.URL
 
 class TransferConnector @Inject() (
   appConfig: FrontendAppConfig,

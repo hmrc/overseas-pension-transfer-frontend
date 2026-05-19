@@ -16,12 +16,14 @@
 
 package forms.memberDetails
 
-import forms.mappings.{Mappings, Regex}
-import models.address.*
-import models.requests.DisplayRequest
-import play.api.data.Forms.*
-import play.api.data.{Form, Forms}
 import utils.AppUtils
+import forms.mappings.Mappings
+import forms.mappings.Regex
+import play.api.data.Forms._
+import models.address._
+import models.requests.DisplayRequest
+import play.api.data.Form
+import play.api.data.Forms
 
 import javax.inject.Inject
 

@@ -16,17 +16,21 @@
 
 package connectors
 
+import models.authentication.AuthenticatedUser
+import models.authentication.PsaUser
+import models.authentication.PspUser
+import models.responses.PensionSchemeErrorResponse
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.parsers.PensionSchemeParser.{AuthorisingPsaIdType, GetAuthorisingPsaIdHttpReads, GetPensionSchemeDetailsHttpReads, PensionSchemeDetailsType}
-import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
-import models.responses.PensionSchemeErrorResponse
-import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.StringContextOps
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import utils.DownstreamLogging
+import connectors.parsers.PensionSchemeParser._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class PensionSchemeConnector @Inject() (
   appConfig: FrontendAppConfig,

@@ -16,26 +16,34 @@
 
 package controllers.qropsDetails
 
-import config.FrontendAppConfig
-import controllers.actions.*
-import controllers.helpers.ErrorHandling
-import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
-import models.Mode
-import models.requests.DisplayRequest
-import org.apache.pekko.Done
-import pages.qropsDetails.QROPSAddressPage
-import play.api.Logging
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AddressService, CountryService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import services.AddressService
+import services.CountryService
+import services.UserAnswersService
 import utils.AppUtils
-import viewmodels.CountrySelectViewModel
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import config.FrontendAppConfig
+import controllers.actions._
+import play.api.Logging
+import controllers.helpers.ErrorHandling
+import models.Mode
+import pages.qropsDetails.QROPSAddressPage
+import org.apache.pekko.Done
 import views.html.qropsDetails.QROPSAddressView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.CountrySelectViewModel
+import forms.qropsDetails.QROPSAddressFormData
+import forms.qropsDetails.QROPSAddressFormProvider
+import models.requests.DisplayRequest
+import play.api.data.Form
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class QROPSAddressController @Inject() (
   override val messagesApi: MessagesApi,

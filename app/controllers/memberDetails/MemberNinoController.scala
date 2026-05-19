@@ -16,22 +16,28 @@
 
 package controllers.memberDetails
 
-import controllers.actions.*
-import controllers.helpers.ErrorHandling
-import forms.memberDetails.MemberNinoFormProvider
-import models.Mode
-import org.apache.pekko.Done
-import pages.memberDetails.{MemberDoesNotHaveNinoPage, MemberNinoPage}
-import play.api.Logging
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import forms.memberDetails.MemberNinoFormProvider
+import controllers.actions._
+import play.api.Logging
+import controllers.helpers.ErrorHandling
+import org.apache.pekko.Done
+import pages.memberDetails.MemberDoesNotHaveNinoPage
+import pages.memberDetails.MemberNinoPage
+import play.api.data.Form
+import models.Mode
 import views.html.memberDetails.MemberNinoView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class MemberNinoController @Inject() (
   override val messagesApi: MessagesApi,

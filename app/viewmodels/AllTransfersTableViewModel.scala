@@ -16,17 +16,23 @@
 
 package viewmodels
 
-import config.FrontendAppConfig
-import models.QtStatus.{AmendInProgress, Compiled, InProgress, Submitted}
-import models.{AllTransfersItem, TransferReportQueryParams}
+import models.QtStatus._
+import utils.DateTimeFormats.display12h
+import utils.DateTimeFormats.displayDateUuuu
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import models.AllTransfersItem
+import models.TransferReportQueryParams
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
-import utils.DateTimeFormats.{display12h, displayDateUuuu}
+import config.FrontendAppConfig
 
-import java.time.{Instant, ZoneOffset}
+import java.time.Instant
+import java.time.ZoneOffset
 
 final case class AllTransfersTableViewModel(table: Table)
 

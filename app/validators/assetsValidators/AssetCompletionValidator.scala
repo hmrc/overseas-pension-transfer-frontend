@@ -17,8 +17,8 @@
 package validators.assetsValidators
 
 import models.UserAnswers
+import play.api.libs.json._
 import models.assets.TypeOfAsset
-import play.api.libs.json.*
 
 object AssetCompletionValidator {
 

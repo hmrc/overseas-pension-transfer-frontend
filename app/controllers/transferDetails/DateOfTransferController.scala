@@ -16,25 +16,33 @@
 
 package controllers.transferDetails
 
-import controllers.actions.*
+import queries.TransferDetailsRecordVersionQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
+import views.html.transferDetails.DateOfTransferView
+import forms.transferDetails.AmendDateOfTransferFormProvider
+import forms.transferDetails.DateOfTransferFormProvider
 import controllers.helpers.ErrorHandling
-import forms.transferDetails.{AmendDateOfTransferFormProvider, DateOfTransferFormProvider}
-import models.requests.DisplayRequest
-import models.{AmendCheckMode, Mode, UserAnswers}
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
 import org.apache.pekko.Done
 import pages.transferDetails.DateOfTransferPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.TransferDetailsRecordVersionQuery
 import services.UserAnswersService
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.DateOfTransferView
+import models.requests.DisplayRequest
+import play.api.data.Form
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import java.time.LocalDate
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class DateOfTransferController @Inject() (
   override val messagesApi: MessagesApi,

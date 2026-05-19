@@ -16,23 +16,31 @@
 
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.actions.*
-import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameFormProvider
-import models.assets.TypeOfAsset.UnquotedShares
-import models.{AmendCheckMode, Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.AssetsRecordVersionQuery
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
+import models.assets.TypeOfAsset.UnquotedShares
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
+import play.api.data.Form
+import queries.assets.AssetsRecordVersionQuery
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameView
+import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameFormProvider
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class UnquotedSharesCompanyNameController @Inject() (
   override val messagesApi: MessagesApi,

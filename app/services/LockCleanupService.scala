@@ -16,11 +16,13 @@
 
 package services
 
-import play.api.Logging
 import utils.ScheduledService
+import play.api.Logging
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class LockCleanupService @Inject() (lockService: LockService) extends ScheduledService[Unit] with Logging {
 

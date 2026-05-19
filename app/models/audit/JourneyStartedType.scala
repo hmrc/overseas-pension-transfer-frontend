@@ -16,8 +16,9 @@
 
 package models.audit
 
-import models.{Enumerable, WithName}
-import play.api.libs.json.*
+import play.api.libs.json._
+import models.Enumerable
+import models.WithName
 
 sealed trait JourneyStartedType
 

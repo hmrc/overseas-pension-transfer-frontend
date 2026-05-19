@@ -16,9 +16,11 @@
 
 package forms.mappings
 
-import play.api.data.validation
-import play.api.data.validation.{Constraint, Invalid, Valid}
 import utils.CurrencyFormats
+import play.api.data.validation.Constraint
+import play.api.data.validation.Invalid
+import play.api.data.validation.Valid
+import play.api.data.validation
 
 import java.time.LocalDate
 

@@ -16,10 +16,12 @@
 
 package scheduler
 
-import org.apache.pekko.actor.{Actor, ActorLogging, Props}
-import play.api.Logging
-import scheduler.SchedulingActor.*
 import utils.ScheduledService
+import scheduler.SchedulingActor._
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.ActorLogging
+import org.apache.pekko.actor.Props
+import play.api.Logging
 
 class SchedulingActor extends Actor with ActorLogging with Logging {
   import context.dispatcher

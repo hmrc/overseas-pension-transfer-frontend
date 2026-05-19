@@ -16,13 +16,14 @@
 
 package viewmodels
 
-import cats.data.Validated.{Invalid, Valid}
+import models.taskList.TaskStatus._
+import validators._
 import models.taskList.TaskStatus
-import models.taskList.TaskStatus.*
-import models.{Mode, NormalMode, TaskCategory, UserAnswers}
+import models._
 import play.api.i18n.Messages
+import cats.data.Validated.Invalid
+import cats.data.Validated.Valid
 import play.api.mvc.Call
-import validators.*
 
 trait TaskJourneyViewModel {
   def category: TaskCategory

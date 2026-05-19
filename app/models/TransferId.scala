@@ -16,11 +16,13 @@
 
 package models
 
-import play.api.libs.json.*
 import play.api.mvc.QueryStringBindable
+import play.api.libs.json._
 
 import scala.util.matching.Regex
-import scala.util.{Failure, Success, Try}
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 trait TransferId {
   def value: String

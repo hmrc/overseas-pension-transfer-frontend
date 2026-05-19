@@ -16,17 +16,23 @@
 
 package models
 
-import models.TaskCategory.{MemberDetails, QROPSDetails, SchemeManagerDetails, SubmissionDetails, TransferDetails}
 import models.authentication.AuthenticatedUser
-import models.taskList.TaskStatus.{CannotStart, NotStarted}
-import play.api.libs.functional.syntax.*
-import play.api.libs.json.*
-import queries.{Gettable, Settable, TaskStatusQuery}
 import services.EncryptionService
+import queries.Gettable
+import queries.Settable
+import queries.TaskStatusQuery
+import models.taskList.TaskStatus.CannotStart
+import models.taskList.TaskStatus.NotStarted
+import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import play.api.libs.functional.syntax._
+import models.TaskCategory._
+
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 import java.time.Instant
-import scala.util.{Failure, Success, Try}
 
 case class SessionData(
   sessionId: String,

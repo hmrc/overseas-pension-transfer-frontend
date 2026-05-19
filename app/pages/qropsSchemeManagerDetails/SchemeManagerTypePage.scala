@@ -16,11 +16,11 @@
 
 package pages.qropsSchemeManagerDetails
 
-import controllers.qropsSchemeManagerDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SchemeManagerType, TaskCategory, UserAnswers}
+import play.api.mvc.Call
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models._
+import controllers.qropsSchemeManagerDetails.routes
 
 import scala.util.Try
 

@@ -16,9 +16,11 @@
 
 package models.dtos
 
-import models.authentication.*
-import models.{SessionData, TransferId, UserAnswers}
-import play.api.libs.json.*
+import models.authentication._
+import play.api.libs.json._
+import models.SessionData
+import models.TransferId
+import models.UserAnswers
 
 import java.time.Instant
 

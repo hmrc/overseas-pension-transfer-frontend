@@ -16,8 +16,9 @@
 
 package connectors.parsers
 
-import models.email.{EmailAccepted, EmailNotSent, EmailSendingResult, EmailUnsendable}
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.HttpReads
+import uk.gov.hmrc.http.HttpResponse
+import models.email._
 
 object EmailHttpParser {
 

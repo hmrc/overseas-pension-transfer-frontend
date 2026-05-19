@@ -17,7 +17,8 @@
 package models.transferJourneys
 
 import models.address.SchemeManagersAddress
-import models.{PersonName, SchemeManagerType}
+import models.PersonName
+import models.SchemeManagerType
 
 case class SchemeManagerDetails(
   schemeManagerType: SchemeManagerType,

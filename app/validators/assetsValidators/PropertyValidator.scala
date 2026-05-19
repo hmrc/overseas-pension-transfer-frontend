@@ -16,13 +16,17 @@
 
 package validators.assetsValidators
 
-import cats.implicits.{catsSyntaxTuple3Semigroupal, catsSyntaxValidatedIdBinCompat0}
-import models.address.PropertyAddress
-import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.transferDetails.TypeOfAssetPage
-import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
+import cats.implicits.catsSyntaxTuple3Semigroupal
+import cats.implicits.catsSyntaxValidatedIdBinCompat0
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
+import models._
 import queries.assets.PropertyQuery
+import models.address.PropertyAddress
+import models.assets.PropertyEntry
+import models.assets.TypeOfAsset
 
 object PropertyValidator {
 

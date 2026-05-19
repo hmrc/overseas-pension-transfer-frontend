@@ -16,24 +16,32 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import controllers.actions.*
+import services.AssetsMiniJourneyService
+import services.UserAnswersService
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
-import models.assets.{PropertyMiniJourney, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
+import controllers.actions._
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
+import models.assets.PropertyMiniJourney
+import models.assets.TypeOfAsset
+import repositories.SessionRepository
+import models._
+import play.api.data.Form
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class PropertyAmendContinueController @Inject() (
   override val messagesApi: MessagesApi,

@@ -16,16 +16,19 @@
 
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.actions.*
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartView
 import models.Mode
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartPage
+import controllers.actions._
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartView
+
+import scala.concurrent.ExecutionContext
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class OtherAssetsStartController @Inject() (
   val controllerComponents: MessagesControllerComponents,

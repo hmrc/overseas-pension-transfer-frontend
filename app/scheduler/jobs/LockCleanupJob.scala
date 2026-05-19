@@ -16,11 +16,11 @@
 
 package scheduler.jobs
 
-import org.apache.pekko.actor.ActorSystem
+import services.LockCleanupService
+import scheduler.SchedulingActor.LockCleanup
 import play.api.Configuration
 import scheduler.ScheduledJob
-import scheduler.SchedulingActor.LockCleanup
-import services.LockCleanupService
+import org.apache.pekko.actor.ActorSystem
 
 import javax.inject.Inject
 

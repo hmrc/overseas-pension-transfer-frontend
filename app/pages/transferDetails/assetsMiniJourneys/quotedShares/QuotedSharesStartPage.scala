@@ -16,10 +16,10 @@
 
 package pages.transferDetails.assetsMiniJourneys.quotedShares
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
-import pages.Page
 import play.api.mvc.Call
+import pages.Page
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models._
 
 object QuotedSharesStartPage extends Page {
   private val startIndex = 0

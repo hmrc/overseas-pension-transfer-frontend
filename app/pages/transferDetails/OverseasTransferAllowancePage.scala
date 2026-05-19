@@ -16,11 +16,11 @@
 
 package pages.transferDetails
 
+import play.api.mvc.Call
 import controllers.transferDetails.routes
-import models.{Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models._
 
 case object OverseasTransferAllowancePage extends QuestionPage[BigDecimal] {
 

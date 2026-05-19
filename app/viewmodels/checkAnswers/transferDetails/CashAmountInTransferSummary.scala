@@ -16,14 +16,15 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{Mode, UserAnswers}
+import viewmodels.implicits._
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import utils.CurrencyFormats.currencyFormat
-import viewmodels.govuk.summarylist.*
-import viewmodels.implicits.*
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object CashAmountInTransferSummary {
 

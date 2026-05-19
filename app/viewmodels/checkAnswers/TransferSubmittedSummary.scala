@@ -16,13 +16,14 @@
 
 package viewmodels.checkAnswers
 
-import models.requests.SchemeRequest
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{SummaryList, SummaryListRow}
-import viewmodels.govuk.summarylist.*
-import viewmodels.implicits.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import play.api.i18n.Messages
+import models.requests.SchemeRequest
+import viewmodels.govuk.summarylist._
 
 case object TransferSubmittedSummary {
 

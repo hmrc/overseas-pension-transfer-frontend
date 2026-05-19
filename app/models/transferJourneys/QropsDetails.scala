@@ -16,7 +16,8 @@
 
 package models.transferJourneys
 
-import models.address.{Country, QROPSAddress}
+import models.address.Country
+import models.address.QROPSAddress
 
 case class QropsDetails(
   qropsName: String,

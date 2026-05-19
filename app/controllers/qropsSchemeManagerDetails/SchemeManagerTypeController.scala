@@ -16,21 +16,27 @@
 
 package controllers.qropsSchemeManagerDetails
 
-import controllers.actions.*
-import controllers.helpers.ErrorHandling
-import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
-import models.{Mode, SchemeManagerType}
-import org.apache.pekko.Done
-import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
+import controllers.actions._
+import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
+import controllers.helpers.ErrorHandling
+import models.Mode
+import models.SchemeManagerType
+import org.apache.pekko.Done
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
+import play.api.data.Form
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class SchemeManagerTypeController @Inject() (
   override val messagesApi: MessagesApi,

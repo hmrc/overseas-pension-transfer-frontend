@@ -16,9 +16,9 @@
 
 package viewmodels
 
+import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 import models.address.Country
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
 
 case class CountrySelectViewModel(items: Seq[SelectItem])
 

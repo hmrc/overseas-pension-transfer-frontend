@@ -16,10 +16,11 @@
 
 package queries.assets
 
+import queries.Gettable
+import queries.Settable
 import models.TaskCategory
-import models.assets.*
 import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
+import models.assets._
 
 sealed trait AssetsQuery[A] extends Gettable[A] with Settable[A] {
   def path: JsPath

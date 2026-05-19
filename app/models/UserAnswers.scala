@@ -16,12 +16,16 @@
 
 package models
 
-import play.api.libs.json.*
-import queries.{Gettable, Settable}
+import queries.Gettable
+import queries.Settable
+import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
 import java.time.Instant
-import scala.util.{Failure, Success, Try}
 
 class DeserialisationException(message: String) extends RuntimeException(message)
 

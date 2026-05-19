@@ -16,11 +16,11 @@
 
 package pages
 
-import controllers.routes
 import models.QtStatus.AmendInProgress
-import models.UserAnswers
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import controllers.routes
+import play.api.libs.json.JsPath
+import models.UserAnswers
 
 case object DiscardTransferConfirmPage extends QuestionPage[Boolean] with NextPageWith[Option[String]] {
 

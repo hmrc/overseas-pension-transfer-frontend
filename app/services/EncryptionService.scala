@@ -16,13 +16,19 @@
 
 package services
 
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
 import java.nio.ByteBuffer
-import java.nio.charset.StandardCharsets
-import java.security.{MessageDigest, SecureRandom}
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
 import java.util.Base64
-import javax.crypto.spec.{GCMParameterSpec, SecretKeySpec}
-import javax.crypto.{Cipher, SecretKey}
-import scala.util.{Failure, Success, Try}
+import java.nio.charset.StandardCharsets
+import javax.crypto.Cipher
+import javax.crypto.SecretKey
+import java.security.MessageDigest
+import java.security.SecureRandom
 
 class EncryptionService(masterKey: String, random: SecureRandom = new SecureRandom()) {
 

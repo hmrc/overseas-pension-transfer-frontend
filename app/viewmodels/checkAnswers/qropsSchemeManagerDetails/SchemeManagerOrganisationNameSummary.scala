@@ -16,12 +16,13 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import models.{Mode, UserAnswers}
-import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist.*
-import viewmodels.implicits.*
+import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object SchemeManagerOrganisationNameSummary {
 

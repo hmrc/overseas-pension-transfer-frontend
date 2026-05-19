@@ -16,16 +16,19 @@
 
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
-import controllers.actions.*
-import models.Mode
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartPage
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.Mode
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesStartView
+import play.api.i18n.I18nSupport
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class QuotedSharesStartController @Inject() (
   val controllerComponents: MessagesControllerComponents,

@@ -16,13 +16,14 @@
 
 package pages.transferDetails
 
-import controllers.transferDetails.routes
-import models.assets.TypeOfAsset
-import models.{Mode, SessionData, TaskCategory, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
-import pages.{MiniJourneyNextPageWith, QuestionPage}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import controllers.transferDetails.routes
+import pages.MiniJourneyNextPageWith
+import pages.QuestionPage
+import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
+import models._
+import play.api.libs.json.JsPath
+import models.assets.TypeOfAsset
 
 case object TypeOfAssetPage
     extends QuestionPage[Seq[TypeOfAsset]]

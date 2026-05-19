@@ -16,7 +16,8 @@
 
 package models.address
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 
 case class Country(code: String, name: String) {
   override def toString: String = name

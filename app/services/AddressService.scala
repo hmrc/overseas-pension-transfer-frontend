@@ -16,14 +16,15 @@
 
 package services
 
-import forms.memberDetails.MembersCurrentAddressFormData
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataTrait
+import models.address._
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataTrait
-import models.address.*
+import forms.memberDetails.MembersCurrentAddressFormData
+
+import scala.concurrent.ExecutionContext
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class AddressService @Inject() (
   countryService: CountryService

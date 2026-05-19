@@ -16,9 +16,10 @@
 
 package models.requests
 
-import models.PensionSchemeDetails
 import models.authentication.AuthenticatedUser
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.mvc.Request
+import play.api.mvc.WrappedRequest
+import models.PensionSchemeDetails
 
 case class SchemeRequest[A](
   request: Request[A],

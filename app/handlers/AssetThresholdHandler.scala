@@ -16,9 +16,10 @@
 
 package handlers
 
+import models.RichJsObject
+import models.UserAnswers
+import play.api.libs.json._
 import models.assets.TypeOfAsset
-import models.{RichJsObject, UserAnswers}
-import play.api.libs.json.*
 
 object AssetThresholdHandler {
 

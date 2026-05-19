@@ -16,9 +16,11 @@
 
 package viewmodels
 
-import models.address.*
-import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.Aliases.{RadioItem, Text}
+import play.twirl.api.Html
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.Aliases.RadioItem
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import models.address._
 
 import scala.language.implicitConversions
 

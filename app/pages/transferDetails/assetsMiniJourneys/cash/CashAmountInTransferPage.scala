@@ -16,13 +16,14 @@
 
 package pages.transferDetails.assetsMiniJourneys.cash
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.assets.CashEntry
-import models.{Mode, SessionData, TaskCategory, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
-import pages.{MiniJourneyNextPageWith, QuestionPage}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.MiniJourneyNextPageWith
+import pages.QuestionPage
+import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models._
+import play.api.libs.json.JsPath
+import models.assets.CashEntry
 
 case object CashAmountInTransferPage
     extends QuestionPage[BigDecimal]

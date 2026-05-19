@@ -16,9 +16,10 @@
 
 package pages.checkYourAnswers
 
-import models.{NormalMode, UserAnswers}
-import pages.Page
 import play.api.mvc.Call
+import pages.Page
+import models.NormalMode
+import models.UserAnswers
 
 object CheckYourAnswersPage extends Page {
 

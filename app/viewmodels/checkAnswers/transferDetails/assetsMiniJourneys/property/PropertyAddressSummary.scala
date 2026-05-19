@@ -16,14 +16,15 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import models.{Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
+import models.Mode
+import models.UserAnswers
+import viewmodels.govuk.summarylist._
+import play.api.i18n.Messages
 import viewmodels.AddressViewModel
-import viewmodels.govuk.summarylist.*
-import viewmodels.implicits.*
 
 object PropertyAddressSummary {
 

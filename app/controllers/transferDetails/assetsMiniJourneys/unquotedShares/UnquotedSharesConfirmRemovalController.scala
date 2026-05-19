@@ -16,20 +16,28 @@
 
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.actions.*
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
+import services.AssetsMiniJourneyService
+import services.MoreAssetCompletionService
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import handlers.AssetThresholdHandler
+import controllers.actions._
+import models.assets.TypeOfAsset
+import models.assets.UnquotedSharesMiniJourney
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.NormalMode
-import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalView
+import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class UnquotedSharesConfirmRemovalController @Inject() (
   override val messagesApi: MessagesApi,

@@ -16,8 +16,8 @@
 
 package models
 
-import play.api.libs.json.*
 import play.api.mvc.QueryStringBindable
+import play.api.libs.json._
 
 case class PstrNumber(value: String)
 

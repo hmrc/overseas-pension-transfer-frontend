@@ -16,22 +16,28 @@
 
 package connectors
 
-import config.FrontendAppConfig
-import connectors.parsers.UserAnswersParser.{DeleteUserAnswersHttpReads, DeleteUserAnswersType, GetSubmissionResponseHttpReads, GetUserAnswersHttpReads, GetUserAnswersType, SetUserAnswersHttpReads, SetUserAnswersType, SubmissionType}
-import models.dtos.{SubmissionDTO, UserAnswersDTO}
-import models.responses.{SubmissionErrorResponse, UserAnswersErrorResponse}
-import models.{PstrNumber, QtStatus, SrnNumber, TransferId}
-import play.api.Logging
-import play.api.libs.json.Json
-import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
-import uk.gov.hmrc.http.HttpReads.Implicits.*
-import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import models.responses.SubmissionErrorResponse
+import models.responses.UserAnswersErrorResponse
 import utils.DownstreamLogging
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import config.FrontendAppConfig
+import models.dtos.SubmissionDTO
+import models.dtos.UserAnswersDTO
+import models._
+import uk.gov.hmrc.http.client.HttpClientV2
+import play.api.Logging
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import play.api.libs.json.Json
+import connectors.parsers.UserAnswersParser._
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.StringContextOps
 
-import java.net.URL
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import java.net.URL
 
 class UserAnswersConnector @Inject() (
   appConfig: FrontendAppConfig,

@@ -32,11 +32,12 @@
 
 package queries.assets
 
+import queries.Gettable
+import queries.Settable
 import models.TaskCategory
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 import models.assets.TypeOfAsset
-import play.api.libs.functional.syntax.*
-import play.api.libs.json.*
-import queries.{Gettable, Settable}
 
 case class SessionAssetTypeWithStatus(
   assetType: TypeOfAsset,

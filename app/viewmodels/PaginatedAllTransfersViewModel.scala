@@ -16,12 +16,13 @@
 
 package viewmodels
 
+import utils.Paging
+import utils.PagingRequest
+import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
 import config.FrontendAppConfig
 import models.AllTransfersItem
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.*
-import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
-import utils.{Paging, PagingRequest}
 
 final case class PaginatedAllTransfersViewModel(
   table: Table,

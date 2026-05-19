@@ -16,11 +16,11 @@
 
 package viewmodels.checkAnswers.schemeOverview
 
+import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import models.Mode
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist.*
-import viewmodels.implicits.*
+import viewmodels.govuk.summarylist._
 
 object SchemeNameSummary {
 

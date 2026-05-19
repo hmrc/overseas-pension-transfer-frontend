@@ -16,12 +16,16 @@
 
 package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
-import models.assets.{AssetsMiniJourneyRegistry, TypeOfAsset}
-import models.{Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.{AmendContinueContext, NextAssetMiniJourney}
-import pages.{MiniJourneyNextPageWith, QuestionPage}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.MiniJourneyNextPageWith
+import pages.QuestionPage
+import pages.transferDetails.assetsMiniJourneys.AmendContinueContext
+import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
+import models.Mode
+import models.UserAnswers
+import play.api.libs.json.JsPath
+import models.assets.AssetsMiniJourneyRegistry
+import models.assets.TypeOfAsset
 
 case object UnquotedSharesAmendContinueAssetPage
     extends QuestionPage[Boolean]

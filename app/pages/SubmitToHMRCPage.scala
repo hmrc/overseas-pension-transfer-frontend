@@ -16,12 +16,16 @@
 
 package pages
 
+import models.authentication.AuthenticatedUser
+import models.authentication.Psa
+import models.authentication.Psp
+import play.api.mvc.Call
 import controllers.routes
-import models.authentication.{AuthenticatedUser, Psa, Psp}
-import models.{AmendCheckMode, NormalMode, UserAnswers}
+import models.AmendCheckMode
+import models.NormalMode
+import models.UserAnswers
 import play.api.Logging
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
 
 case object SubmitToHMRCPage extends QuestionPage[Boolean] with NextPageWith[AuthenticatedUser] with Logging {
 

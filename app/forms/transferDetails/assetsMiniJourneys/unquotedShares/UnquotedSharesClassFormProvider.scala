@@ -16,7 +16,8 @@
 
 package forms.transferDetails.assetsMiniJourneys.unquotedShares
 
-import forms.mappings.{Mappings, Regex}
+import forms.mappings.Mappings
+import forms.mappings.Regex
 import play.api.data.Form
 
 import javax.inject.Inject

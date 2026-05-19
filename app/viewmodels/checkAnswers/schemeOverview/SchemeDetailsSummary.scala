@@ -16,9 +16,9 @@
 
 package viewmodels.checkAnswers.schemeOverview
 
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import models.Mode
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 case object SchemeDetailsSummary {
 
