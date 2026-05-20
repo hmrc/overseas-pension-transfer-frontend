@@ -16,21 +16,25 @@
 
 package controllers.actions
 
+import utils.AppUtils
+import queries.PensionSchemeDetailsQuery
+import play.api.mvc.ActionRefiner
+import play.api.mvc.Result
 import com.google.inject.Inject
 import connectors.PensionSchemeConnector
 import controllers.routes
-import models.requests.{IdentifierRequest, SchemeRequest}
-import models.{PensionSchemeDetails, SrnNumber}
 import play.api.Logging
+import models.PensionSchemeDetails
+import models.SrnNumber
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{ActionRefiner, Result}
-import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.AppUtils
+import models.requests.IdentifierRequest
+import models.requests.SchemeRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class SchemeDataActionImpl @Inject() (
   pensionSchemeConnector: PensionSchemeConnector,

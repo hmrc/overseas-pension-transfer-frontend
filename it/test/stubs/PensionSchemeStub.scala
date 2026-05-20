@@ -16,10 +16,10 @@
 
 package stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.http.Fault
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 object PensionSchemeStub {
 
@@ -52,60 +52,68 @@ object PensionSchemeStub {
   private def PsaDetailsPath(srn: String) = s".*/pensions-scheme/scheme/$srn"
   private def PspDetailsPath(srn: String) = s".*/pensions-scheme/psp-scheme/$srn"
 
-  def responseCheckAssociationPsa(srn: String)(status: Int, body: String): Unit =
+  def responseCheckAssociationPsa(srn: String)(status: Int, body: String): Unit = {
     stubGet(
-      urlRegex        = AssocPathRegex,
-      status          = status,
-      responseBody    = body,
+      urlRegex = AssocPathRegex,
+      status = status,
+      responseBody = body,
       requiredHeaders = Seq("schemeReferenceNumber" -> srn),
-      headerRegexes   = Seq("psaId" -> "^A\\d+$"),
-      absentHeaders   = Seq("pspId")
+      headerRegexes = Seq("psaId" -> "^A\\d+$"),
+      absentHeaders = Seq("pspId")
     )
+    ()
+  }
 
-  def responseCheckAssociationPsp(srn: String)(status: Int, body: String): Unit =
+  def responseCheckAssociationPsp(srn: String)(status: Int, body: String): Unit = {
     stubGet(
-      urlRegex        = AssocPathRegex,
-      status          = status,
-      responseBody    = body,
+      urlRegex = AssocPathRegex,
+      status = status,
+      responseBody = body,
       requiredHeaders = Seq("schemeReferenceNumber" -> srn),
-      headerRegexes   = Seq("pspId" -> "^\\d+$"),
-      absentHeaders   = Seq("psaId")
+      headerRegexes = Seq("pspId" -> "^\\d+$"),
+      absentHeaders = Seq("psaId")
     )
+    ()
+  }
 
   def checkAssociationPsaTrue(srn: String): Unit  = responseCheckAssociationPsa(srn)(OK, "true")
   def checkAssociationPsaFalse(srn: String): Unit = responseCheckAssociationPsa(srn)(OK, "false")
   def checkAssociationPspTrue(srn: String): Unit  = responseCheckAssociationPsp(srn)(OK, "true")
   def checkAssociationPspFalse(srn: String): Unit = responseCheckAssociationPsp(srn)(OK, "false")
 
-  def responseGetSchemeDetailsForPsa(srn: String)(status: Int, body: String): Unit =
+  def responseGetSchemeDetailsForPsa(srn: String)(status: Int, body: String): Unit = {
     stubGet(
-      urlRegex        = PsaDetailsPath(srn),
-      status          = status,
-      responseBody    = body,
+      urlRegex = PsaDetailsPath(srn),
+      status = status,
+      responseBody = body,
       requiredHeaders = Seq(
         "schemeIdType" -> "srn",
-        "idNumber"     -> srn
+        "idNumber" -> srn
       )
     )
+    ()
+  }
 
-  def responseGetSchemeDetailsForPsp(srn: String)(status: Int, body: String): Unit =
+  def responseGetSchemeDetailsForPsp(srn: String)(status: Int, body: String): Unit = {
     stubGet(
-      urlRegex        = PspDetailsPath(srn),
-      status          = status,
-      responseBody    = body,
+      urlRegex = PspDetailsPath(srn),
+      status = status,
+      responseBody = body,
       requiredHeaders = Seq("srn" -> srn)
     )
+    ()
+  }
 
-  def getSchemeDetailsForPsaSuccess(srn: String, pstr: String, schemeName: String): Unit =
+  def stubGetSchemeDetailsForPsaSuccess(srn: String, pstr: String, schemeName: String): Unit =
     responseGetSchemeDetailsForPsa(srn)(OK, schemeDetailsJson(srn, pstr, schemeName))
 
-  def getSchemeDetailsForPspSuccess(srn: String, pstr: String, schemeName: String): Unit =
+  def stubGetSchemeDetailsForPspSuccess(srn: String, pstr: String, schemeName: String): Unit =
     responseGetSchemeDetailsForPsp(srn)(OK, schemeDetailsJson(srn, pstr, schemeName))
 
-  def getSchemeDetailsNotAssociatedForPsa(srn: String): Unit =
+  def stubGetSchemeDetailsNotAssociatedForPsa(srn: String): Unit =
     responseGetSchemeDetailsForPsa(srn)(NOT_FOUND, """{"error":"not associated"}""")
 
-  def getSchemeDetailsErrorForPsp(srn: String, status: Int, body: String): Unit =
+  def stubGetSchemeDetailsErrorForPsp(srn: String, status: Int, body: String): Unit =
     responseGetSchemeDetailsForPsp(srn)(status, body)
 
   def faultGetSchemeDetailsForPsa(srn: String): StubMapping =
@@ -133,6 +141,7 @@ object PensionSchemeStub {
       requiredHeaders = Seq("schemeReferenceNumber" -> srn, "psaId" -> psaId),
       absentHeaders   = Seq("pspId")
     )
+    ()
   }
 
   def stubCheckPsaAssociationFailure(srn: String, psaId: String): Unit          = {
@@ -143,6 +152,7 @@ object PensionSchemeStub {
       requiredHeaders = Seq("schemeReferenceNumber" -> srn, "psaId" -> psaId),
       absentHeaders   = Seq("pspId")
     )
+    ()
   }
 
   private def authorisingPsaJson(srn: String, authorisingPsaId: String): String =
@@ -170,21 +180,23 @@ object PensionSchemeStub {
        |}
        |""".stripMargin
 
-  def responseGetAuthorisingPsa(srn: String)(status: Int, body: String): Unit =
+  def responseGetAuthorisingPsa(srn: String)(status: Int, body: String): Unit = {
     stubGet(
-      urlRegex        = PspDetailsPath(srn),
-      status          = status,
-      responseBody    = body,
+      urlRegex = PspDetailsPath(srn),
+      status = status,
+      responseBody = body,
       requiredHeaders = Seq("srn" -> srn)
     )
+    ()
+  }
 
-  def getAuthorisingPsaSuccess(srn: String, authorisingPsaId: String): Unit =
+  def stubGetAuthorisingPsaSuccess(srn: String, authorisingPsaId: String): Unit =
     responseGetAuthorisingPsa(srn)(OK, authorisingPsaJson(srn, authorisingPsaId))
 
-  def getAuthorisingPsaNotAssociated(srn: String): Unit =
+  def stubGetAuthorisingPsaNotAssociated(srn: String): Unit =
     responseGetAuthorisingPsa(srn)(NOT_FOUND, """{"error":"not associated"}""")
 
-  def getAuthorisingPsaError(srn: String)(status: Int, body: String): Unit =
+  def stubGetAuthorisingPsaError(srn: String)(status: Int, body: String): Unit =
     responseGetAuthorisingPsa(srn)(status, body)
 
   def faultGetAuthorisingPsa(srn: String): StubMapping =

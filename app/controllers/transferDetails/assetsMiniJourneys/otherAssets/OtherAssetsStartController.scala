@@ -16,8 +16,8 @@
 
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.actions._
-import models.{Mode, NormalMode}
+import controllers.actions.*
+import models.Mode
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -25,7 +25,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class OtherAssetsStartController @Inject() (
   val controllerComponents: MessagesControllerComponents,
@@ -33,8 +32,7 @@ class OtherAssetsStartController @Inject() (
   getData: DataRetrievalAction,
   schemeData: SchemeDataAction,
   view: OtherAssetsStartView
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>

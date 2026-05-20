@@ -16,17 +16,22 @@
 
 package connectors
 
+import models.authentication.PsaId
+import models.authentication.PspId
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import config.FrontendAppConfig
-import models.MinimalDetails
-import models.authentication.{PsaId, PspId}
 import play.api.Logging
-import play.api.http.Status.NOT_FOUND
-import uk.gov.hmrc.http.HttpReads.Implicits.*
+import models.MinimalDetails
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps, UpstreamErrorResponse}
+import play.api.http.Status.NOT_FOUND
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.StringContextOps
+import uk.gov.hmrc.http.UpstreamErrorResponse
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait MinimalDetailsError
 

@@ -16,19 +16,25 @@
 
 package controllers.checkYourAnswers
 
-import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import models.{FinalCheckMode, Mode, NormalMode}
-import pages.checkYourAnswers.CheckYourAnswersPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
-import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
-import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.summarylist._
 import views.html.checkYourAnswers.CheckYourAnswersView
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import com.google.inject.Inject
+import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
+import pages.checkYourAnswers.CheckYourAnswersPage
+import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
+import models.FinalCheckMode
+import models.NormalMode
+import viewmodels.govuk.summarylist._
+import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,

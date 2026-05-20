@@ -16,7 +16,7 @@
 
 package models.email
 
-import play.api.libs.json.{JsResult, JsValue, Json, Reads, Writes}
+import play.api.libs.json._
 
 sealed trait EmailParameters
 

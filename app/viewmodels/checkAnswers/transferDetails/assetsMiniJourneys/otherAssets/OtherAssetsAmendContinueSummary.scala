@@ -16,19 +16,22 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import handlers.AssetThresholdHandler
-import models.assets.TypeOfAsset
-import models.{Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
-import play.api.i18n.Messages
-import queries.assets.OtherAssetsQuery
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
-import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import utils.AppUtils
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import handlers.AssetThresholdHandler
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
+import models.assets.TypeOfAsset
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.Mode
+import models.UserAnswers
+import viewmodels.govuk.summarylist._
+import queries.assets.OtherAssetsQuery
+import play.api.i18n.Messages
+import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 
 object OtherAssetsAmendContinueSummary extends AppUtils {
 

@@ -16,24 +16,32 @@
 
 package controllers
 
-import controllers.actions.{IdentifierAction, SchemeDataAction}
-import models.audit.JourneyStartedType.StartNewTransfer
+import services.AuditService
+import services.UserAnswersService
 import models.audit.ReportStartedAuditModel
-import models.{NormalMode, SessionData, TransferNumber, UserAnswers}
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import pages.WhatWillBeNeededPage
-import play.api.Logging
-import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.{AuditService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.WhatWillBeNeededView
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import repositories.SessionRepository
+import play.api.Logging
+import play.api.libs.json.Json
+import models._
+import models.audit.JourneyStartedType.StartNewTransfer
+import play.api.i18n.I18nSupport
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import java.time.{Clock, Instant}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
 import java.util.UUID
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class WhatWillBeNeededController @Inject() (

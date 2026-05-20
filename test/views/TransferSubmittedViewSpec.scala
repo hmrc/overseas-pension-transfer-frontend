@@ -26,8 +26,8 @@ import views.utils.ViewBaseSpec
 
 class TransferSubmittedViewSpec extends ViewBaseSpec {
 
-  private val appConfig = new TestAppConfig
-  private val view      = applicationBuilder().injector().instanceOf[TransferSubmittedView]
+  new TestAppConfig
+  private val view = applicationBuilder().injector().instanceOf[TransferSubmittedView]
 
   implicit val schemeRequest: SchemeRequest[_] = SchemeRequest(
     request = FakeRequest(),
@@ -42,7 +42,7 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
   "TransferSubmittedView" - {
 
     "show correct title" in {
-      doc(view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email, appConfig).body)
+      doc(view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email).body)
         .getElementsByTag("title")
         .eachText()
         .get(0) mustBe
@@ -50,7 +50,7 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
     }
 
     behave like pageWithConfirmationPanel(
-      view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email, appConfig),
+      view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email),
       "transferSubmitted.heading",
       "transferSubmitted.referenceNumber.text",
       testQtNumberValue
@@ -58,7 +58,7 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
 
     "display correct text" in {
       val links =
-        doc(view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email, appConfig).body)
+        doc(view(testQtNumberValue, summaryList, mpsLink, minimalDetailsIndividual.email).body)
           .getElementById("main-content")
           .getElementsByTag("a")
 
@@ -72,7 +72,7 @@ class TransferSubmittedViewSpec extends ViewBaseSpec {
       links.get(3).attr("href") mustBe routes.DashboardController.clearAndExit(mpsLink).url
 
       val email               = minimalDetailsIndividual.email
-      val emailSubmissionText = doc(view(testQtNumberValue, summaryList, mpsLink, email, appConfig).body)
+      val emailSubmissionText = doc(view(testQtNumberValue, summaryList, mpsLink, email).body)
         .getElementById("email-submission-text")
       emailSubmissionText.html() mustBe messages("transferSubmitted.confirmationEmailSent.text", email)
     }

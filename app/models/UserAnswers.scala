@@ -16,12 +16,16 @@
 
 package models
 
+import queries.Gettable
+import queries.Settable
 import play.api.libs.json._
-import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
 import java.time.Instant
-import scala.util.{Failure, Success, Try}
 
 class DeserialisationException(message: String) extends RuntimeException(message)
 
@@ -35,7 +39,7 @@ final case class UserAnswers(
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  import play.api.libs.json._
+  import play.api.libs.json.*
 
   def getWithLogging[A](page: Gettable[A])(implicit rds: Reads[A], mf: Manifest[A]): Either[Throwable, A] = {
     val path     = page.path
@@ -98,7 +102,7 @@ object UserAnswers {
 
   val reads: Reads[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").read[TransferId] and
@@ -110,7 +114,7 @@ object UserAnswers {
 
   val writes: OWrites[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").write[TransferId] and

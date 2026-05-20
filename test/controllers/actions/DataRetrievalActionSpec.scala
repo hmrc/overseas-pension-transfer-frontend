@@ -17,11 +17,11 @@
 package controllers.actions
 
 import base.SpecBase
-import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
+import models.requests.{DisplayRequest, SchemeRequest}
 import models.responses.UserAnswersErrorResponse
 import models.{PensionSchemeDetails, PstrNumber, SessionData, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.SEE_OTHER
@@ -32,7 +32,6 @@ import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.assets.{PropertyMiniJourney, UnquotedSharesMiniJourney}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 

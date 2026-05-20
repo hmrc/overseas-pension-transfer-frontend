@@ -16,7 +16,7 @@
 
 package stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 
 object MinimalDetailsStub {
@@ -44,45 +44,57 @@ object MinimalDetailsStub {
     )
   }
 
-  def psaSuccess(psaId: String, body: String): Unit =
+  def psaSuccess(psaId: String, body: String): Unit = {
     stubGetWithHeaders(
-      status          = 200,
-      body            = body,
+      status = 200,
+      body = body,
       requiredHeaders = Seq("psaId" -> psaId, "loggedInAsPsa" -> "true")
     )
+    ()
+  }
 
-  def pspSuccess(pspId: String, body: String): Unit =
+  def pspSuccess(pspId: String, body: String): Unit = {
     stubGetWithHeaders(
-      status          = 200,
-      body            = body,
+      status = 200,
+      body = body,
       requiredHeaders = Seq("pspId" -> pspId, "loggedInAsPsa" -> "false")
     )
+    ()
+  }
 
-  def psaNotFoundWithNoMatch(psaId: String): Unit =
+  def psaNotFoundWithNoMatch(psaId: String): Unit = {
     stubGetWithHeaders(
-      status          = 404,
-      body            = "no match found",
+      status = 404,
+      body = "no match found",
       requiredHeaders = Seq("psaId" -> psaId, "loggedInAsPsa" -> "true")
     )
+    ()
+  }
 
-  def psaForbiddenDelimited(psaId: String): Unit =
+  def psaForbiddenDelimited(psaId: String): Unit = {
     stubGetWithHeaders(
-      status          = 403,
-      body            = "DELIMITED_PSAID",
+      status = 403,
+      body = "DELIMITED_PSAID",
       requiredHeaders = Seq("psaId" -> psaId, "loggedInAsPsa" -> "true")
     )
+    ()
+  }
 
-  def psaNotFound(psaId: String): Unit =
+  def psaNotFound(psaId: String): Unit = {
     stubGetWithHeaders(
-      status          = 404,
-      body            = """{"error":"not found"}""",
+      status = 404,
+      body = """{"error":"not found"}""",
       requiredHeaders = Seq("psaId" -> psaId, "loggedInAsPsa" -> "true")
     )
+    ()
+  }
 
-  def psaBadRequest(psaId: String): Unit =
+  def psaBadRequest(psaId: String): Unit = {
     stubGetWithHeaders(
-      status          = 400,
-      body            = """{"error":"bad request"}""",
+      status = 400,
+      body = """{"error":"bad request"}""",
       requiredHeaders = Seq("psaId" -> psaId, "loggedInAsPsa" -> "true")
     )
+    ()
+  }
 }

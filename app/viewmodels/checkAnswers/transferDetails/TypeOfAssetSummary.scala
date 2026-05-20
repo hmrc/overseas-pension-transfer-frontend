@@ -16,16 +16,17 @@
 
 package viewmodels.checkAnswers.transferDetails
 
+import viewmodels.implicits._
 import controllers.transferDetails.routes
-import models.assets.TypeOfAsset.Cash
-import models.{Mode, UserAnswers}
-import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import queries.assets.AnswersSelectedAssetTypes
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.assets.TypeOfAsset.Cash
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import queries.assets.AnswersSelectedAssetTypes
 
 object TypeOfAssetSummary {
 

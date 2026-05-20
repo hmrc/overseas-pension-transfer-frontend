@@ -16,10 +16,12 @@
 
 package viewmodels.govuk
 
-import play.api.data.Form
+import uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.ErrorLink
+import uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.ErrorSummary
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.{ErrorLink, ErrorSummary}
+import play.api.data.Form
 
 object errorsummary extends ErrorSummaryFluency
 

@@ -17,15 +17,15 @@
 package viewmodels
 
 import base.SpecBase
-import models.{NormalMode, PersonName, SchemeManagerType}
 import models.address.{Country, QROPSAddress, SchemeManagersAddress}
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
+import models.{NormalMode, PersonName, SchemeManagerType}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.qropsDetails.{QROPSAddressPage, QROPSCountryPage, QROPSNamePage, QROPSReferencePage}
-import pages.qropsSchemeManagerDetails.{SchemeManagerOrgIndividualNamePage, SchemeManagerOrganisationNamePage, SchemeManagerTypePage, SchemeManagersAddressPage, SchemeManagersContactPage, SchemeManagersEmailPage, SchemeManagersNamePage}
+import pages.qropsSchemeManagerDetails.*
 import play.api.libs.json.Json
-import viewmodels.TaskJourneyViewModels.{MemberDetailsJourneyViewModel, QropsDetailsJourneyViewModel, SchemeManagerDetailsJourneyViewModel, SubmissionDetailsJourneyViewModel, TransferDetailsJourneyViewModel}
+import viewmodels.TaskJourneyViewModels.*
 
 class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 

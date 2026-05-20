@@ -16,13 +16,13 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import models.{CheckMode, Mode, SessionData, UserAnswers}
+import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import viewmodels.govuk.summarylist._
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesClassPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object UnquotedSharesClassSummary {
 

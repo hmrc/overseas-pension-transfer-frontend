@@ -16,12 +16,14 @@
 
 package viewmodels.govuk
 
-import play.api.data.Field
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
-import uk.gov.hmrc.govukfrontend.views.viewmodels.dateinput.{DateInput, InputItem}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+import uk.gov.hmrc.govukfrontend.views.viewmodels.FormGroup
+import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Fieldset
+import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.Legend
+import play.api.data.Field
+import uk.gov.hmrc.govukfrontend.views.viewmodels.dateinput.DateInput
+import uk.gov.hmrc.govukfrontend.views.viewmodels.dateinput.InputItem
+import play.api.i18n.Messages
 import viewmodels.ErrorMessageAwareness
 
 object date extends DateFluency

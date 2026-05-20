@@ -25,7 +25,6 @@ import play.api.libs.json.{JsObject, JsString}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 
 import java.time.ZoneId
-import java.time.format.{DateTimeFormatter, FormatStyle}
 
 class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils {
 

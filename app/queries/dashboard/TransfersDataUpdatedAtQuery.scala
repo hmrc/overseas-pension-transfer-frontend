@@ -16,8 +16,9 @@
 
 package queries.dashboard
 
+import queries.Gettable
+import queries.Settable
 import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
 
 import java.time.Instant
 

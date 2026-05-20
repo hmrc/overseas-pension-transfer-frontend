@@ -16,8 +16,8 @@
 
 package pages
 
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
+import models._
 
 /** Mix this into a Page when you need extra, args to decide navigation (e.g. AuthenticatedUser).
   *

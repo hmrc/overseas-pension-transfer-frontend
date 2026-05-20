@@ -16,11 +16,12 @@
 
 package forms.transferDetails.assetsMiniJourneys.property
 
-import forms.mappings.{Mappings, Regex}
-import models.address._
-import play.api.data.Forms._
-import play.api.data.{FieldMapping, Form, Forms, Mapping}
 import utils.AppUtils
+import forms.mappings.Mappings
+import forms.mappings.Regex
+import play.api.data.Forms._
+import models.address._
+import play.api.data._
 
 import javax.inject.Inject
 

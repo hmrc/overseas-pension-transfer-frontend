@@ -16,15 +16,23 @@
 
 package services
 
+import models.responses.AllTransfersUnexpectedError
+import models.responses.NoTransfersFound
+import models.responses.TransferError
 import connectors.TransferConnector
-import models.responses.{AllTransfersUnexpectedError, NoTransfersFound, TransferError}
-import models.{AllTransfersItem, DashboardData, PstrNumber, SrnNumber}
-import queries.dashboard.{TransfersDataUpdatedAtQuery, TransfersOverviewQuery, TransfersSyncedAtQuery}
+import queries.dashboard.TransfersDataUpdatedAtQuery
+import queries.dashboard.TransfersOverviewQuery
+import queries.dashboard.TransfersSyncedAtQuery
 import uk.gov.hmrc.http.HeaderCarrier
+import models._
 
-import java.time.{Clock, Instant}
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class TransferService @Inject() (

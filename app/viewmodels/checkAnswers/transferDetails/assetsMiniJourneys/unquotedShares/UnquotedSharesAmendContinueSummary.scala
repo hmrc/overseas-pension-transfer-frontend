@@ -16,19 +16,22 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import utils.AppUtils
+import viewmodels.implicits._
 import handlers.AssetThresholdHandler
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import models.assets.TypeOfAsset
-import models.{Mode, UserAnswers}
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.Mode
+import models.UserAnswers
+import viewmodels.govuk.summarylist._
+import queries.assets.UnquotedSharesQuery
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
 import play.api.i18n.Messages
-import queries.assets.UnquotedSharesQuery
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
-import utils.AppUtils
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object UnquotedSharesAmendContinueSummary extends AppUtils {
 

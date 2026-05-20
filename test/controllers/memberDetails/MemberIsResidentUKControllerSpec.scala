@@ -31,8 +31,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.{MemberHasEverBeenResidentUKPage, MemberIsResidentUKPage, MembersLastUKAddressPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
+import play.api.test.Helpers.*
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.memberDetails.MemberIsResidentUKView

@@ -23,21 +23,19 @@ import models.ApplicableTaxExclusions.Occupational
 import models.WhyTransferIsNotTaxable.IndividualIsEmployeeOccupational
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
 import models.address.{Country, PropertyAddress}
-import models.assets.TypeOfAsset.{Cash, Other, Property}
-import models.assets.{OtherAssetsEntry, PropertyEntry, QuotedSharesEntry, TypeOfAsset, UnquotedSharesEntry}
-import models.transferJourneys._
-import models.{ApplicableTaxExclusions, DataMissingError, GenericError, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
+import models.assets.*
+import models.assets.TypeOfAsset.{Cash, Other}
+import models.transferJourneys.*
+import models.{ApplicableTaxExclusions, DataMissingError, GenericError, WhyTransferIsTaxable}
 import org.scalatest.freespec.AnyFreeSpec
-import pages.transferDetails._
+import pages.transferDetails.*
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{MoreOtherAssetsDeclarationPage, OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{MorePropertyDeclarationPage, PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
-import pages.transferDetails.assetsMiniJourneys.quotedShares.{MoreQuotedSharesDeclarationPage, QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.{MoreUnquotedSharesDeclarationPage, UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
+import pages.transferDetails.assetsMiniJourneys.quotedShares.*
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.*
 import play.api.libs.json.Json
 import queries.assets.{OtherAssetsQuery, PropertyQuery, QuotedSharesQuery, UnquotedSharesQuery}
-
-import java.time.LocalDate
 
 class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
 

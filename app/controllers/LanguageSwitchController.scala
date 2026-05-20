@@ -16,11 +16,12 @@
 
 package controllers
 
-import com.google.inject.Inject
+import play.api.mvc._
 import config.FrontendAppConfig
 import play.api.i18n.Lang
-import play.api.mvc._
-import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
+import uk.gov.hmrc.play.language.LanguageController
+import uk.gov.hmrc.play.language.LanguageUtils
+import com.google.inject.Inject
 
 class LanguageSwitchController @Inject() (
   appConfig: FrontendAppConfig,

@@ -16,20 +16,25 @@
 
 package controllers
 
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import pages.SubmitToHMRCPage
+import views.html.SubmitToHMRCView
 import controllers.actions._
+import play.api.Logging
 import forms.SubmitToHMRCFormProvider
 import models.Mode
-import pages.SubmitToHMRCPage
-import play.api.Logging
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.SubmitToHMRCView
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class SubmitToHMRCController @Inject() (
   override val messagesApi: MessagesApi,

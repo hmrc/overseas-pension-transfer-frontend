@@ -31,7 +31,7 @@
     qtNumber: QTNumber
 )
 
-@(form: Form[_], mode: Mode, isAmend: Boolean = false)(implicit request: DisplayRequest[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("dateOfTransfer.title"))) {
 
@@ -41,7 +41,6 @@
             @{
                 val missingFields = form.errors.head.args
                 val fieldToHighlight = missingFields.find(List("month", "year", "day").contains).getOrElse("day")
-                val errorField = "value." + fieldToHighlight
 
                 govukErrorSummary(ErrorSummary(
                     title = Text(messages("error.summary.title")),

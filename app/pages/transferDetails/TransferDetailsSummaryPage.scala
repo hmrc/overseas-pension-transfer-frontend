@@ -16,11 +16,13 @@
 
 package pages.transferDetails
 
-import controllers.routes
-import models.{PersonName, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.QuestionPage
+import controllers.routes
+import play.api.libs.json.JsPath
+import models.PersonName
+import models.TaskCategory
+import models.UserAnswers
 
 case object TransferDetailsSummaryPage extends QuestionPage[PersonName] {
 

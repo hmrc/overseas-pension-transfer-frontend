@@ -20,15 +20,13 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 @import views.html.components.AppFooter
-@import config.FrontendAppConfig
 
 @this(
         layout: templates.Layout,
-        govukButton: GovukButton,
         govukSummaryList: GovukSummaryList
 )
 
-@(qtNumber: String, list: SummaryList, mpsLink: String, email: String, appConfig: FrontendAppConfig)(implicit request: SchemeRequest[_], messages: Messages)
+@(qtNumber: String, list: SummaryList, mpsLink: String, email: String)(implicit request: SchemeRequest[_], messages: Messages)
 @schemeName = @{request.schemeDetails.schemeName}
 
 @layout(pageTitle = titleNoForm(messages("transferSubmitted.title")), showPageFooter = false) {

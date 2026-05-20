@@ -21,7 +21,6 @@ import play.api.data.{Form, FormError}
 import utils.DateTimeFormats.isoLocalDate
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class DateBehaviours extends FieldBehaviours {
 

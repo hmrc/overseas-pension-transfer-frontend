@@ -16,14 +16,15 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.AmountOfTransferPage
-import play.api.i18n.Messages
+import viewmodels.implicits._
+import controllers.transferDetails.routes
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.CurrencyFormats.currencyFormat
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object AmountOfTransferSummary {
 

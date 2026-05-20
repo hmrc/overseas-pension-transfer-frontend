@@ -23,7 +23,7 @@ import models.address.{Country, MembersCurrentAddress, MembersLastUKAddress}
 import models.transferJourneys.MemberDetails
 import models.{DataMissingError, GenericError, PersonName}
 import org.scalatest.freespec.AnyFreeSpec
-import pages.memberDetails._
+import pages.memberDetails.*
 import play.api.libs.json.Json
 
 import java.time.LocalDate

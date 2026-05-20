@@ -40,7 +40,6 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
   private val transferDetails      = SummaryList()
   private val qropsDetails         = SummaryList()
   private val schemeManagerDetails = SummaryList()
-  private val managerEmail         = "someone@example.com"
   "PrintSubmittedTransferView" - {
 
     "show correct title" in {
@@ -52,7 +51,6 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
           transferDetails,
           qropsDetails,
           schemeManagerDetails,
-          managerEmail,
           mpsLink
         ).body
       ).getElementsByTag("title").eachText().get(0) mustBe
@@ -67,7 +65,6 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
         transferDetails,
         qropsDetails,
         schemeManagerDetails,
-        managerEmail,
         mpsLink
       ),
       "transferSubmitted.heading",
@@ -84,7 +81,6 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
           transferDetails,
           qropsDetails,
           schemeManagerDetails,
-          managerEmail,
           mpsLink
         ).body
       ).getElementById("main-content").getElementsByTag("a")
@@ -105,7 +101,6 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
           transferDetails,
           qropsDetails,
           schemeManagerDetails,
-          managerEmail,
           mpsLink
         ).body
       ).getElementById("main-content")

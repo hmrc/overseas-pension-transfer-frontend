@@ -16,23 +16,29 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import controllers.actions._
+import services.AssetsMiniJourneyService
+import services.MoreAssetCompletionService
+import services.UserAnswersService
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
 import forms.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationFormProvider
-import models.assets.TypeOfAsset
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc._
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
+import controllers.actions._
+import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
+import models.assets.TypeOfAsset
+import repositories.SessionRepository
+import models._
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
 import views.html.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationView
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class MorePropertyDeclarationController @Inject() (
   override val messagesApi: MessagesApi,

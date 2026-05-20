@@ -23,12 +23,11 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -114,8 +113,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
             SchemeManagerDetailsSummary.rows(CheckMode, userAnswersMemberName, showChangeLinks = false)
           )
 
-        val managerEmail: String = userAnswersMemberName.get(SchemeManagersEmailPage).getOrElse("")
-
         val expectedMpsLink =
           s"${appConfig.pensionSchemeSummaryUrl}1234567890"
 
@@ -131,7 +128,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
             transferDetails,
             qropsDetails,
             schemeManagerDetails,
-            managerEmail,
             expectedMpsLink
           )(fakeSchemeRequest(request), testMessages).toString
       }

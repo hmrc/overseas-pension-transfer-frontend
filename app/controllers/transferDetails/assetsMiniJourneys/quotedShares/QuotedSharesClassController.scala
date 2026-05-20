@@ -16,23 +16,31 @@
 
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
+import services.UserAnswersService
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import controllers.actions._
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassPage
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassFormProvider
 import models.assets.TypeOfAsset.QuotedShares
-import models.{AmendCheckMode, Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassPage
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.assets.AssetsRecordVersionQuery
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesClassView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class QuotedSharesClassController @Inject() (
   override val messagesApi: MessagesApi,

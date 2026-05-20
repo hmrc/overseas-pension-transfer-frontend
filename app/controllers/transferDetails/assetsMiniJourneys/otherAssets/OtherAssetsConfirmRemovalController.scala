@@ -16,20 +16,28 @@
 
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.actions._
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import services.AssetsMiniJourneyService
+import services.MoreAssetCompletionService
+import services.UserAnswersService
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalFormProvider
-import handlers.AssetThresholdHandler
-import models.NormalMode
-import models.assets.{OtherAssetsMiniJourney, TypeOfAsset}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalView
+import handlers.AssetThresholdHandler
+import controllers.actions._
+import models.assets.OtherAssetsMiniJourney
+import models.assets.TypeOfAsset
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.NormalMode
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetsConfirmRemovalController @Inject() (
   override val messagesApi: MessagesApi,

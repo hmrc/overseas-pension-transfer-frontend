@@ -18,23 +18,21 @@ package viewmodels.checkAnswers.transferDetails
 
 import base.SpecBase
 import models.ApplicableTaxExclusions.{Occupational, Publicservice, Resident}
-import models.{ApplicableTaxExclusions, CheckMode, NormalMode}
 import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
-import models.assets.{OtherAssetsEntry, PropertyEntry, QuotedSharesEntry, TypeOfAsset, UnquotedSharesEntry}
 import models.address.{Country, PropertyAddress}
+import models.assets.*
+import models.{ApplicableTaxExclusions, CheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
+import pages.transferDetails.*
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
-import pages.transferDetails._
 import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
+import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import queries.assets.{OtherAssetsQuery, PropertyQuery, QuotedSharesQuery, UnquotedSharesQuery}
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary.rows
-
-import java.time.LocalDate
 
 class TransferDetailsSummarySpec extends AnyFreeSpec with SpecBase {
 

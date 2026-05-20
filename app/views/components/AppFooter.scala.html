@@ -21,7 +21,7 @@
         link: Link
 )
 
-@(footerLinks: Seq[FooterLink])(implicit messages: Messages, request: RequestHeader)
+@(footerLinks: Seq[FooterLink])(implicit request: RequestHeader)
 
 @{
         val isAmendPage = request.uri.contains("/amend-")

@@ -18,7 +18,7 @@ package controllers.viewandamend
 
 import base.SpecBase
 import models.responses.UserAnswersErrorResponse
-import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, SrnNumber, TransferId, UserAnswers}
+import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, SrnNumber, TransferId}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -26,7 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -52,7 +52,6 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
   private def schemeSummaryList =
     SummaryListViewModel(
       SchemeDetailsSummary.rows(
-        FinalCheckMode,
         schemeDetails.schemeName,
         formattedTestDateTransferSubmitted
       )(messages(applicationBuilder().build()))

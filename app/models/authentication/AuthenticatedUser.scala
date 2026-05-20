@@ -16,7 +16,6 @@
 
 package models.authentication
 
-import models.PensionSchemeDetails
 import uk.gov.hmrc.auth.core.AffinityGroup
 import play.api.libs.json._
 

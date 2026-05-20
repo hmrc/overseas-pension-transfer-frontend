@@ -16,13 +16,14 @@
 
 package viewmodels.checkAnswers.qropsDetails
 
-import models.{Mode, UserAnswers}
-import pages.qropsDetails.QROPSReferencePage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import pages.qropsDetails.QROPSReferencePage
 
 object QROPSReferenceSummary {
 

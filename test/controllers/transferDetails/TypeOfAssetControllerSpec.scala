@@ -21,7 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.TypeOfAssetFormProvider
 import models.NormalMode
 import models.assets.TypeOfAsset
-import models.assets.TypeOfAsset.{Cash, Other, Property, QuotedShares, UnquotedShares}
+import models.assets.TypeOfAsset.UnquotedShares
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,7 +30,6 @@ import pages.transferDetails.TypeOfAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 import repositories.SessionRepository
 import views.html.transferDetails.TypeOfAssetView
 

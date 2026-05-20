@@ -16,11 +16,11 @@
 
 package pages.qropsSchemeManagerDetails
 
-import controllers.qropsSchemeManagerDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import play.api.mvc.Call
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models._
+import controllers.qropsSchemeManagerDetails.routes
 
 case object SchemeManagerOrganisationNamePage extends QuestionPage[String] {
 

@@ -18,9 +18,8 @@ package connectors
 
 import config.FrontendAppConfig
 import connectors.parsers.TransferParser.{GetAllTransfersHttpReads, GetAllTransfersType}
-import connectors.parsers.UserAnswersParser._
+import models.responses.AllTransfersUnexpectedError
 import models.{PstrNumber, SrnNumber}
-import models.responses.{AllTransfersUnexpectedError, UserAnswersErrorResponse}
 import play.api.Logging
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
@@ -33,8 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransferConnector @Inject() (
   appConfig: FrontendAppConfig,
   http: HttpClientV2
-)(implicit ec: ExecutionContext)
-    extends Logging
+) extends Logging
     with DownstreamLogging {
 
   def getAllTransfers(srnNumber: SrnNumber, pstrNumber: PstrNumber)(implicit

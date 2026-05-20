@@ -16,19 +16,22 @@
 
 package services
 
-import com.google.inject.Inject
-import connectors.{PensionSchemeConnector, UserAnswersConnector}
-import models.authentication.{AuthenticatedUser, PsaId}
-import models.dtos.SubmissionDTO
-import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
+import models.authentication.AuthenticatedUser
+import models.authentication.PsaId
 import models.responses._
-import models.{AllTransfersItem, PstrNumber, QtStatus, SessionData, SrnNumber, TransferId, UserAnswers}
+import models.dtos.UserAnswersDTO.fromUserAnswers
+import models.dtos.UserAnswersDTO.toUserAnswers
+import com.google.inject.Inject
+import connectors.UserAnswersConnector
+import models.dtos.SubmissionDTO
+import uk.gov.hmrc.http.HeaderCarrier
+import models._
 import org.apache.pekko.Done
 import play.api.Logging
 import play.api.libs.json._
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class UserAnswersService @Inject() (
   connector: UserAnswersConnector,

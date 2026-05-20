@@ -16,16 +16,17 @@
 
 package config
 
-import com.google.inject.{Inject, Singleton}
+import play.api.mvc.RequestHeader
+import com.google.inject.Inject
+import com.google.inject.Singleton
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import play.api.Configuration
 import play.api.i18n.Lang
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
-  import servicesConfig._
+  import servicesConfig.*
 
   val appName: String = configuration.get[String]("appName")
 

@@ -16,8 +16,8 @@
 
 package forms.memberDetails
 
-import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.Form
 
 import javax.inject.Inject
 

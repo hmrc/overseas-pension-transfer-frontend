@@ -16,21 +16,29 @@
 
 package controllers
 
+import models.authentication.AuthenticatedUser
+import models.authentication.PsaUser
+import models.authentication.PspUser
+import utils.AppUtils
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import connectors.MinimalDetailsConnector
+import connectors.MinimalDetailsError
 import config.FrontendAppConfig
-import connectors.{MinimalDetailsConnector, MinimalDetailsError}
+import views.html.TransferSubmittedView
+import viewmodels.checkAnswers.TransferSubmittedSummary
 import controllers.actions._
-import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AppUtils
-import viewmodels.checkAnswers.TransferSubmittedSummary
-import views.html.TransferSubmittedView
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class TransferSubmittedController @Inject() (
   override val messagesApi: MessagesApi,
@@ -56,7 +64,6 @@ class TransferSubmittedController @Inject() (
               dateTransferSubmitted(sessionData)
             )
 
-            val srn     = sessionData.schemeInformation.srnNumber.value
             val mpsLink = appConfig.getPensionSchemeUrl(
               srn = sessionData.schemeInformation.srnNumber.value,
               isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
@@ -67,8 +74,7 @@ class TransferSubmittedController @Inject() (
                 qtNumber(sessionData).value,
                 summaryList,
                 mpsLink,
-                minimalDetails.email,
-                appConfig
+                minimalDetails.email
               )
             )
           case Left(_)               =>

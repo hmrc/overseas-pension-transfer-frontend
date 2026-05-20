@@ -16,10 +16,10 @@
 
 package pages.viewandamend
 
-import controllers.viewandamend.routes
-import models.{PstrNumber, QtStatus, TransferId, UserAnswers}
-import pages.Page
 import play.api.mvc.Call
+import pages.Page
+import controllers.viewandamend.routes
+import models._
 
 object ViewAmendSubmittedPage extends Page {
 

@@ -16,11 +16,11 @@
 
 package viewmodels
 
-import models.taskList.TaskStatus
-import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import viewmodels.govuk.all.HintViewModel
+import models.taskList.TaskStatus
+import play.api.i18n.Messages
 
 final case class TaskTileViewModel(
   id: String,

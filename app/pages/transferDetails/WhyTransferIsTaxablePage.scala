@@ -16,12 +16,13 @@
 
 package pages.transferDetails
 
+import models.WhyTransferIsTaxable.NoExclusion
+import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
+import play.api.mvc.Call
 import controllers.transferDetails.routes
-import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers, WhyTransferIsTaxable}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models._
 
 import scala.util.Try
 

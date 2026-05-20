@@ -16,13 +16,15 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.{Mode, UserAnswers}
-import pages.memberDetails.MemberDateOfBirthPage
-import play.api.i18n.{Lang, Messages}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.DateTimeFormats.dateTimeFormat
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import utils.DateTimeFormats.dateTimeFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import pages.memberDetails.MemberDateOfBirthPage
+import play.api.i18n.Lang
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object MemberDateOfBirthSummary {
 

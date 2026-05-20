@@ -17,10 +17,9 @@
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
-import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.responses.UserAnswersErrorResponse
-import models.{CheckMode, DownstreamError, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,9 +28,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
-import services.{DownstreamError, UserAnswersService}
+import services.UserAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAView

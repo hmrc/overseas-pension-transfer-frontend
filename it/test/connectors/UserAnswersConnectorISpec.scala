@@ -17,14 +17,14 @@
 package connectors
 
 import base.BaseISpec
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.QtStatus.{InProgress, Submitted}
 import models.authentication.{PsaId, Psp, PspId}
 import models.dtos.{PspSubmissionDTO, UserAnswersDTO}
 import models.responses.{SubmissionErrorResponse, SubmissionResponse, UserAnswersErrorResponse, UserAnswersNotFoundResponse}
 import models.{PstrNumber, QtNumber, SrnNumber, TransferNumber}
 import org.apache.pekko.Done
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Injecting
 import stubs.TransferBackendStub
@@ -124,7 +124,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     "the backend returns 200" must {
 
       "return Right(UserAnswersDTO) when qtStatus is InProgress and body is valid" in {
-        TransferBackendStub.getSpecificTransferOk(
+        TransferBackendStub.stubGetSpecificTransferOk(
           referenceId    = referenceId.value,
           pstr           = pstr.value,
           qtStatus       = InProgress.toString,
@@ -154,7 +154,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
       }
 
       "return Right(UserAnswersDTO) when qtStatus is Submitted and versionNumber provided" in {
-        TransferBackendStub.getSpecificTransferOk(
+        TransferBackendStub.stubGetSpecificTransferOk(
           referenceId    = referenceId.value,
           pstr           = pstr.value,
           qtStatus       = Submitted.toString,
@@ -183,7 +183,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
       }
 
       "map to Left(UserAnswersErrorResponse) if body is malformed JSON" in {
-        TransferBackendStub.getSpecificTransferMalformed(
+        TransferBackendStub.stubGetSpecificTransferMalformed(
           referenceId = referenceId.value,
           pstr        = pstr.value,
           qtStatus    = Submitted.toString
@@ -209,7 +209,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     "the backend returns 404" must {
 
       "map to Left(UserAnswersNotFoundResponse)" in {
-        TransferBackendStub.getSpecificTransferNotFound(
+        TransferBackendStub.stubGetSpecificTransferNotFound(
           referenceId = referenceId.value,
           pstr        = pstr.value,
           qtStatus    = Submitted.toString
@@ -232,7 +232,7 @@ class UserAnswersConnectorISpec extends BaseISpec with Injecting {
     "the backend returns 500" must {
 
       "map to Left(UserAnswersErrorResponse)" in {
-        TransferBackendStub.getSpecificTransferServerError(
+        TransferBackendStub.stubGetSpecificTransferServerError(
           referenceId = referenceId.value,
           pstr        = pstr.value,
           qtStatus    = InProgress.toString

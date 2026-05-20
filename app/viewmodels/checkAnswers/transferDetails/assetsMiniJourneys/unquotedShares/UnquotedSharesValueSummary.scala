@@ -16,13 +16,14 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import models.{Mode, SessionData, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.CurrencyFormats.currencyFormat
+import models.Mode
+import models.UserAnswers
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
+import play.api.i18n.Messages
 
 object UnquotedSharesValueSummary {
 

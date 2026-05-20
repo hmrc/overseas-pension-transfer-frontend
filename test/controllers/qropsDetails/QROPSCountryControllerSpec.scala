@@ -28,10 +28,9 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsDetails.QROPSCountryPage
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
@@ -49,9 +48,9 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
     Country("FR", "France")
   )
 
-  implicit private val messages: Messages = stubMessages()
-  private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
-  private val mockCountryService          = mock[CountryService]
+  stubMessages()
+  private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
+  private val mockCountryService     = mock[CountryService]
 
   private val userAnswers = emptyUserAnswers.set(QROPSCountryPage, testCountries.head).success.value
 

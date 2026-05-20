@@ -19,7 +19,7 @@ package controllers.auth
 import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.UnauthorisedView
 
 class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {

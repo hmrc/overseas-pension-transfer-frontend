@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import models.NormalMode
-import models.assets._
+import models.assets.*
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json.Json

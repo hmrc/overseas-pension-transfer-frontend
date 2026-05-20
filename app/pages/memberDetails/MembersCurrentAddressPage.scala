@@ -17,11 +17,11 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import models.address._
-import pages.QuestionPage
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.QuestionPage
+import models._
+import models.address._
+import play.api.libs.json.JsPath
 
 case object MembersCurrentAddressPage extends QuestionPage[MembersCurrentAddress] {
 

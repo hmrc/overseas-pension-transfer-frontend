@@ -16,22 +16,29 @@
 
 package controllers.transferDetails
 
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import controllers.actions._
-import controllers.helpers.ErrorHandling
-import forms.transferDetails.AmountOfTransferFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers}
-import org.apache.pekko.Done
-import pages.transferDetails.AmountOfTransferPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.AmountOfTransferView
+import forms.transferDetails.AmountOfTransferFormProvider
+import controllers.helpers.ErrorHandling
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
+import org.apache.pekko.Done
+import play.api.data.Form
+import pages.transferDetails.AmountOfTransferPage
+import services.UserAnswersService
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class AmountOfTransferController @Inject() (
   override val messagesApi: MessagesApi,

@@ -17,7 +17,8 @@
 package viewmodels
 
 import controllers.routes
-import models.{AmendCheckMode, NormalMode}
+import models.AmendCheckMode
+import models.NormalMode
 import play.api.i18n.Messages
 
 /** Builds a list of footer links for a page. Priority of footers:

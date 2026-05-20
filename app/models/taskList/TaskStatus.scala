@@ -16,7 +16,8 @@
 
 package models.taskList
 
-import models.{Enumerable, WithName}
+import models.Enumerable
+import models.WithName
 
 sealed trait TaskStatus
 

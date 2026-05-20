@@ -16,24 +16,32 @@
 
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.actions._
+import services.AssetsMiniJourneyService
+import services.UserAnswersService
 import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueFormProvider
-import models.assets.{OtherAssetsMiniJourney, TypeOfAsset}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueAssetPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
+import models.assets.OtherAssetsMiniJourney
+import models.assets.TypeOfAsset
+import repositories.SessionRepository
+import models._
+import play.api.data.Form
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueAssetPage
+import controllers.actions._
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class OtherAssetsAmendContinueController @Inject() (
   override val messagesApi: MessagesApi,

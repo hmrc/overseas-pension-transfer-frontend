@@ -16,21 +16,22 @@
 
 package validators
 
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import cats.data.Chain
 import cats.implicits._
-import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
+import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
+import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
+import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import models.assets.TypeOfAsset
 import models.assets.TypeOfAsset._
-import models.transferJourneys._
-import models.{ApplicableTaxExclusions, DataMissingError, GenericError, UserAnswers, ValidationResult, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
-import pages.transferDetails._
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
-import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
-import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
+import models._
+import validators.assetsValidators._
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
+import models.transferJourneys._
 import queries.assets._
-import validators.assetsValidators.{OtherAssetsValidator, PropertyValidator, QuotedSharesValidator, UnquotedSharesValidator}
+import models.WhyTransferIsTaxable.NoExclusion
+import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
+import pages.transferDetails._
 
 import java.time.LocalDate
 

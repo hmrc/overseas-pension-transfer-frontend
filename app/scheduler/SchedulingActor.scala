@@ -16,9 +16,11 @@
 
 package scheduler
 
-import org.apache.pekko.actor.{Actor, ActorLogging, Props}
-import scheduler.SchedulingActor.*
 import utils.ScheduledService
+import scheduler.SchedulingActor._
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.ActorLogging
+import org.apache.pekko.actor.Props
 import play.api.Logging
 
 class SchedulingActor extends Actor with ActorLogging with Logging {
@@ -26,7 +28,7 @@ class SchedulingActor extends Actor with ActorLogging with Logging {
 
   override def receive: Receive = { case message: ScheduledMessage[_] =>
     logger.info(s"Received ${message.getClass.getSimpleName}")
-    message.service.invoke
+    message.service.invoke: Unit
   }
 }
 

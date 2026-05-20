@@ -16,23 +16,32 @@
 
 package controllers.transferDetails.assetsMiniJourneys.cash
 
-import controllers.actions._
-import forms.transferDetails.CashAmountInTransferFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers}
-import models.assets.TypeOfAsset
+import services.AssetsMiniJourneyService
+import services.UserAnswersService
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import controllers.actions._
 import views.html.transferDetails.CashAmountInTransferView
+import forms.transferDetails.CashAmountInTransferFormProvider
+import models.assets.TypeOfAsset
+import repositories.SessionRepository
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
+import play.api.data.Form
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class CashAmountInTransferController @Inject() (
   override val messagesApi: MessagesApi,

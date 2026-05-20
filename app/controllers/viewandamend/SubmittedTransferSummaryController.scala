@@ -16,19 +16,26 @@
 
 package controllers.viewandamend
 
+import models.authentication.PsaUser
+import models.authentication.PspUser
+import services.CollectSubmittedVersionsService
+import services.LockService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import controllers.actions._
-import models.authentication.{PsaUser, PspUser}
-import models.{PstrNumber, QtNumber, QtStatus, TransferId}
+import views.html.viewandamend.SubmittedTransferSummaryView
+import models._
 import pages.memberDetails.MemberNamePage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{CollectSubmittedVersionsService, LockService}
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.SubmittedTransferSummaryViewModel
-import views.html.viewandamend.SubmittedTransferSummaryView
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class SubmittedTransferSummaryController @Inject() (
   override val messagesApi: MessagesApi,

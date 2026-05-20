@@ -16,22 +16,26 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
-import forms.transferDetails.ApplicableTaxExclusionsFormProvider
-import models.{AmendCheckMode, ApplicableTaxExclusions, Mode, UserAnswers}
-import pages.transferDetails.ApplicableTaxExclusionsPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
-import repositories.SessionRepository
-import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
 import views.html.transferDetails.ApplicableTaxExclusionsView
+import forms.transferDetails.ApplicableTaxExclusionsFormProvider
+import models._
+import play.api.data.Form
+import pages.transferDetails.ApplicableTaxExclusionsPage
+import services.UserAnswersService
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class ApplicableTaxExclusionsController @Inject() (
   override val messagesApi: MessagesApi,

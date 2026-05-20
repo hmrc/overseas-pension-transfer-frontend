@@ -16,8 +16,9 @@
 
 package models.dtos
 
-import models.{AllTransfersItem, PstrNumber}
 import play.api.libs.json._
+import models.AllTransfersItem
+import models.PstrNumber
 
 import java.time.Instant
 

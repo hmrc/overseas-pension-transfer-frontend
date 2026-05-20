@@ -16,14 +16,16 @@
 
 package services
 
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import models.address.Country
 import play.api.Environment
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 
-import javax.inject.{Inject, Singleton}
 import scala.io.Source
 import scala.util.Using
+
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class CountryService @Inject() (env: Environment) {

@@ -16,9 +16,11 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 
-import java.time.{Instant, LocalDate}
+import java.time.Instant
+import java.time.LocalDate
 
 /** Exactly one of `submissionDate` or `lastUpdated` should be defined. Submitted/Compiled => submissionDate InProgress =>
   * lastUpdated

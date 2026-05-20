@@ -16,14 +16,18 @@
 
 package viewmodels
 
+import models.QtStatus.AmendInProgress
+import models.QtStatus.Submitted
+import play.twirl.api.Html
 import controllers.viewandamend.routes
-import models.QtStatus.{AmendInProgress, Submitted}
 import models.UserAnswers
 import play.api.i18n.Messages
-import play.twirl.api.Html
 
-import java.time.format.{DateTimeFormatter, FormatStyle}
-import java.time.{Instant, LocalDateTime, ZoneId}
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 case object SubmittedTransferSummaryViewModel {
   private val localDateTimeFormatterSubmitted = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)

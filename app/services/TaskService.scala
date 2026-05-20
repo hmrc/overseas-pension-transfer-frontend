@@ -16,12 +16,13 @@
 
 package services
 
-import models.TaskCategory.{MemberDetails, SubmissionDetails}
-import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
-import models.{CheckMode, Mode, SessionData, TaskCategory, UserAnswers}
 import queries.TaskStatusQuery
+import models.taskList.TaskStatus._
+import models._
+import models.TaskCategory.SubmissionDetails
 
-import scala.util.{Success, Try}
+import scala.util.Success
+import scala.util.Try
 
 object TaskService {
 

@@ -16,12 +16,12 @@
 
 package pages.qropsSchemeManagerDetails
 
-import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import models.address.{Address, SchemeManagersAddress}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.QuestionPage
+import models._
+import controllers.qropsSchemeManagerDetails.routes
+import models.address.SchemeManagersAddress
+import play.api.libs.json.JsPath
 
 case object SchemeManagersAddressPage extends QuestionPage[SchemeManagersAddress] {
 

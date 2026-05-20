@@ -17,11 +17,11 @@
 package controllers.memberDetails
 
 import base.AddressBase
-import controllers.memberDetails.{routes => memberRoutes}
-import controllers.{routes => baseRoutes}
+import controllers.memberDetails.routes as memberRoutes
+import controllers.routes as baseRoutes
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.NormalMode
-import models.address._
+import models.address.*
 import models.requests.DisplayRequest
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
@@ -30,11 +30,10 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MembersCurrentAddressPage
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{AddressService, CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
@@ -54,8 +53,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
     Country("FR", "France")
   )
 
-  implicit private val messages: Messages = stubMessages()
-  private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
+  stubMessages()
+  private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
 
   private val mockCountryService = mock[CountryService]
   "MembersCurrentAddress Controller" - {

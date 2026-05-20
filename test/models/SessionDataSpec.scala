@@ -17,16 +17,14 @@
 package models
 
 import base.SpecBase
-import models.TaskCategory._
+import models.TaskCategory.*
 import models.taskList.TaskStatus
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.SubmitToHMRCPage
-import play.api.libs.json._
+import play.api.libs.json.*
 import queries.TaskStatusQuery
 import services.EncryptionService
-
-import java.time.Instant
 
 class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
 
@@ -87,7 +85,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
   "Encryption wrappers" - {
 
     "should encrypt and decrypt session data correctly" in {
-      import SessionData._
+      import SessionData.*
 
       val decryptedWrapper = DecryptedSessionData(sessionData.data)
       val encryptedWrapper = decryptedWrapper.encrypt(encryptionService)
@@ -100,7 +98,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
     }
 
     "should produce different ciphertexts for the same input (due to random IV)" in {
-      import SessionData._
+      import SessionData.*
 
       val enc1 = DecryptedSessionData(sessionData.data).encrypt(encryptionService)
       val enc2 = DecryptedSessionData(sessionData.data).encrypt(encryptionService)
@@ -109,7 +107,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
     }
 
     "should return Left when decryption fails for invalid cipher text" in {
-      import SessionData._
+      import SessionData.*
       val badEnc = EncryptedSessionData("invalid-cipher-text")
 
       val result = badEnc.decrypt(encryptionService)

@@ -16,12 +16,13 @@
 
 package viewmodels.govuk
 
+import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import play.api.data.Field
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.charactercount.CharacterCount
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
-import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
-import viewmodels.{ErrorMessageAwareness, InputWidth}
+import viewmodels.ErrorMessageAwareness
+import viewmodels.InputWidth
 
 object charactercount extends CharacterCountFluency
 

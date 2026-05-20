@@ -16,12 +16,12 @@
 
 package pages.transferDetails
 
+import services.AssetsMiniJourneyService
+import play.api.mvc.Call
 import controllers.transferDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
-import services.AssetsMiniJourneyService
+import models._
 
 import scala.util.Try
 

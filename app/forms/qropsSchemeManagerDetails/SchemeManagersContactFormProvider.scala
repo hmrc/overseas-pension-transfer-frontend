@@ -16,8 +16,10 @@
 
 package forms.qropsSchemeManagerDetails
 
-import com.google.i18n.phonenumbers.{NumberParseException, PhoneNumberUtil}
-import forms.mappings.{Mappings, Regex}
+import forms.mappings.Mappings
+import forms.mappings.Regex
+import com.google.i18n.phonenumbers.NumberParseException
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 import play.api.data.Form
 
 import javax.inject.Inject

@@ -16,23 +16,28 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
-import controllers.helpers.ErrorHandling
-import forms.transferDetails.WhyTransferIsNotTaxableFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers, WhyTransferIsNotTaxable}
-import org.apache.pekko.Done
-import pages.transferDetails.WhyTransferIsNotTaxablePage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
-import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
 import views.html.transferDetails.WhyTransferIsNotTaxableView
+import forms.transferDetails.WhyTransferIsNotTaxableFormProvider
+import controllers.helpers.ErrorHandling
+import models._
+import org.apache.pekko.Done
+import play.api.data.Form
+import pages.transferDetails.WhyTransferIsNotTaxablePage
+import services.UserAnswersService
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class WhyTransferIsNotTaxableController @Inject() (
   override val messagesApi: MessagesApi,

@@ -19,8 +19,8 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.DateOfTransferFormProvider
-import models.{AmendCheckMode, NormalMode}
 import models.responses.UserAnswersErrorResponse
+import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,15 +29,14 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.Messages
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.transferDetails.DateOfTransferView
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
@@ -134,8 +133,7 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(
             amendForm.fill(originalDate.minusDays(5)),
-            AmendCheckMode,
-            isAmend = true
+            AmendCheckMode
           )(
             fakeDisplayRequest(request),
             messages(application)

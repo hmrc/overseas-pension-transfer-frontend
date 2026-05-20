@@ -16,8 +16,8 @@
 
 package queries
 
-import models.TaskCategory.TransferDetails
 import play.api.libs.json.JsPath
+import models.TaskCategory.TransferDetails
 
 object TransferDetailsRecordVersionQuery extends Gettable[String] with Settable[String] {
 

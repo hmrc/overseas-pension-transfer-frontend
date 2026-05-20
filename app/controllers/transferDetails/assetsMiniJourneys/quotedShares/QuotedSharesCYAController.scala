@@ -16,21 +16,26 @@
 
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
-import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import handlers.AssetThresholdHandler
-import models.Mode
-import models.assets.TypeOfAsset
-import org.apache.pekko.Done
-import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import com.google.inject.Inject
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesSummary
+import handlers.AssetThresholdHandler
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAPage
+import models.assets.TypeOfAsset
+import models.Mode
+import org.apache.pekko.Done
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCYAView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 

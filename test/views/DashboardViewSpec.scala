@@ -123,7 +123,6 @@ class DashboardViewSpec extends ViewBaseSpec {
     "/what-will-be-needed",
     paginatedAllTransfersViewModel,
     searchBarViewModel,
-    "/mps-link",
     isSearch = false,
     "/pension-scheme-link",
     Html("")
@@ -134,7 +133,6 @@ class DashboardViewSpec extends ViewBaseSpec {
     "/what-will-be-needed",
     paginatedNoTransfersViewModel,
     searchBarViewModel,
-    "/mps-link",
     isSearch = false,
     "/pension-scheme-link",
     Html("")
@@ -145,7 +143,6 @@ class DashboardViewSpec extends ViewBaseSpec {
     "/what-will-be-needed",
     paginatedAllTransfersWithLock,
     searchBarViewModel,
-    "/mps-link",
     isSearch = false,
     "/pension-scheme-link",
     Html("")

@@ -16,24 +16,31 @@
 
 package controllers
 
-import controllers.actions._
-import forms.DiscardTransferConfirmFormProvider
-import models.{AmendCheckMode, Mode, NormalMode, UserAnswers}
-import models.QtStatus.AmendInProgress
-import models.authentication.{PsaUser, PspUser}
-import models.requests.DisplayRequest
-import org.apache.pekko.Done
+import models.authentication.PsaUser
+import models.authentication.PspUser
+import services.LockService
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import pages.DiscardTransferConfirmPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
-import services.{LockService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.DiscardTransferConfirmView
+import controllers.actions._
+import models.Mode
+import models.UserAnswers
+import org.apache.pekko.Done
+import repositories.SessionRepository
+import forms.DiscardTransferConfirmFormProvider
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.requests.DisplayRequest
+import play.api.data.Form
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class DiscardTransferConfirmController @Inject() (
   override val messagesApi: MessagesApi,

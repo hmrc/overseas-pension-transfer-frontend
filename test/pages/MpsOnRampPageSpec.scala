@@ -20,16 +20,15 @@ import base.SpecBase
 import controllers.routes
 import models.DashboardData
 import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 
 class MpsOnRampPageSpec extends AnyFreeSpec with SpecBase {
 
   ".nextPage" - {
 
     "must go to the dashboard" in {
-      val dd = DashboardData.create("internal-id", now)
+      DashboardData.create("internal-id", now)
 
-      MpsOnRampPage.nextPage(dd) mustEqual routes.DashboardController.onPageLoad()
+      MpsOnRampPage.nextPage() mustEqual routes.DashboardController.onPageLoad()
     }
   }
 }

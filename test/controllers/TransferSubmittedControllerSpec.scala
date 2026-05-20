@@ -27,7 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
@@ -89,8 +89,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
           "QT123456",
           summaryList,
           expectedMpsLink,
-          minimalDetailsIndividual.email,
-          appConfig
+          minimalDetailsIndividual.email
         )(
           fakeSchemeRequest(request),
           testMessages

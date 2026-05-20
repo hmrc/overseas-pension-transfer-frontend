@@ -26,7 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.http.Status.OK
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.{CollectSubmittedVersionsService, LockService}
 import viewmodels.SubmittedTransferSummaryViewModel
 import views.html.viewandamend.SubmittedTransferSummaryView
@@ -45,7 +45,7 @@ class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
       when(mockLockService.releaseLock(any(), any())).thenReturn(Future.unit)
 
       when(mockCollectVersionsService.collectVersions(any(), any(), any(), any(), any())(any()))
-        .thenReturn(Future.successful(None, List(emptyUserAnswers)))
+        .thenReturn(Future.successful(Tuple2(None, List(emptyUserAnswers))))
 
       val application  = applicationBuilder(userAnswers = emptyUserAnswers)
         .overrides(
@@ -56,7 +56,7 @@ class SubmittedTransferSummaryControllerSpec extends AnyFreeSpec with SpecBase {
       val testMessages = messages(application)
 
       when(mockCollectVersionsService.collectVersions(any(), any(), any(), any(), any())(any()))
-        .thenReturn(Future.successful(None, List(emptyUserAnswers)))
+        .thenReturn(Future.successful(Tuple2(None, List(emptyUserAnswers))))
 
       running(application) {
         val request = FakeRequest(

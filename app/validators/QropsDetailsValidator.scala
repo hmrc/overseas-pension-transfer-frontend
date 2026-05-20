@@ -17,10 +17,12 @@
 package validators
 
 import cats.data.Chain
-import cats.implicits.{catsSyntaxTuple5Semigroupal, catsSyntaxValidatedIdBinCompat0}
-import models.address.{Country, QROPSAddress}
+import cats.implicits.catsSyntaxTuple5Semigroupal
+import cats.implicits.catsSyntaxValidatedIdBinCompat0
+import models.address.Country
+import models.address.QROPSAddress
+import models._
 import models.transferJourneys.QropsDetails
-import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.qropsDetails._
 
 object QropsDetailsValidator extends Validator[QropsDetails] {

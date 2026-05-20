@@ -23,7 +23,6 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukDetails
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.title
 @import viewmodels.govuk.all._
@@ -36,9 +35,7 @@
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    govukDetails: GovukDetails,
-    govukButton: GovukButton,
-    qtNumber: QTNumber
+    govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DisplayRequest[_], messages: Messages)

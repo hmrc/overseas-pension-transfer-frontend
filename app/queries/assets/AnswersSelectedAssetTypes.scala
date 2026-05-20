@@ -16,10 +16,11 @@
 
 package queries.assets
 
+import queries.Gettable
+import queries.Settable
 import models.TaskCategory
-import models.assets.TypeOfAsset
 import play.api.libs.json.JsPath
-import queries.{Gettable, Settable}
+import models.assets.TypeOfAsset
 
 case object AnswersSelectedAssetTypes extends Settable[Seq[TypeOfAsset]] with Gettable[Seq[TypeOfAsset]] {
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ "typeOfAsset"

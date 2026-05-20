@@ -16,8 +16,9 @@
 
 package models.assets
 
-import models.{Mode, SessionData}
 import play.api.mvc.Call
+import models.Mode
+import models.SessionData
 import queries.assets.SelectedAssetTypesWithStatus
 
 object AssetsMiniJourneyRegistry {

@@ -16,11 +16,13 @@
 
 package models
 
-import play.api.libs.json._
 import play.api.mvc.QueryStringBindable
+import play.api.libs.json._
 
-import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 trait TransferId {
   def value: String
@@ -32,6 +34,10 @@ object TransferId {
     (QtNumber.from(value), TransferNumber.from(value)) match {
       case (Right(qtNumber), Left(_))                       => qtNumber
       case (Left(_), Right(transferNumber: TransferNumber)) => transferNumber
+      case _                                                =>
+        throw new RuntimeException(
+          s"Transfer id $value can not be matched to one of either QT number or transfer number"
+        )
     }
 
   implicit val reads: Reads[TransferId] = Reads {

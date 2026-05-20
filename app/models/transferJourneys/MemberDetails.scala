@@ -16,8 +16,9 @@
 
 package models.transferJourneys
 
+import models.address.MembersCurrentAddress
+import models.address.MembersLastUKAddress
 import models.PersonName
-import models.address.{MembersCurrentAddress, MembersLastUKAddress}
 
 import java.time.LocalDate
 

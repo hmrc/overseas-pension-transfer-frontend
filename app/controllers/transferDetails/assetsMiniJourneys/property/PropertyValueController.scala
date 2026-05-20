@@ -16,23 +16,31 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.property.PropertyValueFormProvider
-import models.assets.TypeOfAsset.Property
-import models.{AmendCheckMode, Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.AssetsRecordVersionQuery
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import forms.transferDetails.assetsMiniJourneys.property.PropertyValueFormProvider
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
+import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
+import models.assets.TypeOfAsset.Property
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
+import play.api.data.Form
+import queries.assets.AssetsRecordVersionQuery
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyValueView
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class PropertyValueController @Inject() (
   override val messagesApi: MessagesApi,

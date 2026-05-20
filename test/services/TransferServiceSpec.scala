@@ -21,7 +21,7 @@ import connectors.TransferConnector
 import models.dtos.GetAllTransfersDTO
 import models.responses.{AllTransfersUnexpectedError, NoTransfersFound, TransferError}
 import models.{AllTransfersItem, DashboardData, PstrNumber, SrnNumber}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers

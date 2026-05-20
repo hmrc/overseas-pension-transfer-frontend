@@ -16,12 +16,12 @@
 
 package utils
 
-import config.FrontendAppConfig
 import models.authentication._
+import config.FrontendAppConfig
 import play.api.Logging
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
+import uk.gov.hmrc.auth.core._
 
 trait AuthSupport extends Logging {
 

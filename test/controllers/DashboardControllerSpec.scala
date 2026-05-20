@@ -17,26 +17,25 @@
 package controllers
 
 import base.SpecBase
-import models._
+import models.*
 import models.audit.JourneyStartedType.ContinueTransfer
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import services.{AuditService, LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
+import uk.gov.hmrc.mongo.lock.Lock
 import views.html.DashboardView
 
-import java.time.{Instant, LocalDate}
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
@@ -93,7 +92,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         )
       )
         .thenReturn(Future.successful(Right(dd)))
-      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(play.twirl.api.Html("dashboard view"))
 
       val application = applicationBuilder()
@@ -259,7 +258,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       )
         .thenReturn(Future.successful(Right(dd)))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
-      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any()))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any())(any(), any()))
         .thenReturn(play.twirl.api.Html("dashboard"))
 
       when(mockLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))

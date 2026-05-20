@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, SessionData, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,8 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.{SchemeManagerTypePage, SchemeManagersNamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
+import play.api.test.Helpers.*
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
@@ -141,9 +140,9 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
     }
 
     "must remove previous data if SchemeManagerType changes" in {
-      implicit val hc: HeaderCarrier = HeaderCarrier()
-      val mngrName                   = PersonName("FirstNameMngr", "LastNameMngr")
-      val previousAnswers            = emptyUserAnswers
+      HeaderCarrier()
+      val mngrName        = PersonName("FirstNameMngr", "LastNameMngr")
+      val previousAnswers = emptyUserAnswers
         .set(SchemeManagerTypePage, SchemeManagerType.Individual)
         .success
         .value

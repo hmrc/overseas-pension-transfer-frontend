@@ -16,15 +16,17 @@
 
 package forms.mappings
 
-import models.Enumerable
-import play.api.data.FieldMapping
 import play.api.data.Forms.of
+import models.Enumerable
 import play.api.i18n.Messages
+import play.api.data.FieldMapping
 
 import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
+  protected final val minAmendDate: Int                                                                        = 2012
+  protected final val minYear: Int                                                                             = 1901
   protected def text(errorKey: String = "error.required", args: Seq[String] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
 

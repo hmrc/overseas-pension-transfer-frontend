@@ -17,7 +17,9 @@
 package models.transferJourneys
 
 import models.assets._
-import models.{ApplicableTaxExclusions, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
+import models.ApplicableTaxExclusions
+import models.WhyTransferIsNotTaxable
+import models.WhyTransferIsTaxable
 
 import java.time.LocalDate
 

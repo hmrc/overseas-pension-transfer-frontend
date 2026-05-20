@@ -16,12 +16,13 @@
 
 package generators
 
-import java.time.{Instant, LocalDate, ZoneOffset}
-import org.scalacheck.Arbitrary._
-import org.scalacheck.Gen._
+import org.scalacheck.Arbitrary.*
+import org.scalacheck.Gen.*
 import org.scalacheck.{Gen, Shrink}
 import play.api.Logging
 import wolfendale.scalacheck.regexp.RegexpGen
+
+import java.time.{Instant, LocalDate, ZoneOffset}
 
 trait Generators extends ModelGenerators with Logging {
 

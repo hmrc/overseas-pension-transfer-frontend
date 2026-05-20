@@ -21,7 +21,7 @@ import forms.behaviours.DateBehaviours
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 class MemberDateOfLeavingUKFormProviderSpec extends DateBehaviours with SpecBase {
 
@@ -31,7 +31,7 @@ class MemberDateOfLeavingUKFormProviderSpec extends DateBehaviours with SpecBase
   ".value" - {
 
     val validData = datesBetween(
-      min = LocalDate.of(1901, 1, 1),
+      min = LocalDate.of(minYear, 1, 1),
       max = today
     )
 

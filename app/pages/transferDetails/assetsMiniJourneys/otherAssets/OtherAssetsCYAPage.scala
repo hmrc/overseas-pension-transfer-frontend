@@ -16,12 +16,13 @@
 
 package pages.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import play.api.mvc.Call
+import pages.MiniJourneyNextPage
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
-import pages.{MiniJourneyNextPage, Page}
-import play.api.mvc.Call
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.Mode
+import models.UserAnswers
 
 case class OtherAssetsCYAPage(index: Int) extends MiniJourneyNextPage {
 

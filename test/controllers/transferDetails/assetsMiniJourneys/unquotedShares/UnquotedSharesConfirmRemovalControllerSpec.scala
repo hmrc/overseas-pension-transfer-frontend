@@ -24,7 +24,7 @@ import models.assets.UnquotedSharesEntry
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import queries.assets.UnquotedSharesQuery
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalView
 

@@ -16,12 +16,12 @@
 
 package viewmodels
 
-import config.FrontendAppConfig
-import models.AllTransfersItem
-import play.api.i18n.Messages
+import utils.Paging
+import utils.PagingRequest
 import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
-import utils.{Paging, PagingRequest}
+import models.AllTransfersItem
+import play.api.i18n.Messages
 
 final case class PaginatedAllTransfersViewModel(
   table: Table,
@@ -41,7 +41,7 @@ object PaginatedAllTransfersViewModel {
     urlForPage: Int => String,
     lockWarning: Option[String] = None,
     totalItems: Option[Int] = None
-  )(implicit messages: Messages, appConfig: FrontendAppConfig): PaginatedAllTransfersViewModel = {
+  )(implicit messages: Messages): PaginatedAllTransfersViewModel = {
 
     val sorted      = items.sorted
     val paging      = Paging.fromSeq(sorted, PagingRequest(page, pageSize))

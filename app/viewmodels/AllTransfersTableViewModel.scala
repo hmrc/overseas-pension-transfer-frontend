@@ -16,8 +16,7 @@
 
 package viewmodels
 
-import config.FrontendAppConfig
-import models.QtStatus.{AmendInProgress, Compiled, InProgress, Submitted}
+import models.QtStatus.*
 import models.{AllTransfersItem, TransferReportQueryParams}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -55,8 +54,7 @@ object AllTransfersTableViewModel {
     }
 
   def from(items: Seq[AllTransfersItem], currentPage: Int)(implicit
-    messages: Messages,
-    appConfig: FrontendAppConfig
+    messages: Messages
   ): Table = {
     val head: Seq[HeadCell] = Seq(
       HeadCell(Text(messages("dashboard.allTransfers.head.member"))),

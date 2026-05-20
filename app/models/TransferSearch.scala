@@ -109,10 +109,9 @@ object TransferSearch {
       val lastOpt  = t.memberSurname.map(norm)
 
       normParts match {
-        case single :: Nil =>
+        case List(single)       =>
           firstOpt.contains(single) || lastOpt.contains(single)
-
-        case many if many.size >= 2 =>
+        case many @ List(_, _*) =>
           /* Create a list of all possible splits of tokens into (first tokens, last tokens) i.e.
             List(("john", "marie david scott"),
               ("john marie", "david scott"),
@@ -132,9 +131,7 @@ object TransferSearch {
             firstOpt.contains(firstNameCandidate) &&
             lastOpt.contains(lastNameCandidate)
           }
-
-        case Nil =>
-          false
+        case Nil                => false
       }
     }
   }

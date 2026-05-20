@@ -18,10 +18,10 @@ package services
 
 import base.SpecBase
 import connectors.UserAnswersConnector
-import models.{PstrNumber, QtNumber, SrnNumber, UserAnswers}
 import models.QtStatus.Submitted
 import models.dtos.UserAnswersDTO
 import models.responses.UserAnswersErrorResponse
+import models.{PstrNumber, QtNumber, SrnNumber, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -30,7 +30,6 @@ import play.api.libs.json.{JsObject, JsString}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

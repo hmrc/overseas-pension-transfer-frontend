@@ -16,16 +16,21 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.mongo.lock.LockRepository
+import config.FrontendAppConfig
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationLong
+
+import javax.inject.Inject
 
 class KeepAliveController @Inject() (
   val controllerComponents: MessagesControllerComponents,

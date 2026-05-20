@@ -16,28 +16,38 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import controllers.actions.{IdentifierAction, SchemeDataAction}
-import models.audit.JourneyStartedType.ContinueTransfer
-import models.authentication.{PsaUser, PspUser}
-import models.requests.SchemeRequest
-import models.{AllTransfersItem, DashboardData, PensionSchemeDetails, QtNumber, QtStatus, TransferId, TransferNumber, TransferReportQueryParams, TransferSearch}
-import pages.DashboardPage
-import play.api.Logging
-import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc._
+import models.authentication.PsaUser
+import models.authentication.PspUser
+import services.LockService
+import services.TransferService
+import services.UserAnswersService
 import queries.PensionSchemeDetailsQuery
-import queries.dashboard.TransfersOverviewQuery
-import repositories.{DashboardSessionRepository, SessionRepository}
-import services.{LockService, TransferService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.{PaginatedAllTransfersViewModel, SearchBarViewModel}
+import play.api.mvc._
+import pages.DashboardPage
 import views.html.DashboardView
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
 import views.html.components.AppBreadcrumbs
+import play.api.Logging
+import repositories.DashboardSessionRepository
+import repositories.SessionRepository
+import models.requests.SchemeRequest
+import queries.dashboard.TransfersOverviewQuery
+import config.FrontendAppConfig
+import models._
+import models.audit.JourneyStartedType.ContinueTransfer
+import play.api.i18n.I18nSupport
+import play.api.i18n.Messages
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.PaginatedAllTransfersViewModel
+import viewmodels.SearchBarViewModel
 
-import java.time.{Clock, Instant}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
 import javax.inject._
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DashboardController @Inject() (
@@ -203,7 +213,6 @@ class DashboardController @Inject() (
                   DashboardPage.nextPage(updatedData, None, None).url,
                   transfersVm,
                   searchBarVm,
-                  mpsLink,
                   isSearch = search.exists(_.trim.nonEmpty),
                   breadcrumbs = appBreadcrumbs(mpsLink, pensionSchemeLink),
                   pensionSchemeLink = pensionSchemeLink

@@ -16,27 +16,36 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import config.FrontendAppConfig
+import services.AddressService
+import services.CountryService
+import services.UserAnswersService
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataTrait
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormProvider
+import play.api.mvc._
 import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormDataTrait, PropertyAddressFormProvider}
-import models.assets.TypeOfAsset.Property
-import models.requests.DisplayRequest
-import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.Logging
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import models.assets.TypeOfAsset.Property
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
 import queries.assets.AssetsRecordVersionQuery
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import services.{AddressService, CountryService, UserAnswersService}
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
-import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
+import models.requests.DisplayRequest
+import play.api.data.Form
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class PropertyAddressController @Inject() (
   override val messagesApi: MessagesApi,
@@ -49,7 +58,7 @@ class PropertyAddressController @Inject() (
   addressService: AddressService,
   val controllerComponents: MessagesControllerComponents,
   view: PropertyAddressView
-)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
     with Logging {

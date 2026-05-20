@@ -16,10 +16,13 @@
 
 package utils
 
-import models.{QtNumber, SessionData, UserAnswers}
-import pages.memberDetails.MemberNamePage
-import queries.{DateSubmittedQuery, QtNumberQuery}
+import queries.DateSubmittedQuery
+import queries.QtNumberQuery
 import utils.DateTimeFormats.localDateTimeFormatter
+import models.QtNumber
+import models.SessionData
+import models.UserAnswers
+import pages.memberDetails.MemberNamePage
 
 import java.time.ZoneId
 

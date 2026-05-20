@@ -16,13 +16,13 @@
 
 package scheduler.jobs
 
+import services.LockCleanupService
+import scheduler.SchedulingActor.LockCleanup
+import play.api.Configuration
+import scheduler.ScheduledJob
 import org.apache.pekko.actor.ActorSystem
 
 import javax.inject.Inject
-import play.api.Configuration
-import scheduler.ScheduledJob
-import scheduler.SchedulingActor.LockCleanup
-import services.LockCleanupService
 
 class LockCleanupJob @Inject() (val lockCleanupService: LockCleanupService, val config: Configuration)
     extends ScheduledJob {

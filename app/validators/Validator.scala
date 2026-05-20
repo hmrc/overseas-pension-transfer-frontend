@@ -16,7 +16,8 @@
 
 package validators
 
-import models.{UserAnswers, ValidationResult}
+import models.UserAnswers
+import models.ValidationResult
 
 trait Validator[A] {
   def fromUserAnswers(user: UserAnswers): ValidationResult[A]

@@ -16,10 +16,12 @@
 
 package utils
 
-import play.api.Logging
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpResponse
 import models.BackendError
-import play.api.libs.json.{JsPath, JsonValidationError}
+import play.api.Logging
+import play.api.libs.json.JsPath
+import play.api.libs.json.JsonValidationError
 
 trait DownstreamLogging extends Logging {
 

@@ -16,19 +16,22 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import viewmodels.implicits._
 import handlers.AssetThresholdHandler
-import models.assets.TypeOfAsset
-import models.{Mode, UserAnswers}
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
-import play.api.i18n.Messages
+import models.assets.TypeOfAsset
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.Mode
+import models.UserAnswers
+import viewmodels.govuk.summarylist._
 import queries.assets.PropertyQuery
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
+import play.api.i18n.Messages
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.AddressViewModel
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object PropertyAmendContinueSummary {
 

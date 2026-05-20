@@ -16,7 +16,8 @@
 
 package models.authentication
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.Json
+import play.api.libs.json.OFormat
 
 case class PsaId(value: String)
 

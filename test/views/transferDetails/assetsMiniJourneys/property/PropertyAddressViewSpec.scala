@@ -30,11 +30,11 @@ class PropertyAddressViewSpec extends ViewBaseSpec {
 
   val application: Application = GuiceApplicationBuilder().build()
 
-  private val view                                  = application.injector.instanceOf[PropertyAddressView]
-  private val formProvider                          = application.injector.instanceOf[PropertyAddressFormProvider]
-  private val countrySelectViewModel                = CountrySelectViewModel(Seq.empty)
-  private val testIndex                             = 0
-  implicit private val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+  private val view                   = application.injector.instanceOf[PropertyAddressView]
+  private val formProvider           = application.injector.instanceOf[PropertyAddressFormProvider]
+  private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
+  private val testIndex              = 0
+  application.injector.instanceOf[FrontendAppConfig]
 
   "PropertyAddressView" - {
 

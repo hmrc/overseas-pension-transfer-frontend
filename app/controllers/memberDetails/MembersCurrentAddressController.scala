@@ -16,24 +16,30 @@
 
 package controllers.memberDetails
 
+import services.AddressService
+import services.CountryService
+import services.UserAnswersService
+import play.api.mvc._
+import forms.memberDetails.MembersCurrentAddressFormData
+import forms.memberDetails.MembersCurrentAddressFormProvider
 import controllers.actions._
+import play.api.Logging
 import controllers.helpers.ErrorHandling
-import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
-import models.Mode
-import models.requests.DisplayRequest
 import org.apache.pekko.Done
 import pages.memberDetails.MembersCurrentAddressPage
-import play.api.Logging
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.{AddressService, CountryService, UserAnswersService}
+import models.Mode
+import views.html.memberDetails.MembersCurrentAddressView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
-import views.html.memberDetails.MembersCurrentAddressView
+import models.requests.DisplayRequest
+import play.api.data.Form
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class MembersCurrentAddressController @Inject() (
   override val messagesApi: MessagesApi,

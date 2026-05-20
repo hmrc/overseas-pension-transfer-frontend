@@ -16,9 +16,11 @@
 
 package models.dtos
 
-import models.{PstrNumber, TransferId, UserAnswers}
-import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json._
+import models.PstrNumber
+import models.TransferId
+import models.UserAnswers
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 
 import java.time.Instant
 

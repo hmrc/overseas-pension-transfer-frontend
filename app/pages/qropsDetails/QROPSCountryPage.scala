@@ -16,12 +16,12 @@
 
 package pages.qropsDetails
 
-import controllers.qropsDetails.routes
-import models.address.Country
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.QuestionPage
+import controllers.qropsDetails.routes
+import models._
+import models.address.Country
+import play.api.libs.json.JsPath
 
 import scala.util.Try
 

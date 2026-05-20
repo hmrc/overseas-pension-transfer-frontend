@@ -14,15 +14,11 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.ViewUtils.titleNoForm
 @import models.requests.SchemeRequest
-@import views.html.components.QTNumber
 
 @this(
-        layout: templates.Layout,
-        govukButton: GovukButton,
-        qtNumber: QTNumber
+        layout: templates.Layout
 )
 
 @(memberName: String, qtNumber: String, tableRows: Html)(implicit request: SchemeRequest[_], messages: Messages)

@@ -31,7 +31,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.{MemberHasEverBeenResidentUKPage, MembersLastUKAddressPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.memberDetails.MemberHasEverBeenResidentUKView
@@ -156,7 +156,7 @@ class MemberHasEverBeenResidentUKControllerSpec extends AnyFreeSpec with SpecBas
     }
 
     "must remove MembersLastUKAddressPage if changed from true to false in CheckMode" in {
-      implicit val hc: HeaderCarrier = HeaderCarrier()
+      HeaderCarrier()
 
       val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
       val previousAnswers = emptyUserAnswers

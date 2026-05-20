@@ -16,17 +16,14 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import viewmodels.PaginatedAllTransfersViewModel
-@import views.ViewUtils.{titleNoForm, titleWithPagination}
+@import views.ViewUtils.titleWithPagination
 @import models.{AllTransfersItem, QtStatus}
 @import viewmodels.SearchBarViewModel
 @import views.html.components.SearchBar
 @import views.html.components.ScrollableTable
-@import config.FrontendAppConfig
 
 @this(
         layout: templates.Layout,
-        govukButton: GovukButton,
-        govukTable: GovukTable,
         govukPagination: GovukPagination,
         searchBar: SearchBar,
         scrollableTable: ScrollableTable
@@ -36,27 +33,10 @@
   nextPage: String,
   allTransfersViewModel: PaginatedAllTransfersViewModel,
   searchBarViewModel: SearchBarViewModel,
-  mpsLink: String,
   isSearch: Boolean,
   pensionSchemeLink: String,
   breadcrumbs: Html
-)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
-
-@messageFor(item: AllTransfersItem) = @{
-    val firstName = item.memberFirstName.getOrElse("").trim
-    val surname   = item.memberSurname.getOrElse("").trim
-    val fullName  = s"$firstName $surname".trim
-    val expiryDate = item.lastUpdatedDate
-        .map(_.atZone(java.time.ZoneId.systemDefault()).toLocalDate().plusDays(25))
-        .map(java.time.format.DateTimeFormatter.ofPattern("d MMMM yyyy").format(_))
-        .getOrElse("")
-
-    item.qtStatus match {
-        case Some(QtStatus.AmendInProgress) => messages("dashboard.banner.updateInProgress.text", fullName, expiryDate)
-        case Some(QtStatus.InProgress) => messages("dashboard.banner.inProgress.text", fullName, expiryDate)
-        case _ => ""
-    }
-}
+)(implicit request: Request[_], messages: Messages)
 
 @pagePrefix: String = @{
     if (isSearch) {

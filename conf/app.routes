@@ -6,7 +6,7 @@ GET        /assets/*file                                                        
 
 GET        /language/:lang                                                                        controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET        /start                                                                                 controllers.MpsOnRampController.onRamp(srn: String ?= "")
+GET        /start                                                                                 controllers.MpsOnRampController.onRamp()
 
 GET        /dashboard                                                                             controllers.DashboardController.onPageLoad(page: Int ?= 1, search: Option[String] ?= None)
 

@@ -16,15 +16,14 @@
 
 package viewmodels.checkAnswers.schemeOverview
 
-import models.Mode
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object SchemeNameSummary {
 
-  def row(mode: Mode, schemeName: String)(implicit messages: Messages): SummaryListRow =
+  def row(schemeName: String)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
       key = "schemeName.label",
       value = ValueViewModel(schemeName)

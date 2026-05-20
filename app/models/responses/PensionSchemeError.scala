@@ -16,7 +16,8 @@
 
 package models.responses
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.Json
+import play.api.libs.json.Reads
 
 sealed trait PensionSchemeError
 

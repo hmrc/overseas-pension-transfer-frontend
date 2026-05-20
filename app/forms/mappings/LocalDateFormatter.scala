@@ -16,12 +16,16 @@
 
 package forms.mappings
 
-import play.api.data.FormError
 import play.api.data.format.Formatter
 import play.api.i18n.Messages
+import play.api.data.FormError
 
-import java.time.{LocalDate, Month}
-import scala.util.{Failure, Success, Try}
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
+import java.time.LocalDate
+import java.time.Month
 
 private[mappings] class LocalDateFormatter(
   invalidCharacter: String,
@@ -60,7 +64,9 @@ private[mappings] class LocalDateFormatter(
   )
 
   private def toDate(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] =
-    Try(data(s"$key.year").toIntOption, monthFormatter.bind(s"$key.month", data), data(s"$key.day").toIntOption) match {
+    Try(
+      Tuple3(data(s"$key.year").toIntOption, monthFormatter.bind(s"$key.month", data), data(s"$key.day").toIntOption)
+    ) match {
       case Success((Some(year), Right(month), Some(day))) => handleSuccess(key, year, month, day)
       case Success((year, month, day))                    => handlePartErrors(key, day, month, year)
       case _                                              => Left(Seq(FormError(key, invalidKey, args)))

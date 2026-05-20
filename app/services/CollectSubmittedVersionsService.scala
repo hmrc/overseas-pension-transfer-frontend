@@ -16,14 +16,15 @@
 
 package services
 
+import models.QtStatus.Submitted
+import models.dtos.UserAnswersDTO.toUserAnswers
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
-import models.QtStatus.Submitted
-import models.{PstrNumber, QtNumber, QtStatus, SrnNumber, TransferId, UserAnswers}
-import models.dtos.UserAnswersDTO.toUserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
+import models._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class CollectSubmittedVersionsService @Inject() (
   userAnswersConnector: UserAnswersConnector

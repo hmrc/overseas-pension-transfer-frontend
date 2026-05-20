@@ -17,10 +17,9 @@
 package controllers.transferDetails.assetsMiniJourneys.property
 
 import base.AddressBase
-import config.FrontendAppConfig
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormDataTrait, PropertyAddressFormProvider}
-import models.address._
+import models.address.*
 import models.requests.DisplayRequest
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -28,11 +27,10 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{AddressService, CountryService}
 import viewmodels.CountrySelectViewModel
@@ -54,8 +52,8 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
     Country("FR", "France")
   )
 
-  implicit private val messages: Messages = stubMessages()
-  private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
+  stubMessages()
+  private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
 
   private val mockCountryService = mock[CountryService]
 
@@ -76,10 +74,9 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val request                                                         = FakeRequest(GET, propertyAddressRoute)
         implicit val displayRequest: DisplayRequest[AnyContentAsEmpty.type] = fakeDisplayRequest(request)
 
-        val form      = formProvider()
-        val view      = application.injector.instanceOf[PropertyAddressView]
-        val result    = route(application, request).value
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
+        val form   = formProvider()
+        val view   = application.injector.instanceOf[PropertyAddressView]
+        val result = route(application, request).value
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(
@@ -87,7 +84,7 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           countrySelectViewModel,
           NormalMode,
           index
-        )(displayRequest, messages(application), appConfig).toString
+        )(displayRequest, messages(application)).toString
       }
     }
 
@@ -179,13 +176,11 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
         val boundForm = form.bind(Map("value" -> "invalid value"))
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
           displayRequest,
-          messages(application),
-          appConfig
+          messages(application)
         ).toString
       }
     }
@@ -230,13 +225,11 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
           .withError("postcode", "membersLastUKAddress.error.postcode.incorrect")
         val view      = application.injector.instanceOf[PropertyAddressView]
         val result    = route(application, request).value
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, countrySelectViewModel, NormalMode, index)(
           displayRequest,
-          messages(application),
-          appConfig
+          messages(application)
         ).toString
       }
     }

@@ -20,7 +20,7 @@ import base.AddressBase
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import models.address._
+import models.address.*
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -28,11 +28,9 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class AddressServiceSpec extends AnyFreeSpec with AddressBase with MockitoSugar with ScalaFutures {
 
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
+  HeaderCarrier()
 
   private val mockCountryService = mock[CountryService]
 

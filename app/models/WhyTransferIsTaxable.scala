@@ -16,8 +16,8 @@
 
 package models
 
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 sealed trait WhyTransferIsTaxable

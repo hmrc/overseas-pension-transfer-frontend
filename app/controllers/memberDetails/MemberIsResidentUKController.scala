@@ -16,23 +16,28 @@
 
 package controllers.memberDetails
 
+import services.TaskService
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import forms.memberDetails.MemberIsResidentUKFormProvider
 import controllers.actions._
 import controllers.helpers.ErrorHandling
-import forms.memberDetails.MemberIsResidentUKFormProvider
-import models.Mode
-import models.TaskCategory.MemberDetails
 import org.apache.pekko.Done
 import pages.memberDetails.MemberIsResidentUKPage
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{TaskService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.TaskCategory.MemberDetails
+import models.Mode
 import views.html.memberDetails.MemberIsResidentUKView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class MemberIsResidentUKController @Inject() (
   override val messagesApi: MessagesApi,
