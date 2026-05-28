@@ -83,6 +83,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .value
 
       when(mockSession.clear(any())).thenReturn(Future.successful(true))
+      when(mockSession.get(any())).thenReturn(Future.successful(None))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
@@ -249,6 +250,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .value
 
       when(mockSessionRepo.clear(any())).thenReturn(Future.successful(true))
+      when(mockSessionRepo.get(any())).thenReturn(Future.successful(None))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
       when(
@@ -351,6 +353,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .value
 
       when(mockSession.clear(any())).thenReturn(Future.successful(true))
+      when(mockSession.get(any())).thenReturn(Future.successful(None))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
       when(
@@ -424,6 +427,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .value
 
       when(mockSession.clear(any())).thenReturn(Future.successful(true))
+      when(mockSession.get(any())).thenReturn(Future.successful(None))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
       when(
@@ -512,6 +516,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .value
 
       when(mockSession.clear(any())).thenReturn(Future.successful(true))
+      when(mockSession.get(any())).thenReturn(Future.successful(None))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
       when(
