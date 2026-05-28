@@ -18,24 +18,26 @@ package services
 
 import models.authentication.AuthenticatedUser
 import models.authentication.PsaId
-import models.responses._
+import models.responses.*
 import models.dtos.UserAnswersDTO.fromUserAnswers
 import models.dtos.UserAnswersDTO.toUserAnswers
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
 import models.dtos.SubmissionDTO
 import uk.gov.hmrc.http.HeaderCarrier
-import models._
+import models.*
 import org.apache.pekko.Done
 import play.api.Logging
-import play.api.libs.json._
+import play.api.libs.json.*
+import repositories.SessionRepository
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 class UserAnswersService @Inject() (
   connector: UserAnswersConnector,
-  authService: AuthorisingPsaService
+  authService: AuthorisingPsaService,
+  sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends Logging {
 
@@ -129,4 +131,20 @@ class UserAnswersService @Inject() (
       submissionDate = submissionDate
     )
   }
+
+  def clearEmptyUserAnswers(id: String)(implicit hc: HeaderCarrier): Future[Unit] =
+    sessionRepository.get(id).flatMap {
+      case Some(sessionData) =>
+        getExternalUserAnswers(sessionData).flatMap {
+          case Right(userAnswers) if userAnswers.data == Json.obj() =>
+            clearUserAnswers(
+              sessionData.transferId.value,
+              sessionData.schemeInformation.srnNumber
+            ).map(_ => ())
+          case _                                                    =>
+            Future.successful(())
+        }
+      case None              =>
+        Future.successful(())
+    }
 }

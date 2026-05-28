@@ -17,7 +17,7 @@
 package services
 
 import base.SpecBase
-import connectors.{PensionSchemeConnector, UserAnswersConnector}
+import connectors.UserAnswersConnector
 import models.*
 import models.authentication.{PsaId, PsaUser}
 import models.dtos.UserAnswersDTO
@@ -30,6 +30,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -40,10 +41,11 @@ import scala.concurrent.Future
 class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val mockUserAnswersConnector = mock[UserAnswersConnector]
-  mock[PensionSchemeConnector]
   private val mockAuthService          = mock[AuthorisingPsaService]
+  private val mockSessionRepository    = mock[SessionRepository]
 
-  val service: UserAnswersService = new UserAnswersService(mockUserAnswersConnector, mockAuthService)
+  val service: UserAnswersService =
+    new UserAnswersService(mockUserAnswersConnector, mockAuthService, mockSessionRepository)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
