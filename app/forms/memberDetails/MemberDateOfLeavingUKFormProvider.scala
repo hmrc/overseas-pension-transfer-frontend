@@ -16,6 +16,7 @@
 
 package forms.memberDetails
 
+import config.Constants.ddMMyyyy
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -28,7 +29,7 @@ class MemberDateOfLeavingUKFormProvider @Inject() (clock: Clock) extends Mapping
 
   def minDate: LocalDate    = LocalDate of (1901, 1, 1)
   def maxDate: LocalDate    = LocalDate.now(clock)
-  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+  private def dateFormatter = ddMMyyyy
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(

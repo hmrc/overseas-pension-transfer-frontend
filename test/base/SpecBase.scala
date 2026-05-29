@@ -69,6 +69,10 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience {
 
+  protected val maxCurrency: Double          = config.Constants.maxCurrency
+  protected val minCurrency: Double          = config.Constants.minCurrency
+  protected val dMMMMyyyy: DateTimeFormatter = config.Constants.dMMMMyyyy
+
   private val clockMillis: Long = 1718118467838L
   val clock: Clock              = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
 

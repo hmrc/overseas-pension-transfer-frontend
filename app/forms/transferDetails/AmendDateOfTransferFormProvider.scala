@@ -16,6 +16,7 @@
 
 package forms.transferDetails
 
+import config.Constants.ddMMyyyy
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -28,7 +29,7 @@ class AmendDateOfTransferFormProvider @Inject() extends Mappings {
 
   def minDate: LocalDate = LocalDate of (2012, 4, 6)
 
-  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+  private def dateFormatter = ddMMyyyy
 
   def apply(submissionDate: LocalDate)(implicit messages: Messages): Form[LocalDate] = {
 

@@ -27,6 +27,7 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
+@import config.FormConstants.GovUkMarginBottom6
 
 
 @this(
@@ -54,7 +55,7 @@
             InputViewModel(
                 field = form("netAmount"),
                 label = LabelViewModel(Text(messages("netTransferAmount.heading")))
-                        .withCssClass("govuk-!-margin-bottom-6")
+                        .withCssClass(GovUkMarginBottom6)
                         .asPageHeading(size = Large)
                 )
                 .withHint(HintViewModel(messages("netTransferAmount.hint")))

@@ -16,6 +16,7 @@
 
 package forms.transferDetails
 
+import config.Constants.ddMMyyyy
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -28,7 +29,7 @@ class DateOfTransferFormProvider @Inject() (clock: Clock) extends Mappings {
 
   def minDate: LocalDate    = LocalDate of (2012, 4, 6)
   def maxDate: LocalDate    = LocalDate.now(clock)
-  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+  private def dateFormatter = ddMMyyyy
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(

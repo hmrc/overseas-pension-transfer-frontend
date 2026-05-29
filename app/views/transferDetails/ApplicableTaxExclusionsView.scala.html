@@ -21,6 +21,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
+@import config.FormConstants.GovUkMarginBottom6
 
 @this(
     layout: templates.Layout,
@@ -51,7 +52,7 @@
                             messages("applicableTaxExclusions.heading")
                          )
                          .asPageHeading(size = LegendSize.Large)
-                         .withCssClass("govuk-!-margin-bottom-6"),
+                         .withCssClass(GovUkMarginBottom6),
                 items  = ApplicableTaxExclusions.checkboxItems
             ).withHint(HintViewModel(Text(messages("applicableTaxExclusions.hint"))))
         )

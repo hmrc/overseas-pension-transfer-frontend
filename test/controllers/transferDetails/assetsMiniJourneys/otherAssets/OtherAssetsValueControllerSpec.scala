@@ -39,7 +39,7 @@ class OtherAssetsValueControllerSpec extends AnyFreeSpec with SpecBase with Mock
   val form         = formProvider()
   val index        = 0
 
-  val validAnswer = BigDecimal(0.01)
+  val validAnswer = BigDecimal(minCurrency)
 
   lazy val otherAssetsValueRoute = AssetsMiniJourneysRoutes.OtherAssetsValueController.onPageLoad(NormalMode, index).url
 

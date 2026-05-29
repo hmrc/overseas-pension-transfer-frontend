@@ -37,7 +37,7 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
   val formProvider = new NetTransferAmountFormProvider()
   val form         = formProvider()
 
-  val validAnswer = BigDecimal(0.01)
+  val validAnswer = BigDecimal(minCurrency)
 
   lazy val amountOfTransferAfterTaxRoute = routes.NetTransferAmountController.onPageLoad(NormalMode).url
 

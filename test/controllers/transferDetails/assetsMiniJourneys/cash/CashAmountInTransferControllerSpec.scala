@@ -38,7 +38,7 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
   val formProvider = new CashAmountInTransferFormProvider()
   val form         = formProvider()
 
-  val validAnswer = BigDecimal(0.01)
+  val validAnswer = BigDecimal(minCurrency)
 
   lazy val cashAmountInTransferRoute = AssetsMiniJourneysRoutes.CashAmountInTransferController.onPageLoad(NormalMode).url
 

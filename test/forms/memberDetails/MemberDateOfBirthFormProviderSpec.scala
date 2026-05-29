@@ -17,6 +17,7 @@
 package forms.memberDetails
 
 import base.SpecBase
+import config.Constants.ddMMyyyy
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 import play.api.i18n.Messages
@@ -33,7 +34,7 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours with SpecBase {
   private val minDate = LocalDate.of(1901, 1, 1)
   private val maxDate = today
 
-  private def dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+  private def dateFormatter = ddMMyyyy
 
   ".value" - {
 

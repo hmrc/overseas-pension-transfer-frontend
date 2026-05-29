@@ -424,7 +424,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
         val userAnswers = buildBaseUserAnswers
           .set(TypeOfAssetPage, Seq(TypeOfAsset.Cash)).success.value
           .set(IsTransferCashOnlyPage, true).success.value
-          .set(CashAmountInTransferPage, BigDecimal(0.01)).success.value
+          .set(CashAmountInTransferPage, BigDecimal(minCurrency)).success.value
 
         val result = validator.fromUserAnswers(userAnswers)
 

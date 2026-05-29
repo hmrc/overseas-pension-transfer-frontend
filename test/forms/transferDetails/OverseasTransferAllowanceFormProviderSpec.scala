@@ -34,8 +34,8 @@ class OverseasTransferAllowanceFormProviderSpec extends CurrencyFieldBehaviours 
   ".value" - {
 
     val fieldName = "otAllowance"
-    val minimum   = 0.01
-    val maximum   = 999999999.99
+    val minimum   = minCurrency
+    val maximum   = maxCurrency
 
     val validDataGenerator =
       Gen.choose[BigDecimal](minimum, maximum)

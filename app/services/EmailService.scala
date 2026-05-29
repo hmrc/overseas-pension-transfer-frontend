@@ -16,6 +16,7 @@
 
 package services
 
+import config.Constants.dMMMMyyyy
 import config.FrontendAppConfig
 import connectors.EmailConnector
 import models.email.{EmailAccepted, EmailToSendRequest, SubmissionConfirmation}
@@ -94,7 +95,7 @@ class EmailService @Inject() (
 
   private def format(instant: Instant): String = {
     val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-    val date          = localDateTime.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+    val date          = localDateTime.format(dMMMMyyyy)
     val time          = localDateTime.format(DateTimeFormatter.ofPattern("HH:mma", Locale.ENGLISH))
     s"$date at ${time.toLowerCase}"
   }

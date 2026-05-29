@@ -87,7 +87,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
           .set(MemberNamePage, testMemberName).success.value
           .set(DateSubmittedQuery, submittedAt).success.value
 
-      val date                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+      val date                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(dMMMMyyyy)
       val time                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("HH:mm"))
       val expectedFormattedSubmittedAt = s"$date at ${time}am"
 
@@ -173,7 +173,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val date =
         LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
-          .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+          .format(dMMMMyyyy)
 
       val time =
         LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
@@ -228,7 +228,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
 
       val date =
         LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
-          .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+          .format(dMMMMyyyy)
 
       val time =
         LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())

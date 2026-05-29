@@ -27,6 +27,7 @@
 @import views.html.components.QTNumber
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
 @import viewmodels.LabelSize.Large
+@import config.FormConstants.GovUkMarginBottom6
 
 
 @this(
@@ -54,7 +55,7 @@
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(Text(messages("amountOfTransfer.heading")))
-                    .withCssClass("govuk-!-margin-bottom-6")
+                    .withCssClass(GovUkMarginBottom6)
                     .asPageHeading(size = Large)
             )
             .withPrefix(PrefixOrSuffix(content = "£"))

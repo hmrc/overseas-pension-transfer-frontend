@@ -22,6 +22,7 @@
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
 @import models.assets.TypeOfAsset
+@import config.FormConstants.GovUkMarginBottom6
 
 @this(
     layout: templates.Layout,
@@ -52,7 +53,7 @@
                             messages("typeOfAsset.heading")
                          )
                          .asPageHeading(size = LegendSize.Large)
-                         .withCssClass("govuk-!-margin-bottom-6"),
+                         .withCssClass(GovUkMarginBottom6),
                 items  = TypeOfAsset.checkboxItems
             ).withHint(HintViewModel(Text(messages("typeOfAsset.hint"))))
         )

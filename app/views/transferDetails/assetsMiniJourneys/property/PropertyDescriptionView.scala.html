@@ -24,6 +24,7 @@
 @import views.html.components.QTNumber
 @import play.api.data.Form
 @import play.api.i18n.Messages
+@import config.FormConstants.GovUkMarginBottom6
 
 @this(
         layout: templates.Layout,
@@ -50,7 +51,7 @@
             TextareaViewModel(
                 field = form("value"),
                 label = LabelViewModel(Text(messages("propertyDescription.heading")))
-                    .withCssClass("govuk-!-margin-bottom-6")
+                    .withCssClass(GovUkMarginBottom6)
                     .asPageHeading(size = Large)
             )
             .withHint(HintViewModel(messages("propertyDescription.hint")))
