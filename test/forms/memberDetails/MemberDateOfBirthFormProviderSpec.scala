@@ -17,7 +17,6 @@
 package forms.memberDetails
 
 import base.SpecBase
-import config.Constants.ddMMyyyy
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 import play.api.i18n.Messages

@@ -20,7 +20,7 @@ import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
-import config.Constants.{maxCurrency, minCurrency}
+import config.Constants.maxCurrency
 
 class AmountOfTaxDeductedFormProvider @Inject() extends Mappings {
 

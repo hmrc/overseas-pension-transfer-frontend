@@ -46,14 +46,11 @@ import scala.util.Random
 
 trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
-  protected final val minYear: Int = 1901
-  private val clockMillis: Long    = 1718118467838L
-  val clock: Clock                 = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
-  protected val maxCurrency: Double          = config.Constants.maxCurrency
-  protected val minCurrency: Double          = config.Constants.minCurrency
-
-  private val clockMillis: Long = 1718118467838L
-  val clock: Clock              = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
+  protected final val minYear: Int  = 1901
+  private val clockMillis: Long     = 1718118467838L
+  val clock: Clock                  = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
+  protected val maxCurrency: Double = config.Constants.maxCurrency
+  protected val minCurrency: Double = config.Constants.minCurrency
 
   val now: Instant     = Instant.now(clock)
   val today: LocalDate = LocalDate.now(clock)
