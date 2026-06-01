@@ -16,18 +16,21 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.AmountOfTaxDeductedPage
-import play.api.i18n.Messages
+import viewmodels.implicits._
+import controllers.transferDetails.routes
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.CurrencyFormats.currencyFormat
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object AmountOfTaxDeductedSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(AmountOfTaxDeductedPage).map { answer =>
       val actions =
         if (showChangeLink) {
@@ -40,8 +43,8 @@ object AmountOfTaxDeductedSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "amountOfTaxDeducted.checkYourAnswersLabel",
-        value   = ValueViewModel(currencyFormat(answer)),
+        key = "amountOfTaxDeducted.checkYourAnswersLabel",
+        value = ValueViewModel(currencyFormat(answer)),
         actions = actions
       )
     }

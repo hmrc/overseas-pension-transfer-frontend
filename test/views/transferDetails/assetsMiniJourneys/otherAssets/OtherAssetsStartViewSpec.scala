@@ -29,7 +29,9 @@ class OtherAssetsStartViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(nextPage).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("otherAssetsStart.title")} - ${messages("service.name")} - GOV.UK"
     }
 

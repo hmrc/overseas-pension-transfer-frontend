@@ -21,7 +21,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 class TestAppConfig
     extends FrontendAppConfig(
-      configuration  = Configuration(
+      configuration = Configuration(
         "appName"                             -> "test-frontend",
         "contact-frontend.host"               -> "http://localhost:9250",
         "contact-frontend.serviceId"          -> "test-service",
@@ -32,7 +32,6 @@ class TestAppConfig
         "urls.pensionSchemeUrl"               -> "http://localhost:8204/manage-pension-schemes/pension-scheme-summary/",
         "urls.mpsHomeUrl"                     -> "http://localhost:8204/manage-pension-schemes/overview",
         "feedback-frontend.host"              -> "http://localhost:9514",
-        "features.welsh-translation"          -> false,
         "enrolments.psa.serviceName"          -> "HMRC-PSA-ORG",
         "enrolments.psa.identifierKey"        -> "PSAID",
         "enrolments.psp.serviceName"          -> "HMRC-PSP-ORG",

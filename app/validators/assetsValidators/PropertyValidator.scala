@@ -16,13 +16,17 @@
 
 package validators.assetsValidators
 
-import cats.implicits.{catsSyntaxTuple3Semigroupal, catsSyntaxValidatedIdBinCompat0}
-import models.address.PropertyAddress
-import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.transferDetails.TypeOfAssetPage
-import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
+import cats.implicits.catsSyntaxTuple3Semigroupal
+import cats.implicits.catsSyntaxValidatedIdBinCompat0
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
+import pages.transferDetails.assetsMiniJourneys.property.PropertyValuePage
+import models._
 import queries.assets.PropertyQuery
+import models.address.PropertyAddress
+import models.assets.PropertyEntry
+import models.assets.TypeOfAsset
 
 object PropertyValidator {
 
@@ -44,7 +48,7 @@ object PropertyValidator {
       case None                      => DataMissingError(PropertyDescriptionPage(index)).invalidNec
     }
 
-  def validatePropertyDetails(answers: UserAnswers): ValidationResult[Option[List[PropertyEntry]]] = {
+  def validatePropertyDetails(answers: UserAnswers): ValidationResult[Option[List[PropertyEntry]]] =
     answers.get(TypeOfAssetPage) match {
       case Some(assets) if assets.contains(TypeOfAsset.Property) =>
         answers.get(PropertyQuery) match {
@@ -69,5 +73,4 @@ object PropertyValidator {
       case Some(_)                                               => None.validNec
       case None                                                  => DataMissingError(PropertyQuery).invalidNec
     }
-  }
 }

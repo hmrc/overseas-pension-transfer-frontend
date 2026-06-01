@@ -25,7 +25,6 @@ import play.api.libs.json.{JsObject, JsString}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 
 import java.time.ZoneId
-import java.time.format.{DateTimeFormatter, FormatStyle}
 
 class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils {
 
@@ -41,10 +40,11 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
     }
 
     "must return full name from user answers when not present in session data" in {
-      val userAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
-        .set(MemberNamePage, testMemberName)
-        .success
-        .value
+      val userAnswers: UserAnswers =
+        UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+          .set(MemberNamePage, testMemberName)
+          .success
+          .value
 
       memberFullName(emptySessionData, Some(userAnswers)) mustBe "User McUser"
     }
@@ -69,8 +69,7 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
       dateTransferSubmitted(
         emptySessionData.set(DateSubmittedQuery, now).success.value
       ) mustBe
-        DateTimeFormatter
-          .ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
+        DateTimeFormats.localDateTimeFormatter
           .withZone(ZoneId.systemDefault()) // or ZoneOffset.UTC
           .format(now)
     }

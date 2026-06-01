@@ -16,57 +16,68 @@
 
 package controllers.qropsDetails
 
-import config.FrontendAppConfig
-import controllers.actions._
-import controllers.helpers.ErrorHandling
-import forms.qropsDetails.{QROPSAddressFormData, QROPSAddressFormProvider}
-import models.Mode
-import models.requests.DisplayRequest
-import org.apache.pekko.Done
-import pages.qropsDetails.QROPSAddressPage
-import play.api.Logging
-import play.api.data.{Form, FormError}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AddressService, CountryService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import services.AddressService
+import services.CountryService
+import services.UserAnswersService
 import utils.AppUtils
-import viewmodels.CountrySelectViewModel
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
+import play.api.Logging
+import controllers.helpers.ErrorHandling
+import models.Mode
+import pages.qropsDetails.QROPSAddressPage
+import org.apache.pekko.Done
 import views.html.qropsDetails.QROPSAddressView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.CountrySelectViewModel
+import forms.qropsDetails.QROPSAddressFormData
+import forms.qropsDetails.QROPSAddressFormProvider
+import models.requests.DisplayRequest
+import play.api.data.Form
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class QROPSAddressController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    schemeData: SchemeDataAction,
-    getData: DataRetrievalAction,
-    formProvider: QROPSAddressFormProvider,
-    countryService: CountryService,
-    addressService: AddressService,
-    val controllerComponents: MessagesControllerComponents,
-    view: QROPSAddressView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext,
-    appConfig: FrontendAppConfig
-  ) extends FrontendBaseController with I18nSupport with Logging with AppUtils with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  schemeData: SchemeDataAction,
+  getData: DataRetrievalAction,
+  formProvider: QROPSAddressFormProvider,
+  countryService: CountryService,
+  addressService: AddressService,
+  val controllerComponents: MessagesControllerComponents,
+  view: QROPSAddressView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging
+    with AppUtils
+    with ErrorHandling {
 
   private def form(): Form[QROPSAddressFormData] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSAddressPage) match {
-        case None          => form()
-        case Some(address) => form().fill(QROPSAddressFormData.fromDomain(address))
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(QROPSAddressPage) match {
+      case None          => form()
+      case Some(address) => form().fill(QROPSAddressFormData.fromDomain(address))
+    }
 
-      val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+    val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
 
-      Ok(view(preparedForm, countrySelectViewModel, mode))
+    Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
-  private def renderErrorPage(formWithErrors: Form[QROPSAddressFormData], mode: Mode)(implicit displayRequest: DisplayRequest[_]) = {
+  private def renderErrorPage(formWithErrors: Form[QROPSAddressFormData], mode: Mode)(implicit
+    displayRequest: DisplayRequest[_]
+  ) = {
     val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
     Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
   }
@@ -86,12 +97,13 @@ class QROPSAddressController @Inject() (
             case Some(address) =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSAddressPage, address))
-                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-              } yield {
-                savedForLater match {
-                  case Right(Done) => Redirect(QROPSAddressPage.nextPage(mode, updatedAnswers))
-                  case Left(err)   => onFailureRedirect(err)
-                }
+                savedForLater  <- userAnswersService.setExternalUserAnswers(
+                                    updatedAnswers,
+                                    request.sessionData.schemeInformation.srnNumber
+                                  )
+              } yield savedForLater match {
+                case Right(Done) => Redirect(QROPSAddressPage.nextPage(mode, updatedAnswers))
+                case Left(err)   => onFailureRedirect(err)
               }
           }
       )

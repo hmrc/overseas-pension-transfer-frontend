@@ -18,7 +18,7 @@ package controllers.viewandamend
 
 import base.SpecBase
 import models.responses.UserAnswersErrorResponse
-import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, SrnNumber, TransferId, UserAnswers}
+import models.{AmendCheckMode, FinalCheckMode, PstrNumber, QtStatus, SrnNumber, TransferId}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -26,7 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,11 +41,7 @@ import views.html.viewandamend.ViewSubmittedView
 import java.time.Clock
 import scala.concurrent.Future
 
-class ViewAmendSubmittedControllerSpec
-    extends AnyFreeSpec
-    with SpecBase
-    with MockitoSugar
-    with SummaryListFluency {
+class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with SummaryListFluency {
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockLockService        = mock[LockService]
@@ -56,7 +52,6 @@ class ViewAmendSubmittedControllerSpec
   private def schemeSummaryList =
     SummaryListViewModel(
       SchemeDetailsSummary.rows(
-        FinalCheckMode,
         schemeDetails.schemeName,
         formattedTestDateTransferSubmitted
       )(messages(applicationBuilder().build()))
@@ -122,7 +117,8 @@ class ViewAmendSubmittedControllerSpec
             bind[Clock].toInstance(clock)
           ).build()
 
-        val req    = FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber, pstr, qtStatus, versionNumber).url)
+        val req    =
+          FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber, pstr, qtStatus, versionNumber).url)
         val result = route(app, req).value
 
         val view = app.injector.instanceOf[ViewSubmittedView]
@@ -137,7 +133,7 @@ class ViewAmendSubmittedControllerSpec
           schemeManagerDetailsSummaryList,
           testQtNumber.value,
           testMemberName.fullName,
-          isAmend   = false,
+          isAmend = false,
           isChanged = false
         )(
           fakeIdentifierRequest(
@@ -164,7 +160,8 @@ class ViewAmendSubmittedControllerSpec
           .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
           .build()
 
-        val request = FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber, pstr, qtStatus, versionNumber).url)
+        val request =
+          FakeRequest(GET, routes.ViewAmendSubmittedController.view(testQtNumber, pstr, qtStatus, versionNumber).url)
         val result  = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -188,9 +185,13 @@ class ViewAmendSubmittedControllerSpec
             bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[LockService].toInstance(mockLockService),
             bind[SessionRepository].toInstance(mockSessionRepository)
-          ).build()
+          )
+          .build()
 
-        val request = FakeRequest(GET, routes.ViewAmendSubmittedController.fromDraft(testQtNumber, pstr, qtStatus, versionNumber).url)
+        val request = FakeRequest(
+          GET,
+          routes.ViewAmendSubmittedController.fromDraft(testQtNumber, pstr, qtStatus, versionNumber).url
+        )
         val result  = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -210,9 +211,13 @@ class ViewAmendSubmittedControllerSpec
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[LockService].toInstance(mockLockService)
-          ).build()
+          )
+          .build()
 
-        val request = FakeRequest(GET, routes.ViewAmendSubmittedController.fromDraft(testQtNumber, pstr, qtStatus, versionNumber).url)
+        val request = FakeRequest(
+          GET,
+          routes.ViewAmendSubmittedController.fromDraft(testQtNumber, pstr, qtStatus, versionNumber).url
+        )
         val result  = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -234,9 +239,13 @@ class ViewAmendSubmittedControllerSpec
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[LockService].toInstance(mockLockService)
-          ).build()
+          )
+          .build()
 
-        val request = FakeRequest(GET, routes.ViewAmendSubmittedController.fromDraft(testQtNumber, pstr, qtStatus, versionNumber).url)
+        val request = FakeRequest(
+          GET,
+          routes.ViewAmendSubmittedController.fromDraft(testQtNumber, pstr, qtStatus, versionNumber).url
+        )
         val result  = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -250,7 +259,8 @@ class ViewAmendSubmittedControllerSpec
 
       "return Ok with isChanged = true when local and external user answers differ" in {
         val localUserAnswers    = userAnswersMemberNameQtNumber
-        val externalUserAnswers = localUserAnswers.copy(data = localUserAnswers.data ++ play.api.libs.json.Json.obj("newField" -> "newValue"))
+        val externalUserAnswers =
+          localUserAnswers.copy(data = localUserAnswers.data ++ play.api.libs.json.Json.obj("newField" -> "newValue"))
 
         when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
           .thenReturn(Future.successful(Right(externalUserAnswers)))

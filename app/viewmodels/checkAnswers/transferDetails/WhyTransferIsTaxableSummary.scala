@@ -16,19 +16,22 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.WhyTransferIsTaxablePage
-import play.api.i18n.Messages
+import viewmodels.implicits._
+import controllers.transferDetails.routes
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object WhyTransferIsTaxableSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(WhyTransferIsTaxablePage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(
@@ -47,8 +50,8 @@ object WhyTransferIsTaxableSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "whyTransferIsTaxable.checkYourAnswersLabel",
-        value   = value,
+        key = "whyTransferIsTaxable.checkYourAnswersLabel",
+        value = value,
         actions = actions
       )
     }

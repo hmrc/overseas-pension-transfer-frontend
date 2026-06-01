@@ -19,8 +19,8 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.DateOfTransferFormProvider
-import models.{AmendCheckMode, NormalMode}
 import models.responses.UserAnswersErrorResponse
+import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,15 +29,14 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.DateOfTransferPage
 import play.api.i18n.Messages
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.transferDetails.DateOfTransferView
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
@@ -74,7 +73,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val view    = application.injector.instanceOf[DateOfTransferView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(form, NormalMode)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
         }
       }
 
@@ -90,7 +92,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val result  = route(application, getRequest).value
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(form.fill(today), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(form.fill(today), NormalMode)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
         }
       }
 
@@ -98,10 +103,14 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val originalDate = LocalDate.of(2025, 1, 25)
 
         val originalSubmission = emptyUserAnswers
-          .set(DateOfTransferPage, originalDate).success.value
+          .set(DateOfTransferPage, originalDate)
+          .success
+          .value
 
         val currentUserAnswers = emptyUserAnswers
-          .set(DateOfTransferPage, originalDate.minusDays(5)).success.value
+          .set(DateOfTransferPage, originalDate.minusDays(5))
+          .success
+          .value
 
         val mockUserAnswersService = mock[UserAnswersService]
         when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
@@ -122,7 +131,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val amendForm         = amendFormProvider(originalDate)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(amendForm.fill(originalDate.minusDays(5)), AmendCheckMode, isAmend = true)(
+          contentAsString(result) mustEqual view(
+            amendForm.fill(originalDate.minusDays(5)),
+            AmendCheckMode
+          )(
             fakeDisplayRequest(request),
             messages(application)
           ).toString
@@ -203,7 +215,10 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           val result = route(application, request).value
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+          contentAsString(result) mustEqual view(boundForm, NormalMode)(
+            fakeDisplayRequest(request),
+            messages(application)
+          ).toString
         }
       }
 
@@ -212,7 +227,9 @@ class DateOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val newDate      = originalDate.plusDays(1)
 
         val originalSubmission = emptyUserAnswers
-          .set(DateOfTransferPage, originalDate).success.value
+          .set(DateOfTransferPage, originalDate)
+          .success
+          .value
 
         val mockUserAnswersService = mock[UserAnswersService]
         when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))

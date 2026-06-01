@@ -17,9 +17,9 @@
 package forms.transferDetails
 
 import forms.mappings.Mappings
+import play.api.data.Forms.set
 import models.WhyTransferIsNotTaxable
 import play.api.data.Form
-import play.api.data.Forms.set
 
 import javax.inject.Inject
 

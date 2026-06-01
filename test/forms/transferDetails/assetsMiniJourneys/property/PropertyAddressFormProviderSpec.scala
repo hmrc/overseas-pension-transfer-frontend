@@ -44,7 +44,7 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -80,7 +80,7 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -115,7 +115,7 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -149,7 +149,7 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -183,7 +183,7 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -224,18 +224,19 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
       "GIR 0AA"
     )
 
-    "must bind valid postcodes" in {
+    "must bind valid postcodes" in
       forAll(validPostcodes) { postcode =>
-        val result = form.bind(Map(
-          "addressLine1" -> "1 Test Lane",
-          "addressLine2" -> "Test",
-          "countryCode"  -> "GB",
-          "postcode"     -> postcode
-        ))
+        val result = form.bind(
+          Map(
+            "addressLine1" -> "1 Test Lane",
+            "addressLine2" -> "Test",
+            "countryCode"  -> "GB",
+            "postcode"     -> postcode
+          )
+        )
         result.errors mustBe empty
         result.value.flatMap(_.postcode) mustBe Some(formatUkPostcode(postcode))
       }
-    }
 
     "must reject invalid postcodes" in {
       val invalidPostcodes = Table(
@@ -249,12 +250,14 @@ class PropertyAddressFormProviderSpec extends StringFieldBehaviours with Regex w
       )
 
       forAll(invalidPostcodes) { postcode =>
-        val result = form.bind(Map(
-          "addressLine1" -> "1 Test",
-          "addressLine2" -> "Test",
-          "countryCode"  -> "GB",
-          "postcode"     -> postcode
-        ))
+        val result = form.bind(
+          Map(
+            "addressLine1" -> "1 Test",
+            "addressLine2" -> "Test",
+            "countryCode"  -> "GB",
+            "postcode"     -> postcode
+          )
+        )
         result.errors must not be empty
         result.errors.exists(_.message == "membersLastUKAddress.error.postcode.incorrect") mustBe true
       }

@@ -17,10 +17,10 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import play.api.mvc.Call
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models._
 
 import scala.util.Try
 
@@ -39,11 +39,11 @@ case object MemberDoesNotHaveNinoPage extends QuestionPage[String] {
   final def changeLink(mode: Mode): Call =
     routes.MemberDoesNotHaveNinoController.onPageLoad(mode)
 
-  override def cleanup(memberDoesNotHaveNinoPage: Option[String], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(memberDoesNotHaveNinoPage: Option[String], userAnswers: UserAnswers): Try[UserAnswers] =
     memberDoesNotHaveNinoPage match {
-      case Some(_) => userAnswers
+      case Some(_) =>
+        userAnswers
           .remove(MemberNinoPage)
       case _       => super.cleanup(memberDoesNotHaveNinoPage, userAnswers)
     }
-  }
 }

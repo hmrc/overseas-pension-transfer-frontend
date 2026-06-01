@@ -16,13 +16,14 @@
 
 package viewmodels
 
-import cats.data.Validated.{Invalid, Valid}
-import models.taskList.TaskStatus
 import models.taskList.TaskStatus._
-import models.{Mode, NormalMode, TaskCategory, UserAnswers}
-import play.api.i18n.Messages
-import play.api.mvc.Call
 import validators._
+import models.taskList.TaskStatus
+import models._
+import play.api.i18n.Messages
+import cats.data.Validated.Invalid
+import cats.data.Validated.Valid
+import play.api.mvc.Call
 
 trait TaskJourneyViewModel {
   def category: TaskCategory
@@ -82,7 +83,7 @@ object TaskJourneyViewModels {
     def start(m: Mode): Call = controllers.transferDetails.routes.OverseasTransferAllowanceController.onPageLoad(m)
     def cya(): Call          = controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad()
 
-    override def status(userAnswers: UserAnswers): TaskStatus = {
+    override def status(userAnswers: UserAnswers): TaskStatus =
       MemberDetailsJourneyViewModel.status(userAnswers) match {
         case Completed | InProgress =>
           TransferDetailsValidator.fromUserAnswers(userAnswers) match {
@@ -96,7 +97,6 @@ object TaskJourneyViewModels {
           }
         case _                      => CannotStart
       }
-    }
   }
 
   case object QropsDetailsJourneyViewModel extends TaskJourneyViewModel {

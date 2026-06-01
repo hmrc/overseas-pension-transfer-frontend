@@ -16,31 +16,29 @@
 
 package viewmodels
 
-import models.taskList.TaskStatus
-import models.{SessionData, UserAnswers}
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases._
+import models.UserAnswers
+import play.api.i18n.Messages
 
 object TaskListViewModel {
 
-  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[TaskListItem] = {
+  def rows(userAnswers: UserAnswers)(implicit messages: Messages): Seq[TaskListItem] =
     TaskJourneyViewModels.valuesWithoutSubmissionJourney.map { journey =>
       TaskTileViewModel(
-        id       = journey.id,
+        id = journey.id,
         linkText = journey.linkText(userAnswers),
-        link     = journey.entry(userAnswers),
-        status   = journey.status(userAnswers)
+        link = journey.entry(userAnswers),
+        status = journey.status(userAnswers)
       ).toTaskListItem
     }
-  }
 
   def submissionRow(userAnswers: UserAnswers)(implicit messages: Messages): TaskListItem = {
     val journey = TaskJourneyViewModels.SubmissionDetailsJourneyViewModel
     TaskTileViewModel(
-      id       = journey.id,
+      id = journey.id,
       linkText = messages(journey.linkTextKey),
-      link     = journey.entry(userAnswers),
-      status   = journey.status(userAnswers)
+      link = journey.entry(userAnswers),
+      status = journey.status(userAnswers)
     ).toTaskListItem
   }
 }

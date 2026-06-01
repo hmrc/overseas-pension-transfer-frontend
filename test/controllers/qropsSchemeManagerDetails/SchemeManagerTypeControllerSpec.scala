@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.qropsSchemeManagerDetails.SchemeManagerTypeFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, SessionData, UserAnswers}
+import models.{CheckMode, NormalMode, PersonName, SchemeManagerType, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,8 +30,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.{SchemeManagerTypePage, SchemeManagersNamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
+import play.api.test.Helpers.*
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.qropsSchemeManagerDetails.SchemeManagerTypeView
@@ -59,7 +58,10 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val view = application.injector.instanceOf[SchemeManagerTypeView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -131,16 +133,22 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(CheckMode).url
+        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController
+          .onPageLoad(CheckMode)
+          .url
       }
     }
 
     "must remove previous data if SchemeManagerType changes" in {
-      implicit val hc: HeaderCarrier = HeaderCarrier()
-      val mngrName                   = PersonName("FirstNameMngr", "LastNameMngr")
-      val previousAnswers            = emptyUserAnswers
-        .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-        .set(SchemeManagersNamePage, mngrName).success.value
+      HeaderCarrier()
+      val mngrName        = PersonName("FirstNameMngr", "LastNameMngr")
+      val previousAnswers = emptyUserAnswers
+        .set(SchemeManagerTypePage, SchemeManagerType.Individual)
+        .success
+        .value
+        .set(SchemeManagersNamePage, mngrName)
+        .success
+        .value
 
       val mockUserAnswersService = mock[UserAnswersService]
 
@@ -161,7 +169,9 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual routes.SchemeManagerOrganisationNameController
+          .onPageLoad(NormalMode)
+          .url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockUserAnswersService).setExternalUserAnswers(captor.capture(), any())(any)
@@ -187,7 +197,10 @@ class SchemeManagerTypeControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

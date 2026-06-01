@@ -50,9 +50,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
   "refine" - {
     "return Right of SchemeData request" - {
       "when authenticatedUser has NO existing pensionSchemeDetails and checkAssociation returns true" in {
-        val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj("srnNumber" -> "S1234567", "pstrNumber" -> "12345678AB", "schemeName" -> "Scheme Name"))
+        val dataJson = Json.obj(
+          "pensionSchemeDetails" -> Json
+            .obj("srnNumber" -> "S1234567", "pstrNumber" -> "12345678AB", "schemeName" -> "Scheme Name")
+        )
 
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData.create("id", now).copy(data = dataJson)))
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(
+          Some(DashboardData.create("id", now).copy(data = dataJson))
+        )
         when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
 
         val identifierRequest = IdentifierRequest(
@@ -64,23 +69,23 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           )
         )
 
-        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+        val refine =
+          new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-        refine.map {
-          request =>
-            request.authenticatedUser mustBe
-              PsaUser(
-                PsaId("psaId"),
-                "internalId",
-                affinityGroup = Individual
-              )
+        refine.map { request =>
+          request.authenticatedUser mustBe
+            PsaUser(
+              PsaId("psaId"),
+              "internalId",
+              affinityGroup = Individual
+            )
 
-            request.schemeDetails mustBe
-              PensionSchemeDetails(
-                SrnNumber("S1234567"),
-                PstrNumber("12345678AB"),
-                "Scheme Name"
-              )
+          request.schemeDetails mustBe
+            PensionSchemeDetails(
+              SrnNumber("S1234567"),
+              PstrNumber("12345678AB"),
+              "Scheme Name"
+            )
         }
       }
 
@@ -95,12 +100,12 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           )
         )
 
-        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+        val refine =
+          new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-        refine.map {
-          request =>
-            request.authenticatedUser mustBe
-              identifierRequest.authenticatedUser
+        refine.map { request =>
+          request.authenticatedUser mustBe
+            identifierRequest.authenticatedUser
         }
       }
 
@@ -112,7 +117,9 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
 
         when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
         when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
-        when(mockPensionSchemeConnector.getSchemeDetails(any(), any())(any())) thenReturn Future.successful(Right(schemeResponse))
+        when(mockPensionSchemeConnector.getSchemeDetails(any(), any())(any())) thenReturn Future.successful(
+          Right(schemeResponse)
+        )
 
         val identifierRequest = IdentifierRequest(
           FakeRequest("GET", "/start?srn=S1234567"),
@@ -123,23 +130,23 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           )
         )
 
-        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+        val refine =
+          new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-        refine.map {
-          request =>
-            request.authenticatedUser mustBe
-              PsaUser(
-                PsaId("psaId"),
-                "internalId",
-                affinityGroup = Individual
-              )
+        refine.map { request =>
+          request.authenticatedUser mustBe
+            PsaUser(
+              PsaId("psaId"),
+              "internalId",
+              affinityGroup = Individual
+            )
 
-            request.schemeDetails mustBe
-              PensionSchemeDetails(
-                SrnNumber("S1234567"),
-                PstrNumber("12345678AB"),
-                "Scheme Name"
-              )
+          request.schemeDetails mustBe
+            PensionSchemeDetails(
+              SrnNumber("S1234567"),
+              PstrNumber("12345678AB"),
+              "Scheme Name"
+            )
         }
       }
 
@@ -149,7 +156,8 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
       val schemeDetails = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
       val dashboardData =
-        DashboardData.create("id", now)
+        DashboardData
+          .create("id", now)
           .set(PensionSchemeDetailsQuery, schemeDetails)
           .success
           .value
@@ -166,12 +174,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
         )
       )
 
-      val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+      val refine =
+        new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-      refine.left.map {
-        result =>
-          result.header.status mustBe SEE_OTHER
-          result.header.headers.get("Location") mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
+      refine.left.map { result =>
+        result.header.status mustBe SEE_OTHER
+        result.header.headers.get("Location") mustBe Some(
+          controllers.auth.routes.UnauthorisedController.onPageLoad().url
+        )
       }
     }
 
@@ -179,7 +189,9 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
       "when there is no srn found" in {
         val dataJson = Json.obj("pensionSchemeDetails" -> Json.obj())
 
-        when(mockSessionRepository.get(any())) thenReturn Future.successful(Some(DashboardData.create("id", now).copy(data = dataJson)))
+        when(mockSessionRepository.get(any())) thenReturn Future.successful(
+          Some(DashboardData.create("id", now).copy(data = dataJson))
+        )
 
         val identifierRequest = IdentifierRequest(
           FakeRequest(),
@@ -190,12 +202,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           )
         )
 
-        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+        val refine =
+          new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-        refine.left.map {
-          result =>
-            result.header.status mustBe SEE_OTHER
-            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        refine.left.map { result =>
+          result.header.status mustBe SEE_OTHER
+          result.header.headers.get("Location") mustBe Some(
+            controllers.routes.JourneyRecoveryController.onPageLoad().url
+          )
         }
       }
 
@@ -212,12 +226,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
             )
           )
 
-        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+        val refine =
+          new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-        refine.left.map {
-          result =>
-            result.header.status mustBe SEE_OTHER
-            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        refine.left.foreach { result =>
+          result.header.status mustBe SEE_OTHER
+          result.header.headers.get("Location") mustBe Some(
+            controllers.routes.JourneyRecoveryController.onPageLoad().url
+          )
         }
       }
 
@@ -234,19 +250,23 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           )
         )
 
-        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+        val refine =
+          new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-        refine.left.map {
-          result =>
-            result.header.status mustBe SEE_OTHER
-            result.header.headers.get("Location") mustBe Some(controllers.auth.routes.UnauthorisedController.onPageLoad().url)
+        refine.left.map { result =>
+          result.header.status mustBe SEE_OTHER
+          result.header.headers.get("Location") mustBe Some(
+            controllers.auth.routes.UnauthorisedController.onPageLoad().url
+          )
         }
       }
 
       "when dashboard data returns none but On Ramp request provides Srn and isAssociated returns true and getSchemeDetails returns a Left" in {
         when(mockSessionRepository.get(any())) thenReturn Future.successful(None)
         when(mockPensionSchemeConnector.checkAssociation(any(), any())(any())) thenReturn Future.successful(true)
-        when(mockPensionSchemeConnector.getSchemeDetails(any(), any())(any())) thenReturn Future.successful(Left(PensionSchemeErrorResponse("Error", None)))
+        when(mockPensionSchemeConnector.getSchemeDetails(any(), any())(any())) thenReturn Future.successful(
+          Left(PensionSchemeErrorResponse("Error", None))
+        )
 
         val identifierRequest = IdentifierRequest(
           FakeRequest("GET", "/start?srn=S1234567"),
@@ -257,12 +277,14 @@ class SchemeDataActionSpec extends AnyFreeSpec with SpecBase {
           )
         )
 
-        val refine = new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
+        val refine =
+          new Harness(mockPensionSchemeConnector, mockSessionRepository).callRefine(identifierRequest).futureValue
 
-        refine.left.map {
-          result =>
-            result.header.status mustBe SEE_OTHER
-            result.header.headers.get("Location") mustBe Some(controllers.routes.JourneyRecoveryController.onPageLoad().url)
+        refine.left.map { result =>
+          result.header.status mustBe SEE_OTHER
+          result.header.headers.get("Location") mustBe Some(
+            controllers.routes.JourneyRecoveryController.onPageLoad().url
+          )
         }
       }
     }

@@ -16,76 +16,84 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
-import controllers.helpers.ErrorHandling
-import forms.transferDetails.IsTransferTaxableFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers}
-import models.TaskCategory.TransferDetails
-import org.apache.pekko.Done
-import pages.transferDetails.{AmountOfTransferPage, IsTransferTaxablePage}
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
-import services.{TaskService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
 import views.html.transferDetails.IsTransferTaxableView
+import forms.transferDetails.IsTransferTaxableFormProvider
+import controllers.helpers.ErrorHandling
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
+import org.apache.pekko.Done
+import play.api.data.Form
+import models.TaskCategory.TransferDetails
+import pages.transferDetails.IsTransferTaxablePage
+import services.TaskService
+import services.UserAnswersService
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.Try
 
+import javax.inject.Inject
+
 class IsTransferTaxableController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: IsTransferTaxableFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: IsTransferTaxableView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: IsTransferTaxableFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IsTransferTaxableView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(IsTransferTaxablePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(IsTransferTaxablePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              request.userAnswers.set(IsTransferTaxablePage, value) flatMap {
-                answers =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                request.userAnswers.set(IsTransferTaxablePage, value) flatMap { answers =>
                   answers.remove(TransferDetailsRecordVersionQuery)
+                }
+              } else {
+                request.userAnswers.set(IsTransferTaxablePage, value)
               }
-            } else {
-              request.userAnswers.set(IsTransferTaxablePage, value)
-            }
 
-          for {
-            ua1           <- Future.fromTry(setAnswers())
-            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
-            savedForLater <- userAnswersService.setExternalUserAnswers(ua2, request.sessionData.schemeInformation.srnNumber)
-          } yield {
-            savedForLater match {
+            for {
+              ua1           <- Future.fromTry(setAnswers())
+              ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, ua1, taskCategory = TransferDetails))
+              savedForLater <-
+                userAnswersService.setExternalUserAnswers(ua2, request.sessionData.schemeInformation.srnNumber)
+            } yield savedForLater match {
               case Right(Done) => Redirect(IsTransferTaxablePage.nextPage(mode, ua2))
               case Left(err)   => onFailureRedirect(err)
             }
           }
-        }
-      )
+        )
   }
 }

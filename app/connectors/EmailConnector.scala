@@ -17,21 +17,26 @@
 package connectors
 
 import config.FrontendAppConfig
-import connectors.parsers.EmailHttpParser._
-import models.email.{EmailNotSent, EmailSendingResult, EmailToSendRequest}
+import play.api.libs.ws.writeableOf_JsValue
+import uk.gov.hmrc.http._
+import models.email.EmailNotSent
+import models.email.EmailSendingResult
+import models.email.EmailToSendRequest
 import play.api.Logging
 import play.api.libs.json.Json
-import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{BadGatewayException, GatewayTimeoutException, HeaderCarrier, StringContextOps}
+import connectors.parsers.EmailHttpParser._
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class EmailConnector @Inject() (appConfig: FrontendAppConfig, httpClientV2: HttpClientV2) extends Logging {
 
-  def send(email: EmailToSendRequest)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[EmailSendingResult] = {
+  def send(email: EmailToSendRequest)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[EmailSendingResult] =
     httpClientV2.post(url"${appConfig.emailService}").withBody(Json.toJson(email)).execute[EmailSendingResult].recover {
       case e: BadGatewayException     =>
         logger.warn(s"[EmailConnector][send] Error sending email: ${e.message}")
@@ -40,5 +45,4 @@ class EmailConnector @Inject() (appConfig: FrontendAppConfig, httpClientV2: Http
         logger.warn(s"[EmailConnector][send] Gateway timed out: ${e.message}")
         EmailNotSent
     }
-  }
 }

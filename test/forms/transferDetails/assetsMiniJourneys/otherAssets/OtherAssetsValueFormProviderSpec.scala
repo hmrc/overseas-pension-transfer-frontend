@@ -35,7 +35,8 @@ class OtherAssetsValueFormProviderSpec extends CurrencyFieldBehaviours {
     val maximum = maxCurrency
 
     val validDataGenerator =
-      Gen.choose[BigDecimal](minimum, maximum)
+      Gen
+        .choose[BigDecimal](minimum, maximum)
         .map(_.setScale(2, RoundingMode.HALF_UP))
         .map(_.toString)
 

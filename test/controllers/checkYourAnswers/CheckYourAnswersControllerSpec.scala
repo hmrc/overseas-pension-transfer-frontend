@@ -22,9 +22,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty, GET, POST}
+import play.api.test.Helpers.{GET, POST, contentAsString, defaultAwaitTimeout, redirectLocation, route, status, writeableOf_AnyContentAsEmpty}
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.SummaryListFluency
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.checkYourAnswers.CheckYourAnswersView
 
@@ -35,7 +34,9 @@ class CheckYourAnswersControllerSpec extends AnyFreeSpec with SpecBase with Mock
   private lazy val checkYourAnswersRoute = routes.CheckYourAnswersController.onPageLoad().url
 
   val memberDetailsSummaryList        = SummaryListViewModel(Seq.empty)
-  val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, emptyUserAnswers)(messages(application)))
+  val transferDetailsSummaryList      = SummaryListViewModel(
+    TransferDetailsSummary.rows(FinalCheckMode, emptyUserAnswers)(messages(application))
+  )
   val qropsDetailsSummaryList         = SummaryListViewModel(Seq.empty)
   val schemeManagerDetailsSummaryList = SummaryListViewModel(Seq.empty)
 

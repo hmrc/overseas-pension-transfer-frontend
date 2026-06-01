@@ -16,9 +16,10 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
-import models.{Mode, SessionData, UserAnswers}
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 
 object OtherAssetsSummary {
 

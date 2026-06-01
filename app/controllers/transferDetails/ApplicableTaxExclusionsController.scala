@@ -16,68 +16,73 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
-import forms.transferDetails.ApplicableTaxExclusionsFormProvider
-import models.{AmendCheckMode, ApplicableTaxExclusions, Mode, UserAnswers}
-import pages.transferDetails.ApplicableTaxExclusionsPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
-import repositories.SessionRepository
-import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
 import views.html.transferDetails.ApplicableTaxExclusionsView
+import forms.transferDetails.ApplicableTaxExclusionsFormProvider
+import models._
+import play.api.data.Form
+import pages.transferDetails.ApplicableTaxExclusionsPage
+import services.UserAnswersService
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.Try
 
+import javax.inject.Inject
+
 class ApplicableTaxExclusionsController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: ApplicableTaxExclusionsFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: ApplicableTaxExclusionsView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: ApplicableTaxExclusionsFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: ApplicableTaxExclusionsView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[Set[ApplicableTaxExclusions]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(ApplicableTaxExclusionsPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(ApplicableTaxExclusionsPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              request.userAnswers.set(ApplicableTaxExclusionsPage, value) flatMap {
-                answers =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                request.userAnswers.set(ApplicableTaxExclusionsPage, value) flatMap { answers =>
                   answers.remove(TransferDetailsRecordVersionQuery)
+                }
+              } else {
+                request.userAnswers.set(ApplicableTaxExclusionsPage, value)
               }
-            } else {
-              request.userAnswers.set(ApplicableTaxExclusionsPage, value)
-            }
 
-          for {
-            updatedAnswers <- Future.fromTry(setAnswers())
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield Redirect(ApplicableTaxExclusionsPage.nextPage(mode, updatedAnswers))
-        }
-      )
+            for {
+              updatedAnswers <- Future.fromTry(setAnswers())
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield Redirect(ApplicableTaxExclusionsPage.nextPage(mode, updatedAnswers))
+          }
+        )
   }
 }

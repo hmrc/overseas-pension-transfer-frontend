@@ -22,15 +22,17 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.qropsSchemeManagerDetails.SchemeManagerDetailsCYAView
 
 class SchemeManagerDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
-  private lazy val onPageLoadRoute = controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad().url
-  private lazy val onSubmitRoute   = controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onSubmit().url
+  private lazy val onPageLoadRoute =
+    controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onPageLoad().url
+  private lazy val onSubmitRoute   =
+    controllers.qropsSchemeManagerDetails.routes.SchemeManagerDetailsCYAController.onSubmit().url
 
   "SchemeManagerDetailsCYAController" - {
 

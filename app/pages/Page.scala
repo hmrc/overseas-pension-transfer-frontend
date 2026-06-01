@@ -16,10 +16,10 @@
 
 package pages
 
-import controllers.checkYourAnswers.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
 import play.api.mvc.Call
+import controllers.checkYourAnswers.routes
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
+import models._
 
 import scala.language.implicitConversions
 

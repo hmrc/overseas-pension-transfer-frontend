@@ -18,11 +18,8 @@ package pages.transferDetails
 
 import base.SpecBase
 import controllers.transferDetails.routes
-import models.ApplicableTaxExclusions.Occupational
-import models.WhyTransferIsNotTaxable.{IndividualIsEmployedPublicService, IndividualIsEmployeeOccupational}
 import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
-import models.{AmendCheckMode, ApplicableTaxExclusions, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers, WhyTransferIsNotTaxable}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
+import models.{AmendCheckMode, ApplicableTaxExclusions, CheckMode, FinalCheckMode, NormalMode, UserAnswers, WhyTransferIsNotTaxable}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -34,48 +31,62 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to why transfer is taxable page if user selects true" in {
         val ua = emptyUserAnswers.set(IsTransferTaxablePage, true).success.value
-        IsTransferTaxablePage.nextPage(NormalMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(NormalMode)
+        IsTransferTaxablePage.nextPage(NormalMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(
+          NormalMode
+        )
       }
 
       "must go to why transfer is not taxable page if user selects false" in {
         val ua = emptyUserAnswers.set(IsTransferTaxablePage, false).success.value
-        IsTransferTaxablePage.nextPage(NormalMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(NormalMode)
+        IsTransferTaxablePage.nextPage(NormalMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(
+          NormalMode
+        )
       }
     }
 
     "in Check Mode" - {
       "must go to why transfer is taxable page if user selects true" in {
         val ua = emptyUserAnswers.set(IsTransferTaxablePage, true).success.value
-        IsTransferTaxablePage.nextPage(CheckMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(CheckMode)
+        IsTransferTaxablePage.nextPage(CheckMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(
+          CheckMode
+        )
       }
 
       "must go to why transfer is not taxable page if user selects false" in {
         val ua = emptyUserAnswers.set(IsTransferTaxablePage, false).success.value
-        IsTransferTaxablePage.nextPage(CheckMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(CheckMode)
+        IsTransferTaxablePage.nextPage(CheckMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(
+          CheckMode
+        )
       }
     }
 
     "in FinalCheckMode" - {
       "must go to why transfer is taxable page if user selects true" in {
         val ua = emptyUserAnswers.set(IsTransferTaxablePage, true).success.value
-        IsTransferTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(FinalCheckMode)
+        IsTransferTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(
+          FinalCheckMode
+        )
       }
 
       "must go to why transfer is not taxable page if user selects false" in {
         val ua = emptyUserAnswers.set(IsTransferTaxablePage, false).success.value
-        IsTransferTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(FinalCheckMode)
+        IsTransferTaxablePage.nextPage(FinalCheckMode, ua) mustEqual routes.WhyTransferIsNotTaxableController
+          .onPageLoad(FinalCheckMode)
       }
     }
 
     "in AmendCheckMode" - {
       "must go to why transfer is taxable page if user selects true" in {
         val ua = emptyUserAnswers.set(IsTransferTaxablePage, true).success.value
-        IsTransferTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(AmendCheckMode)
+        IsTransferTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.WhyTransferIsTaxableController.onPageLoad(
+          AmendCheckMode
+        )
       }
 
       "must go to why transfer is not taxable page if user selects false" in {
         val ua = emptyUserAnswers.set(IsTransferTaxablePage, false).success.value
-        IsTransferTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.WhyTransferIsNotTaxableController.onPageLoad(AmendCheckMode)
+        IsTransferTaxablePage.nextPage(AmendCheckMode, ua) mustEqual routes.WhyTransferIsNotTaxableController
+          .onPageLoad(AmendCheckMode)
       }
     }
 
@@ -86,10 +97,13 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBase 
       val emptyUA = emptyUserAnswers.set(OverseasTransferAllowancePage, BigDecimal(100)).success.value
 
       val result =
-        IsTransferTaxablePage.cleanup(
-          Some(true),
-          emptyUA.set(WhyTransferIsNotTaxablePage, WhyTransferIsNotTaxable.values.toSet).success.value
-        ).success.value
+        IsTransferTaxablePage
+          .cleanup(
+            Some(true),
+            emptyUA.set(WhyTransferIsNotTaxablePage, WhyTransferIsNotTaxable.values.toSet).success.value
+          )
+          .success
+          .value
 
       result mustBe emptyUA
     }
@@ -99,10 +113,18 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       val userAnswersWithYesJourney =
         emptyUA
-          .set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
-          .set(ApplicableTaxExclusionsPage, ApplicableTaxExclusions.values.toSet).success.value
-          .set(AmountOfTaxDeductedPage, BigDecimal(100)).success.value
-          .set(NetTransferAmountPage, BigDecimal(100)).success.value
+          .set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance)
+          .success
+          .value
+          .set(ApplicableTaxExclusionsPage, ApplicableTaxExclusions.values.toSet)
+          .success
+          .value
+          .set(AmountOfTaxDeductedPage, BigDecimal(100))
+          .success
+          .value
+          .set(NetTransferAmountPage, BigDecimal(100))
+          .success
+          .value
 
       val result = IsTransferTaxablePage.cleanup(Some(false), userAnswersWithYesJourney).success.value
 
@@ -114,9 +136,15 @@ class IsTransferTaxablePageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       val userAnswersWithYesJourney =
         emptyUA
-          .set(WhyTransferIsTaxablePage, NoExclusion).success.value
-          .set(AmountOfTaxDeductedPage, BigDecimal(100)).success.value
-          .set(NetTransferAmountPage, BigDecimal(100)).success.value
+          .set(WhyTransferIsTaxablePage, NoExclusion)
+          .success
+          .value
+          .set(AmountOfTaxDeductedPage, BigDecimal(100))
+          .success
+          .value
+          .set(NetTransferAmountPage, BigDecimal(100))
+          .success
+          .value
 
       val result = IsTransferTaxablePage.cleanup(Some(false), userAnswersWithYesJourney).success.value
 

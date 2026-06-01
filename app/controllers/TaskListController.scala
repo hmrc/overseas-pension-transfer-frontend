@@ -16,49 +16,56 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import controllers.helpers.ErrorHandling
-import models.{SessionData, TransferId}
-import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
 import play.api.mvc._
+import views.html.TaskListView
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import play.api.libs.json.Json
+import models.SessionData
+import models.TransferId
 import repositories.SessionRepository
+import controllers.helpers.ErrorHandling
+import play.api.i18n.I18nSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.TaskListViewModel
-import views.html.TaskListView
 
-import java.time.{Clock, Instant}
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
+import java.time.Clock
+import java.time.Instant
+import javax.inject.Inject
+
 class TaskListController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    sessionRepository: SessionRepository,
-    view: TaskListView,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  val controllerComponents: MessagesControllerComponents,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  sessionRepository: SessionRepository,
+  view: TaskListView,
+  clock: Clock
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
     Ok(view(TaskListViewModel.rows(request.userAnswers), TaskListViewModel.submissionRow(request.userAnswers)))
   }
 
-  def fromDashboard(transferId: TransferId): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
-    val newSession = SessionData(
-      request.authenticatedUser.internalId,
-      transferId,
-      request.schemeDetails,
-      request.authenticatedUser,
-      Json.obj(),
-      Instant.now(clock)
-    )
+  def fromDashboard(transferId: TransferId): Action[AnyContent] = (identify andThen schemeData).async {
+    implicit request =>
+      val newSession = SessionData(
+        request.authenticatedUser.internalId,
+        transferId,
+        request.schemeDetails,
+        request.authenticatedUser,
+        Json.obj(),
+        Instant.now(clock)
+      )
 
-    sessionRepository.set(newSession) map {
-      _ =>
+      sessionRepository.set(newSession) map { _ =>
         Redirect(controllers.routes.TaskListController.onPageLoad())
-    }
+      }
   }
 }

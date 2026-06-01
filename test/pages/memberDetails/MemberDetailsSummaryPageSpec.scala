@@ -18,7 +18,7 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.routes
-import models.{NormalMode, PstrNumber, UserAnswers}
+import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 

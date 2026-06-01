@@ -16,16 +16,19 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.{Mode, UserAnswers}
+import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
 import pages.memberDetails.MemberHasEverBeenResidentUKPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object MemberHasEverBeenResidentUKSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(MemberHasEverBeenResidentUKPage).map { answer =>
       val value = if (answer) "site.yes" else "site.no"
 
@@ -40,8 +43,8 @@ object MemberHasEverBeenResidentUKSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "memberHasEverBeenResidentUK.checkYourAnswersLabel",
-        value   = ValueViewModel(value),
+        key = "memberHasEverBeenResidentUK.checkYourAnswersLabel",
+        value = ValueViewModel(value),
         actions = actions
       )
     }

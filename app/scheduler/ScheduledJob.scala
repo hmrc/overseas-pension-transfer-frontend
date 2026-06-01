@@ -16,10 +16,12 @@
 
 package scheduler
 
-import org.apache.pekko.actor.{ActorRef, ActorSystem}
 import org.apache.pekko.extension.quartz.QuartzSchedulerExtension
-import play.api.{Configuration, Logging}
 import scheduler.SchedulingActor.ScheduledMessage
+import org.apache.pekko.actor.ActorRef
+import org.apache.pekko.actor.ActorSystem
+import play.api.Configuration
+import play.api.Logging
 
 trait ScheduledJob extends Logging {
 
@@ -36,10 +38,10 @@ trait ScheduledJob extends Logging {
 
   lazy val description: Option[String] = config.getOptional[String](s"schedules.$jobName.description")
 
-  lazy val expression: String = config.getOptional[String](s"schedules.$jobName.expression") map (_.replaceAll("_", " ")) getOrElse ""
+  lazy val expression: String =
+    config.getOptional[String](s"schedules.$jobName.expression") map (_.replaceAll("_", " ")) getOrElse ""
 
-  lazy val schedule: Unit = {
-
+  lazy val schedule: Unit =
     (enabled, expression.nonEmpty) match {
       case (true, true)  =>
         scheduler.createSchedule(jobName, description, expression)
@@ -50,7 +52,5 @@ trait ScheduledJob extends Logging {
       case (false, _)    =>
         logger.info(s"Scheduler for $jobName is disabled by configuration")
     }
-
-  }
 
 }

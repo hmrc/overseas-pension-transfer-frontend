@@ -16,12 +16,12 @@
 
 package pages.transferDetails
 
+import services.AssetsMiniJourneyService
+import play.api.mvc.Call
 import controllers.transferDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SessionData, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
-import services.AssetsMiniJourneyService
+import models._
 
 import scala.util.Try
 
@@ -59,7 +59,11 @@ case object IsTransferCashOnlyPage extends QuestionPage[Boolean] {
       case _           => controllers.routes.JourneyRecoveryController.onPageLoad()
     }
 
-  def cleanup(maybeTransferIsCashOnly: Option[Boolean], userAnswers: UserAnswers, sessionData: SessionData): Try[UserAnswers] =
+  def cleanup(
+    maybeTransferIsCashOnly: Option[Boolean],
+    userAnswers: UserAnswers,
+    sessionData: SessionData
+  ): Try[UserAnswers] =
     maybeTransferIsCashOnly match {
       case Some(true) =>
         AssetsMiniJourneyService.clearAllAssetCompletionFlags(sessionData)

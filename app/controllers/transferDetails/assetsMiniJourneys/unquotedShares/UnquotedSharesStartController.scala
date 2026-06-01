@@ -16,27 +16,30 @@
 
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.actions._
-import models.{Mode, NormalMode}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartView
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
+import models.Mode
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartPage
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 
 class UnquotedSharesStartController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: UnquotedSharesStartView
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: UnquotedSharesStartView
+) extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      Ok(view(UnquotedSharesStartPage.nextPage(mode, request.userAnswers).url))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    Ok(view(UnquotedSharesStartPage.nextPage(mode, request.userAnswers).url))
   }
 }

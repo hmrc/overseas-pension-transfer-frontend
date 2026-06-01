@@ -17,54 +17,62 @@
 package services
 
 import config.Constants.dMMMMyyyy
-import config.FrontendAppConfig
+import queries.DateSubmittedQuery
+import queries.QtNumberQuery
 import connectors.EmailConnector
-import models.email.{EmailAccepted, EmailToSendRequest, SubmissionConfirmation}
-import models.{MinimalDetails, SessionData}
-import pages.memberDetails.MemberNamePage
+import config.FrontendAppConfig
 import play.api.Logging
-import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.http.HeaderCarrier
+import models.MinimalDetails
+import models.SessionData
+import pages.memberDetails.MemberNamePage
+import models.email.EmailAccepted
+import models.email.EmailToSendRequest
+import models.email.SubmissionConfirmation
 
-import java.time.format.DateTimeFormatter
-import java.time.{Instant, LocalDateTime, ZoneId}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.Locale
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import java.time.format.DateTimeFormatter
+import javax.inject.Inject
+import javax.inject.Singleton
 
 sealed trait EmailServiceError
 
-case object MinimalDetailsError         extends EmailServiceError
-case object SessionDataError            extends EmailServiceError
+case object MinimalDetailsError extends EmailServiceError
+case object SessionDataError extends EmailServiceError
 case class DownstreamError(err: String) extends EmailServiceError
 
 sealed trait EmailSuccess
 
-case object EmailSentSuccess    extends EmailSuccess
+case object EmailSentSuccess extends EmailSuccess
 // EmailNotSentSuccess is returned when the submission email is disabled in the config
 case object EmailNotSentSuccess extends EmailSuccess
 
 @Singleton
 class EmailService @Inject() (
-    emailConnector: EmailConnector
-  )(implicit executionContext: ExecutionContext,
-    appConfig: FrontendAppConfig
-  ) extends Logging {
+  emailConnector: EmailConnector
+)(implicit executionContext: ExecutionContext, appConfig: FrontendAppConfig)
+    extends Logging {
 
   def sendConfirmationEmail(
-      sessionData: SessionData,
-      minimalDetails: MinimalDetails
-    )(implicit hc: HeaderCarrier
-    ): Future[Either[EmailServiceError, EmailSuccess]] = {
+    sessionData: SessionData,
+    minimalDetails: MinimalDetails
+  )(implicit hc: HeaderCarrier): Future[Either[EmailServiceError, EmailSuccess]] = {
     val emailAddress   = minimalDetails.email
     val schemeName     = sessionData.schemeInformation.schemeName
     val maybeSubmitter = minimalDetails.organisationName.orElse(minimalDetails.individualDetails.map(_.fullName))
-    val sessionDataGet = (sessionData.get(QtNumberQuery), sessionData.get(MemberNamePage), sessionData.get(DateSubmittedQuery))
+    val sessionDataGet =
+      (sessionData.get(QtNumberQuery), sessionData.get(MemberNamePage), sessionData.get(DateSubmittedQuery))
     sessionDataGet match {
       case (Some(qtRef), Some(memberName), Some(dateSubmitted)) =>
         maybeSubmitter match {
           case Some(submitter) =>
-            val emailParameters = {
+            val emailParameters =
               SubmissionConfirmation(
                 qtRef.value,
                 memberName.fullName,
@@ -72,15 +80,18 @@ class EmailService @Inject() (
                 format(dateSubmitted),
                 schemeName
               )
-            }
-            emailConnector.send(EmailToSendRequest(
-              List(emailAddress),
-              appConfig.submittedConfirmationTemplateId,
-              emailParameters
-            )) flatMap {
+            emailConnector.send(
+              EmailToSendRequest(
+                List(emailAddress),
+                appConfig.submittedConfirmationTemplateId,
+                emailParameters
+              )
+            ) flatMap {
               case EmailAccepted => Future.successful(Right(EmailSentSuccess))
               case err           =>
-                logger.warn(s"[EmailService][sendConfirmationEmail] Email not sent due to downstream error: ${err.toString}")
+                logger.warn(
+                  s"[EmailService][sendConfirmationEmail] Email not sent due to downstream error: ${err.toString}"
+                )
                 Future.successful(Left(DownstreamError(err.toString)))
             }
           case _               =>

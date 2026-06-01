@@ -16,37 +16,44 @@
 
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
+import services.AssetsMiniJourneyService
+import services.MoreAssetCompletionService
+import services.UserAnswersService
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import play.api.mvc._
 import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationFormProvider
 import models.assets.TypeOfAsset
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
+import models._
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationView
+import forms.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationFormProvider
+import repositories.SessionRepository
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.Try
 
+import javax.inject.Inject
+
 class MoreUnquotedSharesDeclarationController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: MoreUnquotedSharesDeclarationFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: MoreUnquotedSharesDeclarationView,
-    moreAssetCompletionService: MoreAssetCompletionService,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: MoreUnquotedSharesDeclarationFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: MoreUnquotedSharesDeclarationView,
+  moreAssetCompletionService: MoreAssetCompletionService,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val form = formProvider()
 
@@ -83,30 +90,40 @@ class MoreUnquotedSharesDeclarationController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val assets = UnquotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
-          Future.successful(BadRequest(view(formWithErrors, assets, mode)))
-        },
-        continue => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              for {
-                addCashAmount                      <- request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue)
-                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-              } yield removeTypeOfAssetsRecordVersion
-            } else {
-              request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue)
-            }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val assets = UnquotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
+            Future.successful(BadRequest(view(formWithErrors, assets, mode)))
+          },
+          continue => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                for {
+                  addCashAmount                      <- request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue)
+                  removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                  removeTypeOfAssetsRecordVersion    <-
+                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                } yield removeTypeOfAssetsRecordVersion
+              } else {
+                request.userAnswers.set(MoreUnquotedSharesDeclarationPage, continue)
+              }
 
-          for {
-            userAnswers            <- Future.fromTry(setAnswers())
-            _                      <- userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
-            sessionAfterCompletion <-
-              moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.UnquotedShares, completed = true, Some(continue))
-          } yield Redirect(MoreUnquotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
-        }
-      )
+            for {
+              userAnswers            <- Future.fromTry(setAnswers())
+              _                      <-
+                userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
+              sessionAfterCompletion <-
+                moreAssetCompletionService.completeAsset(
+                  userAnswers,
+                  request.sessionData,
+                  TypeOfAsset.UnquotedShares,
+                  completed = true,
+                  Some(continue)
+                )
+            } yield Redirect(MoreUnquotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
+          }
+        )
     }
 }

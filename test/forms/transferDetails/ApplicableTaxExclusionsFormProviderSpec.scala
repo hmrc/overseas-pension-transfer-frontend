@@ -32,7 +32,7 @@ class ApplicableTaxExclusionsFormProviderSpec extends CheckboxFieldBehaviours {
     behave like checkboxField[ApplicableTaxExclusions](
       form,
       fieldName,
-      validValues  = ApplicableTaxExclusions.values,
+      validValues = ApplicableTaxExclusions.values,
       invalidError = FormError(s"$fieldName[0]", "error.invalid")
     )
 

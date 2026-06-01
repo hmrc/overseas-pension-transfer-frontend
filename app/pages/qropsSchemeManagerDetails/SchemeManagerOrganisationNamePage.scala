@@ -16,11 +16,11 @@
 
 package pages.qropsSchemeManagerDetails
 
-import controllers.qropsSchemeManagerDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
+import play.api.mvc.Call
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models._
+import controllers.qropsSchemeManagerDetails.routes
 
 case object SchemeManagerOrganisationNamePage extends QuestionPage[String] {
 
@@ -31,26 +31,23 @@ case object SchemeManagerOrganisationNamePage extends QuestionPage[String] {
   override protected def nextPageNormalMode(answers: UserAnswers): Call =
     routes.SchemeManagerOrgIndividualNameController.onPageLoad(NormalMode)
 
-  override protected def nextPageCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageCheckMode(answers: UserAnswers): Call =
     answers.get(SchemeManagerOrgIndividualNamePage) match {
       case Some(_) => routes.SchemeManagerDetailsCYAController.onPageLoad()
       case None    => routes.SchemeManagerOrgIndividualNameController.onPageLoad(CheckMode)
     }
-  }
 
-  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageFinalCheckMode(answers: UserAnswers): Call =
     answers.get(SchemeManagerOrgIndividualNamePage) match {
       case Some(_) => controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       case None    => routes.SchemeManagerOrgIndividualNameController.onPageLoad(FinalCheckMode)
     }
-  }
 
-  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call = {
+  override protected def nextPageAmendCheckMode(answers: UserAnswers): Call =
     answers.get(SchemeManagerOrgIndividualNamePage) match {
       case Some(_) => controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       case None    => routes.SchemeManagerOrgIndividualNameController.onPageLoad(AmendCheckMode)
     }
-  }
 
   final def changeLink(mode: Mode): Call =
     routes.SchemeManagerOrganisationNameController.onPageLoad(mode)

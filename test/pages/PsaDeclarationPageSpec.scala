@@ -18,8 +18,7 @@ package pages
 
 import base.SpecBase
 import controllers.routes
-import models.{AmendCheckMode, NormalMode, PstrNumber, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
+import models.{AmendCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -30,14 +29,16 @@ class PsaDeclarationPageSpec extends AnyFreeSpec with Matchers with SpecBase {
     "in Normal Mode" - {
 
       "must go to submission screen on successful submission" in {
-        PsaDeclarationPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
+        PsaDeclarationPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController
+          .onPageLoad()
       }
     }
 
     "in Amend Check Mode" - {
 
       "must go to submission screen on successful submission" in {
-        PsaDeclarationPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController.onPageLoad()
+        PsaDeclarationPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.TransferSubmittedController
+          .onPageLoad()
       }
     }
   }

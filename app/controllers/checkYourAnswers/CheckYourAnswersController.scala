@@ -16,41 +16,55 @@
 
 package controllers.checkYourAnswers
 
-import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import models.{FinalCheckMode, Mode, NormalMode}
-import pages.checkYourAnswers.CheckYourAnswersPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
-import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
-import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.summarylist._
 import views.html.checkYourAnswers.CheckYourAnswersView
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import com.google.inject.Inject
+import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
+import pages.checkYourAnswers.CheckYourAnswersPage
+import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
+import models.FinalCheckMode
+import models.NormalMode
+import viewmodels.govuk.summarylist._
+import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 class CheckYourAnswersController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: CheckYourAnswersView
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckYourAnswersView
+) extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val memberDetailsSummaryList        = SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, request.userAnswers))
-      val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, request.userAnswers))
-      val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(FinalCheckMode, request.userAnswers))
-      val schemeManagerDetailsSummaryList = SummaryListViewModel(SchemeManagerDetailsSummary.rows(FinalCheckMode, request.userAnswers))
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val memberDetailsSummaryList        = SummaryListViewModel(MemberDetailsSummary.rows(FinalCheckMode, request.userAnswers))
+    val transferDetailsSummaryList      =
+      SummaryListViewModel(TransferDetailsSummary.rows(FinalCheckMode, request.userAnswers))
+    val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(FinalCheckMode, request.userAnswers))
+    val schemeManagerDetailsSummaryList =
+      SummaryListViewModel(SchemeManagerDetailsSummary.rows(FinalCheckMode, request.userAnswers))
 
-      Ok(view(memberDetailsSummaryList, transferDetailsSummaryList, qropsDetailsSummaryList, schemeManagerDetailsSummaryList))
+    Ok(
+      view(
+        memberDetailsSummaryList,
+        transferDetailsSummaryList,
+        qropsDetailsSummaryList,
+        schemeManagerDetailsSummaryList
+      )
+    )
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      Redirect(CheckYourAnswersPage.nextPage(NormalMode, request.userAnswers))
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    Redirect(CheckYourAnswersPage.nextPage(NormalMode, request.userAnswers))
   }
 }

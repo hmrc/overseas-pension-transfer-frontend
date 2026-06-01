@@ -16,25 +16,30 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import viewmodels.implicits._
 import handlers.AssetThresholdHandler
-import models.assets.TypeOfAsset
-import models.{Mode, UserAnswers}
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Key
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
-import play.api.i18n.Messages
+import models.assets.TypeOfAsset
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.Mode
+import models.UserAnswers
+import viewmodels.govuk.summarylist._
 import queries.assets.PropertyQuery
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Key, SummaryListRow}
+import play.api.i18n.Messages
 import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
 import viewmodels.AddressViewModel
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object PropertyAmendContinueSummary {
 
   private val threshold = 5
 
-  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(mode: Mode, userAnswers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] = {
     val maybeEntries = userAnswers.get(PropertyQuery)
     val count        = AssetThresholdHandler.getAssetCount(userAnswers, TypeOfAsset.Property)
     val valueText    = messages("propertyAmendContinue.summary.value", maybeEntries.map(_.size).getOrElse(0))
@@ -60,8 +65,8 @@ object PropertyAmendContinueSummary {
 
         Some(
           SummaryListRowViewModel(
-            key     = "propertyAmendContinue.checkYourAnswersLabel",
-            value   = ValueViewModel(valueText),
+            key = "propertyAmendContinue.checkYourAnswersLabel",
+            value = ValueViewModel(valueText),
             actions = actions
           )
         )
@@ -69,33 +74,35 @@ object PropertyAmendContinueSummary {
     }
   }
 
-  def moreThanFivePropertiesRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+  def moreThanFivePropertiesRow(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     userAnswers.get(MorePropertyDeclarationPage).filter(identity).map { _ =>
       SummaryListRowViewModel(
-        key     = Key(Text(messages("moreThanFive.properties.checkYourAnswersLabel"))),
-        value   = ValueViewModel(HtmlContent(messages("site.yes"))),
+        key = Key(Text(messages("moreThanFive.properties.checkYourAnswersLabel"))),
+        value = ValueViewModel(HtmlContent(messages("site.yes"))),
         actions = if (showChangeLinks) {
-          Seq(ActionItemViewModel(
-            content = Text(messages("site.change")),
-            href    = controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
-              .onPageLoad(mode).url
-          ).withVisuallyHiddenText(messages("moreThanFive.properties.change.hidden")))
+          Seq(
+            ActionItemViewModel(
+              content = Text(messages("site.change")),
+              href = controllers.transferDetails.assetsMiniJourneys.property.routes.MorePropertyDeclarationController
+                .onPageLoad(mode)
+                .url
+            ).withVisuallyHiddenText(messages("moreThanFive.properties.change.hidden"))
+          )
         } else Nil
       )
     }
-  }
 
   def rows(mode: Mode, answers: UserAnswers): Seq[ListItem] = {
     val maybeEntries = answers.get(PropertyQuery)
 
-    maybeEntries.getOrElse(Nil).zipWithIndex.map {
-      case (entry, index) => {
-        ListItem(
-          name      = AddressViewModel.formatAddressAsString(entry.propertyAddress),
-          changeUrl = AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(mode, index).url,
-          removeUrl = AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onPageLoad(index).url
-        )
-      }
+    maybeEntries.getOrElse(Nil).zipWithIndex.map { case (entry, index) =>
+      ListItem(
+        name = AddressViewModel.formatAddressAsString(entry.propertyAddress),
+        changeUrl = AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(mode, index).url,
+        removeUrl = AssetsMiniJourneysRoutes.PropertyConfirmRemovalController.onPageLoad(index).url
+      )
     }
   }
 }

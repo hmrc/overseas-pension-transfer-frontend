@@ -18,10 +18,11 @@ package connectors
 
 import base.BaseISpec
 import models.authentication.{PsaId, PspId}
+import models.{IndividualDetails, MinimalDetails}
 import play.api.libs.json.Json
 import play.api.test.Injecting
 import stubs.MinimalDetailsStub
-import models.{IndividualDetails, MinimalDetails}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class MinimalDetailsConnectorISpec extends BaseISpec with Injecting {

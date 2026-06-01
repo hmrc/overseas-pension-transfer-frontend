@@ -16,64 +16,71 @@
 
 package controllers.memberDetails
 
+import services.TaskService
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import forms.memberDetails.MemberHasEverBeenResidentUKFormProvider
 import controllers.actions._
 import controllers.helpers.ErrorHandling
-import forms.memberDetails.MemberHasEverBeenResidentUKFormProvider
-import models.Mode
-import models.TaskCategory.MemberDetails
 import org.apache.pekko.Done
 import pages.memberDetails.MemberHasEverBeenResidentUKPage
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{TaskService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.TaskCategory.MemberDetails
+import models.Mode
 import views.html.memberDetails.MemberHasEverBeenResidentUKView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class MemberHasEverBeenResidentUKController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: MemberHasEverBeenResidentUKFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: MemberHasEverBeenResidentUKView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: MemberHasEverBeenResidentUKFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: MemberHasEverBeenResidentUKView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(MemberHasEverBeenResidentUKPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(MemberHasEverBeenResidentUKPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value => {
-          for {
-            baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
-            ua2           <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
-            savedForLater <- userAnswersService.setExternalUserAnswers(ua2, request.sessionData.schemeInformation.srnNumber)
-          } yield {
-            savedForLater match {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              baseAnswers   <- Future.fromTry(request.userAnswers.set(MemberHasEverBeenResidentUKPage, value))
+              ua2           <-
+                Future.fromTry(TaskService.setInProgressInCheckMode(mode, baseAnswers, taskCategory = MemberDetails))
+              savedForLater <-
+                userAnswersService.setExternalUserAnswers(ua2, request.sessionData.schemeInformation.srnNumber)
+            } yield savedForLater match {
               case Right(Done) => Redirect(MemberHasEverBeenResidentUKPage.nextPage(mode, ua2))
               case Left(err)   => onFailureRedirect(err)
             }
-          }
-        }
-      )
+        )
   }
 }

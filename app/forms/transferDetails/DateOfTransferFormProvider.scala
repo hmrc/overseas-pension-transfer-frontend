@@ -16,34 +16,33 @@
 
 package forms.transferDetails
 
-import config.Constants.ddMMyyyy
+import utils.DateTimeFormats.dateInput
 import forms.mappings.Mappings
-import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.data.Form
 
-import java.time.format.DateTimeFormatter
-import java.time.{Clock, LocalDate, ZoneOffset}
+import java.time.Clock
+import java.time.LocalDate
 import javax.inject.Inject
 
 class DateOfTransferFormProvider @Inject() (clock: Clock) extends Mappings {
 
-  def minDate: LocalDate    = LocalDate of (2012, 4, 6)
-  def maxDate: LocalDate    = LocalDate.now(clock)
-  private def dateFormatter = ddMMyyyy
+  def minDate: LocalDate = LocalDate.of(minAmendDate, 4, 6)
+  def maxDate: LocalDate = LocalDate.now(clock)
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidCharacter = "common.dateInput.error.invalid.character",
-        invalidKey       = "dateOfTransfer.error.invalid",
-        requiredKey      = "common.dateInput.error.required",
-        twoRequiredKey   = "common.dateInput.error.required.two",
-        allRequiredKey   = "dateOfTransfer.error.required.all",
-        realDateKey      = "dateOfTransfer.error.real.date"
+        invalidKey = "dateOfTransfer.error.invalid",
+        requiredKey = "common.dateInput.error.required",
+        twoRequiredKey = "common.dateInput.error.required.two",
+        allRequiredKey = "dateOfTransfer.error.required.all",
+        realDateKey = "dateOfTransfer.error.real.date"
       )
         .verifying(
-          maxDate(maxDate, "dateOfTransfer.error.invalid.maxdate", maxDate.format(dateFormatter)),
-          minDate(minDate, "dateOfTransfer.error.invalid.mindate", minDate.format(dateFormatter))
+          maxDate(maxDate, "dateOfTransfer.error.invalid.maxdate", maxDate.format(dateInput)),
+          minDate(minDate, "dateOfTransfer.error.invalid.mindate", minDate.format(dateInput))
         )
     )
 }

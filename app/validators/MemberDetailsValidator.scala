@@ -16,12 +16,13 @@
 
 package validators
 
-import cats.data.{Chain, NonEmptyChain}
+import cats.data.Chain
 import cats.implicits._
-import models.address.{MembersCurrentAddress, MembersLastUKAddress}
-import models.{DataMissingError, GenericError, PersonName, UserAnswers, ValidationResult}
-import models.transferJourneys.MemberDetails
+import models.address.MembersCurrentAddress
+import models.address.MembersLastUKAddress
+import models._
 import pages.memberDetails._
+import models.transferJourneys.MemberDetails
 
 import java.time.LocalDate
 
@@ -40,15 +41,15 @@ object MemberDetailsValidator extends Validator[MemberDetails] {
       validateMemberDateLeftUk(userAnswers)
     ).mapN(
       (
-          name,
-          nino,
-          reasonNoNino,
-          dateOfBirth,
-          currentAddress,
-          isUkResident,
-          hasEverBeenUkResident,
-          lastUkAddress,
-          dateLeftUk
+        name,
+        nino,
+        reasonNoNino,
+        dateOfBirth,
+        currentAddress,
+        isUkResident,
+        hasEverBeenUkResident,
+        lastUkAddress,
+        dateLeftUk
       ) =>
         MemberDetails(
           name,
@@ -108,7 +109,8 @@ object MemberDetailsValidator extends Validator[MemberDetails] {
       case (None, Some(true))                         => None.validNec
       case (None, Some(false))                        => DataMissingError(MemberHasEverBeenResidentUKPage).invalidNec
       case (Some(hasEverBeenUkResident), Some(false)) => Some(hasEverBeenUkResident).validNec
-      case (Some(_), Some(true))                      => GenericError("Cannot have valid payload with isUkResident = true and hasEverBeenUkResident").invalidNec
+      case (Some(_), Some(true))                      =>
+        GenericError("Cannot have valid payload with isUkResident = true and hasEverBeenUkResident").invalidNec
       case (None, None)                               => DataMissingError(MemberHasEverBeenResidentUKPage).invalidNec
       case (Some(_), None)                            => DataMissingError(MemberIsResidentUKPage).invalidNec
     }
@@ -116,7 +118,8 @@ object MemberDetailsValidator extends Validator[MemberDetails] {
   private def validateLastPrincipalUkAddress(answers: UserAnswers): ValidationResult[Option[MembersLastUKAddress]] =
     (answers.get(MemberIsResidentUKPage), answers.get(MemberHasEverBeenResidentUKPage)) match {
       case (Some(true), None)         => None.validNec
-      case (Some(true), Some(_))      => GenericError("Cannot have valid payload with isUkResident = true and lastUkPrincipalAddress").invalidNec
+      case (Some(true), Some(_))      =>
+        GenericError("Cannot have valid payload with isUkResident = true and lastUkPrincipalAddress").invalidNec
       case (Some(false), Some(false)) => None.validNec
       case (Some(false), Some(true))  =>
         answers.get(MembersLastUKAddressPage) match {
@@ -129,7 +132,8 @@ object MemberDetailsValidator extends Validator[MemberDetails] {
   private def validateMemberDateLeftUk(answers: UserAnswers): ValidationResult[Option[LocalDate]] =
     (answers.get(MemberIsResidentUKPage), answers.get(MemberHasEverBeenResidentUKPage)) match {
       case (Some(true), None)         => None.validNec
-      case (Some(true), Some(_))      => GenericError("Cannot have valid payload with isUkResident = true and memberDateLeftUk").invalidNec
+      case (Some(true), Some(_))      =>
+        GenericError("Cannot have valid payload with isUkResident = true and memberDateLeftUk").invalidNec
       case (Some(false), Some(false)) => None.validNec
       case (Some(false), Some(true))  =>
         answers.get(MemberDateOfLeavingUKPage) match {

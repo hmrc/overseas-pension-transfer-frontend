@@ -16,7 +16,7 @@
 
 package base
 
-import models.address._
+import models.address.*
 
 trait AddressBase extends SpecBase {
 
@@ -25,24 +25,24 @@ trait AddressBase extends SpecBase {
   val addressRecordList: Seq[AddressRecord] =
     Seq(
       AddressRecord(
-        id      = "GB990091234514",
+        id = "GB990091234514",
         address = RawAddress(
-          lines    = List("2 Other Place", "Some District"),
-          town     = "Faketown",
+          lines = List("2 Other Place", "Some District"),
+          town = "Faketown",
           postcode = "BB00 1BB",
-          country  = Countries.UK
+          country = Countries.UK
         ),
-        poBox   = None
+        poBox = None
       ),
       AddressRecord(
-        id      = "GB990091234515",
+        id = "GB990091234515",
         address = RawAddress(
-          lines    = List("3 Other Place", "Some District"),
-          town     = "Faketown",
+          lines = List("3 Other Place", "Some District"),
+          town = "Faketown",
           postcode = "BB00 1BB",
-          country  = Countries.UK
+          country = Countries.UK
         ),
-        poBox   = None
+        poBox = None
       )
     )
 
@@ -57,9 +57,9 @@ trait AddressBase extends SpecBase {
     addressLine2 = "Some District",
     addressLine3 = None,
     addressLine4 = None,
-    ukPostCode   = Some("ZZ1 1ZZ"),
-    country      = Countries.UK,
-    poBoxNumber  = None
+    ukPostCode = Some("ZZ1 1ZZ"),
+    country = Countries.UK,
+    poBoxNumber = None
   )
 
   val qropsAddress: QROPSAddress = QROPSAddress(
@@ -68,7 +68,7 @@ trait AddressBase extends SpecBase {
     addressLine3 = None,
     addressLine4 = None,
     addressLine5 = None,
-    country      = Countries.UK
+    country = Countries.UK
   )
 
   val schemeManagersAddress: SchemeManagersAddress = SchemeManagersAddress(
@@ -77,7 +77,7 @@ trait AddressBase extends SpecBase {
     addressLine3 = None,
     addressLine4 = None,
     addressLine5 = None,
-    country      = Countries.UK
+    country = Countries.UK
   )
 
   val propertyAddress: PropertyAddress = PropertyAddress(
@@ -86,7 +86,7 @@ trait AddressBase extends SpecBase {
     addressLine3 = None,
     addressLine4 = None,
     addressLine5 = None,
-    ukPostCode   = Some("ZZ1 1ZZ"),
-    country      = Countries.UK
+    ukPostCode = Some("ZZ1 1ZZ"),
+    country = Countries.UK
   )
 }

@@ -16,65 +16,76 @@
 
 package controllers.transferDetails
 
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import controllers.actions._
-import forms.transferDetails.TypeOfAssetFormProvider
-import models.assets.TypeOfAsset
-import models.{AmendCheckMode, Mode, UserAnswers}
-import pages.transferDetails.{AmountOfTransferPage, TypeOfAssetPage}
-import play.api.Logging
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.TransferDetailsRecordVersionQuery
-import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus}
-import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.TypeOfAssetView
+import forms.transferDetails.TypeOfAssetFormProvider
+import repositories.SessionRepository
+import models.Mode
+import play.api.data.Form
+import queries.assets.AnswersSelectedAssetTypes
+import pages.transferDetails.TypeOfAssetPage
+import services.AssetsMiniJourneyService
+import services.UserAnswersService
+import play.api.Logging
+import models.assets.TypeOfAsset
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class TypeOfAssetController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    sessionRepository: SessionRepository,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: TypeOfAssetFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: TypeOfAssetView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: TypeOfAssetFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: TypeOfAssetView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   val form: Form[Seq[TypeOfAsset]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AnswersSelectedAssetTypes) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(AnswersSelectedAssetTypes) match {
+      case None        =>
+        form
+      case Some(value) =>
+        form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        selectedAssets => {
-          val orderedAssets = selectedAssets.toSeq.sorted
-          for {
-            (sd, ua) <- Future.fromTry(AssetsMiniJourneyService.handleTypeOfAssetStatusUpdate(request.sessionData, request.userAnswers, orderedAssets, mode))
-            _        <- userAnswersService.setExternalUserAnswers(ua, request.sessionData.schemeInformation.srnNumber)
-            _        <- sessionRepository.set(sd)
-          } yield Redirect(TypeOfAssetPage.nextPageWith(mode, ua, sd))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          selectedAssets => {
+            val orderedAssets = selectedAssets.toSeq.sorted
+            for {
+              (sd, ua) <-
+                Future.fromTry(
+                  AssetsMiniJourneyService
+                    .handleTypeOfAssetStatusUpdate(request.sessionData, request.userAnswers, orderedAssets, mode)
+                )
+              _        <- userAnswersService.setExternalUserAnswers(ua, request.sessionData.schemeInformation.srnNumber)
+              _        <- sessionRepository.set(sd)
+            } yield Redirect(TypeOfAssetPage.nextPageWith(mode, ua, sd))
+          }
+        )
     }
 }

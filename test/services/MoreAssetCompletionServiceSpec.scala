@@ -18,16 +18,16 @@ package services
 
 import base.SpecBase
 import handlers.AssetThresholdHandler
-import models.{SessionData, UserAnswers}
 import models.assets.TypeOfAsset
+import models.{SessionData, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, reset, times, verify, when}
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.prop.TableDrivenPropertyChecks.*
 import org.scalatestplus.mockito.MockitoSugar
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -77,19 +77,23 @@ class MoreAssetCompletionServiceSpec
           when(mockSessionRepository.set(any()))
             .thenReturn(Future.successful(true))
 
-          service.completeAsset(userAnswers, emptySessionData, assetType, completed = true, userSelection = Some(true)).map { result =>
-            result mustBe updated
+          service
+            .completeAsset(userAnswers, emptySessionData, assetType, completed = true, userSelection = Some(true))
+            .map { result =>
+              result mustBe updated
 
-            val expectedOnce  = AssetThresholdHandler.handle(userAnswers, assetType, Some(true))
-            val expectedTwice = AssetThresholdHandler.handle(expectedOnce, assetType, Some(true))
+              val expectedOnce  = AssetThresholdHandler.handle(userAnswers, assetType, Some(true))
+              val expectedTwice = AssetThresholdHandler.handle(expectedOnce, assetType, Some(true))
 
-            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture(), any())(any[HeaderCarrier])
-            uaCaptor.getValue mustBe expectedTwice
-            verify(mockSessionRepository, times(1)).set(updated)
+              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture(), any())(
+                any[HeaderCarrier]
+              )
+              uaCaptor.getValue mustBe expectedTwice
+              verify(mockSessionRepository, times(1)).set(updated)
 
-            succeed
-          }
+              succeed
+            }
         }
 
         s"should handle case when userSelection is None for $assetType (enrich twice)" in {
@@ -110,7 +114,9 @@ class MoreAssetCompletionServiceSpec
             val expectedTwice = AssetThresholdHandler.handle(expectedOnce, assetType, None)
 
             val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture(), any())(any[HeaderCarrier])
+            verify(mockUserAnswersService, times(1)).setExternalUserAnswers(uaCaptor.capture(), any())(
+              any[HeaderCarrier]
+            )
             uaCaptor.getValue mustBe expectedTwice
             verify(mockSessionRepository, times(1)).set(updated)
             succeed

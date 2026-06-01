@@ -16,16 +16,17 @@
 
 package config
 
-import com.google.inject.{Inject, Singleton}
+import play.api.mvc.RequestHeader
+import com.google.inject.Inject
+import com.google.inject.Singleton
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import play.api.Configuration
 import play.api.i18n.Lang
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
-  import servicesConfig._
+  import servicesConfig.*
 
   val appName: String = configuration.get[String]("appName")
 
@@ -42,14 +43,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val mpsHomeUrl: String              = configuration.get[String]("urls.mpsHomeUrl")
 
   private val exitSurveyBaseUrl: String = configuration.get[String]("feedback-frontend.host")
-  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/report-transfer-qualifying-recognised-overseas-pension-scheme"
-
-  val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("features.welsh-translation")
+  val exitSurveyUrl: String             =
+    s"$exitSurveyBaseUrl/feedback/report-transfer-qualifying-recognised-overseas-pension-scheme"
 
   def languageMap: Map[String, Lang] = Map(
-    "en" -> Lang("en"),
-    "cy" -> Lang("cy")
+    "en" -> Lang("en")
   )
 
   case class EnrolmentConfig(serviceName: String, identifierKey: String)
@@ -86,11 +84,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val submittedConfirmationTemplateId: String = configuration.get[String]("submission-confirmation-template-id")
 
-  def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String = {
+  def getPensionSchemeUrl(srn: String, isPspUser: Boolean): String =
     if (isPspUser) {
       s"${mpsHomeUrl.dropRight("/overview".length)}/$srn/dashboard/pension-scheme-details"
     } else {
       s"$pensionSchemeSummaryUrl$srn"
     }
-  }
 }

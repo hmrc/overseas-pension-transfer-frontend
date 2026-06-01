@@ -16,34 +16,43 @@
 
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.actions._
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
+import services.AssetsMiniJourneyService
+import services.MoreAssetCompletionService
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import handlers.AssetThresholdHandler
+import controllers.actions._
+import models.assets.TypeOfAsset
+import models.assets.UnquotedSharesMiniJourney
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.NormalMode
-import models.assets.{TypeOfAsset, UnquotedSharesMiniJourney}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalView
+import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalFormProvider
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class UnquotedSharesConfirmRemovalController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: UnquotedSharesConfirmRemovalFormProvider,
-    miniJourney: UnquotedSharesMiniJourney.type,
-    userAnswersService: UserAnswersService,
-    val controllerComponents: MessagesControllerComponents,
-    view: UnquotedSharesConfirmRemovalView,
-    moreAssetCompletionService: MoreAssetCompletionService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: UnquotedSharesConfirmRemovalFormProvider,
+  miniJourney: UnquotedSharesMiniJourney.type,
+  userAnswersService: UserAnswersService,
+  val controllerComponents: MessagesControllerComponents,
+  view: UnquotedSharesConfirmRemovalView,
+  moreAssetCompletionService: MoreAssetCompletionService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val form    = formProvider()
   private val actions = identify andThen schemeData andThen getData
@@ -53,32 +62,39 @@ class UnquotedSharesConfirmRemovalController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = actions.async { implicit request =>
-    form.bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
-      confirmRemoval =>
-        if (!confirmRemoval) {
-          val unquotedSharesCount = AssetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.UnquotedShares)
-          val redirectTarget      =
-            if (unquotedSharesCount >= 5) {
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, index))),
+        confirmRemoval =>
+          if (!confirmRemoval) {
+            val unquotedSharesCount =
+              AssetThresholdHandler.getAssetCount(request.userAnswers, TypeOfAsset.UnquotedShares)
+            val redirectTarget      =
+              if (unquotedSharesCount >= 5) {
 
-              controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController.onPageLoad(mode = NormalMode)
-            } else {
+                controllers.transferDetails.assetsMiniJourneys.unquotedShares.routes.MoreUnquotedSharesDeclarationController
+                  .onPageLoad(mode = NormalMode)
+              } else {
+                AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode)
+              }
+
+            Future.successful(Redirect(redirectTarget))
+          } else {
+            (for {
+              updatedAnswers <-
+                Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+              _              <- moreAssetCompletionService
+                                  .completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.UnquotedShares, completed = false)
+            } yield Redirect(
               AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode)
-            }
-
-          Future.successful(Redirect(redirectTarget))
-        } else {
-          (for {
-            updatedAnswers <- Future.fromTry(AssetsMiniJourneyService.removeAssetEntry(miniJourney, request.userAnswers, index))
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-            _              <- moreAssetCompletionService.completeAsset(updatedAnswers, request.sessionData, TypeOfAsset.UnquotedShares, completed = false)
-          } yield {
-            Redirect(AssetsMiniJourneysRoutes.UnquotedSharesAmendContinueController.onPageLoad(mode = NormalMode))
-          })
-            .recover {
-              case _ => Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
-            }
-        }
-    )
+            ))
+              .recover { case _ =>
+                Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+              }
+          }
+      )
   }
 }

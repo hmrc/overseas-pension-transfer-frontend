@@ -16,11 +16,11 @@
 
 package pages.transferDetails
 
+import play.api.mvc.Call
 import controllers.transferDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models._
 
 import scala.util.Try
 
@@ -52,7 +52,7 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
   final def changeLink(mode: Mode): Call =
     routes.IsTransferTaxableController.onPageLoad(mode)
 
-  override def cleanup(maybeTransferIsTaxable: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(maybeTransferIsTaxable: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     maybeTransferIsTaxable match {
       case Some(false) =>
         for {
@@ -65,5 +65,4 @@ case object IsTransferTaxablePage extends QuestionPage[Boolean] {
         userAnswers.remove(WhyTransferIsNotTaxablePage)
       case _           => super.cleanup(maybeTransferIsTaxable, userAnswers)
     }
-  }
 }

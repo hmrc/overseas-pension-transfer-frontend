@@ -16,19 +16,19 @@
 
 package models
 
-import play.api.i18n.Messages
+import viewmodels.govuk.checkbox._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import viewmodels.govuk.checkbox._
+import play.api.i18n.Messages
 
 sealed trait ApplicableTaxExclusions
 
 object ApplicableTaxExclusions extends Enumerable.Implicits {
 
-  case object Occupational     extends WithName("occupational") with ApplicableTaxExclusions
-  case object Publicservice    extends WithName("publicService") with ApplicableTaxExclusions
+  case object Occupational extends WithName("occupational") with ApplicableTaxExclusions
+  case object Publicservice extends WithName("publicService") with ApplicableTaxExclusions
   case object InternationalOrg extends WithName("internationalOrg") with ApplicableTaxExclusions
-  case object Resident         extends WithName("resident") with ApplicableTaxExclusions
+  case object Resident extends WithName("resident") with ApplicableTaxExclusions
 
   val values: Seq[ApplicableTaxExclusions] = Seq(
     Occupational,
@@ -38,14 +38,13 @@ object ApplicableTaxExclusions extends Enumerable.Implicits {
   )
 
   def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
-    values.zipWithIndex.map {
-      case (value, index) =>
-        CheckboxItemViewModel(
-          content = Text(messages(s"applicableTaxExclusions.${value.toString}")),
-          fieldId = "value",
-          index   = index,
-          value   = value.toString
-        )
+    values.zipWithIndex.map { case (value, index) =>
+      CheckboxItemViewModel(
+        content = Text(messages(s"applicableTaxExclusions.${value.toString}")),
+        fieldId = "value",
+        index = index,
+        value = value.toString
+      )
     }
 
   implicit val enumerable: Enumerable[ApplicableTaxExclusions] =

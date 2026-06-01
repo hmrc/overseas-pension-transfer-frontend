@@ -16,16 +16,18 @@
 
 package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.assets.{TypeOfAsset, UnquotedSharesEntry}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.QuestionPage
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models._
+import play.api.libs.json.JsPath
+import models.assets.TypeOfAsset
+import models.assets.UnquotedSharesEntry
 
 case class UnquotedSharesClassPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
+  override def path: JsPath =
+    JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
 
   override def toString: String = UnquotedSharesEntry.ClassOfShares
 

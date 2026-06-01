@@ -30,21 +30,26 @@ class PropertyAddressViewSpec extends ViewBaseSpec {
 
   val application: Application = GuiceApplicationBuilder().build()
 
-  private val view                                  = application.injector.instanceOf[PropertyAddressView]
-  private val formProvider                          = application.injector.instanceOf[PropertyAddressFormProvider]
-  private val countrySelectViewModel                = CountrySelectViewModel(Seq.empty)
-  private val testIndex                             = 0
-  implicit private val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+  private val view                   = application.injector.instanceOf[PropertyAddressView]
+  private val formProvider           = application.injector.instanceOf[PropertyAddressFormProvider]
+  private val countrySelectViewModel = CountrySelectViewModel(Seq.empty)
+  private val testIndex              = 0
+  application.injector.instanceOf[FrontendAppConfig]
 
   "PropertyAddressView" - {
 
     "show correct title" in {
       doc(view(formProvider(), countrySelectViewModel, NormalMode, testIndex).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("propertyAddress.title")} - ${messages("service.name")} - GOV.UK"
     }
 
-    behave like pageWithH1(view(formProvider(), countrySelectViewModel, NormalMode, testIndex), "propertyAddress.heading")
+    behave like pageWithH1(
+      view(formProvider(), countrySelectViewModel, NormalMode, testIndex),
+      "propertyAddress.heading"
+    )
 
     behave like pageWithMultipleInputFields(
       view(formProvider(), countrySelectViewModel, NormalMode, testIndex),

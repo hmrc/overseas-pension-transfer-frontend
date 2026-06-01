@@ -16,19 +16,20 @@
 
 package models.transferJourneys
 
+import models.address.MembersCurrentAddress
+import models.address.MembersLastUKAddress
 import models.PersonName
-import models.address.{MembersCurrentAddress, MembersLastUKAddress}
 
 import java.time.LocalDate
 
 case class MemberDetails(
-    memberName: PersonName,
-    memberNino: Option[String],
-    reasonNoNino: Option[String],
-    memberDateOfBirth: LocalDate,
-    memberAddress: MembersCurrentAddress,
-    isUkResident: Boolean,
-    hasBeenUkResident: Option[Boolean],
-    lastPrincipalAddress: Option[MembersLastUKAddress],
-    dateLeftUk: Option[LocalDate]
-  )
+  memberName: PersonName,
+  memberNino: Option[String],
+  reasonNoNino: Option[String],
+  memberDateOfBirth: LocalDate,
+  memberAddress: MembersCurrentAddress,
+  isUkResident: Boolean,
+  hasBeenUkResident: Option[Boolean],
+  lastPrincipalAddress: Option[MembersLastUKAddress],
+  dateLeftUk: Option[LocalDate]
+)

@@ -33,7 +33,9 @@ class OtherAssetsValueViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(formProvider(), NormalMode, testIndex).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("valueOfAsset.title")} - ${messages("service.name")} - GOV.UK"
     }
 

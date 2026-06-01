@@ -16,35 +16,37 @@
 
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
-import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberFormProvider
-import models.assets.TypeOfAsset.QuotedShares
-import models.{AmendCheckMode, Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.AssetsRecordVersionQuery
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberPage
+import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberFormProvider
+import models.Mode
+import play.api.data.Form
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesNumberView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class QuotedSharesNumberController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: QuotedSharesNumberFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: QuotedSharesNumberView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: QuotedSharesNumberFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: QuotedSharesNumberView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[Int] = formProvider()
 
@@ -60,28 +62,17 @@ class QuotedSharesNumberController @Inject() (
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              for {
-                addCashAmount                      <- request.userAnswers.set(QuotedSharesNumberPage(index), value)
-                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, QuotedShares))
-              } yield removeAssetRecordVersion
-            } else {
-              request.userAnswers.set(QuotedSharesNumberPage(index), value)
-            }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, index))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesNumberPage(index), value))
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
 
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(QuotedSharesNumberPage(index), value))
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-
-          } yield Redirect(QuotedSharesNumberPage(index).nextPage(mode, updatedAnswers))
-        }
-      )
+            } yield Redirect(QuotedSharesNumberPage(index).nextPage(mode, updatedAnswers))
+        )
   }
 }

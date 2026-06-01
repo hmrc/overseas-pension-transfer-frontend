@@ -16,11 +16,12 @@
 
 package pages.memberDetails
 
-import controllers.{memberDetails, routes}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.QuestionPage
+import controllers.memberDetails
+import controllers.routes
+import play.api.libs.json.JsPath
+import models._
 
 import scala.util.Try
 
@@ -61,12 +62,12 @@ case object MemberHasEverBeenResidentUKPage extends QuestionPage[Boolean] {
   final def changeLink(mode: Mode): Call =
     memberDetails.routes.MemberHasEverBeenResidentUKController.onPageLoad(mode)
 
-  override def cleanup(maybeHasEverBeenResidentUk: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(maybeHasEverBeenResidentUk: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     maybeHasEverBeenResidentUk match {
-      case Some(false) => userAnswers
+      case Some(false) =>
+        userAnswers
           .remove(MembersLastUKAddressPage)
           .flatMap(_.remove(MemberDateOfLeavingUKPage))
       case _           => super.cleanup(maybeHasEverBeenResidentUk, userAnswers)
     }
-  }
 }

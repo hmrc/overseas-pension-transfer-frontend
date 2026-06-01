@@ -29,7 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.SchemeManagerOrganisationNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.qropsSchemeManagerDetails.SchemeManagerOrganisationNameView
@@ -57,7 +57,10 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
         val view = application.injector.instanceOf[SchemeManagerOrganisationNameView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -75,7 +78,10 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -103,7 +109,9 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual SchemeManagerOrganisationNamePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual SchemeManagerOrganisationNamePage
+          .nextPage(NormalMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -123,7 +131,10 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

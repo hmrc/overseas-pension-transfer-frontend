@@ -31,7 +31,8 @@ class SchemeManagerOrgIndividualNameSummarySpec extends AnyFreeSpec with SpecBas
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when OrgIndividualNamePage has a value" in {
-      val answers = emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("FirstName", "LastName")).success.value
+      val answers =
+        emptyUserAnswers.set(SchemeManagerOrgIndividualNamePage, PersonName("FirstName", "LastName")).success.value
       val result  = SchemeManagerOrgIndividualNameSummary.row(CheckMode, answers)
 
       result mustBe defined

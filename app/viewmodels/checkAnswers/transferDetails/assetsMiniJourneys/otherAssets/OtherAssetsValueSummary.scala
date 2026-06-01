@@ -16,26 +16,26 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets
 
-import models.{Mode, SessionData, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.CurrencyFormats.currencyFormat
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
+import utils.CurrencyFormats.currencyFormat
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object OtherAssetsValueSummary {
 
   def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(OtherAssetsValuePage(index)).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "valueOfAsset.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
-          actions = Seq(
-            ActionItemViewModel("site.change", OtherAssetsValuePage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("valueOfAsset.change.hidden"))
-          )
+    userAnswers.get(OtherAssetsValuePage(index)).map { answer =>
+      SummaryListRowViewModel(
+        key = "valueOfAsset.checkYourAnswersLabel",
+        value = ValueViewModel(currencyFormat(answer)),
+        actions = Seq(
+          ActionItemViewModel("site.change", OtherAssetsValuePage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("valueOfAsset.change.hidden"))
         )
+      )
     }
 }

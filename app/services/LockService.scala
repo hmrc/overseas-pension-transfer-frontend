@@ -16,37 +16,41 @@
 
 package services
 
-import models.audit.JourneyStartedType.StartJourneyFailed
-import models.audit.{JourneyStartedType, ReportStartedAuditModel}
 import models.authentication.AuthenticatedUser
-import models.{AllTransfersItem, PensionSchemeDetails, TransferId}
+import models.audit.JourneyStartedType
+import models.audit.ReportStartedAuditModel
 import org.mongodb.scala.result.DeleteResult
 import play.api.Logging
 import repositories.EnhancedLockRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.lock.LockRepository
+import models.AllTransfersItem
+import models.PensionSchemeDetails
+import models.TransferId
+import models.audit.JourneyStartedType.StartJourneyFailed
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.*
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.concurrent.duration._
+
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class LockService @Inject() (
-    lockRepository: EnhancedLockRepository,
-    auditService: AuditService
-  )(implicit ec: ExecutionContext
-  ) extends Logging {
+  lockRepository: EnhancedLockRepository,
+  auditService: AuditService
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
   def takeLockWithAudit(
-      transferId: TransferId,
-      owner: String,
-      ttlSeconds: Long,
-      authenticatedUser: AuthenticatedUser,
-      schemeDetails: PensionSchemeDetails,
-      journeyType: JourneyStartedType,
-      allTransfersItem: Option[AllTransfersItem]
-    )(implicit hc: HeaderCarrier
-    ): Future[Boolean] = {
+    transferId: TransferId,
+    owner: String,
+    ttlSeconds: Long,
+    authenticatedUser: AuthenticatedUser,
+    schemeDetails: PensionSchemeDetails,
+    journeyType: JourneyStartedType,
+    allTransfersItem: Option[AllTransfersItem]
+  )(implicit hc: HeaderCarrier): Future[Boolean] =
 
     lockRepository.takeLock(transferId.value, owner, ttlSeconds.seconds).flatMap {
       case Some(_) =>
@@ -77,7 +81,6 @@ class LockService @Inject() (
         )
         Future.successful(false)
     }
-  }
 
   def takeLock(lockId: String, owner: String, ttlSeconds: Long): Future[Boolean] =
     lockRepository.takeLock(lockId, owner, ttlSeconds.seconds).map(_.isDefined)

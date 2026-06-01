@@ -10,6 +10,22 @@ ThisBuild / scalaVersion := "3.3.7"
 
 addCommandAlias("runAllChecks", ";clean;compile;scalafmtAll;scalastyle;coverage;test;it/test;coverageReport")
 
+val commonSettings: Seq[String] = Seq(
+  "-unchecked",
+  "-feature",
+  "-deprecation",
+  "-language:noAutoTupling",
+  "-Wvalue-discard",
+  "-Wunused:imports",
+  "-Wconf:msg=unused import&src=views/.*:s", // False positives found in Twirl scala.html files at line 1:1: unused import
+  "-Wconf:msg=unused private member&src=validators/.*:s", // False negative fixed in scala 3.7.0: see https://github.com/scala/scala3/issues/19998
+  "-Wconf:msg=unused explicit parameter&src=pages/.*:s", // NextPageWith - it's not clear that the context argument is used - need a spike to investigate
+  "-Werror",
+  "-Wconf:src=routes/.*:s",
+  "-Wunused:unsafe-warn-patvars",
+  "-Wconf:msg=Flag.*repeatedly:s"
+)
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
@@ -39,11 +55,7 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageMinimumStmtTotal := 78,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
-    scalacOptions ++= Seq(
-      "-feature",
-      "-Wconf:cat=deprecation:ws,cat=feature:ws,cat=optimizer:ws,src=target/.*:s"
-    ),
-    scalacOptions := Seq("-unchecked", "-deprecation"),
+    scalacOptions ++= commonSettings,
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     pipelineStages := Seq(digest),
@@ -60,3 +72,4 @@ lazy val it =
   (project in file("it"))
     .enablePlugins(PlayScala)
     .dependsOn(microservice % "test->test")
+    .settings(scalacOptions ++= commonSettings)

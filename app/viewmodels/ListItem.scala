@@ -17,7 +17,7 @@
 package viewmodels
 
 case class ListItem(
-    name: String,
-    changeUrl: Option[String],
-    removeUrl: Option[String]
-  )
+  name: String,
+  changeUrl: Option[String],
+  removeUrl: Option[String]
+)

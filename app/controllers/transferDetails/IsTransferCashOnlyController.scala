@@ -16,93 +16,114 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
-import controllers.helpers.ErrorHandling
-import forms.transferDetails.IsTransferCashOnlyFormProvider
-import models.{AmendCheckMode, Mode, SessionData, UserAnswers}
-import models.TaskCategory.TransferDetails
-import models.assets.TypeOfAsset
-import models.assets.TypeOfAsset.Cash
-import org.apache.pekko.Done
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import pages.transferDetails.{AmountOfTransferPage, IsTransferCashOnlyPage, TypeOfAssetPage}
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Writes._
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import queries.assets.{AnswersSelectedAssetTypes, SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
-import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, TaskService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import queries.TransferDetailsRecordVersionQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import controllers.actions._
 import views.html.transferDetails.IsTransferCashOnlyView
+import forms.transferDetails.IsTransferCashOnlyFormProvider
+import models.assets.TypeOfAsset
+import models._
+import org.apache.pekko.Done
+import play.api.data.Form
+import models.TaskCategory.TransferDetails
+import queries.assets.AnswersSelectedAssetTypes
+import queries.assets.SelectedAssetTypesWithStatus
+import queries.assets.SessionAssetTypeWithStatus
+import pages.transferDetails.AmountOfTransferPage
+import pages.transferDetails.IsTransferCashOnlyPage
+import services.AssetsMiniJourneyService
+import services.TaskService
+import services.UserAnswersService
+import repositories.SessionRepository
+import controllers.helpers.ErrorHandling
+import models.assets.TypeOfAsset.Cash
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.util.Success
+import scala.util.Try
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
 
 class IsTransferCashOnlyController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    userAnswersService: UserAnswersService,
-    formProvider: IsTransferCashOnlyFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: IsTransferCashOnlyView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  userAnswersService: UserAnswersService,
+  formProvider: IsTransferCashOnlyFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IsTransferCashOnlyView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(IsTransferCashOnlyPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, mode))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(IsTransferCashOnlyPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedUserAnswers    <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value, mode))
-            inProgressUserAnswers <- Future.fromTry(TaskService.setInProgressInCheckMode(mode, updatedUserAnswers, taskCategory = TransferDetails))
-            savedForLater         <- userAnswersService.setExternalUserAnswers(inProgressUserAnswers, request.sessionData.schemeInformation.srnNumber)
-            sessionData           <- Future.fromTry(updateCashOnlySession(request.sessionData, value))
-            _                     <- sessionRepository.set(sessionData)
-          } yield {
-            savedForLater match {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              updatedUserAnswers    <- Future.fromTry(updateCashOnlyAnswers(request.userAnswers, value, mode))
+              inProgressUserAnswers <-
+                Future.fromTry(
+                  TaskService.setInProgressInCheckMode(mode, updatedUserAnswers, taskCategory = TransferDetails)
+                )
+              savedForLater         <-
+                userAnswersService
+                  .setExternalUserAnswers(inProgressUserAnswers, request.sessionData.schemeInformation.srnNumber)
+              sessionData           <- Future.fromTry(updateCashOnlySession(request.sessionData, value))
+              _                     <- sessionRepository.set(sessionData)
+            } yield savedForLater match {
               case Right(Done) => Redirect(IsTransferCashOnlyPage.nextPage(mode, inProgressUserAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
-          }
-      )
+        )
   }
 
-  private def updateCashOnlySession(sessionData: SessionData, isCashOnly: Boolean): Try[SessionData] = {
+  private def updateCashOnlySession(sessionData: SessionData, isCashOnly: Boolean): Try[SessionData] =
     if (isCashOnly) {
       for {
         sessionDataClearedAssetCompletion <- AssetsMiniJourneyService.clearAllAssetCompletionFlags(sessionData)
-        sessionDataSetToCashOnly          <- sessionDataClearedAssetCompletion.set(SelectedAssetTypesWithStatus, SelectedAssetTypesWithStatus.fromTypes(Seq(Cash)))
+        sessionDataSetToCashOnly          <- sessionDataClearedAssetCompletion.set(
+                                               SelectedAssetTypesWithStatus,
+                                               SelectedAssetTypesWithStatus.fromTypes(Seq(Cash))
+                                             )
       } yield sessionDataSetToCashOnly
     } else {
       Success(sessionData)
     }
-  }
 
-  private def updateCashOnlyAnswers(userAnswers: models.UserAnswers, isCashOnly: Boolean, mode: Mode): Try[models.UserAnswers] = {
+  private def updateCashOnlyAnswers(
+    userAnswers: models.UserAnswers,
+    isCashOnly: Boolean,
+    mode: Mode
+  ): Try[models.UserAnswers] = {
     def setAnswers(ua: UserAnswers): Try[UserAnswers] =
       if (mode == AmendCheckMode) {
-        ua.set(IsTransferCashOnlyPage, isCashOnly) flatMap {
-          answers =>
-            answers.remove(TransferDetailsRecordVersionQuery)
+        ua.set(IsTransferCashOnlyPage, isCashOnly) flatMap { answers =>
+          answers.remove(TransferDetailsRecordVersionQuery)
         }
       } else {
         ua.set(IsTransferCashOnlyPage, isCashOnly)
@@ -113,7 +134,8 @@ class IsTransferCashOnlyController @Inject() (
       for {
         userAnswersAssetEntriesRemoved <- AssetsMiniJourneyService.removeAllAssetEntriesExceptCash(userAnswers)
         userAnswersCashAmountAdded     <- userAnswersAssetEntriesRemoved.set(CashAmountInTransferPage, netAmount)
-        userAnswersCastAssetAdded      <- userAnswersCashAmountAdded.set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash))
+        userAnswersCastAssetAdded      <-
+          userAnswersCashAmountAdded.set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash))
         setUserAnswers                 <- setAnswers(userAnswersCastAssetAdded)
       } yield setUserAnswers
     } else {

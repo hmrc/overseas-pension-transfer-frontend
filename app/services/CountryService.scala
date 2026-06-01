@@ -16,14 +16,16 @@
 
 package services
 
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import models.address.Country
 import play.api.Environment
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 
-import javax.inject.{Inject, Singleton}
 import scala.io.Source
 import scala.util.Using
+
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class CountryService @Inject() (env: Environment) {
@@ -31,23 +33,24 @@ class CountryService @Inject() (env: Environment) {
 
   lazy val countries: Seq[Country] = loadCountries()
 
-  def findByCode(code: String): Option[Country] = {
+  def findByCode(code: String): Option[Country] =
     countries.find(_.code == code)
-  }
 
   implicit private val codeCountryReads: Reads[Country] = (
     (JsPath \ "code").read[String] and
       (JsPath \ "country").read[String]
   )(Country.apply _)
 
-  private def loadCountries(): Seq[Country] = {
-    env.resourceAsStream(countriesJsonPath).flatMap { stream =>
-      Using(stream) { stream => Json.parse(Source.fromInputStream(stream).mkString) }.toOption
-    }.fold(throw new RuntimeException("Couldn't load country data")) {
-      _.validate[Seq[Country]] match {
-        case JsSuccess(countries, _) => countries.sortBy(_.name)
-        case JsError(errors)         => throw new RuntimeException(s"Failed to parse countries JSON: $errors")
+  private def loadCountries(): Seq[Country] =
+    env
+      .resourceAsStream(countriesJsonPath)
+      .flatMap { stream =>
+        Using(stream)(stream => Json.parse(Source.fromInputStream(stream).mkString)).toOption
       }
-    }
-  }
+      .fold(throw new RuntimeException("Couldn't load country data")) {
+        _.validate[Seq[Country]] match {
+          case JsSuccess(countries, _) => countries.sortBy(_.name)
+          case JsError(errors)         => throw new RuntimeException(s"Failed to parse countries JSON: $errors")
+        }
+      }
 }

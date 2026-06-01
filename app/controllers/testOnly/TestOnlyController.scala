@@ -16,34 +16,31 @@
 
 package controllers.testOnly
 
+import play.api.mvc._
 import com.google.inject.Inject
 import connectors.UserAnswersConnector
-import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents}
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.ExecutionContext
 
 class TestOnlyController @Inject() (
-    sessionRepository: SessionRepository,
-    userAnswersConnector: UserAnswersConnector,
-    cc: ControllerComponents
-  )(implicit ec: ExecutionContext
-  ) extends AbstractController(cc) {
+  sessionRepository: SessionRepository,
+  userAnswersConnector: UserAnswersConnector,
+  cc: ControllerComponents
+)(implicit ec: ExecutionContext)
+    extends AbstractController(cc) {
 
-  def resetDatabase: Action[AnyContent] = Action.async {
-    implicit request =>
-      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-      sessionRepository.clear flatMap {
-        _ =>
-          userAnswersConnector.resetDatabase map {
-            response =>
-              response.status match {
-                case NO_CONTENT => Ok("Success")
-                case _          => BadGateway("Reset failed. Try again")
-              }
-          }
+  def resetDatabase: Action[AnyContent] = Action.async { implicit request =>
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    sessionRepository.clear flatMap { _ =>
+      userAnswersConnector.resetDatabase map { response =>
+        response.status match {
+          case NO_CONTENT => Ok("Success")
+          case _          => BadGateway("Reset failed. Try again")
+        }
       }
+    }
   }
 }

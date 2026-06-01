@@ -16,11 +16,11 @@
 
 package pages.transferDetails
 
-import controllers.transferDetails.routes
-import models.{CheckMode, Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
 import play.api.mvc.Call
+import controllers.transferDetails.routes
+import pages.QuestionPage
 import play.api.libs.json.JsPath
+import models._
 
 import java.time.LocalDate
 

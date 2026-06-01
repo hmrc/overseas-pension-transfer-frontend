@@ -16,18 +16,17 @@
 
 package viewmodels.checkAnswers.schemeOverview
 
-import models.Mode
-import play.api.i18n.{Lang, Messages}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object DateOfSubmissionSummary {
 
-  def row(mode: Mode, dateSubmitted: String)(implicit messages: Messages): SummaryListRow = {
-    implicit val lang: Lang = messages.lang
+  def row(dateSubmitted: String)(implicit messages: Messages): SummaryListRow = {
+    messages.lang
     SummaryListRowViewModel(
-      key   = "dateOfSubmission.label",
+      key = "dateOfSubmission.label",
       value = ValueViewModel(dateSubmitted)
     )
   }

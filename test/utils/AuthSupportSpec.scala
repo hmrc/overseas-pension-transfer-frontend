@@ -18,7 +18,7 @@ package utils
 
 import config.FrontendAppConfig
 import models.authentication.{PsaId, PsaUser, PspId, PspUser}
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar

@@ -16,26 +16,30 @@
 
 package models
 
+import queries.Gettable
+import queries.Settable
 import play.api.libs.json._
-import queries.{Gettable, Settable}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+
 import java.time.Instant
-import scala.util.{Failure, Success, Try}
 
 class DeserialisationException(message: String) extends RuntimeException(message)
 
 final case class UserAnswers(
-    id: TransferId,
-    pstr: PstrNumber,
-    data: JsObject,
-    lastUpdated: Instant
-  ) {
+  id: TransferId,
+  pstr: PstrNumber,
+  data: JsObject,
+  lastUpdated: Instant
+) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  import play.api.libs.json._
+  import play.api.libs.json.*
 
   def getWithLogging[A](page: Gettable[A])(implicit rds: Reads[A], mf: Manifest[A]): Either[Throwable, A] = {
     val path     = page.path
@@ -52,10 +56,11 @@ final case class UserAnswers(
              |Path     : $path
              |Expected : ${mf.runtimeClass.getSimpleName}
              |Actual   : ${Json.prettyPrint(rawValue)}
-             |Errors   : ${errors.map {
-              case (jsPath, validationErrors) =>
+             |Errors   : ${errors
+              .map { case (jsPath, validationErrors) =>
                 s"$jsPath -> ${validationErrors.map(_.message).mkString(", ")}"
-            }.mkString("\n           |           ")}
+              }
+              .mkString("\n           |           ")}
              |""".stripMargin
 
         Left(new DeserialisationException(errorMsg))
@@ -71,10 +76,9 @@ final case class UserAnswers(
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(Some(value), updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(Some(value), updatedAnswers)
     }
   }
 
@@ -87,10 +91,9 @@ final case class UserAnswers(
         Success(data)
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(None, updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(None, updatedAnswers)
     }
   }
 }
@@ -99,7 +102,7 @@ object UserAnswers {
 
   val reads: Reads[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").read[TransferId] and
@@ -111,7 +114,7 @@ object UserAnswers {
 
   val writes: OWrites[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").write[TransferId] and

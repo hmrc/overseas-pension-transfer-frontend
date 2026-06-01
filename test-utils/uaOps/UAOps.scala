@@ -16,20 +16,15 @@
 
 package uaOps
 
-import pages.qropsDetails._
-import models.address.{Countries, Country, PropertyAddress, QROPSAddress, SchemeManagersAddress}
+import models.address.*
 import models.{PersonName, SchemeManagerType, UserAnswers}
 import org.scalatest.TryValues.convertTryToSuccessOrFailure
-import pages.qropsSchemeManagerDetails._
+import pages.qropsDetails.*
+import pages.qropsSchemeManagerDetails.*
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
-  UnquotedSharesClassPage,
-  UnquotedSharesCompanyNamePage,
-  UnquotedSharesNumberPage,
-  UnquotedSharesValuePage
-}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
 
 object UAOps {
 
@@ -81,9 +76,11 @@ object UAOps {
       ua.set(
         OtherAssetsDescriptionPage(idx),
         s"OtherAsset-${idx + 1}"
-      ).success.value
+      ).success
+        .value
         .set(OtherAssetsValuePage(idx), BigDecimal(200 + idx * 50))
-        .success.value
+        .success
+        .value
 
     def withPropertyAsset(idx: Int): UserAnswers =
       ua.set(
@@ -97,35 +94,46 @@ object UAOps {
           Countries.UK,
           None
         )
-      ).success.value
+      ).success
+        .value
         .set(PropertyValuePage(idx), BigDecimal(10000 + idx * 1000)) // incremental property values
-        .success.value
+        .success
+        .value
         .set(PropertyDescriptionPage(idx), s"Description-${idx + 1}")
-        .success.value
+        .success
+        .value
 
     def withQuotedSharesAsset(idx: Int): UserAnswers =
       ua.set(
         QuotedSharesCompanyNamePage(idx),
         s"QuotedCompany-${idx + 1}"
-      ).success.value
+      ).success
+        .value
         .set(QuotedSharesValuePage(idx), BigDecimal(500 + idx * 125))
-        .success.value
+        .success
+        .value
         .set(QuotedSharesNumberPage(idx), 600 + idx * 150)
-        .success.value
+        .success
+        .value
         .set(QuotedSharesClassPage(idx), "B")
-        .success.value
+        .success
+        .value
 
     def withUnquotedSharesAsset(idx: Int): UserAnswers =
       ua.set(
         UnquotedSharesCompanyNamePage(idx),
         s"UnquotedCompany-${idx + 1}"
-      ).success.value
+      ).success
+        .value
         .set(UnquotedSharesValuePage(idx), BigDecimal(500 + idx * 125))
-        .success.value
+        .success
+        .value
         .set(UnquotedSharesNumberPage(idx), 600 + idx * 150)
-        .success.value
+        .success
+        .value
         .set(UnquotedSharesClassPage(idx), "B")
-        .success.value
+        .success
+        .value
 
   }
 }

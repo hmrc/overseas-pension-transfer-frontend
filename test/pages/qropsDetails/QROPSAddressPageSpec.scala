@@ -18,7 +18,7 @@ package pages.qropsDetails
 
 import base.SpecBase
 import controllers.qropsDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -30,7 +30,9 @@ class QROPSAddressPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Index" in {
 
-        QROPSAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.QROPSCountryController.onPageLoad(NormalMode)
+        QROPSAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.QROPSCountryController.onPageLoad(
+          NormalMode
+        )
       }
     }
 

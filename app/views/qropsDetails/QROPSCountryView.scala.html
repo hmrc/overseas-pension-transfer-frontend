@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary, GovukInput}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukErrorSummary}
 @import viewmodels.CountrySelectViewModel
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
@@ -25,7 +25,6 @@
         layout: templates.Layout,
         formHelper: FormWithCSRF,
         govukErrorSummary: GovukErrorSummary,
-        govukInput: GovukInput,
         inputCountry: InputCountry,
         govukButton: GovukButton
 )

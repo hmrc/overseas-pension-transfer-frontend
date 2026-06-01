@@ -22,19 +22,17 @@ import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
+import utils.DateTimeFormats.dateInput
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 class MemberDateOfBirthFormProviderSpec extends DateBehaviours with SpecBase {
 
   implicit private val messages: Messages = stubMessages()
   private val form                        = new MemberDateOfBirthFormProvider(clock)()
 
-  private val minDate = LocalDate.of(1901, 1, 1)
+  private val minDate = LocalDate.of(minYear, 1, 1)
   private val maxDate = today
-
-  private def dateFormatter = ddMMyyyy
 
   ".value" - {
 
@@ -43,24 +41,24 @@ class MemberDateOfBirthFormProviderSpec extends DateBehaviours with SpecBase {
     behave like dateField(form, "value", validData)
 
     behave like dateFieldWithMax(
-      form      = form,
-      key       = "value",
-      max       = maxDate,
+      form = form,
+      key = "value",
+      max = maxDate,
       formError = FormError(
         "value",
         "common.dateInput.error.invalid.timeFrame",
-        Seq(maxDate.format(dateFormatter))
+        Seq(maxDate.format(dateInput))
       )
     )
 
     behave like dateFieldWithMin(
-      form      = form,
-      key       = "value",
-      min       = minDate,
+      form = form,
+      key = "value",
+      min = minDate,
       formError = FormError(
         "value",
         "common.dateInput.error.invalid.timeFrame",
-        Seq(minDate.format(dateFormatter))
+        Seq(minDate.format(dateInput))
       )
     )
 

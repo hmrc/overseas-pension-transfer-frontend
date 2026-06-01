@@ -21,7 +21,7 @@ import connectors.TransferConnector
 import models.dtos.GetAllTransfersDTO
 import models.responses.{AllTransfersUnexpectedError, NoTransfersFound, TransferError}
 import models.{AllTransfersItem, DashboardData, PstrNumber, SrnNumber}
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -48,11 +48,22 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       val pstr = PstrNumber("12345678AB")
 
       val existingDataUpdatedAt = Instant.parse("2025-09-01T12:00:00Z")
-      val startDd               = DashboardData.create("id", now)
-        .set(TransfersDataUpdatedAtQuery, existingDataUpdatedAt).success.value
-        .set(TransfersOverviewQuery, Seq(AllTransfersItem(userAnswersTransferNumber, None, None, None, None, None, None, None, None, None))).success.value
+      val startDd               = DashboardData
+        .create("id", now)
+        .set(TransfersDataUpdatedAtQuery, existingDataUpdatedAt)
+        .success
+        .value
+        .set(
+          TransfersOverviewQuery,
+          Seq(AllTransfersItem(userAnswersTransferNumber, None, None, None, None, None, None, None, None, None))
+        )
+        .success
+        .value
 
-      when(mockConnector.getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockConnector
+          .getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext])
+      )
         .thenReturn(Future.successful(Left(NoTransfersFound)))
 
       val result = await(service.getAllTransfersData(startDd, pstr, SrnNumber("1234567890")))
@@ -74,22 +85,25 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
 
       val dtoTransfers: Seq[AllTransfersItem] = Seq(
         AllTransfersItem(
-          transferId      = userAnswersTransferNumber,
-          qtVersion       = None,
-          nino            = None,
+          transferId = userAnswersTransferNumber,
+          qtVersion = None,
+          nino = None,
           memberFirstName = Some("Ada"),
-          memberSurname   = Some("Lovelace"),
-          submissionDate  = None,
-          lastUpdated     = None,
-          qtStatus        = None,
-          pstrNumber      = None,
-          qtDate          = None
+          memberSurname = Some("Lovelace"),
+          submissionDate = None,
+          lastUpdated = None,
+          qtStatus = None,
+          pstrNumber = None,
+          qtDate = None
         )
       )
       val dtoLastUpdated                      = Instant.parse("2025-09-24T08:00:00Z")
       val dto                                 = GetAllTransfersDTO(pstr, dtoLastUpdated, dtoTransfers)
 
-      when(mockConnector.getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockConnector
+          .getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext])
+      )
         .thenReturn(Future.successful(Right(dto)))
 
       val startDd = DashboardData.create("id", now)
@@ -112,15 +126,51 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
       val pstr = PstrNumber("12345678AB")
 
       val rawTransfers: Seq[AllTransfersItem] = Seq(
-        AllTransfersItem(userAnswersTransferNumber, None, None, None, Some("Ada"), Some("Lovelace"), None, None, None, None),
-        AllTransfersItem(userAnswersTransferNumber, None, None, None, Some(""), Some("Valid"), None, None, None, None), // invalid
-        AllTransfersItem(userAnswersTransferNumber, None, None, None, Some("Grace"), None, None, None, None, None) // invalid
+        AllTransfersItem(
+          userAnswersTransferNumber,
+          None,
+          None,
+          None,
+          Some("Ada"),
+          Some("Lovelace"),
+          None,
+          None,
+          None,
+          None
+        ),
+        AllTransfersItem(
+          userAnswersTransferNumber,
+          None,
+          None,
+          None,
+          Some(""),
+          Some("Valid"),
+          None,
+          None,
+          None,
+          None
+        ), // invalid
+        AllTransfersItem(
+          userAnswersTransferNumber,
+          None,
+          None,
+          None,
+          Some("Grace"),
+          None,
+          None,
+          None,
+          None,
+          None
+        ) // invalid
       )
 
       val dtoLastUpdated = Instant.parse("2025-10-01T09:00:00Z")
       val dto            = GetAllTransfersDTO(pstr, dtoLastUpdated, rawTransfers)
 
-      when(mockConnector.getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockConnector
+          .getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext])
+      )
         .thenReturn(Future.successful(Right(dto)))
 
       val startDd = DashboardData.create("id", now)
@@ -142,7 +192,10 @@ class TransferServiceSpec extends AnyFreeSpec with SpecBase with Matchers with M
 
       val err: TransferError = AllTransfersUnexpectedError("boom", None)
 
-      when(mockConnector.getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockConnector
+          .getAllTransfers(meq(SrnNumber("1234567890")), meq(pstr))(any[HeaderCarrier], any[ExecutionContext])
+      )
         .thenReturn(Future.successful(Left(err)))
 
       val startDd = DashboardData.create("id", now)

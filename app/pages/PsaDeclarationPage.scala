@@ -16,8 +16,8 @@
 
 package pages
 
-import models.UserAnswers
 import play.api.mvc.Call
+import models.UserAnswers
 
 object PsaDeclarationPage extends Page {
 

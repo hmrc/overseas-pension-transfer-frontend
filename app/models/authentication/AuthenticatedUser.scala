@@ -16,7 +16,6 @@
 
 package models.authentication
 
-import models.PensionSchemeDetails
 import uk.gov.hmrc.auth.core.AffinityGroup
 import play.api.libs.json._
 
@@ -44,10 +43,10 @@ object AuthenticatedUser {
 }
 
 case class PsaUser(
-    psaId: PsaId,
-    internalId: String,
-    affinityGroup: AffinityGroup
-  ) extends AuthenticatedUser {
+  psaId: PsaId,
+  internalId: String,
+  affinityGroup: AffinityGroup
+) extends AuthenticatedUser {
   override val userType: UserType = Psa
 }
 
@@ -56,10 +55,10 @@ object PsaUser {
 }
 
 case class PspUser(
-    pspId: PspId,
-    internalId: String,
-    affinityGroup: AffinityGroup
-  ) extends AuthenticatedUser {
+  pspId: PspId,
+  internalId: String,
+  affinityGroup: AffinityGroup
+) extends AuthenticatedUser {
   override val userType: UserType = Psp
 }
 

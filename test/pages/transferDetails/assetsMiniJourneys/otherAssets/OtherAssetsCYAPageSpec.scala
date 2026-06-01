@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import uaOps.UAOps.Assets
@@ -32,12 +32,18 @@ class OtherAssetsCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in Normal Mode" - {
       "must go to AmendContinue" in {
-        OtherAssetsCYAPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(
+        OtherAssetsCYAPage(index).nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(
           NormalMode
         )
       }
       "must go to more page if more than 5 assets" in {
-        OtherAssetsCYAPage(index).nextPage(NormalMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(
+        OtherAssetsCYAPage(index).nextPage(
+          NormalMode,
+          moreThan5Ua
+        ) mustEqual AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(
           NormalMode
         )
       }
@@ -45,12 +51,18 @@ class OtherAssetsCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in CheckMode" - {
       "must go to AmendContinue" in {
-        OtherAssetsCYAPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(
+        OtherAssetsCYAPage(index).nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(
           CheckMode
         )
       }
       "must go to more page if more than 5 assets" in {
-        OtherAssetsCYAPage(index).nextPage(CheckMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(
+        OtherAssetsCYAPage(index).nextPage(
+          CheckMode,
+          moreThan5Ua
+        ) mustEqual AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(
           CheckMode
         )
       }
@@ -58,12 +70,18 @@ class OtherAssetsCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in FinalCheckMode" - {
       "must go to AmendContinue" in {
-        OtherAssetsCYAPage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(
+        OtherAssetsCYAPage(index).nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(
           FinalCheckMode
         )
       }
       "must go to more page if more than 5 assets" in {
-        OtherAssetsCYAPage(index).nextPage(FinalCheckMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(
+        OtherAssetsCYAPage(index).nextPage(
+          FinalCheckMode,
+          moreThan5Ua
+        ) mustEqual AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(
           FinalCheckMode
         )
       }
@@ -71,12 +89,18 @@ class OtherAssetsCYAPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in AmendCheckMode" - {
       "must go to AmendContinue" in {
-        OtherAssetsCYAPage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(
+        OtherAssetsCYAPage(index).nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(
           AmendCheckMode
         )
       }
       "must go to more page if more than 5 assets" in {
-        OtherAssetsCYAPage(index).nextPage(AmendCheckMode, moreThan5Ua) mustEqual AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(
+        OtherAssetsCYAPage(index).nextPage(
+          AmendCheckMode,
+          moreThan5Ua
+        ) mustEqual AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController.onPageLoad(
           AmendCheckMode
         )
       }

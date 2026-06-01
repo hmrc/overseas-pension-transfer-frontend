@@ -16,14 +16,15 @@
 
 package connectors.parsers
 
-import models.email.{EmailAccepted, EmailNotSent, EmailSendingResult, EmailUnsendable}
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.HttpReads
+import uk.gov.hmrc.http.HttpResponse
+import models.email._
 
 object EmailHttpParser {
 
   implicit object EmailResponseReads extends HttpReads[EmailSendingResult] {
 
-    override def read(method: String, url: String, response: HttpResponse): EmailSendingResult = {
+    override def read(method: String, url: String, response: HttpResponse): EmailSendingResult =
       response.status match {
         case status if status >= 200 && status < 300 =>
           EmailAccepted
@@ -34,6 +35,5 @@ object EmailHttpParser {
         case _                                       =>
           EmailAccepted
       }
-    }
   }
 }

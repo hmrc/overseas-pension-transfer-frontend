@@ -16,10 +16,12 @@
 
 package utils
 
-import play.api.Logging
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpResponse
 import models.BackendError
-import play.api.libs.json.{JsPath, JsonValidationError}
+import play.api.Logging
+import play.api.libs.json.JsPath
+import play.api.libs.json.JsonValidationError
 
 trait DownstreamLogging extends Logging {
 
@@ -29,7 +31,8 @@ trait DownstreamLogging extends Logging {
   }
 
   private def correlationFromResponse(response: HttpResponse): Option[String] =
-    response.header("X-Request-ID")
+    response
+      .header("X-Request-ID")
       .orElse(response.header("X-Correlation-ID"))
 
   private def correlationFromHeaderCarrier(hc: HeaderCarrier): Option[String] =
@@ -43,10 +46,10 @@ trait DownstreamLogging extends Logging {
 
     val err = BackendError(
       correlationId = correlationId,
-      status        = response.status,
-      reason        = reason,
-      origin        = origin,
-      body          = body
+      status = response.status,
+      reason = reason,
+      origin = origin,
+      body = body
     )
 
     logger.error(s"Downstream failure: ${err.message} body=$body")

@@ -17,10 +17,9 @@
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
 import base.SpecBase
-import controllers.routes
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.responses.UserAnswersErrorResponse
-import models.{CheckMode, DownstreamError, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,9 +28,9 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
-import services.{DownstreamError, UserAnswersService}
+import services.UserAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAView
@@ -41,7 +40,9 @@ import scala.concurrent.Future
 class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val otherAssetsCyaRoute =
-    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController.onPageLoad(NormalMode, 0).url
+    controllers.transferDetails.assetsMiniJourneys.otherAssets.routes.OtherAssetsCYAController
+      .onPageLoad(NormalMode, 0)
+      .url
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]
@@ -126,7 +127,8 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual
-          pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAPage(0)
+          pages.transferDetails.assetsMiniJourneys.otherAssets
+            .OtherAssetsCYAPage(0)
             .nextPageRecovery()
             .url
       }

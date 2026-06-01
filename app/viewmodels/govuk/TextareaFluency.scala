@@ -16,11 +16,11 @@
 
 package viewmodels.govuk
 
+import uk.gov.hmrc.govukfrontend.views.viewmodels.textarea.Textarea
+import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
+import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import play.api.data.Field
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
-import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
-import uk.gov.hmrc.govukfrontend.views.viewmodels.textarea.Textarea
 import viewmodels.ErrorMessageAwareness
 
 object textarea extends TextareaFluency
@@ -30,15 +30,14 @@ trait TextareaFluency {
   object TextareaViewModel extends ErrorMessageAwareness {
 
     def apply(
-        field: Field,
-        label: Label = Label()
-      )(implicit messages: Messages
-      ): Textarea =
+      field: Field,
+      label: Label = Label()
+    )(implicit messages: Messages): Textarea =
       Textarea(
-        id           = field.id,
-        name         = field.name,
-        value        = field.value,
-        label        = label,
+        id = field.id,
+        name = field.name,
+        value = field.value,
+        label = label,
         errorMessage = errorMessage(field)
       )
   }

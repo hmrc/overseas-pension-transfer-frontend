@@ -16,76 +16,84 @@
 
 package controllers.transferDetails
 
-import controllers.actions._
-import controllers.helpers.ErrorHandling
-import forms.transferDetails.OverseasTransferAllowanceFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers}
-import org.apache.pekko.Done
-import pages.transferDetails.OverseasTransferAllowancePage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.TransferDetailsRecordVersionQuery
-import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
 import views.html.transferDetails.OverseasTransferAllowanceView
+import forms.transferDetails.OverseasTransferAllowanceFormProvider
+import controllers.helpers.ErrorHandling
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
+import org.apache.pekko.Done
+import play.api.data.Form
+import pages.transferDetails.OverseasTransferAllowancePage
+import services.UserAnswersService
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.Try
 
+import javax.inject.Inject
+
 class OverseasTransferAllowanceController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: OverseasTransferAllowanceFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: OverseasTransferAllowanceView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: OverseasTransferAllowanceFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: OverseasTransferAllowanceView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[BigDecimal] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (identify andThen schemeData andThen getData) {
-      implicit request =>
-        val preparedForm = request.userAnswers.get(OverseasTransferAllowancePage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-        Ok(view(preparedForm, mode))
+    (identify andThen schemeData andThen getData) { implicit request =>
+      val preparedForm = request.userAnswers.get(OverseasTransferAllowancePage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
+      Ok(view(preparedForm, mode))
 
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              request.userAnswers.set(OverseasTransferAllowancePage, value) flatMap {
-                answers =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                request.userAnswers.set(OverseasTransferAllowancePage, value) flatMap { answers =>
                   answers.remove(TransferDetailsRecordVersionQuery)
+                }
+              } else {
+                request.userAnswers.set(OverseasTransferAllowancePage, value)
               }
-            } else {
-              request.userAnswers.set(OverseasTransferAllowancePage, value)
-            }
 
-          for {
-            updatedAnswers <- Future.fromTry(setAnswers())
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            for {
+              updatedAnswers <- Future.fromTry(setAnswers())
+              savedForLater  <-
+                userAnswersService
+                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
 
-          } yield {
-            savedForLater match {
+            } yield savedForLater match {
               case Right(Done) => Redirect(OverseasTransferAllowancePage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
           }
-        }
-      )
+        )
   }
 }

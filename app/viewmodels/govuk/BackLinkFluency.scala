@@ -16,9 +16,9 @@
 
 package viewmodels.govuk
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import play.api.i18n.Messages
 
 object backlink extends BackLinkFluency
 
@@ -28,7 +28,7 @@ trait BackLinkFluency {
 
     def apply(href: String)(implicit messages: Messages): BackLink =
       BackLink(
-        href    = href,
+        href = href,
         content = Text(messages("site.back"))
       )
   }

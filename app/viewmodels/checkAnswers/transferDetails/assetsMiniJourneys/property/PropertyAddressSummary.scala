@@ -16,31 +16,28 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import models.{Mode, SessionData, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.AddressViewModel
+import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
+import models.Mode
+import models.UserAnswers
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import play.api.i18n.Messages
+import viewmodels.AddressViewModel
 
 object PropertyAddressSummary {
 
-  def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] = {
-    userAnswers.get(PropertyAddressPage(index)).map {
-      address =>
-        {
-          val addressVM = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
-          SummaryListRowViewModel(
-            key     = "propertyAddress.checkYourAnswersLabel",
-            value   = ValueViewModel(HtmlContent(addressVM)),
-            actions = Seq(
-              ActionItemViewModel("site.change", PropertyAddressPage(index).changeLink(mode).url)
-                .withVisuallyHiddenText(messages("propertyAddress.change.hidden"))
-            )
-          )
-        }
+  def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
+    userAnswers.get(PropertyAddressPage(index)).map { address =>
+      val addressVM = AddressViewModel.formatAddressWithLineBreaks(address, ukMode = false)
+      SummaryListRowViewModel(
+        key = "propertyAddress.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(addressVM)),
+        actions = Seq(
+          ActionItemViewModel("site.change", PropertyAddressPage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("propertyAddress.change.hidden"))
+        )
+      )
     }
-  }
 }

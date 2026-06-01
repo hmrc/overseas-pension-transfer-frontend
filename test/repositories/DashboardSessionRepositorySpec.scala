@@ -16,19 +16,19 @@
 
 package repositories
 
+import base.SpecBase
+import config.TestAppConfig
+import models.{AllTransfersItem, DashboardData, QtNumber, QtStatus}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import uk.gov.hmrc.mongo.test.CleanMongoCollectionSupport
-import base.SpecBase
-import config.TestAppConfig
 import services.EncryptionService
-import models.{AllTransfersItem, DashboardData, QtNumber, QtStatus}
+import uk.gov.hmrc.mongo.test.CleanMongoCollectionSupport
 
-import java.time.{Clock, Duration, Instant, Period, ZoneOffset}
+import java.time.{Duration, *}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 class DashboardSessionRepositorySpec
     extends AnyFreeSpec
@@ -47,10 +47,10 @@ class DashboardSessionRepositorySpec
   private val appConfig  = new TestAppConfig
 
   private val repository = new DashboardSessionRepository(
-    mongoComponent    = mongoComponent,
+    mongoComponent = mongoComponent,
     encryptionService = encryption,
-    appConfig         = appConfig,
-    clock             = clock
+    appConfig = appConfig,
+    clock = clock
   )
 
   "DashboardSessionRepository" - {
@@ -85,20 +85,21 @@ class DashboardSessionRepositorySpec
     "must find expiring transfers within 2 days" in {
       def makeTransfer(status: Option[QtStatus], lastUpdated: Option[Instant]) =
         AllTransfersItem(
-          transferId      = QtNumber("QT123456"),
-          qtVersion       = None,
-          qtStatus        = status,
-          nino            = None,
+          transferId = QtNumber("QT123456"),
+          qtVersion = None,
+          qtStatus = status,
+          nino = None,
           memberFirstName = None,
-          memberSurname   = None,
-          qtDate          = None,
-          lastUpdated     = lastUpdated,
-          pstrNumber      = None,
-          submissionDate  = None
+          memberSurname = None,
+          qtDate = None,
+          lastUpdated = lastUpdated,
+          pstrNumber = None,
+          submissionDate = None
         )
 
       val inProgress   = makeTransfer(Some(QtStatus.InProgress), Some(now.minus(Period.ofDays(24))))
-      val amendInProg  = makeTransfer(Some(QtStatus.AmendInProgress), Some(now.minus(Period.ofDays(23)).minus(Duration.ofHours(23))))
+      val amendInProg  =
+        makeTransfer(Some(QtStatus.AmendInProgress), Some(now.minus(Period.ofDays(23)).minus(Duration.ofHours(23))))
       val oldTransfer  = makeTransfer(Some(QtStatus.InProgress), Some(now.minus(Period.ofDays(10))))
       val complete     = makeTransfer(Some(QtStatus.Compiled), Some(now.minus(Period.ofDays(1))))
       val allTransfers = Seq(inProgress, amendInProg, oldTransfer, complete)

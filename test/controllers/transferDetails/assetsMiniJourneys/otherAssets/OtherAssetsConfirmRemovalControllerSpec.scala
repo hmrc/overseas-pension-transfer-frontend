@@ -28,7 +28,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import queries.assets.OtherAssetsQuery
 import services.UserAnswersService
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsConfirmRemovalView
@@ -80,7 +80,9 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual AssetsMiniJourneysRoutes.OtherAssetsAmendContinueController
+          .onPageLoad(NormalMode)
+          .url
       }
     }
 
@@ -100,7 +102,10 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, 1)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, 1)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

@@ -17,14 +17,13 @@
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
 import base.SpecBase
-import controllers.routes
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationFormProvider
 import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationView
 
@@ -34,13 +33,19 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
   private val form         = formProvider()
 
   private lazy val moreUnquotedSharesDeclarationRoute =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(NormalMode).url
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController
+      .onPageLoad(NormalMode)
+      .url
 
   private lazy val moreUnquotedSharesDeclarationRouteCheckMode =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(CheckMode).url
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController
+      .onPageLoad(CheckMode)
+      .url
 
   private lazy val moreUnquotedSharesDeclarationRouteFinalCheckMode =
-    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController.onPageLoad(FinalCheckMode).url
+    controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController
+      .onPageLoad(FinalCheckMode)
+      .url
 
   "MoreUnquotedSharesDeclaration Controller" - {
 
@@ -56,7 +61,10 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(form, rows, NormalMode)(fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)), messages(application)).toString
+          view(form, rows, NormalMode)(
+            fakeDisplayRequest(request, userAnswersWithAssets(assetsCount = 5)),
+            messages(application)
+          ).toString
       }
     }
 
@@ -71,7 +79,10 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
         val view   = application.injector.instanceOf[MoreUnquotedSharesDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -86,7 +97,9 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -101,7 +114,9 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.transferDetails.routes.TransferDetailsCYAController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -116,7 +131,9 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController
+          .onPageLoad()
+          .url
       }
     }
 
@@ -135,7 +152,10 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

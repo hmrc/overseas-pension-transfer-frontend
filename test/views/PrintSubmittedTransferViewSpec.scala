@@ -28,9 +28,9 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
   private val view = applicationBuilder().injector().instanceOf[PrintSubmittedTransferView]
 
   implicit val schemeRequest: SchemeRequest[_] = SchemeRequest(
-    request           = FakeRequest(),
+    request = FakeRequest(),
     authenticatedUser = psaUser,
-    schemeDetails     = schemeDetails
+    schemeDetails = schemeDetails
   )
 
   private val testQtNumberValue    = "QT123456"
@@ -40,18 +40,33 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
   private val transferDetails      = SummaryList()
   private val qropsDetails         = SummaryList()
   private val schemeManagerDetails = SummaryList()
-  private val managerEmail         = "someone@example.com"
   "PrintSubmittedTransferView" - {
 
     "show correct title" in {
       doc(
-        view(testQtNumberValue, overviewDetails, memberDetails, transferDetails, qropsDetails, schemeManagerDetails, managerEmail, mpsLink).body
+        view(
+          testQtNumberValue,
+          overviewDetails,
+          memberDetails,
+          transferDetails,
+          qropsDetails,
+          schemeManagerDetails,
+          mpsLink
+        ).body
       ).getElementsByTag("title").eachText().get(0) mustBe
         s"${messages("transferSubmitted.title")} - ${messages("service.name")} - GOV.UK"
     }
 
     behave like pageWithConfirmationPanel(
-      view(testQtNumberValue, overviewDetails, memberDetails, transferDetails, qropsDetails, schemeManagerDetails, managerEmail, mpsLink),
+      view(
+        testQtNumberValue,
+        overviewDetails,
+        memberDetails,
+        transferDetails,
+        qropsDetails,
+        schemeManagerDetails,
+        mpsLink
+      ),
       "transferSubmitted.heading",
       "transferSubmitted.referenceNumber.text",
       testQtNumberValue
@@ -59,7 +74,15 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
 
     "display correct links" in {
       val links = doc(
-        view(testQtNumberValue, overviewDetails, memberDetails, transferDetails, qropsDetails, schemeManagerDetails, managerEmail, mpsLink).body
+        view(
+          testQtNumberValue,
+          overviewDetails,
+          memberDetails,
+          transferDetails,
+          qropsDetails,
+          schemeManagerDetails,
+          mpsLink
+        ).body
       ).getElementById("main-content").getElementsByTag("a")
 
       links.get(0).text() mustBe messages("transferSubmitted.dashboardLink.text")
@@ -71,7 +94,15 @@ class PrintSubmittedTransferViewSpec extends ViewBaseSpec {
 
     "display transfer details for print" in {
       val printDocScreen = doc(
-        view(testQtNumberValue, overviewDetails, memberDetails, transferDetails, qropsDetails, schemeManagerDetails, managerEmail, mpsLink).body
+        view(
+          testQtNumberValue,
+          overviewDetails,
+          memberDetails,
+          transferDetails,
+          qropsDetails,
+          schemeManagerDetails,
+          mpsLink
+        ).body
       ).getElementById("main-content")
       val headings       = printDocScreen.getElementsByTag("h2")
 

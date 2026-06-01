@@ -18,7 +18,7 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.memberDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -30,7 +30,9 @@ class MemberNamePageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
       "must go to Member Nino" in {
 
-        MemberNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberNinoController.onPageLoad(NormalMode)
+        MemberNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberNinoController.onPageLoad(
+          NormalMode
+        )
       }
     }
 

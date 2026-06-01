@@ -16,8 +16,10 @@
 
 package forms.qropsSchemeManagerDetails
 
-import com.google.i18n.phonenumbers.{NumberParseException, PhoneNumberUtil}
-import forms.mappings.{Mappings, Regex}
+import forms.mappings.Mappings
+import forms.mappings.Regex
+import com.google.i18n.phonenumbers.NumberParseException
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 import play.api.data.Form
 
 import javax.inject.Inject
@@ -35,12 +37,13 @@ class SchemeManagersContactFormProvider @Inject() extends Mappings with Regex {
         .verifying("schemeManagersContact.error.pattern", number => isValidPhoneNumber(number))
     )
 
-  /** Accepts any valid phone number in the world. If it starts with '+', it's treated as an international number. If it doesn't, we fall back to GB as a
-    * default region for parsing. See: https://design-system.service.gov.uk/patterns/phone-numbers/
+  /** Accepts any valid phone number in the world. If it starts with '+', it's treated as an international number. If it
+    * doesn't, we fall back to GB as a default region for parsing. See:
+    * https://design-system.service.gov.uk/patterns/phone-numbers/
     */
   private def isValidPhoneNumber(raw: String): Boolean = {
     val phoneUtil = PhoneNumberUtil.getInstance()
-    try {
+    try
       if (raw.isEmpty) {
         false
       } else {
@@ -48,7 +51,7 @@ class SchemeManagersContactFormProvider @Inject() extends Mappings with Regex {
         val parsed        = phoneUtil.parse(raw, defaultRegion)
         phoneUtil.isPossibleNumber(parsed)
       }
-    } catch {
+    catch {
       case _: NumberParseException => false
     }
   }

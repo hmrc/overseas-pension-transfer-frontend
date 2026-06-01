@@ -32,7 +32,9 @@ class UnquotedSharesConfirmRemovalViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(formProvider(), testIndex).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("unquotedSharesConfirmRemoval.title")} - ${messages("service.name")} - GOV.UK"
     }
 

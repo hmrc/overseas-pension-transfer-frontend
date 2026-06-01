@@ -16,58 +16,55 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-import play.api.data.validation
-import play.api.data.validation.{Constraint, Invalid, Valid}
 import utils.CurrencyFormats
+import play.api.data.validation.Constraint
+import play.api.data.validation.Invalid
+import play.api.data.validation.Valid
+import play.api.data.validation
 
 import java.time.LocalDate
 
 trait Constraints {
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
-    Constraint {
-      input =>
-        constraints
-          .map(_.apply(input))
-          .find(_ != Valid)
-          .getOrElse(Valid)
+    Constraint { input =>
+      constraints
+        .map(_.apply(input))
+        .find(_ != Valid)
+        .getOrElse(Valid)
     }
 
   protected def minimumValue[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
-        import ev._
+    Constraint { input =>
+      import ev.*
 
-        if (input >= minimum) {
-          Valid
-        } else {
-          Invalid(errorKey, minimum)
-        }
+      if (input >= minimum) {
+        Valid
+      } else {
+        Invalid(errorKey, minimum)
+      }
     }
 
   protected def maximumValue[A](maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
-        import ev._
+    Constraint { input =>
+      import ev.*
 
-        if (input <= maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, maximum)
-        }
+      if (input <= maximum) {
+        Valid
+      } else {
+        Invalid(errorKey, maximum)
+      }
     }
 
   protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
-        import ev._
+    Constraint { input =>
+      import ev.*
 
-        if (input >= minimum && input <= maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, minimum, maximum)
-        }
+      if (input >= minimum && input <= maximum) {
+        Valid
+      } else {
+        Invalid(errorKey, minimum, maximum)
+      }
     }
 
   protected def regexp(regex: String, errorKey: String): Constraint[String] =
@@ -119,22 +116,20 @@ trait Constraints {
     }
 
   protected def minimumCurrency(minimum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
-    Constraint {
-      input =>
-        if (input >= minimum) {
-          Valid
-        } else {
-          Invalid(errorKey, CurrencyFormats.currencyFormat(minimum))
-        }
+    Constraint { input =>
+      if (input >= minimum) {
+        Valid
+      } else {
+        Invalid(errorKey, CurrencyFormats.currencyFormat(minimum))
+      }
     }
 
   protected def maximumCurrency(maximum: BigDecimal, errorKey: String): Constraint[BigDecimal] =
-    Constraint {
-      input =>
-        if (input <= maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, CurrencyFormats.currencyFormat(maximum))
-        }
+    Constraint { input =>
+      if (input <= maximum) {
+        Valid
+      } else {
+        Invalid(errorKey, CurrencyFormats.currencyFormat(maximum))
+      }
     }
 }

@@ -17,28 +17,26 @@
 package models
 
 import base.SpecBase
-import models.TaskCategory._
+import models.TaskCategory.*
 import models.taskList.TaskStatus
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.SubmitToHMRCPage
-import play.api.libs.json._
+import play.api.libs.json.*
 import queries.TaskStatusQuery
 import services.EncryptionService
-
-import java.time.Instant
 
 class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   private val encryptionService = new EncryptionService("F42sAkGScIpm4Vlui6XGpKW/zvmfyAYyoNHeLVQuoCk=")
 
   private val sessionData = SessionData(
-    sessionId         = "Int-8d355b23-d997-4ea4-b766-c547334f313a",
-    transferId        = TransferNumber("5772e197-70ff-4767-8409-44f18774eb75"),
+    sessionId = "Int-8d355b23-d997-4ea4-b766-c547334f313a",
+    transferId = TransferNumber("5772e197-70ff-4767-8409-44f18774eb75"),
     schemeInformation = schemeDetails,
-    user              = psaUser,
-    data              = Json.obj("memberDetails" -> Json.obj("status" -> "inProgress")),
-    lastUpdated       = now
+    user = psaUser,
+    data = Json.obj("memberDetails" -> Json.obj("status" -> "inProgress")),
+    lastUpdated = now
   )
 
   "get" - {
@@ -61,8 +59,12 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "remove" - {
     "should remove existing Json from data field" in {
-      emptySessionData.copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
-        .remove(SubmitToHMRCPage).success.value.data mustBe
+      emptySessionData
+        .copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
+        .remove(SubmitToHMRCPage)
+        .success
+        .value
+        .data mustBe
         Json.obj("key" -> "value")
     }
   }
@@ -83,7 +85,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
   "Encryption wrappers" - {
 
     "should encrypt and decrypt session data correctly" in {
-      import SessionData._
+      import SessionData.*
 
       val decryptedWrapper = DecryptedSessionData(sessionData.data)
       val encryptedWrapper = decryptedWrapper.encrypt(encryptionService)
@@ -96,7 +98,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
     }
 
     "should produce different ciphertexts for the same input (due to random IV)" in {
-      import SessionData._
+      import SessionData.*
 
       val enc1 = DecryptedSessionData(sessionData.data).encrypt(encryptionService)
       val enc2 = DecryptedSessionData(sessionData.data).encrypt(encryptionService)
@@ -105,7 +107,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
     }
 
     "should return Left when decryption fails for invalid cipher text" in {
-      import SessionData._
+      import SessionData.*
       val badEnc = EncryptedSessionData("invalid-cipher-text")
 
       val result = badEnc.decrypt(encryptionService)
@@ -121,7 +123,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
       val written = format.writes(sessionData)
 
       (written \ "data").as[String] must not be empty
-      (written \ "data").as[String] must not include ("memberDetails")
+      (written \ "data").as[String] must not include "memberDetails"
 
       val readBack = format.reads(written).get
 

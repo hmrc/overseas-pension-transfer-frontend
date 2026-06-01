@@ -17,10 +17,12 @@
 package validators
 
 import cats.data.Chain
-import cats.implicits.{catsSyntaxTuple5Semigroupal, catsSyntaxValidatedIdBinCompat0}
-import models.address.{Country, QROPSAddress}
+import cats.implicits.catsSyntaxTuple5Semigroupal
+import cats.implicits.catsSyntaxValidatedIdBinCompat0
+import models.address.Country
+import models.address.QROPSAddress
+import models._
 import models.transferJourneys.QropsDetails
-import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.qropsDetails._
 
 object QropsDetailsValidator extends Validator[QropsDetails] {
@@ -64,9 +66,11 @@ object QropsDetailsValidator extends Validator[QropsDetails] {
     (answers.get(QROPSOtherCountryPage), answers.get(QROPSCountryPage)) match {
       case (Some(oCountry), Some(Country("ZZ", "Other"))) => Some(oCountry).validNec
       case (None, Some(Country("ZZ", "Other")))           => DataMissingError(QROPSOtherCountryPage).invalidNec
-      case (Some(_), None)                                => GenericError("Cannot have a value for other Country where value of QROPS Country is None").invalidNec
+      case (Some(_), None)                                =>
+        GenericError("Cannot have a value for other Country where value of QROPS Country is None").invalidNec
       case (None, Some(_))                                => None.validNec
-      case (Some(_), Some(_))                             => GenericError(s"Cannot have valid payload value of QROPS Country is not 'Other'").invalidNec
+      case (Some(_), Some(_))                             =>
+        GenericError(s"Cannot have valid payload value of QROPS Country is not 'Other'").invalidNec
       case (None, None)                                   => DataMissingError(QROPSOtherCountryPage).invalidNec
     }
 

@@ -16,27 +16,28 @@
 
 package validators
 
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
 import cats.data.Chain
 import cats.implicits._
-import models.WhyTransferIsTaxable.{NoExclusion, TransferExceedsOTCAllowance}
+import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
+import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
+import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
 import models.assets.TypeOfAsset
 import models.assets.TypeOfAsset._
-import models.transferJourneys._
-import models.{ApplicableTaxExclusions, DataMissingError, GenericError, UserAnswers, ValidationResult, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
-import pages.transferDetails._
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import pages.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationPage
-import pages.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationPage
-import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
+import models._
+import validators.assetsValidators._
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
+import models.transferJourneys._
 import queries.assets._
-import validators.assetsValidators.{OtherAssetsValidator, PropertyValidator, QuotedSharesValidator, UnquotedSharesValidator}
+import models.WhyTransferIsTaxable.NoExclusion
+import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
+import pages.transferDetails._
 
 import java.time.LocalDate
 
 object TransferDetailsValidator extends Validator[TransferDetails] {
 
-  override def fromUserAnswers(userAnswers: UserAnswers): ValidationResult[TransferDetails] = {
+  override def fromUserAnswers(userAnswers: UserAnswers): ValidationResult[TransferDetails] =
     (
       validateAllowanceBeforeTransfer(userAnswers),
       validateTransferAmount(userAnswers),
@@ -59,7 +60,6 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
       OtherAssetsValidator.validateOtherAssetsDetails(userAnswers),
       validateMoreThan5Other(userAnswers)
     ).mapN(TransferDetails.apply)
-  }
 
   private def validateAllowanceBeforeTransfer(answers: UserAnswers): ValidationResult[BigDecimal] =
     answers.get(OverseasTransferAllowancePage) match {
@@ -95,7 +95,9 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
         DataMissingError(WhyTransferIsTaxablePage).invalidNec
     }
 
-  private def validateWhyIsTransferNotTaxable(answers: UserAnswers): ValidationResult[Option[Set[WhyTransferIsNotTaxable]]] =
+  private def validateWhyIsTransferNotTaxable(
+    answers: UserAnswers
+  ): ValidationResult[Option[Set[WhyTransferIsNotTaxable]]] =
     answers.get(IsTransferTaxablePage) match {
       case Some(false) =>
         answers.get(WhyTransferIsNotTaxablePage) match {
@@ -104,14 +106,17 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
         }
       case Some(true)  =>
         answers.get(WhyTransferIsNotTaxablePage) match {
-          case Some(_) => GenericError("reasonNoOverseasTransfer cannot be present when paymentTaxableOverseas is true").invalidNec
+          case Some(_) =>
+            GenericError("reasonNoOverseasTransfer cannot be present when paymentTaxableOverseas is true").invalidNec
           case None    => None.validNec
         }
       case None        =>
         DataMissingError(WhyTransferIsNotTaxablePage).invalidNec
     }
 
-  private def validateApplicableTaxExclusions(answers: UserAnswers): ValidationResult[Option[Set[ApplicableTaxExclusions]]] =
+  private def validateApplicableTaxExclusions(
+    answers: UserAnswers
+  ): ValidationResult[Option[Set[ApplicableTaxExclusions]]] =
     (answers.get(IsTransferTaxablePage), answers.get(WhyTransferIsTaxablePage)) match {
       case (Some(true), Some(TransferExceedsOTCAllowance)) =>
         answers.get(ApplicableTaxExclusionsPage) match {
@@ -121,30 +126,33 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
       case (Some(true), Some(NoExclusion))                 =>
         answers.get(ApplicableTaxExclusionsPage) match {
           case None => None.validNec
-          case _    => GenericError("Applicable exclusions cannot be present when WhyTransferTaxable is NoExclusion").invalidNec
+          case _    =>
+            GenericError("Applicable exclusions cannot be present when WhyTransferTaxable is NoExclusion").invalidNec
         }
       case (Some(false), _)                                =>
         answers.get(ApplicableTaxExclusionsPage) match {
           case None => None.validNec
-          case _    => GenericError("applicableExclusion cannot be present when paymentTaxableOverseas is false").invalidNec
+          case _    =>
+            GenericError("applicableExclusion cannot be present when paymentTaxableOverseas is false").invalidNec
         }
       case _                                               => DataMissingError(ApplicableTaxExclusionsPage).invalidNec
     }
 
-  private def validateAmountOfTaxDeducted(answers: UserAnswers): ValidationResult[Option[BigDecimal]] = {
+  private def validateAmountOfTaxDeducted(answers: UserAnswers): ValidationResult[Option[BigDecimal]] =
     answers.get(IsTransferTaxablePage) match {
-      case Some(true) => answers.get(AmountOfTaxDeductedPage) match {
+      case Some(true) =>
+        answers.get(AmountOfTaxDeductedPage) match {
           case Some(amountOfTaxDeducted) => Some(amountOfTaxDeducted).validNec
           case None                      => DataMissingError(AmountOfTaxDeductedPage).invalidNec
         }
       case Some(_)    => None.validNec
       case _          => DataMissingError(AmountOfTaxDeductedPage).invalidNec
     }
-  }
 
   private def validateNetTransferAmount(answers: UserAnswers): ValidationResult[Option[BigDecimal]] =
     answers.get(IsTransferTaxablePage) match {
-      case Some(true) => answers.get(NetTransferAmountPage) match {
+      case Some(true) =>
+        answers.get(NetTransferAmountPage) match {
           case Some(netAmount) => Some(netAmount).validNec
           case None            => DataMissingError(NetTransferAmountPage).invalidNec
         }
@@ -173,55 +181,59 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
       case None                     => DataMissingError(IsTransferCashOnlyPage).invalidNec
     }
 
-  private def validateTypeOfAsset(answers: UserAnswers): ValidationResult[Seq[TypeOfAsset]] = {
+  private def validateTypeOfAsset(answers: UserAnswers): ValidationResult[Seq[TypeOfAsset]] =
     answers.get(IsTransferCashOnlyPage) match {
-      case Some(true)  => answers.get(TypeOfAssetPage) match {
+      case Some(true)  =>
+        answers.get(TypeOfAssetPage) match {
           case Some(asset) if asset.length == 1 && asset.contains(Cash) => asset.validNec
           case Some(_)                                                  =>
-            GenericError("typeOfAsset expected to be Seq(Cash) when cashOnlyTransfer is true")
-              .invalidNec
+            GenericError("typeOfAsset expected to be Seq(Cash) when cashOnlyTransfer is true").invalidNec
           case None                                                     => DataMissingError(TypeOfAssetPage).invalidNec
         }
-      case Some(false) => answers.get(TypeOfAssetPage) match {
+      case Some(false) =>
+        answers.get(TypeOfAssetPage) match {
           case Some(asset) if asset.nonEmpty => asset.validNec
           case _                             => DataMissingError(TypeOfAssetPage).invalidNec
         }
       case None        => DataMissingError(TypeOfAssetPage).invalidNec
     }
-  }
 
   private def validateCashAmountInTransfer(
-      answers: UserAnswers
-    ): ValidationResult[Option[BigDecimal]] = {
+    answers: UserAnswers
+  ): ValidationResult[Option[BigDecimal]] =
     answers.get(IsTransferCashOnlyPage) match {
       case Some(true)  =>
         answers.get(CashAmountInTransferPage) match {
           case Some(cashAmountInTransfer) if cashAmountInTransfer > 0 => Some(cashAmountInTransfer).validNec
           case _                                                      => DataMissingError(CashAmountInTransferPage).invalidNec
         }
-      case Some(false) => answers.get(TypeOfAssetPage) match {
+      case Some(false) =>
+        answers.get(TypeOfAssetPage) match {
           case Some(assets) if assets.contains(Cash) =>
             answers.get(CashAmountInTransferPage) match {
               case Some(cashAmountInTransfer) => Some(cashAmountInTransfer).validNec
               case None                       => DataMissingError(CashAmountInTransferPage).invalidNec
             }
-          case Some(_)                               => answers.get(CashAmountInTransferPage) match {
-              case Some(_) => GenericError("cashValue not expected when Cash is not present in type of assets").invalidNec
+          case Some(_)                               =>
+            answers.get(CashAmountInTransferPage) match {
+              case Some(_) =>
+                GenericError("cashValue not expected when Cash is not present in type of assets").invalidNec
               case None    => None.validNec
             }
           case None                                  => DataMissingError(CashAmountInTransferPage).invalidNec
         }
       case None        => DataMissingError(CashAmountInTransferPage).invalidNec
     }
-  }
 
   private def validateMoreThan5Unquoted(answers: UserAnswers): ValidationResult[Option[Boolean]] =
     answers.get(TypeOfAssetPage) match {
       case Some(assets) if assets.contains(UnquotedShares) =>
         (answers.get(UnquotedSharesQuery), answers.get(MoreUnquotedSharesDeclarationPage)) match {
           case (Some(shares), Some(value)) if shares.length == 5 => Some(value).validNec
-          case (Some(shares), None) if shares.length == 5        => DataMissingError(MoreUnquotedSharesDeclarationPage).invalidNec
-          case (None, Some(_))                                   => GenericError("moreUnquoted cannot be populated when no unquoted shares are present").invalidNec
+          case (Some(shares), None) if shares.length == 5        =>
+            DataMissingError(MoreUnquotedSharesDeclarationPage).invalidNec
+          case (None, Some(_))                                   =>
+            GenericError("moreUnquoted cannot be populated when no unquoted shares are present").invalidNec
           case _                                                 => None.validNec
         }
       case Some(_)                                         => None.validNec
@@ -233,8 +245,10 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
       case Some(assets) if assets.contains(QuotedShares) =>
         (answers.get(QuotedSharesQuery), answers.get(MoreQuotedSharesDeclarationPage)) match {
           case (Some(shares), Some(value)) if shares.length == 5 => Some(value).validNec
-          case (Some(shares), None) if shares.length == 5        => DataMissingError(MoreQuotedSharesDeclarationPage).invalidNec
-          case (None, Some(_))                                   => GenericError("moreQuoted cannot be populated when no quoted shares are present").invalidNec
+          case (Some(shares), None) if shares.length == 5        =>
+            DataMissingError(MoreQuotedSharesDeclarationPage).invalidNec
+          case (None, Some(_))                                   =>
+            GenericError("moreQuoted cannot be populated when no quoted shares are present").invalidNec
           case _                                                 => None.validNec
         }
       case Some(_)                                       => None.validNec
@@ -260,7 +274,8 @@ object TransferDetailsValidator extends Validator[TransferDetails] {
         (answers.get(OtherAssetsQuery), answers.get(MoreOtherAssetsDeclarationPage)) match {
           case (Some(shares), Some(value)) if shares.length == 5 => Some(value).validNec
           case (Some(shares), None) if shares.length == 5        => DataMissingError(MoreOtherAssetsDeclarationPage).invalidNec
-          case (None, Some(_))                                   => GenericError("moreQuoted cannot be populated when no unquoted shares are present").invalidNec
+          case (None, Some(_))                                   =>
+            GenericError("moreQuoted cannot be populated when no unquoted shares are present").invalidNec
           case _                                                 => None.validNec
         }
       case Some(_)                                => None.validNec

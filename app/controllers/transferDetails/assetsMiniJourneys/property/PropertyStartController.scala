@@ -16,8 +16,8 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import controllers.actions._
-import models.{Mode, NormalMode}
+import controllers.actions.*
+import models.Mode
 import pages.transferDetails.assetsMiniJourneys.property.PropertyStartPage
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -25,19 +25,17 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyStartView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class PropertyStartController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    view: PropertyStartView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  val controllerComponents: MessagesControllerComponents,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  view: PropertyStartView
+) extends FrontendBaseController
+    with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      Ok(view(PropertyStartPage.nextPage(mode, request.userAnswers).url))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    Ok(view(PropertyStartPage.nextPage(mode, request.userAnswers).url))
   }
 }

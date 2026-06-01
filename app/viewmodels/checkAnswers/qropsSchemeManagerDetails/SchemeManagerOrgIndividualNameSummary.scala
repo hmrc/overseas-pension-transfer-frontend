@@ -16,18 +16,21 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import models.{Mode, UserAnswers}
-import pages.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNamePage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import pages.qropsSchemeManagerDetails.SchemeManagerOrgIndividualNamePage
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object SchemeManagerOrgIndividualNameSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(SchemeManagerOrgIndividualNamePage).map { answer =>
       val value = s"${HtmlFormat.escape(answer.firstName)} ${HtmlFormat.escape(answer.lastName)}"
 
@@ -42,8 +45,8 @@ object SchemeManagerOrgIndividualNameSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "orgIndividualName.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlContent(value)),
+        key = "orgIndividualName.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(value)),
         actions = actions
       )
     }

@@ -16,39 +16,47 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import controllers.actions._
-import models.{CheckMode, QtNumber, QtStatus}
-import pages.qropsSchemeManagerDetails.SchemeManagersEmailPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.QtNumberQuery
-import repositories.SessionRepository
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
+import queries.QtNumberQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
+import config.FrontendAppConfig
+import views.html.PrintSubmittedTransferView
+import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
+import repositories.SessionRepository
+import models.CheckMode
+import models.QtNumber
+import models.QtStatus
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
-import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
-import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.all.SummaryListViewModel
-import views.html.PrintSubmittedTransferView
+import controllers.actions._
+import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class PrintSubmittedTransferController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    schemeData: SchemeDataAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: PrintSubmittedTransferView,
-    sessionRepository: SessionRepository,
-    appConfig: FrontendAppConfig,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  schemeData: SchemeDataAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: PrintSubmittedTransferView,
+  sessionRepository: SessionRepository,
+  appConfig: FrontendAppConfig,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with AppUtils {
 
   def onPageLoad: Action[AnyContent] =
     (identify andThen schemeData).async { implicit request =>
@@ -60,24 +68,33 @@ class PrintSubmittedTransferController @Inject() (
           val versionNumber: Option[String] = Some((sessionData.data \ "versionNumber").asOpt[String].getOrElse("001"))
 
           userAnswersService
-            .getExternalUserAnswers(transferId, pstr, QtStatus.Submitted, versionNumber, request.schemeDetails.srnNumber)
+            .getExternalUserAnswers(
+              transferId,
+              pstr,
+              QtStatus.Submitted,
+              versionNumber,
+              request.schemeDetails.srnNumber
+            )
             .map {
               case Right(userAnswers) =>
                 val overviewDetails =
                   TransferSubmittedSummary.rows(memberFullName(sessionData), dateTransferSubmitted(sessionData))
 
-                val memberDetails = SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
+                val memberDetails =
+                  SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
 
-                val transferDetails = SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
+                val transferDetails =
+                  SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
 
-                val qropsDetails = SummaryListViewModel(QROPSDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
+                val qropsDetails =
+                  SummaryListViewModel(QROPSDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
 
-                val schemeManagerDetails = SummaryListViewModel(SchemeManagerDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
-
-                val managerEmail: String = userAnswers.get(SchemeManagersEmailPage).getOrElse("")
+                val schemeManagerDetails = SummaryListViewModel(
+                  SchemeManagerDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false)
+                )
 
                 val mpsLink = appConfig.getPensionSchemeUrl(
-                  srn       = sessionData.schemeInformation.srnNumber.value,
+                  srn = sessionData.schemeInformation.srnNumber.value,
                   isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
                 )
 
@@ -89,7 +106,6 @@ class PrintSubmittedTransferController @Inject() (
                     transferDetails,
                     qropsDetails,
                     schemeManagerDetails,
-                    managerEmail,
                     mpsLink
                   )
                 )

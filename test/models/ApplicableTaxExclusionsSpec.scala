@@ -24,7 +24,12 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class ApplicableTaxExclusionsSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with ModelGenerators {
+class ApplicableTaxExclusionsSpec
+    extends AnyFreeSpec
+    with Matchers
+    with ScalaCheckPropertyChecks
+    with OptionValues
+    with ModelGenerators {
 
   "ApplicableTaxExclusions" - {
 
@@ -32,9 +37,11 @@ class ApplicableTaxExclusionsSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       val gen = arbitrary[ApplicableTaxExclusions]
 
-      forAll(gen) {
-        applicableTaxExclusions =>
-          JsString(applicableTaxExclusions.toString).validate[ApplicableTaxExclusions].asOpt.value mustEqual applicableTaxExclusions
+      forAll(gen) { applicableTaxExclusions =>
+        JsString(applicableTaxExclusions.toString)
+          .validate[ApplicableTaxExclusions]
+          .asOpt
+          .value mustEqual applicableTaxExclusions
       }
     }
 
@@ -42,9 +49,8 @@ class ApplicableTaxExclusionsSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       val gen = arbitrary[String] suchThat (!ApplicableTaxExclusions.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[ApplicableTaxExclusions] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[ApplicableTaxExclusions] mustEqual JsError("error.invalid")
       }
     }
 
@@ -52,9 +58,8 @@ class ApplicableTaxExclusionsSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       val gen = arbitrary[ApplicableTaxExclusions]
 
-      forAll(gen) {
-        applicableTaxExclusions =>
-          Json.toJson(applicableTaxExclusions) mustEqual JsString(applicableTaxExclusions.toString)
+      forAll(gen) { applicableTaxExclusions =>
+        Json.toJson(applicableTaxExclusions) mustEqual JsString(applicableTaxExclusions.toString)
       }
     }
   }

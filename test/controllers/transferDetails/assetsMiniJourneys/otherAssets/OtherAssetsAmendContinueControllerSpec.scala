@@ -28,7 +28,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.AssetsMiniJourneyService
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueView
@@ -49,7 +49,7 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
   private def uaWithOtherAssets(n: Int): UserAnswers = {
     val entry = OtherAssetsEntry(
       assetDescription = "Antique vase",
-      assetValue       = BigDecimal(2500)
+      assetValue = BigDecimal(2500)
     )
     val list  = List.fill(n)(entry)
     emptyUserAnswers.set(OtherAssetsMiniJourney.query, list).success.value
@@ -66,7 +66,10 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val view    = application.injector.instanceOf[OtherAssetsAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -80,7 +83,10 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val view    = application.injector.instanceOf[OtherAssetsAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request, ua), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
+          fakeDisplayRequest(request, ua),
+          messages(application)
+        ).toString
       }
     }
 
@@ -120,7 +126,8 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -146,7 +153,8 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, false).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -176,7 +184,8 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, value = true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          OtherAssetsAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -228,7 +237,8 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
 
         val ua2       = userAnswers.set(OtherAssetsAmendContinueAssetPage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(OtherAssetsMiniJourney, ua2)
-        val expected  = OtherAssetsAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          OtherAssetsAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -249,7 +259,10 @@ class OtherAssetsAmendContinueControllerSpec extends AnyFreeSpec with SpecBase w
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

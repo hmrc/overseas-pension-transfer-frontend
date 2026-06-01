@@ -16,12 +16,15 @@
 
 package config
 
-import com.google.inject.{AbstractModule, Provides, Singleton}
+import services.EncryptionService
+import com.google.inject.AbstractModule
+import com.google.inject.Provides
+import com.google.inject.Singleton
 import controllers.actions._
 import play.api.Configuration
-import services.EncryptionService
 
-import java.time.{Clock, ZoneOffset}
+import java.time.Clock
+import java.time.ZoneOffset
 
 class Module extends AbstractModule {
 
@@ -36,7 +39,8 @@ class Module extends AbstractModule {
   @Provides
   @Singleton
   def provideEncryptionService(config: Configuration): EncryptionService = {
-    val master = config.getOptional[String]("encryption.masterKey")
+    val master = config
+      .getOptional[String]("encryption.masterKey")
       .getOrElse(throw new IllegalStateException("encryption.masterKey missing"))
     new EncryptionService(master)
   }

@@ -21,14 +21,10 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewmodels.govuk.SummaryListFluency
 
-class TaskListControllerSpec
-    extends AnyFreeSpec
-    with SpecBase
-    with SummaryListFluency
-    with MockitoSugar {
+class TaskListControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency with MockitoSugar {
 
   "TaskListController" - {
 

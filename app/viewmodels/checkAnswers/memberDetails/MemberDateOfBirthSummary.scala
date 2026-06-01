@@ -16,23 +16,24 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.{Mode, UserAnswers}
-import pages.memberDetails.MemberDateOfBirthPage
-import play.api.i18n.{Lang, Messages}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.DateTimeFormats.dateTimeFormat
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import utils.DateTimeFormats.dateTimeFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import pages.memberDetails.MemberDateOfBirthPage
+import play.api.i18n.Lang
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object MemberDateOfBirthSummary {
 
   def row(
-      mode: Mode,
-      answers: UserAnswers,
-      showChangeLink: Boolean           = true,
-      additionalClasses: Option[String] = None
-    )(implicit messages: Messages
-    ): Option[SummaryListRow] =
+    mode: Mode,
+    answers: UserAnswers,
+    showChangeLink: Boolean = true,
+    additionalClasses: Option[String] = None
+  )(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberDateOfBirthPage).map { answer =>
       implicit val lang: Lang = messages.lang
 
@@ -47,8 +48,8 @@ object MemberDateOfBirthSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "memberDateOfBirth.checkYourAnswersLabel",
-        value   = ValueViewModel(answer.format(dateTimeFormat())),
+        key = "memberDateOfBirth.checkYourAnswersLabel",
+        value = ValueViewModel(answer.format(dateTimeFormat)),
         actions = actions
       ).withCssClass(additionalClasses.getOrElse(""))
     }

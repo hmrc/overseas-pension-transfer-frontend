@@ -16,26 +16,25 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property
 
-import models.{Mode, SessionData, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
-import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import pages.transferDetails.assetsMiniJourneys.property.PropertyDescriptionPage
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object PropertyDescriptionSummary {
 
   def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(PropertyDescriptionPage(index)).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "propertyDescription.checkYourAnswersLabel",
-          value   = ValueViewModel(answer),
-          actions = Seq(
-            ActionItemViewModel("site.change", PropertyDescriptionPage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("propertyDescription.change.hidden"))
-          )
+    userAnswers.get(PropertyDescriptionPage(index)).map { answer =>
+      SummaryListRowViewModel(
+        key = "propertyDescription.checkYourAnswersLabel",
+        value = ValueViewModel(answer),
+        actions = Seq(
+          ActionItemViewModel("site.change", PropertyDescriptionPage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("propertyDescription.change.hidden"))
         )
+      )
     }
 }

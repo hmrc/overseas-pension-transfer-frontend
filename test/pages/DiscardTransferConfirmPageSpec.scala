@@ -20,21 +20,18 @@ import base.SpecBase
 import controllers.routes
 import models.QtStatus.AmendInProgress
 import models.{AmendCheckMode, NormalMode, PstrNumber, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-import scala.util.Try
-
 class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
-  ".nextPage" - {
+  ".nextPage" -
     Seq(
       NormalMode     -> controllers.routes.TaskListController.onPageLoad(),
       AmendCheckMode -> controllers.viewandamend.routes.ViewAmendSubmittedController.fromDraft(
-        qtReference   = userAnswersTransferNumber,
-        pstr          = PstrNumber("12345678AB"),
-        qtStatus      = AmendInProgress,
+        qtReference = userAnswersTransferNumber,
+        pstr = PstrNumber("12345678AB"),
+        qtStatus = AmendInProgress,
         versionNumber = "1000"
       )
     ).foreach { case (mode, expectedRoute) =>
@@ -43,7 +40,8 @@ class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers with Spec
         "must go to Index when DiscardTransferConfirm in UserAnswers is true" in {
           val userAnswers: UserAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
 
-          DiscardTransferConfirmPage.nextPageWith(mode, userAnswers, None) mustEqual routes.DashboardController.onPageLoad()
+          DiscardTransferConfirmPage.nextPageWith(mode, userAnswers, None) mustEqual routes.DashboardController
+            .onPageLoad()
         }
 
         "must go to Task List page when DiscardTransferConfirm in UserAnswers is false" in {
@@ -57,9 +55,12 @@ class DiscardTransferConfirmPageSpec extends AnyFreeSpec with Matchers with Spec
         }
 
         "must got to Journey Recovery page when User Answers is empty" in {
-          DiscardTransferConfirmPage.nextPageWith(mode, emptyUserAnswers, None) mustEqual routes.JourneyRecoveryController.onPageLoad()
+          DiscardTransferConfirmPage.nextPageWith(
+            mode,
+            emptyUserAnswers,
+            None
+          ) mustEqual routes.JourneyRecoveryController.onPageLoad()
         }
       }
     }
-  }
 }

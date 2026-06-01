@@ -16,34 +16,33 @@
 
 package forms.memberDetails
 
-import config.Constants.ddMMyyyy
+import utils.DateTimeFormats.dateInput
 import forms.mappings.Mappings
-import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.data.Form
 
-import java.time.format.DateTimeFormatter
-import java.time.{Clock, LocalDate, ZoneOffset}
+import java.time.Clock
+import java.time.LocalDate
 import javax.inject.Inject
 
 class MemberDateOfLeavingUKFormProvider @Inject() (clock: Clock) extends Mappings {
 
-  def minDate: LocalDate    = LocalDate of (1901, 1, 1)
-  def maxDate: LocalDate    = LocalDate.now(clock)
-  private def dateFormatter = ddMMyyyy
+  def minDate: LocalDate = LocalDate.of(minYear, 1, 1)
+  def maxDate: LocalDate = LocalDate.now(clock)
 
   def apply()(implicit messages: Messages): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidCharacter = "common.dateInput.error.invalid.character",
-        invalidKey       = "common.dateInput.error.invalid",
-        requiredKey      = "common.dateInput.error.required",
-        twoRequiredKey   = "common.dateInput.error.required.two",
-        allRequiredKey   = "memberDateOfLeavingUK.error.required.all",
-        realDateKey      = "memberDateOfLeavingUK.error.real.date"
+        invalidKey = "common.dateInput.error.invalid",
+        requiredKey = "common.dateInput.error.required",
+        twoRequiredKey = "common.dateInput.error.required.two",
+        allRequiredKey = "memberDateOfLeavingUK.error.required.all",
+        realDateKey = "memberDateOfLeavingUK.error.real.date"
       )
         .verifying(
-          maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateFormatter)),
-          minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateFormatter))
+          maxDate(maxDate, "common.dateInput.error.invalid.timeFrame", maxDate.format(dateInput)),
+          minDate(minDate, "common.dateInput.error.invalid.timeFrame", minDate.format(dateInput))
         )
     )
 }

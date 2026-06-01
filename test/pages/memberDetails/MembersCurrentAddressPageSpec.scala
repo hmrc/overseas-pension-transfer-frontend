@@ -18,7 +18,7 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.memberDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -30,7 +30,8 @@ class MembersCurrentAddressPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Member Is UK Resident" in {
 
-        MembersCurrentAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberIsResidentUKController.onPageLoad(NormalMode)
+        MembersCurrentAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberIsResidentUKController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -38,7 +39,8 @@ class MembersCurrentAddressPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers" in {
 
-        MembersCurrentAddressPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MembersCurrentAddressPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController
+          .onPageLoad()
       }
     }
 

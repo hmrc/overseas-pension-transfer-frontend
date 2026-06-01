@@ -26,7 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.ApplicableTaxExclusionsPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import views.html.transferDetails.ApplicableTaxExclusionsView
 
@@ -54,13 +54,17 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(ApplicableTaxExclusionsPage, ApplicableTaxExclusions.values.toSet).success.value
+      val userAnswers =
+        emptyUserAnswers.set(ApplicableTaxExclusionsPage, ApplicableTaxExclusions.values.toSet).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -125,7 +129,9 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual ApplicableTaxExclusionsPage.nextPage(AmendCheckMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual ApplicableTaxExclusionsPage
+          .nextPage(AmendCheckMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -145,7 +151,10 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

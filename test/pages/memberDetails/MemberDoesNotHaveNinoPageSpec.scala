@@ -18,8 +18,7 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.memberDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
+import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -31,7 +30,8 @@ class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Member Date of Birth" in {
 
-        MemberDoesNotHaveNinoPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfBirthController.onPageLoad(NormalMode)
+        MemberDoesNotHaveNinoPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfBirthController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -39,7 +39,8 @@ class MemberDoesNotHaveNinoPageSpec extends AnyFreeSpec with Matchers with SpecB
 
       "must go to Check Answers" in {
 
-        MemberDoesNotHaveNinoPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDoesNotHaveNinoPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController
+          .onPageLoad()
       }
     }
 

@@ -33,17 +33,20 @@ class QuotedSharesAmendContinueSummarySpec extends AnyFreeSpec with SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when QuotedSharesQuery has a value" in {
-      val answers = emptyUserAnswers.set(
-        QuotedSharesQuery,
-        List(
-          QuotedSharesEntry(
-            "Name",
-            BigDecimal(9876543.00),
-            12,
-            "class"
+      val answers = emptyUserAnswers
+        .set(
+          QuotedSharesQuery,
+          List(
+            QuotedSharesEntry(
+              "Name",
+              BigDecimal(9876543.00),
+              12,
+              "class"
+            )
           )
         )
-      ).success.value
+        .success
+        .value
 
       val result = QuotedSharesAmendContinueSummary.row(CheckMode, answers)
 

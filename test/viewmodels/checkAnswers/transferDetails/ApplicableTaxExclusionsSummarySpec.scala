@@ -32,14 +32,19 @@ class ApplicableTaxExclusionsSummarySpec extends AnyFreeSpec with SpecBase {
     implicit val messages: Messages = stubMessages()
 
     "must return a SummaryListRow when ApplicableTaxExclusionsPage has a value" in {
-      val answers = emptyUserAnswers.set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, Publicservice, Resident)).success.value
+      val answers = emptyUserAnswers
+        .set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, Publicservice, Resident))
+        .success
+        .value
       val result  = ApplicableTaxExclusionsSummary.row(CheckMode, answers)
 
       result mustBe defined
       result.get.key.content mustBe Text(messages("applicableTaxExclusions.checkYourAnswersLabel"))
-      result.get.value.content mustBe HtmlContent(messages(
-        "applicableTaxExclusions.occupational<br><br>applicableTaxExclusions.publicService<br><br>applicableTaxExclusions.resident"
-      ))
+      result.get.value.content mustBe HtmlContent(
+        messages(
+          "applicableTaxExclusions.occupational<br><br>applicableTaxExclusions.publicService<br><br>applicableTaxExclusions.resident"
+        )
+      )
       result.get.actions.get.items.head.href mustBe
         controllers.transferDetails.routes.ApplicableTaxExclusionsController.onPageLoad(CheckMode).url
     }

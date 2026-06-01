@@ -16,25 +16,12 @@
 
 package base
 
-import controllers.actions._
+import controllers.actions.*
 import models.address.{Countries, PropertyAddress}
 import models.assets.TypeOfAsset
-import models.authentication._
+import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
-import models.{
-  AllTransfersItem,
-  IndividualDetails,
-  MinimalDetails,
-  PensionSchemeDetails,
-  PersonName,
-  PstrNumber,
-  QtNumber,
-  QtStatus,
-  SessionData,
-  SrnNumber,
-  TransferNumber,
-  UserAnswers
-}
+import models.{AllTransfersItem, IndividualDetails, MinimalDetails, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -42,12 +29,7 @@ import pages.memberDetails.MemberNamePage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.{
-  UnquotedSharesClassPage,
-  UnquotedSharesCompanyNamePage,
-  UnquotedSharesNumberPage,
-  UnquotedSharesValuePage
-}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
@@ -56,22 +38,19 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import utils.DateTimeFormats.localDateTimeFormatter
 
-import java.time.format.{DateTimeFormatter, FormatStyle}
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
 import scala.util.Random
 
-trait SpecBase
-    extends Matchers
-    with TryValues
-    with OptionValues
-    with ScalaFutures
-    with IntegrationPatience {
+trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
 
+  protected final val minYear: Int = 1901
+  private val clockMillis: Long    = 1718118467838L
+  val clock: Clock                 = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
   protected val maxCurrency: Double          = config.Constants.maxCurrency
   protected val minCurrency: Double          = config.Constants.minCurrency
-  protected val dMMMMyyyy: DateTimeFormatter = config.Constants.dMMMMyyyy
 
   private val clockMillis: Long = 1718118467838L
   val clock: Clock              = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
@@ -101,7 +80,7 @@ trait SpecBase
   )
 
   val formattedTestDateTransferSubmitted: String =
-    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT).withZone(ZoneId.systemDefault()).format(now)
+    localDateTimeFormatter.withZone(ZoneId.systemDefault()).format(now)
 
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersTransferNumber, pstr, Json.obj(), now)
 
@@ -129,7 +108,7 @@ trait SpecBase
     nino
   }
 
-  val testNino = generateNino()
+  val testNino: String = generateNino()
 
   def userAnswersMemberName: UserAnswers = emptyUserAnswers.set(MemberNamePage, testMemberName).success.value
   def sessionDataMemberName: SessionData = emptySessionData.set(MemberNamePage, testMemberName).success.value
@@ -147,9 +126,9 @@ trait SpecBase
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   protected def applicationBuilder(
-      userAnswers: UserAnswers = emptyUserAnswers,
-      sessionData: SessionData = sessionDataMemberNameQtNumber
-    ): GuiceApplicationBuilder =
+    userAnswers: UserAnswers = emptyUserAnswers,
+    sessionData: SessionData = sessionDataMemberNameQtNumber
+  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].to[FakeIdentifierAction],
@@ -158,48 +137,48 @@ trait SpecBase
       )
 
   def fakeIdentifierRequest[A](
-      fakeRequest: FakeRequest[A],
-      authenticatedUser: AuthenticatedUser = psaUser
-    ): IdentifierRequest[A] =
+    fakeRequest: FakeRequest[A],
+    authenticatedUser: AuthenticatedUser = psaUser
+  ): IdentifierRequest[A] =
     IdentifierRequest(fakeRequest, authenticatedUser)
 
   implicit val testIdentifierRequest: IdentifierRequest[_] =
     IdentifierRequest(FakeRequest(), psaUser)
 
   def fakeSchemeRequest[A](
-      fakeRequest: FakeRequest[A],
-      authenticatedUser: AuthenticatedUser = psaUser,
-      schemeDetails: PensionSchemeDetails  = schemeDetails
-    ): SchemeRequest[A] =
+    fakeRequest: FakeRequest[A],
+    authenticatedUser: AuthenticatedUser = psaUser,
+    schemeDetails: PensionSchemeDetails = schemeDetails
+  ): SchemeRequest[A] =
     SchemeRequest(fakeRequest, authenticatedUser, schemeDetails)
 
   def fakeDisplayRequest[A](
-      fakeRequest: FakeRequest[A],
-      userAnswers: UserAnswers = emptyUserAnswers,
-      sessionData: SessionData = emptySessionData
-    ): DisplayRequest[A] =
+    fakeRequest: FakeRequest[A],
+    userAnswers: UserAnswers = emptyUserAnswers,
+    sessionData: SessionData = emptySessionData
+  ): DisplayRequest[A] =
     DisplayRequest(
-      request               = fakeRequest,
-      authenticatedUser     = psaUser,
-      userAnswers           = userAnswers,
-      sessionData           = sessionData,
-      memberName            = testMemberName.fullName,
-      qtNumber              = testQtNumber,
+      request = fakeRequest,
+      authenticatedUser = psaUser,
+      userAnswers = userAnswers,
+      sessionData = sessionData,
+      memberName = testMemberName.fullName,
+      qtNumber = testQtNumber,
       dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
 
   implicit val testDisplayRequest: DisplayRequest[_] =
     DisplayRequest(
-      request               = FakeRequest(),
-      authenticatedUser     = psaUser,
-      userAnswers           = emptyUserAnswers,
-      sessionData           = emptySessionData,
-      memberName            = testMemberName.fullName,
-      qtNumber              = testQtNumber,
+      request = FakeRequest(),
+      authenticatedUser = psaUser,
+      userAnswers = emptyUserAnswers,
+      sessionData = emptySessionData,
+      memberName = testMemberName.fullName,
+      qtNumber = testQtNumber,
       dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
 
-  def userAnswersWithAssets(assetsCount: Int = 1): UserAnswers = {
+  def userAnswersWithAssets(assetsCount: Int = 1): UserAnswers =
     (0 until assetsCount).foldLeft(
       emptyUserAnswers
         .set(QtNumberQuery, testQtNumber)
@@ -218,67 +197,86 @@ trait SpecBase
             Countries.UK,
             None
           )
-        ).success.value
+        ).success
+          .value
           .set(PropertyValuePage(idx), BigDecimal(10000 + idx * 1000)) // incremental property values
-          .success.value
+          .success
+          .value
           .set(PropertyDescriptionPage(idx), s"Description-${idx + 1}")
-          .success.value
+          .success
+          .value
 
       // Add other assets
       val withOtherAssets =
-        updatedUa.set(
-          OtherAssetsDescriptionPage(idx),
-          s"OtherAsset-${idx + 1}"
-        ).success.value
+        updatedUa
+          .set(
+            OtherAssetsDescriptionPage(idx),
+            s"OtherAsset-${idx + 1}"
+          )
+          .success
+          .value
           .set(OtherAssetsValuePage(idx), BigDecimal(200 + idx * 50))
-          .success.value
+          .success
+          .value
 
       // Add unquoted shares
       val withUnquotedShares =
-        withOtherAssets.set(
-          UnquotedSharesCompanyNamePage(idx),
-          s"UnquotedCompany-${idx + 1}"
-        ).success.value
+        withOtherAssets
+          .set(
+            UnquotedSharesCompanyNamePage(idx),
+            s"UnquotedCompany-${idx + 1}"
+          )
+          .success
+          .value
           .set(UnquotedSharesValuePage(idx), BigDecimal(300 + idx * 75))
-          .success.value
+          .success
+          .value
           .set(UnquotedSharesNumberPage(idx), 400 + idx * 100)
-          .success.value
+          .success
+          .value
           .set(UnquotedSharesClassPage(idx), "A")
-          .success.value
+          .success
+          .value
 
       // Add quoted shares
       val withQuotedShares =
-        withUnquotedShares.set(
-          QuotedSharesCompanyNamePage(idx),
-          s"QuotedCompany-${idx + 1}"
-        ).success.value
+        withUnquotedShares
+          .set(
+            QuotedSharesCompanyNamePage(idx),
+            s"QuotedCompany-${idx + 1}"
+          )
+          .success
+          .value
           .set(QuotedSharesValuePage(idx), BigDecimal(500 + idx * 125))
-          .success.value
+          .success
+          .value
           .set(QuotedSharesNumberPage(idx), 600 + idx * 150)
-          .success.value
+          .success
+          .value
           .set(QuotedSharesClassPage(idx), "B")
-          .success.value
+          .success
+          .value
 
       withQuotedShares
     }
-  }
 
   val transferItem = AllTransfersItem(
-    transferId      = userAnswersTransferNumber,
-    qtVersion       = Some("v1"),
-    qtStatus        = Some(QtStatus.InProgress),
-    nino            = Some("AA123456A"),
+    transferId = userAnswersTransferNumber,
+    qtVersion = Some("v1"),
+    qtStatus = Some(QtStatus.InProgress),
+    nino = Some("AA123456A"),
     memberFirstName = Some("John"),
-    memberSurname   = Some("Doe"),
-    qtDate          = Some(today),
-    lastUpdated     = Some(now),
-    pstrNumber      = Some(PstrNumber("12345678AB")),
-    submissionDate  = None
+    memberSurname = Some("Doe"),
+    qtDate = Some(today),
+    lastUpdated = Some(now),
+    pstrNumber = Some(PstrNumber("12345678AB")),
+    submissionDate = None
   )
 
   val individualSubmitterDetails = IndividualDetails("David", None, "Frost")
 
-  val minimalDetailsIndividual = MinimalDetails("d.frost@test.com", false, None, Some(individualSubmitterDetails), false, false)
+  val minimalDetailsIndividual =
+    MinimalDetails("d.frost@test.com", false, None, Some(individualSubmitterDetails), false, false)
 
   def completeJson(assetType: TypeOfAsset): JsObject =
     assetType match {

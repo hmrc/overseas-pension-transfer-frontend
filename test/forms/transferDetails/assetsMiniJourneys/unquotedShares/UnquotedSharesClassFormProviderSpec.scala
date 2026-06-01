@@ -43,7 +43,7 @@ class UnquotedSharesClassFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 
@@ -56,7 +56,7 @@ class UnquotedSharesClassFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatRejectsInvalidCharacters(
       form,
       fieldName,
-      patternError   = FormError(fieldName, patternKey, Seq(classRegex)),
+      patternError = FormError(fieldName, patternKey, Seq(classRegex)),
       maybeMaxLength = Some(maxLength)
     )
   }

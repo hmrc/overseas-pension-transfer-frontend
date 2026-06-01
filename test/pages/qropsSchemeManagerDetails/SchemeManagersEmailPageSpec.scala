@@ -18,7 +18,7 @@ package pages.qropsSchemeManagerDetails
 
 import base.SpecBase
 import controllers.qropsSchemeManagerDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -30,7 +30,8 @@ class SchemeManagersEmailPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
       "must go to Scheme manager contact" in {
 
-        SchemeManagersEmailPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagersContactController.onPageLoad(NormalMode)
+        SchemeManagersEmailPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagersContactController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -38,7 +39,8 @@ class SchemeManagersEmailPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
       "must go to Check Answers" in {
 
-        SchemeManagersEmailPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagersEmailPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerDetailsCYAController
+          .onPageLoad()
       }
     }
 

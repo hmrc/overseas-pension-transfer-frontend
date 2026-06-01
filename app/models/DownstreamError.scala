@@ -21,11 +21,11 @@ sealed trait DownstreamError {
 }
 
 final case class BackendError(
-    correlationId: String,
-    status: Int,
-    reason: String,
-    origin: String,
-    body: String
-  ) extends DownstreamError {
+  correlationId: String,
+  status: Int,
+  reason: String,
+  origin: String,
+  body: String
+) extends DownstreamError {
   val message: String = s"[$origin] $status $reason (correlationId=$correlationId)"
 }

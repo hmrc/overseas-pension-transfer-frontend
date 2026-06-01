@@ -36,12 +36,19 @@ class QROPSOtherCountryViewSpec extends ViewBaseSpec {
 
     behave like pageWithH1(view(formProvider(), NormalMode), "qropsOtherCountry.heading")
 
-    behave like pageWithInputField(view(formProvider(), NormalMode), "otherEstablishedCountry", "qropsOtherCountry.heading")
+    behave like pageWithInputField(
+      view(formProvider(), NormalMode),
+      "otherEstablishedCountry",
+      "qropsOtherCountry.heading"
+    )
 
     behave like pageWithSubmitButton(view(formProvider(), NormalMode), "site.saveAndContinue")
 
     behave like pageWithErrors(
-      view(formProvider().withError(FormError("otherEstablishedCountry", "qropsOtherCountry.error.required")), NormalMode),
+      view(
+        formProvider().withError(FormError("otherEstablishedCountry", "qropsOtherCountry.error.required")),
+        NormalMode
+      ),
       "otherEstablishedCountry",
       "qropsOtherCountry.error.required"
     )

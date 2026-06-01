@@ -16,21 +16,23 @@
 
 package forms.qropsSchemeManagerDetails
 
-import forms.mappings.{Mappings, Regex}
+import forms.mappings.Mappings
+import forms.mappings.Regex
+import play.api.data.Forms._
 import models.address.SchemeManagersAddress
-import play.api.data.Forms.*
-import play.api.data.{Form, Forms}
+import play.api.data.Form
+import play.api.data.Forms
 
 import javax.inject.Inject
 
 case class SchemeManagersAddressFormData(
-    addressLine1: String,
-    addressLine2: String,
-    addressLine3: Option[String],
-    addressLine4: Option[String],
-    addressLine5: Option[String],
-    countryCode: String
-  )
+  addressLine1: String,
+  addressLine2: String,
+  addressLine3: Option[String],
+  addressLine4: Option[String],
+  addressLine5: Option[String],
+  countryCode: String
+)
 
 object SchemeManagersAddressFormData {
 
@@ -41,18 +43,22 @@ object SchemeManagersAddressFormData {
       addressLine3 = address.addressLine3,
       addressLine4 = address.addressLine4,
       addressLine5 = address.addressLine5,
-      countryCode  = address.country.code
+      countryCode = address.country.code
     )
 
-  def unapply(addressFormData: SchemeManagersAddressFormData): Option[(String, String, Option[String], Option[String], Option[String], String)] =
-    Some((
-      addressFormData.addressLine1,
-      addressFormData.addressLine2,
-      addressFormData.addressLine3,
-      addressFormData.addressLine4,
-      addressFormData.addressLine5,
-      addressFormData.countryCode
-    ))
+  def unapply(
+    addressFormData: SchemeManagersAddressFormData
+  ): Option[(String, String, Option[String], Option[String], Option[String], String)] =
+    Some(
+      (
+        addressFormData.addressLine1,
+        addressFormData.addressLine2,
+        addressFormData.addressLine3,
+        addressFormData.addressLine4,
+        addressFormData.addressLine5,
+        addressFormData.countryCode
+      )
+    )
 }
 
 class SchemeManagersAddressFormProvider @Inject() extends Mappings with Regex {

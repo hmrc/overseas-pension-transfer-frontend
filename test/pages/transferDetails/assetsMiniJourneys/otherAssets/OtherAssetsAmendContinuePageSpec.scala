@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import controllers.transferDetails.routes
 import models.assets.{OtherAssetsMiniJourney, UnquotedSharesMiniJourney}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
@@ -71,7 +71,11 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
             )
           )
 
-        val result = OtherAssetsAmendContinueAssetPage.nextPageWith(NormalMode, userAnswers.success.value, (sessionData.success.value, 0))
+        val result = OtherAssetsAmendContinueAssetPage.nextPageWith(
+          NormalMode,
+          userAnswers.success.value,
+          (sessionData.success.value, 0)
+        )
         result mustBe UnquotedSharesMiniJourney.call(NormalMode)
       }
     }
@@ -119,7 +123,11 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
             )
           )
 
-        val result = OtherAssetsAmendContinueAssetPage.nextPageWith(CheckMode, userAnswers.success.value, (sessionData.success.value, 0))
+        val result = OtherAssetsAmendContinueAssetPage.nextPageWith(
+          CheckMode,
+          userAnswers.success.value,
+          (sessionData.success.value, 0)
+        )
         result mustBe UnquotedSharesMiniJourney.call(CheckMode)
       }
     }
@@ -167,7 +175,11 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
             )
           )
 
-        val result = OtherAssetsAmendContinueAssetPage.nextPageWith(FinalCheckMode, userAnswers.success.value, (sessionData.success.value, 0))
+        val result = OtherAssetsAmendContinueAssetPage.nextPageWith(
+          FinalCheckMode,
+          userAnswers.success.value,
+          (sessionData.success.value, 0)
+        )
         result mustBe UnquotedSharesMiniJourney.call(FinalCheckMode)
       }
     }
@@ -215,7 +227,11 @@ class OtherAssetsAmendContinuePageSpec extends AnyFreeSpec with SpecBase {
             )
           )
 
-        val result = OtherAssetsAmendContinueAssetPage.nextPageWith(AmendCheckMode, userAnswers.success.value, (sessionData.success.value, 0))
+        val result = OtherAssetsAmendContinueAssetPage.nextPageWith(
+          AmendCheckMode,
+          userAnswers.success.value,
+          (sessionData.success.value, 0)
+        )
         result mustBe UnquotedSharesMiniJourney.call(AmendCheckMode)
       }
     }

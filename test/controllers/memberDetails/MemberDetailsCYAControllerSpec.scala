@@ -17,32 +17,14 @@
 package controllers.memberDetails
 
 import base.SpecBase
-import controllers.routes.JourneyRecoveryController
-import models.TaskCategory._
-import models.{SessionData, TaskCategory, UserAnswers}
-import models.taskList.TaskStatus
-import org.apache.pekko.Done
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import queries.TaskStatusQuery
-import repositories.SessionRepository
-import services.UserAnswersService
+import play.api.test.Helpers.*
 import viewmodels.govuk.SummaryListFluency
 import views.html.memberDetails.MemberDetailsCYAView
-import models.responses.UserAnswersErrorResponse
 
-import scala.concurrent.Future
-
-class MemberDetailsCYAControllerSpec
-    extends AnyFreeSpec
-    with SpecBase
-    with SummaryListFluency
-    with MockitoSugar {
+class MemberDetailsCYAControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency with MockitoSugar {
 
   "Check Your Answers Controller" - {
 

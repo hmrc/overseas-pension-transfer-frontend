@@ -17,10 +17,13 @@
 package controllers
 
 import base.SpecBase
-import controllers.actions._
+import connectors.MinimalDetailsConnector
+import controllers.actions.*
 import forms.PspDeclarationFormProvider
+import models.authentication.PspId
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
 import models.{MinimalDetails, NormalMode, QtNumber, SessionData, UserAnswers}
+import org.apache.commons.text.StringEscapeUtils
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -28,20 +31,15 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.PspDeclarationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PspDeclarationView
 
-import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
-import org.apache.commons.text.StringEscapeUtils
-import connectors.MinimalDetailsConnector
-import models.authentication.PspId
-import play.api.i18n.Messages
-import play.api.mvc.ControllerComponents
 
 class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -54,14 +52,17 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   val cc: ControllerComponents = stubControllerComponents()
 
-  val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
+  val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(
+    cc.executionContext
+  )
 
-  def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers): GuiceApplicationBuilder = new GuiceApplicationBuilder()
-    .overrides(
-      bind[IdentifierAction].toInstance(fakeIdentifierAction),
-      bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionDataMemberNameQtNumber)),
-      bind[SchemeDataAction].to[FakeSchemeDataAction]
-    )
+  def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[IdentifierAction].toInstance(fakeIdentifierAction),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionDataMemberNameQtNumber)),
+        bind[SchemeDataAction].to[FakeSchemeDataAction]
+      )
 
   "PspDeclaration Controller" - {
 
@@ -77,7 +78,10 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val view = application.injector.instanceOf[PspDeclarationView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -142,7 +146,10 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

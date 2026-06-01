@@ -16,17 +16,19 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
 import pages.transferDetails.IsTransferCashOnlyPage
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object IsTransferCashOnlySummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(IsTransferCashOnlyPage).map { answer =>
       val value   = if (answer) "site.yes" else "site.no"
       val actions =
@@ -40,8 +42,8 @@ object IsTransferCashOnlySummary {
         }
 
       SummaryListRowViewModel(
-        key     = "isTransferCashOnly.checkYourAnswersLabel",
-        value   = ValueViewModel(value),
+        key = "isTransferCashOnly.checkYourAnswersLabel",
+        value = ValueViewModel(value),
         actions = actions
       )
     }

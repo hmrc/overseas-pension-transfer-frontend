@@ -19,7 +19,7 @@ package pages.transferDetails.assetsMiniJourneys.quotedShares
 import base.SpecBase
 import controllers.transferDetails.routes
 import models.assets.{QuotedSharesMiniJourney, UnquotedSharesMiniJourney}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
@@ -45,7 +45,8 @@ class MoreQuotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers with
             )
           )
 
-        val result = MoreQuotedSharesDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
+        val result =
+          MoreQuotedSharesDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
         result mustBe UnquotedSharesMiniJourney.call(NormalMode)
       }
     }
@@ -67,7 +68,8 @@ class MoreQuotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers with
             )
           )
 
-        val result = MoreQuotedSharesDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
+        val result =
+          MoreQuotedSharesDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
         result mustBe UnquotedSharesMiniJourney.call(CheckMode)
       }
     }
@@ -89,7 +91,11 @@ class MoreQuotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers with
             )
           )
 
-        val result = MoreQuotedSharesDeclarationPage.nextPageWith(FinalCheckMode, userAnswers.success.value, sessionData.success.value)
+        val result = MoreQuotedSharesDeclarationPage.nextPageWith(
+          FinalCheckMode,
+          userAnswers.success.value,
+          sessionData.success.value
+        )
         result mustBe UnquotedSharesMiniJourney.call(FinalCheckMode)
       }
     }
@@ -111,7 +117,11 @@ class MoreQuotedSharesDeclarationPageSpec extends AnyFreeSpec with Matchers with
             )
           )
 
-        val result = MoreQuotedSharesDeclarationPage.nextPageWith(AmendCheckMode, userAnswers.success.value, sessionData.success.value)
+        val result = MoreQuotedSharesDeclarationPage.nextPageWith(
+          AmendCheckMode,
+          userAnswers.success.value,
+          sessionData.success.value
+        )
         result mustBe UnquotedSharesMiniJourney.call(AmendCheckMode)
       }
     }

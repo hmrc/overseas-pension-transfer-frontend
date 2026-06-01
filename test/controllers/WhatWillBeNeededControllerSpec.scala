@@ -28,17 +28,14 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{AuditService, UserAnswersService}
 import views.html.WhatWillBeNeededView
 
 import scala.concurrent.Future
 
-class WhatWillBeNeededControllerSpec
-    extends AnyFreeSpec
-    with SpecBase
-    with MockitoSugar {
+class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   "onPageLoad" - {
     "must render the view with the correct form action" in {
@@ -62,7 +59,8 @@ class WhatWillBeNeededControllerSpec
       val mockAuditService                            = mock[AuditService]
       val eventCaptor: ArgumentCaptor[JsonAuditModel] = ArgumentCaptor.forClass(classOf[JsonAuditModel])
 
-      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any())).thenReturn(Future.successful(Right(Done)))
+      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
       when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(true))
 
       val application =
@@ -71,7 +69,8 @@ class WhatWillBeNeededControllerSpec
             bind[SessionRepository].toInstance(mockRepo),
             bind[UserAnswersService].toInstance(mockUserAnswerSvc),
             bind[AuditService].toInstance(mockAuditService)
-          ).build()
+          )
+          .build()
 
       running(application) {
         val request = FakeRequest(POST, routes.WhatWillBeNeededController.onSubmit().url)
@@ -93,7 +92,8 @@ class WhatWillBeNeededControllerSpec
       val mockRepo          = mock[SessionRepository]
       val mockUserAnswerSvc = mock[UserAnswersService]
 
-      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any())).thenReturn(Future.successful(Right(Done)))
+      when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any()))
+        .thenReturn(Future.successful(Right(Done)))
       when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(false))
 
       val application =
@@ -101,7 +101,8 @@ class WhatWillBeNeededControllerSpec
           .overrides(
             bind[SessionRepository].toInstance(mockRepo),
             bind[UserAnswersService].toInstance(mockUserAnswerSvc)
-          ).build()
+          )
+          .build()
 
       running(application) {
         val request = FakeRequest(POST, routes.WhatWillBeNeededController.onSubmit().url)

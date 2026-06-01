@@ -31,8 +31,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.{MemberHasEverBeenResidentUKPage, MemberIsResidentUKPage, MembersLastUKAddressPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import repositories.SessionRepository
+import play.api.test.Helpers.*
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.memberDetails.MemberIsResidentUKView
@@ -137,9 +136,15 @@ class MemberIsResidentUKControllerSpec extends AnyFreeSpec with SpecBase with Mo
     "must remove previous data if changed from false to true in CheckMode" in {
       val lastUkAdd       = MembersLastUKAddress("Line1", "Line2", Some("Line3"), Some("Line4"), "Postcode")
       val previousAnswers = emptyUserAnswers
-        .set(MemberIsResidentUKPage, false).success.value
-        .set(MemberHasEverBeenResidentUKPage, true).success.value
-        .set(MembersLastUKAddressPage, lastUkAdd).success.value
+        .set(MemberIsResidentUKPage, false)
+        .success
+        .value
+        .set(MemberHasEverBeenResidentUKPage, true)
+        .success
+        .value
+        .set(MembersLastUKAddressPage, lastUkAdd)
+        .success
+        .value
 
       val mockUserAnswersService = mock[UserAnswersService]
 

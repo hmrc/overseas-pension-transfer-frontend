@@ -16,9 +16,11 @@
 
 package forms
 
-import javax.inject.Inject
-import forms.mappings.{Mappings, Regex}
+import forms.mappings.Mappings
+import forms.mappings.Regex
 import play.api.data.Form
+
+import javax.inject.Inject
 
 class PspDeclarationFormProvider @Inject() extends Mappings with Regex {
 

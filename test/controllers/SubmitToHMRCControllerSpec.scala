@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.SubmitToHMRCFormProvider
 import models.NormalMode
 import models.authentication.{PspId, PspUser}
@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import views.html.SubmitToHMRCView
@@ -58,7 +58,10 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         val view = application.injector.instanceOf[SubmitToHMRCView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -76,7 +79,10 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -123,7 +129,10 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -153,13 +162,15 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
       val cc = stubControllerComponents()
 
-      val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
+      val fakeIdentifierAction =
+        new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
       val application = new GuiceApplicationBuilder()
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
+          bind[DataRetrievalAction]
+            .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
           bind[SchemeDataAction].to[FakeSchemeDataAction]
         )
         .build()
@@ -185,13 +196,15 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
       val cc = stubControllerComponents()
 
-      val fakeIdentifierAction = new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
+      val fakeIdentifierAction =
+        new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
       val application = new GuiceApplicationBuilder()
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
+          bind[DataRetrievalAction]
+            .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
           bind[SchemeDataAction].to[FakeSchemeDataAction]
         )
         .build()

@@ -27,7 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionView
 
@@ -39,7 +39,8 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
   private val formProvider = new OtherAssetsDescriptionFormProvider()
   private val form         = formProvider()
 
-  private lazy val assetValueDescriptionRoute = AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index).url
+  private lazy val assetValueDescriptionRoute =
+    AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(NormalMode, index).url
 
   "AssetValueDescription Controller" - {
 
@@ -55,7 +56,10 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
         val view = application.injector.instanceOf[OtherAssetsDescriptionView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -73,7 +77,10 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -96,7 +103,9 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OtherAssetsDescriptionPage(index).nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual OtherAssetsDescriptionPage(index)
+          .nextPage(NormalMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -115,13 +124,18 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
       running(application) {
         val request =
-          FakeRequest(POST, AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(AmendCheckMode, index).url)
+          FakeRequest(
+            POST,
+            AssetsMiniJourneysRoutes.OtherAssetsDescriptionController.onPageLoad(AmendCheckMode, index).url
+          )
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OtherAssetsDescriptionPage(index).nextPage(AmendCheckMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual OtherAssetsDescriptionPage(index)
+          .nextPage(AmendCheckMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -141,7 +155,10 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

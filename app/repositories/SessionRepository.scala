@@ -16,34 +16,38 @@
 
 package repositories
 
-import config.FrontendAppConfig
-import models.SessionData
-import org.mongodb.scala.bson.conversions.Bson
-import org.mongodb.scala.model.*
-import play.api.libs.json.Format
 import services.EncryptionService
 import uk.gov.hmrc.mongo.MongoComponent
-import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import org.mongodb.scala.model._
 import uk.gov.hmrc.mdc.Mdc
+import org.mongodb.scala.bson.conversions.Bson
+import play.api.libs.json.Format
+import models.SessionData
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import config.FrontendAppConfig
 
-import java.time.{Clock, Instant}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
 import java.util.concurrent.TimeUnit
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class SessionRepository @Inject() (
-    mongoComponent: MongoComponent,
-    encryptionService: EncryptionService,
-    appConfig: FrontendAppConfig,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) extends PlayMongoRepository[SessionData](
+  mongoComponent: MongoComponent,
+  encryptionService: EncryptionService,
+  appConfig: FrontendAppConfig,
+  clock: Clock
+)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[SessionData](
       collectionName = "session-data",
       mongoComponent = mongoComponent,
-      domainFormat   = SessionData.encryptedFormat(encryptionService),
-      indexes        = Seq(
+      domainFormat = SessionData.encryptedFormat(encryptionService),
+      indexes = Seq(
         IndexModel(
           Indexes.ascending("lastUpdated"),
           IndexOptions()
@@ -71,11 +75,10 @@ class SessionRepository @Inject() (
   }
 
   def get(id: String): Future[Option[SessionData]] = Mdc.preservingMdc {
-    keepAlive(id).flatMap {
-      _ =>
-        collection
-          .find(byId(id))
-          .headOption()
+    keepAlive(id).flatMap { _ =>
+      collection
+        .find(byId(id))
+        .headOption()
     }
   }
 
@@ -85,9 +88,9 @@ class SessionRepository @Inject() (
 
     collection
       .replaceOne(
-        filter      = byId(updatedSession.sessionId),
+        filter = byId(updatedSession.sessionId),
         replacement = updatedSession,
-        options     = ReplaceOptions().upsert(true)
+        options = ReplaceOptions().upsert(true)
       )
       .toFuture()
       .map(_ => true)
@@ -101,7 +104,8 @@ class SessionRepository @Inject() (
   }
 
   def clear: Future[Boolean] = Mdc.preservingMdc {
-    collection.drop()
+    collection
+      .drop()
       .toFuture()
       .map(_ => true)
   }

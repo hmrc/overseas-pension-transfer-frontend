@@ -16,10 +16,10 @@
 
 package forms.transferDetails.assetsMiniJourneys.unquotedShares
 
-import utils.CurrencyFormats.currencyFormat
 import forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
+import utils.CurrencyFormats.currencyFormat
 
 import scala.math.BigDecimal.RoundingMode
 
@@ -35,7 +35,8 @@ class UnquotedSharesValueFormProviderSpec extends CurrencyFieldBehaviours {
     val maximum = maxCurrency
 
     val validDataGenerator =
-      Gen.choose[BigDecimal](minimum, maximum)
+      Gen
+        .choose[BigDecimal](minimum, maximum)
         .map(_.setScale(2, RoundingMode.HALF_UP))
         .map(_.toString)
 

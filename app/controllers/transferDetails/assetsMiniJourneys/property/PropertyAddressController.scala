@@ -16,42 +16,52 @@
 
 package controllers.transferDetails.assetsMiniJourneys.property
 
-import config.FrontendAppConfig
+import services.AddressService
+import services.CountryService
+import services.UserAnswersService
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormData
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataTrait
+import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormProvider
+import play.api.mvc._
 import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.property.{PropertyAddressFormData, PropertyAddressFormDataTrait, PropertyAddressFormProvider}
-import models.assets.TypeOfAsset.Property
-import models.requests.DisplayRequest
-import models.{AmendCheckMode, Mode, UserAnswers}
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAddressPage
 import play.api.Logging
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import models.assets.TypeOfAsset.Property
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
 import queries.assets.AssetsRecordVersionQuery
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import services.{AddressService, CountryService, UserAnswersService}
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
-import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
+import models.requests.DisplayRequest
+import play.api.data.Form
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.Try
 
+import javax.inject.Inject
+
 class PropertyAddressController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: PropertyAddressFormProvider,
-    countryService: CountryService,
-    addressService: AddressService,
-    val controllerComponents: MessagesControllerComponents,
-    view: PropertyAddressView
-  )(implicit ec: ExecutionContext,
-    appConfig: FrontendAppConfig
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: PropertyAddressFormProvider,
+  countryService: CountryService,
+  addressService: AddressService,
+  val controllerComponents: MessagesControllerComponents,
+  view: PropertyAddressView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
   def onPageLoad(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData) {
     implicit request =>
@@ -66,11 +76,10 @@ class PropertyAddressController @Inject() (
   }
 
   def renderErrorPage(
-      formWithErrors: Form[PropertyAddressFormData],
-      mode: Mode,
-      index: Int
-    )(implicit displayRequest: DisplayRequest[_]
-    ): Future[Result] = {
+    formWithErrors: Form[PropertyAddressFormData],
+    mode: Mode,
+    index: Int
+  )(implicit displayRequest: DisplayRequest[_]): Future[Result] = {
     val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
     Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode, index)))
   }
@@ -89,15 +98,21 @@ class PropertyAddressController @Inject() (
                 Redirect(PropertyAddressPage(index).nextPageRecovery())
               )
             case Some(addressToSave) if addressToSave.country.code != "GB" && addressToSave.postcode.nonEmpty =>
-              renderErrorPage(boundForm.withError("postcode", "membersLastUKAddress.error.postcode.incorrect"), mode, index)
+              renderErrorPage(
+                boundForm.withError("postcode", "membersLastUKAddress.error.postcode.incorrect"),
+                mode,
+                index
+              )
             case Some(addressToSave)                                                                          =>
               def setAnswers(): Try[UserAnswers] =
                 if (mode == AmendCheckMode) {
                   for {
                     addCashAmount                      <- request.userAnswers.set(PropertyAddressPage(index), addressToSave)
                     removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                    removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-                    removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, Property))
+                    removeTypeOfAssetsRecordVersion    <-
+                      removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                    removeAssetRecordVersion           <-
+                      removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, Property))
                   } yield removeAssetRecordVersion
                 } else {
                   request.userAnswers.set(PropertyAddressPage(index), addressToSave)
@@ -105,7 +120,8 @@ class PropertyAddressController @Inject() (
 
               for {
                 updatedAnswers <- Future.fromTry(setAnswers())
-                _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+                _              <- userAnswersService
+                                    .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
               } yield Redirect(PropertyAddressPage(index).nextPage(mode, updatedAnswers))
           }
       )

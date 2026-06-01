@@ -16,24 +16,22 @@
 
 package viewmodels
 
-import models.address.Country
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SelectItem
+import models.address.Country
 
 case class CountrySelectViewModel(items: Seq[SelectItem])
 
 object CountrySelectViewModel {
 
-  def fromCountries(countries: Seq[Country])(implicit messages: Messages): CountrySelectViewModel = {
+  def fromCountries(countries: Seq[Country]): CountrySelectViewModel = {
 
-    val selectItems = {
+    val selectItems =
       countries.map { country =>
         SelectItem(
           value = Some(country.code),
-          text  = country.name
+          text = country.name
         )
       }
-    }
 
     CountrySelectViewModel(selectItems)
   }

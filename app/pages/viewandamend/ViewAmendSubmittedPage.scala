@@ -16,24 +16,22 @@
 
 package pages.viewandamend
 
-import controllers.viewandamend.routes
-import models.{PstrNumber, QtStatus, TransferId, UserAnswers}
-import pages.Page
 import play.api.mvc.Call
+import pages.Page
+import controllers.viewandamend.routes
+import models._
 
 object ViewAmendSubmittedPage extends Page {
 
-  def userAnswersError(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Call = {
+  def userAnswersError(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Call =
     routes.SubmittedTransferSummaryController.onPageLoad(
       qtReference,
       pstr,
       qtStatus,
       versionNumber
     )
-  }
 
-  override def nextPageNormalMode(answers: UserAnswers): Call = {
+  override def nextPageNormalMode(answers: UserAnswers): Call =
     routes.ViewAmendSubmittedController.amend()
-  }
 
 }

@@ -16,16 +16,17 @@
 
 package models.dtos
 
-import models.{AllTransfersItem, PstrNumber}
 import play.api.libs.json._
+import models.AllTransfersItem
+import models.PstrNumber
 
 import java.time.Instant
 
 final case class GetAllTransfersDTO(
-    pstr: PstrNumber,
-    lastUpdated: Instant,
-    transfers: Seq[AllTransfersItem]
-  )
+  pstr: PstrNumber,
+  lastUpdated: Instant,
+  transfers: Seq[AllTransfersItem]
+)
 
 object GetAllTransfersDTO {
 

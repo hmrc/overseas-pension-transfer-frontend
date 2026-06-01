@@ -16,33 +16,34 @@
 
 package controllers.auth
 
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import play.api.i18n.I18nSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AuthController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    config: FrontendAppConfig,
-    sessionRepository: SessionRepository,
-    identify: IdentifierAction
-  )(implicit ec: ExecutionContext,
-    appConfig: FrontendAppConfig
-  ) extends FrontendBaseController with I18nSupport {
+import javax.inject.Inject
 
-  def signOut(): Action[AnyContent] = identify.async {
-    implicit request =>
-      sessionRepository
-        .clear(request.authenticatedUser.internalId)
-        .map {
-          _ =>
-            Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
-        }
+class AuthController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  config: FrontendAppConfig,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
+    extends FrontendBaseController
+    with I18nSupport {
+
+  def signOut(): Action[AnyContent] = identify.async { implicit request =>
+    sessionRepository
+      .clear(request.authenticatedUser.internalId)
+      .map { _ =>
+        Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
+      }
   }
 
   def signOutNoSurvey(): Action[AnyContent] = Action {

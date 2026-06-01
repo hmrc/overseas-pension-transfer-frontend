@@ -16,18 +16,21 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.CurrencyFormats.currencyFormat
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import utils.CurrencyFormats.currencyFormat
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object CashAmountInTransferSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(CashAmountInTransferPage).map { answer =>
       val actions =
         if (showChangeLink)
@@ -40,8 +43,8 @@ object CashAmountInTransferSummary {
         else Seq.empty
 
       SummaryListRowViewModel(
-        key     = "cashAmountInTransfer.checkYourAnswersLabel",
-        value   = ValueViewModel(currencyFormat(answer)),
+        key = "cashAmountInTransfer.checkYourAnswersLabel",
+        value = ValueViewModel(currencyFormat(answer)),
         actions = actions
       )
     }

@@ -16,68 +16,85 @@
 
 package controllers
 
-import cats.data.EitherT
-import connectors.MinimalDetailsConnector
-import controllers.actions._
 import models.authentication.PsaUser
-import models.{Mode, PersonName}
-import pages.memberDetails.MemberNamePage
-import pages.{PsaDeclarationPage, PspDeclarationPage}
+import services.EmailService
+import services.UserAnswersService
+import queries.DateSubmittedQuery
+import queries.QtNumberQuery
+import play.api.mvc._
+import connectors.MinimalDetailsConnector
+import pages.PsaDeclarationPage
+import pages.PspDeclarationPage
+import controllers.actions._
 import play.api.Logging
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.SessionRepository
-import services.{EmailService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.Mode
+import models.PersonName
+import pages.memberDetails.MemberNamePage
+import cats.data.EitherT
 import views.html.PsaDeclarationView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDeclarationController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: PsaDeclarationView,
-    minimalDetailsConnector: MinimalDetailsConnector,
-    emailService: EmailService,
-    sessionRepository: SessionRepository
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with Logging {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: PsaDeclarationView,
+  minimalDetailsConnector: MinimalDetailsConnector,
+  emailService: EmailService,
+  sessionRepository: SessionRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with Logging {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      Ok(view(mode))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    Ok(view(mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       (for {
         submissionResponse   <-
-          EitherT(userAnswersService.submitDeclaration(
-            request.authenticatedUser,
-            request.userAnswers,
-            request.sessionData,
-            srnNumber = request.sessionData.schemeInformation.srnNumber
-          )).leftMap { e =>
+          EitherT(
+            userAnswersService.submitDeclaration(
+              request.authenticatedUser,
+              request.userAnswers,
+              request.sessionData,
+              srnNumber = request.sessionData.schemeInformation.srnNumber
+            )
+          ).leftMap { e =>
             logger.warn(s"[PsaDeclarationController][onSubmit] Failed to submit declaration: $e")
             Redirect(PsaDeclarationPage.nextPageRecovery())
           }
-        updateWithQTNumberSD <- EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, submissionResponse.qtNumber)))
+        updateWithQTNumberSD <-
+          EitherT.right[Result](Future.fromTry(request.sessionData.set(QtNumberQuery, submissionResponse.qtNumber)))
 
-        updateWithReceiptDateSD <- EitherT.right[Result](Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, submissionResponse.receiptDate)))
-        name                     = request.sessionData.get(MemberNamePage)
+        updateWithReceiptDateSD <-
+          EitherT
+            .right[Result](Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, submissionResponse.receiptDate)))
+        name                     = request.sessionData
+                                     .get(MemberNamePage)
                                      .orElse(request.userAnswers.get(MemberNamePage))
                                      .getOrElse(PersonName("Undefined", "Undefined"))
-        updateWithMemberNameSD  <- EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
+        updateWithMemberNameSD  <-
+          EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
         _                       <- EitherT.right[Result](sessionRepository.set(updateWithMemberNameSD))
         psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
         minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
-                                     logger.warn(s"[PsaDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e")
+                                     logger.warn(
+                                       s"[PsaDeclarationController][onSubmit] Failed to fetch minimal details for psaId=${psaId.value}: $e"
+                                     )
                                      Redirect(PsaDeclarationPage.nextPageRecovery())
                                    }
         _                       <- EitherT.right[Result](

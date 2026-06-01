@@ -16,34 +16,41 @@
 
 package repositories
 
-import config.FrontendAppConfig
-import models.{AllTransfersItem, DashboardData, QtStatus}
-import org.mongodb.scala.bson.conversions.Bson
-import org.mongodb.scala.model.*
-import play.api.libs.json.Format
 import services.EncryptionService
-import uk.gov.hmrc.mdc.Mdc
 import uk.gov.hmrc.mongo.MongoComponent
-import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import org.mongodb.scala.model._
+import uk.gov.hmrc.mdc.Mdc
+import org.mongodb.scala.bson.conversions.Bson
+import play.api.libs.json.Format
+import models.AllTransfersItem
+import models.DashboardData
+import models.QtStatus
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import config.FrontendAppConfig
 
-import java.time.{Clock, Instant, Period}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
+import java.time.Period
 import java.util.concurrent.TimeUnit
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class DashboardSessionRepository @Inject() (
-    mongoComponent: MongoComponent,
-    encryptionService: EncryptionService,
-    appConfig: FrontendAppConfig,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) extends PlayMongoRepository[DashboardData](
+  mongoComponent: MongoComponent,
+  encryptionService: EncryptionService,
+  appConfig: FrontendAppConfig,
+  clock: Clock
+)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[DashboardData](
       collectionName = "dashboard-data",
       mongoComponent = mongoComponent,
-      domainFormat   = DashboardData.encryptedFormat(encryptionService),
-      indexes        = Seq(
+      domainFormat = DashboardData.encryptedFormat(encryptionService),
+      indexes = Seq(
         IndexModel(
           Indexes.ascending("lastUpdated"),
           IndexOptions()
@@ -83,11 +90,10 @@ class DashboardSessionRepository @Inject() (
   }
 
   def get(id: String): Future[Option[DashboardData]] = Mdc.preservingMdc {
-    keepAlive(id).flatMap {
-      _ =>
-        collection
-          .find(byId(id))
-          .headOption()
+    keepAlive(id).flatMap { _ =>
+      collection
+        .find(byId(id))
+        .headOption()
     }
   }
 
@@ -97,9 +103,9 @@ class DashboardSessionRepository @Inject() (
 
     collection
       .replaceOne(
-        filter      = byId(updatedData.id),
+        filter = byId(updatedData.id),
         replacement = updatedData,
-        options     = ReplaceOptions().upsert(true)
+        options = ReplaceOptions().upsert(true)
       )
       .toFuture()
       .map(_ => true)

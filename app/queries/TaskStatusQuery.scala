@@ -16,9 +16,9 @@
 
 package queries
 
-import models.TaskCategory
 import models.taskList._
 import play.api.libs.json.JsPath
+import models.TaskCategory
 
 final case class TaskStatusQuery(category: TaskCategory) extends Gettable[TaskStatus] with Settable[TaskStatus] {
   val path: JsPath = JsPath \ category.toString \ "status"

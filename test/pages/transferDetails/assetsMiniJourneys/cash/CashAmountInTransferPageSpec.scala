@@ -19,7 +19,7 @@ package pages.transferDetails.assetsMiniJourneys.cash
 import base.SpecBase
 import controllers.transferDetails.routes
 import models.assets.{CashMiniJourney, QuotedSharesMiniJourney}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
@@ -29,7 +29,11 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
 
     "in Normal Mode" - {
       "must go to the cya page if no more assets" in {
-        CashAmountInTransferPage.nextPageWith(NormalMode, emptyUserAnswers, emptySessionData) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        CashAmountInTransferPage.nextPageWith(
+          NormalMode,
+          emptyUserAnswers,
+          emptySessionData
+        ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if more assets" in {
@@ -49,7 +53,11 @@ class CashAmountInTransferPageSpec extends AnyFreeSpec with SpecBase {
 
     "in Check Mode" - {
       "must go to the cya page if no more assets" in {
-        CashAmountInTransferPage.nextPageWith(CheckMode, emptyUserAnswers, emptySessionData) mustEqual routes.TransferDetailsCYAController.onPageLoad()
+        CashAmountInTransferPage.nextPageWith(
+          CheckMode,
+          emptyUserAnswers,
+          emptySessionData
+        ) mustEqual routes.TransferDetailsCYAController.onPageLoad()
       }
 
       "must go to the next asset page if more assets" in {

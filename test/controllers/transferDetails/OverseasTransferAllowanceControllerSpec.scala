@@ -19,8 +19,8 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.OverseasTransferAllowanceFormProvider
-import models.{AmendCheckMode, NormalMode}
 import models.responses.UserAnswersErrorResponse
+import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,7 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.OverseasTransferAllowancePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.transferDetails.OverseasTransferAllowanceView
@@ -43,7 +43,8 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
   val validAnswer = BigDecimal(minCurrency)
 
-  private lazy val overseasTransferAllowanceRoute = routes.OverseasTransferAllowanceController.onPageLoad(NormalMode).url
+  private lazy val overseasTransferAllowanceRoute =
+    routes.OverseasTransferAllowanceController.onPageLoad(NormalMode).url
 
   "OverseasTransferAllowance Controller" - {
 
@@ -59,7 +60,10 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
         val view = application.injector.instanceOf[OverseasTransferAllowanceView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -77,7 +81,10 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -105,7 +112,9 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OverseasTransferAllowancePage.nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual OverseasTransferAllowancePage
+          .nextPage(NormalMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -133,7 +142,9 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual OverseasTransferAllowancePage.nextPage(AmendCheckMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual OverseasTransferAllowancePage
+          .nextPage(AmendCheckMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -153,7 +164,10 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

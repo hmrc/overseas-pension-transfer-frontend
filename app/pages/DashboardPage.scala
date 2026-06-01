@@ -16,10 +16,12 @@
 
 package pages
 
-import controllers.routes
-import models.{DashboardData, QtStatus, TransferReportQueryParams}
-import play.api.mvc.Call
 import queries.PensionSchemeDetailsQuery
+import play.api.mvc.Call
+import controllers.routes
+import models.DashboardData
+import models.QtStatus
+import models.TransferReportQueryParams
 
 object DashboardPage extends Page {
 

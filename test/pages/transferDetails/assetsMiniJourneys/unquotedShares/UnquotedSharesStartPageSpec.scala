@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -28,7 +28,10 @@ class UnquotedSharesStartPageSpec extends AnyFreeSpec with Matchers with SpecBas
   ".nextPage" - {
     "in Normal Mode" - {
       "must go to the Next page" in {
-        UnquotedSharesStartPage.nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
+        UnquotedSharesStartPage.nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
           NormalMode,
           index
         )
@@ -37,7 +40,10 @@ class UnquotedSharesStartPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
     "in CheckMode" - {
       "must go to the Next page" in {
-        UnquotedSharesStartPage.nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
+        UnquotedSharesStartPage.nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
           CheckMode,
           index
         )
@@ -46,7 +52,10 @@ class UnquotedSharesStartPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        UnquotedSharesStartPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
+        UnquotedSharesStartPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -55,7 +64,10 @@ class UnquotedSharesStartPageSpec extends AnyFreeSpec with Matchers with SpecBas
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        UnquotedSharesStartPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
+        UnquotedSharesStartPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(
           AmendCheckMode,
           index
         )

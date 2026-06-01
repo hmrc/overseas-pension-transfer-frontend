@@ -20,18 +20,16 @@ import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.memberDetails.MemberNameFormProvider
 import models.responses.UserAnswersErrorResponse
-import models.taskList.TaskStatus
-import models.{NormalMode, PersonName, TaskCategory, UserAnswers}
+import models.{NormalMode, PersonName}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MemberNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import queries.TaskStatusQuery
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.memberDetails.MemberNameView
@@ -78,7 +76,10 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(request, messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(PersonName("value 1", "value 2")), NormalMode)(
+          request,
+          messages(application)
+        ).toString
       }
     }
 

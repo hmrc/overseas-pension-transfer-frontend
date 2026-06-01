@@ -16,13 +16,19 @@
 
 package pages.transferDetails.assetsMiniJourneys.property
 
-import models.{Mode, SessionData, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
-import pages.{MiniJourneyNextPageWith, QuestionPage}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.MiniJourneyNextPageWith
+import pages.QuestionPage
+import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
+import play.api.libs.json.JsPath
+import models.Mode
+import models.SessionData
+import models.UserAnswers
 
-case object MorePropertyDeclarationPage extends QuestionPage[Boolean] with MiniJourneyNextPageWith[SessionData] with NextAssetMiniJourney {
+case object MorePropertyDeclarationPage
+    extends QuestionPage[Boolean]
+    with MiniJourneyNextPageWith[SessionData]
+    with NextAssetMiniJourney {
 
   override def path: JsPath =
     JsPath \ "transferDetails" \ "moreProp"

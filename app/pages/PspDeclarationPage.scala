@@ -16,10 +16,9 @@
 
 package pages
 
-import controllers.routes
-import models.UserAnswers
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import play.api.libs.json.JsPath
+import models.UserAnswers
 
 case object PspDeclarationPage extends QuestionPage[String] {
 

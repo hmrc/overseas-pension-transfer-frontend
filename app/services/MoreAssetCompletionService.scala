@@ -18,28 +18,28 @@ package services
 
 import handlers.AssetThresholdHandler
 import models.assets._
-import models.{SessionData, UserAnswers}
-import queries.assets._
+import models.SessionData
+import models.UserAnswers
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class MoreAssetCompletionService @Inject() (
-    sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) {
+  sessionRepository: SessionRepository,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext) {
 
   def completeAsset(
-      userAnswers: UserAnswers,
-      sessionData: SessionData,
-      assetType: TypeOfAsset,
-      completed: Boolean,
-      userSelection: Option[Boolean] = None
-    )(implicit hc: HeaderCarrier
-    ): Future[SessionData] = {
+    userAnswers: UserAnswers,
+    sessionData: SessionData,
+    assetType: TypeOfAsset,
+    completed: Boolean,
+    userSelection: Option[Boolean] = None
+  )(implicit hc: HeaderCarrier): Future[SessionData] =
 
     for {
       // Step 1: mark asset completed
@@ -48,7 +48,7 @@ class MoreAssetCompletionService @Inject() (
                         )
 
       // Step 2 Update Session with Completed Flag
-      _              <- sessionRepository.set(updatedSession)
+      _ <- sessionRepository.set(updatedSession)
 
       // Step 3: enrich with threshold flags
       enrichedAnswers = AssetThresholdHandler.handle(userAnswers, assetType, userSelection)
@@ -60,5 +60,4 @@ class MoreAssetCompletionService @Inject() (
            )
 
     } yield updatedSession
-  }
 }

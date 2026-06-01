@@ -16,19 +16,21 @@
 
 package pages.transferDetails.assetsMiniJourneys.quotedShares
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import play.api.mvc.Call
+import pages.MiniJourneyNextPage
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
-import models.{Mode, UserAnswers}
-import pages.MiniJourneyNextPage
-import play.api.mvc.Call
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.Mode
+import models.UserAnswers
 
 case class QuotedSharesCYAPage(index: Int) extends MiniJourneyNextPage {
 
   override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
     val quotedSharesCount = AssetThresholdHandler.getAssetCount(answers, TypeOfAsset.QuotedShares)
     if (quotedSharesCount >= 5) {
-      controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.MoreQuotedSharesDeclarationController.onPageLoad(mode = mode)
+      controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.MoreQuotedSharesDeclarationController
+        .onPageLoad(mode = mode)
     } else {
       AssetsMiniJourneysRoutes.QuotedSharesAmendContinueController.onPageLoad(mode = mode)
     }

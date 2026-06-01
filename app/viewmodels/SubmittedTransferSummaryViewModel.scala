@@ -16,14 +16,18 @@
 
 package viewmodels
 
+import models.QtStatus.AmendInProgress
+import models.QtStatus.Submitted
+import play.twirl.api.Html
 import controllers.viewandamend.routes
-import models.QtStatus.{AmendInProgress, Submitted}
 import models.UserAnswers
 import play.api.i18n.Messages
-import play.twirl.api.Html
 
-import java.time.format.{DateTimeFormatter, FormatStyle}
-import java.time.{Instant, LocalDateTime, ZoneId}
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 case object SubmittedTransferSummaryViewModel {
   private val localDateTimeFormatterSubmitted = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
@@ -31,9 +35,12 @@ case object SubmittedTransferSummaryViewModel {
   private def formattedDate(instant: Instant): String =
     LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(localDateTimeFormatterSubmitted)
 
-  def rows(maybeDraft: Option[UserAnswers], answers: List[UserAnswers], versionNumber: String)(implicit messages: Messages): Html = {
+  def rows(maybeDraft: Option[UserAnswers], answers: List[UserAnswers], versionNumber: String)(implicit
+    messages: Messages
+  ): Html = {
     def changeLinkText(isDraftDefined: Boolean) =
-      if (isDraftDefined) messages("submittedTransferSummary.view") else messages("submittedTransferSummary.viewOrAmend")
+      if (isDraftDefined) messages("submittedTransferSummary.view")
+      else messages("submittedTransferSummary.viewOrAmend")
     def changeLinkHref(isDraftDefined: Boolean) =
       if (isDraftDefined) {
         routes.ViewAmendSubmittedController.view(answers.head.id, answers.head.pstr, Submitted, versionNumber).url
@@ -42,14 +49,13 @@ case object SubmittedTransferSummaryViewModel {
       }
     val versions                                = versionNumber.toInt to 1 by -1
 
-    val draftTableRow = maybeDraft.fold("") {
-      draft =>
-        buildRow(
-          messages("submittedTransferSummary.status.inProgress"),
-          messages("submittedTransferSummary.draft"),
-          routes.ViewAmendSubmittedController.fromDraft(draft.id, draft.pstr, AmendInProgress, versionNumber).url,
-          messages("submittedTransferSummary.reviewAndSubmit")
-        )
+    val draftTableRow = maybeDraft.fold("") { draft =>
+      buildRow(
+        messages("submittedTransferSummary.status.inProgress"),
+        messages("submittedTransferSummary.draft"),
+        routes.ViewAmendSubmittedController.fromDraft(draft.id, draft.pstr, AmendInProgress, versionNumber).url,
+        messages("submittedTransferSummary.reviewAndSubmit")
+      )
     }
 
     val mostRecentSubmittedVersion = {
@@ -62,8 +68,9 @@ case object SubmittedTransferSummaryViewModel {
       )
     }
 
-    val submittedRecords = answers.tail.zip(versions.tail).map {
-      case (answer, version) =>
+    val submittedRecords = answers.tail
+      .zip(versions.tail)
+      .map { case (answer, version) =>
         val stringifyVersion = version.toString.length match {
           case 1 => s"00$version"
           case 2 => s"0$version"
@@ -79,7 +86,8 @@ case object SubmittedTransferSummaryViewModel {
           routes.ViewAmendSubmittedController.view(answers.head.id, answers.head.pstr, Submitted, stringifyVersion).url,
           messages("submittedTransferSummary.view")
         )
-    }.mkString
+      }
+      .mkString
 
     Html(draftTableRow + mostRecentSubmittedVersion + submittedRecords)
   }

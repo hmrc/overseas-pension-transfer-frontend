@@ -17,26 +17,25 @@
 package controllers
 
 import base.SpecBase
-import models._
+import models.*
 import models.audit.JourneyStartedType.ContinueTransfer
 import org.jsoup.Jsoup
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.{any, eq as meq}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import queries.PensionSchemeDetailsQuery
 import queries.dashboard.TransfersOverviewQuery
 import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import services.{AuditService, LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.lock.{Lock, LockRepository}
+import uk.gov.hmrc.mongo.lock.Lock
 import views.html.DashboardView
 
-import java.time.{Instant, LocalDate}
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 
@@ -62,29 +61,39 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
       val transferItem  = AllTransfersItem(
-        transferId      = userAnswersTransferNumber,
-        qtVersion       = Some("v1"),
-        qtStatus        = Some(QtStatus.InProgress),
-        nino            = Some("AA123456A"),
+        transferId = userAnswersTransferNumber,
+        qtVersion = Some("v1"),
+        qtStatus = Some(QtStatus.InProgress),
+        nino = Some("AA123456A"),
         memberFirstName = Some("John"),
-        memberSurname   = Some("Doe"),
-        qtDate          = Some(today),
-        lastUpdated     = Some(now),
-        pstrNumber      = Some(PstrNumber("12345678AB")),
-        submissionDate  = None
+        memberSurname = Some("Doe"),
+        qtDate = Some(today),
+        lastUpdated = Some(now),
+        pstrNumber = Some(PstrNumber("12345678AB")),
+        submissionDate = None
       )
 
-      val dd = DashboardData.create("id", now)
-        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
-        .set(TransfersOverviewQuery, Seq(transferItem)).success.value
+      val dd = DashboardData
+        .create("id", now)
+        .set(PensionSchemeDetailsQuery, pensionScheme)
+        .success
+        .value
+        .set(TransfersOverviewQuery, Seq(transferItem))
+        .success
+        .value
 
       when(mockSession.clear(any())).thenReturn(Future.successful(true))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
-      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(any[HeaderCarrier]))
+      when(
+        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(Right(dd)))
-      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(play.twirl.api.Html("dashboard view"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(play.twirl.api.Html("dashboard view"))
 
       val application = applicationBuilder()
         .overrides(
@@ -104,7 +113,9 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         contentAsString(result) must include("dashboard view")
 
         verify(mockRepo).get(any())
-        verify(mockService).getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(any[HeaderCarrier])
+        verify(mockService).getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+          any[HeaderCarrier]
+        )
         verify(mockRepo).set(any())
       }
     }
@@ -129,7 +140,9 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       running(application) {
         val request = FakeRequest(
           GET,
-          routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&name=SomeName&currentPage=1&pstr=PSTR123456"
+          routes.DashboardController
+            .onTransferClick()
+            .url + "?transferId=QT123456&qtStatus=InProgress&name=SomeName&currentPage=1&pstr=PSTR123456"
         )
 
         val result = route(application, request).value
@@ -161,7 +174,9 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         val request =
           FakeRequest(
             GET,
-            routes.DashboardController.onTransferClick().url + "?transferId=QT123456&qtStatus=InProgress&memberName=LockedScheme&currentPage=2&pstr=PSTR123456"
+            routes.DashboardController
+              .onTransferClick()
+              .url + "?transferId=QT123456&qtStatus=InProgress&memberName=LockedScheme&currentPage=2&pstr=PSTR123456"
           )
 
         val result = route(application, request).value
@@ -187,54 +202,64 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       // two transfers: one with transferReference, one with qtReference, one with neither
       val transfers = Seq(
         AllTransfersItem(
-          transferId      = userAnswersTransferNumber,
-          qtVersion       = None,
-          qtStatus        = None,
-          nino            = None,
+          transferId = userAnswersTransferNumber,
+          qtVersion = None,
+          qtStatus = None,
+          nino = None,
           memberFirstName = None,
-          memberSurname   = None,
-          qtDate          = None,
-          lastUpdated     = Some(now),
-          pstrNumber      = Some(PstrNumber("PSTR111")),
-          submissionDate  = None
+          memberSurname = None,
+          qtDate = None,
+          lastUpdated = Some(now),
+          pstrNumber = Some(PstrNumber("PSTR111")),
+          submissionDate = None
         ),
         AllTransfersItem(
-          transferId      = testQtNumber,
-          qtVersion       = None,
-          qtStatus        = None,
-          nino            = None,
+          transferId = testQtNumber,
+          qtVersion = None,
+          qtStatus = None,
+          nino = None,
           memberFirstName = None,
-          memberSurname   = None,
-          qtDate          = None,
-          lastUpdated     = Some(now),
-          pstrNumber      = Some(PstrNumber("PSTR111")),
-          submissionDate  = None
+          memberSurname = None,
+          qtDate = None,
+          lastUpdated = Some(now),
+          pstrNumber = Some(PstrNumber("PSTR111")),
+          submissionDate = None
         ),
         AllTransfersItem(
-          transferId      = QtNumber("QT987654"),
-          qtVersion       = None,
-          qtStatus        = None,
-          nino            = None,
+          transferId = QtNumber("QT987654"),
+          qtVersion = None,
+          qtStatus = None,
+          nino = None,
           memberFirstName = None,
-          memberSurname   = None,
-          qtDate          = None,
-          lastUpdated     = Some(now),
-          pstrNumber      = Some(PstrNumber("PSTR111")),
-          submissionDate  = None
+          memberSurname = None,
+          qtDate = None,
+          lastUpdated = Some(now),
+          pstrNumber = Some(PstrNumber("PSTR111")),
+          submissionDate = None
         )
       )
 
-      val dd = DashboardData.create("id", now)
-        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
-        .set(TransfersOverviewQuery, transfers).success.value
+      val dd = DashboardData
+        .create("id", now)
+        .set(PensionSchemeDetailsQuery, pensionScheme)
+        .success
+        .value
+        .set(TransfersOverviewQuery, transfers)
+        .success
+        .value
 
       when(mockSessionRepo.clear(any())).thenReturn(Future.successful(true))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
-      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(any[HeaderCarrier]))
+      when(
+        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(Right(dd)))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
-      when(mockView.apply(any(), any(), any(), any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(play.twirl.api.Html("dashboard"))
+      when(mockView.apply(any(), any(), any(), any(), any(), any(), any())(any(), any()))
+        .thenReturn(play.twirl.api.Html("dashboard"))
 
       when(mockLockRepository.releaseLock(any(), any())).thenReturn(Future.successful(()))
 
@@ -269,7 +294,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val mockSessionRepo    = mock[SessionRepository]
       val mockLockRepository = mock[EnhancedLockRepository]
 
-      when(mockLockRepository.takeLock(any[String], any[String], any[Duration])).thenReturn(Future.successful(Some(mock[Lock])))
+      when(mockLockRepository.takeLock(any[String], any[String], any[Duration]))
+        .thenReturn(Future.successful(Some(mock[Lock])))
 
       val application = applicationBuilder()
         .overrides(
@@ -284,7 +310,9 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val request = FakeRequest(
           GET,
-          routes.DashboardController.onTransferClick().url + "?transferId=QT654321&qtStatus=InProgress&name=ReAccess&currentPage=1&pstr=PSTR123456"
+          routes.DashboardController
+            .onTransferClick()
+            .url + "?transferId=QT654321&qtStatus=InProgress&name=ReAccess&currentPage=1&pstr=PSTR123456"
         )
 
         val result = route(application, request).value
@@ -301,26 +329,35 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
       val transferItem  = AllTransfersItem(
-        transferId      = userAnswersTransferNumber,
-        qtVersion       = Some("v1"),
-        qtStatus        = Some(QtStatus.InProgress),
-        nino            = Some("AA123456A"),
+        transferId = userAnswersTransferNumber,
+        qtVersion = Some("v1"),
+        qtStatus = Some(QtStatus.InProgress),
+        nino = Some("AA123456A"),
         memberFirstName = Some("John"),
-        memberSurname   = Some("Doe"),
-        qtDate          = Some(today),
-        lastUpdated     = Some(now),
-        pstrNumber      = Some(PstrNumber("12345678AB")),
-        submissionDate  = None
+        memberSurname = Some("Doe"),
+        qtDate = Some(today),
+        lastUpdated = Some(now),
+        pstrNumber = Some(PstrNumber("12345678AB")),
+        submissionDate = None
       )
 
-      val dd = DashboardData.create("id", now)
-        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
-        .set(TransfersOverviewQuery, Seq(transferItem)).success.value
+      val dd = DashboardData
+        .create("id", now)
+        .set(PensionSchemeDetailsQuery, pensionScheme)
+        .success
+        .value
+        .set(TransfersOverviewQuery, Seq(transferItem))
+        .success
+        .value
 
       when(mockSession.clear(any())).thenReturn(Future.successful(true))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
-      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(any[HeaderCarrier]))
+      when(
+        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(Right(dd)))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
 
@@ -352,39 +389,48 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
       val johnTransfer = AllTransfersItem(
-        transferId      = userAnswersTransferNumber,
-        qtVersion       = Some("v1"),
-        qtStatus        = Some(QtStatus.InProgress),
-        nino            = Some("AA123456A"),
+        transferId = userAnswersTransferNumber,
+        qtVersion = Some("v1"),
+        qtStatus = Some(QtStatus.InProgress),
+        nino = Some("AA123456A"),
         memberFirstName = Some("John"),
-        memberSurname   = Some("Doe"),
-        qtDate          = Some(today),
-        lastUpdated     = Some(now),
-        pstrNumber      = Some(PstrNumber("12345678AB")),
-        submissionDate  = None
+        memberSurname = Some("Doe"),
+        qtDate = Some(today),
+        lastUpdated = Some(now),
+        pstrNumber = Some(PstrNumber("12345678AB")),
+        submissionDate = None
       )
 
       val aliceTransfer = AllTransfersItem(
-        transferId      = testQtNumber,
-        qtVersion       = Some("v1"),
-        qtStatus        = Some(QtStatus.InProgress),
-        nino            = Some("BB123456B"),
+        transferId = testQtNumber,
+        qtVersion = Some("v1"),
+        qtStatus = Some(QtStatus.InProgress),
+        nino = Some("BB123456B"),
         memberFirstName = Some("Alice"),
-        memberSurname   = Some("Smith"),
-        qtDate          = Some(today),
-        lastUpdated     = Some(now),
-        pstrNumber      = Some(PstrNumber("12345678AB")),
-        submissionDate  = None
+        memberSurname = Some("Smith"),
+        qtDate = Some(today),
+        lastUpdated = Some(now),
+        pstrNumber = Some(PstrNumber("12345678AB")),
+        submissionDate = None
       )
 
-      val dd = DashboardData.create("id", now)
-        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
-        .set(TransfersOverviewQuery, Seq(johnTransfer, aliceTransfer)).success.value
+      val dd = DashboardData
+        .create("id", now)
+        .set(PensionSchemeDetailsQuery, pensionScheme)
+        .success
+        .value
+        .set(TransfersOverviewQuery, Seq(johnTransfer, aliceTransfer))
+        .success
+        .value
 
       when(mockSession.clear(any())).thenReturn(Future.successful(true))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
-      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(any[HeaderCarrier]))
+      when(
+        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(Right(dd)))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
 
@@ -414,7 +460,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         body must include("""value="John"""")
 
         val clearLink = doc.select("a.search-bar__clear").first()
-        clearLink must not be null
+        clearLink        must not be null
         clearLink.text() must include(messages(application)("dashboard.search.clear"))
 
         val hiddenSpan = clearLink.select("span.govuk-visually-hidden").first()
@@ -431,39 +477,48 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
       val johnTransfer = AllTransfersItem(
-        transferId      = userAnswersTransferNumber,
-        qtVersion       = Some("v1"),
-        qtStatus        = Some(QtStatus.InProgress),
-        nino            = Some("AA123456A"),
+        transferId = userAnswersTransferNumber,
+        qtVersion = Some("v1"),
+        qtStatus = Some(QtStatus.InProgress),
+        nino = Some("AA123456A"),
         memberFirstName = Some("John"),
-        memberSurname   = Some("Doe"),
-        qtDate          = Some(today),
-        lastUpdated     = Some(now),
-        pstrNumber      = Some(PstrNumber("12345678AB")),
-        submissionDate  = None
+        memberSurname = Some("Doe"),
+        qtDate = Some(today),
+        lastUpdated = Some(now),
+        pstrNumber = Some(PstrNumber("12345678AB")),
+        submissionDate = None
       )
 
       val aliceTransfer = AllTransfersItem(
-        transferId      = testQtNumber,
-        qtVersion       = Some("v1"),
-        qtStatus        = Some(QtStatus.InProgress),
-        nino            = Some("BB123456B"),
+        transferId = testQtNumber,
+        qtVersion = Some("v1"),
+        qtStatus = Some(QtStatus.InProgress),
+        nino = Some("BB123456B"),
         memberFirstName = Some("Alice"),
-        memberSurname   = Some("Smith"),
-        qtDate          = Some(today),
-        lastUpdated     = Some(now),
-        pstrNumber      = Some(PstrNumber("12345678AB")),
-        submissionDate  = None
+        memberSurname = Some("Smith"),
+        qtDate = Some(today),
+        lastUpdated = Some(now),
+        pstrNumber = Some(PstrNumber("12345678AB")),
+        submissionDate = None
       )
 
-      val dd = DashboardData.create("id", now)
-        .set(PensionSchemeDetailsQuery, pensionScheme).success.value
-        .set(TransfersOverviewQuery, Seq(johnTransfer, aliceTransfer)).success.value
+      val dd = DashboardData
+        .create("id", now)
+        .set(PensionSchemeDetailsQuery, pensionScheme)
+        .success
+        .value
+        .set(TransfersOverviewQuery, Seq(johnTransfer, aliceTransfer))
+        .success
+        .value
 
       when(mockSession.clear(any())).thenReturn(Future.successful(true))
       when(mockRepo.get(any())).thenReturn(Future.successful(Some(dd)))
       when(mockRepo.set(any())).thenReturn(Future.successful(true))
-      when(mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(any[HeaderCarrier]))
+      when(
+        mockService.getAllTransfersData(meq(dd), meq(pensionScheme.pstrNumber), meq(pensionScheme.srnNumber))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(Right(dd)))
       when(mockRepo.findExpiringWithin2Days(any())).thenReturn(Seq.empty)
 
@@ -506,24 +561,26 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val owner      = "A123456"
 
       val emptyUserAnswers = UserAnswers(
-        id          = transferId,
-        pstr        = PstrNumber("PSTR000"),
+        id = transferId,
+        pstr = PstrNumber("PSTR000"),
         lastUpdated = now,
-        data        = Json.obj()
+        data = Json.obj()
       )
 
       when(mockUserAnswersSvc.getExternalUserAnswers(any(), any(), any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(emptyUserAnswers)))
 
-      when(mockLockService.takeLockWithAudit(
-        any(),
-        any(),
-        any(),
-        any(),
-        any(),
-        any(),
-        any()
-      )(any())).thenReturn(Future.successful(true))
+      when(
+        mockLockService.takeLockWithAudit(
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any(),
+          any()
+        )(any())
+      ).thenReturn(Future.successful(true))
 
       val application = applicationBuilder()
         .overrides(
@@ -533,7 +590,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
           bind[LockService].toInstance(mockLockService),
           bind[UserAnswersService].toInstance(mockUserAnswersSvc),
           bind[AuditService].toInstance(mockAuditService)
-        ).build()
+        )
+        .build()
 
       running(application) {
         val request = FakeRequest(

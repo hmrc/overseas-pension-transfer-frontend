@@ -16,15 +16,16 @@
 
 package models.assets
 
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.functional.syntax.unlift
 import models.address.PropertyAddress
-import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-import play.api.libs.json.*
+import play.api.libs.json._
 
 sealed trait AssetEntry
 
 case class CashEntry(
-    cashValue: BigDecimal
-  ) extends AssetEntry
+  cashValue: BigDecimal
+) extends AssetEntry
 
 object CashEntry {
   val CashValue = "cashValue"
@@ -39,16 +40,23 @@ object CashEntry {
 }
 
 case class QuotedSharesEntry(
-    companyName: String,
-    valueOfShares: BigDecimal,
-    numberOfShares: Int,
-    classOfShares: String
-  ) extends AssetEntry
+  companyName: String,
+  valueOfShares: BigDecimal,
+  numberOfShares: Int,
+  classOfShares: String
+) extends AssetEntry
 
 object QuotedSharesEntry {
 
   def unapply(quotedSharesEntry: QuotedSharesEntry): Option[(String, BigDecimal, Int, String)] =
-    Some((quotedSharesEntry.companyName, quotedSharesEntry.valueOfShares, quotedSharesEntry.numberOfShares, quotedSharesEntry.classOfShares))
+    Some(
+      (
+        quotedSharesEntry.companyName,
+        quotedSharesEntry.valueOfShares,
+        quotedSharesEntry.numberOfShares,
+        quotedSharesEntry.classOfShares
+      )
+    )
 
   val CompanyName    = "quotedCompany"
   val ValueOfShares  = "quotedValue"
@@ -73,16 +81,23 @@ object QuotedSharesEntry {
 }
 
 case class UnquotedSharesEntry(
-    companyName: String,
-    valueOfShares: BigDecimal,
-    numberOfShares: Int,
-    classOfShares: String
-  ) extends AssetEntry
+  companyName: String,
+  valueOfShares: BigDecimal,
+  numberOfShares: Int,
+  classOfShares: String
+) extends AssetEntry
 
 object UnquotedSharesEntry {
 
   def unapply(unquotedSharesEntry: UnquotedSharesEntry): Option[(String, BigDecimal, Int, String)] =
-    Some((unquotedSharesEntry.companyName, unquotedSharesEntry.valueOfShares, unquotedSharesEntry.numberOfShares, unquotedSharesEntry.classOfShares))
+    Some(
+      (
+        unquotedSharesEntry.companyName,
+        unquotedSharesEntry.valueOfShares,
+        unquotedSharesEntry.numberOfShares,
+        unquotedSharesEntry.classOfShares
+      )
+    )
 
   val CompanyName    = "unquotedCompany"
   val ValueOfShares  = "unquotedValue"
@@ -107,10 +122,10 @@ object UnquotedSharesEntry {
 }
 
 case class PropertyEntry(
-    propertyAddress: PropertyAddress,
-    propValue: BigDecimal,
-    propDescription: String
-  ) extends AssetEntry
+  propertyAddress: PropertyAddress,
+  propValue: BigDecimal,
+  propDescription: String
+) extends AssetEntry
 
 object PropertyEntry {
 
@@ -137,9 +152,9 @@ object PropertyEntry {
 }
 
 case class OtherAssetsEntry(
-    assetDescription: String,
-    assetValue: BigDecimal
-  ) extends AssetEntry
+  assetDescription: String,
+  assetValue: BigDecimal
+) extends AssetEntry
 
 object OtherAssetsEntry {
 

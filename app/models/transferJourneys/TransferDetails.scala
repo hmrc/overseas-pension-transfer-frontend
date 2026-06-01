@@ -17,29 +17,31 @@
 package models.transferJourneys
 
 import models.assets._
-import models.{ApplicableTaxExclusions, WhyTransferIsNotTaxable, WhyTransferIsTaxable}
+import models.ApplicableTaxExclusions
+import models.WhyTransferIsNotTaxable
+import models.WhyTransferIsTaxable
 
 import java.time.LocalDate
 
 case class TransferDetails(
-    allowanceBeforeTransfer: BigDecimal,
-    transferAmount: BigDecimal,
-    isTransferTaxable: Boolean,
-    whyTaxable: Option[WhyTransferIsTaxable],
-    whyNotTaxable: Option[Set[WhyTransferIsNotTaxable]],
-    applicableTaxExclusions: Option[Set[ApplicableTaxExclusions]],
-    amountOfTaxDeducted: Option[BigDecimal],
-    netTransferAmount: Option[BigDecimal],
-    dateOfTransfer: LocalDate,
-    isTransferCashOnly: Boolean,
-    typeOfAsset: Seq[TypeOfAsset],
-    cashAmountInTransfer: Option[BigDecimal],
-    unquotedShares: Option[List[UnquotedSharesEntry]],
-    moreThan5Unquoted: Option[Boolean],
-    quotedShares: Option[List[QuotedSharesEntry]],
-    moreThan5Quoted: Option[Boolean],
-    propertyDetails: Option[List[PropertyEntry]],
-    moreThan5Property: Option[Boolean],
-    otherAssets: Option[List[OtherAssetsEntry]],
-    moreThan5OtherAssets: Option[Boolean]
-  )
+  allowanceBeforeTransfer: BigDecimal,
+  transferAmount: BigDecimal,
+  isTransferTaxable: Boolean,
+  whyTaxable: Option[WhyTransferIsTaxable],
+  whyNotTaxable: Option[Set[WhyTransferIsNotTaxable]],
+  applicableTaxExclusions: Option[Set[ApplicableTaxExclusions]],
+  amountOfTaxDeducted: Option[BigDecimal],
+  netTransferAmount: Option[BigDecimal],
+  dateOfTransfer: LocalDate,
+  isTransferCashOnly: Boolean,
+  typeOfAsset: Seq[TypeOfAsset],
+  cashAmountInTransfer: Option[BigDecimal],
+  unquotedShares: Option[List[UnquotedSharesEntry]],
+  moreThan5Unquoted: Option[Boolean],
+  quotedShares: Option[List[QuotedSharesEntry]],
+  moreThan5Quoted: Option[Boolean],
+  propertyDetails: Option[List[PropertyEntry]],
+  moreThan5Property: Option[Boolean],
+  otherAssets: Option[List[OtherAssetsEntry]],
+  moreThan5OtherAssets: Option[Boolean]
+)

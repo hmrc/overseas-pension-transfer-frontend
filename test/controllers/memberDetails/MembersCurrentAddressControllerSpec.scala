@@ -17,11 +17,11 @@
 package controllers.memberDetails
 
 import base.AddressBase
-import controllers.memberDetails.{routes => memberRoutes}
-import controllers.{routes => baseRoutes}
+import controllers.memberDetails.routes as memberRoutes
+import controllers.routes as baseRoutes
 import forms.memberDetails.{MembersCurrentAddressFormData, MembersCurrentAddressFormProvider}
 import models.NormalMode
-import models.address._
+import models.address.*
 import models.requests.DisplayRequest
 import models.responses.UserAnswersErrorResponse
 import org.apache.pekko.Done
@@ -30,11 +30,10 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.memberDetails.MembersCurrentAddressPage
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{AddressService, CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
@@ -54,17 +53,19 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
     Country("FR", "France")
   )
 
-  implicit private val messages: Messages = stubMessages()
-  private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
+  stubMessages()
+  private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
 
   private val mockCountryService = mock[CountryService]
   "MembersCurrentAddress Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).overrides(
-        bind[CountryService].toInstance(mockCountryService)
-      ).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber)
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService)
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -89,9 +90,11 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
     "must return OK and the correct view for a GET when accessible change feature is on" in {
 
-      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber).overrides(
-        bind[CountryService].toInstance(mockCountryService)
-      ).build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberNameQtNumber)
+        .overrides(
+          bind[CountryService].toInstance(mockCountryService)
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -120,7 +123,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application = applicationBuilder(userAnswers)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        ).build()
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -160,7 +164,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
-          ).build()
+          )
+          .build()
 
       running(application) {
         val request =
@@ -184,7 +189,8 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
           bind[CountryService].toInstance(mockCountryService)
-        ).build()
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
 
@@ -216,15 +222,18 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
         .overrides(
           bind[CountryService].toInstance(mockCountryService),
           bind[AddressService].toInstance(mockAddressService)
-        ).build()
+        )
+        .build()
 
       when(mockCountryService.countries).thenReturn(testCountries)
-      when(mockAddressService.membersCurrentAddress(any())).thenReturn(Some(
-        membersCurrentAddress.copy(
-          ukPostCode = Some("AA00AA"),
-          country    = Country("FR", "France")
+      when(mockAddressService.membersCurrentAddress(any())).thenReturn(
+        Some(
+          membersCurrentAddress.copy(
+            ukPostCode = Some("AA00AA"),
+            country = Country("FR", "France")
+          )
         )
-      ))
+      )
 
       val data = Seq(
         "addressLine1" -> "2 Other Place",

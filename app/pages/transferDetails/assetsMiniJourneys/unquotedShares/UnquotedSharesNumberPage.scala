@@ -16,27 +16,31 @@
 
 package pages.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.assets.{TypeOfAsset, UnquotedSharesEntry}
-import models.{Mode, TaskCategory, UserAnswers}
-import pages.{MiniJourneyNextPage, QuestionPage}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.MiniJourneyNextPage
+import pages.QuestionPage
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.Mode
+import models.TaskCategory
+import models.UserAnswers
 import validators.assetsValidators.AssetCompletionValidator
+import play.api.libs.json.JsPath
+import models.assets.TypeOfAsset
+import models.assets.UnquotedSharesEntry
 
 case class UnquotedSharesNumberPage(index: Int) extends QuestionPage[Int] with MiniJourneyNextPage {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
+  override def path: JsPath =
+    JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.UnquotedShares.entryName \ index \ toString
 
   override def toString: String = UnquotedSharesEntry.NumberOfShares
 
-  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call =
     if (AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.UnquotedShares, answers)) {
       AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(mode, index)
     } else {
       AssetsMiniJourneysRoutes.UnquotedSharesClassController.onPageLoad(mode, index)
     }
-  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.UnquotedSharesNumberController.onPageLoad(mode, index)

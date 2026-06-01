@@ -25,31 +25,29 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.summarylist._
+import viewmodels.govuk.summarylist.*
 import views.html.transferDetails.TransferDetailsCYAView
 
-import scala.concurrent.ExecutionContext
-
 class TransferDetailsCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: TransferDetailsCYAView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: TransferDetailsCYAView
+) extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val list = SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, request.userAnswers))
-      Ok(view(list))
+  def onPageLoad(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val list = SummaryListViewModel(TransferDetailsSummary.rows(CheckMode, request.userAnswers))
+    Ok(view(list))
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val isAmendJourney = (request.sessionData.data \ "versionNumber").isDefined || (request.sessionData.data \ "receiptDate").isDefined
-      val mode           = if (isAmendJourney) AmendCheckMode else CheckMode
-      Redirect(TransferDetailsSummaryPage.nextPage(mode, request.userAnswers))
+  def onSubmit(): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val isAmendJourney =
+      (request.sessionData.data \ "versionNumber").isDefined || (request.sessionData.data \ "receiptDate").isDefined
+    val mode           = if (isAmendJourney) AmendCheckMode else CheckMode
+    Redirect(TransferDetailsSummaryPage.nextPage(mode, request.userAnswers))
   }
 }

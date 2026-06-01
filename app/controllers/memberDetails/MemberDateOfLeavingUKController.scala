@@ -16,61 +16,67 @@
 
 package controllers.memberDetails
 
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import forms.memberDetails.MemberDateOfLeavingUKFormProvider
 import controllers.actions._
 import controllers.helpers.ErrorHandling
-import forms.memberDetails.MemberDateOfLeavingUKFormProvider
-import models.Mode
 import org.apache.pekko.Done
 import pages.memberDetails.MemberDateOfLeavingUKPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.Mode
 import views.html.memberDetails.MemberDateOfLeavingUKView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDateOfLeavingUKController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    userAnswersService: UserAnswersService,
-    formProvider: MemberDateOfLeavingUKFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: MemberDateOfLeavingUKView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  userAnswersService: UserAnswersService,
+  formProvider: MemberDateOfLeavingUKFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: MemberDateOfLeavingUKView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val form = formProvider()
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val form = formProvider()
 
-      val preparedForm = request.userAnswers.get(MemberDateOfLeavingUKPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+    val preparedForm = request.userAnswers.get(MemberDateOfLeavingUKPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
       val form = formProvider()
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            userAnswers   <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
-            savedForLater <- userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield {
-            savedForLater match {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              userAnswers   <- Future.fromTry(request.userAnswers.set(MemberDateOfLeavingUKPage, value))
+              savedForLater <-
+                userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield savedForLater match {
               case Right(Done) => Redirect(MemberDateOfLeavingUKPage.nextPage(mode, userAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
-          }
-      )
+        )
   }
 }

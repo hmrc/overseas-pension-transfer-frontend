@@ -16,11 +16,11 @@
 
 package pages.qropsSchemeManagerDetails
 
-import controllers.qropsSchemeManagerDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, SchemeManagerType, TaskCategory, UserAnswers}
+import play.api.mvc.Call
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models._
+import controllers.qropsSchemeManagerDetails.routes
 
 import scala.util.Try
 
@@ -52,14 +52,15 @@ case object SchemeManagerTypePage extends QuestionPage[SchemeManagerType] {
   final def changeLink(mode: Mode): Call =
     routes.SchemeManagerTypeController.onPageLoad(mode)
 
-  override def cleanup(maybeSchemeManagerType: Option[SchemeManagerType], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(maybeSchemeManagerType: Option[SchemeManagerType], userAnswers: UserAnswers): Try[UserAnswers] =
     maybeSchemeManagerType match {
-      case Some(SchemeManagerType.Organisation) => userAnswers
+      case Some(SchemeManagerType.Organisation) =>
+        userAnswers
           .remove(SchemeManagersNamePage)
-      case Some(SchemeManagerType.Individual)   => userAnswers
+      case Some(SchemeManagerType.Individual)   =>
+        userAnswers
           .remove(SchemeManagerOrganisationNamePage)
           .flatMap(_.remove(SchemeManagerOrgIndividualNamePage))
       case _                                    => super.cleanup(maybeSchemeManagerType, userAnswers)
     }
-  }
 }

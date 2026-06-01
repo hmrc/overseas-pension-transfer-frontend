@@ -23,18 +23,19 @@ import utils.AppUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeSchemeDataAction
-    extends SchemeDataAction with AppUtils with SpecBase {
+class FakeSchemeDataAction extends SchemeDataAction with AppUtils with SpecBase {
 
   implicit override protected val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SchemeRequest[A]]] =
-    Future.successful(Right(
-      SchemeRequest(
-        request.request,
-        request.authenticatedUser,
-        schemeDetails
+    Future.successful(
+      Right(
+        SchemeRequest(
+          request.request,
+          request.authenticatedUser,
+          schemeDetails
+        )
       )
-    ))
+    )
 }

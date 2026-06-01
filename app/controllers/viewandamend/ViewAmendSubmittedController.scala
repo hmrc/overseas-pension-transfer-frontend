@@ -16,118 +16,133 @@
 
 package controllers.viewandamend
 
-import com.google.inject.Inject
-import config.FrontendAppConfig
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import models.audit.JourneyStartedType.ContinueAmendmentOfTransfer
-import models.authentication.{PsaUser, PspUser}
-import models.requests.SchemeRequest
-import models.responses.UserAnswersError
-import models.{AmendCheckMode, NormalMode, PstrNumber, QtNumber, QtStatus, SessionData, TransferId, UserAnswers}
-import pages.memberDetails.MemberNamePage
-import pages.viewandamend.{ViewAmendSubmittedPage => page}
-import play.api.Logging
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.HtmlFormat
-import repositories.SessionRepository
-import services.{LockService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.authentication.PsaUser
+import models.authentication.PspUser
 import utils.AppUtils
-import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
+import play.api.mvc._
+import com.google.inject.Inject
 import viewmodels.checkAnswers.qropsDetails.QROPSDetailsSummary
-import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
+import config.FrontendAppConfig
+import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import repositories.SessionRepository
+import pages.memberDetails.MemberNamePage
+import services.LockService
+import services.UserAnswersService
+import models.responses.UserAnswersError
 import viewmodels.checkAnswers.schemeOverview.SchemeDetailsSummary
-import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
-import viewmodels.govuk.summarylist._
+import play.twirl.api.HtmlFormat
+import viewmodels.checkAnswers.qropsSchemeManagerDetails.SchemeManagerDetailsSummary
 import views.html.viewandamend.ViewSubmittedView
+import play.api.Logging
+import play.api.libs.json.Json
+import models._
+import models.audit.JourneyStartedType.ContinueAmendmentOfTransfer
+import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.govuk.summarylist._
+import models.requests.SchemeRequest
+import pages.viewandamend.{ViewAmendSubmittedPage => page}
 
-import java.time.{Clock, Instant}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
 
 class ViewAmendSubmittedController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    schemeData: SchemeDataAction,
-    userAnswersService: UserAnswersService,
-    getData: DataRetrievalAction,
-    val controllerComponents: MessagesControllerComponents,
-    view: ViewSubmittedView,
-    lockService: LockService,
-    sessionRepository: SessionRepository,
-    appConfig: FrontendAppConfig,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils with Logging {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  schemeData: SchemeDataAction,
+  userAnswersService: UserAnswersService,
+  getData: DataRetrievalAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: ViewSubmittedView,
+  lockService: LockService,
+  sessionRepository: SessionRepository,
+  appConfig: FrontendAppConfig,
+  clock: Clock
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with AppUtils
+    with Logging {
 
   def view(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
-    (identify andThen schemeData).async {
-      implicit request =>
-        qtReference match {
-          case QtNumber(_) =>
-            userAnswersService
-              .getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber), request.schemeDetails.srnNumber)
-              .map {
-                case Right(userAnswers) =>
-                  val sessionData = SessionData(
-                    request.authenticatedUser.internalId,
-                    qtReference,
-                    request.schemeDetails,
-                    request.authenticatedUser,
-                    Json.obj(
-                      "receiptDate" -> userAnswers.lastUpdated
-                    ),
-                    Instant.now(clock)
-                  )
+    (identify andThen schemeData).async { implicit request =>
+      qtReference match {
+        case QtNumber(_) =>
+          userAnswersService
+            .getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber), request.schemeDetails.srnNumber)
+            .map {
+              case Right(userAnswers) =>
+                val sessionData = SessionData(
+                  request.authenticatedUser.internalId,
+                  qtReference,
+                  request.schemeDetails,
+                  request.authenticatedUser,
+                  Json.obj(
+                    "receiptDate" -> userAnswers.lastUpdated
+                  ),
+                  Instant.now(clock)
+                )
 
-                  val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) {
-                    name =>
-                      sessionData.set(MemberNamePage, name).getOrElse(sessionData)
-                  }
+                val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) { name =>
+                  sessionData.set(MemberNamePage, name).getOrElse(sessionData)
+                }
 
-                  Ok(renderView(sessionDataWithMemberName, userAnswers, isAmend = false))
-                case Left(_)            =>
-                  Redirect(page.nextPageRecovery())
-              }
-          case _           => Future.successful(Redirect(page.nextPageRecovery()))
-        }
+                Ok(renderView(sessionDataWithMemberName, userAnswers, isAmend = false))
+              case Left(_)            =>
+                Redirect(page.nextPageRecovery())
+            }
+        case _           => Future.successful(Redirect(page.nextPageRecovery()))
+      }
 
     }
 
-  def fromDraft(qtReference: TransferId, pstr: PstrNumber, qtStatus: QtStatus, versionNumber: String): Action[AnyContent] =
-    (identify andThen schemeData).async {
-      implicit request =>
-        val owner = request.authenticatedUser match {
-          case PsaUser(psaId, _, _) => psaId.value
-          case PspUser(pspId, _, _) => pspId.value
-        }
+  def fromDraft(
+    qtReference: TransferId,
+    pstr: PstrNumber,
+    qtStatus: QtStatus,
+    versionNumber: String
+  ): Action[AnyContent] =
+    (identify andThen schemeData).async { implicit request =>
+      val owner = request.authenticatedUser match {
+        case PsaUser(psaId, _, _) => psaId.value
+        case PspUser(pspId, _, _) => pspId.value
+      }
 
-        for {
-          userAnswersResult <- userAnswersService.getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber), request.schemeDetails.srnNumber)
-          allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
-          lockAcquired      <- lockService.takeLockWithAudit(
-                                 qtReference,
-                                 owner,
-                                 appConfig.dashboardLockTtl,
-                                 request.authenticatedUser,
-                                 request.schemeDetails,
-                                 ContinueAmendmentOfTransfer,
-                                 allTransfersItem
-                               )
-          result            <- handleResult(qtReference, pstr, qtStatus, versionNumber, request, userAnswersResult, lockAcquired)
-        } yield result
+      for {
+        userAnswersResult <-
+          userAnswersService
+            .getExternalUserAnswers(qtReference, pstr, qtStatus, Some(versionNumber), request.schemeDetails.srnNumber)
+        allTransfersItem   = userAnswersResult.toOption.map(userAnswersService.toAllTransfersItem)
+        lockAcquired      <- lockService.takeLockWithAudit(
+                               qtReference,
+                               owner,
+                               appConfig.dashboardLockTtl,
+                               request.authenticatedUser,
+                               request.schemeDetails,
+                               ContinueAmendmentOfTransfer,
+                               allTransfersItem
+                             )
+        result            <- handleResult(qtReference, pstr, qtStatus, versionNumber, request, userAnswersResult, lockAcquired)
+      } yield result
     }
 
   private def handleResult(
-      qtReference: TransferId,
-      pstr: PstrNumber,
-      qtStatus: QtStatus,
-      versionNumber: String,
-      request: SchemeRequest[AnyContent],
-      userAnswersResult: Either[UserAnswersError, UserAnswers],
-      lockAcquired: Boolean
-    ) = {
+    qtReference: TransferId,
+    pstr: PstrNumber,
+    qtStatus: QtStatus,
+    versionNumber: String,
+    request: SchemeRequest[AnyContent],
+    userAnswersResult: Either[UserAnswersError, UserAnswers],
+    lockAcquired: Boolean
+  ) =
 
     (userAnswersResult, lockAcquired) match {
       case (Right(userAnswers), true) =>
@@ -162,43 +177,49 @@ class ViewAmendSubmittedController @Inject() (
       case _ =>
         Future.successful(Redirect(page.nextPageRecovery()))
     }
-  }
 
   def amend(): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit dr =>
       val versionNumber = (dr.sessionData.data \ "versionNumber").asOpt[String].getOrElse("001")
-      userAnswersService.getExternalUserAnswers(
-        dr.userAnswers.id,
-        dr.userAnswers.pstr,
-        QtStatus.Submitted,
-        Some(versionNumber),
-        dr.sessionData.schemeInformation.srnNumber
-      ).map {
-        case Right(externalUserAnswers) =>
-          val isChanged: Boolean = externalUserAnswers.data != dr.userAnswers.data
-          Ok(renderView(dr.sessionData, dr.userAnswers, isAmend = true, isChanged = isChanged))
-        case Left(_)                    =>
-          InternalServerError("Unable to fetch external user answers")
-      }
+      userAnswersService
+        .getExternalUserAnswers(
+          dr.userAnswers.id,
+          dr.userAnswers.pstr,
+          QtStatus.Submitted,
+          Some(versionNumber),
+          dr.sessionData.schemeInformation.srnNumber
+        )
+        .map {
+          case Right(externalUserAnswers) =>
+            val isChanged: Boolean = externalUserAnswers.data != dr.userAnswers.data
+            Ok(renderView(dr.sessionData, dr.userAnswers, isAmend = true, isChanged = isChanged))
+          case Left(_)                    =>
+            InternalServerError("Unable to fetch external user answers")
+        }
     }
 
   private def renderView(
-      sessionData: SessionData,
-      userAnswers: UserAnswers,
-      isAmend: Boolean,
-      isChanged: Boolean = false
-    )(implicit request: Request[_]
-    ): HtmlFormat.Appendable = {
+    sessionData: SessionData,
+    userAnswers: UserAnswers,
+    isAmend: Boolean,
+    isChanged: Boolean = false
+  )(implicit request: Request[_]): HtmlFormat.Appendable = {
 
     val schemeName                      = sessionData.schemeInformation.schemeName
-    val schemeSummaryList               = SummaryListViewModel(SchemeDetailsSummary.rows(AmendCheckMode, schemeName, dateTransferSubmitted(sessionData)))
+    val schemeSummaryList               = SummaryListViewModel(
+      SchemeDetailsSummary.rows(schemeName, dateTransferSubmitted(sessionData))
+    )
     val memberDetailsSummaryList        = if (isAmend) {
       SummaryListViewModel(MemberDetailsSummary.amendRows(AmendCheckMode, userAnswers))
     } else {
       SummaryListViewModel(MemberDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = false))
     }
-    val transferDetailsSummaryList      = SummaryListViewModel(TransferDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
-    val qropsDetailsSummaryList         = SummaryListViewModel(QROPSDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
+    val transferDetailsSummaryList      = SummaryListViewModel(
+      TransferDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend)
+    )
+    val qropsDetailsSummaryList         = SummaryListViewModel(
+      QROPSDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend)
+    )
     val schemeManagerDetailsSummaryList =
       SummaryListViewModel(SchemeManagerDetailsSummary.rows(AmendCheckMode, userAnswers, showChangeLinks = isAmend))
 

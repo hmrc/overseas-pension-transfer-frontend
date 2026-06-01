@@ -17,43 +17,31 @@
 package viewmodels
 
 import base.SpecBase
-import models.{NormalMode, PersonName, SchemeManagerType}
 import models.address.{Country, QROPSAddress, SchemeManagersAddress}
 import models.taskList.TaskStatus.{CannotStart, Completed, InProgress, NotStarted}
+import models.{NormalMode, PersonName, SchemeManagerType}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.qropsDetails.{QROPSAddressPage, QROPSCountryPage, QROPSNamePage, QROPSReferencePage}
-import pages.qropsSchemeManagerDetails.{
-  SchemeManagerOrgIndividualNamePage,
-  SchemeManagerOrganisationNamePage,
-  SchemeManagerTypePage,
-  SchemeManagersAddressPage,
-  SchemeManagersContactPage,
-  SchemeManagersEmailPage,
-  SchemeManagersNamePage
-}
+import pages.qropsSchemeManagerDetails.*
 import play.api.libs.json.Json
-import viewmodels.TaskJourneyViewModels.{
-  MemberDetailsJourneyViewModel,
-  QropsDetailsJourneyViewModel,
-  SchemeManagerDetailsJourneyViewModel,
-  SubmissionDetailsJourneyViewModel,
-  TransferDetailsJourneyViewModel
-}
+import viewmodels.TaskJourneyViewModels.*
 
 class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
 
-  private val validMemberDetails = Json.obj("memberDetails" -> Json.obj(
-    "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
-    "nino"                   -> "AA000000A",
-    "dateOfBirth"            -> "1993-11-11",
-    "principalResAddDetails" -> Json.obj(
-      "addressLine1" -> "line1",
-      "addressLine2" -> "line2",
-      "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
-    ),
-    "memUkResident"          -> true
-  ))
+  private val validMemberDetails = Json.obj(
+    "memberDetails" -> Json.obj(
+      "name"                   -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname"),
+      "nino"                   -> "AA000000A",
+      "dateOfBirth"            -> "1993-11-11",
+      "principalResAddDetails" -> Json.obj(
+        "addressLine1" -> "line1",
+        "addressLine2" -> "line2",
+        "country"      -> Json.obj("code" -> "GB", "name" -> "United Kingdom")
+      ),
+      "memUkResident"          -> true
+    )
+  )
 
   private val validTransferDetails = Json.obj(
     "allowanceBeforeTransfer" -> 1000.25,
@@ -85,9 +73,11 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
       }
 
       "must return InProgress when other Invalid Chain is returned" in {
-        val missingMemberDetailsJson = Json.obj("memberDetails" -> Json.obj(
-          "name" -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname")
-        ))
+        val missingMemberDetailsJson = Json.obj(
+          "memberDetails" -> Json.obj(
+            "name" -> Json.obj("firstName" -> "Firstname", "lastName" -> "Lastname")
+          )
+        )
 
         MemberDetailsJourneyViewModel.status(emptyUserAnswers.copy(data = missingMemberDetailsJson)) mustBe
           InProgress
@@ -176,8 +166,12 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           )
 
           val userAnswers = baseAnswers
-            .set(QROPSNamePage, "Test QROPS").success.value
-            .set(QROPSReferencePage, "Q123456").success.value
+            .set(QROPSNamePage, "Test QROPS")
+            .success
+            .value
+            .set(QROPSReferencePage, "Q123456")
+            .success
+            .value
             .set(
               QROPSAddressPage,
               QROPSAddress(
@@ -186,10 +180,14 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
                 addressLine3 = None,
                 addressLine4 = None,
                 addressLine5 = None,
-                country      = Country("GB", "United Kingdom")
+                country = Country("GB", "United Kingdom")
               )
-            ).success.value
-            .set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+            )
+            .success
+            .value
+            .set(QROPSCountryPage, Country("GB", "United Kingdom"))
+            .success
+            .value
 
           QropsDetailsJourneyViewModel.status(userAnswers) mustBe Completed
         }
@@ -206,8 +204,12 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
         "must return InProgress when partial QROPS details are present and MemberDetails is completed" in {
           val userAnswers = emptyUserAnswers
             .copy(data = validMemberDetails)
-            .set(QROPSNamePage, "Test QROPS").success.value
-            .set(QROPSReferencePage, "Q123456").success.value
+            .set(QROPSNamePage, "Test QROPS")
+            .success
+            .value
+            .set(QROPSReferencePage, "Q123456")
+            .success
+            .value
 
           QropsDetailsJourneyViewModel.status(userAnswers) mustBe InProgress
         }
@@ -216,8 +218,12 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           "must route to QROPS CYA when status is Completed" in {
             val userAnswers = emptyUserAnswers
               .copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
-              .set(QROPSNamePage, "Test QROPS").success.value
-              .set(QROPSReferencePage, "Q123456").success.value
+              .set(QROPSNamePage, "Test QROPS")
+              .success
+              .value
+              .set(QROPSReferencePage, "Q123456")
+              .success
+              .value
               .set(
                 QROPSAddressPage,
                 QROPSAddress(
@@ -226,10 +232,14 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
                   addressLine3 = None,
                   addressLine4 = None,
                   addressLine5 = None,
-                  country      = Country("GB", "United Kingdom")
+                  country = Country("GB", "United Kingdom")
                 )
-              ).success.value
-              .set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+              )
+              .success
+              .value
+              .set(QROPSCountryPage, Country("GB", "United Kingdom"))
+              .success
+              .value
 
             QropsDetailsJourneyViewModel.status(userAnswers) mustBe Completed
             QropsDetailsJourneyViewModel.entry(userAnswers) mustBe
@@ -255,8 +265,12 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           )
 
           val userAnswers = baseAnswers
-            .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-            .set(SchemeManagersNamePage, PersonName("John", "Doe")).success.value
+            .set(SchemeManagerTypePage, SchemeManagerType.Individual)
+            .success
+            .value
+            .set(SchemeManagersNamePage, PersonName("John", "Doe"))
+            .success
+            .value
             .set(
               SchemeManagersAddressPage,
               SchemeManagersAddress(
@@ -265,11 +279,17 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
                 addressLine3 = None,
                 addressLine4 = None,
                 addressLine5 = None,
-                country      = Country("GB", "United Kingdom")
+                country = Country("GB", "United Kingdom")
               )
-            ).success.value
-            .set(SchemeManagersEmailPage, "test@gmail.co.uk").success.value
-            .set(SchemeManagersContactPage, "0121456789").success.value
+            )
+            .success
+            .value
+            .set(SchemeManagersEmailPage, "test@gmail.co.uk")
+            .success
+            .value
+            .set(SchemeManagersContactPage, "0121456789")
+            .success
+            .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
         }
@@ -280,9 +300,15 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           )
 
           val userAnswers = baseAnswers
-            .set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
-            .set(SchemeManagerOrganisationNamePage, "Test Org").success.value
-            .set(SchemeManagerOrgIndividualNamePage, PersonName("Contact", "Person")).success.value
+            .set(SchemeManagerTypePage, SchemeManagerType.Organisation)
+            .success
+            .value
+            .set(SchemeManagerOrganisationNamePage, "Test Org")
+            .success
+            .value
+            .set(SchemeManagerOrgIndividualNamePage, PersonName("Contact", "Person"))
+            .success
+            .value
             .set(
               SchemeManagersAddressPage,
               SchemeManagersAddress(
@@ -291,11 +317,17 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
                 addressLine3 = None,
                 addressLine4 = None,
                 addressLine5 = None,
-                country      = Country("GB", "United Kingdom")
+                country = Country("GB", "United Kingdom")
               )
-            ).success.value
-            .set(SchemeManagersEmailPage, "org@gmail.co.uk").success.value
-            .set(SchemeManagersContactPage, "0787654321").success.value
+            )
+            .success
+            .value
+            .set(SchemeManagersEmailPage, "org@gmail.co.uk")
+            .success
+            .value
+            .set(SchemeManagersContactPage, "0787654321")
+            .success
+            .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
         }
@@ -317,9 +349,15 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           )
 
           val userAnswers = baseAnswers
-            .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-            .set(SchemeManagersNamePage, PersonName("John", "Doe")).success.value
-            .set(SchemeManagersEmailPage, "test@example.com").success.value
+            .set(SchemeManagerTypePage, SchemeManagerType.Individual)
+            .success
+            .value
+            .set(SchemeManagersNamePage, PersonName("John", "Doe"))
+            .success
+            .value
+            .set(SchemeManagersEmailPage, "test@example.com")
+            .success
+            .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe InProgress
         }
@@ -330,9 +368,15 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           )
 
           val userAnswers = baseAnswers
-            .set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
-            .set(SchemeManagerOrganisationNamePage, "Test Org").success.value
-            .set(SchemeManagerOrgIndividualNamePage, PersonName("Contact", "Person")).success.value
+            .set(SchemeManagerTypePage, SchemeManagerType.Organisation)
+            .success
+            .value
+            .set(SchemeManagerOrganisationNamePage, "Test Org")
+            .success
+            .value
+            .set(SchemeManagerOrgIndividualNamePage, PersonName("Contact", "Person"))
+            .success
+            .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe InProgress
         }
@@ -342,8 +386,12 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
         "must route to Scheme Manager CYA when status is Completed (Individual)" in {
           val userAnswers = emptyUserAnswers
             .copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
-            .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-            .set(SchemeManagersNamePage, PersonName("John", "Doe")).success.value
+            .set(SchemeManagerTypePage, SchemeManagerType.Individual)
+            .success
+            .value
+            .set(SchemeManagersNamePage, PersonName("John", "Doe"))
+            .success
+            .value
             .set(
               SchemeManagersAddressPage,
               SchemeManagersAddress(
@@ -352,11 +400,17 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
                 addressLine3 = None,
                 addressLine4 = None,
                 addressLine5 = None,
-                country      = Country("GB", "United Kingdom")
+                country = Country("GB", "United Kingdom")
               )
-            ).success.value
-            .set(SchemeManagersEmailPage, "test@example.com").success.value
-            .set(SchemeManagersContactPage, "0121456789").success.value
+            )
+            .success
+            .value
+            .set(SchemeManagersEmailPage, "test@example.com")
+            .success
+            .value
+            .set(SchemeManagersContactPage, "0121456789")
+            .success
+            .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
           SchemeManagerDetailsJourneyViewModel.entry(userAnswers) mustBe
@@ -366,9 +420,15 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
         "must route to Scheme Manager CYA when status is Completed (Organisation)" in {
           val userAnswers = emptyUserAnswers
             .copy(data = validMemberDetails ++ Json.obj("transferDetails" -> validTransferDetails))
-            .set(SchemeManagerTypePage, SchemeManagerType.Organisation).success.value
-            .set(SchemeManagerOrganisationNamePage, "Test Org").success.value
-            .set(SchemeManagerOrgIndividualNamePage, PersonName("Contact", "Person")).success.value
+            .set(SchemeManagerTypePage, SchemeManagerType.Organisation)
+            .success
+            .value
+            .set(SchemeManagerOrganisationNamePage, "Test Org")
+            .success
+            .value
+            .set(SchemeManagerOrgIndividualNamePage, PersonName("Contact", "Person"))
+            .success
+            .value
             .set(
               SchemeManagersAddressPage,
               SchemeManagersAddress(
@@ -377,11 +437,17 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
                 addressLine3 = None,
                 addressLine4 = None,
                 addressLine5 = None,
-                country      = Country("GB", "United Kingdom")
+                country = Country("GB", "United Kingdom")
               )
-            ).success.value
-            .set(SchemeManagersEmailPage, "org@gmail.co.uk").success.value
-            .set(SchemeManagersContactPage, "0787654321").success.value
+            )
+            .success
+            .value
+            .set(SchemeManagersEmailPage, "org@gmail.co.uk")
+            .success
+            .value
+            .set(SchemeManagersContactPage, "0787654321")
+            .success
+            .value
 
           SchemeManagerDetailsJourneyViewModel.status(userAnswers) mustBe Completed
           SchemeManagerDetailsJourneyViewModel.entry(userAnswers) mustBe
@@ -407,8 +473,12 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           )
 
           val userAnswers = baseAnswers
-            .set(QROPSNamePage, "Test QROPS").success.value
-            .set(QROPSReferencePage, "Q123456").success.value
+            .set(QROPSNamePage, "Test QROPS")
+            .success
+            .value
+            .set(QROPSReferencePage, "Q123456")
+            .success
+            .value
             .set(
               QROPSAddressPage,
               QROPSAddress(
@@ -417,12 +487,20 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
                 addressLine3 = None,
                 addressLine4 = None,
                 addressLine5 = None,
-                country      = Country("GB", "United Kingdom")
+                country = Country("GB", "United Kingdom")
               )
-            ).success.value
-            .set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
-            .set(SchemeManagerTypePage, SchemeManagerType.Individual).success.value
-            .set(SchemeManagersNamePage, PersonName("John", "Doe")).success.value
+            )
+            .success
+            .value
+            .set(QROPSCountryPage, Country("GB", "United Kingdom"))
+            .success
+            .value
+            .set(SchemeManagerTypePage, SchemeManagerType.Individual)
+            .success
+            .value
+            .set(SchemeManagersNamePage, PersonName("John", "Doe"))
+            .success
+            .value
             .set(
               SchemeManagersAddressPage,
               SchemeManagersAddress(
@@ -431,11 +509,17 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
                 addressLine3 = None,
                 addressLine4 = None,
                 addressLine5 = None,
-                country      = Country("GB", "United Kingdom")
+                country = Country("GB", "United Kingdom")
               )
-            ).success.value
-            .set(SchemeManagersEmailPage, "test@gmail.co.uk").success.value
-            .set(SchemeManagersContactPage, "0121456789").success.value
+            )
+            .success
+            .value
+            .set(SchemeManagersEmailPage, "test@gmail.co.uk")
+            .success
+            .value
+            .set(SchemeManagersContactPage, "0121456789")
+            .success
+            .value
 
           SubmissionDetailsJourneyViewModel.status(userAnswers) mustBe NotStarted
         }
@@ -463,8 +547,12 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
           )
 
           val userAnswers = baseAnswers
-            .set(QROPSNamePage, "Test QROPS").success.value
-            .set(QROPSReferencePage, "Q123456").success.value
+            .set(QROPSNamePage, "Test QROPS")
+            .success
+            .value
+            .set(QROPSReferencePage, "Q123456")
+            .success
+            .value
             .set(
               QROPSAddressPage,
               QROPSAddress(
@@ -473,10 +561,14 @@ class TaskJourneyViewModelSpec extends AnyFreeSpec with Matchers with SpecBase {
                 addressLine3 = None,
                 addressLine4 = None,
                 addressLine5 = None,
-                country      = Country("GB", "United Kingdom")
+                country = Country("GB", "United Kingdom")
               )
-            ).success.value
-            .set(QROPSCountryPage, Country("GB", "United Kingdom")).success.value
+            )
+            .success
+            .value
+            .set(QROPSCountryPage, Country("GB", "United Kingdom"))
+            .success
+            .value
 
           SubmissionDetailsJourneyViewModel.status(userAnswers) mustBe CannotStart
         }

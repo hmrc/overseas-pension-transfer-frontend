@@ -24,22 +24,16 @@ import play.api.libs.json.{JsError, JsString, JsSuccess, Json}
 
 class JourneyStartedTypeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks {
 
-  "must serialise and deserialise to and from all valid values" in {
-
-    JourneyStartedType.values.foreach {
-      value =>
-        val json = Json.toJson(value)
-        json.validate[JourneyStartedType] mustEqual JsSuccess(value)
+  "must serialise and deserialise to and from all valid values" in
+    JourneyStartedType.values.foreach { value =>
+      val json = Json.toJson(value)
+      json.validate[JourneyStartedType] mustEqual JsSuccess(value)
     }
-  }
 
-  "must not deserialise from any invalid values" in {
-
-    forAll(arbitrary[String]) {
-      value =>
-        whenever(!JourneyStartedType.values.map(_.toString).contains(value)) {
-          JsString(value).validate[JourneyStartedType] mustEqual JsError("error.invalid")
-        }
+  "must not deserialise from any invalid values" in
+    forAll(arbitrary[String]) { value =>
+      whenever(!JourneyStartedType.values.map(_.toString).contains(value)) {
+        JsString(value).validate[JourneyStartedType] mustEqual JsError("error.invalid")
+      }
     }
-  }
 }

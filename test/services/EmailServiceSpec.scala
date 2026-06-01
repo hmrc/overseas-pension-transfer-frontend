@@ -30,8 +30,8 @@ import pages.memberDetails.MemberNamePage
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.DateTimeFormats.{display24h, emailDisplayDate, emailDisplayTime}
 
-import java.time.format.DateTimeFormatter
 import java.time.{Instant, LocalDateTime, ZoneId}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,7 +55,9 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       val minimalDetails = mock[MinimalDetails]
       when(minimalDetails.email).thenReturn("test@example.com")
       when(minimalDetails.organisationName).thenReturn(None)
-      when(minimalDetails.individualDetails).thenReturn(Some(IndividualDetails(firstName = "Test", middleName = None, lastName = "User")))
+      when(minimalDetails.individualDetails).thenReturn(
+        Some(IndividualDetails(firstName = "Test", middleName = None, lastName = "User"))
+      )
 
       val result = await(service.sendConfirmationEmail(emptySessionData, minimalDetails))
 
@@ -77,29 +79,37 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       val minimalDetails = mock[MinimalDetails]
       when(minimalDetails.email).thenReturn(emailAddress)
       when(minimalDetails.organisationName).thenReturn(None)
-      when(minimalDetails.individualDetails).thenReturn(Some(IndividualDetails(firstName = "David", middleName = None, lastName = "Frost")))
+      when(minimalDetails.individualDetails).thenReturn(
+        Some(IndividualDetails(firstName = "David", middleName = None, lastName = "Frost"))
+      )
 
       val submittedAt: Instant = Instant.parse("2025-10-01T09:13:00Z")
 
       val sessionData =
         emptySessionData
-          .set(QtNumberQuery, testQtNumber).success.value
-          .set(MemberNamePage, testMemberName).success.value
-          .set(DateSubmittedQuery, submittedAt).success.value
+          .set(QtNumberQuery, testQtNumber)
+          .success
+          .value
+          .set(MemberNamePage, testMemberName)
+          .success
+          .value
+          .set(DateSubmittedQuery, submittedAt)
+          .success
+          .value
 
-      val date                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(dMMMMyyyy)
-      val time                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("HH:mm"))
+      val date                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(emailDisplayDate)
+      val time                         = LocalDateTime.ofInstant(submittedAt, ZoneId.systemDefault()).format(display24h)
       val expectedFormattedSubmittedAt = s"$date at ${time}am"
 
       val expectedRequest =
         EmailToSendRequest(
-          to         = List(emailAddress),
+          to = List(emailAddress),
           templateId = "submitted_confirmation_template",
           parameters = SubmissionConfirmation(
-            qtReference       = testQtNumber.value,
-            memberName        = testMemberName.fullName,
-            submitter         = individualSubmitterDetails.fullName,
-            submissionDate    = expectedFormattedSubmittedAt,
+            qtReference = testQtNumber.value,
+            memberName = testMemberName.fullName,
+            submitter = individualSubmitterDetails.fullName,
+            submissionDate = expectedFormattedSubmittedAt,
             pensionSchemeName = sessionData.schemeInformation.schemeName
           )
         )
@@ -126,15 +136,23 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       val minimalDetails = mock[MinimalDetails]
       when(minimalDetails.email).thenReturn("test@example.com")
       when(minimalDetails.organisationName).thenReturn(None)
-      when(minimalDetails.individualDetails).thenReturn(Some(IndividualDetails(firstName = "Test", middleName = None, lastName = "User")))
+      when(minimalDetails.individualDetails).thenReturn(
+        Some(IndividualDetails(firstName = "Test", middleName = None, lastName = "User"))
+      )
 
       val submittedAt: Instant = Instant.parse("2025-10-01T09:13:00Z")
 
       val sessionData =
         emptySessionData
-          .set(QtNumberQuery, testQtNumber).success.value
-          .set(MemberNamePage, testMemberName).success.value
-          .set(DateSubmittedQuery, submittedAt).success.value
+          .set(QtNumberQuery, testQtNumber)
+          .success
+          .value
+          .set(MemberNamePage, testMemberName)
+          .success
+          .value
+          .set(DateSubmittedQuery, submittedAt)
+          .success
+          .value
 
       val nonAccepted = mock[models.email.EmailSendingResult]
 
@@ -160,37 +178,47 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       val minimalDetails = mock[MinimalDetails]
       when(minimalDetails.email).thenReturn("test@example.com")
       when(minimalDetails.organisationName).thenReturn(None)
-      when(minimalDetails.individualDetails).thenReturn(Some(IndividualDetails(firstName = "David", middleName = None, lastName = "Frost")))
+      when(minimalDetails.individualDetails).thenReturn(
+        Some(IndividualDetails(firstName = "David", middleName = None, lastName = "Frost"))
+      )
       when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier]))
         .thenReturn(Future.successful(EmailAccepted))
 
       val submittedAtAM: Instant = Instant.parse("2025-10-01T09:08:00Z")
       val sessionDataAM          =
         emptySessionData
-          .set(QtNumberQuery, testQtNumber).success.value
-          .set(MemberNamePage, testMemberName).success.value
-          .set(DateSubmittedQuery, submittedAtAM).success.value
+          .set(QtNumberQuery, testQtNumber)
+          .success
+          .value
+          .set(MemberNamePage, testMemberName)
+          .success
+          .value
+          .set(DateSubmittedQuery, submittedAtAM)
+          .success
+          .value
 
       val date =
-        LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
-          .format(dMMMMyyyy)
+        LocalDateTime
+          .ofInstant(submittedAtAM, ZoneId.systemDefault())
+          .format(emailDisplayDate)
 
       val time =
-        LocalDateTime.ofInstant(submittedAtAM, ZoneId.systemDefault())
-          .format(DateTimeFormatter.ofPattern("HH:mma"))
+        LocalDateTime
+          .ofInstant(submittedAtAM, ZoneId.systemDefault())
+          .format(emailDisplayTime)
           .toLowerCase
 
       val formatted = s"$date at $time"
 
       val expectedRequest =
         EmailToSendRequest(
-          to         = List("test@example.com"),
+          to = List("test@example.com"),
           templateId = "submitted_confirmation_template",
           parameters = SubmissionConfirmation(
-            qtReference       = testQtNumber.value,
-            memberName        = testMemberName.fullName,
-            submitter         = individualSubmitterDetails.fullName,
-            submissionDate    = formatted,
+            qtReference = testQtNumber.value,
+            memberName = testMemberName.fullName,
+            submitter = individualSubmitterDetails.fullName,
+            submissionDate = formatted,
             pensionSchemeName = sessionDataAM.schemeInformation.schemeName
           )
         )
@@ -222,30 +250,38 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       val submittedAtPM: Instant = Instant.parse("2025-10-01T15:45:00Z")
       val sessionDataPM          =
         emptySessionData
-          .set(QtNumberQuery, testQtNumber).success.value
-          .set(MemberNamePage, testMemberName).success.value
-          .set(DateSubmittedQuery, submittedAtPM).success.value
+          .set(QtNumberQuery, testQtNumber)
+          .success
+          .value
+          .set(MemberNamePage, testMemberName)
+          .success
+          .value
+          .set(DateSubmittedQuery, submittedAtPM)
+          .success
+          .value
 
       val date =
-        LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
-          .format(dMMMMyyyy)
+        LocalDateTime
+          .ofInstant(submittedAtPM, ZoneId.systemDefault())
+          .format(emailDisplayDate)
 
       val time =
-        LocalDateTime.ofInstant(submittedAtPM, ZoneId.systemDefault())
-          .format(DateTimeFormatter.ofPattern("HH:mma"))
+        LocalDateTime
+          .ofInstant(submittedAtPM, ZoneId.systemDefault())
+          .format(emailDisplayTime)
           .toLowerCase
 
       val formatted = s"$date at $time"
 
       val expectedRequest =
         EmailToSendRequest(
-          to         = List("test@example.com"),
+          to = List("test@example.com"),
           templateId = "submitted_confirmation_template",
           parameters = SubmissionConfirmation(
-            qtReference       = testQtNumber.value,
-            memberName        = testMemberName.fullName,
-            submitter         = individualSubmitterDetails.fullName,
-            submissionDate    = formatted,
+            qtReference = testQtNumber.value,
+            memberName = testMemberName.fullName,
+            submitter = individualSubmitterDetails.fullName,
+            submissionDate = formatted,
             pensionSchemeName = sessionDataPM.schemeInformation.schemeName
           )
         )

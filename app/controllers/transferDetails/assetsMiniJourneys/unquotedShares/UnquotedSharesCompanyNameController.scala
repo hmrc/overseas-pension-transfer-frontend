@@ -16,35 +16,37 @@
 
 package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameFormProvider
-import models.assets.TypeOfAsset.UnquotedShares
-import models.{AmendCheckMode, Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.assets.AssetsRecordVersionQuery
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
+import models.Mode
+import play.api.data.Form
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameView
+import forms.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNameFormProvider
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesCompanyNamePage
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 class UnquotedSharesCompanyNameController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: UnquotedSharesCompanyNameFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: UnquotedSharesCompanyNameView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: UnquotedSharesCompanyNameFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: UnquotedSharesCompanyNameView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[String] = formProvider()
 
@@ -60,27 +62,16 @@ class UnquotedSharesCompanyNameController @Inject() (
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              for {
-                addCashAmount                      <- request.userAnswers.set(UnquotedSharesCompanyNamePage(index), value)
-                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, UnquotedShares))
-              } yield removeAssetRecordVersion
-            } else {
-              request.userAnswers.set(UnquotedSharesCompanyNamePage(index), value)
-            }
-
-          for {
-            updatedSession <- Future.fromTry(request.userAnswers.set(UnquotedSharesCompanyNamePage(index), value))
-            _              <- userAnswersService.setExternalUserAnswers(updatedSession, request.sessionData.schemeInformation.srnNumber)
-          } yield Redirect(UnquotedSharesCompanyNamePage(index).nextPage(mode, updatedSession))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, index))),
+          value =>
+            for {
+              updatedSession <- Future.fromTry(request.userAnswers.set(UnquotedSharesCompanyNamePage(index), value))
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedSession, request.sessionData.schemeInformation.srnNumber)
+            } yield Redirect(UnquotedSharesCompanyNamePage(index).nextPage(mode, updatedSession))
+        )
   }
 }

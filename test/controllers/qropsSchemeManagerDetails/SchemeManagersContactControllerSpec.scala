@@ -29,7 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.qropsSchemeManagerDetails.SchemeManagersContactView
@@ -57,7 +57,10 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
         val view = application.injector.instanceOf[SchemeManagersContactView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -75,7 +78,10 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -123,7 +129,10 @@ class SchemeManagersContactControllerSpec extends AnyFreeSpec with SpecBase with
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

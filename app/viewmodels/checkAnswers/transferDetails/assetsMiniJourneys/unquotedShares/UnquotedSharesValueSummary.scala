@@ -16,26 +16,26 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import models.{Mode, SessionData, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.CurrencyFormats.currencyFormat
+import models.Mode
+import models.UserAnswers
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesValuePage
+import play.api.i18n.Messages
 
 object UnquotedSharesValueSummary {
 
   def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(UnquotedSharesValuePage(index)).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "unquotedSharesValue.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
-          actions = Seq(
-            ActionItemViewModel("site.change", UnquotedSharesValuePage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("unquotedSharesValue.change.hidden"))
-          )
+    userAnswers.get(UnquotedSharesValuePage(index)).map { answer =>
+      SummaryListRowViewModel(
+        key = "unquotedSharesValue.checkYourAnswersLabel",
+        value = ValueViewModel(currencyFormat(answer)),
+        actions = Seq(
+          ActionItemViewModel("site.change", UnquotedSharesValuePage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("unquotedSharesValue.change.hidden"))
         )
+      )
     }
 }

@@ -28,12 +28,11 @@ class ViewAmendSelectorFormProviderSpec extends StringFieldBehaviours {
     behave like mandatoryField(form, fieldName, FormError(fieldName, "viewAmend.error.required"))
 
     "bind" - {
-      List("view", "amend") foreach {
-        string =>
-          s"value of $string" in {
-            val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-            result.value mustBe Some(string)
-          }
+      List("view", "amend") foreach { string =>
+        s"value of $string" in {
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          result.value mustBe Some(string)
+        }
       }
     }
   }

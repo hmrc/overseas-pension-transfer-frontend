@@ -29,7 +29,9 @@ class UnquotedSharesStartViewSpec extends ViewBaseSpec {
 
     "show correct title" in {
       doc(view(nextPage).body)
-        .getElementsByTag("title").eachText().get(0) mustBe
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe
         s"${messages("unquotedShareStart.title")} - ${messages("service.name")} - GOV.UK"
     }
 

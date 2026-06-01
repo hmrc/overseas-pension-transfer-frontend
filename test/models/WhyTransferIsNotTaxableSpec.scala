@@ -24,7 +24,12 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class WhyTransferIsNotTaxableSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues with ModelGenerators {
+class WhyTransferIsNotTaxableSpec
+    extends AnyFreeSpec
+    with Matchers
+    with ScalaCheckPropertyChecks
+    with OptionValues
+    with ModelGenerators {
 
   "WhyTransferIsNotTaxable" - {
 
@@ -32,9 +37,11 @@ class WhyTransferIsNotTaxableSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       val gen = arbitrary[WhyTransferIsNotTaxable]
 
-      forAll(gen) {
-        whyTransferIsNotTaxable =>
-          JsString(whyTransferIsNotTaxable.toString).validate[WhyTransferIsNotTaxable].asOpt.value mustEqual whyTransferIsNotTaxable
+      forAll(gen) { whyTransferIsNotTaxable =>
+        JsString(whyTransferIsNotTaxable.toString)
+          .validate[WhyTransferIsNotTaxable]
+          .asOpt
+          .value mustEqual whyTransferIsNotTaxable
       }
     }
 
@@ -42,9 +49,8 @@ class WhyTransferIsNotTaxableSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       val gen = arbitrary[String] suchThat (!WhyTransferIsNotTaxable.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-          JsString(invalidValue).validate[WhyTransferIsNotTaxable] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[WhyTransferIsNotTaxable] mustEqual JsError("error.invalid")
       }
     }
 
@@ -52,9 +58,8 @@ class WhyTransferIsNotTaxableSpec extends AnyFreeSpec with Matchers with ScalaCh
 
       val gen = arbitrary[WhyTransferIsNotTaxable]
 
-      forAll(gen) {
-        whyTransferIsNotTaxable =>
-          Json.toJson(whyTransferIsNotTaxable) mustEqual JsString(whyTransferIsNotTaxable.toString)
+      forAll(gen) { whyTransferIsNotTaxable =>
+        Json.toJson(whyTransferIsNotTaxable) mustEqual JsString(whyTransferIsNotTaxable.toString)
       }
     }
   }

@@ -16,20 +16,32 @@
 
 package pages.transferDetails.assetsMiniJourneys.property
 
-import models.assets.{AssetsMiniJourneyRegistry, TypeOfAsset}
-import models.{Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.{AmendContinueContext, NextAssetMiniJourney}
-import pages.{MiniJourneyNextPageWith, QuestionPage}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.MiniJourneyNextPageWith
+import pages.QuestionPage
+import pages.transferDetails.assetsMiniJourneys.AmendContinueContext
+import pages.transferDetails.assetsMiniJourneys.NextAssetMiniJourney
+import models.Mode
+import models.UserAnswers
+import play.api.libs.json.JsPath
+import models.assets.AssetsMiniJourneyRegistry
+import models.assets.TypeOfAsset
 
-case object PropertyAmendContinueAssetPage extends QuestionPage[Boolean] with MiniJourneyNextPageWith[AmendContinueContext] with NextAssetMiniJourney {
+case object PropertyAmendContinueAssetPage
+    extends QuestionPage[Boolean]
+    with MiniJourneyNextPageWith[AmendContinueContext]
+    with NextAssetMiniJourney {
 
   override def path: JsPath = JsPath \ toString
 
   override def toString: String = "propertyAmendContinue"
 
-  override def decideNextPage(answers: UserAnswers, sessionDataWithIndex: AmendContinueContext, mode: Mode, modeCall: Call): Call = {
+  override def decideNextPage(
+    answers: UserAnswers,
+    sessionDataWithIndex: AmendContinueContext,
+    mode: Mode,
+    modeCall: Call
+  ): Call = {
     val (sessionData, nextIndex) = sessionDataWithIndex
     answers.get(PropertyAmendContinueAssetPage) match {
       case Some(true)  => AssetsMiniJourneyRegistry.startOf(TypeOfAsset.Property, mode, nextIndex)

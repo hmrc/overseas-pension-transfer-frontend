@@ -16,8 +16,8 @@
 
 package queries
 
-import models.PensionSchemeDetails
 import play.api.libs.json.JsPath
+import models.PensionSchemeDetails
 
 object PensionSchemeDetailsQuery extends Gettable[PensionSchemeDetails] with Settable[PensionSchemeDetails] {
   override val path: JsPath = JsPath \ "pensionSchemeDetails"

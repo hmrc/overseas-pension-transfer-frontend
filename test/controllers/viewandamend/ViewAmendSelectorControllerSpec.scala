@@ -25,17 +25,14 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class ViewAmendSelectorControllerSpec
-    extends AnyFreeSpec
-    with SpecBase
-    with MockitoSugar {
+class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockLockService        = mock[LockService]
@@ -51,7 +48,8 @@ class ViewAmendSelectorControllerSpec
       bind[UserAnswersService].toInstance(mockUserAnswersService),
       bind[LockService].toInstance(mockLockService),
       bind[SessionRepository].toInstance(mockSessionRepository)
-    ).build()
+    )
+    .build()
 
   "onPageLoad" - {
 
@@ -63,7 +61,8 @@ class ViewAmendSelectorControllerSpec
         .thenReturn(Future.unit)
 
       val app     = buildApp
-      val request = FakeRequest(GET, routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber).url)
+      val request =
+        FakeRequest(GET, routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber).url)
 
       val result = route(app, request).value
 
@@ -80,7 +79,8 @@ class ViewAmendSelectorControllerSpec
         .thenReturn(Future.successful(false))
 
       val app     = buildApp
-      val request = FakeRequest(GET, routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber).url)
+      val request =
+        FakeRequest(GET, routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber).url)
 
       val result = route(app, request).value
 
@@ -97,13 +97,16 @@ class ViewAmendSelectorControllerSpec
           .thenReturn(Future.successful(Right(emptyUserAnswers)))
 
         val app     = buildApp
-        val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("viewOrAmend" -> "view")
+        val request =
+          FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
+            .withFormUrlEncodedBody("viewOrAmend" -> "view")
 
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ViewAmendSubmittedController.view(qtReference, pstr, qtStatus, versionNumber).url
+        redirectLocation(result).value mustBe routes.ViewAmendSubmittedController
+          .view(qtReference, pstr, qtStatus, versionNumber)
+          .url
         app.stop()
       }
     }
@@ -117,8 +120,9 @@ class ViewAmendSelectorControllerSpec
         when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
         val app     = buildApp
-        val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("viewOrAmend" -> "amend")
+        val request =
+          FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
+            .withFormUrlEncodedBody("viewOrAmend" -> "amend")
 
         val result = route(app, request).value
 
@@ -134,13 +138,16 @@ class ViewAmendSelectorControllerSpec
           .thenReturn(Future.successful(false))
 
         val app     = buildApp
-        val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("viewOrAmend" -> "amend")
+        val request =
+          FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
+            .withFormUrlEncodedBody("viewOrAmend" -> "amend")
 
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).value mustBe routes.ViewAmendSelectorController.onPageLoad(qtReference, pstr, qtStatus, versionNumber).url
+        redirectLocation(result).value mustBe routes.ViewAmendSelectorController
+          .onPageLoad(qtReference, pstr, qtStatus, versionNumber)
+          .url
         flash(result).get("lockWarning") mustBe defined
         app.stop()
       }
@@ -149,8 +156,9 @@ class ViewAmendSelectorControllerSpec
     "when no option is selected on view-amend page" - {
       "must show error message" in {
         val app     = buildApp
-        val request = FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
-          .withFormUrlEncodedBody("viewOrAmend" -> "")
+        val request =
+          FakeRequest(POST, routes.ViewAmendSelectorController.onSubmit(qtReference, pstr, qtStatus, versionNumber).url)
+            .withFormUrlEncodedBody("viewOrAmend" -> "")
 
         val result = route(app, request).value
 

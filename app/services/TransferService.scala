@@ -16,29 +16,35 @@
 
 package services
 
+import models.responses.AllTransfersUnexpectedError
+import models.responses.NoTransfersFound
+import models.responses.TransferError
 import connectors.TransferConnector
-import models.responses.{AllTransfersUnexpectedError, NoTransfersFound, TransferError}
-import models.{AllTransfersItem, DashboardData, PstrNumber, SrnNumber}
-import queries.dashboard.{TransfersDataUpdatedAtQuery, TransfersOverviewQuery, TransfersSyncedAtQuery}
+import queries.dashboard.TransfersDataUpdatedAtQuery
+import queries.dashboard.TransfersOverviewQuery
+import queries.dashboard.TransfersSyncedAtQuery
 import uk.gov.hmrc.http.HeaderCarrier
+import models._
 
-import java.time.{Clock, Instant}
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+
+import java.time.Clock
+import java.time.Instant
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class TransferService @Inject() (
-    connector: TransferConnector,
-    clock: Clock
-  )(implicit ec: ExecutionContext
-  ) {
+  connector: TransferConnector,
+  clock: Clock
+)(implicit ec: ExecutionContext) {
 
   def getAllTransfersData(
-      current: DashboardData,
-      pstr: PstrNumber,
-      srnNumber: SrnNumber
-    )(implicit hc: HeaderCarrier
-    ): Future[Either[TransferError, DashboardData]] =
+    current: DashboardData,
+    pstr: PstrNumber,
+    srnNumber: SrnNumber
+  )(implicit hc: HeaderCarrier): Future[Either[TransferError, DashboardData]] =
     connector.getAllTransfers(srnNumber, pstr).map {
       case Left(NoTransfersFound) =>
         (for {
@@ -62,7 +68,8 @@ class TransferService @Inject() (
         )
     }
 
-  /** Filters out transfers missing a valid first name or surname. This prevents displaying incomplete member records on the dashboard.
+  /** Filters out transfers missing a valid first name or surname. This prevents displaying incomplete member records on
+    * the dashboard.
     */
   private def filterTransfersWithValidNames(transfers: Seq[AllTransfersItem]) =
     transfers.filter(t =>

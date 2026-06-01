@@ -16,23 +16,20 @@
 
 @import play.api.mvc.Request
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukInsetText, GovukSummaryList}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukSummaryList}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 @import viewmodels.govuk.all.ButtonViewModel
 @import views.ViewUtils.titleNoForm
-@import views.html.components.{CheckYourAnswersHeading, QTNumber}
+@import views.html.components.CheckYourAnswersHeading
 @import views.html.helper.form
 @import play.twirl.api.Html
 
 @this(
         layout: templates.Layout,
-        formHelper: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
         govukButton: GovukButton,
-        govukInsetText : GovukInsetText,
-        heading: CheckYourAnswersHeading,
-        qtNumber: QTNumber,
+        heading: CheckYourAnswersHeading
 )
 @(
         mode: Mode,

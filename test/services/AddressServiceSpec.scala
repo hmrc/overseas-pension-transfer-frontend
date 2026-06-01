@@ -20,7 +20,7 @@ import base.AddressBase
 import forms.memberDetails.MembersCurrentAddressFormData
 import forms.qropsDetails.QROPSAddressFormData
 import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
-import models.address._
+import models.address.*
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -28,15 +28,9 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
+class AddressServiceSpec extends AnyFreeSpec with AddressBase with MockitoSugar with ScalaFutures {
 
-class AddressServiceSpec
-    extends AnyFreeSpec
-    with AddressBase
-    with MockitoSugar
-    with ScalaFutures {
-
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
+  HeaderCarrier()
 
   private val mockCountryService = mock[CountryService]
 
@@ -49,7 +43,7 @@ class AddressServiceSpec
       addressLine3 = schemeManagersAddress.addressLine3,
       addressLine4 = schemeManagersAddress.addressLine4,
       addressLine5 = schemeManagersAddress.addressLine5,
-      countryCode  = schemeManagersAddress.country.code
+      countryCode = schemeManagersAddress.country.code
     )
 
     "must construct a SchemeManagersAddress when the country exists" in {
@@ -79,7 +73,7 @@ class AddressServiceSpec
         addressLine3 = qropsAddress.addressLine3,
         addressLine4 = qropsAddress.addressLine4,
         addressLine5 = qropsAddress.addressLine5,
-        countryCode  = qropsAddress.countryCode.code
+        countryCode = qropsAddress.countryCode.code
       )
 
       service.qropsAddress(formData).value mustBe qropsAddress
@@ -96,9 +90,9 @@ class AddressServiceSpec
         addressLine2 = membersCurrentAddress.addressLine2,
         addressLine3 = membersCurrentAddress.addressLine3,
         addressLine4 = membersCurrentAddress.addressLine4,
-        countryCode  = membersCurrentAddress.country.code,
-        postcode     = membersCurrentAddress.postcode,
-        poBox        = membersCurrentAddress.poBoxNumber
+        countryCode = membersCurrentAddress.country.code,
+        postcode = membersCurrentAddress.postcode,
+        poBox = membersCurrentAddress.poBoxNumber
       )
 
       service.membersCurrentAddress(formData).value mustBe membersCurrentAddress

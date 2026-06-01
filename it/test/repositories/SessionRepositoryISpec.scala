@@ -35,8 +35,8 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.mdc.MdcExecutionContext
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
-import java.time.temporal.ChronoUnit
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, Future}
 
 class SessionRepositoryISpec

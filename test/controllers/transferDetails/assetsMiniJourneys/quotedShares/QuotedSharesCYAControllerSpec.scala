@@ -18,7 +18,7 @@ package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{CheckMode, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -27,7 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
@@ -39,7 +39,9 @@ import scala.concurrent.Future
 class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private lazy val quotedSharesCyaRoute =
-    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController.onPageLoad(NormalMode, 0).url
+    controllers.transferDetails.assetsMiniJourneys.quotedShares.routes.QuotedSharesCYAController
+      .onPageLoad(NormalMode, 0)
+      .url
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockSessionRepository  = mock[SessionRepository]

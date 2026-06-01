@@ -21,9 +21,9 @@ import scala.util.matching.Regex
 object TransferSearch {
 
   def filterTransfers(
-      transfers: Seq[AllTransfersItem],
-      rawTerm: String
-    ): Seq[AllTransfersItem] = {
+    transfers: Seq[AllTransfersItem],
+    rawTerm: String
+  ): Seq[AllTransfersItem] = {
 
     val term = rawTerm.trim
 
@@ -63,9 +63,9 @@ object TransferSearch {
   }
 
   private def filterByQtRef(
-      transfers: Seq[AllTransfersItem],
-      normalisedRef: String
-    ): Seq[AllTransfersItem] = {
+    transfers: Seq[AllTransfersItem],
+    normalisedRef: String
+  ): Seq[AllTransfersItem] = {
 
     def normaliseRef(value: String): String =
       TransferSearch.normaliseForId(value)
@@ -81,9 +81,9 @@ object TransferSearch {
   }
 
   private def filterByNino(
-      transfers: Seq[AllTransfersItem],
-      normalisedNino: String
-    ): Seq[AllTransfersItem] = {
+    transfers: Seq[AllTransfersItem],
+    normalisedNino: String
+  ): Seq[AllTransfersItem] = {
 
     def normaliseNino(n: String): String =
       TransferSearch.normaliseForId(n)
@@ -96,9 +96,9 @@ object TransferSearch {
   }
 
   private def filterByName(
-      transfers: Seq[AllTransfersItem],
-      parts: List[String]
-    ): Seq[AllTransfersItem] = {
+    transfers: Seq[AllTransfersItem],
+    parts: List[String]
+  ): Seq[AllTransfersItem] = {
 
     def norm(s: String): String = s.trim.toLowerCase
 
@@ -109,10 +109,9 @@ object TransferSearch {
       val lastOpt  = t.memberSurname.map(norm)
 
       normParts match {
-        case single :: Nil =>
+        case List(single)       =>
           firstOpt.contains(single) || lastOpt.contains(single)
-
-        case many if many.size >= 2 =>
+        case many @ List(_, _*) =>
           /* Create a list of all possible splits of tokens into (first tokens, last tokens) i.e.
             List(("john", "marie david scott"),
               ("john marie", "david scott"),
@@ -132,9 +131,7 @@ object TransferSearch {
             firstOpt.contains(firstNameCandidate) &&
             lastOpt.contains(lastNameCandidate)
           }
-
-        case Nil =>
-          false
+        case Nil                => false
       }
     }
   }
@@ -142,6 +139,6 @@ object TransferSearch {
 }
 
 sealed private trait SearchMode
-private case class QtRefSearch(normalisedRef: String)               extends SearchMode
-private case class NinoSearch(normalisedNino: String)               extends SearchMode
+private case class QtRefSearch(normalisedRef: String) extends SearchMode
+private case class NinoSearch(normalisedNino: String) extends SearchMode
 private case class NameSearch(rawTerm: String, parts: List[String]) extends SearchMode

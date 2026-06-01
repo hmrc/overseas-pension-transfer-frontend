@@ -16,72 +16,80 @@
 
 package controllers.actions
 
+import utils.AppUtils
+import queries.PensionSchemeDetailsQuery
+import play.api.mvc.ActionRefiner
+import play.api.mvc.Result
 import com.google.inject.Inject
 import connectors.PensionSchemeConnector
 import controllers.routes
-import models.requests.{IdentifierRequest, SchemeRequest}
-import models.{PensionSchemeDetails, SrnNumber}
 import play.api.Logging
+import models.PensionSchemeDetails
+import models.SrnNumber
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{ActionRefiner, Result}
-import queries.PensionSchemeDetailsQuery
 import repositories.DashboardSessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.AppUtils
+import models.requests.IdentifierRequest
+import models.requests.SchemeRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class SchemeDataActionImpl @Inject() (
-    pensionSchemeConnector: PensionSchemeConnector,
-    dashboardSessionRepository: DashboardSessionRepository
-  )(implicit val executionContext: ExecutionContext
-  ) extends SchemeDataAction with AppUtils with Logging {
+  pensionSchemeConnector: PensionSchemeConnector,
+  dashboardSessionRepository: DashboardSessionRepository
+)(implicit val executionContext: ExecutionContext)
+    extends SchemeDataAction
+    with AppUtils
+    with Logging {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, SchemeRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     request.getQueryString("srn") match {
       case Some(value) =>
-        pensionSchemeConnector.checkAssociation(value, request.authenticatedUser) flatMap {
-          isAssociated =>
-            if (isAssociated) {
-              pensionSchemeConnector.getSchemeDetails(value, request.authenticatedUser) map {
-                case Right(pensionSchemeResponse) =>
-                  Right(
-                    SchemeRequest(
-                      request           = request,
-                      authenticatedUser = request.authenticatedUser,
-                      schemeDetails     = PensionSchemeDetails(SrnNumber(value), pensionSchemeResponse.pstr, pensionSchemeResponse.schemeName)
+        pensionSchemeConnector.checkAssociation(value, request.authenticatedUser) flatMap { isAssociated =>
+          if (isAssociated) {
+            pensionSchemeConnector.getSchemeDetails(value, request.authenticatedUser) map {
+              case Right(pensionSchemeResponse) =>
+                Right(
+                  SchemeRequest(
+                    request = request,
+                    authenticatedUser = request.authenticatedUser,
+                    schemeDetails = PensionSchemeDetails(
+                      SrnNumber(value),
+                      pensionSchemeResponse.pstr,
+                      pensionSchemeResponse.schemeName
                     )
                   )
-                case Left(err)                    =>
-                  logger.error(s"[SchemeDataAction][refine]: Error has occurred during request of scheme details: $err")
-                  Left(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
-              }
-            } else {
-              logger.error(s"[SchemeDataAction][refine]: User isn't associated to a scheme")
-              Future.successful(Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad())))
+                )
+              case Left(err)                    =>
+                logger.error(s"[SchemeDataAction][refine]: Error has occurred during request of scheme details: $err")
+                Left(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
             }
+          } else {
+            logger.error(s"[SchemeDataAction][refine]: User isn't associated to a scheme")
+            Future.successful(Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad())))
+          }
         }
       case None        =>
         dashboardSessionRepository.get(request.authenticatedUser.internalId) flatMap {
           case Some(dashboardData) =>
             dashboardData.get(PensionSchemeDetailsQuery) match {
               case Some(scheme @ PensionSchemeDetails(srn, _, _)) =>
-                pensionSchemeConnector.checkAssociation(srn.value, request.authenticatedUser) map {
-                  isAssociated =>
-                    if (isAssociated) {
-                      Right(
-                        SchemeRequest(
-                          request           = request,
-                          authenticatedUser = request.authenticatedUser,
-                          schemeDetails     = scheme
-                        )
+                pensionSchemeConnector.checkAssociation(srn.value, request.authenticatedUser) map { isAssociated =>
+                  if (isAssociated) {
+                    Right(
+                      SchemeRequest(
+                        request = request,
+                        authenticatedUser = request.authenticatedUser,
+                        schemeDetails = scheme
                       )
-                    } else {
-                      Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad()))
-                    }
+                    )
+                  } else {
+                    Left(Redirect(controllers.auth.routes.UnauthorisedController.onPageLoad()))
+                  }
                 }
               case None                                           =>
                 logger.error(s"[SchemeDataAction][refine]: Dashboard Data requires PensionSchemeDetails")

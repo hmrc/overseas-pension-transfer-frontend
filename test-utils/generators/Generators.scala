@@ -16,12 +16,13 @@
 
 package generators
 
-import java.time.{Instant, LocalDate, ZoneOffset}
-import org.scalacheck.Arbitrary._
-import org.scalacheck.Gen._
+import org.scalacheck.Arbitrary.*
+import org.scalacheck.Gen.*
 import org.scalacheck.{Gen, Shrink}
 import play.api.Logging
 import wolfendale.scalacheck.regexp.RegexpGen
+
+import java.time.{Instant, LocalDate, ZoneOffset}
 
 trait Generators extends ModelGenerators with Logging {
 
@@ -49,13 +50,11 @@ trait Generators extends ModelGenerators with Logging {
     for {
       seq1 <- gen
       seq2 <- Gen.listOfN(seq1.length, genValue)
-    } yield {
-      seq1.toSeq.zip(seq2).foldLeft("") {
-        case (acc, (n, Some(v))) =>
-          acc + n + v
-        case (acc, (n, _))       =>
-          acc + n
-      }
+    } yield seq1.toSeq.zip(seq2).foldLeft("") {
+      case (acc, (n, Some(v))) =>
+        acc + n + v
+      case (acc, (n, _))       =>
+        acc + n
     }
   }
 
@@ -117,10 +116,10 @@ trait Generators extends ModelGenerators with Logging {
   }
 
   def stringsMatchingRegex(
-      regex: String,
-      maybeMinLength: Option[Int] = None,
-      maybeMaxLength: Option[Int] = Some(99)
-    ): Gen[String] = {
+    regex: String,
+    maybeMinLength: Option[Int] = None,
+    maybeMaxLength: Option[Int] = Some(99)
+  ): Gen[String] = {
 
     val baseGen: Gen[String] = RegexpGen.from(regex)
 
@@ -134,9 +133,9 @@ trait Generators extends ModelGenerators with Logging {
   }
 
   def stringsWithInvalidCharacters(
-      maybeMinLength: Option[Int] = None,
-      maybeMaxLength: Option[Int] = None
-    ): Gen[String] = {
+    maybeMinLength: Option[Int] = None,
+    maybeMaxLength: Option[Int] = None
+  ): Gen[String] = {
     val minLen = maybeMinLength.getOrElse(1)
     val maxLen = maybeMaxLength.getOrElse(100)
 
@@ -168,9 +167,8 @@ trait Generators extends ModelGenerators with Logging {
     def toMillis(date: LocalDate): Long =
       date.atStartOfDay.atZone(ZoneOffset.UTC).toInstant.toEpochMilli
 
-    Gen.choose(toMillis(min), toMillis(max)).map {
-      millis =>
-        Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
+    Gen.choose(toMillis(min), toMillis(max)).map { millis =>
+      Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
     }
   }
 }

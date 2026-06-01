@@ -16,26 +16,26 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares
 
-import models.{Mode, SessionData, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
-import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.CurrencyFormats.currencyFormat
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
+import utils.CurrencyFormats.currencyFormat
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object QuotedSharesValueSummary {
 
   def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(QuotedSharesValuePage(index)).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "quotedSharesValue.checkYourAnswersLabel",
-          value   = ValueViewModel(currencyFormat(answer)),
-          actions = Seq(
-            ActionItemViewModel("site.change", QuotedSharesValuePage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("quotedSharesValue.change.hidden"))
-          )
+    userAnswers.get(QuotedSharesValuePage(index)).map { answer =>
+      SummaryListRowViewModel(
+        key = "quotedSharesValue.checkYourAnswersLabel",
+        value = ValueViewModel(currencyFormat(answer)),
+        actions = Seq(
+          ActionItemViewModel("site.change", QuotedSharesValuePage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("quotedSharesValue.change.hidden"))
         )
+      )
     }
 }

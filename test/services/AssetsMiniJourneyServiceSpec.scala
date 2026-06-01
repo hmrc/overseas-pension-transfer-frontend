@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import models.NormalMode
-import models.assets._
+import models.assets.*
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.TypeOfAssetPage
 import play.api.libs.json.Json
@@ -82,7 +82,9 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
         .set(
           SelectedAssetTypesWithStatus,
           SelectedAssetTypesWithStatus.fromTypes(Seq(UnquotedSharesMiniJourney.assetType))
-        ).success.value
+        )
+        .success
+        .value
 
       val result = service.setAssetCompleted(sd0, UnquotedSharesMiniJourney.assetType, completed = true)
 
@@ -96,7 +98,9 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
         .set(
           SelectedAssetTypesWithStatus,
           Seq(SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted = true))
-        ).success.value
+        )
+        .success
+        .value
 
       val result = service.setAssetCompleted(sd0, QuotedSharesMiniJourney.assetType, completed = false)
 
@@ -114,9 +118,11 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
           SelectedAssetTypesWithStatus,
           Seq(
             SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true),
-            SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted   = true)
+            SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted = true)
           )
-        ).success.value
+        )
+        .success
+        .value
 
       val result = service.clearAllAssetCompletionFlags(sdWithCompleted)
 
@@ -142,14 +148,24 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
 
       val uaWithAssetsAndFlags =
         emptyUserAnswers
-          .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("UQ Co", 10, 1, "A"))).success.value
-          .set(QuotedSharesMiniJourney.query, List(QuotedSharesEntry("Q Co", 20, 2, "B"))).success.value
-          .set(OtherAssetsMiniJourney.query, List(OtherAssetsEntry("Gold", 30))).success.value
-          .set(CashMiniJourney.query, CashEntry(999)).success.value
+          .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("UQ Co", 10, 1, "A")))
+          .success
+          .value
+          .set(QuotedSharesMiniJourney.query, List(QuotedSharesEntry("Q Co", 20, 2, "B")))
+          .success
+          .value
+          .set(OtherAssetsMiniJourney.query, List(OtherAssetsEntry("Gold", 30)))
+          .success
+          .value
+          .set(CashMiniJourney.query, CashEntry(999))
+          .success
+          .value
           .set(
             AnswersSelectedAssetTypes,
             Seq[TypeOfAsset](TypeOfAsset.Cash, TypeOfAsset.UnquotedShares, TypeOfAsset.QuotedShares, TypeOfAsset.Other)
-          ).success.value
+          )
+          .success
+          .value
 
       val result = service.removeAllAssetEntriesExceptCash(uaWithAssetsAndFlags)
 
@@ -168,8 +184,12 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
     "must remove non-cash data even if SelectedAssetTypes already equals Set(Cash)" in {
       val ua =
         emptyUserAnswers
-          .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("Leftover", 10, 1, "C"))).success.value
-          .set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash)).success.value
+          .set(UnquotedSharesMiniJourney.query, List(UnquotedSharesEntry("Leftover", 10, 1, "C")))
+          .success
+          .value
+          .set(AnswersSelectedAssetTypes, Seq[TypeOfAsset](TypeOfAsset.Cash))
+          .success
+          .value
 
       val result = service.removeAllAssetEntriesExceptCash(ua)
 
@@ -197,8 +217,12 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
 
     val userAnswers =
       emptyUserAnswers
-        .set(UnquotedSharesMiniJourney.query, entries).success.value
-        .set(TypeOfAssetPage, Seq(UnquotedSharesMiniJourney.assetType)).success.value
+        .set(UnquotedSharesMiniJourney.query, entries)
+        .success
+        .value
+        .set(TypeOfAssetPage, Seq(UnquotedSharesMiniJourney.assetType))
+        .success
+        .value
 
     val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 0)
 
@@ -216,14 +240,18 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
 
     val userAnswers =
       emptyUserAnswers
-        .set(UnquotedSharesMiniJourney.query, entries).success.value
+        .set(UnquotedSharesMiniJourney.query, entries)
+        .success
+        .value
         .set(
           TypeOfAssetPage,
           Seq(
             UnquotedSharesMiniJourney.assetType,
             QuotedSharesMiniJourney.assetType
           )
-        ).success.value
+        )
+        .success
+        .value
 
     val result = service.removeAssetEntry(UnquotedSharesMiniJourney, userAnswers, 0)
 
@@ -285,11 +313,11 @@ class AssetsMiniJourneyServiceSpec extends AnyFreeSpec with SpecBase {
         result.success.value._1.get(SelectedAssetTypesWithStatus).value
 
       updatedSession must contain theSameElementsAs Seq(
-        SessionAssetTypeWithStatus(TypeOfAsset.Cash, isCompleted           = true),
-        SessionAssetTypeWithStatus(TypeOfAsset.QuotedShares, isCompleted   = true),
-        SessionAssetTypeWithStatus(TypeOfAsset.Property, isCompleted       = true),
+        SessionAssetTypeWithStatus(TypeOfAsset.Cash, isCompleted = true),
+        SessionAssetTypeWithStatus(TypeOfAsset.QuotedShares, isCompleted = true),
+        SessionAssetTypeWithStatus(TypeOfAsset.Property, isCompleted = true),
         SessionAssetTypeWithStatus(TypeOfAsset.UnquotedShares, isCompleted = false),
-        SessionAssetTypeWithStatus(TypeOfAsset.Other, isCompleted          = false)
+        SessionAssetTypeWithStatus(TypeOfAsset.Other, isCompleted = false)
       )
     }
 

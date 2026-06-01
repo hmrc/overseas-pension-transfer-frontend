@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameFormProvider
 import models.{AmendCheckMode, NormalMode}
-import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -28,7 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesCompanyNameView
 
@@ -40,7 +39,8 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
   private val form         = formProvider()
   private val index        = 0
 
-  private lazy val quotedSharesCompanyNameRoute = AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, index).url
+  private lazy val quotedSharesCompanyNameRoute =
+    AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(NormalMode, index).url
 
   "QuotedSharesCompanyName Controller" - {
 
@@ -78,7 +78,10 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill("answer"), NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -101,7 +104,9 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index).nextPage(NormalMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index)
+          .nextPage(NormalMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -120,13 +125,18 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
 
       running(application) {
         val request =
-          FakeRequest(POST, AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(AmendCheckMode, index).url)
+          FakeRequest(
+            POST,
+            AssetsMiniJourneysRoutes.QuotedSharesCompanyNameController.onPageLoad(AmendCheckMode, index).url
+          )
             .withFormUrlEncodedBody(("value", "answer"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index).nextPage(AmendCheckMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual QuotedSharesCompanyNamePage(index)
+          .nextPage(AmendCheckMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -146,7 +156,10 @@ class QuotedSharesCompanyNameControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode, index)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

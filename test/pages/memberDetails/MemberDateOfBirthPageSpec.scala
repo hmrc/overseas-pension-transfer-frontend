@@ -18,7 +18,7 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.memberDetails.routes
-import models.{CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -30,9 +30,10 @@ class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to Members Current Address" in {
 
-        MemberDateOfBirthPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MembersCurrentAddressController.onPageLoad(
-          NormalMode
-        )
+        MemberDateOfBirthPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MembersCurrentAddressController
+          .onPageLoad(
+            NormalMode
+          )
       }
     }
 
@@ -40,7 +41,8 @@ class MemberDateOfBirthPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
       "must go to Check Answers" in {
 
-        MemberDateOfBirthPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController.onPageLoad()
+        MemberDateOfBirthPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDetailsCYAController
+          .onPageLoad()
       }
     }
 

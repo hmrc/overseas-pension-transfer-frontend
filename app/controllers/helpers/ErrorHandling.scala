@@ -16,14 +16,17 @@
 
 package controllers.helpers
 
-import play.api.Logging
-import play.api.mvc.{RequestHeader, Result, Results}
 import play.api.routing.Router
+import play.api.mvc.RequestHeader
+import play.api.mvc.Result
+import play.api.mvc.Results
+import play.api.Logging
 
 trait ErrorHandling extends Logging {
 
   protected def onFailureRedirect(err: Any)(implicit rh: RequestHeader): Result = {
-    val (controller, method) = rh.attrs.get(Router.Attrs.HandlerDef)
+    val (controller, method) = rh.attrs
+      .get(Router.Attrs.HandlerDef)
       .map(hd => (hd.controller, hd.method))
       .getOrElse(("UnknownController", "UnknownMethod"))
 

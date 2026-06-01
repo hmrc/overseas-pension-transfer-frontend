@@ -17,42 +17,41 @@
 package viewmodels
 
 import base.SpecBase
-import config.{FrontendAppConfig, TestAppConfig}
+import config.TestAppConfig
 import models.AllTransfersItem
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.TableRow
+import utils.DateTimeFormats.{display12h, displayDateUuuu}
+import annotation.nowarn
 
-import java.time.format.DateTimeFormatter
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
 class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
-  implicit val messages: Messages               = stubMessagesApi().preferred(Seq.empty)
-  implicit private val appConfig: TestAppConfig = new TestAppConfig
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
+  new TestAppConfig
 
   private def mkItem(idx: Int, when: Instant): AllTransfersItem =
     AllTransfersItem(
-      transferId      = userAnswersTransferNumber,
-      qtVersion       = None,
-      nino            = None,
+      transferId = userAnswersTransferNumber,
+      qtVersion = None,
+      nino = None,
       memberFirstName = Some(s"Name$idx"),
-      memberSurname   = Some("McUser"),
-      submissionDate  = None,
-      lastUpdated     = Some(when),
-      qtStatus        = None,
-      pstrNumber      = None,
-      qtDate          = None
+      memberSurname = Some("McUser"),
+      submissionDate = None,
+      lastUpdated = Some(when),
+      qtStatus = None,
+      pstrNumber = None,
+      qtDate = None
     )
 
+  @nowarn
   private def utc(y: Int, m: Int, d: Int, hh: Int = 0, mm: Int = 0): Instant =
     ZonedDateTime.of(y, m, d, hh, mm, 0, 0, ZoneOffset.UTC).toInstant
-
-  private val dateFmt = DateTimeFormatter.ofPattern("d MMMM uuuu")
-  private val timeFmt = DateTimeFormatter.ofPattern("h:mma")
 
   // This regex extracts the time and date from the paragraph structure of the lastUpdated call
   // capture group 1 == date, capture group 2 == time
@@ -74,7 +73,7 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
 
   private def fmt(i: Instant): (String, String) = {
     val z = i.atZone(ZoneOffset.UTC)
-    (dateFmt.format(z), timeFmt.format(z).toLowerCase)
+    (displayDateUuuu.format(z), display12h.format(z).toLowerCase)
   }
 
   private def urlFor(n: Int): String = s"/dash?page=$n"
@@ -86,9 +85,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 1,
-        pageSize   = pageSize,
+        items = items,
+        page = 1,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -105,9 +104,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val page     = 2
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = page,
-        pageSize   = pageSize,
+        items = items,
+        page = page,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -143,9 +142,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val items    = instants.zipWithIndex.map { case (ins, i) => mkItem(i + 1, ins) }
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 1,
-        pageSize   = 3,
+        items = items,
+        page = 1,
+        pageSize = 3,
         urlForPage = urlFor
       )
 
@@ -165,15 +164,15 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vmPage1 = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 1,
-        pageSize   = pageSize,
+        items = items,
+        page = 1,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
       val vmPage2 = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 2,
-        pageSize   = pageSize,
+        items = items,
+        page = 2,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -200,10 +199,10 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val lock  = Some("Record is locked by another user")
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items       = items,
-        page        = 1,
-        pageSize    = 10,
-        urlForPage  = urlFor,
+        items = items,
+        page = 1,
+        pageSize = 10,
+        urlForPage = urlFor,
         lockWarning = lock
       )
 
@@ -218,9 +217,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 3,
-        pageSize   = pageSize,
+        items = items,
+        page = 3,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -237,9 +236,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 1,
-        pageSize   = pageSize,
+        items = items,
+        page = 1,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -260,9 +259,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10 // 10 pages
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 5,
-        pageSize   = pageSize,
+        items = items,
+        page = 5,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -284,9 +283,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 10,
-        pageSize   = pageSize,
+        items = items,
+        page = 10,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -305,9 +304,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 3,
-        pageSize   = pageSize,
+        items = items,
+        page = 3,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -322,9 +321,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 5,
-        pageSize   = pageSize,
+        items = items,
+        page = 5,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -344,9 +343,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 5,
-        pageSize   = pageSize,
+        items = items,
+        page = 5,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -362,9 +361,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 5,
-        pageSize   = pageSize,
+        items = items,
+        page = 5,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 
@@ -385,9 +384,9 @@ class PaginatedAllTransfersViewModelSpec extends AnyFreeSpec with SpecBase with 
       val pageSize = 10
 
       val vm = PaginatedAllTransfersViewModel.build(
-        items      = items,
-        page       = 25,
-        pageSize   = pageSize,
+        items = items,
+        page = 25,
+        pageSize = pageSize,
         urlForPage = urlFor
       )
 

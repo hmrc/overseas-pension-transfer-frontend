@@ -18,7 +18,7 @@ package pages.qropsSchemeManagerDetails
 
 import base.SpecBase
 import controllers.qropsSchemeManagerDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -28,13 +28,15 @@ class SchemeManagersNamePageSpec extends AnyFreeSpec with Matchers with SpecBase
 
     "in Normal Mode" - {
       "must go to Scheme manager's address" in {
-        SchemeManagersNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagersAddressController.onPageLoad(NormalMode)
+        SchemeManagersNamePage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.SchemeManagersAddressController
+          .onPageLoad(NormalMode)
       }
     }
 
     "in Check Mode" - {
       "must go to Check your answers" in {
-        SchemeManagersNamePage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerDetailsCYAController.onPageLoad()
+        SchemeManagersNamePage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.SchemeManagerDetailsCYAController
+          .onPageLoad()
       }
     }
 

@@ -32,7 +32,7 @@ class WhyTransferIsTaxableFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[WhyTransferIsTaxable](
       form,
       fieldName,
-      validValues  = WhyTransferIsTaxable.values,
+      validValues = WhyTransferIsTaxable.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

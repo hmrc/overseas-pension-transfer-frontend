@@ -18,7 +18,7 @@ package pages.transferDetails.assetsMiniJourneys.quotedShares
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -29,7 +29,10 @@ class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in Normal Mode" - {
       "must go to Index" in {
-        QuotedSharesClassPage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
+        QuotedSharesClassPage(index).nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
           NormalMode,
           index
         )
@@ -38,7 +41,10 @@ class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in CheckMode" - {
       "must go to Index" in {
-        QuotedSharesClassPage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
+        QuotedSharesClassPage(index).nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
           CheckMode,
           index
         )
@@ -47,7 +53,10 @@ class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in FinalCheckMode" - {
       "must go to Index" in {
-        QuotedSharesClassPage(index).nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
+        QuotedSharesClassPage(index).nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -56,7 +65,10 @@ class QuotedSharesClassPageSpec extends AnyFreeSpec with Matchers with SpecBase 
 
     "in AmendCheckMode" - {
       "must go to Index" in {
-        QuotedSharesClassPage(index).nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
+        QuotedSharesClassPage(index).nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.QuotedSharesCYAController.onPageLoad(
           AmendCheckMode,
           index
         )

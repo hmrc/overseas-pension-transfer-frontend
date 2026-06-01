@@ -16,8 +16,9 @@
 
 package models.assets
 
-import models.{Mode, SessionData}
 import play.api.mvc.Call
+import models.Mode
+import models.SessionData
 import queries.assets.SelectedAssetTypesWithStatus
 
 object AssetsMiniJourneyRegistry {
@@ -42,6 +43,7 @@ object AssetsMiniJourneyRegistry {
   }
 
   def startOf(assetType: TypeOfAsset, mode: Mode, index: Int): Call =
-    forType(assetType).map(_.call(mode, index))
+    forType(assetType)
+      .map(_.call(mode, index))
       .getOrElse(controllers.routes.JourneyRecoveryController.onPageLoad())
 }

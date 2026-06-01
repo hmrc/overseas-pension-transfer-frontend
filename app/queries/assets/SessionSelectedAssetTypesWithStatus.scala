@@ -32,16 +32,17 @@
 
 package queries.assets
 
-import models.{SessionData, TaskCategory}
-import models.assets.TypeOfAsset
-import play.api.libs.json._
+import queries.Gettable
+import queries.Settable
+import models.TaskCategory
 import play.api.libs.functional.syntax._
-import queries.{Gettable, Settable}
+import play.api.libs.json._
+import models.assets.TypeOfAsset
 
 case class SessionAssetTypeWithStatus(
-    assetType: TypeOfAsset,
-    isCompleted: Boolean = false
-  )
+  assetType: TypeOfAsset,
+  isCompleted: Boolean = false
+)
 
 object SessionAssetTypeWithStatus {
 
@@ -54,7 +55,9 @@ object SessionAssetTypeWithStatus {
   )(SessionAssetTypeWithStatus.apply, unlift(SessionAssetTypeWithStatus.unapply))
 }
 
-case object SelectedAssetTypesWithStatus extends Gettable[Seq[SessionAssetTypeWithStatus]] with Settable[Seq[SessionAssetTypeWithStatus]] {
+case object SelectedAssetTypesWithStatus
+    extends Gettable[Seq[SessionAssetTypeWithStatus]]
+    with Settable[Seq[SessionAssetTypeWithStatus]] {
   override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ "typeOfAsset"
 
   def fromTypes(types: Seq[TypeOfAsset]): Seq[SessionAssetTypeWithStatus] =
@@ -69,10 +72,16 @@ case object SelectedAssetTypesWithStatus extends Gettable[Seq[SessionAssetTypeWi
   def getIncompleteAssets(assets: Seq[SessionAssetTypeWithStatus]): Seq[TypeOfAsset] =
     assets.filterNot(_.isCompleted).map(_.assetType)
 
-  def markAsCompleted(assets: Seq[SessionAssetTypeWithStatus], assetType: TypeOfAsset): Seq[SessionAssetTypeWithStatus] =
+  def markAsCompleted(
+    assets: Seq[SessionAssetTypeWithStatus],
+    assetType: TypeOfAsset
+  ): Seq[SessionAssetTypeWithStatus] =
     assets.map(a => if (a.assetType == assetType) a.copy(isCompleted = true) else a)
 
-  def markAsIncomplete(assets: Seq[SessionAssetTypeWithStatus], assetType: TypeOfAsset): Seq[SessionAssetTypeWithStatus] =
+  def markAsIncomplete(
+    assets: Seq[SessionAssetTypeWithStatus],
+    assetType: TypeOfAsset
+  ): Seq[SessionAssetTypeWithStatus] =
     assets.map(a => if (a.assetType == assetType) a.copy(isCompleted = false) else a)
 
   def markAllIncomplete(assets: Seq[SessionAssetTypeWithStatus]): Seq[SessionAssetTypeWithStatus] =

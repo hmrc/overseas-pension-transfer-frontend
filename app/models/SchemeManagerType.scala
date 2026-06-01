@@ -16,15 +16,15 @@
 
 package models
 
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 sealed trait SchemeManagerType
 
 object SchemeManagerType extends Enumerable.Implicits {
 
-  case object Individual   extends WithName("individual") with SchemeManagerType
+  case object Individual extends WithName("individual") with SchemeManagerType
   case object Organisation extends WithName("organisation") with SchemeManagerType
 
   val values: Seq[SchemeManagerType] = Seq(
@@ -32,13 +32,12 @@ object SchemeManagerType extends Enumerable.Implicits {
     Organisation
   )
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"schemeManagerType.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(
+      content = Text(messages(s"schemeManagerType.${value.toString}")),
+      value = Some(value.toString),
+      id = Some(s"value_$index")
+    )
   }
 
   implicit val enumerable: Enumerable[SchemeManagerType] =

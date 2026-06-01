@@ -16,66 +16,70 @@
 
 package services
 
-import com.google.inject.Inject
-import connectors.{PensionSchemeConnector, UserAnswersConnector}
-import models.authentication.{AuthenticatedUser, PsaId}
-import models.dtos.SubmissionDTO
-import models.dtos.UserAnswersDTO.{fromUserAnswers, toUserAnswers}
+import models.authentication.AuthenticatedUser
+import models.authentication.PsaId
 import models.responses._
-import models.{AllTransfersItem, PstrNumber, QtStatus, SessionData, SrnNumber, TransferId, UserAnswers}
+import models.dtos.UserAnswersDTO.fromUserAnswers
+import models.dtos.UserAnswersDTO.toUserAnswers
+import com.google.inject.Inject
+import connectors.UserAnswersConnector
+import models.dtos.SubmissionDTO
+import uk.gov.hmrc.http.HeaderCarrier
+import models._
 import org.apache.pekko.Done
 import play.api.Logging
 import play.api.libs.json._
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class UserAnswersService @Inject() (
-    connector: UserAnswersConnector,
-    authService: AuthorisingPsaService
-  )(implicit ec: ExecutionContext
-  ) extends Logging {
+  connector: UserAnswersConnector,
+  authService: AuthorisingPsaService
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
   // These two versions of getExternalUserAnswers are purposely similar to one another as it is recommended to combine them in a future refactor
-  def getExternalUserAnswers(sessionData: SessionData)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] = {
+  def getExternalUserAnswers(
+    sessionData: SessionData
+  )(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] =
     connector.getAnswers(sessionData.transferId.value, sessionData.schemeInformation.srnNumber) map {
       case Right(userAnswersDTO) => Right(toUserAnswers(userAnswersDTO))
       case Left(error)           => Left(error)
     }
-  }
 
   def getExternalUserAnswers(
-      transferId: TransferId,
-      pstr: PstrNumber,
-      qtStatus: QtStatus,
-      versionNumber: Option[String],
-      srnNumber: SrnNumber
-    )(implicit hc: HeaderCarrier
-    ): Future[Either[UserAnswersError, UserAnswers]] = {
-    connector.getAnswers(
-      transferId,
-      pstr,
-      qtStatus,
-      versionNumber,
-      srnNumber
-    ).map {
-      case Right(dto) => Right(toUserAnswers(dto))
-      case Left(err)  => Left(err)
-    }
-  }
+    transferId: TransferId,
+    pstr: PstrNumber,
+    qtStatus: QtStatus,
+    versionNumber: Option[String],
+    srnNumber: SrnNumber
+  )(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, UserAnswers]] =
+    connector
+      .getAnswers(
+        transferId,
+        pstr,
+        qtStatus,
+        versionNumber,
+        srnNumber
+      )
+      .map {
+        case Right(dto) => Right(toUserAnswers(dto))
+        case Left(err)  => Left(err)
+      }
 
-  def setExternalUserAnswers(userAnswers: UserAnswers, srnNumber: SrnNumber)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
+  def setExternalUserAnswers(userAnswers: UserAnswers, srnNumber: SrnNumber)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[UserAnswersError, Done]] =
     connector.putAnswers(fromUserAnswers(userAnswers), srnNumber)
-  }
 
   def submitDeclaration(
-      authenticatedUser: AuthenticatedUser,
-      userAnswers: UserAnswers,
-      sessionData: SessionData,
-      maybePsaId: Option[PsaId] = None,
-      srnNumber: SrnNumber
-    )(implicit hc: HeaderCarrier
-    ): Future[Either[UserAnswersError, SubmissionResponse]] = {
+    authenticatedUser: AuthenticatedUser,
+    userAnswers: UserAnswers,
+    sessionData: SessionData,
+    maybePsaId: Option[PsaId] = None,
+    srnNumber: SrnNumber
+  )(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, SubmissionResponse]] = {
 
     val submissionDTO = SubmissionDTO.fromRequest(authenticatedUser, userAnswers, maybePsaId, sessionData)
     maybePsaId match {
@@ -90,9 +94,10 @@ class UserAnswersService @Inject() (
     }
   }
 
-  def clearUserAnswers(id: String, srnNumber: SrnNumber)(implicit hc: HeaderCarrier): Future[Either[UserAnswersError, Done]] = {
+  def clearUserAnswers(id: String, srnNumber: SrnNumber)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[UserAnswersError, Done]] =
     connector.deleteAnswers(id, srnNumber)
-  }
 
   def toAllTransfersItem(userAnswers: UserAnswers): AllTransfersItem = {
     val reportDetails = (userAnswers.data \ "reportDetails").asOpt[JsObject]
@@ -112,16 +117,16 @@ class UserAnswersService @Inject() (
       if (qtStatus.exists(_ != QtStatus.Submitted)) Some(userAnswers.lastUpdated) else None
 
     AllTransfersItem(
-      transferId      = userAnswers.id,
-      qtVersion       = None,
-      qtStatus        = qtStatus,
-      nino            = ninoOpt,
+      transferId = userAnswers.id,
+      qtVersion = None,
+      qtStatus = qtStatus,
+      nino = ninoOpt,
       memberFirstName = memberFirstName,
-      memberSurname   = memberSurname,
-      qtDate          = None,
-      lastUpdated     = lastUpdated,
-      pstrNumber      = Some(userAnswers.pstr),
-      submissionDate  = submissionDate
+      memberSurname = memberSurname,
+      qtDate = None,
+      lastUpdated = lastUpdated,
+      pstrNumber = Some(userAnswers.pstr),
+      submissionDate = submissionDate
     )
   }
 }

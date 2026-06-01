@@ -47,12 +47,11 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
   def doc(body: String): Document = Jsoup.parse(body)
 
   def pageWithBackLink(html: Html): Unit =
-    "have a back link" in {
+    "have a back link" in
       assert(
         doc(html.body).getElementsByClass("govuk-back-link") != null,
         "\n\nElement " + "govuk-back-link" + " was not rendered on the page.\n"
       )
-    }
 
   def pageWithErrors(view: Html, idSelectorPrefix: String, errorMessage: String): Unit =
     s"show errors correctly for $idSelectorPrefix field" in {
@@ -64,7 +63,10 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
 
   def pageWithTitle(view: Html, message: String): Unit =
     "show correct page title" in {
-      doc(view.body).getElementsByTag("title").first().text mustBe s"${messages(message)} - ${messages("service.name")} - GOV.UK"
+      doc(view.body)
+        .getElementsByTag("title")
+        .first()
+        .text mustBe s"${messages(message)} - ${messages("service.name")} - GOV.UK"
     }
 
   def pageWithH1(view: Html, message: String): Unit =
@@ -74,12 +76,12 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
 
   def pageWithHeadings(view: Html, headerLevel: String, message: String*): Unit =
     "show correct headings" in {
-      doc(view.body).getElementById("main-content").getElementsByTag(headerLevel).eachText().toArray mustBe message.map(messageKey =>
-        messages(messageKey)
-      ).toArray
+      doc(view.body).getElementById("main-content").getElementsByTag(headerLevel).eachText().toArray mustBe message
+        .map(messageKey => messages(messageKey))
+        .toArray
     }
 
-  def pageWithLinks(view: Html, links: (String, String)*): Unit = {
+  def pageWithLinks(view: Html, links: (String, String)*): Unit =
     "show correct links" in {
       val document = doc(view.body)
       links.foreach { case (text, url) =>
@@ -89,7 +91,10 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
           href == url || href.endsWith(url)
         }
 
-        assert(matchingLink.isDefined, s"Link with href '$url' was not found. Available hrefs: ${allLinks.asScala.map(_.attr("href")).mkString(", ")}")
+        assert(
+          matchingLink.isDefined,
+          s"Link with href '$url' was not found. Available hrefs: ${allLinks.asScala.map(_.attr("href")).mkString(", ")}"
+        )
 
         val linkText = matchingLink.get.text()
         assert(
@@ -98,14 +103,11 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
         )
       }
     }
-  }
 
   def pageWithText(view: Html, expectedText: String*): Unit =
     s"show correct text: $expectedText" in {
       doc(view.body).getElementById("main-content").getElementsByTag("p").eachText().toArray mustBe
-        expectedText.map(messageKey =>
-          messages(messageKey)
-        ).toArray
+        expectedText.map(messageKey => messages(messageKey)).toArray
     }
 
   def pageWithRadioButtons(view: Html, expectedText: String*): Unit =
@@ -123,9 +125,7 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
     "show correct bullet list items" in {
       val bulletPoints = doc(view.body).getElementsByClass("govuk-list--bullet").first().getElementsByTag("li")
 
-      bulletPoints.eachText().toArray() mustBe expectedText.map(messageKey =>
-        messages(messageKey)
-      ).toArray
+      bulletPoints.eachText().toArray() mustBe expectedText.map(messageKey => messages(messageKey)).toArray
     }
 
   def pageWithSubmitButton(view: Html, buttonText: String): Unit =
@@ -169,12 +169,14 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
         label.text() mustBe messages(labelKey)
         if (hint != null) {
           hint.text() mustBe messages(hintKey)
+        } else {
+          assert(true)
         }
       }
     }
 
   def pageWithMultipleInputFields(view: Html, fields: (String, String)*): Unit =
-    "display all required input fields with correct labels" in {
+    "display all required input fields with correct labels" in
       fields.foreach { case (fieldId, labelText) =>
         val field = doc(view.body).getElementById(fieldId)
         assert(field != null, s"\n\nInput field '$fieldId' was not rendered on the page.\n")
@@ -183,6 +185,5 @@ trait ViewBaseSpec extends AnyFreeSpec with SpecBase {
         assert(label != null, s"\n\nLabel for field '$fieldId' was not found.\n")
         label.text() must include(messages(labelText))
       }
-    }
 
 }

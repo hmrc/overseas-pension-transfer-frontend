@@ -16,30 +16,31 @@
 
 package services
 
-import config.FrontendAppConfig
 import models.audit.JsonAuditModel
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.AuditExtensions
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
+import uk.gov.hmrc.play.audit.AuditExtensions
+import config.FrontendAppConfig
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
+import javax.inject.Inject
+
 class AuditService @Inject() (
-    appConfig: FrontendAppConfig,
-    auditConnector: AuditConnector
-  )(implicit ec: ExecutionContext
-  ) {
+  appConfig: FrontendAppConfig,
+  auditConnector: AuditConnector
+)(implicit ec: ExecutionContext) {
 
   def audit(eventData: JsonAuditModel)(implicit hc: HeaderCarrier): Unit = {
     auditConnector.sendExtendedEvent(
       ExtendedDataEvent(
         auditSource = appConfig.appName,
-        auditType   = eventData.auditType,
-        detail      = eventData.detail,
-        tags        = AuditExtensions.auditHeaderCarrier(hc).toAuditTags()
+        auditType = eventData.auditType,
+        detail = eventData.detail,
+        tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags()
       )
     )
+    ()
   }
 }

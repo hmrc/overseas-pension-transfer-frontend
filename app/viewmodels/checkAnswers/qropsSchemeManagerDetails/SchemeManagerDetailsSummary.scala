@@ -16,19 +16,23 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import models.{Mode, UserAnswers}
-import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 
 case object SchemeManagerDetailsSummary {
 
-  def rows(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean = true)(implicit messages: Messages): Seq[SummaryListRow] = {
+  def rows(mode: Mode, userAnswers: UserAnswers, showChangeLinks: Boolean = true)(implicit
+    messages: Messages
+  ): Seq[SummaryListRow] = {
     val managersType: Option[SummaryListRow] = SchemeManagerTypeSummary.row(mode, userAnswers, showChangeLinks)
 
     val managersName: Option[SummaryListRow] = SchemeManagersNameSummary.row(mode, userAnswers, showChangeLinks)
 
     val orgName: Option[SummaryListRow]       = SchemeManagerOrganisationNameSummary.row(mode, userAnswers, showChangeLinks)
-    val orgIndividual: Option[SummaryListRow] = SchemeManagerOrgIndividualNameSummary.row(mode, userAnswers, showChangeLinks)
+    val orgIndividual: Option[SummaryListRow] =
+      SchemeManagerOrgIndividualNameSummary.row(mode, userAnswers, showChangeLinks)
 
     val managerAddress: Option[SummaryListRow]  = SchemeManagersAddressSummary.row(mode, userAnswers, showChangeLinks)
     val managersEmail: Option[SummaryListRow]   = SchemeManagersEmailSummary.row(mode, userAnswers, showChangeLinks)

@@ -19,7 +19,7 @@ package pages.transferDetails.assetsMiniJourneys.property
 import base.SpecBase
 import controllers.transferDetails.routes
 import models.assets.{PropertyMiniJourney, UnquotedSharesMiniJourney}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
@@ -45,7 +45,8 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
             )
           )
 
-        val result = MorePropertyDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
+        val result =
+          MorePropertyDeclarationPage.nextPageWith(NormalMode, userAnswers.success.value, sessionData.success.value)
         result mustBe UnquotedSharesMiniJourney.call(NormalMode)
       }
     }
@@ -67,7 +68,8 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
             )
           )
 
-        val result = MorePropertyDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
+        val result =
+          MorePropertyDeclarationPage.nextPageWith(CheckMode, userAnswers.success.value, sessionData.success.value)
         result mustBe UnquotedSharesMiniJourney.call(CheckMode)
       }
     }
@@ -89,7 +91,8 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
             )
           )
 
-        val result = MorePropertyDeclarationPage.nextPageWith(FinalCheckMode, userAnswers.success.value, sessionData.success.value)
+        val result =
+          MorePropertyDeclarationPage.nextPageWith(FinalCheckMode, userAnswers.success.value, sessionData.success.value)
         result mustBe UnquotedSharesMiniJourney.call(FinalCheckMode)
       }
     }
@@ -111,7 +114,8 @@ class MorePropertyDeclarationPageSpec extends AnyFreeSpec with Matchers with Spe
             )
           )
 
-        val result = MorePropertyDeclarationPage.nextPageWith(AmendCheckMode, userAnswers.success.value, sessionData.success.value)
+        val result =
+          MorePropertyDeclarationPage.nextPageWith(AmendCheckMode, userAnswers.success.value, sessionData.success.value)
         result mustBe UnquotedSharesMiniJourney.call(AmendCheckMode)
       }
     }

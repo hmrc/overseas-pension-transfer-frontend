@@ -16,81 +16,90 @@
 
 package controllers.qropsDetails
 
+import services.CountryService
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import controllers.actions._
-import controllers.helpers.ErrorHandling
-import forms.qropsDetails.QROPSCountryFormProvider
-import models.Mode
 import models.address.Country
-import org.apache.pekko.Done
+import controllers.helpers.ErrorHandling
+import models.Mode
 import pages.qropsDetails.QROPSCountryPage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{CountryService, UserAnswersService}
+import org.apache.pekko.Done
+import views.html.qropsDetails.QROPSCountryView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.CountrySelectViewModel
-import views.html.qropsDetails.QROPSCountryView
+import forms.qropsDetails.QROPSCountryFormProvider
+import play.api.data.Form
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class QROPSCountryController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: QROPSCountryFormProvider,
-    countryService: CountryService,
-    val controllerComponents: MessagesControllerComponents,
-    view: QROPSCountryView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: QROPSCountryFormProvider,
+  countryService: CountryService,
+  val controllerComponents: MessagesControllerComponents,
+  view: QROPSCountryView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(QROPSCountryPage) match {
-        case None          => form
-        case Some(country) => form.fill(country.code)
-      }
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(QROPSCountryPage) match {
+      case None          => form
+      case Some(country) => form.fill(country.code)
+    }
 
-      val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-      Ok(view(preparedForm, countrySelectViewModel, mode))
+    val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+    Ok(view(preparedForm, countrySelectViewModel, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
-          Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
-        },
-        countryCode => {
-          val maybeCountry: Option[Country] =
-            countryService.findByCode(countryCode)
-          maybeCountry match {
-            case None          =>
-              Future.successful(
-                Redirect(
-                  QROPSCountryPage.nextPageRecovery(
-                    Some(QROPSCountryPage.recoveryModeReturnUrl)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val countrySelectViewModel = CountrySelectViewModel.fromCountries(countryService.countries)
+            Future.successful(BadRequest(view(formWithErrors, countrySelectViewModel, mode)))
+          },
+          countryCode => {
+            val maybeCountry: Option[Country] =
+              countryService.findByCode(countryCode)
+            maybeCountry match {
+              case None          =>
+                Future.successful(
+                  Redirect(
+                    QROPSCountryPage.nextPageRecovery(
+                      Some(QROPSCountryPage.recoveryModeReturnUrl)
+                    )
                   )
                 )
-              )
-            case Some(country) =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
-                savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-              } yield {
-                savedForLater match {
+              case Some(country) =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(QROPSCountryPage, country))
+                  savedForLater  <-
+                    userAnswersService
+                      .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+                } yield savedForLater match {
                   case Right(Done) => Redirect(QROPSCountryPage.nextPage(mode, updatedAnswers))
                   case Left(err)   => onFailureRedirect(err)
                 }
-              }
+            }
           }
-        }
-      )
+        )
   }
 }

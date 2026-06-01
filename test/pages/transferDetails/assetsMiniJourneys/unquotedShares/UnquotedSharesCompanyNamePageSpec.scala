@@ -19,7 +19,7 @@ package pages.transferDetails.assetsMiniJourneys.unquotedShares
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.assets.TypeOfAsset
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -30,7 +30,10 @@ class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with S
 
     "in Normal Mode" - {
       "must go to next page" in {
-        UnquotedSharesCompanyNamePage(index).nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
+        UnquotedSharesCompanyNamePage(index).nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
           NormalMode,
           index
         )
@@ -39,7 +42,10 @@ class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with S
 
     "in Check Mode" - {
       "must go to next page" in {
-        UnquotedSharesCompanyNamePage(index).nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
+        UnquotedSharesCompanyNamePage(index).nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(
           CheckMode,
           index
         )
@@ -72,12 +78,18 @@ class UnquotedSharesCompanyNamePageSpec extends AnyFreeSpec with Matchers with S
 
     "should go to CYA when complete" in {
       val ua = emptyUserAnswers.copy(data = completeJson(TypeOfAsset.UnquotedShares))
-      UnquotedSharesCompanyNamePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(NormalMode, index)
+      UnquotedSharesCompanyNamePage(index).nextPage(
+        NormalMode,
+        ua
+      ) mustBe AssetsMiniJourneysRoutes.UnquotedSharesCYAController.onPageLoad(NormalMode, index)
     }
 
     "should go to Value page when incomplete" in {
       val ua = emptyUserAnswers.copy(data = incompleteJson())
-      UnquotedSharesCompanyNamePage(index).nextPage(NormalMode, ua) mustBe AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(NormalMode, index)
+      UnquotedSharesCompanyNamePage(index).nextPage(
+        NormalMode,
+        ua
+      ) mustBe AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(NormalMode, index)
     }
   }
 }

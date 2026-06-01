@@ -19,8 +19,8 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.AmountOfTransferFormProvider
-import models.{AmendCheckMode, NormalMode}
 import models.responses.UserAnswersErrorResponse
+import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -30,7 +30,7 @@ import pages.transferDetails.AmountOfTransferPage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.transferDetails.AmountOfTransferView
@@ -60,7 +60,10 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val view = application.injector.instanceOf[AmountOfTransferView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -78,7 +81,10 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(validAnswer), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -154,7 +160,10 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

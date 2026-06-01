@@ -16,61 +16,70 @@
 
 package controllers.memberDetails
 
+import services.UserAnswersService
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import forms.memberDetails.MemberDoesNotHaveNinoFormProvider
 import controllers.actions._
 import controllers.helpers.ErrorHandling
-import forms.memberDetails.MemberDoesNotHaveNinoFormProvider
-import models.Mode
 import org.apache.pekko.Done
-import pages.memberDetails.{MemberDoesNotHaveNinoPage, MemberNinoPage}
+import pages.memberDetails.MemberDoesNotHaveNinoPage
+import pages.memberDetails.MemberNinoPage
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.Mode
 import views.html.memberDetails.MemberDoesNotHaveNinoView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class MemberDoesNotHaveNinoController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: MemberDoesNotHaveNinoFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: MemberDoesNotHaveNinoView,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with ErrorHandling {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: MemberDoesNotHaveNinoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: MemberDoesNotHaveNinoView,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with ErrorHandling {
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(MemberDoesNotHaveNinoPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, mode))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData) { implicit request =>
+    val preparedForm = request.userAnswers.get(MemberDoesNotHaveNinoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
+    Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value).flatMap(_.remove(MemberNinoPage)))
-            savedForLater  <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield {
-            savedForLater match {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+          value =>
+            for {
+              updatedAnswers <-
+                Future
+                  .fromTry(request.userAnswers.set(MemberDoesNotHaveNinoPage, value).flatMap(_.remove(MemberNinoPage)))
+              savedForLater  <-
+                userAnswersService
+                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield savedForLater match {
               case Right(Done) => Redirect(MemberDoesNotHaveNinoPage.nextPage(mode, updatedAnswers))
               case Left(err)   => onFailureRedirect(err)
             }
-
-          }
-      )
+        )
   }
 }

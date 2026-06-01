@@ -18,11 +18,11 @@ package viewmodels
 
 import base.SpecBase
 import config.TestAppConfig
-import models.{AllTransfersItem, QtNumber, QtStatus}
+import models.{AllTransfersItem, QtStatus}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, TableRow}
 
@@ -30,8 +30,8 @@ import java.time.{Instant, ZoneOffset, ZonedDateTime}
 
 class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matchers {
 
-  implicit val messages: Messages               = stubMessagesApi().preferred(Seq.empty)
-  implicit private val appConfig: TestAppConfig = new TestAppConfig
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq.empty)
+  new TestAppConfig
 
   private def textOfHead(h: HeadCell): String = h.content match {
     case Text(s) => s
@@ -61,16 +61,16 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "renders headers, a member link, submitted status label, reference, and formatted submission date" in {
       val submitted = AllTransfersItem(
-        transferId      = userAnswersTransferNumber,
-        qtVersion       = None,
-        nino            = None,
+        transferId = userAnswersTransferNumber,
+        qtVersion = None,
+        nino = None,
         memberFirstName = Some("Ada"),
-        memberSurname   = Some("Lovelace"),
-        submissionDate  = Some(utc(2025, 9, 24, 10, 15)),
-        lastUpdated     = None,
-        qtStatus        = Some(QtStatus.Submitted),
-        pstrNumber      = None,
-        qtDate          = None
+        memberSurname = Some("Lovelace"),
+        submissionDate = Some(utc(2025, 9, 24, 10, 15)),
+        lastUpdated = None,
+        qtStatus = Some(QtStatus.Submitted),
+        pstrNumber = None,
+        qtDate = None
       )
 
       val table = AllTransfersTableViewModel.from(Seq(submitted), 1)
@@ -107,16 +107,16 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "renders in-progress label and uses lastUpdated (date+time)" in {
       val inProgress = AllTransfersItem(
-        transferId      = userAnswersTransferNumber,
-        qtVersion       = None,
-        nino            = None,
+        transferId = userAnswersTransferNumber,
+        qtVersion = None,
+        nino = None,
         memberFirstName = Some("  "),
-        memberSurname   = Some(""),
-        submissionDate  = None,
-        lastUpdated     = Some(utc(2025, 1, 5, 17, 3)),
-        qtStatus        = Some(QtStatus.InProgress),
-        pstrNumber      = None,
-        qtDate          = None
+        memberSurname = Some(""),
+        submissionDate = None,
+        lastUpdated = Some(utc(2025, 1, 5, 17, 3)),
+        qtStatus = Some(QtStatus.InProgress),
+        pstrNumber = None,
+        qtDate = None
       )
 
       val table = AllTransfersTableViewModel.from(Seq(inProgress), 2)
@@ -135,16 +135,16 @@ class AllTransfersTableViewModelSpec extends AnyFreeSpec with SpecBase with Matc
 
     "maps Compiled status to submitted label (same as Submitted)" in {
       val compiled = AllTransfersItem(
-        transferId      = userAnswersTransferNumber,
-        qtVersion       = None,
-        nino            = None,
+        transferId = userAnswersTransferNumber,
+        qtVersion = None,
+        nino = None,
         memberFirstName = Some("Jean"),
-        memberSurname   = Some("Jarvis"),
-        submissionDate  = Some(utc(2024, 12, 31, 0, 0)),
-        lastUpdated     = None,
-        qtStatus        = Some(QtStatus.Compiled),
-        pstrNumber      = None,
-        qtDate          = None
+        memberSurname = Some("Jarvis"),
+        submissionDate = Some(utc(2024, 12, 31, 0, 0)),
+        lastUpdated = None,
+        qtStatus = Some(QtStatus.Compiled),
+        pstrNumber = None,
+        qtDate = None
       )
 
       val table = AllTransfersTableViewModel.from(Seq(compiled), 3)

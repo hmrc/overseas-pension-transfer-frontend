@@ -19,8 +19,8 @@ package controllers.transferDetails
 import base.SpecBase
 import controllers.routes.JourneyRecoveryController
 import forms.transferDetails.IsTransferTaxableFormProvider
-import models.{AmendCheckMode, NormalMode}
 import models.responses.UserAnswersErrorResponse
+import models.{AmendCheckMode, NormalMode}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -29,7 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.IsTransferTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.transferDetails.IsTransferTaxableView
@@ -57,7 +57,10 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val view = application.injector.instanceOf[IsTransferTaxableView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -75,7 +78,10 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

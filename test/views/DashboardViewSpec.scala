@@ -39,16 +39,49 @@ class DashboardViewSpec extends ViewBaseSpec {
   val pageUrl: Int => String = page => routes.DashboardController.onPageLoad(page, None).url
 
   private val searchBarViewModel = SearchBarViewModel(
-    label  = messages("dashboard.search.heading"),
+    label = messages("dashboard.search.heading"),
     action = routes.DashboardController.onPageLoad().url
   )
 
   private val paginatedAllTransfersViewModel =
     PaginatedAllTransfersViewModel.build(
       Seq(
-        AllTransfersItem(testQtNumber, Some("001"), Some(Submitted), None, Some("Firstname1"), Some("Surname1"), None, Some(now), None, None),
-        AllTransfersItem(userAnswersTransferNumber, None, Some(InProgress), None, Some("Firstname2"), Some("Surname2"), None, Some(now), None, None),
-        AllTransfersItem(QtNumber("QT987654"), Some("001"), Some(AmendInProgress), None, Some("Firstname3"), Some("Surname3"), None, Some(now), None, None)
+        AllTransfersItem(
+          testQtNumber,
+          Some("001"),
+          Some(Submitted),
+          None,
+          Some("Firstname1"),
+          Some("Surname1"),
+          None,
+          Some(now),
+          None,
+          None
+        ),
+        AllTransfersItem(
+          userAnswersTransferNumber,
+          None,
+          Some(InProgress),
+          None,
+          Some("Firstname2"),
+          Some("Surname2"),
+          None,
+          Some(now),
+          None,
+          None
+        ),
+        AllTransfersItem(
+          QtNumber("QT987654"),
+          Some("001"),
+          Some(AmendInProgress),
+          None,
+          Some("Firstname3"),
+          Some("Surname3"),
+          None,
+          Some(now),
+          None,
+          None
+        )
       ),
       1,
       appConfig.transfersPerPage,
@@ -66,7 +99,18 @@ class DashboardViewSpec extends ViewBaseSpec {
   private val paginatedAllTransfersWithLock =
     PaginatedAllTransfersViewModel.build(
       Seq(
-        AllTransfersItem(userAnswersTransferNumber, None, Some(InProgress), None, Some("Firstname"), Some("Surname"), None, Some(now), None, None)
+        AllTransfersItem(
+          userAnswersTransferNumber,
+          None,
+          Some(InProgress),
+          None,
+          Some("Firstname"),
+          Some("Surname"),
+          None,
+          Some(now),
+          None,
+          None
+        )
       ),
       1,
       appConfig.transfersPerPage,
@@ -79,7 +123,6 @@ class DashboardViewSpec extends ViewBaseSpec {
     "/what-will-be-needed",
     paginatedAllTransfersViewModel,
     searchBarViewModel,
-    "/mps-link",
     isSearch = false,
     "/pension-scheme-link",
     Html("")
@@ -90,7 +133,6 @@ class DashboardViewSpec extends ViewBaseSpec {
     "/what-will-be-needed",
     paginatedNoTransfersViewModel,
     searchBarViewModel,
-    "/mps-link",
     isSearch = false,
     "/pension-scheme-link",
     Html("")
@@ -101,16 +143,17 @@ class DashboardViewSpec extends ViewBaseSpec {
     "/what-will-be-needed",
     paginatedAllTransfersWithLock,
     searchBarViewModel,
-    "/mps-link",
     isSearch = false,
     "/pension-scheme-link",
     Html("")
   )
 
   val formattedLastUpdated: String = {
-    val dateFormatter = DateTimeFormatter.ofPattern("d MMMM uuuu")
+    val dateFormatter = DateTimeFormatter
+      .ofPattern("d MMMM uuuu")
       .withLocale(Locale.UK)
-    val timeFormatter = DateTimeFormatter.ofPattern("h:mma")
+    val timeFormatter = DateTimeFormatter
+      .ofPattern("h:mma")
       .withLocale(Locale.UK)
 
     s"${dateFormatter.format(now.atZone(ZoneOffset.UTC))} ${timeFormatter.format(now.atZone(ZoneOffset.UTC))}"
@@ -118,7 +161,10 @@ class DashboardViewSpec extends ViewBaseSpec {
 
   "full dashboard view" - {
     "show correct title" in {
-      doc(fullView.body).getElementsByTag("title").eachText().get(0) mustBe s"${messages("dashboard.allTransfers.page", "1", "1")} – Report a transfer to a qualifying recognised overseas pension scheme (QROPS) – GOV.UK"
+      doc(fullView.body)
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe s"${messages("dashboard.allTransfers.page", "1", "1")} – Report a transfer to a qualifying recognised overseas pension scheme (QROPS) – GOV.UK"
     }
 
     behave like pageWithH1(fullView, "dashboard.heading")
@@ -186,7 +232,10 @@ class DashboardViewSpec extends ViewBaseSpec {
 
   "No transfer records dashboard view" - {
     "show correct title" in {
-      doc(viewWithNoTransfers.body).getElementsByTag("title").eachText().get(0) mustBe s"${messages("dashboard.allTransfers.page", "1", "1")} – Report a transfer to a qualifying recognised overseas pension scheme (QROPS) – GOV.UK"
+      doc(viewWithNoTransfers.body)
+        .getElementsByTag("title")
+        .eachText()
+        .get(0) mustBe s"${messages("dashboard.allTransfers.page", "1", "1")} – Report a transfer to a qualifying recognised overseas pension scheme (QROPS) – GOV.UK"
     }
 
     behave like pageWithH1(viewWithNoTransfers, "dashboard.heading")
@@ -206,7 +255,9 @@ class DashboardViewSpec extends ViewBaseSpec {
 
   "View with lock warning" - {
     "display lock warning" in {
-      doc(viewWithLockWarning.body).getElementById("govuk-lock-banner-title").text() mustBe messages("dashboard.lock.title")
+      doc(viewWithLockWarning.body).getElementById("govuk-lock-banner-title").text() mustBe messages(
+        "dashboard.lock.title"
+      )
       doc(viewWithLockWarning.body).getElementsByClass("govuk-notification-banner__content").text() mustBe
         s"${messages("dashboard.lock.warning", "Firstname Surname")} ${messages("dashboard.lock.hide")}."
     }

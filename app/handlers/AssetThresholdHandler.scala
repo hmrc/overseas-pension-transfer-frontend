@@ -16,9 +16,10 @@
 
 package handlers
 
-import models.{RichJsObject, SessionData, UserAnswers}
-import models.assets.TypeOfAsset
+import models.RichJsObject
+import models.UserAnswers
 import play.api.libs.json._
+import models.assets.TypeOfAsset
 
 object AssetThresholdHandler {
 
@@ -33,22 +34,26 @@ object AssetThresholdHandler {
 
   /** Get count of assets of given type */
   def getAssetCount(userAnswers: UserAnswers, assetType: TypeOfAsset): Int =
-    assetChecks.get(assetType).map { case (assetKey, _) =>
-      (userAnswers.data \ "transferDetails" \ assetKey)
-        .asOpt[Seq[JsValue]]
-        .map(_.size)
-        .getOrElse(0)
-    }.getOrElse(0)
+    assetChecks
+      .get(assetType)
+      .map { case (assetKey, _) =>
+        (userAnswers.data \ "transferDetails" \ assetKey)
+          .asOpt[Seq[JsValue]]
+          .map(_.size)
+          .getOrElse(0)
+      }
+      .getOrElse(0)
 
-  /** Update threshold flag. If userSelection is Some(true/false), it overrides the flag when count == threshold. Otherwise:
+  /** Update threshold flag. If userSelection is Some(true/false), it overrides the flag when count == threshold.
+    * Otherwise:
     *   - count < threshold → false
     *   - count == threshold → userSelection (or false if not provided)
     */
   def handle(
-      userAnswers: UserAnswers,
-      assetType: TypeOfAsset,
-      userSelection: Option[Boolean] = None
-    ): UserAnswers = {
+    userAnswers: UserAnswers,
+    assetType: TypeOfAsset,
+    userSelection: Option[Boolean] = None
+  ): UserAnswers =
 
     assetChecks.get(assetType) match {
       case Some((_, flagKey)) =>
@@ -68,5 +73,4 @@ object AssetThresholdHandler {
 
       case None => userAnswers
     }
-  }
 }

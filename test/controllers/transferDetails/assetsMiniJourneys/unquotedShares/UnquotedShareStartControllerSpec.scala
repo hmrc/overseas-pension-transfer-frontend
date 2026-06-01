@@ -21,7 +21,7 @@ import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import models.NormalMode
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesStartView
 
 class UnquotedShareStartControllerSpec extends AnyFreeSpec with SpecBase {
@@ -33,7 +33,8 @@ class UnquotedShareStartControllerSpec extends AnyFreeSpec with SpecBase {
       val application = applicationBuilder().build()
 
       running(application) {
-        val request  = FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad(NormalMode).url)
+        val request  =
+          FakeRequest(GET, AssetsMiniJourneysRoutes.UnquotedSharesStartController.onPageLoad(NormalMode).url)
         val result   = route(application, request).value
         val view     = application.injector.instanceOf[UnquotedSharesStartView]
         val nextPage = AssetsMiniJourneysRoutes.UnquotedSharesCompanyNameController.onPageLoad(NormalMode, 0).url

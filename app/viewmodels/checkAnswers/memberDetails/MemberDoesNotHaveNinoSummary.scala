@@ -16,22 +16,22 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.{Mode, UserAnswers}
+import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
 import pages.memberDetails.MemberDoesNotHaveNinoPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object MemberDoesNotHaveNinoSummary {
 
   def row(
-      mode: Mode,
-      answers: UserAnswers,
-      showChangeLink: Boolean           = true,
-      additionalClasses: Option[String] = None
-    )(implicit messages: Messages
-    ): Option[SummaryListRow] =
+    mode: Mode,
+    answers: UserAnswers,
+    showChangeLink: Boolean = true,
+    additionalClasses: Option[String] = None
+  )(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(MemberDoesNotHaveNinoPage).map {
 
       val actions = if (showChangeLink) {
@@ -45,8 +45,8 @@ object MemberDoesNotHaveNinoSummary {
 
       answer =>
         SummaryListRowViewModel(
-          key     = "memberDoesNotHaveNino.checkYourAnswersLabel",
-          value   = ValueViewModel(answer),
+          key = "memberDoesNotHaveNino.checkYourAnswersLabel",
+          value = ValueViewModel(answer),
           actions = actions
         ).withCssClass(additionalClasses.getOrElse(""))
     }

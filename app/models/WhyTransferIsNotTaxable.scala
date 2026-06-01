@@ -16,20 +16,27 @@
 
 package models
 
-import play.api.i18n.Messages
-import play.api.libs.json.{JsString, Writes}
+import viewmodels.govuk.checkbox._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.checkboxes.CheckboxItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import viewmodels.govuk.checkbox._
+import play.api.i18n.Messages
 
 sealed trait WhyTransferIsNotTaxable
 
 object WhyTransferIsNotTaxable extends Enumerable.Implicits {
 
-  case object IndividualIsEmployeeOccupational      extends WithName("individualIsEmployeeOccupational") with WhyTransferIsNotTaxable
-  case object IndividualIsEmployedPublicService     extends WithName("individualIsEmployedPublicService") with WhyTransferIsNotTaxable
-  case object IndividualIsEmployeeInternationalOrg  extends WithName("individualIsEmployeeInternationalOrg") with WhyTransferIsNotTaxable
-  case object IndividualAndQROPSResidentSameCountry extends WithName("individualAndQROPSResidentSameCountry") with WhyTransferIsNotTaxable
+  case object IndividualIsEmployeeOccupational
+      extends WithName("individualIsEmployeeOccupational")
+      with WhyTransferIsNotTaxable
+  case object IndividualIsEmployedPublicService
+      extends WithName("individualIsEmployedPublicService")
+      with WhyTransferIsNotTaxable
+  case object IndividualIsEmployeeInternationalOrg
+      extends WithName("individualIsEmployeeInternationalOrg")
+      with WhyTransferIsNotTaxable
+  case object IndividualAndQROPSResidentSameCountry
+      extends WithName("individualAndQROPSResidentSameCountry")
+      with WhyTransferIsNotTaxable
 
   val values: Seq[WhyTransferIsNotTaxable] = Seq(
     IndividualIsEmployeeOccupational,
@@ -39,14 +46,13 @@ object WhyTransferIsNotTaxable extends Enumerable.Implicits {
   )
 
   def checkboxItems(implicit messages: Messages): Seq[CheckboxItem] =
-    values.zipWithIndex.map {
-      case (value, index) =>
-        CheckboxItemViewModel(
-          content = Text(messages(s"whyTransferIsNotTaxable.${value.toString}")),
-          fieldId = "value",
-          index   = index,
-          value   = value.toString
-        )
+    values.zipWithIndex.map { case (value, index) =>
+      CheckboxItemViewModel(
+        content = Text(messages(s"whyTransferIsNotTaxable.${value.toString}")),
+        fieldId = "value",
+        index = index,
+        value = value.toString
+      )
     }
 
   implicit val enumerable: Enumerable[WhyTransferIsNotTaxable] =

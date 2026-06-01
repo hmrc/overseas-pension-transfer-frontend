@@ -28,13 +28,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.PsaDeclarationPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PsaDeclarationView
 
-import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {

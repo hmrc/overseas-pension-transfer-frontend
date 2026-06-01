@@ -23,7 +23,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import viewmodels.checkAnswers.transferDetails.TransferDetailsSummary
 import viewmodels.govuk.all.SummaryListViewModel
 import views.html.transferDetails.TransferDetailsCYAView

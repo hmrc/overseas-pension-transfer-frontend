@@ -16,9 +16,9 @@
 
 package stubs
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 
 object AddressLookupStub {
 
@@ -34,10 +34,12 @@ object AddressLookupStub {
 
   def responsePostPostcode(postcode: String)(status: Int, body: String): Unit = {
     stubPost("/lookup", Some(s"""{ "postcode": "$postcode" }"""), status, body)
+    ()
   }
 
   def errorResponsePostPostcode(postcode: String)(status: Int, body: String): Unit = {
     stubPost("/lookup", Some(s"""{ "postcode": "$postcode" }"""), status, body)
+    ()
   }
 
   val noAddressesFoundResponseJson: String =

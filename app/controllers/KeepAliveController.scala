@@ -16,33 +16,41 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.mongo.lock.LockRepository
+import config.FrontendAppConfig
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationLong
 
-class KeepAliveController @Inject() (
-    val controllerComponents: MessagesControllerComponents,
-    appConfig: FrontendAppConfig,
-    identify: IdentifierAction,
-    getScheme: SchemeDataAction,
-    getData: DataRetrievalAction,
-    sessionRepository: SessionRepository,
-    lockRepository: LockRepository
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController {
+import javax.inject.Inject
 
-  def keepAlive(): Action[AnyContent] = (identify andThen getScheme andThen getData).async {
-    implicit request =>
-      for {
-        _         <- lockRepository.refreshExpiry(request.authenticatedUser.internalId, request.sessionData.transferId.value, appConfig.dashboardLockTtl.seconds)
-        keepAlive <- sessionRepository.keepAlive(request.userAnswers.id.value).map(_ => Ok)
-      } yield keepAlive
+class KeepAliveController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  appConfig: FrontendAppConfig,
+  identify: IdentifierAction,
+  getScheme: SchemeDataAction,
+  getData: DataRetrievalAction,
+  sessionRepository: SessionRepository,
+  lockRepository: LockRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController {
+
+  def keepAlive(): Action[AnyContent] = (identify andThen getScheme andThen getData).async { implicit request =>
+    for {
+      _         <- lockRepository.refreshExpiry(
+                     request.authenticatedUser.internalId,
+                     request.sessionData.transferId.value,
+                     appConfig.dashboardLockTtl.seconds
+                   )
+      keepAlive <- sessionRepository.keepAlive(request.userAnswers.id.value).map(_ => Ok)
+    } yield keepAlive
   }
 }

@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.html.JourneyRecoveryContinueView
 import views.html.errors.JourneyRecoveryView
@@ -43,7 +43,10 @@ class JourneyRecoveryControllerSpec extends AnyFreeSpec with SpecBase {
           val continueView = application.injector.instanceOf[JourneyRecoveryContinueView]
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual continueView(continueUrl.unsafeValue)(request, messages(application)).toString
+          contentAsString(result) mustEqual continueView(continueUrl.unsafeValue)(
+            request,
+            messages(application)
+          ).toString
         }
       }
     }

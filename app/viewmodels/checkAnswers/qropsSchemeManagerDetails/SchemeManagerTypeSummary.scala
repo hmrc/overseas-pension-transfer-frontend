@@ -16,18 +16,21 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import models.{Mode, UserAnswers}
-import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import pages.qropsSchemeManagerDetails.SchemeManagerTypePage
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object SchemeManagerTypeSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(SchemeManagerTypePage).map { answer =>
       val value = ValueViewModel(
         HtmlContent(
@@ -46,8 +49,8 @@ object SchemeManagerTypeSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "schemeManagerType.checkYourAnswersLabel",
-        value   = value,
+        key = "schemeManagerType.checkYourAnswersLabel",
+        value = value,
         actions = actions
       )
     }

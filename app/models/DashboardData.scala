@@ -16,20 +16,24 @@
 
 package models
 
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json._
-import queries.{Gettable, Settable}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import services.EncryptionService
+import queries.Gettable
+import queries.Settable
+import play.api.libs.json._
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 import java.time.Instant
-import scala.util.{Failure, Success, Try}
 
 final case class DashboardData(
-    id: String,
-    data: JsObject,
-    lastUpdated: Instant
-  ) {
+  id: String,
+  data: JsObject,
+  lastUpdated: Instant
+) {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
@@ -43,9 +47,8 @@ final case class DashboardData(
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
-      d =>
-        Success(copy(data = d))
+    updatedData.flatMap { d =>
+      Success(copy(data = d))
     }
   }
 
@@ -58,36 +61,27 @@ final case class DashboardData(
         Success(data)
     }
 
-    updatedData.flatMap {
-      d =>
-        Success(copy(data = d))
+    updatedData.flatMap { d =>
+      Success(copy(data = d))
     }
   }
 }
 
 object DashboardData {
 
-  val reads: Reads[DashboardData] = {
-
-    import play.api.libs.functional.syntax._
-
+  val reads: Reads[DashboardData] =
     (
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantFormat)
     )(DashboardData.apply _)
-  }
 
-  val writes: OWrites[DashboardData] = {
-
-    import play.api.libs.functional.syntax._
-
+  val writes: OWrites[DashboardData] =
     (
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantFormat)
     )(ua => (ua.id, ua.data, ua.lastUpdated))
-  }
 
   implicit val format: OFormat[DashboardData] = OFormat(reads, writes)
 
@@ -124,8 +118,8 @@ object DashboardData {
     )(DashboardData.apply _)
 
     val writes: OWrites[DashboardData] = OWrites { dd =>
-      implicit val es: EncryptionService    = encryptionService
-      val encrypted: EncryptedDashboardData = DecryptedDashboardData(dd.data).encrypt
+      implicit val es: EncryptionService            = encryptionService
+      val encrypted: EncryptedDashboardData         = DecryptedDashboardData(dd.data).encrypt
       Json.obj(
         "_id"         -> dd.id,
         "data"        -> encrypted.encryptedString,
@@ -137,8 +131,8 @@ object DashboardData {
   }
 
   def create(id: String, now: Instant): DashboardData = DashboardData(
-    id          = id,
-    data        = Json.obj(),
+    id = id,
+    data = Json.obj(),
     lastUpdated = now
   )
 

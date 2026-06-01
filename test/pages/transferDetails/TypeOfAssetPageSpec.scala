@@ -19,7 +19,7 @@ package pages.transferDetails
 import base.SpecBase
 import controllers.transferDetails.routes
 import models.assets.{QuotedSharesMiniJourney, UnquotedSharesMiniJourney}
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import queries.assets.{SelectedAssetTypesWithStatus, SessionAssetTypeWithStatus}
 
@@ -31,12 +31,15 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to the first incomplete asset journey when one exists" in {
         val sessionData =
-          emptySessionData.set(
-            SelectedAssetTypesWithStatus,
-            Seq(
-              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = false)
+          emptySessionData
+            .set(
+              SelectedAssetTypesWithStatus,
+              Seq(
+                SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = false)
+              )
             )
-          ).success.value
+            .success
+            .value
 
         TypeOfAssetPage.nextPageWith(NormalMode, emptyUserAnswers, sessionData) mustEqual
           UnquotedSharesMiniJourney.call(NormalMode)
@@ -44,10 +47,13 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to Transfer Details CYA when all selected assets are completed or none selected" in {
         val sessionDataAllCompleted =
-          emptySessionData.set(
-            SelectedAssetTypesWithStatus,
-            Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
-          ).success.value
+          emptySessionData
+            .set(
+              SelectedAssetTypesWithStatus,
+              Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
+            )
+            .success
+            .value
 
         TypeOfAssetPage.nextPageWith(NormalMode, emptyUserAnswers, sessionDataAllCompleted) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
@@ -61,12 +67,15 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to the first incomplete asset journey when one exists" in {
         val sessionData =
-          emptySessionData.set(
-            SelectedAssetTypesWithStatus,
-            Seq(
-              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = false)
+          emptySessionData
+            .set(
+              SelectedAssetTypesWithStatus,
+              Seq(
+                SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = false)
+              )
             )
-          ).success.value
+            .success
+            .value
 
         TypeOfAssetPage.nextPageWith(CheckMode, emptyUserAnswers, sessionData) mustEqual
           UnquotedSharesMiniJourney.call(CheckMode)
@@ -74,10 +83,13 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to Transfer Details CYA when all selected assets are completed or none selected" in {
         val sessionDataAllCompleted =
-          emptySessionData.set(
-            SelectedAssetTypesWithStatus,
-            Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
-          ).success.value
+          emptySessionData
+            .set(
+              SelectedAssetTypesWithStatus,
+              Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
+            )
+            .success
+            .value
 
         TypeOfAssetPage.nextPageWith(CheckMode, emptyUserAnswers, sessionDataAllCompleted) mustEqual
           routes.TransferDetailsCYAController.onPageLoad()
@@ -91,12 +103,15 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to the first incomplete asset journey when one exists" in {
         val sessionData =
-          emptySessionData.set(
-            SelectedAssetTypesWithStatus,
-            Seq(
-              SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted = false)
+          emptySessionData
+            .set(
+              SelectedAssetTypesWithStatus,
+              Seq(
+                SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted = false)
+              )
             )
-          ).success.value
+            .success
+            .value
 
         TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyUserAnswers, sessionData) mustEqual
           QuotedSharesMiniJourney.call(FinalCheckMode)
@@ -104,10 +119,13 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to Final Check Answers when all selected assets are completed or none selected" in {
         val sessionDataAllCompleted =
-          emptySessionData.set(
-            SelectedAssetTypesWithStatus,
-            Seq(SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted = true))
-          ).success.value
+          emptySessionData
+            .set(
+              SelectedAssetTypesWithStatus,
+              Seq(SessionAssetTypeWithStatus(QuotedSharesMiniJourney.assetType, isCompleted = true))
+            )
+            .success
+            .value
 
         TypeOfAssetPage.nextPageWith(FinalCheckMode, emptyUserAnswers, sessionDataAllCompleted) mustEqual
           controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
@@ -121,12 +139,15 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to the first incomplete asset journey when one exists" in {
         val sessionData =
-          emptySessionData.set(
-            SelectedAssetTypesWithStatus,
-            Seq(
-              SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = false)
+          emptySessionData
+            .set(
+              SelectedAssetTypesWithStatus,
+              Seq(
+                SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = false)
+              )
             )
-          ).success.value
+            .success
+            .value
 
         TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyUserAnswers, sessionData) mustEqual
           UnquotedSharesMiniJourney.call(AmendCheckMode)
@@ -134,10 +155,13 @@ class TypeOfAssetPageSpec extends AnyFreeSpec with SpecBase {
 
       "must go to View & Amend CYA when all selected assets are completed or none selected" in {
         val sessionDataAllCompleted =
-          emptySessionData.set(
-            SelectedAssetTypesWithStatus,
-            Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
-          ).success.value
+          emptySessionData
+            .set(
+              SelectedAssetTypesWithStatus,
+              Seq(SessionAssetTypeWithStatus(UnquotedSharesMiniJourney.assetType, isCompleted = true))
+            )
+            .success
+            .value
 
         TypeOfAssetPage.nextPageWith(AmendCheckMode, emptyUserAnswers, sessionDataAllCompleted) mustEqual
           controllers.viewandamend.routes.ViewAmendSubmittedController.amend()

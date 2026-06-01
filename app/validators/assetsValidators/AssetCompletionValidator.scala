@@ -17,8 +17,8 @@
 package validators.assetsValidators
 
 import models.UserAnswers
+import play.api.libs.json._
 import models.assets.TypeOfAsset
-import play.api.libs.json.*
 
 object AssetCompletionValidator {
 
@@ -70,20 +70,33 @@ object AssetCompletionValidator {
         hasMandatoryKeys(td, mandatoryKeys(TypeOfAsset.Cash))
 
       case TypeOfAsset.UnquotedShares =>
-        (td \ "unquotedShares").asOpt[JsArray]
-          .exists(arr => arr.value.nonEmpty && arr.value.forall(js => hasMandatoryKeys(js, mandatoryKeys(TypeOfAsset.UnquotedShares))))
+        (td \ "unquotedShares")
+          .asOpt[JsArray]
+          .exists(arr =>
+            arr.value.nonEmpty && arr.value
+              .forall(js => hasMandatoryKeys(js, mandatoryKeys(TypeOfAsset.UnquotedShares)))
+          )
 
       case TypeOfAsset.QuotedShares =>
-        (td \ "quotedShares").asOpt[JsArray]
-          .exists(arr => arr.value.nonEmpty && arr.value.forall(js => hasMandatoryKeys(js, mandatoryKeys(TypeOfAsset.QuotedShares))))
+        (td \ "quotedShares")
+          .asOpt[JsArray]
+          .exists(arr =>
+            arr.value.nonEmpty && arr.value.forall(js => hasMandatoryKeys(js, mandatoryKeys(TypeOfAsset.QuotedShares)))
+          )
 
       case TypeOfAsset.Property =>
-        (td \ "propertyAssets").asOpt[JsArray]
-          .exists(arr => arr.value.nonEmpty && arr.value.forall(js => hasMandatoryKeys(js, mandatoryKeys(TypeOfAsset.Property))))
+        (td \ "propertyAssets")
+          .asOpt[JsArray]
+          .exists(arr =>
+            arr.value.nonEmpty && arr.value.forall(js => hasMandatoryKeys(js, mandatoryKeys(TypeOfAsset.Property)))
+          )
 
       case TypeOfAsset.Other =>
-        (td \ "otherAssets").asOpt[JsArray]
-          .exists(arr => arr.value.nonEmpty && arr.value.forall(js => hasMandatoryKeys(js, mandatoryKeys(TypeOfAsset.Other))))
+        (td \ "otherAssets")
+          .asOpt[JsArray]
+          .exists(arr =>
+            arr.value.nonEmpty && arr.value.forall(js => hasMandatoryKeys(js, mandatoryKeys(TypeOfAsset.Other)))
+          )
 
     }
   }

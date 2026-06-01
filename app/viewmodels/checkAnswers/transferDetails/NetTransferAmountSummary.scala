@@ -16,17 +16,20 @@
 
 package viewmodels.checkAnswers.transferDetails
 
-import models.{Mode, UserAnswers}
 import pages.transferDetails.NetTransferAmountPage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.CurrencyFormats.currencyFormat
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object NetTransferAmountSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(NetTransferAmountPage).map { answer =>
       val actions =
         if (showChangeLink) {
@@ -39,8 +42,8 @@ object NetTransferAmountSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "netTransferAmount.checkYourAnswersLabel",
-        value   = ValueViewModel(currencyFormat(answer)),
+        key = "netTransferAmount.checkYourAnswersLabel",
+        value = ValueViewModel(currencyFormat(answer)),
         actions = actions
       )
     }

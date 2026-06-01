@@ -16,37 +16,44 @@
 
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
+import services.AssetsMiniJourneyService
+import services.MoreAssetCompletionService
+import services.UserAnswersService
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import play.api.mvc._
+import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueSummary
 import controllers.actions._
+import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
 import forms.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationFormProvider
 import models.assets.TypeOfAsset
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, Mode, NormalMode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
 import repositories.SessionRepository
-import services.{AssetsMiniJourneyService, MoreAssetCompletionService, UserAnswersService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesAmendContinueSummary
+import models._
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedSharesDeclarationView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.Try
 
+import javax.inject.Inject
+
 class MoreQuotedSharesDeclarationController @Inject() (
-    override val messagesApi: MessagesApi,
-    sessionRepository: SessionRepository,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: MoreQuotedSharesDeclarationFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: MoreQuotedSharesDeclarationView,
-    moreAssetCompletionService: MoreAssetCompletionService,
-    userAnswersService: UserAnswersService
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: MoreQuotedSharesDeclarationFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: MoreQuotedSharesDeclarationView,
+  moreAssetCompletionService: MoreAssetCompletionService,
+  userAnswersService: UserAnswersService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val form = formProvider()
 
@@ -82,30 +89,40 @@ class MoreQuotedSharesDeclarationController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (identify andThen schemeData andThen getData).async { implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val assets = QuotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
-          Future.successful(BadRequest(view(formWithErrors, assets, mode)))
-        },
-        continue => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              for {
-                addCashAmount                      <- request.userAnswers.set(MoreQuotedSharesDeclarationPage, continue)
-                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-              } yield removeTypeOfAssetsRecordVersion
-            } else {
-              request.userAnswers.set(MoreQuotedSharesDeclarationPage, continue)
-            }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val assets = QuotedSharesAmendContinueSummary.rows(mode, request.userAnswers)
+            Future.successful(BadRequest(view(formWithErrors, assets, mode)))
+          },
+          continue => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                for {
+                  addCashAmount                      <- request.userAnswers.set(MoreQuotedSharesDeclarationPage, continue)
+                  removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                  removeTypeOfAssetsRecordVersion    <-
+                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                } yield removeTypeOfAssetsRecordVersion
+              } else {
+                request.userAnswers.set(MoreQuotedSharesDeclarationPage, continue)
+              }
 
-          for {
-            userAnswers            <- Future.fromTry(setAnswers())
-            _                      <- userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
-            sessionAfterCompletion <-
-              moreAssetCompletionService.completeAsset(userAnswers, request.sessionData, TypeOfAsset.QuotedShares, completed = true, Some(continue))
-          } yield Redirect(MoreQuotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
-        }
-      )
+            for {
+              userAnswers            <- Future.fromTry(setAnswers())
+              _                      <-
+                userAnswersService.setExternalUserAnswers(userAnswers, request.sessionData.schemeInformation.srnNumber)
+              sessionAfterCompletion <-
+                moreAssetCompletionService.completeAsset(
+                  userAnswers,
+                  request.sessionData,
+                  TypeOfAsset.QuotedShares,
+                  completed = true,
+                  Some(continue)
+                )
+            } yield Redirect(MoreQuotedSharesDeclarationPage.nextPageWith(mode, userAnswers, sessionAfterCompletion))
+          }
+        )
     }
 }

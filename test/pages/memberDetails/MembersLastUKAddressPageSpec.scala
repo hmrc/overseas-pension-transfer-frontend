@@ -18,12 +18,9 @@ package pages.memberDetails
 
 import base.SpecBase
 import controllers.memberDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
-
-import java.time.LocalDate
 
 class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
@@ -33,7 +30,8 @@ class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
       "must go to Members Date of Leaving UK" in {
 
-        MembersLastUKAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(NormalMode)
+        MembersLastUKAddressPage.nextPage(NormalMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController
+          .onPageLoad(NormalMode)
       }
     }
 
@@ -45,7 +43,8 @@ class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers with SpecBa
       }
 
       "must go to Members Date of Leaving UK in CheckMode if not present" in {
-        MembersLastUKAddressPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(CheckMode)
+        MembersLastUKAddressPage.nextPage(CheckMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController
+          .onPageLoad(CheckMode)
       }
     }
 
@@ -53,11 +52,17 @@ class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
       "must go to FinalCheck Answers if Members Date of Leaving UK present" in {
         val ua = emptyUserAnswers.set(MemberDateOfLeavingUKPage, today).success.value
-        MembersLastUKAddressPage.nextPage(FinalCheckMode, ua) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
+        MembersLastUKAddressPage.nextPage(
+          FinalCheckMode,
+          ua
+        ) mustEqual controllers.checkYourAnswers.routes.CheckYourAnswersController.onPageLoad()
       }
 
       "must go to Members Date of Leaving UK in FinalCheckMode if not present" in {
-        MembersLastUKAddressPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(FinalCheckMode)
+        MembersLastUKAddressPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(FinalCheckMode)
       }
     }
 
@@ -65,11 +70,17 @@ class MembersLastUKAddressPageSpec extends AnyFreeSpec with Matchers with SpecBa
 
       "must go to AmendCheck Answers if Members Date of Leaving UK present" in {
         val ua = emptyUserAnswers.set(MemberDateOfLeavingUKPage, today).success.value
-        MembersLastUKAddressPage.nextPage(AmendCheckMode, ua) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
+        MembersLastUKAddressPage.nextPage(
+          AmendCheckMode,
+          ua
+        ) mustEqual controllers.viewandamend.routes.ViewAmendSubmittedController.amend()
       }
 
       "must go to Members Date of Leaving UK in AmendCheckMode if not present" in {
-        MembersLastUKAddressPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(AmendCheckMode)
+        MembersLastUKAddressPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual routes.MemberDateOfLeavingUKController.onPageLoad(AmendCheckMode)
       }
     }
   }

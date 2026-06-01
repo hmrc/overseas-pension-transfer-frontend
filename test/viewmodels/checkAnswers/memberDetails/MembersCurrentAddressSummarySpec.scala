@@ -18,7 +18,7 @@ package viewmodels.checkAnswers.memberDetails
 
 import base.SpecBase
 import models.CheckMode
-import models.address._
+import models.address.*
 import org.scalatest.freespec.AnyFreeSpec
 import pages.memberDetails.MembersCurrentAddressPage
 import play.api.i18n.Messages
@@ -37,9 +37,9 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine2 = "Line2",
         addressLine3 = Some("Line3"),
         addressLine4 = Some("Line4"),
-        ukPostCode   = Some("Postcode"),
-        country      = Country("FI", "Finland"),
-        poBoxNumber  = Some("POBox")
+        ukPostCode = Some("Postcode"),
+        country = Country("FI", "Finland"),
+        poBoxNumber = Some("POBox")
       )
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
@@ -58,9 +58,9 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine2 = "Line2",
         addressLine3 = None,
         addressLine4 = None,
-        ukPostCode   = None,
-        country      = Country("FI", "Finland"),
-        poBoxNumber  = None
+        ukPostCode = None,
+        country = Country("FI", "Finland"),
+        poBoxNumber = None
       )
 
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
@@ -78,9 +78,9 @@ class MembersCurrentAddressSummarySpec extends AnyFreeSpec with SpecBase {
         addressLine2 = "Line2",
         addressLine3 = Some("    "),
         addressLine4 = Some(""),
-        ukPostCode   = Some("  "),
-        country      = Country("FI", "Finland"),
-        poBoxNumber  = None
+        ukPostCode = Some("  "),
+        country = Country("FI", "Finland"),
+        poBoxNumber = None
       )
       val answers = emptyUserAnswers.set(MembersCurrentAddressPage, address).success.value
 

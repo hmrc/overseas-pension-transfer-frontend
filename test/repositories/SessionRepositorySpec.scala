@@ -27,9 +27,9 @@ import play.api.libs.json.Json
 import services.EncryptionService
 import uk.gov.hmrc.mongo.test.CleanMongoCollectionSupport
 
-import java.time.{Clock, Instant, ZoneOffset}
+import java.time.Instant
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 class SessionRepositorySpec
     extends AnyFreeSpec
@@ -48,20 +48,20 @@ class SessionRepositorySpec
   private val appConfig  = new TestAppConfig
 
   private val repository = new SessionRepository(
-    mongoComponent    = mongoComponent,
+    mongoComponent = mongoComponent,
     encryptionService = encryption,
-    appConfig         = appConfig,
-    clock             = clock
+    appConfig = appConfig,
+    clock = clock
   )
 
   private def sessionData(sessionId: String, transferId: TransferId) =
     SessionData(
-      sessionId         = sessionId,
-      transferId        = transferId,
+      sessionId = sessionId,
+      transferId = transferId,
       schemeInformation = schemeDetails,
-      user              = psaUser,
-      data              = Json.obj(),
-      lastUpdated       = now
+      user = psaUser,
+      data = Json.obj(),
+      lastUpdated = now
     )
 
   "SessionRepository" - {

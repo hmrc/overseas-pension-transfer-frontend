@@ -16,35 +16,44 @@
 
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
-import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueFormProvider
-import models.assets.TypeOfAsset.Other
-import models.{AmendCheckMode, Mode, UserAnswers}
-import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import queries.assets.AssetsRecordVersionQuery
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import forms.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueFormProvider
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValueView
+import models.assets.TypeOfAsset.Other
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
+import play.api.data.Form
+import queries.assets.AssetsRecordVersionQuery
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
+import controllers.actions._
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.Try
 
+import javax.inject.Inject
+
 class OtherAssetsValueController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: OtherAssetsValueFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: OtherAssetsValueView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: OtherAssetsValueFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: OtherAssetsValueView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[BigDecimal] = formProvider()
 
@@ -60,27 +69,31 @@ class OtherAssetsValueController @Inject() (
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              for {
-                addCashAmount                      <- request.userAnswers.set(OtherAssetsValuePage(index), value)
-                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, Other))
-              } yield removeAssetRecordVersion
-            } else {
-              request.userAnswers.set(OtherAssetsValuePage(index), value)
-            }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, index))),
+          value => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                for {
+                  addCashAmount                      <- request.userAnswers.set(OtherAssetsValuePage(index), value)
+                  removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                  removeTypeOfAssetsRecordVersion    <-
+                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                  removeAssetRecordVersion           <-
+                    removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, Other))
+                } yield removeAssetRecordVersion
+              } else {
+                request.userAnswers.set(OtherAssetsValuePage(index), value)
+              }
 
-          for {
-            updatedAnswers <- Future.fromTry(setAnswers())
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield Redirect(OtherAssetsValuePage(index).nextPage(mode, updatedAnswers))
-        }
-      )
+            for {
+              updatedAnswers <- Future.fromTry(setAnswers())
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield Redirect(OtherAssetsValuePage(index).nextPage(mode, updatedAnswers))
+          }
+        )
   }
 }

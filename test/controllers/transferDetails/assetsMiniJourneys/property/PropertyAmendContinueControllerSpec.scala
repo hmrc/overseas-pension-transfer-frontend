@@ -19,17 +19,16 @@ package controllers.transferDetails.assetsMiniJourneys.property
 import base.AddressBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueFormProvider
-import models.assets.{PropertyEntry, PropertyMiniJourney, UnquotedSharesMiniJourney}
+import models.assets.{PropertyEntry, PropertyMiniJourney}
 import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.AssetsMiniJourneyService
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
@@ -50,7 +49,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
   private def uaWithProperties(n: Int): UserAnswers = {
     val entry = PropertyEntry(
       propertyAddress = propertyAddress,
-      propValue       = BigDecimal(100000),
+      propValue = BigDecimal(100000),
       propDescription = "Test property"
     )
     val list  = List.fill(n)(entry)
@@ -68,7 +67,10 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val view    = application.injector.instanceOf[PropertyAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -82,7 +84,10 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val view    = application.injector.instanceOf[PropertyAmendContinueView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(fakeDisplayRequest(request, userAnswers), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), Seq.empty, NormalMode)(
+          fakeDisplayRequest(request, userAnswers),
+          messages(application)
+        ).toString
       }
     }
 
@@ -200,7 +205,8 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
         val ua2       = userAnswers.set(PropertyAmendContinueAssetPage, true).success.value
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
-        val expected  = PropertyAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
+        val expected  =
+          PropertyAmendContinueAssetPage.nextPageWith(FinalCheckMode, ua2, (emptySessionData, nextIndex)).url
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual expected
@@ -232,7 +238,9 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val nextIndex = AssetsMiniJourneyService.assetCount(PropertyMiniJourney, ua2)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual PropertyAmendContinueAssetPage.nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex)).url
+        redirectLocation(result).value mustEqual PropertyAmendContinueAssetPage
+          .nextPageWith(AmendCheckMode, ua2, (emptySessionData, nextIndex))
+          .url
       }
     }
 
@@ -250,7 +258,10 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, Seq.empty, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

@@ -16,32 +16,31 @@
 
 package models
 
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Request
 
-import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import java.net.URLEncoder
 
 case class TransferReportQueryParams(
-    transferId: Option[TransferId],
-    qtStatus: Option[QtStatus],
-    pstr: Option[PstrNumber],
-    versionNumber: Option[String],
-    memberName: String,
-    currentPage: Int
-  )
+  transferId: Option[TransferId],
+  qtStatus: Option[QtStatus],
+  pstr: Option[PstrNumber],
+  versionNumber: Option[String],
+  memberName: String,
+  currentPage: Int
+)
 
 object TransferReportQueryParams {
 
-  def fromRequest(request: Request[_]): TransferReportQueryParams = {
+  def fromRequest(request: Request[_]): TransferReportQueryParams =
     TransferReportQueryParams(
-      transferId    = request.getQueryString("transferId").map(TransferId(_)),
-      qtStatus      = request.getQueryString("qtStatus").flatMap(s => QtStatus.values.find(_.toString == s)),
-      pstr          = request.getQueryString("pstr").map(PstrNumber(_)),
+      transferId = request.getQueryString("transferId").map(TransferId(_)),
+      qtStatus = request.getQueryString("qtStatus").flatMap(s => QtStatus.values.find(_.toString == s)),
+      pstr = request.getQueryString("pstr").map(PstrNumber(_)),
       versionNumber = request.getQueryString("versionNumber"),
-      memberName    = request.getQueryString("memberName").getOrElse("-"),
-      currentPage   = request.getQueryString("currentPage").flatMap(_.toIntOption).getOrElse(1)
+      memberName = request.getQueryString("memberName").getOrElse("-"),
+      currentPage = request.getQueryString("currentPage").flatMap(_.toIntOption).getOrElse(1)
     )
-  }
 
   /** Helper to URL-encode */
   private def enc(v: String): String =

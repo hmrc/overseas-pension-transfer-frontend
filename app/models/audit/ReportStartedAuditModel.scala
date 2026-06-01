@@ -16,18 +16,23 @@
 
 package models.audit
 
-import models.{AllTransfersItem, PensionSchemeDetails, TransferId}
-import models.authentication.{AuthenticatedUser, PsaUser, PspUser}
-import play.api.libs.json.{JsValue, Json}
+import models.authentication.AuthenticatedUser
+import models.authentication.PsaUser
+import models.authentication.PspUser
+import play.api.libs.json.JsValue
+import play.api.libs.json.Json
+import models.AllTransfersItem
+import models.PensionSchemeDetails
+import models.TransferId
 
 case class ReportStartedAuditModel(
-    internalTransferID: TransferId,
-    authenticatedUser: AuthenticatedUser,
-    pensionSchemeDetails: PensionSchemeDetails,
-    journeyType: JourneyStartedType,
-    allTransfersItem: Option[AllTransfersItem],
-    failure: Option[String]
-  ) extends JsonAuditModel {
+  internalTransferID: TransferId,
+  authenticatedUser: AuthenticatedUser,
+  pensionSchemeDetails: PensionSchemeDetails,
+  journeyType: JourneyStartedType,
+  allTransfersItem: Option[AllTransfersItem],
+  failure: Option[String]
+) extends JsonAuditModel {
 
   override val auditType: String = "OverseasPensionTransferReportStarted"
   private val userRole           = authenticatedUser.userType
@@ -45,27 +50,30 @@ case class ReportStartedAuditModel(
 
   private val memberFirstName =
     allTransfersItem
-      .map(item => {
+      .map { item =>
         val name: String = item.memberFirstName.getOrElse("")
         Json.obj("memberFirstName" -> name)
-      }).getOrElse(Json.obj())
+      }
+      .getOrElse(Json.obj())
 
   private val memberSurname =
     allTransfersItem
-      .map(item => {
+      .map { item =>
         val surname: String = item.memberSurname.getOrElse("")
         Json.obj("memberSurname" -> surname)
-      }).getOrElse(Json.obj())
+      }
+      .getOrElse(Json.obj())
 
   private val memberNino =
     allTransfersItem
-      .map(item => {
+      .map { item =>
         val nino: String = item.nino.getOrElse("")
         Json.obj("memberNino" -> nino)
-      }).getOrElse(Json.obj())
+      }
+      .getOrElse(Json.obj())
 
   private val failureReason =
-    failure.map(reason => { Json.obj("reasonForFailure" -> reason) }).getOrElse(Json.obj())
+    failure.map(reason => Json.obj("reasonForFailure" -> reason)).getOrElse(Json.obj())
 
   override val detail: JsValue = Json.obj(
     "journeyType"               -> journeyType.toString,
@@ -79,12 +87,12 @@ case class ReportStartedAuditModel(
 object ReportStartedAuditModel {
 
   def build(
-      transferId: TransferId,
-      authenticatedUser: AuthenticatedUser,
-      pensionSchemeDetails: PensionSchemeDetails,
-      journeyType: JourneyStartedType,
-      allTransfersItem: Option[AllTransfersItem],
-      failure: Option[String] = None
-    ): ReportStartedAuditModel =
+    transferId: TransferId,
+    authenticatedUser: AuthenticatedUser,
+    pensionSchemeDetails: PensionSchemeDetails,
+    journeyType: JourneyStartedType,
+    allTransfersItem: Option[AllTransfersItem],
+    failure: Option[String] = None
+  ): ReportStartedAuditModel =
     ReportStartedAuditModel(transferId, authenticatedUser, pensionSchemeDetails, journeyType, allTransfersItem, failure)
 }

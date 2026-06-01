@@ -16,25 +16,31 @@
 
 package controllers.actions
 
+import services.UserAnswersService
+import utils.AppUtils
+import play.api.mvc.ActionRefiner
+import play.api.mvc.Result
 import controllers.routes
-import models.requests.{DisplayRequest, SchemeRequest}
 import play.api.Logging
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{ActionRefiner, Result}
 import repositories.SessionRepository
-import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.AppUtils
+import models.requests.DisplayRequest
+import models.requests.SchemeRequest
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class DataRetrievalActionImpl @Inject() (
-    sessionRepository: SessionRepository,
-    userAnswersService: UserAnswersService
-  )(implicit val executionContext: ExecutionContext
-  ) extends DataRetrievalAction with AppUtils with Logging {
+  sessionRepository: SessionRepository,
+  userAnswersService: UserAnswersService
+)(implicit val executionContext: ExecutionContext)
+    extends DataRetrievalAction
+    with AppUtils
+    with Logging {
 
   override protected def refine[A](request: SchemeRequest[A]): Future[Either[Result, DisplayRequest[A]]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
@@ -43,15 +49,17 @@ class DataRetrievalActionImpl @Inject() (
       case Some(value) =>
         userAnswersService.getExternalUserAnswers(value) map {
           case Right(answers) =>
-            Right(DisplayRequest(
-              request.request,
-              request.authenticatedUser,
-              answers,
-              value,
-              memberFullName(value, Some(answers)),
-              qtNumber(value),
-              dateTransferSubmitted(value)
-            ))
+            Right(
+              DisplayRequest(
+                request.request,
+                request.authenticatedUser,
+                answers,
+                value,
+                memberFullName(value, Some(answers)),
+                qtNumber(value),
+                dateTransferSubmitted(value)
+              )
+            )
           case Left(error)    =>
             logger.error(s"[DataRetrievalAction][refine] Error receiving the UserAnswers from saveforlater: $error")
             Left(Redirect(routes.JourneyRecoveryController.onPageLoad()))

@@ -16,11 +16,14 @@
 
 package validators.assetsValidators
 
-import cats.implicits.{catsSyntaxTuple2Semigroupal, catsSyntaxValidatedIdBinCompat0}
-import models.assets.{OtherAssetsEntry, TypeOfAsset}
-import models.{DataMissingError, GenericError, UserAnswers, ValidationResult}
 import pages.transferDetails.TypeOfAssetPage
-import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
+import cats.implicits.catsSyntaxTuple2Semigroupal
+import cats.implicits.catsSyntaxValidatedIdBinCompat0
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsDescriptionPage
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsValuePage
+import models.assets.OtherAssetsEntry
+import models.assets.TypeOfAsset
+import models._
 import queries.assets.OtherAssetsQuery
 
 object OtherAssetsValidator {
@@ -37,11 +40,12 @@ object OtherAssetsValidator {
       case None                   => DataMissingError(OtherAssetsValuePage(index)).invalidNec
     }
 
-  def validateOtherAssetsDetails(answers: UserAnswers): ValidationResult[Option[List[OtherAssetsEntry]]] = {
+  def validateOtherAssetsDetails(answers: UserAnswers): ValidationResult[Option[List[OtherAssetsEntry]]] =
     answers.get(TypeOfAssetPage) match {
       case Some(assets) if assets.contains(TypeOfAsset.Other) =>
         answers.get(OtherAssetsQuery) match {
-          case Some(shares) if shares.length > 5 => GenericError("Other assets cannot hold more than 5 in list").invalidNec
+          case Some(shares) if shares.length > 5 =>
+            GenericError("Other assets cannot hold more than 5 in list").invalidNec
           case Some(shares)                      =>
             val validatedShares = shares.zipWithIndex.map { case (_, index) =>
               (
@@ -61,6 +65,5 @@ object OtherAssetsValidator {
       case Some(_)                                            => None.validNec
       case None                                               => DataMissingError(OtherAssetsQuery).invalidNec
     }
-  }
 
 }

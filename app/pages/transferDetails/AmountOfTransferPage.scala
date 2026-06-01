@@ -16,13 +16,14 @@
 
 package pages.transferDetails
 
-import controllers.transferDetails.routes
-import models.{Mode, NormalMode, TaskCategory, UserAnswers}
-import pages.QuestionPage
-import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
-import play.api.libs.json.JsPath
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
 import play.api.mvc.Call
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
+import controllers.transferDetails.routes
+import pages.transferDetails.assetsMiniJourneys.cash.CashAmountInTransferPage
+import pages.QuestionPage
+import play.api.libs.json.JsPath
+import models._
 
 import scala.util.Try
 
@@ -41,7 +42,7 @@ case object AmountOfTransferPage extends QuestionPage[BigDecimal] {
   final def changeLink(mode: Mode): Call =
     routes.AmountOfTransferController.onPageLoad(mode)
 
-  override def cleanup(value: Option[BigDecimal], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[BigDecimal], userAnswers: UserAnswers): Try[UserAnswers] =
     userAnswers.get(IsTransferCashOnlyPage) match {
       case Some(true) =>
         userAnswers
@@ -51,5 +52,4 @@ case object AmountOfTransferPage extends QuestionPage[BigDecimal] {
       case _          =>
         userAnswers.remove(TransferDetailsRecordVersionQuery)
     }
-  }
 }

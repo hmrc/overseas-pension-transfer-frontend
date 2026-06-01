@@ -16,19 +16,20 @@
 
 package viewmodels.checkAnswers.qropsSchemeManagerDetails
 
-import controllers.qropsSchemeManagerDetails.routes
-import models.{CheckMode, Mode, UserAnswers}
-import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
-import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import pages.qropsSchemeManagerDetails.SchemeManagersContactPage
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object SchemeManagersContactSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(SchemeManagersContactPage).map { answer =>
       val actions =
         if (showChangeLink) {
@@ -41,8 +42,8 @@ object SchemeManagersContactSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "schemeManagersContact.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlFormat.escape(answer).toString),
+        key = "schemeManagersContact.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = actions
       )
     }

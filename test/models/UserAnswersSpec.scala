@@ -17,17 +17,10 @@
 package models
 
 import base.SpecBase
-import models.TaskCategory._
-import models.assets.{QuotedSharesEntry, UnquotedSharesEntry}
-import models.taskList.TaskStatus
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.SubmitToHMRCPage
-import play.api.libs.json._
-import queries.TaskStatusQuery
-import queries.assets.{QuotedSharesQuery, UnquotedSharesQuery}
-
-import java.time.Instant
+import play.api.libs.json.*
 
 class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
 
@@ -51,8 +44,12 @@ class UserAnswersSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   "remove" - {
     "should remove existing Json from data field" in {
-      emptyUserAnswers.copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
-        .remove(SubmitToHMRCPage).success.value.data mustBe
+      emptyUserAnswers
+        .copy(data = Json.obj("submitToHMRC" -> true, "key" -> "value"))
+        .remove(SubmitToHMRCPage)
+        .success
+        .value
+        .data mustBe
         Json.obj("key" -> "value")
     }
   }

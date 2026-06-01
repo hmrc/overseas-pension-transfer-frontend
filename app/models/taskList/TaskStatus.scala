@@ -16,15 +16,16 @@
 
 package models.taskList
 
-import models.{Enumerable, WithName}
+import models.Enumerable
+import models.WithName
 
 sealed trait TaskStatus
 
 object TaskStatus extends Enumerable.Implicits {
   case object CannotStart extends WithName("cannotStart") with TaskStatus
-  case object NotStarted  extends WithName("notStarted") with TaskStatus
-  case object InProgress  extends WithName("inProgress") with TaskStatus
-  case object Completed   extends WithName("completed") with TaskStatus
+  case object NotStarted extends WithName("notStarted") with TaskStatus
+  case object InProgress extends WithName("inProgress") with TaskStatus
+  case object Completed extends WithName("completed") with TaskStatus
 
   val values: Seq[TaskStatus] = Seq(
     CannotStart,

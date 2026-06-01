@@ -16,11 +16,12 @@
 
 package forms.transferDetails.assetsMiniJourneys.property
 
-import forms.mappings.{Mappings, Regex}
-import models.address._
-import play.api.data.Forms._
-import play.api.data.{FieldMapping, Form, Forms, Mapping}
 import utils.AppUtils
+import forms.mappings.Mappings
+import forms.mappings.Regex
+import play.api.data.Forms._
+import models.address._
+import play.api.data._
 
 import javax.inject.Inject
 
@@ -39,14 +40,14 @@ sealed trait PropertyAddressFormDataTrait {
 }
 
 case class PropertyAddressFormData(
-    addressLine1: String,
-    addressLine2: String,
-    addressLine3: Option[String],
-    addressLine4: Option[String],
-    postcode: Option[String],
-    addressLine5: Option[String],
-    countryCode: String
-  ) extends PropertyAddressFormDataTrait
+  addressLine1: String,
+  addressLine2: String,
+  addressLine3: Option[String],
+  addressLine4: Option[String],
+  postcode: Option[String],
+  addressLine5: Option[String],
+  countryCode: String
+) extends PropertyAddressFormDataTrait
 
 object PropertyAddressFormDataTrait {
 
@@ -57,30 +58,29 @@ object PropertyAddressFormDataTrait {
       addressLine3 = address.town,
       addressLine4 = address.county,
       addressLine5 = address.poBoxNumber,
-      countryCode  = address.country.code,
-      postcode     = address.postcode
+      countryCode = address.country.code,
+      postcode = address.postcode
     )
 }
 
 class PropertyAddressFormProvider @Inject() extends Mappings with Regex with AppUtils {
 
-  private[property] def addressLineMapping(line: Int): (String, Mapping[String]) = {
+  private[property] def addressLineMapping(line: Int): (String, Mapping[String]) =
     s"addressLine$line" -> text(s"propertyAddress.error.addressLine$line.required")
       .transform[String](input => input.trim, identity)
       .verifying(maxLength(35, s"common.addressInput.error.addressLine$line.length"))
       .verifying(regexp(addressLinesRegex, s"common.addressInput.error.addressLine$line.pattern"))
-  }
 
-  private[property] def optionalAddressLineMapping(line: Int): (String, Mapping[Option[String]]) = {
+  private[property] def optionalAddressLineMapping(line: Int): (String, Mapping[Option[String]]) =
     s"addressLine$line" -> optional(
       Forms.text
         .transform[String](input => input.trim, identity)
         .verifying(maxLength(35, s"common.addressInput.error.addressLine$line.length"))
         .verifying(regexp(addressLinesRegex, s"common.addressInput.error.addressLine$line.pattern"))
     )
-  }
 
-  private def countryMapping(): (String, FieldMapping[String]) = "countryCode" -> text("common.addressInput.error.countryCode.required")
+  private def countryMapping(): (String, FieldMapping[String]) =
+    "countryCode" -> text("common.addressInput.error.countryCode.required")
 
   private def postcodeMapping(): (String, Mapping[Option[String]]) = "postcode" -> optional(
     Forms.text
@@ -105,7 +105,7 @@ class PropertyAddressFormProvider @Inject() extends Mappings with Regex with App
       )
   )
 
-  def apply(): Form[PropertyAddressFormData] = {
+  def apply(): Form[PropertyAddressFormData] =
     Form(
       mapping(
         addressLineMapping(1),
@@ -129,5 +129,4 @@ class PropertyAddressFormProvider @Inject() extends Mappings with Regex with App
         )
       )
     )
-  }
 }

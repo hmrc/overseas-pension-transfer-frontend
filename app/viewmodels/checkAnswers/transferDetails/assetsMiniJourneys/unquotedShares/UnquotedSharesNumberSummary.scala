@@ -16,25 +16,25 @@
 
 package viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares
 
-import models.{Mode, SessionData, UserAnswers}
+import viewmodels.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import viewmodels.govuk.summarylist._
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesNumberPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
 
 object UnquotedSharesNumberSummary {
 
   def row(mode: Mode, userAnswers: UserAnswers, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    userAnswers.get(UnquotedSharesNumberPage(index)).map {
-      answer =>
-        SummaryListRowViewModel(
-          key     = "unquotedSharesNumber.checkYourAnswersLabel",
-          value   = ValueViewModel(answer.toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", UnquotedSharesNumberPage(index).changeLink(mode).url)
-              .withVisuallyHiddenText(messages("unquotedSharesNumber.change.hidden"))
-          )
+    userAnswers.get(UnquotedSharesNumberPage(index)).map { answer =>
+      SummaryListRowViewModel(
+        key = "unquotedSharesNumber.checkYourAnswersLabel",
+        value = ValueViewModel(answer.toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", UnquotedSharesNumberPage(index).changeLink(mode).url)
+            .withVisuallyHiddenText(messages("unquotedSharesNumber.change.hidden"))
         )
+      )
     }
 }

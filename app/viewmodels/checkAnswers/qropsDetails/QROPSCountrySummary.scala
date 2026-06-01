@@ -16,17 +16,20 @@
 
 package viewmodels.checkAnswers.qropsDetails
 
-import models.{Mode, UserAnswers}
-import pages.qropsDetails.QROPSCountryPage
-import play.api.i18n.Messages
+import viewmodels.implicits._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import play.api.i18n.Messages
 import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import pages.qropsDetails.QROPSCountryPage
 
 object QROPSCountrySummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(QROPSCountryPage).map { country =>
       val actions =
         if (showChangeLink) {
@@ -39,8 +42,8 @@ object QROPSCountrySummary {
         }
 
       SummaryListRowViewModel(
-        key     = "qropsCountry.checkYourAnswersLabel",
-        value   = ValueViewModel(HtmlFormat.escape(country.name).toString),
+        key = "qropsCountry.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(country.name).toString),
         actions = actions
       )
     }

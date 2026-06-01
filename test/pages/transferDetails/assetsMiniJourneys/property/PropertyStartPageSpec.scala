@@ -18,10 +18,9 @@ package pages.transferDetails.assetsMiniJourneys.property
 
 import base.SpecBase
 import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PstrNumber, UserAnswers}
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsStartPage
 
 class PropertyStartPageSpec extends AnyFreeSpec with Matchers with SpecBase {
   private val index = 0
@@ -30,19 +29,28 @@ class PropertyStartPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in Normal Mode" - {
       "must go to the Next page" in {
-        PropertyStartPage.nextPage(NormalMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index)
+        PropertyStartPage.nextPage(
+          NormalMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(NormalMode, index)
       }
     }
 
     "in CheckMode" - {
       "must go to the Next page" in {
-        PropertyStartPage.nextPage(CheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, index)
+        PropertyStartPage.nextPage(
+          CheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(CheckMode, index)
       }
     }
 
     "in FinalCheckMode" - {
       "must go to the Next page" in {
-        PropertyStartPage.nextPage(FinalCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
+        PropertyStartPage.nextPage(
+          FinalCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
           FinalCheckMode,
           index
         )
@@ -51,7 +59,10 @@ class PropertyStartPageSpec extends AnyFreeSpec with Matchers with SpecBase {
 
     "in AmendCheckMode" - {
       "must go to the Next page" in {
-        PropertyStartPage.nextPage(AmendCheckMode, emptyUserAnswers) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
+        PropertyStartPage.nextPage(
+          AmendCheckMode,
+          emptyUserAnswers
+        ) mustEqual AssetsMiniJourneysRoutes.PropertyAddressController.onPageLoad(
           AmendCheckMode,
           index
         )

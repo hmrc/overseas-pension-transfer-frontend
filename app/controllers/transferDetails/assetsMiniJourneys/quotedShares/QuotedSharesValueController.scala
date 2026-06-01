@@ -16,35 +16,44 @@
 
 package controllers.transferDetails.assetsMiniJourneys.quotedShares
 
-import controllers.actions._
-import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueFormProvider
-import models.{AmendCheckMode, Mode, UserAnswers}
-import models.assets.TypeOfAsset.QuotedShares
-import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.{TransferDetailsRecordVersionQuery, TypeOfAssetsRecordVersionQuery}
-import queries.assets.AssetsRecordVersionQuery
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import queries.TransferDetailsRecordVersionQuery
+import queries.TypeOfAssetsRecordVersionQuery
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import controllers.actions._
+import pages.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValuePage
+import forms.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueFormProvider
+import models.assets.TypeOfAsset.QuotedShares
+import models.AmendCheckMode
+import models.Mode
+import models.UserAnswers
+import play.api.data.Form
+import queries.assets.AssetsRecordVersionQuery
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesValueView
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.Try
 
+import javax.inject.Inject
+
 class QuotedSharesValueController @Inject() (
-    override val messagesApi: MessagesApi,
-    userAnswersService: UserAnswersService,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    formProvider: QuotedSharesValueFormProvider,
-    val controllerComponents: MessagesControllerComponents,
-    view: QuotedSharesValueView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport {
+  override val messagesApi: MessagesApi,
+  userAnswersService: UserAnswersService,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  formProvider: QuotedSharesValueFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: QuotedSharesValueView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport {
 
   val form: Form[BigDecimal] = formProvider()
 
@@ -60,26 +69,30 @@ class QuotedSharesValueController @Inject() (
 
   def onSubmit(mode: Mode, index: Int): Action[AnyContent] = (identify andThen schemeData andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index))),
-        value => {
-          def setAnswers(): Try[UserAnswers] =
-            if (mode == AmendCheckMode) {
-              for {
-                addCashAmount                      <- request.userAnswers.set(QuotedSharesValuePage(index), value)
-                removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
-                removeTypeOfAssetsRecordVersion    <- removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
-                removeAssetRecordVersion           <- removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, QuotedShares))
-              } yield removeAssetRecordVersion
-            } else {
-              request.userAnswers.set(QuotedSharesValuePage(index), value)
-            }
-          for {
-            updatedAnswers <- Future.fromTry(setAnswers())
-            _              <- userAnswersService.setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
-          } yield Redirect(QuotedSharesValuePage(index).nextPage(mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, index))),
+          value => {
+            def setAnswers(): Try[UserAnswers] =
+              if (mode == AmendCheckMode) {
+                for {
+                  addCashAmount                      <- request.userAnswers.set(QuotedSharesValuePage(index), value)
+                  removeTransferDetailsRecordVersion <- addCashAmount.remove(TransferDetailsRecordVersionQuery)
+                  removeTypeOfAssetsRecordVersion    <-
+                    removeTransferDetailsRecordVersion.remove(TypeOfAssetsRecordVersionQuery)
+                  removeAssetRecordVersion           <-
+                    removeTypeOfAssetsRecordVersion.remove(AssetsRecordVersionQuery(index, QuotedShares))
+                } yield removeAssetRecordVersion
+              } else {
+                request.userAnswers.set(QuotedSharesValuePage(index), value)
+              }
+            for {
+              updatedAnswers <- Future.fromTry(setAnswers())
+              _              <- userAnswersService
+                                  .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)
+            } yield Redirect(QuotedSharesValuePage(index).nextPage(mode, updatedAnswers))
+          }
+        )
   }
 }

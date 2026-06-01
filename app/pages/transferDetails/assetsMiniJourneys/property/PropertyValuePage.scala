@@ -16,27 +16,31 @@
 
 package pages.transferDetails.assetsMiniJourneys.property
 
-import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
-import models.assets.{PropertyEntry, TypeOfAsset}
-import models.{Mode, TaskCategory, UserAnswers}
-import pages.{MiniJourneyNextPage, QuestionPage}
-import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import pages.MiniJourneyNextPage
+import pages.QuestionPage
+import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+import models.Mode
+import models.TaskCategory
+import models.UserAnswers
 import validators.assetsValidators.AssetCompletionValidator
+import play.api.libs.json.JsPath
+import models.assets.PropertyEntry
+import models.assets.TypeOfAsset
 
 case class PropertyValuePage(index: Int) extends QuestionPage[BigDecimal] with MiniJourneyNextPage {
 
-  override def path: JsPath = JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.entryName \ index \ toString
+  override def path: JsPath =
+    JsPath \ TaskCategory.TransferDetails.toString \ TypeOfAsset.Property.entryName \ index \ toString
 
   override def toString: String = PropertyEntry.PropValue
 
-  override def decideNextPage(answers: UserAnswers, mode: Mode): Call = {
+  override def decideNextPage(answers: UserAnswers, mode: Mode): Call =
     if (AssetCompletionValidator.hasMandatoryFields(TypeOfAsset.Property, answers)) {
       AssetsMiniJourneysRoutes.PropertyCYAController.onPageLoad(mode, index)
     } else {
       AssetsMiniJourneysRoutes.PropertyDescriptionController.onPageLoad(mode, index)
     }
-  }
 
   final def changeLink(mode: Mode): Call =
     AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(mode, index)

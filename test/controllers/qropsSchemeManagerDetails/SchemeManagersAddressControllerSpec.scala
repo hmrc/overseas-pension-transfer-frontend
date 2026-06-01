@@ -17,8 +17,7 @@
 package controllers.qropsSchemeManagerDetails
 
 import base.{AddressBase, SpecBase}
-import config.FrontendAppConfig
-import controllers.{routes => controllerRoutes}
+import controllers.routes as controllerRoutes
 import forms.qropsSchemeManagerDetails.{SchemeManagersAddressFormData, SchemeManagersAddressFormProvider}
 import models.NormalMode
 import models.address.Country
@@ -29,10 +28,9 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.qropsSchemeManagerDetails.SchemeManagersAddressPage
-import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
@@ -55,8 +53,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
     Country("FR", "France")
   )
 
-  implicit private val messages: Messages = stubMessages()
-  private val countrySelectViewModel      = CountrySelectViewModel.fromCountries(testCountries)
+  stubMessages()
+  private val countrySelectViewModel = CountrySelectViewModel.fromCountries(testCountries)
 
   private val mockCountryService = mock[CountryService]
 
@@ -73,9 +71,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .build()
 
       running(application) {
-        val request                      = FakeRequest(GET, schemeManagersAddressRoute)
-        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
-        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val view    = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
 
@@ -84,7 +81,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           form,
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application), appConfig).toString
+        )(request, messages(application)).toString
       }
     }
 
@@ -99,9 +96,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
         .build()
 
       running(application) {
-        val request                      = FakeRequest(GET, schemeManagersAddressRoute)
-        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
-        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+        val request = FakeRequest(GET, schemeManagersAddressRoute)
+        val view    = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
 
@@ -110,7 +106,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           form.fill(formData),
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application), appConfig).toString
+        )(request, messages(application)).toString
       }
     }
 
@@ -168,9 +164,8 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           FakeRequest(POST, schemeManagersAddressRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm                    = form.bind(Map("value" -> "invalid value"))
-        val view                         = application.injector.instanceOf[SchemeManagersAddressView]
-        val appConfig: FrontendAppConfig = application.injector.instanceOf[FrontendAppConfig]
+        val boundForm = form.bind(Map("value" -> "invalid value"))
+        val view      = application.injector.instanceOf[SchemeManagersAddressView]
 
         val result = route(application, request).value
 
@@ -179,7 +174,7 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
           boundForm,
           countrySelectViewModel,
           NormalMode
-        )(request, messages(application), appConfig).toString
+        )(request, messages(application)).toString
       }
     }
 

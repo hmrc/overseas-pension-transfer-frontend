@@ -41,15 +41,15 @@ class UnquotedSharesNumberFormProviderSpec extends IntFieldBehaviours with Regex
     behave like intField(
       form,
       fieldName,
-      nonNumericError  = FormError(fieldName, "unquotedSharesNumber.error.nonNumeric"),
+      nonNumericError = FormError(fieldName, "unquotedSharesNumber.error.nonNumeric"),
       wholeNumberError = FormError(fieldName, "unquotedSharesNumber.error.wholeNumber")
     )
 
     behave like intFieldWithRange(
       form,
       fieldName,
-      minimum       = minimum,
-      maximum       = maximum,
+      minimum = minimum,
+      maximum = maximum,
       expectedError = FormError(fieldName, "unquotedSharesNumber.error.outOfRange", Seq(minimum, maximum))
     )
 

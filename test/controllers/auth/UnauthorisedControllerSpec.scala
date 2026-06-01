@@ -19,7 +19,7 @@ package controllers.auth
 import base.SpecBase
 import org.scalatest.freespec.AnyFreeSpec
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.UnauthorisedView
 
 class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {
@@ -51,7 +51,9 @@ class UnauthorisedControllerSpec extends AnyFreeSpec with SpecBase {
         val result = route(application, request).value
         val body   = contentAsString(result)
 
-        body must include("""<a href="https://www.gov.uk/guidance/manage-a-registered-pension-scheme" class="govuk-link">Find out more about access to Managing Pension Schemes.</a>""")
+        body must include(
+          """<a href="https://www.gov.uk/guidance/manage-a-registered-pension-scheme" class="govuk-link">Find out more about access to Managing Pension Schemes.</a>"""
+        )
       }
     }
   }

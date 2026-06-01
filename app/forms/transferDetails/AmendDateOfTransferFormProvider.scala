@@ -16,36 +16,32 @@
 
 package forms.transferDetails
 
-import config.Constants.ddMMyyyy
+import utils.DateTimeFormats.dateInput
 import forms.mappings.Mappings
-import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.data.Form
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class AmendDateOfTransferFormProvider @Inject() extends Mappings {
 
-  def minDate: LocalDate = LocalDate of (2012, 4, 6)
+  def minDate: LocalDate = LocalDate.of(minAmendDate, 4, 6)
 
-  private def dateFormatter = ddMMyyyy
-
-  def apply(submissionDate: LocalDate)(implicit messages: Messages): Form[LocalDate] = {
+  def apply(submissionDate: LocalDate)(implicit messages: Messages): Form[LocalDate] =
 
     Form(
       "value" -> localDate(
         invalidCharacter = "common.dateInput.error.invalid.character",
-        invalidKey       = "dateOfTransfer.error.invalid",
-        requiredKey      = "common.dateInput.error.required",
-        twoRequiredKey   = "common.dateInput.error.required.two",
-        allRequiredKey   = "dateOfTransfer.error.required.all",
-        realDateKey      = "dateOfTransfer.error.real.date"
+        invalidKey = "dateOfTransfer.error.invalid",
+        requiredKey = "common.dateInput.error.required",
+        twoRequiredKey = "common.dateInput.error.required.two",
+        allRequiredKey = "dateOfTransfer.error.required.all",
+        realDateKey = "dateOfTransfer.error.real.date"
       )
         .verifying(
-          minDate(minDate, "dateOfTransfer.amend.error.invalid.mindate", minDate.format(dateFormatter)),
-          maxDate(submissionDate, "dateOfTransfer.amend.error.afterSubmissionDate", submissionDate.format(dateFormatter))
+          minDate(minDate, "dateOfTransfer.amend.error.invalid.mindate", minDate.format(dateInput)),
+          maxDate(submissionDate, "dateOfTransfer.amend.error.afterSubmissionDate", submissionDate.format(dateInput))
         )
     )
-  }
 }

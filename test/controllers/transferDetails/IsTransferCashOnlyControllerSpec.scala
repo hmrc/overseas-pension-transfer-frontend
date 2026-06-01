@@ -27,7 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.IsTransferCashOnlyPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.transferDetails.IsTransferCashOnlyView
@@ -55,7 +55,10 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val view = application.injector.instanceOf[IsTransferCashOnlyView]
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -73,7 +76,10 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form.fill(true), NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
@@ -148,7 +154,10 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
   }

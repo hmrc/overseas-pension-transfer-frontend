@@ -32,7 +32,7 @@ class SchemeManagerTypeFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[SchemeManagerType](
       form,
       fieldName,
-      validValues  = SchemeManagerType.values,
+      validValues = SchemeManagerType.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

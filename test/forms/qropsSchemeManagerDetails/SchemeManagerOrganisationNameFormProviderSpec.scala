@@ -18,7 +18,6 @@ package forms.qropsSchemeManagerDetails
 
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Regex
-import models.PersonName
 import play.api.data.FormError
 
 class SchemeManagerOrganisationNameFormProviderSpec extends StringFieldBehaviours with Regex {
@@ -43,14 +42,14 @@ class SchemeManagerOrganisationNameFormProviderSpec extends StringFieldBehaviour
     behave like fieldThatRejectsInvalidCharacters(
       form,
       fieldName,
-      patternError   = FormError(fieldName, patternKey, Seq(nameRegex)),
+      patternError = FormError(fieldName, patternKey, Seq(nameRegex)),
       maybeMaxLength = Some(maxLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength   = maxLength,
+      maxLength = maxLength,
       lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
     )
 

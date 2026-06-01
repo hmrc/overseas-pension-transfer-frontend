@@ -18,8 +18,7 @@ package pages.qropsSchemeManagerDetails
 
 import base.SpecBase
 import controllers.qropsSchemeManagerDetails.routes
-import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PersonName, PstrNumber, SchemeManagerType, UserAnswers}
-import org.scalatest.TryValues.convertTryToSuccessOrFailure
+import models.{AmendCheckMode, CheckMode, FinalCheckMode, NormalMode, PersonName, SchemeManagerType}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -113,9 +112,15 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
     "must remove SchemeManagersNamePage when SchemeManagerType is Organisation" in {
       val withBoth =
         emptyUserAnswers
-          .set(SchemeManagersNamePage, individualName).success.value
-          .set(SchemeManagerOrganisationNamePage, orgName).success.value
-          .set(SchemeManagerOrgIndividualNamePage, orgContact).success.value
+          .set(SchemeManagersNamePage, individualName)
+          .success
+          .value
+          .set(SchemeManagerOrganisationNamePage, orgName)
+          .success
+          .value
+          .set(SchemeManagerOrgIndividualNamePage, orgContact)
+          .success
+          .value
 
       val cleaned = SchemeManagerTypePage.cleanup(Some(SchemeManagerType.Organisation), withBoth).success.value
 
@@ -127,9 +132,15 @@ class SchemeManagerTypePageSpec extends AnyFreeSpec with Matchers with SpecBase 
     "must remove SchemeManagerOrganisationNamePage and SchemeManagerOrgIndividualNamePage when SchemeManagerType is Individual" in {
       val withBoth =
         emptyUserAnswers
-          .set(SchemeManagersNamePage, individualName).success.value
-          .set(SchemeManagerOrganisationNamePage, orgName).success.value
-          .set(SchemeManagerOrgIndividualNamePage, orgContact).success.value
+          .set(SchemeManagersNamePage, individualName)
+          .success
+          .value
+          .set(SchemeManagerOrganisationNamePage, orgName)
+          .success
+          .value
+          .set(SchemeManagerOrgIndividualNamePage, orgContact)
+          .success
+          .value
 
       val cleaned = SchemeManagerTypePage.cleanup(Some(SchemeManagerType.Individual), withBoth).success.value
 

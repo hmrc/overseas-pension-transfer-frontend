@@ -17,10 +17,12 @@
 package pages.memberDetails
 
 import controllers.memberDetails.routes
-import models.{CheckMode, Mode, TaskCategory, UserAnswers}
+import play.api.mvc.Call
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import play.api.mvc.Call
+import models.Mode
+import models.TaskCategory
+import models.UserAnswers
 
 import java.time.LocalDate
 

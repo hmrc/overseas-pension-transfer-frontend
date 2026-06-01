@@ -16,19 +16,17 @@
 
 package services
 
-import forms.memberDetails.MembersCurrentAddressFormData
-import forms.qropsDetails.QROPSAddressFormData
-import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
 import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormDataTrait
 import models.address._
+import forms.qropsDetails.QROPSAddressFormData
+import forms.qropsSchemeManagerDetails.SchemeManagersAddressFormData
+import forms.memberDetails.MembersCurrentAddressFormData
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class AddressService @Inject() (
-    countryService: CountryService
-  )(implicit ex: ExecutionContext
-  ) {
+  countryService: CountryService
+) {
 
   def propertyAddress(data: PropertyAddressFormDataTrait): Option[PropertyAddress] =
     countryService.findByCode(data.countryCode).map { country =>

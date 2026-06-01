@@ -16,34 +16,41 @@
 
 package controllers.transferDetails.assetsMiniJourneys.otherAssets
 
-import com.google.inject.Inject
-import controllers.actions.{DataRetrievalAction, IdentifierAction, SchemeDataAction}
-import handlers.AssetThresholdHandler
-import models.Mode
-import models.assets.TypeOfAsset
-import org.apache.pekko.Done
-import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAPage
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.UserAnswersService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AppUtils
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
+import handlers.AssetThresholdHandler
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsSummary
+import models.assets.TypeOfAsset
+import models.Mode
+import org.apache.pekko.Done
 import viewmodels.govuk.summarylist._
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAView
+import com.google.inject.Inject
+import pages.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsCYAPage
+import controllers.actions.DataRetrievalAction
+import controllers.actions.IdentifierAction
+import controllers.actions.SchemeDataAction
+import play.api.i18n.I18nSupport
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 
 class OtherAssetsCYAController @Inject() (
-    override val messagesApi: MessagesApi,
-    identify: IdentifierAction,
-    getData: DataRetrievalAction,
-    schemeData: SchemeDataAction,
-    userAnswersService: UserAnswersService,
-    val controllerComponents: MessagesControllerComponents,
-    view: OtherAssetsCYAView
-  )(implicit ec: ExecutionContext
-  ) extends FrontendBaseController with I18nSupport with AppUtils {
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  schemeData: SchemeDataAction,
+  userAnswersService: UserAnswersService,
+  val controllerComponents: MessagesControllerComponents,
+  view: OtherAssetsCYAView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController
+    with I18nSupport
+    with AppUtils {
 
   private val actions = identify andThen schemeData andThen getData
 
@@ -57,14 +64,13 @@ class OtherAssetsCYAController @Inject() (
     val updatedUserAnswers = AssetThresholdHandler.handle(request.userAnswers, TypeOfAsset.Other, userSelection = None)
 
     for {
-      saved <- userAnswersService.setExternalUserAnswers(updatedUserAnswers, request.sessionData.schemeInformation.srnNumber)
-    } yield {
-      saved match {
-        case Right(Done) =>
-          Redirect(OtherAssetsCYAPage(index).nextPage(mode, request.userAnswers))
-        case _           =>
-          Redirect(OtherAssetsCYAPage(index).nextPageRecovery())
-      }
+      saved <-
+        userAnswersService.setExternalUserAnswers(updatedUserAnswers, request.sessionData.schemeInformation.srnNumber)
+    } yield saved match {
+      case Right(Done) =>
+        Redirect(OtherAssetsCYAPage(index).nextPage(mode, request.userAnswers))
+      case _           =>
+        Redirect(OtherAssetsCYAPage(index).nextPageRecovery())
     }
   }
 }

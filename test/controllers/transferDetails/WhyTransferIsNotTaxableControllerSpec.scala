@@ -29,7 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.WhyTransferIsNotTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import services.UserAnswersService
 import views.html.transferDetails.WhyTransferIsNotTaxableView
@@ -58,13 +58,17 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(form, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(form, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(WhyTransferIsNotTaxablePage, WhyTransferIsNotTaxable.values.toSet).success.value
+      val userAnswers =
+        emptyUserAnswers.set(WhyTransferIsNotTaxablePage, WhyTransferIsNotTaxable.values.toSet).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
@@ -131,7 +135,9 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual WhyTransferIsNotTaxablePage.nextPage(AmendCheckMode, emptyUserAnswers).url
+        redirectLocation(result).value mustEqual WhyTransferIsNotTaxablePage
+          .nextPage(AmendCheckMode, emptyUserAnswers)
+          .url
       }
     }
 
@@ -151,7 +157,10 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(boundForm, NormalMode)(fakeDisplayRequest(request), messages(application)).toString
+        contentAsString(result) mustEqual view(boundForm, NormalMode)(
+          fakeDisplayRequest(request),
+          messages(application)
+        ).toString
       }
     }
 

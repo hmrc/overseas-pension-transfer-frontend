@@ -16,17 +16,21 @@
 
 package viewmodels.checkAnswers.memberDetails
 
-import models.{Mode, UserAnswers}
-import pages.memberDetails.MemberDateOfLeavingUKPage
-import play.api.i18n.{Lang, Messages}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import utils.DateTimeFormats.dateTimeFormat
-import viewmodels.govuk.summarylist._
 import viewmodels.implicits._
+import utils.DateTimeFormats.dateTimeFormat
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import models.Mode
+import models.UserAnswers
+import pages.memberDetails.MemberDateOfLeavingUKPage
+import play.api.i18n.Lang
+import play.api.i18n.Messages
+import viewmodels.govuk.summarylist._
 
 object MemberDateOfLeavingUKSummary {
 
-  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(mode: Mode, answers: UserAnswers, showChangeLink: Boolean = true)(implicit
+    messages: Messages
+  ): Option[SummaryListRow] =
     answers.get(MemberDateOfLeavingUKPage).map { answer =>
       implicit val lang: Lang = messages.lang
 
@@ -41,8 +45,8 @@ object MemberDateOfLeavingUKSummary {
         }
 
       SummaryListRowViewModel(
-        key     = "memberDateOfLeavingUK.checkYourAnswersLabel",
-        value   = ValueViewModel(answer.format(dateTimeFormat())),
+        key = "memberDateOfLeavingUK.checkYourAnswersLabel",
+        value = ValueViewModel(answer.format(dateTimeFormat)),
         actions = actions
       )
     }
