@@ -25,7 +25,7 @@ import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse, U
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -238,6 +238,54 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
       result.qtStatus mustBe Some(QtStatus.InProgress)
       result.lastUpdated mustBe Some(now)
       result.submissionDate mustBe None
+    }
+  }
+
+  "clearEmptyUserAnswers" - {
+
+    "should clear userAnswers when user-answers.data is empty" in {
+      reset(mockUserAnswersConnector, mockSessionRepository)
+      val emptyUserAnswers =
+        UserAnswersDTO(emptySessionData.transferId, pstr, Json.obj(), now)
+
+      when(mockSessionRepository.get("id"))
+        .thenReturn(Future.successful(Some(emptySessionData)))
+
+      when(
+        mockUserAnswersConnector.getAnswers(
+          ArgumentMatchers.eq(emptySessionData.transferId.value),
+          any()
+        )(any(), any())
+      ).thenReturn(Future.successful(Right(emptyUserAnswers)))
+
+      when(
+        mockUserAnswersConnector.deleteAnswers(
+          ArgumentMatchers.eq(emptySessionData.transferId.value),
+          ArgumentMatchers.eq(emptySessionData.schemeInformation.srnNumber)
+        )(any(), any())
+      ).thenReturn(Future.successful(Right(Done)))
+
+      await(service.clearEmptyUserAnswers("id"))
+      verify(mockUserAnswersConnector).deleteAnswers(
+        ArgumentMatchers.eq(emptySessionData.transferId.value),
+        ArgumentMatchers.eq(emptySessionData.schemeInformation.srnNumber)
+      )(any(), any())
+    }
+
+    "should not clear userAnswers when user-answers.data is not empty" in {
+      reset(mockUserAnswersConnector, mockSessionRepository)
+      when(mockSessionRepository.get("id"))
+        .thenReturn(Future.successful(Some(emptySessionData)))
+
+      when(
+        mockUserAnswersConnector.getAnswers(
+          ArgumentMatchers.eq(emptySessionData.transferId.value),
+          any()
+        )(any(), any())
+      ).thenReturn(Future.successful(Right(userAnswersDTO)))
+
+      await(service.clearEmptyUserAnswers("id"))
+      verify(mockUserAnswersConnector, never()).deleteAnswers(any(), any())(any(), any())
     }
   }
 }

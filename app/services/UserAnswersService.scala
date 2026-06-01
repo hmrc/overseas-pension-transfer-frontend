@@ -136,7 +136,7 @@ class UserAnswersService @Inject() (
     sessionRepository.get(id).flatMap {
       case Some(sessionData) =>
         getExternalUserAnswers(sessionData).flatMap {
-          case Right(userAnswers) if userAnswers.data == Json.obj() =>
+          case Right(userAnswers) if userAnswers.data.value.isEmpty =>
             clearUserAnswers(
               sessionData.transferId.value,
               sessionData.schemeInformation.srnNumber
