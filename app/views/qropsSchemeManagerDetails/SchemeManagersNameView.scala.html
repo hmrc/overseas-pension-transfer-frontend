@@ -21,6 +21,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
+@import views.html.components.heading
 
 
 @this(
@@ -43,7 +44,7 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("schemeManagersName.heading")</h1>
+        @heading("schemeManagersName")
 
         @govukInput(
             InputViewModel(

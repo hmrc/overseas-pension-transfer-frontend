@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import play.api.i18n.Messages
+@import views.html.components.heading
 
 @this(
         layout: templates.Layout,
@@ -32,7 +33,7 @@
 
 @layout(pageTitle = titleNoForm(messages("unquotedShareStart.title"))) {
     @qtNumber()
-    <h1 class="govuk-heading-l">@messages("unquotedShareStart.heading")</h1>
+    @heading("unquotedShareStart")
     <p class="govuk-body">@messages("unquotedShareStart.paragraph")</p>
 
     @govukButton(ButtonViewModel(content = Text(messages("site.continue"))).asLink(nextPage))

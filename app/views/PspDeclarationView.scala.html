@@ -23,6 +23,7 @@
 @import viewmodels.govuk.all._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import models.requests.DisplayRequest
+@import views.html.components.heading
 
 @this(
         layout: templates.Layout,
@@ -46,7 +47,7 @@ showTasklistFooter = false
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("pspDeclaration.heading")</h1>
+        @heading("pspDeclaration")
 
         <p class="govuk-body">@messages("pspDeclaration.bySubmitting")</p>
 

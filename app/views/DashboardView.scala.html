@@ -21,6 +21,7 @@
 @import viewmodels.SearchBarViewModel
 @import views.html.components.SearchBar
 @import views.html.components.ScrollableTable
+@import views.html.components.heading
 
 @this(
         layout: templates.Layout,
@@ -74,7 +75,7 @@
     }
 
     <h2 class="govuk-caption-l">@schemeName</h2>
-    <h1 class="govuk-heading-l">@messages("dashboard.heading")</h1>
+    @heading("dashboard")
     
     <p class="govuk-body">
         <a href="@nextPage" class="govuk-link">@messages("dashboard.linkText")</a>

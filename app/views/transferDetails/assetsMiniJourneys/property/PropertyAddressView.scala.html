@@ -26,6 +26,7 @@
 @import play.api.data.Form
 @import play.api.i18n.Messages
 @import viewmodels.InputWidth
+@import views.html.components.heading
 
 @this(
         layout: templates.Layout,
@@ -67,7 +68,7 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("propertyAddress.heading")</h1>
+        @heading("propertyAddress")
         
         @textInputLine("addressLine1", "common.addressInput.addressLine1")
         @textInputLine("addressLine2", "common.addressInput.addressLine2")
