@@ -48,7 +48,7 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("membersCurrentAddress.heading", memberName)</h1>
+        @heading("membersCurrentAddress", memberName)
         @govukInput(
             InputViewModel(
                 field = form("addressLine1"),
