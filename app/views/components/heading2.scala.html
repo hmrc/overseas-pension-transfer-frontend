@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@(baseKey: String, size: String, args: Any*)(implicit messages: Messages)
+@(message: String, size: String)(implicit messages: Messages)
 
-<h1 class="@{s"govuk-heading-$size"}">
- @messages(baseKey + ".heading", args: _*)
-</h1>
+<h2 class="@{s"govuk-heading-$size"}">
+@messages(s"$message")
+</h2>
+

@@ -15,7 +15,7 @@
  *@
 
 @import views.ViewUtils.titleNoForm
-@import views.html.components.text
+@import views.html.components.{text, heading}
 
 @this(
         layout: templates.Layout
@@ -29,7 +29,7 @@
  showPageFooter = false
 ) {
 
-    <h1 class="govuk-heading-xl">@messages("unauthorised.heading")</h1>
+    @heading("unauthorised","xl")
 
     @text("unauthorised.guidance1")
     @text("unauthorised.guidance2")

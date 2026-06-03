@@ -33,7 +33,7 @@
 
 @layout(pageTitle = titleNoForm(messages("unquotedShareStart.title"))) {
     @qtNumber()
-    @heading("unquotedShareStart")
+    @heading("unquotedShareStart", "l")
     @text("unquotedShareStart.paragraph")
 
     @govukButton(ButtonViewModel(content = Text(messages("site.continue"))).asLink(nextPage))

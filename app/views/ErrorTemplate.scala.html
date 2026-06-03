@@ -15,16 +15,16 @@
  *@
 
 @import views.ViewUtils.titleNoForm
-@import views.html.components.text
+@import views.html.components.{text, heading}
 
 @this(
         layout: templates.Layout
 )
 
-@(pageTitle: String, heading: String, message: String)(implicit rh: RequestHeader, messages: Messages)
+@(pageTitle: String, headingKey: String, message: String)(implicit rh: RequestHeader, messages: Messages)
 
 @layout(pageTitle = titleNoForm(pageTitle), showPageFooter = false, showStartFooter = true, showTasklistFooter = false) {
-    <h1 class="govuk-heading-xl">@messages(heading)</h1>
+    @heading(headingKey, "xl")
 
     @text(message)
 }

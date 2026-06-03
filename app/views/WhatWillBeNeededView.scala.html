@@ -19,7 +19,7 @@
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
 @import play.twirl.api.Html
-@import views.html.components.heading
+@import views.html.components.{heading, heading2}
 
 
 @this(
@@ -32,10 +32,10 @@
 
 @layout(pageTitle = titleNoForm(messages("requiredInfo.title")), showStartFooter = true) {
 
-    @heading("requiredInfo")
+    @heading("requiredInfo", "l")
     <p class="govuk-body"><b>@messages("requiredInfo.text.bold") </b>@messages("requiredInfo.text.normal")</p>
 
-    <h2 class="govuk-heading-s">@messages("requiredInfo.memberDetails.heading")</h2>
+    @heading2("requiredInfo.memberDetails.heading","m")
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("requiredInfo.memberDetails.bullet1")</li>
         <li>@messages("requiredInfo.memberDetails.bullet2")</li>
