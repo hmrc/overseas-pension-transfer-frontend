@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,7 @@
  * limitations under the License.
  *@
 
-@import views.ViewUtils.titleNoForm
-@import views.html.components.text
-
-@this(
-        layout: templates.Layout
-)
-
-@(pageTitle: String, heading: String, message: String)(implicit rh: RequestHeader, messages: Messages)
-
-@layout(pageTitle = titleNoForm(pageTitle), showPageFooter = false, showStartFooter = true, showTasklistFooter = false) {
-    <h1 class="govuk-heading-xl">@messages(heading)</h1>
-
-    @text(message)
-}
+@(message: String)(implicit messages: Messages)
+<p class="govuk-body">
+    @messages(message)
+</p>

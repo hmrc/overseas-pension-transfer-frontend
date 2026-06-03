@@ -21,7 +21,7 @@
 @import views.html.components.QTNumber
 @import play.api.i18n.Messages
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import views.html.components.heading
+@import views.html.components.{heading, text}
 
 @this(
         layout: templates.Layout,
@@ -36,7 +36,7 @@
 
     @qtNumber()
     @heading("propertyStart")
-    <p class="govuk-body">@messages("propertyStart.text")</p>
+    @text("propertyStart.text")
 
     @govukButton(
         ButtonViewModel(Text(messages("site.continue")))

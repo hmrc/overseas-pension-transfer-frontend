@@ -21,7 +21,7 @@
 @import views.html.components.QTNumber
 @import play.api.i18n.Messages
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import views.html.components.heading
+@import views.html.components.{heading, text}
 
 @this(
         layout: templates.Layout,
@@ -40,7 +40,7 @@ showTasklistFooter = false
 
     @qtNumber()
     @heading("psaDeclaration")
-    <p class="govuk-body">@messages("psaDeclaration.bySubmitting")</p>
+    @text("psaDeclaration.bySubmitting")
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("psaDeclaration.receivedAndChecked")</li>

@@ -15,6 +15,7 @@
  *@
 
 @import views.ViewUtils.titleNoForm
+@import views.html.components.text
 
 @this(
         layout: templates.Layout
@@ -30,7 +31,7 @@
 
     <h1 class="govuk-heading-xl">@messages("unauthorised.heading")</h1>
 
-    <p class="govuk-body">@messages("unauthorised.guidance1")</p>
-    <p class="govuk-body">@messages("unauthorised.guidance2")</p>
+    @text("unauthorised.guidance1")
+    @text("unauthorised.guidance2")
     <p class="govuk-body">@Html(messages("unauthorised.link", "https://www.gov.uk/guidance/manage-a-registered-pension-scheme"))</p>
 }

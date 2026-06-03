@@ -21,7 +21,7 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 @import play.api.i18n.Messages
-@import views.html.components.heading
+@import views.html.components.{heading, text}
 
 @this(
         layout: templates.Layout,
@@ -35,7 +35,7 @@
 
     @qtNumber()
     @heading("quotedSharesStart")
-    <p class="govuk-body">@messages("quotedSharesStart.text")</p>
+    @text("quotedSharesStart.text")
 
     @govukButton(
         ButtonViewModel(Text(messages("site.continue")))
