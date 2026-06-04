@@ -16,7 +16,6 @@
 
 package services
 
-import config.Constants.dMMMMyyyy
 import queries.DateSubmittedQuery
 import queries.QtNumberQuery
 import connectors.EmailConnector
@@ -29,10 +28,10 @@ import pages.memberDetails.MemberNamePage
 import models.email.EmailAccepted
 import models.email.EmailToSendRequest
 import models.email.SubmissionConfirmation
+import utils.DateTimeFormats.emailDisplayDate
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -106,7 +105,7 @@ class EmailService @Inject() (
 
   private def format(instant: Instant): String = {
     val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-    val date          = localDateTime.format(dMMMMyyyy)
+    val date          = localDateTime.format(emailDisplayDate)
     val time          = localDateTime.format(DateTimeFormatter.ofPattern("HH:mma", Locale.ENGLISH))
     s"$date at ${time.toLowerCase}"
   }

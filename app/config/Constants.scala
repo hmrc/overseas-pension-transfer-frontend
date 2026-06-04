@@ -16,14 +16,9 @@
 
 package config
 
-import java.time.format.DateTimeFormatter
-
 object Constants {
 
   val maxCurrency = 999999999.99
   val minCurrency = 0.01
-
-  val ddMMyyyy: DateTimeFormatter  = DateTimeFormatter.ofPattern("dd MM yyyy")
-  val dMMMMyyyy: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
 }
