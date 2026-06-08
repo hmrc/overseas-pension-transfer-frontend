@@ -22,7 +22,7 @@ import services.LockService
 import services.TransferService
 import services.UserAnswersService
 import queries.PensionSchemeDetailsQuery
-import play.api.mvc._
+import play.api.mvc.*
 import pages.DashboardPage
 import views.html.DashboardView
 import controllers.actions.IdentifierAction
@@ -44,10 +44,9 @@ import viewmodels.SearchBarViewModel
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-
 import java.time.Clock
 import java.time.Instant
-import javax.inject._
+import javax.inject.*
 
 @Singleton
 class DashboardController @Inject() (
@@ -73,58 +72,59 @@ class DashboardController @Inject() (
     implicit request =>
       val id          = request.authenticatedUser.internalId
       val lockWarning = request.flash.get("lockWarning") // flash for warning
+      userAnswersService.clearEmptyUserAnswers(id).flatMap { _ =>
+        sessionRepository.clear(id) flatMap { _ =>
+          repo.get(id).flatMap {
+            case None =>
+              logger.warn(s"[DashboardController][onPageLoad] No dashboard data found for this customer")
+              Future.successful(Redirect(DashboardPage.nextPageRecovery()))
 
-      sessionRepository.clear(id) flatMap { _ =>
-        repo.get(id).flatMap {
-          case None =>
-            logger.warn(s"[DashboardController][onPageLoad] No dashboard data found this customer")
-            Future.successful(Redirect(DashboardPage.nextPageRecovery()))
+            case Some(dashboardData) =>
+              dashboardData
+                .get(PensionSchemeDetailsQuery)
+                .fold {
+                  logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for this customer")
+                  Future.successful(Redirect(DashboardPage.nextPageRecovery()))
+                } { pensionSchemeDetails =>
+                  dashboardData.get(TransfersOverviewQuery) match {
+                    case None            =>
+                      renderDashboard(
+                        page,
+                        search,
+                        dashboardData,
+                        pensionSchemeDetails,
+                        lockWarning,
+                        request.authenticatedUser
+                      )
+                    case Some(transfers) =>
+                      transfers.map {
+                        val owner =
+                          request.authenticatedUser match {
+                            case PsaUser(psaId, _, _) => psaId.value
+                            case PspUser(pspId, _, _) => pspId.value
+                          }
 
-          case Some(dashboardData) =>
-            dashboardData
-              .get(PensionSchemeDetailsQuery)
-              .fold {
-                logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for this customer")
-                Future.successful(Redirect(DashboardPage.nextPageRecovery()))
-              } { pensionSchemeDetails =>
-                dashboardData.get(TransfersOverviewQuery) match {
-                  case None            =>
-                    renderDashboard(
-                      page,
-                      search,
-                      dashboardData,
-                      pensionSchemeDetails,
-                      lockWarning,
-                      request.authenticatedUser
-                    )
-                  case Some(transfers) =>
-                    transfers.map {
-                      val owner =
-                        request.authenticatedUser match {
-                          case PsaUser(psaId, _, _) => psaId.value
-                          case PspUser(pspId, _, _) => pspId.value
-                        }
-
-                      transfer =>
-                        transfer.transferId match {
-                          case TransferNumber(transferRef) =>
-                            logger.info(s"[DashboardController][onPageLoad] lock released for $transferRef")
-                            lockService.releaseLock(transferRef, owner)
-                          case QtNumber(qtRefefence)       =>
-                            logger.info(s"[DashboardController][onPageLoad] lock released for $qtRefefence")
-                            lockService.releaseLock(qtRefefence, owner)
-                        }
-                    }
-                    renderDashboard(
-                      page,
-                      search,
-                      dashboardData,
-                      pensionSchemeDetails,
-                      lockWarning,
-                      request.authenticatedUser
-                    )
+                        transfer =>
+                          transfer.transferId match {
+                            case TransferNumber(transferRef) =>
+                              logger.info(s"[DashboardController][onPageLoad] lock released for $transferRef")
+                              lockService.releaseLock(transferRef, owner)
+                            case QtNumber(qtRefefence)       =>
+                              logger.info(s"[DashboardController][onPageLoad] lock released for $qtRefefence")
+                              lockService.releaseLock(qtRefefence, owner)
+                          }
+                      }
+                      renderDashboard(
+                        page,
+                        search,
+                        dashboardData,
+                        pensionSchemeDetails,
+                        lockWarning,
+                        request.authenticatedUser
+                      )
+                  }
                 }
-              }
+          }
         }
       }
   }
@@ -274,5 +274,4 @@ class DashboardController @Inject() (
 
   private def pageUrl(search: Option[String])(p: Int): String =
     routes.DashboardController.onPageLoad(p, search).url
-
 }

@@ -23,27 +23,31 @@ import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
 import repositories.SessionRepository
 import play.api.i18n.I18nSupport
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
-
 import javax.inject.Inject
 
 class AuthController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   config: FrontendAppConfig,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction
+  identify: IdentifierAction,
+  userAnswersService: UserAnswersService
 )(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   def signOut(): Action[AnyContent] = identify.async { implicit request =>
-    sessionRepository
-      .clear(request.authenticatedUser.internalId)
-      .map { _ =>
-        Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
-      }
+    val id = request.authenticatedUser.internalId
+    userAnswersService.clearEmptyUserAnswers(id).flatMap { _ =>
+      sessionRepository
+        .clear(id)
+        .map { _ =>
+          Redirect(config.signOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
+        }
+    }
   }
 
   def signOutNoSurvey(): Action[AnyContent] = Action {
