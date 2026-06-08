@@ -26,6 +26,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
+import services.UserAnswersService
 
 import java.net.URLEncoder
 import scala.concurrent.Future
@@ -33,24 +34,27 @@ import scala.concurrent.Future
 class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   "signOut" - {
+    "must clear session-data and redirect to sign out, specifying the exit survey as the continue URL" in {
 
-    "must clear user answers and redirect to sign out, specifying the exit survey as the continue URL" in {
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
 
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
+      when(mockUserAnswersService.clearEmptyUserAnswers(any())(any())) thenReturn Future.successful(())
 
       val application =
         applicationBuilder(emptyUserAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
           .build()
 
       running(application) {
 
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
-        val request   = FakeRequest(GET, routes.AuthController.signOut().url)
-
-        val result = route(application, request).value
-
+        val appConfig           = application.injector.instanceOf[FrontendAppConfig]
+        val request             = FakeRequest(GET, routes.AuthController.signOut().url)
+        val result              = route(application, request).value
         val encodedContinueUrl  = URLEncoder.encode(appConfig.exitSurveyUrl, "UTF-8")
         val expectedRedirectUrl = s"${appConfig.signOutUrl}?continue=$encodedContinueUrl"
 
@@ -59,11 +63,39 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
         verify(mockSessionRepository, times(1)).clear(eqTo("id"))
       }
     }
+
+    "must clear empty-user-answers on sign out" in {
+
+      val mockSessionRepository  = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
+      when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
+      when(mockUserAnswersService.clearEmptyUserAnswers(any())(any())).thenReturn(Future.successful(()))
+
+      val application =
+        applicationBuilder(emptyUserAnswers)
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[UserAnswersService].toInstance(mockUserAnswersService)
+          )
+          .build()
+
+      running(application) {
+
+        val request = FakeRequest(GET, routes.AuthController.signOut().url)
+        val result  = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        verify(mockUserAnswersService, times(1))
+          .clearEmptyUserAnswers(eqTo("id"))(any())
+        verify(mockSessionRepository, times(1))
+          .clear(eqTo("id"))
+      }
+    }
   }
 
   "signOutNoSurvey" - {
-
-    "must clear users answers and redirect to sign out, specifying SignedOut as the continue URL" in {
+    "must redirect to sign out, specifying SignedOut as the continue URL" in {
 
       val application =
         applicationBuilder(emptyUserAnswers)
@@ -71,11 +103,9 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
       running(application) {
 
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
-        val request   = FakeRequest(GET, routes.AuthController.signOutNoSurvey().url)
-
-        val result = route(application, request).value
-
+        val appConfig           = application.injector.instanceOf[FrontendAppConfig]
+        val request             = FakeRequest(GET, routes.AuthController.signOutNoSurvey().url)
+        val result              = route(application, request).value
         val encodedContinueUrl  = URLEncoder.encode(appConfig.signedOutRedirectUrl, "UTF-8")
         val expectedRedirectUrl = s"${appConfig.signOutUrl}?continue=$encodedContinueUrl"
 
