@@ -29,7 +29,7 @@ class OverseasTransferAllowanceFormProvider @Inject() extends Mappings {
         "overseasTransferAllowance.error.required",
         "overseasTransferAllowance.error.nonNumeric"
       )
-        .verifying(minimumCurrency(0.01, "overseasTransferAllowance.error.belowMinimum"))
+        .verifying(minimumCurrency(0.00, "overseasTransferAllowance.error.belowMinimum"))
         .verifying(maximumCurrency(999999999.99, "overseasTransferAllowance.error.aboveMaximum"))
     )
 }
