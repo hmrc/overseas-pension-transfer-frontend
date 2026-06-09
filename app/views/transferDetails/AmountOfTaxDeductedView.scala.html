@@ -26,6 +26,7 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
+@import config.FormConstants.GovUkMarginBottom6
 
 
 @this(
@@ -52,7 +53,7 @@
             InputViewModel(
                 field = form("taxDeducted"),
                 label = LabelViewModel(Text(messages("amountOfTaxDeducted.heading")))
-                        .withCssClass("govuk-!-margin-bottom-6")
+                        .withCssClass(GovUkMarginBottom6)
                         .asPageHeading(size = Large)
             )
             .withHint(HintViewModel(messages("amountOfTaxDeducted.hint")))

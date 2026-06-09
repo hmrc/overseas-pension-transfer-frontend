@@ -28,6 +28,7 @@
 @import views.html.components.QTNumber
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.input.PrefixOrSuffix
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
+@import config.FormConstants.GovUkMarginBottom6
 
 @this(
         layout: templates.Layout,
@@ -55,7 +56,7 @@
             InputViewModel(
                 field = form("cashInTransfer"),
                 label = LabelViewModel(Text(messages("cashAmountInTransfer.heading")))
-                        .withCssClass("govuk-!-margin-bottom-6")
+                        .withCssClass(GovUkMarginBottom6)
                         .asPageHeading(size = Large)
             )
             .withHint(HintViewModel(messages("cashAmountInTransfer.hint")))

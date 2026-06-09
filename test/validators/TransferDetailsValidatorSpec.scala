@@ -546,7 +546,7 @@ class TransferDetailsValidatorSpec extends AnyFreeSpec with SpecBase {
           .set(IsTransferCashOnlyPage, true)
           .success
           .value
-          .set(CashAmountInTransferPage, BigDecimal(0.01))
+          .set(CashAmountInTransferPage, BigDecimal(minCurrency))
           .success
           .value
 

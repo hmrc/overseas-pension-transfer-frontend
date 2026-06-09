@@ -22,6 +22,7 @@
 @import views.ViewUtils.title
 @import views.html.components.InputCountry
 @import viewmodels.InputWidth
+@import views.html.components.heading
     
 @this(
     layout: templates.Layout,
@@ -52,7 +53,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("schemeManagersAddress.heading")</h1>
+        @heading("schemeManagersAddress", "l")
 
         @addresslineField(1)
         @addresslineField(2)

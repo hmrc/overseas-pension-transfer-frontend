@@ -39,7 +39,7 @@ class PropertyValueControllerSpec extends AnyFreeSpec with SpecBase with Mockito
   val form          = formProvider()
   private val index = 0
 
-  val validAnswer = BigDecimal(0.01)
+  val validAnswer = BigDecimal(minCurrency)
 
   lazy val propertyValueRoute = AssetsMiniJourneysRoutes.PropertyValueController.onPageLoad(NormalMode, index).url
 

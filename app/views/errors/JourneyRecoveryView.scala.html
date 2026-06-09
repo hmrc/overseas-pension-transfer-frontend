@@ -17,6 +17,8 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
+@import views.html.components.{text, heading}
+
 
 @this(
     layout: templates.Layout
@@ -26,9 +28,8 @@
 
 @layout(pageTitle = titleNoForm(messages("journeyRecovery.startAgain.title")), showPageFooter = false) {
 
-<h1 class="govuk-heading-xl">@messages("journeyRecovery.continue.heading")</h1>
+@heading("journeyRecovery.continue","xl")
 
-<p class="govuk-body">@messages("journeyRecovery.continue.guidance")</p>
-
-<p class="govuk-body">@messages("journeyRecovery.continue.guidance.extra")</p>
+@text("journeyRecovery.continue.guidance")
+@text("journeyRecovery.continue.guidance.extra")
 }

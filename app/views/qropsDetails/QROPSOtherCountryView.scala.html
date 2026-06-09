@@ -26,6 +26,7 @@
 @import models.requests.DisplayRequest
 @import views.html.components.QTNumber
 @import viewmodels.LabelSize.Large
+@import config.FormConstants.GovUkMarginBottom6
 
 @this(
     layout: templates.Layout,
@@ -49,7 +50,7 @@
             InputViewModel(
                 field = form("otherEstablishedCountry"),
                 label = LabelViewModel(Text(messages("qropsOtherCountry.heading")))
-                    .withCssClass("govuk-!-margin-bottom-6")
+                    .withCssClass(GovUkMarginBottom6)
                     .asPageHeading(size = Large)
             )
             .withWidth(OneHalf)

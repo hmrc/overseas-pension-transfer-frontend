@@ -28,6 +28,7 @@
 @import controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes
 @import play.api.data.Form
 @import play.api.i18n.Messages
+@import config.FormConstants.GovUkMarginBottom6
 
 @this(
         layout: templates.Layout,
@@ -54,7 +55,7 @@
             InputViewModel(
                 field = form("value"),
                 label = LabelViewModel(Text(messages("quotedSharesClass.heading")))
-                .withCssClass("govuk-!-margin-bottom-6")
+                .withCssClass(GovUkMarginBottom6)
                 .asPageHeading(size = Large)
             )
             .withWidth(OneHalf)

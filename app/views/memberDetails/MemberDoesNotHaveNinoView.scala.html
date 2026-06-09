@@ -21,6 +21,7 @@
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
 @import views.html.components.Link
+@import views.html.components.heading
 
 @this(
         layout: templates.Layout,
@@ -44,7 +45,7 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("memberDoesNotHaveNino.heading", memberName)</h1>
+        @heading("memberDoesNotHaveNino", "l", memberName)
 
         @govukTextarea(
             TextareaViewModel(
@@ -54,7 +55,7 @@
         )
 
         @link("memberNinoPageLink", memberNinoPage, messages("memberDoesNotHaveNino.memberNino.link.text"), extraClasses = "govuk-body")
-        <hr class="govuk-section-break govuk-section-break govuk-!-margin-bottom-6" aria-hidden="true">
+        <hr class=@{s"govuk-section-break govuk-section-break ${config.FormConstants.GovUkMarginBottom6}"} aria-hidden="true">
 
         @govukButton(
             ButtonViewModel(Text(messages("site.saveAndContinue")))

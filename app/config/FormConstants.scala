@@ -1,5 +1,5 @@
-@*
- * Copyright 2024 HM Revenue & Customs
+/*
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,19 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.ViewUtils.titleNoForm
-@import views.html.components.{text, heading}
+package config
 
-@this(
-        layout: templates.Layout
-)
+object FormConstants {
 
-@(pageTitle: String, headingKey: String, message: String)(implicit rh: RequestHeader, messages: Messages)
+  val GovUkMarginBottom6 = "govuk-!-margin-bottom-6"
+  val GovUkMarginBottom9 = "govuk-!-margin-bottom-9"
+  val GovUkSectionBreakl = "govuk-section-break--l"
 
-@layout(pageTitle = titleNoForm(pageTitle), showPageFooter = false, showStartFooter = true, showTasklistFooter = false) {
-    @heading(headingKey, "xl")
-
-    @text(message)
 }

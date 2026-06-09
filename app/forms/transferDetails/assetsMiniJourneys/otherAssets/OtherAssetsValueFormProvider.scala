@@ -20,6 +20,7 @@ import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
+import config.Constants.{maxCurrency, minCurrency}
 
 class OtherAssetsValueFormProvider @Inject() extends Mappings {
 
@@ -29,7 +30,7 @@ class OtherAssetsValueFormProvider @Inject() extends Mappings {
         "valueOfAsset.error.required",
         "valueOfAsset.error.nonNumeric"
       )
-        .verifying(minimumCurrency(0.01, "valueOfAsset.error.belowMinimum"))
-        .verifying(maximumCurrency(999999999.99, "valueOfAsset.error.aboveMaximum"))
+        .verifying(minimumCurrency(minCurrency, "valueOfAsset.error.belowMinimum"))
+        .verifying(maximumCurrency(maxCurrency, "valueOfAsset.error.aboveMaximum"))
     )
 }

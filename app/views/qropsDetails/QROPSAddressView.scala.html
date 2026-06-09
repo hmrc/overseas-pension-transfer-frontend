@@ -22,6 +22,7 @@
 @import views.ViewUtils.title
 @import views.html.components.InputCountry
 @import viewmodels.InputWidth
+@import views.html.components.heading
 
 @this(
     layout: templates.Layout,
@@ -51,7 +52,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("qropsAddress.heading")</h1>
+        @heading("qropsAddress", "l")
         
 
         @addressLine("addressLine1", "common.addressInput.addressLine1")

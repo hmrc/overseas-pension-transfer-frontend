@@ -39,7 +39,7 @@ class UnquotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with M
   val form         = formProvider()
   val index        = 0
 
-  val validAnswer = BigDecimal(0.01)
+  val validAnswer = BigDecimal(minCurrency)
 
   lazy val unquotedSharesValueRoute =
     AssetsMiniJourneysRoutes.UnquotedSharesValueController.onPageLoad(NormalMode, index).url
