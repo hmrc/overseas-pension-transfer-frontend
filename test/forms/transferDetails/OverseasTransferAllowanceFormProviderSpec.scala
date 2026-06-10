@@ -62,6 +62,7 @@ class OverseasTransferAllowanceFormProviderSpec extends CurrencyFieldBehaviours 
       minimum,
       FormError(fieldName, minimumKey, Nil)
     )
+    
     behave like currencyFieldWithMaximum(
       form,
       fieldName,
