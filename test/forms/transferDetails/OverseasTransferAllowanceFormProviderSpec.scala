@@ -28,13 +28,14 @@ class OverseasTransferAllowanceFormProviderSpec extends CurrencyFieldBehaviours 
   val requiredKey   = "overseasTransferAllowance.error.required"
   val nonNumericKey = "overseasTransferAllowance.error.nonNumeric"
   val maximumKey    = "overseasTransferAllowance.error.aboveMaximum"
+  val minimumKey    = "overseasTransferAllowance.error.nonNumeric" // "-" is invalid character
 
   val form = new OverseasTransferAllowanceFormProvider()()
 
   ".value" - {
 
     val fieldName = "otAllowance"
-    val minimum   = 0.01
+    val minimum   = 0.00
     val maximum   = 999999999.99
 
     val validDataGenerator =
@@ -55,6 +56,12 @@ class OverseasTransferAllowanceFormProviderSpec extends CurrencyFieldBehaviours 
       nonNumericError = FormError(fieldName, nonNumericKey)
     )
 
+    behave like currencyFieldWithMinimum(
+      form,
+      fieldName,
+      minimum,
+      FormError(fieldName, minimumKey, Nil)
+    )
     behave like currencyFieldWithMaximum(
       form,
       fieldName,
