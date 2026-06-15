@@ -22,16 +22,13 @@ import connectors.EmailConnector
 import config.FrontendAppConfig
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
-import models.MinimalDetails
-import models.SessionData
-import pages.memberDetails.MemberNamePage
+import models.{MinimalDetails, PersonName, SessionData}
 import models.email.EmailAccepted
 import models.email.EmailToSendRequest
 import models.email.SubmissionConfirmation
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -59,6 +56,7 @@ class EmailService @Inject() (
     extends Logging {
 
   def sendConfirmationEmail(
+    memberName: PersonName,
     sessionData: SessionData,
     minimalDetails: MinimalDetails
   )(implicit hc: HeaderCarrier): Future[Either[EmailServiceError, EmailSuccess]] = {
@@ -66,9 +64,9 @@ class EmailService @Inject() (
     val schemeName     = sessionData.schemeInformation.schemeName
     val maybeSubmitter = minimalDetails.organisationName.orElse(minimalDetails.individualDetails.map(_.fullName))
     val sessionDataGet =
-      (sessionData.get(QtNumberQuery), sessionData.get(MemberNamePage), sessionData.get(DateSubmittedQuery))
+      (sessionData.get(QtNumberQuery), sessionData.get(DateSubmittedQuery))
     sessionDataGet match {
-      case (Some(qtRef), Some(memberName), Some(dateSubmitted)) =>
+      case (Some(qtRef), Some(dateSubmitted)) =>
         maybeSubmitter match {
           case Some(submitter) =>
             val emailParameters =
@@ -97,7 +95,7 @@ class EmailService @Inject() (
             logger.warn("[EmailService][sendConfirmationEmail] Email not sent due to missing data in minimal details")
             Future.successful(Left(MinimalDetailsError))
         }
-      case _                                                    =>
+      case _                                  =>
         logger.warn("[EmailService][sendConfirmationEmail] Email not sent due to missing data in sd")
         Future.successful(Left(SessionDataError))
     }

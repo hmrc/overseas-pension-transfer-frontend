@@ -29,6 +29,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
+import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
 import viewmodels.checkAnswers.TransferSubmittedSummary
@@ -39,26 +40,29 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
-  private val mockSessionRepository = mock[SessionRepository]
-  private val mockConnector         = mock[MinimalDetailsConnector]
-  private val application           = new GuiceApplicationBuilder().build()
-  private val appConfig             = application.injector.instanceOf[FrontendAppConfig]
+  private val mockUserAnswersService = mock[UserAnswersService]
+  private val mockSessionRepository  = mock[SessionRepository]
+  private val mockConnector          = mock[MinimalDetailsConnector]
+  private val application            = new GuiceApplicationBuilder().build()
+  private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "TransferSubmitted Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      val application  = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
+      val application  = applicationBuilder(userAnswers = userAnswersMemberNameQtNumberTransferSubmitted)
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[MinimalDetailsConnector].toInstance(mockConnector)
         )
         .build()
       val testMessages = messages(application)
-
       when(mockSessionRepository.get(any()))
         .thenReturn(Future.successful(Some(sessionDataMemberNameQtNumberTransferSubmitted)))
+      when(mockUserAnswersService.getExternalUserAnswers(any())(any()))
+        .thenReturn(Future.successful(Right(userAnswersMemberNameQtNumberTransferSubmitted)))
       when(mockConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(minimalDetailsIndividual)))
       running(application) {

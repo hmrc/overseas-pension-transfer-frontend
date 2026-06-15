@@ -55,7 +55,7 @@ class DataRetrievalActionImpl @Inject() (
                 request.authenticatedUser,
                 answers,
                 value,
-                memberFullName(value, Some(answers)),
+                memberFullName(answers),
                 qtNumber(value),
                 dateTransferSubmitted(value)
               )

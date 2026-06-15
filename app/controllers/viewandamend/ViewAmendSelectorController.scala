@@ -114,7 +114,7 @@ class ViewAmendSelectorController @Inject() (
         )
     } yield (userAnswersResult, lockResult) match {
       case (Right(answers), true) =>
-        val sessionData                            = SessionData(
+        val sessionData = SessionData(
           request.authenticatedUser.internalId,
           qtReference,
           request.schemeDetails,
@@ -124,9 +124,7 @@ class ViewAmendSelectorController @Inject() (
           ),
           Instant.now(clock)
         )
-        val sessionDataWithMemberName: SessionData =
-          answers.get(MemberNamePage).fold(sessionData)(sessionData.set(MemberNamePage, _).getOrElse(sessionData))
-        sessionRepository.set(sessionDataWithMemberName)
+        sessionRepository.set(sessionData)
         Redirect(routes.ViewAmendSubmittedController.amend()).withSession(request.session + ("isAmend" -> "true"))
       case (_, false)             =>
         val memberName =

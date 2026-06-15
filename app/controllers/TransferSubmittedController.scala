@@ -28,16 +28,17 @@ import connectors.MinimalDetailsError
 import config.FrontendAppConfig
 import views.html.TransferSubmittedView
 import viewmodels.checkAnswers.TransferSubmittedSummary
-import controllers.actions._
+import controllers.actions.*
+import play.api.Logging
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import play.api.i18n.I18nSupport
 import play.api.i18n.MessagesApi
+import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-
 import javax.inject.Inject
 
 class TransferSubmittedController @Inject() (
@@ -48,40 +49,46 @@ class TransferSubmittedController @Inject() (
   view: TransferSubmittedView,
   sessionRepository: SessionRepository,
   appConfig: FrontendAppConfig,
-  minimalDetailsConnector: MinimalDetailsConnector
+  minimalDetailsConnector: MinimalDetailsConnector,
+  userAnswersService: UserAnswersService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport
-    with AppUtils {
+    with AppUtils
+    with Logging {
 
   def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     sessionRepository.get(request.authenticatedUser.internalId).flatMap {
       case Some(sessionData) =>
-        fetchMinimalDetails(request.authenticatedUser).map {
+        val userAnswers = userAnswersService.getExternalUserAnswers(sessionData)
+        fetchMinimalDetails(request.authenticatedUser).flatMap {
+
           case Right(minimalDetails) =>
-            val summaryList = TransferSubmittedSummary.rows(
-              memberFullName(sessionData),
-              dateTransferSubmitted(sessionData)
-            )
-
-            val mpsLink = appConfig.getPensionSchemeUrl(
-              srn = sessionData.schemeInformation.srnNumber.value,
-              isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
-            )
-
-            Ok(
-              view(
-                qtNumber(sessionData).value,
-                summaryList,
-                mpsLink,
-                minimalDetails.email
-              )
-            )
+            userAnswers.map {
+              case Right(ua) =>
+                val summaryList = TransferSubmittedSummary.rows(
+                  memberFullName(ua),
+                  dateTransferSubmitted(sessionData)
+                )
+                val mpsLink     = appConfig.getPensionSchemeUrl(
+                  srn = sessionData.schemeInformation.srnNumber.value,
+                  isPspUser = request.authenticatedUser.isInstanceOf[models.authentication.PspUser]
+                )
+                Ok(
+                  view(
+                    qtNumber(sessionData).value,
+                    summaryList,
+                    mpsLink,
+                    minimalDetails.email
+                  )
+                )
+              case Left(_)   =>
+                Redirect(routes.JourneyRecoveryController.onPageLoad())
+            }
           case Left(_)               =>
-            Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
+            Future.successful(Redirect(controllers.routes.JourneyRecoveryController.onPageLoad()))
         }
-
-      case None =>
+      case None              =>
         scala.concurrent.Future.successful(
           Redirect(controllers.routes.JourneyRecoveryController.onPageLoad())
         )

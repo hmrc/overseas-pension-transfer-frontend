@@ -25,7 +25,6 @@ import controllers.actions._
 import org.apache.pekko.Done
 import pages.memberDetails.MemberNamePage
 import play.api.data.Form
-import repositories.SessionRepository
 import controllers.helpers.ErrorHandling
 import models.Mode
 import models.PersonName
@@ -41,7 +40,6 @@ import javax.inject.Inject
 
 class MemberNameController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   identify: IdentifierAction,
   getData: DataRetrievalAction,
   schemeData: SchemeDataAction,
@@ -74,8 +72,6 @@ class MemberNameController @Inject() (
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(MemberNamePage, value))
-              sessionData    <- Future.fromTry(request.sessionData.set(MemberNamePage, value))
-              _              <- sessionRepository.set(sessionData)
               savedForLater  <-
                 userAnswersService
                   .setExternalUserAnswers(updatedAnswers, request.sessionData.schemeInformation.srnNumber)

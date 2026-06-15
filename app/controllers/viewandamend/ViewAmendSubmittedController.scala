@@ -91,11 +91,7 @@ class ViewAmendSubmittedController @Inject() (
                   Instant.now(clock)
                 )
 
-                val sessionDataWithMemberName: SessionData = userAnswers.get(MemberNamePage).fold(sessionData) { name =>
-                  sessionData.set(MemberNamePage, name).getOrElse(sessionData)
-                }
-
-                Ok(renderView(sessionDataWithMemberName, userAnswers, isAmend = false))
+                Ok(renderView(sessionData, userAnswers, isAmend = false))
               case Left(_)            =>
                 Redirect(page.nextPageRecovery())
             }
@@ -158,12 +154,7 @@ class ViewAmendSubmittedController @Inject() (
           Instant.now(clock)
         )
 
-        val sessionDataWithMemberName: SessionData =
-          userAnswers.get(MemberNamePage).fold(sessionData) { name =>
-            sessionData.set(MemberNamePage, name).getOrElse(sessionData)
-          }
-
-        sessionRepository.set(sessionDataWithMemberName).map { _ =>
+        sessionRepository.set(sessionData).map { _ =>
           Redirect(page.nextPage(NormalMode, userAnswers))
         }
 

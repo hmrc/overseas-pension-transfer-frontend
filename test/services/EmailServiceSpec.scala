@@ -20,7 +20,7 @@ import base.SpecBase
 import config.FrontendAppConfig
 import connectors.EmailConnector
 import models.email.{EmailAccepted, EmailToSendRequest, SubmissionConfirmation}
-import models.{IndividualDetails, MinimalDetails}
+import models.{IndividualDetails, MinimalDetails, PersonName}
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.freespec.AnyFreeSpec
@@ -59,7 +59,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
         Some(IndividualDetails(firstName = "Test", middleName = None, lastName = "User"))
       )
 
-      val result = await(service.sendConfirmationEmail(emptySessionData, minimalDetails))
+      val result = await(service.sendConfirmationEmail(testMemberName, emptySessionData, minimalDetails))
 
       result mustBe Left(SessionDataError)
     }
@@ -117,7 +117,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier]))
         .thenReturn(Future.successful(EmailAccepted))
 
-      val result = await(service.sendConfirmationEmail(sessionData, minimalDetails))
+      val result = await(service.sendConfirmationEmail(testMemberName, sessionData, minimalDetails))
 
       result mustBe Right(EmailSentSuccess)
       verify(mockConnector).send(refEq(expectedRequest))(any[ExecutionContext], any[HeaderCarrier])
@@ -159,7 +159,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
       when(mockConnector.send(any())(any[ExecutionContext], any[HeaderCarrier]))
         .thenReturn(Future.successful(nonAccepted))
 
-      val result = await(service.sendConfirmationEmail(sessionData, minimalDetails))
+      val result = await(service.sendConfirmationEmail(testMemberName, sessionData, minimalDetails))
 
       result.isLeft mustBe true
       result.left.toOption.get mustBe DownstreamError(nonAccepted.toString)
@@ -223,7 +223,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
           )
         )
 
-      val result = await(service.sendConfirmationEmail(sessionDataAM, minimalDetails))
+      val result = await(service.sendConfirmationEmail(testMemberName, sessionDataAM, minimalDetails))
 
       result mustBe Right(EmailSentSuccess)
       verify(mockConnector).send(refEq(expectedRequest))(any[ExecutionContext], any[HeaderCarrier])
@@ -286,7 +286,7 @@ class EmailServiceSpec extends AnyFreeSpec with SpecBase with Matchers with Mock
           )
         )
 
-      val result = await(service.sendConfirmationEmail(sessionDataPM, minimalDetails))
+      val result = await(service.sendConfirmationEmail(testMemberName, sessionDataPM, minimalDetails))
 
       result mustBe Right(EmailSentSuccess)
       verify(mockConnector).send(refEq(expectedRequest))(any[ExecutionContext], any[HeaderCarrier])
