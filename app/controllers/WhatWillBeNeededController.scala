@@ -35,7 +35,6 @@ import play.api.i18n.I18nSupport
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
 
 import java.time.Clock
 import java.time.Instant
@@ -76,9 +75,8 @@ class WhatWillBeNeededController @Inject() (
       UserAnswers(sessionData.transferId, sessionData.schemeInformation.pstrNumber, Json.obj(), Instant.now(clock))
 
     for {
-      updatedSessionData <- Future.fromTry(SessionData.initialise(sessionData))
-      persisted          <- sessionRepository.set(updatedSessionData)
-      _                  <- userAnswersService.setExternalUserAnswers(newUa, sessionData.schemeInformation.srnNumber)
+      persisted <- sessionRepository.set(sessionData)
+      _         <- userAnswersService.setExternalUserAnswers(newUa, sessionData.schemeInformation.srnNumber)
     } yield
       if (persisted) {
         auditService.audit(
