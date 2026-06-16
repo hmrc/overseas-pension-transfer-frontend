@@ -101,7 +101,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
   "encryptedFormat" - {
 
     "should encrypt and decrypt using encryptedFormat successfully" in {
-      val format = SessionData.encryptedFormat(encryptionService)
+      val format  = SessionData.encryptedFormat(encryptionService)
       val written = format.writes(sessionData)
 
       (written \ "data").as[String] must not be empty

@@ -61,7 +61,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
       val testMessages = messages(application)
       when(mockSessionRepository.get(any()))
         .thenReturn(Future.successful(Some(sessionDataMemberNameQtNumberTransferSubmitted)))
-      when(mockUserAnswersService.getExternalUserAnswers(any())(any()))
+      when(mockUserAnswersService.getExternalUserAnswers(any(), any(), any(), any(), any())(any()))
         .thenReturn(Future.successful(Right(userAnswersMemberNameQtNumberTransferSubmitted)))
       when(mockConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(minimalDetailsIndividual)))

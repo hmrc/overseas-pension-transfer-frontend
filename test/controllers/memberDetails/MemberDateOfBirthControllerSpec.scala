@@ -123,7 +123,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val application = applicationBuilder(userAnswers = userAnswersMemberName).build()
-      val request = FakeRequest(POST, memberDateOfBirthRoute)
+      val request     = FakeRequest(POST, memberDateOfBirthRoute)
         .withFormUrlEncodedBody(("value", "invalid value"))
 
       running(application) {

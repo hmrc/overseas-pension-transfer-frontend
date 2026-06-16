@@ -29,11 +29,13 @@ import config.FrontendAppConfig
 import views.html.TransferSubmittedView
 import viewmodels.checkAnswers.TransferSubmittedSummary
 import controllers.actions.*
+import models.{QtNumber, QtStatus}
 import play.api.Logging
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import play.api.i18n.I18nSupport
 import play.api.i18n.MessagesApi
+import queries.QtNumberQuery
 import services.UserAnswersService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -60,7 +62,16 @@ class TransferSubmittedController @Inject() (
   def onPageLoad: Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     sessionRepository.get(request.authenticatedUser.internalId).flatMap {
       case Some(sessionData) =>
-        val userAnswers = userAnswersService.getExternalUserAnswers(sessionData)
+        val transferId                    = sessionData.get(QtNumberQuery).getOrElse(QtNumber.empty)
+        val pstr                          = sessionData.schemeInformation.pstrNumber
+        val versionNumber: Option[String] = Some((sessionData.data \ "versionNumber").asOpt[String].getOrElse("001"))
+        val userAnswers                   = userAnswersService.getExternalUserAnswers(
+          transferId,
+          pstr,
+          QtStatus.Submitted,
+          versionNumber,
+          request.schemeDetails.srnNumber
+        )
         fetchMinimalDetails(request.authenticatedUser).flatMap {
 
           case Right(minimalDetails) =>
