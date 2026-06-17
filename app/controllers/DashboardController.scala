@@ -16,37 +16,28 @@
 
 package controllers
 
-import models.authentication.PsaUser
-import models.authentication.PspUser
-import services.LockService
-import services.TransferService
-import services.UserAnswersService
-import queries.PensionSchemeDetailsQuery
-import play.api.mvc.*
-import pages.DashboardPage
-import views.html.DashboardView
-import controllers.actions.IdentifierAction
-import controllers.actions.SchemeDataAction
-import views.html.components.AppBreadcrumbs
-import play.api.Logging
-import repositories.DashboardSessionRepository
-import repositories.SessionRepository
-import models.requests.SchemeRequest
-import queries.dashboard.TransfersOverviewQuery
 import config.FrontendAppConfig
-import models._
+import controllers.actions.{IdentifierAction, SchemeDataAction}
+import models.*
 import models.audit.JourneyStartedType.ContinueTransfer
-import play.api.i18n.I18nSupport
-import play.api.i18n.Messages
+import models.authentication.{PsaUser, PspUser}
+import models.requests.SchemeRequest
+import pages.DashboardPage
+import play.api.Logging
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.*
+import queries.PensionSchemeDetailsQuery
+import queries.dashboard.TransfersOverviewQuery
+import repositories.{DashboardSessionRepository, SessionRepository}
+import services.{LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewmodels.PaginatedAllTransfersViewModel
-import viewmodels.SearchBarViewModel
+import viewmodels.{PaginatedAllTransfersViewModel, SearchBarViewModel}
+import views.html.DashboardView
+import views.html.components.AppBreadcrumbs
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import java.time.Clock
-import java.time.Instant
+import java.time.{Clock, Instant}
 import javax.inject.*
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DashboardController @Inject() (
@@ -75,10 +66,9 @@ class DashboardController @Inject() (
       userAnswersService.clearEmptyUserAnswers(id).flatMap { _ =>
         sessionRepository.clear(id) flatMap { _ =>
           repo.get(id).flatMap {
-            case None =>
+            case None                =>
               logger.warn(s"[DashboardController][onPageLoad] No dashboard data found for this customer")
               Future.successful(Redirect(DashboardPage.nextPageRecovery()))
-
             case Some(dashboardData) =>
               dashboardData
                 .get(PensionSchemeDetailsQuery)
@@ -86,8 +76,8 @@ class DashboardController @Inject() (
                   logger.warn(s"[DashboardController][onPageLoad] Missing PensionSchemeDetails for this customer")
                   Future.successful(Redirect(DashboardPage.nextPageRecovery()))
                 } { pensionSchemeDetails =>
-                  dashboardData.get(TransfersOverviewQuery) match {
-                    case None            =>
+                  releaseLocks(dashboardData.get(TransfersOverviewQuery).fold[Seq[AllTransfersItem]](Nil)(identity))
+                    .flatMap { _ =>
                       renderDashboard(
                         page,
                         search,
@@ -96,33 +86,7 @@ class DashboardController @Inject() (
                         lockWarning,
                         request.authenticatedUser
                       )
-                    case Some(transfers) =>
-                      transfers.map {
-                        val owner =
-                          request.authenticatedUser match {
-                            case PsaUser(psaId, _, _) => psaId.value
-                            case PspUser(pspId, _, _) => pspId.value
-                          }
-
-                        transfer =>
-                          transfer.transferId match {
-                            case TransferNumber(transferRef) =>
-                              logger.info(s"[DashboardController][onPageLoad] lock released for $transferRef")
-                              lockService.releaseLock(transferRef, owner)
-                            case QtNumber(qtRefefence)       =>
-                              logger.info(s"[DashboardController][onPageLoad] lock released for $qtRefefence")
-                              lockService.releaseLock(qtRefefence, owner)
-                          }
-                      }
-                      renderDashboard(
-                        page,
-                        search,
-                        dashboardData,
-                        pensionSchemeDetails,
-                        lockWarning,
-                        request.authenticatedUser
-                      )
-                  }
+                    }
                 }
           }
         }
@@ -131,10 +95,6 @@ class DashboardController @Inject() (
 
   def onTransferClick(): Action[AnyContent] = (identify andThen schemeData).async { implicit request =>
     val params     = TransferReportQueryParams.fromRequest(request)
-    val owner      = request.authenticatedUser match {
-      case PsaUser(psaId, _, _) => psaId.value
-      case PspUser(pspId, _, _) => pspId.value
-    }
     val transferId = params.transferId.getOrElse(TransferId("-"))
     val pstr       = params.pstr.getOrElse {
       throw new IllegalStateException("[DashboardController][onTransferClick] Missing PSTR in query params")
@@ -274,4 +234,27 @@ class DashboardController @Inject() (
 
   private def pageUrl(search: Option[String])(p: Int): String =
     routes.DashboardController.onPageLoad(p, search).url
+
+  private def owner(implicit request: SchemeRequest[AnyContent]): String = request.authenticatedUser match {
+    case PsaUser(psaId, _, _) => psaId.value
+    case PspUser(pspId, _, _) => pspId.value
+  }
+
+  private def releaseLocks(
+    transfers: Seq[AllTransfersItem]
+  )(implicit request: SchemeRequest[AnyContent], ec: ExecutionContext): Future[Unit] =
+    Future
+      .sequence {
+        transfers.map { transfer =>
+          transfer.transferId match {
+            case TransferNumber(transferRef) =>
+              logger.info(s"[DashboardController][onPageLoad] lock released for $transferRef")
+              lockService.releaseLock(transferRef, owner)
+            case QtNumber(qtReference)       =>
+              logger.info(s"[DashboardController][onPageLoad] lock released for $qtReference")
+              lockService.releaseLock(qtReference, owner)
+          }
+        }
+      }
+      .map(_ => ())
 }
