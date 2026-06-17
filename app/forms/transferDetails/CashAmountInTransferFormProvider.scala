@@ -20,7 +20,7 @@ import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
-import config.Constants.{maxCurrency, minCurrency}
+import config.Constants.{MaxCurrency, MinCurrency}
 
 class CashAmountInTransferFormProvider @Inject() extends Mappings {
 
@@ -30,7 +30,7 @@ class CashAmountInTransferFormProvider @Inject() extends Mappings {
         "cashAmountInTransfer.error.required",
         "cashAmountInTransfer.error.nonNumeric"
       )
-        .verifying(minimumCurrency(minCurrency, "cashAmountInTransfer.error.belowMinimum"))
-        .verifying(maximumCurrency(maxCurrency, "cashAmountInTransfer.error.aboveMaximum"))
+        .verifying(minimumCurrency(MinCurrency, "cashAmountInTransfer.error.belowMinimum"))
+        .verifying(maximumCurrency(MaxCurrency, "cashAmountInTransfer.error.aboveMaximum"))
     )
 }

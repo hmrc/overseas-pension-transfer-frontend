@@ -20,7 +20,7 @@ import forms.mappings.Mappings
 import play.api.data.Form
 
 import javax.inject.Inject
-import config.Constants.maxCurrency
+import config.Constants.MaxCurrency
 
 class AmountOfTaxDeductedFormProvider @Inject() extends Mappings {
 
@@ -31,6 +31,6 @@ class AmountOfTaxDeductedFormProvider @Inject() extends Mappings {
         "amountOfTaxDeducted.error.nonNumeric"
       )
         .verifying(minimumCurrency(.01, "amountOfTaxDeducted.error.belowMinimum"))
-        .verifying(maximumCurrency(maxCurrency, "amountOfTaxDeducted.error.aboveMaximum"))
+        .verifying(maximumCurrency(MaxCurrency, "amountOfTaxDeducted.error.aboveMaximum"))
     )
 }

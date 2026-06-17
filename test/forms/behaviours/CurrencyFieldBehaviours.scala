@@ -19,8 +19,8 @@ package forms.behaviours
 import play.api.data.{Form, FormError}
 
 trait CurrencyFieldBehaviours extends FieldBehaviours {
-  protected val maxCurrency: Double = config.Constants.maxCurrency
-  protected val minCurrency: Double = config.Constants.minCurrency
+  protected val maxCurrency: Double = config.Constants.MaxCurrency
+  protected val minCurrency: Double = config.Constants.MinCurrency
 
   def currencyField(form: Form[_], fieldName: String, nonNumericError: FormError): Unit = {
 

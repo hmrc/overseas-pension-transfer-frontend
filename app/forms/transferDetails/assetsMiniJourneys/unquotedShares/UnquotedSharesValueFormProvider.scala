@@ -16,7 +16,7 @@
 
 package forms.transferDetails.assetsMiniJourneys.unquotedShares
 
-import config.Constants.{maxCurrency, minCurrency}
+import config.Constants.{MaxCurrency, MinCurrency}
 import forms.mappings.Mappings
 import play.api.data.Form
 
@@ -30,7 +30,7 @@ class UnquotedSharesValueFormProvider @Inject() extends Mappings {
         "unquotedSharesValue.error.required",
         "unquotedSharesValue.error.nonNumeric"
       )
-        .verifying(minimumCurrency(minCurrency, "unquotedSharesValue.error.belowMinimum"))
-        .verifying(maximumCurrency(maxCurrency, "unquotedSharesValue.error.aboveMaximum"))
+        .verifying(minimumCurrency(MinCurrency, "unquotedSharesValue.error.belowMinimum"))
+        .verifying(maximumCurrency(MaxCurrency, "unquotedSharesValue.error.aboveMaximum"))
     )
 }
