@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 @import views.html.components.AppFooter
-@import views.html.components.heading2
+@import views.html.components.h2
 
 
 @this(
@@ -45,7 +45,7 @@
     @govukSummaryList(list)
 
 
-    @heading2("transferSubmitted.nextInfo", "m")
+    @h2("transferSubmitted.nextInfo", "m")
     <ul class="govuk-list govuk-list--bullet">
         <li><a class="govuk-link govuk-body" href="@controllers.routes.PrintSubmittedTransferController.onPageLoad()">@messages("transferSubmitted.printLink")</a></li>
         <li>@messages("transferSubmitted.start") <a class="govuk-link govuk-body" href="@controllers.routes.WhatWillBeNeededController.onPageLoad()">@messages("transferSubmitted.newTransfer")</a></li>

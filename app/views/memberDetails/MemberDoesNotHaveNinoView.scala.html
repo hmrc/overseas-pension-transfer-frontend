@@ -21,7 +21,7 @@
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
 @import views.html.components.Link
-@import views.html.components.heading
+@import views.html.components.h
 
 @this(
         layout: templates.Layout,
@@ -45,7 +45,7 @@
         }
 
         @qtNumber()
-        @heading("memberDoesNotHaveNino", "l", memberName)
+        @h("memberDoesNotHaveNino", "l", memberName)
 
         @govukTextarea(
             TextareaViewModel(

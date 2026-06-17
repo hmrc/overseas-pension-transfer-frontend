@@ -15,7 +15,7 @@
  *@
 
 @import views.ViewUtils.titleNoForm
-@import views.html.components.{text, heading}
+@import views.html.components.{p, h}
 
 @this(
         layout: templates.Layout
@@ -24,7 +24,7 @@
 @(pageTitle: String, headingKey: String, message: String)(implicit rh: RequestHeader, messages: Messages)
 
 @layout(pageTitle = titleNoForm(pageTitle), showPageFooter = false, showStartFooter = true, showTasklistFooter = false) {
-    @heading(headingKey, "xl")
+    @h(headingKey, "xl")
 
-    @text(message)
+    @p(message)
 }

@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
-@import views.html.components.{heading, text}
+@import views.html.components.{h, p}
 
 @this(
     layout: templates.Layout,
@@ -35,9 +35,9 @@
     showPageFooter = false
 ) {
 
-    @heading("signedOut","xl")
+    @h("signedOut","xl")
 
-    @text("signedOut.guidance")
+    @p("signedOut.guidance")
 
     <p class="govuk-body">
         @govukButton(

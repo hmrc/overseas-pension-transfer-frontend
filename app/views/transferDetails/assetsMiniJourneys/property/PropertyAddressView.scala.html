@@ -26,7 +26,7 @@
 @import play.api.data.Form
 @import play.api.i18n.Messages
 @import viewmodels.InputWidth
-@import views.html.components.heading
+@import views.html.components.h
 
 @this(
         layout: templates.Layout,
@@ -68,7 +68,7 @@
         }
 
         @qtNumber()
-        @heading("propertyAddress", "l")
+        @h("propertyAddress", "l")
         
         @textInputLine("addressLine1", "common.addressInput.addressLine1")
         @textInputLine("addressLine2", "common.addressInput.addressLine2")

@@ -22,7 +22,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.{InputCountry, QTNumber}
-@import views.html.components.heading
+@import views.html.components.h
 
 @this(
         layout: templates.Layout,
@@ -48,7 +48,7 @@
         }
 
         @qtNumber()
-        @heading("membersCurrentAddress", "l", memberName)
+        @h("membersCurrentAddress", "l", memberName)
         @govukInput(
             InputViewModel(
                 field = form("addressLine1"),

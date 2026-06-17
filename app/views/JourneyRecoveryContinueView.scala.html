@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
-@import views.html.components.{heading, text}
+@import views.html.components.{h, p}
 
 @this(
         layout: templates.Layout,
@@ -29,9 +29,9 @@
 
 @layout(pageTitle = titleNoForm(messages("journeyRecovery.continue.title"))) {
 
-    @heading("journeyRecovery", "l")
+    @h("journeyRecovery", "l")
 
-    @text("journeyRecovery.continue.guidance")
+    @p("journeyRecovery.continue.guidance")
 
     <p class="govuk-body">
         @govukButton(

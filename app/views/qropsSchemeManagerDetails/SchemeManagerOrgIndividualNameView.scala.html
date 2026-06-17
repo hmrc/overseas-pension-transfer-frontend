@@ -21,7 +21,7 @@
 @import viewmodels.govuk.all.{ButtonViewModel, ErrorSummaryViewModel, FluentInput, InputViewModel, LabelViewModel}
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
-@import views.html.components.heading
+@import views.html.components.h
 
 @this(
         layout: templates.Layout,
@@ -42,7 +42,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
         @qtNumber()
-        @heading("orgIndividualName", "l")
+        @h("orgIndividualName", "l")
 
         @govukInput(
             InputViewModel(

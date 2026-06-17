@@ -21,7 +21,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
-@import views.html.components.heading
+@import views.html.components.h
 
 
 @this(
@@ -44,7 +44,7 @@
         }
 
         @qtNumber()
-        @heading("schemeManagersName", "l")
+        @h("schemeManagersName", "l")
 
         @govukInput(
             InputViewModel(

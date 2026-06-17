@@ -16,7 +16,7 @@
 
 @import views.ViewUtils.titleNoForm
 @import models.requests.SchemeRequest
-@import views.html.components.heading
+@import views.html.components.h
 
 @this(
         layout: templates.Layout
@@ -45,7 +45,7 @@
     }
 
     <h2 class="govuk-caption-l">@qtNumber</h2>
-    @heading("submittedTransferSummary", "l",memberName)
+    @h("submittedTransferSummary", "l",memberName)
 
     <div role="region" aria-labelledby="Caption01" tabindex="0">
         <table class="govuk-table">

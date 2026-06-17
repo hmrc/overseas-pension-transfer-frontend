@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukTaskList
 @import uk.gov.hmrc.govukfrontend.views.Aliases.TaskListItem
 @import uk.gov.hmrc.govukfrontend.views.Aliases.TaskList
-@import views.html.components.heading2
+@import views.html.components.h2
 
 
 @this(
@@ -31,7 +31,7 @@
 @layout(pageTitle = messages("taskList.title"), showTasklistFooter = true) {
     <h1 class=@{s"govuk-heading-l ${config.FormConstants.GovUkMarginBottom9}"}>@messages("taskList.heading")</h1>
 
-    @heading2("taskList.transferDetails.heading", "m")
+    @h2("taskList.transferDetails.heading", "m")
     @govukTaskList(TaskList(taskItems))
     <h2 class="govuk-heading-m govuk-!-margin-top-7">@messages("taskList.checkAndSubmit.heading")</h2>
     @govukTaskList(TaskList(Seq(submissionItem), idPrefix = "check-and-submit"))

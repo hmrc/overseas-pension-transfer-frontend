@@ -15,7 +15,7 @@
  *@
 
 @import views.ViewUtils.titleNoForm
-@import views.html.components.{text, heading}
+@import views.html.components.{p, h}
 
 @this(
         layout: templates.Layout
@@ -29,9 +29,9 @@
  showPageFooter = false
 ) {
 
-    @heading("unauthorised","xl")
+    @h("unauthorised","xl")
 
-    @text("unauthorised.guidance1")
-    @text("unauthorised.guidance2")
+    @p("unauthorised.guidance1")
+    @p("unauthorised.guidance2")
     <p class="govuk-body">@Html(messages("unauthorised.link", "https://www.gov.uk/guidance/manage-a-registered-pension-scheme"))</p>
 }

@@ -19,7 +19,7 @@
 @import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
 @import views.ViewUtils.titleNoForm
 @import play.twirl.api.Html
-@import views.html.components.{heading, heading2}
+@import views.html.components.{h, h2}
 
 
 @this(
@@ -32,10 +32,10 @@
 
 @layout(pageTitle = titleNoForm(messages("requiredInfo.title")), showStartFooter = true) {
 
-    @heading("requiredInfo", "l")
+    @h("requiredInfo", "l")
     <p class="govuk-body"><b>@messages("requiredInfo.text.bold") </b>@messages("requiredInfo.text.normal")</p>
 
-    @heading2("requiredInfo.memberDetails.heading","m")
+    @h2("requiredInfo.memberDetails.heading","m")
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("requiredInfo.memberDetails.bullet1")</li>
         <li>@messages("requiredInfo.memberDetails.bullet2")</li>
@@ -43,7 +43,7 @@
         <li>@messages("requiredInfo.memberDetails.bullet4")</li>
         <li>@messages("requiredInfo.memberDetails.bullet5")</li>
     </ul>
-    @heading2("requiredInfo.transferDetails.heading", "s")
+    @h2("requiredInfo.transferDetails.heading", "s")
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("requiredInfo.transferDetails.bullet1")</li>
         <li>@messages("requiredInfo.transferDetails.bullet2")</li>
@@ -53,14 +53,14 @@
         <li>@messages("requiredInfo.transferDetails.bullet6")</li>
         <li>@messages("requiredInfo.transferDetails.bullet7")</li>
     </ul>
-    @heading2("requiredInfo.qropsDetails.heading", "s")
+    @h2("requiredInfo.qropsDetails.heading", "s")
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("requiredInfo.qropsDetails.bullet1")</li>
         <li>@messages("requiredInfo.qropsDetails.bullet2")</li>
         <li>@messages("requiredInfo.qropsDetails.bullet3")</li>
         <li>@messages("requiredInfo.qropsDetails.bullet4")</li>
     </ul>
-    @heading2("requiredInfo.schemeManager.heading", "s")
+    @h2("requiredInfo.schemeManager.heading", "s")
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("requiredInfo.schemeManager.bullet1")</li>
         <li>@messages("requiredInfo.schemeManager.bullet2")</li>

@@ -22,7 +22,7 @@
 @import views.ViewUtils.title
 @import views.html.components.InputCountry
 @import viewmodels.InputWidth
-@import views.html.components.heading
+@import views.html.components.h
     
 @this(
     layout: templates.Layout,
@@ -53,7 +53,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @heading("schemeManagersAddress", "l")
+        @h("schemeManagersAddress", "l")
 
         @addresslineField(1)
         @addresslineField(2)
