@@ -62,7 +62,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder().build()
+      val application = applicationBuilder(userAnswers = userAnswersMemberName).build()
 
       running(application) {
         val request = getRequest
@@ -72,7 +72,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(form, NormalMode)(
-          fakeDisplayRequest(request),
+          fakeDisplayRequest(request, userAnswersMemberName),
           messages(application)
         ).toString
       }
@@ -80,8 +80,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(MemberDateOfBirthPage, today).success.value
-
+      val userAnswers = userAnswersMemberName.set(MemberDateOfBirthPage, today).success.value
       val application = applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
@@ -123,9 +122,8 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder().build()
-
-      val request = FakeRequest(POST, memberDateOfBirthRoute)
+      val application = applicationBuilder(userAnswers = userAnswersMemberName).build()
+      val request     = FakeRequest(POST, memberDateOfBirthRoute)
         .withFormUrlEncodedBody(("value", "invalid value"))
 
       running(application) {
@@ -135,7 +133,7 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual view(boundForm, NormalMode)(
-          fakeDisplayRequest(request),
+          fakeDisplayRequest(request, userAnswersMemberName),
           messages(application)
         ).toString
       }
@@ -146,7 +144,6 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
-
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Left(UserAnswersErrorResponse("Error", None))))
 

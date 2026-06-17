@@ -22,7 +22,7 @@ import controllers.actions.*
 import forms.PspDeclarationFormProvider
 import models.authentication.PspId
 import models.responses.{NotAuthorisingPsaIdErrorResponse, SubmissionResponse}
-import models.{MinimalDetails, NormalMode, QtNumber, SessionData, UserAnswers}
+import models.{MinimalDetails, NormalMode, PersonName, QtNumber, SessionData, UserAnswers}
 import org.apache.commons.text.StringEscapeUtils
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -101,7 +101,11 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       when(mockMinimalDetailsConnector.fetch(any[PspId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(minimalDetails)))
 
-      when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier]))
+      when(
+        mockEmailService.sendConfirmationEmail(any[PersonName], any[SessionData], any[MinimalDetails])(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(Right(EmailSentSuccess)))
 
       when(mockSessionRepository.set(any()))

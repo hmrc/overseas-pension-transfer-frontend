@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.{DetailsNotFound, MinimalDetailsConnector}
 import models.authentication.PsaId
 import models.responses.{SubmissionErrorResponse, SubmissionResponse}
-import models.{MinimalDetails, NormalMode, QtNumber, SessionData}
+import models.{MinimalDetails, NormalMode, PersonName, QtNumber, SessionData}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
@@ -74,7 +74,11 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       when(mockMinimalDetailsConnector.fetch(any[PsaId]())(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(Right(minimalDetails)))
 
-      when(mockEmailService.sendConfirmationEmail(any[SessionData], any[MinimalDetails])(any[HeaderCarrier]))
+      when(
+        mockEmailService.sendConfirmationEmail(any[PersonName], any[SessionData], any[MinimalDetails])(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(Right(EmailSentSuccess)))
 
       when(mockSessionRepository.set(any()))

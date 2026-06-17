@@ -36,7 +36,7 @@ class FakeDataRetrievalAction(answers: UserAnswers, sessionData: SessionData)
           request.authenticatedUser,
           answers,
           sessionData,
-          memberFullName(sessionData),
+          memberFullName(answers),
           qtNumber(sessionData),
           dateTransferSubmitted(sessionData)
         )

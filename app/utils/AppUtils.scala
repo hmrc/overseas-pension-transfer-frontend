@@ -22,19 +22,14 @@ import utils.DateTimeFormats.localDateTimeFormatter
 import models.QtNumber
 import models.SessionData
 import models.UserAnswers
-import pages.memberDetails.MemberNamePage
-
 import java.time.ZoneId
 
 trait AppUtils {
 
-  def memberFullName(sessionData: SessionData, userAnswers: Option[UserAnswers] = None): String =
-    sessionData
-      .get(MemberNamePage)
+  def memberFullName(userAnswers: UserAnswers): String =
+    userAnswers
+      .get(pages.memberDetails.MemberNamePage)
       .map(_.fullName)
-      .orElse {
-        userAnswers.flatMap(_.get(pages.memberDetails.MemberNamePage).map(_.fullName))
-      }
       .getOrElse("Undefined Undefined")
 
   def qtNumber(sessionData: SessionData): QtNumber =

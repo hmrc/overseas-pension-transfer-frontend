@@ -17,13 +17,10 @@
 package models
 
 import base.SpecBase
-import models.TaskCategory.*
-import models.taskList.TaskStatus
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.SubmitToHMRCPage
 import play.api.libs.json.*
-import queries.TaskStatusQuery
 import services.EncryptionService
 
 class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
@@ -69,19 +66,6 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
     }
   }
 
-  "initialise" - {
-    "should set expected default statuses" in {
-      val sd = SessionData.initialise(emptySessionData).get
-
-      sd.transferId mustBe userAnswersTransferNumber
-      sd.get(TaskStatusQuery(MemberDetails)) mustBe Some(TaskStatus.NotStarted)
-      sd.get(TaskStatusQuery(QROPSDetails)) mustBe Some(TaskStatus.CannotStart)
-      sd.get(TaskStatusQuery(SchemeManagerDetails)) mustBe Some(TaskStatus.CannotStart)
-      sd.get(TaskStatusQuery(TransferDetails)) mustBe Some(TaskStatus.CannotStart)
-      sd.get(TaskStatusQuery(SubmissionDetails)) mustBe Some(TaskStatus.CannotStart)
-    }
-  }
-
   "Encryption wrappers" - {
 
     "should encrypt and decrypt session data correctly" in {
@@ -109,7 +93,6 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
     "should return Left when decryption fails for invalid cipher text" in {
       import SessionData.*
       val badEnc = EncryptedSessionData("invalid-cipher-text")
-
       val result = badEnc.decrypt(encryptionService)
       result.isLeft mustBe true
     }
@@ -118,8 +101,7 @@ class SessionDataSpec extends AnyFreeSpec with Matchers with SpecBase {
   "encryptedFormat" - {
 
     "should encrypt and decrypt using encryptedFormat successfully" in {
-      val format = SessionData.encryptedFormat(encryptionService)
-
+      val format  = SessionData.encryptedFormat(encryptionService)
       val written = format.writes(sessionData)
 
       (written \ "data").as[String] must not be empty

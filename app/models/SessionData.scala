@@ -20,13 +20,9 @@ import models.authentication.AuthenticatedUser
 import services.EncryptionService
 import queries.Gettable
 import queries.Settable
-import queries.TaskStatusQuery
-import models.taskList.TaskStatus.CannotStart
-import models.taskList.TaskStatus.NotStarted
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import play.api.libs.functional.syntax._
-import models.TaskCategory._
 
 import scala.util.Failure
 import scala.util.Success
@@ -157,13 +153,4 @@ object SessionData {
 
     OFormat(reads, writes)
   }
-
-  def initialise(sd: SessionData): Try[SessionData] =
-    for {
-      sd1 <- sd.set(TaskStatusQuery(MemberDetails), NotStarted)
-      sd2 <- sd1.set(TaskStatusQuery(QROPSDetails), CannotStart)
-      sd3 <- sd2.set(TaskStatusQuery(SchemeManagerDetails), CannotStart)
-      sd4 <- sd3.set(TaskStatusQuery(TransferDetails), CannotStart)
-      sd5 <- sd4.set(TaskStatusQuery(SubmissionDetails), CannotStart)
-    } yield sd5
 }

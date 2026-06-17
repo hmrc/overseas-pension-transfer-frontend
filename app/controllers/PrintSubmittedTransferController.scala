@@ -78,7 +78,7 @@ class PrintSubmittedTransferController @Inject() (
             .map {
               case Right(userAnswers) =>
                 val overviewDetails =
-                  TransferSubmittedSummary.rows(memberFullName(sessionData), dateTransferSubmitted(sessionData))
+                  TransferSubmittedSummary.rows(memberFullName(userAnswers), dateTransferSubmitted(sessionData))
 
                 val memberDetails =
                   SummaryListViewModel(MemberDetailsSummary.rows(CheckMode, userAnswers, showChangeLinks = false))
