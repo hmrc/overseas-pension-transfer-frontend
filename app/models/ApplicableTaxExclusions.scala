@@ -26,13 +26,13 @@ sealed trait ApplicableTaxExclusions
 object ApplicableTaxExclusions extends Enumerable.Implicits {
 
   case object Occupational extends WithName("occupational") with ApplicableTaxExclusions
-  case object Publicservice extends WithName("publicService") with ApplicableTaxExclusions
+  case object PublicService extends WithName("publicService") with ApplicableTaxExclusions
   case object InternationalOrg extends WithName("internationalOrg") with ApplicableTaxExclusions
   case object Resident extends WithName("resident") with ApplicableTaxExclusions
 
   val values: Seq[ApplicableTaxExclusions] = Seq(
     Occupational,
-    Publicservice,
+    PublicService,
     InternationalOrg,
     Resident
   )

@@ -35,10 +35,10 @@ import services.{AuditService, LockService, TransferService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.lock.Lock
 import views.html.DashboardView
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
-
+import scala.concurrent.ExecutionContext
 class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   implicit class FakeRequestOps[A](req: FakeRequest[A]) {
@@ -53,11 +53,12 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
   "DashboardController" - {
 
     "must render the dashboard data successfully" in {
-      val mockRepo    = mock[DashboardSessionRepository]
-      val mockService = mock[TransferService]
-      val mockSession = mock[SessionRepository]
-      val mockLock    = mock[EnhancedLockRepository]
-      val mockView    = mock[DashboardView]
+      val mockRepo        = mock[DashboardSessionRepository]
+      val mockService     = mock[TransferService]
+      val mockSession     = mock[SessionRepository]
+      val mockLock        = mock[EnhancedLockRepository]
+      val mockView        = mock[DashboardView]
+      val mockLockService = mock[LockService]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
       val transferItem  = AllTransfersItem(
@@ -102,9 +103,13 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
           bind[TransferService].toInstance(mockService),
           bind[SessionRepository].toInstance(mockSession),
           bind[EnhancedLockRepository].toInstance(mockLock),
-          bind[DashboardView].toInstance(mockView)
+          bind[DashboardView].toInstance(mockView),
+          bind[ExecutionContext].toInstance(global),
+          bind[LockService].toInstance(mockLockService)
         )
         .build()
+
+      when(mockLockService.releaseLock(any(), any())).thenReturn(Future.successful((): Unit))
 
       running(application) {
         val request = FakeRequest(GET, routes.DashboardController.onPageLoad().url)
