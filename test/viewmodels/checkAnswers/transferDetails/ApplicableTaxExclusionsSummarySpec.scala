@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import base.SpecBase
-import models.ApplicableTaxExclusions.{Occupational, Publicservice, Resident}
+import models.ApplicableTaxExclusions.{Occupational, PublicService, Resident}
 import models.{ApplicableTaxExclusions, CheckMode}
 import org.scalatest.freespec.AnyFreeSpec
 import pages.transferDetails.ApplicableTaxExclusionsPage
@@ -33,7 +33,7 @@ class ApplicableTaxExclusionsSummarySpec extends AnyFreeSpec with SpecBase {
 
     "must return a SummaryListRow when ApplicableTaxExclusionsPage has a value" in {
       val answers = emptyUserAnswers
-        .set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, Publicservice, Resident))
+        .set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, PublicService, Resident))
         .success
         .value
       val result  = ApplicableTaxExclusionsSummary.row(CheckMode, answers)

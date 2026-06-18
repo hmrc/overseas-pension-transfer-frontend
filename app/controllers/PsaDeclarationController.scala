@@ -83,13 +83,10 @@ class PsaDeclarationController @Inject() (
         updateWithReceiptDateSD <-
           EitherT
             .right[Result](Future.fromTry(updateWithQTNumberSD.set(DateSubmittedQuery, submissionResponse.receiptDate)))
-        name                     = request.sessionData
+        name                     = request.userAnswers
                                      .get(MemberNamePage)
-                                     .orElse(request.userAnswers.get(MemberNamePage))
                                      .getOrElse(PersonName("Undefined", "Undefined"))
-        updateWithMemberNameSD  <-
-          EitherT.right[Result](Future.fromTry(updateWithReceiptDateSD.set(MemberNamePage, name)))
-        _                       <- EitherT.right[Result](sessionRepository.set(updateWithMemberNameSD))
+        _                       <- EitherT.right[Result](sessionRepository.set(updateWithReceiptDateSD))
         psaId                    = request.authenticatedUser.asInstanceOf[PsaUser].psaId
         minimalDetails          <- EitherT(minimalDetailsConnector.fetch(psaId)).leftMap { e =>
                                      logger.warn(
@@ -100,7 +97,7 @@ class PsaDeclarationController @Inject() (
         _                       <- EitherT.right[Result](
                                      // Currently we do nothing with the return value from the email service. If we want to map the error we can do so here.
                                      emailService
-                                       .sendConfirmationEmail(updateWithMemberNameSD, minimalDetails)
+                                       .sendConfirmationEmail(name, updateWithReceiptDateSD, minimalDetails)
                                        .map(_ => ())
                                    )
       } yield Redirect(PspDeclarationPage.nextPage(mode, request.userAnswers))).merge

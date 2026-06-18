@@ -17,7 +17,7 @@
 package viewmodels.checkAnswers.transferDetails
 
 import base.SpecBase
-import models.ApplicableTaxExclusions.{Occupational, Publicservice, Resident}
+import models.ApplicableTaxExclusions.{Occupational, PublicService, Resident}
 import models.WhyTransferIsTaxable.TransferExceedsOTCAllowance
 import models.address.{Country, PropertyAddress}
 import models.assets.*
@@ -63,7 +63,7 @@ class TransferDetailsSummarySpec extends AnyFreeSpec with SpecBase {
         .set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance)
         .success
         .value
-        .set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, Publicservice, Resident))
+        .set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, PublicService, Resident))
         .success
         .value
         .set(AmountOfTaxDeductedPage, BigDecimal(1000))
@@ -161,7 +161,7 @@ class TransferDetailsSummarySpec extends AnyFreeSpec with SpecBase {
         .set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance)
         .success
         .value
-        .set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, Publicservice, Resident))
+        .set(ApplicableTaxExclusionsPage, Set[ApplicableTaxExclusions](Occupational, PublicService, Resident))
         .success
         .value
         .set(AmountOfTaxDeductedPage, BigDecimal(1000))

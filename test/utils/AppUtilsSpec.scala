@@ -21,7 +21,7 @@ import models.{QtNumber, UserAnswers}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import pages.memberDetails.MemberNamePage
-import play.api.libs.json.{JsObject, JsString}
+//import play.api.libs.json.{JsObject, JsString}
 import queries.{DateSubmittedQuery, QtNumberQuery}
 
 import java.time.ZoneId
@@ -30,27 +30,18 @@ class AppUtilsSpec extends AnyFreeSpec with Matchers with SpecBase with AppUtils
 
   "memberFullName" - {
 
-    "must return full name when present in session data" in {
-      val sessionData = emptySessionData
-        .set(MemberNamePage, testMemberName)
-        .success
-        .value
-
-      memberFullName(sessionData) mustBe "User McUser"
-    }
-
-    "must return full name from user answers when not present in session data" in {
+    "must return full name when present in UserAnswers data" in {
       val userAnswers: UserAnswers =
-        UserAnswers(userAnswersTransferNumber, pstr, JsObject(Map("field" -> JsString("value"))), now)
+        emptyUserAnswers
           .set(MemberNamePage, testMemberName)
           .success
           .value
 
-      memberFullName(emptySessionData, Some(userAnswers)) mustBe "User McUser"
+      memberFullName(userAnswers) mustBe "User McUser"
     }
 
-    "must return 'Undefined Undefined' when name missing from both session data and user answers" in {
-      memberFullName(emptySessionData, None) mustBe "Undefined Undefined"
+    "must return 'Undefined Undefined' when name is missing from UserAnswers" in {
+      memberFullName(emptyUserAnswers) mustBe "Undefined Undefined"
     }
   }
 
