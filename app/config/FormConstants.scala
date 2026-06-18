@@ -18,8 +18,8 @@ package config
 
 object FormConstants {
 
-  val GovUkMarginBottom6 = "govuk-!-margin-bottom-6"
-  val GovUkMarginBottom9 = "govuk-!-margin-bottom-9"
-  val GovUkSectionBreakl = "govuk-section-break--l"
+  final val GovUkMarginBottom6 = "govuk-!-margin-bottom-6"
+  final val GovUkMarginBottom9 = "govuk-!-margin-bottom-9"
+  final val GovUkSectionBreakl = "govuk-section-break--l"
 
 }
