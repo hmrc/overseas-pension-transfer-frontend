@@ -18,7 +18,7 @@ package config
 
 object Constants {
 
-  val MaxCurrency = 999999999.99
-  val MinCurrency = 0.01
+  final val MaxCurrency = 999999999.99
+  final val MinCurrency = 0.01
 
 }
