@@ -1,5 +1,5 @@
-@*
- * Copyright 2024 HM Revenue & Customs
+/*
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,24 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
-@import views.ViewUtils.titleNoForm
-@import views.html.components.{p, h}
+package config
 
+object FormConstants {
 
-@this(
-    layout: templates.Layout
-)
+  final val GovUkMarginBottom6 = "govuk-!-margin-bottom-6"
+  final val GovUkMarginBottom9 = "govuk-!-margin-bottom-9"
+  final val GovUkSectionBreakl = "govuk-section-break--l"
 
-@()(implicit request: Request[_], messages: Messages)
-
-@layout(pageTitle = titleNoForm(messages("journeyRecovery.startAgain.title")), showPageFooter = false) {
-
-@h("journeyRecovery.continue","xl")
-
-@p("journeyRecovery.continue.guidance")
-@p("journeyRecovery.continue.guidance.extra")
 }

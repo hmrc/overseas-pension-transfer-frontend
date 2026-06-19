@@ -41,7 +41,7 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
   private val formProvider = new OverseasTransferAllowanceFormProvider()
   private val form         = formProvider()
 
-  val validAnswer = BigDecimal(0.01)
+  val validAnswer = BigDecimal(minCurrency)
 
   private lazy val overseasTransferAllowanceRoute =
     routes.OverseasTransferAllowanceController.onPageLoad(NormalMode).url

@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,8 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-@import viewmodels.govuk.all.{ButtonViewModel, FluentButton}
-@import views.ViewUtils.titleNoForm
-@import views.html.components.{p, h}
+@(baseKey: String, size: String, args: Any*)(implicit messages: Messages)
 
-
-@this(
-    layout: templates.Layout
-)
-
-@()(implicit request: Request[_], messages: Messages)
-
-@layout(pageTitle = titleNoForm(messages("journeyRecovery.startAgain.title")), showPageFooter = false) {
-
-@h("journeyRecovery.continue","xl")
-
-@p("journeyRecovery.continue.guidance")
-@p("journeyRecovery.continue.guidance.extra")
-}
+<h1 class="@{s"govuk-heading-$size"}">
+ @messages(baseKey + ".heading", args: _*)
+</h1>

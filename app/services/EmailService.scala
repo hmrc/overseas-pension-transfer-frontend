@@ -26,6 +26,7 @@ import models.{MinimalDetails, PersonName, SessionData}
 import models.email.EmailAccepted
 import models.email.EmailToSendRequest
 import models.email.SubmissionConfirmation
+import utils.DateTimeFormats.emailDisplayDate
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -103,7 +104,7 @@ class EmailService @Inject() (
 
   private def format(instant: Instant): String = {
     val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-    val date          = localDateTime.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+    val date          = localDateTime.format(emailDisplayDate)
     val time          = localDateTime.format(DateTimeFormatter.ofPattern("HH:mma", Locale.ENGLISH))
     s"$date at ${time.toLowerCase}"
   }

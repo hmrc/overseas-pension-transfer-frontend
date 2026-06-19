@@ -29,6 +29,7 @@
 @import viewmodels.LabelSize.Large
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import views.html.components.QTNumber
+@import config.FormConstants.GovUkMarginBottom6
 
 @this(
     layout: templates.Layout,
@@ -52,7 +53,7 @@
             InputViewModel(
                 field = form("otAllowance"),
                 label = LabelViewModel(Text(messages("overseasTransferAllowance.heading")))
-                        .withCssClass("govuk-!-margin-bottom-6")
+                        .withCssClass(GovUkMarginBottom6)
                         .asPageHeading(size = Large)
             )
             .withHint(HintViewModel(messages("overseasTransferAllowance.hint")))

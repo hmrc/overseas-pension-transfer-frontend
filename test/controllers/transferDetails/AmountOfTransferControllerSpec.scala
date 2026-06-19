@@ -42,7 +42,7 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
   val formProvider           = new AmountOfTransferFormProvider()
   val form: Form[BigDecimal] = formProvider()
 
-  val validAnswer = BigDecimal(0.01)
+  val validAnswer = BigDecimal(minCurrency)
 
   lazy val amountOfTransferRoute: String = routes.AmountOfTransferController.onPageLoad(NormalMode).url
 

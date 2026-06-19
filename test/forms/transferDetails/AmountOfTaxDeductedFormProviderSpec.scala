@@ -31,8 +31,8 @@ class AmountOfTaxDeductedFormProviderSpec extends CurrencyFieldBehaviours {
 
     val fieldName = "taxDeducted"
 
-    val minimum = .01
-    val maximum = 999999999.99
+    val minimum = minCurrency
+    val maximum = maxCurrency
 
     val validDataGenerator =
       Gen

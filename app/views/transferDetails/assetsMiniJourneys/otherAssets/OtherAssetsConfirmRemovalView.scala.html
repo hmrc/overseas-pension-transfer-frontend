@@ -24,6 +24,7 @@
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
 @import viewmodels.LegendSize.Large
+@import config.FormConstants.GovUkMarginBottom6
 
 @this(
         layout: templates.Layout,
@@ -52,7 +53,7 @@
                 field = form("value"),
                 legend = LegendViewModel(Text(messages("otherAssetsConfirmRemoval.heading")))
                     .asPageHeading(size = Large)
-                    .withCssClass("govuk-!-margin-bottom-6")
+                    .withCssClass(GovUkMarginBottom6)
             )
         )
 

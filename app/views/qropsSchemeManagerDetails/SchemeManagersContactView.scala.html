@@ -20,6 +20,7 @@
 @import viewmodels.LabelSize.Large
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
+@import config.FormConstants.GovUkMarginBottom6
 
 @this(
     layout: templates.Layout,
@@ -43,7 +44,7 @@
             InputViewModel(
                 field = form("contactNumber"),
                 label = LabelViewModel(Text(messages("schemeManagersContact.heading")))
-                            .withCssClass("govuk-!-margin-bottom-6")
+                            .withCssClass(GovUkMarginBottom6)
                             .asPageHeading(size = Large)
             )
             .withHint(Hint(content = HtmlContent(

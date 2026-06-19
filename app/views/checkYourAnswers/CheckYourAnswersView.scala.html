@@ -22,6 +22,7 @@
 @import viewmodels.govuk.all.ButtonViewModel
 @import views.ViewUtils.titleNoForm
 @import views.html.components.{CheckYourAnswersHeading, QTNumber}
+@import views.html.components.h2
 
 
 @this(
@@ -43,15 +44,15 @@
 
  @govukSummaryList(memberDetails)
 
- <h2 class="govuk-heading-m">@messages("common.transferDetails.heading")</h2>
+ @h2("common.transferDetails.heading", "m")
 
  @govukSummaryList(transferDetails)
 
- <h2 class="govuk-heading-m">@messages("common.qropsDetails.heading")</h2>
+ @h2("common.qropsDetails.heading", "m")
 
  @govukSummaryList(qropsDetails)
 
- <h2 class="govuk-heading-m">@messages("common.qropsSchemeManagerDetails.heading")</h2>
+ @h2("common.qropsSchemeManagerDetails.heading", "m")
 
  @govukSummaryList(schemeManagerDetails)
 

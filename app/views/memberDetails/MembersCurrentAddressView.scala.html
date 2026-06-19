@@ -22,6 +22,7 @@
 @import viewmodels.govuk.all._
 @import views.ViewUtils.title
 @import views.html.components.{InputCountry, QTNumber}
+@import views.html.components.h
 
 @this(
         layout: templates.Layout,
@@ -47,7 +48,7 @@
         }
 
         @qtNumber()
-        <h1 class="govuk-heading-l">@messages("membersCurrentAddress.heading", memberName)</h1>
+        @h("membersCurrentAddress", "l", memberName)
         @govukInput(
             InputViewModel(
                 field = form("addressLine1"),

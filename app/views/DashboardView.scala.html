@@ -21,6 +21,7 @@
 @import viewmodels.SearchBarViewModel
 @import views.html.components.SearchBar
 @import views.html.components.ScrollableTable
+@import views.html.components.{h, h2, p}
 
 @this(
         layout: templates.Layout,
@@ -74,7 +75,7 @@
     }
 
     <h2 class="govuk-caption-l">@schemeName</h2>
-    <h1 class="govuk-heading-l">@messages("dashboard.heading")</h1>
+    @h("dashboard", "l")
     
     <p class="govuk-body">
         <a href="@nextPage" class="govuk-link">@messages("dashboard.linkText")</a>
@@ -87,12 +88,12 @@
     @if(allTransfersViewModel.table.rows.nonEmpty) {
         <div>
         @if(isSearch) {
-            <h2 class="govuk-heading-m">@messages("dashboard.search.results.heading")</h2>
+            @h2("dashboard.search.results.heading", "m")
             <p class="govuk-body">
                 @messages("dashboard.search.results.count", allTransfersViewModel.table.rows.size, allTransfersViewModel.totalItems)
             </p>
         } else {
-            <h2 class="govuk-heading-m">@messages("dashboard.allTransfers.heading")</h2>
+            @h2("dashboard.allTransfers.heading","m")
         }
         <div>
             @scrollableTable(messages("dashboard.allTransfers.heading"), allTransfersViewModel.table)
@@ -101,16 +102,10 @@
         </div>
     } else {
         @if(isSearch) {
-            <h2 class="govuk-heading-m">
-                @messages("dashboard.search.noResults.heading")
-            </h2>
-            <p class="govuk-body">
-                @messages("dashboard.search.noResults.paragraph")
-            </p>
+            @h2("dashboard.search.noResults.heading","m")
+            @p("dashboard.search.noResults.paragraph")
         } else {
-            <p class="govuk-body">
-            @messages("dashboard.allTransfers.empty")
-            </p>
+            @p("dashboard.allTransfers.empty")
         }
     }
     

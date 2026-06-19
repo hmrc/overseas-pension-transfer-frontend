@@ -19,6 +19,7 @@
 @import viewmodels.InputWidth._
 @import viewmodels.govuk.all.{ButtonViewModel, ErrorSummaryViewModel, FluentInput, InputViewModel, LabelViewModel}
 @import views.ViewUtils.title
+@import views.html.components.h
 
 @this(
         layout: templates.Layout,
@@ -38,7 +39,7 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        <h1 class="govuk-heading-l">@messages("memberName.heading")</h1>
+        @h("memberName", "l")
 
         @govukInput(
             InputViewModel(

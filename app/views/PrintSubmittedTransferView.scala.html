@@ -20,6 +20,8 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukSummaryList
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 @import views.html.helper.CSPNonce
+@import views.html.components.h2
+
 
 @this(
         layout: templates.Layout,
@@ -50,16 +52,16 @@
 
     @govukSummaryList(overviewDetails)
 
-    <h2 class="govuk-heading-m">@messages("transferSubmitted.memberDetails")</h2>
+    @h2("transferSubmitted.memberDetails", "m")
     @govukSummaryList(memberDetails)
 
-    <h2 class="govuk-heading-m">@messages("transferSubmitted.transferDetails")</h2>
+    @h2("transferSubmitted.transferDetails", "m")
     @govukSummaryList(transferDetails)
 
-    <h2 class="govuk-heading-m">@messages("transferSubmitted.qropsDetails")</h2>
+    @h2("transferSubmitted.qropsDetails", "m")
     @govukSummaryList(qropsDetails)
 
-    <h2 class="govuk-heading-m">@messages("transferSubmitted.qropsManagerDetails")</h2>
+    @h2("transferSubmitted.qropsManagerDetails", "m")
     @govukSummaryList(schemeManagerDetails)
 
 

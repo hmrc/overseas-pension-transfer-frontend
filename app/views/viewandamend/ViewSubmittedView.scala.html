@@ -24,6 +24,7 @@
 @import views.html.components.CheckYourAnswersHeading
 @import views.html.helper.form
 @import play.twirl.api.Html
+@import views.html.components.h2
 
 @this(
         layout: templates.Layout,
@@ -64,19 +65,19 @@
 
  @govukSummaryList(schemeDetails)
 
- <h2 class="govuk-heading-m">@messages("common.memberDetails.heading")</h2>
+ @h2("common.memberDetails.heading","m")
 
  @govukSummaryList(memberDetails)
 
- <h2 class="govuk-heading-m">@messages("common.transferDetails.heading")</h2>
+ @h2("common.transferDetails.heading", "m")
 
  @govukSummaryList(transferDetails)
 
- <h2 class="govuk-heading-m">@messages("common.qropsDetails.heading")</h2>
+ @h2("common.qropsDetails.heading", "m")
 
  @govukSummaryList(qropsDetails)
 
- <h2 class="govuk-heading-m">@messages("common.qropsSchemeManagerDetails.heading")</h2>
+ @h2("common.qropsSchemeManagerDetails.heading", "m")
 
  @govukSummaryList(schemeManagerDetails)
 
