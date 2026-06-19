@@ -17,6 +17,7 @@
 package controllers.transferDetails
 
 import base.SpecBase
+import config.Constants.MinCurrency
 import forms.transferDetails.AmountOfTaxDeductedFormProvider
 import models.{AmendCheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -37,7 +38,7 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
   val formProvider = new AmountOfTaxDeductedFormProvider()
   val form         = formProvider()
 
-  val validAnswer = BigDecimal(.01)
+  val validAnswer = BigDecimal(MinCurrency)
 
   lazy val amountOfTaxDeductedRoute = routes.AmountOfTaxDeductedController.onPageLoad(NormalMode).url
 
