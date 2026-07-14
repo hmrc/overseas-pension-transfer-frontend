@@ -221,6 +221,7 @@ memberNino.error.required = Enter the member’'s National Insurance number
 memberNino.error.pattern = Enter the member’'s National Insurance number in the correct format
 memberNino.change.hidden = National Insurance number
 memberNino.hint = For example, QQ123456A.
+memberNino.hint.accessible = For example, Q Q 1 2 3 4 5 6 A
 memberNino.doesNotHaveNino.link.text = Member does not have a National Insurance number.
 
 memberDoesNotHaveNino.title = Why does the member not have a National Insurance number?
@@ -738,6 +739,11 @@ otherAssetsAmendContinue.change.hidden = Other asset details
 otherAssetsAmendContinue.summary.value = {0} added
 otherAssetsAmendContinue.text.singular = asset
 otherAssetsAmendContinue.text.plural = assets
+
+amendContinueList.text.title.noItems = You have not added any items
+amendContinueList.text.title.oneItem = You have added 1 item
+amendContinueList.text.title.multipleItems = You have added {0} items
+amendContinueList.addAnotherItem = Do you need to add another item?
 
 moreOtherAssetsDeclaration.title = Is the member transferring more than 5 other assets?
 moreOtherAssetsDeclaration.moreOtherAssets = Is the member transferring more than 5 other assets?
