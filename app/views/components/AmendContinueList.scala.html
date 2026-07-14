@@ -24,6 +24,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.listwithactions.{ListWithActions, ListWithActionsItem, ListWithActionsAction}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcListWithActions
+@import viewmodels.SeqDisplayItemsHelper._
 
 @this(
         govukRadios: GovukRadios,
@@ -35,14 +36,7 @@
 @(params: AddToAList, errorMessage: Option[ErrorMessage])(implicit messages: Messages, request: RequestHeader)
 @import params._
 
-<h1 class="govuk-heading-xl">@{
-        itemList.length match {
-            case 0 => messages("amendContinueList.text.title.noItems")
-            case 1 => messages("amendContinueList.text.title.oneItem")
-            case n => messages("amendContinueList.text.title.multipleItems", n)
-        }
-    }
-</h1>
+<h1 class="govuk-heading-xl">@describeItems(itemList, "amendContinueList")</h1>
 
 <div class="govuk-form-group">
 @hmrcListWithActions(ListWithActions(items = itemList map (item => ListWithActionsItem(

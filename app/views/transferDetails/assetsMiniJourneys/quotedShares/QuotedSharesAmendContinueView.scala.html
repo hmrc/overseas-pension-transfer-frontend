@@ -29,6 +29,7 @@
 @import play.api.data.Form
 @import play.api.i18n.Messages
 @import views.html.components.AmendContinueList
+@import viewmodels.SeqDisplayItemsHelper._
 
 @this(
     layout: templates.Layout,
@@ -42,14 +43,7 @@
 
 @singularTxt = @{messages("quotedSharesAmendContinue.text.singular")}
 @pluralTxt = @{messages("quotedSharesAmendContinue.text.plural")}
-@titleTxt = @{
-    shares.length match {
-        case 0 => messages("quotedSharesAmendContinue.text.title.noItems")
-        case 1 => messages("quotedSharesAmendContinue.text.title.oneItem")
-        case n => messages("quotedSharesAmendContinue.text.title.multipleItems", n)
-    }
-}
-
+@titleTxt = @{describeItems(shares, "quotedSharesAmendContinue")}
 
 @layout(pageTitle = title(form, titleTxt)) {
 

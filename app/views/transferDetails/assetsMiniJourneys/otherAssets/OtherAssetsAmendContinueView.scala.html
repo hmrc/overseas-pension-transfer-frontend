@@ -26,6 +26,7 @@
 @import views.ViewUtils.title
 @import views.html.components.QTNumber
 @import views.html.components.AmendContinueList
+@import viewmodels.SeqDisplayItemsHelper._
 
 @this(
         layout: templates.Layout,
@@ -39,13 +40,7 @@
 
 @singularTxt = @{messages("otherAssetsAmendContinue.text.singular")}
 @pluralTxt = @{messages("otherAssetsAmendContinue.text.plural")}
-@titleTxt = @{
-    shares.length match {
-        case 0 => messages("otherAssetsAmendContinue.text.title.noItems")
-        case 1 => messages("otherAssetsAmendContinue.text.title.oneItem")
-        case n => messages("otherAssetsAmendContinue.text.title.multipleItems", n)
-    }
-}
+@titleTxt = @{describeItems(shares, "otherAssetsAmendContinue")}
 
 @layout(pageTitle = title(form, titleTxt)) {
 
