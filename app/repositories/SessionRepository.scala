@@ -76,16 +76,9 @@ class SessionRepository @Inject() (
 
   def get(id: String): Future[Option[SessionData]] = Mdc.preservingMdc {
     keepAlive(id).flatMap { _ =>
-
-      val x = collection
+      collection
         .find(byId(id))
         .headOption()
-      x.map { u =>
-        u.map { o =>
-          println("\nHERE:" + o.data)
-        }
-      }
-      x
     }
   }
 
