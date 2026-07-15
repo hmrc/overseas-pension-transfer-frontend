@@ -17,7 +17,7 @@
 package viewmodels
 import play.api.i18n.Messages
 
-object SeqDisplayItemsHelper {
+object DisplayItems {
   def describeItems[A](itemList: Seq[A], baseKey: String)(implicit messages: Messages): String =
     itemList.length match {
       case 0 => messages(s"$baseKey.text.title.noItems")

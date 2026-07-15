@@ -21,7 +21,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessagesApi
 
-class SeqDisplayItemsHelperSpec extends AnyWordSpec with Matchers {
+class DisplayItemsSpec extends AnyWordSpec with Matchers {
 
   implicit val messages: Messages =
     stubMessagesApi(
@@ -36,15 +36,15 @@ class SeqDisplayItemsHelperSpec extends AnyWordSpec with Matchers {
 
   "describeItems" should {
     "return correct message when zero items" in {
-      val result = SeqDisplayItemsHelper.describeItems(Nil, "base")
+      val result = DisplayItems.describeItems(Nil, "base")
       result shouldBe "No items"
     }
     "return correct message when one item" in {
-      val result = SeqDisplayItemsHelper.describeItems(Seq(""), "base")
+      val result = DisplayItems.describeItems(Seq(""), "base")
       result shouldBe "One item"
     }
     "return correct message when >1 items" in {
-      val result = SeqDisplayItemsHelper.describeItems(Seq("", ""), "base")
+      val result = DisplayItems.describeItems(Seq("", ""), "base")
       result shouldBe "Multiple items"
     }
   }
