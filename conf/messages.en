@@ -398,6 +398,7 @@ schemeManagersEmail.change.hidden = Manager email
 schemeManagersContact.title = What is the scheme manager''s telephone number?
 schemeManagersContact.heading = What is the scheme manager''s telephone number?
 schemeManagersContact.hint = For international numbers include the country code
+schemeManagersContact.hint.accessible = All numbers should include the area, dialling or country code For example, + 4 4 1 2 3 4 5 6 7 8 9 0
 schemeManagersContact.checkYourAnswersLabel = Manager telephone number
 schemeManagersContact.error.required = Enter the scheme manager''s telephone number
 schemeManagersContact.error.length = Telephone number must be 35 characters or less
