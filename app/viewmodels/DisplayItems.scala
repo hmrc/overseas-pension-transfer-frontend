@@ -18,8 +18,8 @@ package viewmodels
 import play.api.i18n.Messages
 
 object DisplayItems {
-  def describeItems[A](itemList: Seq[A], baseKey: String)(implicit messages: Messages): String =
-    itemList.length match {
+  def describeItems[A](items: Seq[A], baseKey: String)(implicit messages: Messages): String =
+    items.length match {
       case 0 => messages(s"$baseKey.text.title.noItems")
       case 1 => messages(s"$baseKey.text.title.oneItem")
       case n => messages(s"$baseKey.text.title.multipleItems", n)
