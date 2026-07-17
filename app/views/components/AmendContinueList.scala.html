@@ -21,10 +21,10 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.AddToAList
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ItemType
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.listwithactions.{ListWithActions, ListWithActionsItem, ListWithActionsAction}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcListWithActions
+@import viewmodels.DisplayItems._
 
 @this(
         govukRadios: GovukRadios,
@@ -36,65 +36,54 @@
 @(params: AddToAList, errorMessage: Option[ErrorMessage])(implicit messages: Messages, request: RequestHeader)
 @import params._
 
-@defining(ItemType(
-            singular = "item",
-            plural = "items"
-          )
-        ) { itemType =>
+<h1 class="govuk-heading-xl">@describeItems(itemList, "amendContinueList")</h1>
 
-        <h1 class="govuk-heading-xl">@itemList.length match {
-            case 0 => {You have not added any items }
-            case 1 => {You have added 1 @itemType.singular}
-            case n => {You have added @n @itemType.plural}
-        }</h1>
-
-        <div class="govuk-form-group">
-        @hmrcListWithActions(ListWithActions(items = itemList map (item => ListWithActionsItem(
-            name = Text(item.name),
-            actions = Seq(
-                ListWithActionsAction(
-                    content = Text("Change"),
-                    visuallyHiddenText = Some(s"Change ${item.name}"),
-                    href= item.changeUrl
+<div class="govuk-form-group">
+@hmrcListWithActions(ListWithActions(items = itemList map (item => ListWithActionsItem(
+    name = Text(item.name),
+    actions = Seq(
+        ListWithActionsAction(
+            content = Text(messages("site.change")),
+            visuallyHiddenText = Some(s"${messages("site.change")} ${item.name}"),                                 
+            href= item.changeUrl
+        ),
+        ListWithActionsAction(
+            content = Text(messages("site.remove")),
+            visuallyHiddenText = Some(s"${messages("site.remove")} ${item.name}"),                    
+            href= item.removeUrl
+        )
+    ))),
+    classes = s"hmrc-list-with-actions--${itemSize.suffix}"
+))
+</div>
+@defining(params.formAction.getOrElse("")) { action =>
+    @formWithCsrf(action = Call("post", action)) {
+        @govukRadios(
+            Radios(
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("amendContinueList.addAnotherItem")),                        
+                    classes = "govuk-fieldset__legend govuk-fieldset__legend--m",
+                    isPageHeading = false
+                ))
+            )),
+            hint = Some(Hint(content = Text(hintText.getOrElse("")))),
+            errorMessage = errorMessage,
+            idPrefix = Some("add-another"),
+            name = "add-another",
+            items = Seq(
+                RadioItem(
+                    content = Text(messages("site.yes")),                        
+                    value = Some("Yes")
                 ),
-                ListWithActionsAction(
-                    content = Text("Remove"),
-                    visuallyHiddenText = Some(s"Remove ${item.name} from the list"),
-                    href= item.removeUrl
+                RadioItem(
+                    content = Text(messages("site.no")),
+                    value = Some("No")
                 )
-            ))),
-            classes = s"hmrc-list-with-actions--${itemSize.suffix}"
+            ),
+            classes = "govuk-radios--inline"
         ))
-        </div>
-    @defining(params.formAction.getOrElse("")) { action =>
-        @formWithCsrf(action = Call("post", action)) {
-            @govukRadios(
-                Radios(
-                fieldset = Some(Fieldset(
-                    legend = Some(Legend(
-                        content = Text(s"Do you need to add another ${itemType.singular}?"),
-                        classes = "govuk-fieldset__legend govuk-fieldset__legend--m",
-                        isPageHeading = false
-                    ))
-                )),
-                hint = Some(Hint(content = Text(hintText.getOrElse("")))),
-                errorMessage = errorMessage,
-                idPrefix = Some("add-another"),
-                name = "add-another",
-                items = Seq(
-                    RadioItem(
-                        content = Text("Yes"),
-                        value = Some("Yes")
-                    ),
-                    RadioItem(
-                        content = Text("No"),
-                        value = Some("No")
-                    )
-                ),
-                classes = "govuk-radios--inline"
-            ))
 
-            @govukButton(Button(content = Text("Continue")))
-        }
+        @govukButton(Button(content = Text(messages("site.continue"))))
     }
 }
