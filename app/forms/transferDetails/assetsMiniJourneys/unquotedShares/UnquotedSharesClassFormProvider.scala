@@ -23,12 +23,12 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class UnquotedSharesClassFormProvider @Inject() extends Mappings with Regex {
-
+  private val lineLength    = 160
   def apply(): Form[String] =
     Form(
       "value" -> text("unquotedSharesClass.error.required")
         .transform[String](input => input.trim, identity)
-        .verifying(maxLength(160, "unquotedSharesClass.error.length"))
+        .verifying(maxLength("unquotedSharesClass.error.length", lineLength))
         .verifying(regexp(classRegex, "unquotedSharesClass.error.pattern"))
     )
 }

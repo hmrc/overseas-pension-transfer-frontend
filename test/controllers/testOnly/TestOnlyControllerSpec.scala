@@ -28,7 +28,7 @@ import play.api.http.Status.{BAD_GATEWAY, NO_CONTENT, OK}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
-import repositories.SessionRepository
+
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -36,11 +36,9 @@ import scala.concurrent.Future
 class TestOnlyControllerSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   val mockUserAnswersConnector: UserAnswersConnector = mock[UserAnswersConnector]
-  val mockSessionRepository: SessionRepository       = mock[SessionRepository]
 
   val application: Application = applicationBuilder(emptyUserAnswers)
     .overrides(
-      bind[SessionRepository].toInstance(mockSessionRepository),
       bind[UserAnswersConnector].toInstance(mockUserAnswersConnector)
     )
     .build()

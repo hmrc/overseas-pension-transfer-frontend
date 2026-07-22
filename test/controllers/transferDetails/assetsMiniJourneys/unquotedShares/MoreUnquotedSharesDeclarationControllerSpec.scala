@@ -19,6 +19,8 @@ package controllers.transferDetails.assetsMiniJourneys.unquotedShares
 import base.SpecBase
 import forms.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationFormProvider
 import models.{CheckMode, FinalCheckMode, NormalMode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationPage
@@ -26,6 +28,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.MoreUnquotedSharesDeclarationView
+
+import scala.concurrent.Future
 
 class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -46,7 +50,7 @@ class MoreUnquotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecB
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreUnquotedSharesDeclarationController
       .onPageLoad(FinalCheckMode)
       .url
-
+  when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
   "MoreUnquotedSharesDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {

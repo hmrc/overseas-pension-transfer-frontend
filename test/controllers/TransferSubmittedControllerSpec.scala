@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
@@ -41,7 +41,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
   private val mockUserAnswersService = mock[UserAnswersService]
-  private val mockSessionRepository  = mock[SessionRepository]
   private val mockConnector          = mock[MinimalDetailsConnector]
   private val application            = new GuiceApplicationBuilder().build()
   private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
@@ -53,7 +52,6 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
     "must return OK and the correct view for a GET" in {
       val application  = applicationBuilder(userAnswers = userAnswersMemberNameQtNumberTransferSubmitted)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[MinimalDetailsConnector].toInstance(mockConnector)
         )
@@ -103,9 +101,6 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
     "redirect to JourneyRecovery page when the sessionRepo is empty" in {
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository)
-        )
         .build()
 
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))

@@ -29,7 +29,7 @@ import pages.qropsDetails.QROPSOtherCountryPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.UserAnswersService
 import views.html.qropsDetails.QROPSOtherCountryView
 
@@ -85,8 +85,6 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
-      val mockSessionRepository  = mock[SessionRepository]
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -95,7 +93,6 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -136,7 +133,7 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
     }
 
     "must return InternalServerError for an error from the backend" in {
-      val mockSessionRepository  = mock[SessionRepository]
+
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
@@ -146,7 +143,6 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()

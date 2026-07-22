@@ -26,6 +26,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationView
+import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.any
+import scala.concurrent.Future
 
 class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -46,6 +49,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController
       .onPageLoad(FinalCheckMode)
       .url
+  when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
   "MorePropertyDeclaration Controller" - {
 

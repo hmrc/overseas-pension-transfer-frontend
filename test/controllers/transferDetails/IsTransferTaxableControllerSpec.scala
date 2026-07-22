@@ -30,7 +30,7 @@ import pages.transferDetails.IsTransferTaxablePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.UserAnswersService
 import views.html.transferDetails.IsTransferTaxableView
 
@@ -87,8 +87,8 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-      val ua                     = emptyUserAnswers.set(IsTransferTaxablePage, true).success.value
+
+      val ua = emptyUserAnswers.set(IsTransferTaxablePage, true).success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -97,7 +97,6 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application = applicationBuilder(ua)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -116,15 +115,10 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -160,7 +154,6 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -169,7 +162,6 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

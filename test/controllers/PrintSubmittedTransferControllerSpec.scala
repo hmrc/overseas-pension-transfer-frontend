@@ -28,7 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.UserAnswersService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateTimeFormats.localDateTimeFormatter
@@ -45,7 +45,6 @@ import scala.concurrent.Future
 
 class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
 
-  private val mockSessionRepository  = mock[SessionRepository]
   private val application            = new GuiceApplicationBuilder().build()
   private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
   private val mockUserAnswersService = mock[UserAnswersService]
@@ -57,7 +56,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
       val application =
         applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -136,7 +134,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
     "redirect to JourneyRecovery page when the sessionRepo is empty" in {
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

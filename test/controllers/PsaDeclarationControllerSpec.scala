@@ -29,7 +29,7 @@ import pages.PsaDeclarationPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PsaDeclarationView
@@ -61,7 +61,6 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must redirect to the next page when submitted" in {
       val mockUserAnswersService      = mock[UserAnswersService]
-      val mockSessionRepository       = mock[SessionRepository]
       val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
       val mockEmailService            = mock[EmailService]
 
@@ -88,7 +87,6 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         applicationBuilder()
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
             bind[EmailService].toInstance(mockEmailService)
           )
@@ -129,7 +127,6 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockUserAnswersService      = mock[UserAnswersService]
       val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
       val mockEmailService            = mock[EmailService]
-      val mockSessionRepository       = mock[SessionRepository]
 
       val qtNumber = QtNumber("QT123456")
 
@@ -147,8 +144,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
-            bind[EmailService].toInstance(mockEmailService),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[EmailService].toInstance(mockEmailService)
           )
           .build()
 

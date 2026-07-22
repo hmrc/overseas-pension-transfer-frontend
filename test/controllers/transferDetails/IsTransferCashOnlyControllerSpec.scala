@@ -28,7 +28,7 @@ import pages.transferDetails.IsTransferCashOnlyPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.UserAnswersService
 import views.html.transferDetails.IsTransferCashOnlyView
 
@@ -85,8 +85,8 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-      val ua                     = emptyUserAnswers.set(IsTransferCashOnlyPage, true).success.value
+
+      val ua = emptyUserAnswers.set(IsTransferCashOnlyPage, true).success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -96,7 +96,6 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application =
         applicationBuilder(userAnswers = ua)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -115,15 +114,10 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

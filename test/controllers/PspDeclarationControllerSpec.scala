@@ -34,7 +34,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.PspDeclarationView
@@ -88,7 +88,6 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     "must redirect to the next page when valid data is submitted" in {
 
       val mockUserAnswersService      = mock[UserAnswersService]
-      val mockSessionRepository       = mock[SessionRepository]
       val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
       val mockEmailService            = mock[EmailService]
 
@@ -115,7 +114,6 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       val application = applicationBuilderPsp(userAnswers = ua)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
           bind[EmailService].toInstance(mockEmailService)

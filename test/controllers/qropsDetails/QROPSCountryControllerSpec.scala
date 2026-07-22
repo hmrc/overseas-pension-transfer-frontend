@@ -31,7 +31,7 @@ import pages.qropsDetails.QROPSCountryPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.{CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.qropsDetails.QROPSCountryView
@@ -109,7 +109,6 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -118,7 +117,6 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -169,7 +167,6 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -178,7 +175,6 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

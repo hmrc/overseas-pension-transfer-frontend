@@ -30,7 +30,7 @@ import pages.transferDetails.OverseasTransferAllowancePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.UserAnswersService
 import views.html.transferDetails.OverseasTransferAllowanceView
 
@@ -90,7 +90,6 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -99,7 +98,6 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -120,7 +118,6 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -129,7 +126,6 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -173,7 +169,6 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -182,7 +177,6 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

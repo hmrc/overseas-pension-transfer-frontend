@@ -26,10 +26,9 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueAssetPage
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.AssetsMiniJourneyService
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueView
 
@@ -92,14 +91,11 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must return OK for a GET in CheckMode and save completion" in {
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(1)
       val application =
-        applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+        applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request = FakeRequest(GET, propertyAmendContinueRouteCheck)
@@ -109,14 +105,11 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to the page's nextPageWith when valid data 'Yes' is submitted in NormalMode" in {
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(2)
       val application =
-        applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+        applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request =
@@ -135,14 +128,11 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to the page's nextPageWith when valid data 'No' is submitted in NormalMode" in {
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(0)
       val application =
-        applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+        applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request =
@@ -161,14 +151,11 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to CYA when valid data is submitted in CheckMode" in {
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(3)
       val application =
-        applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+        applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request =
@@ -187,14 +174,11 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to Final CYA when valid data is submitted in FinalCheckMode" in {
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(3)
       val application =
-        applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
+        applicationBuilder(userAnswers = userAnswers).build()
 
       running(application) {
         val request =
@@ -215,17 +199,11 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val userAnswers = uaWithProperties(2)
       val application =
-        applicationBuilder(userAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+        applicationBuilder(userAnswers).build()
 
       running(application) {
         val request =

@@ -27,6 +27,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.assets.UnquotedSharesQuery
 import views.html.transferDetails.assetsMiniJourneys.unquotedShares.UnquotedSharesConfirmRemovalView
+import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.any
+
+import scala.concurrent.Future
 
 class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -57,6 +61,8 @@ class UnquotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBa
       val userAnswers = emptyUserAnswers.set(UnquotedSharesQuery, entries).success.value
 
       val application = applicationBuilder(userAnswers = userAnswers).build()
+
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       running(application) {
         val request =

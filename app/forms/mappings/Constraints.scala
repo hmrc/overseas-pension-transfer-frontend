@@ -67,15 +67,15 @@ trait Constraints {
       }
     }
 
-  protected def regexp(regex: String, errorKey: String): Constraint[String] =
+  protected def regexp(regex: String, errorKey: String): Constraint[String]                =
     Constraint {
       case str if str.matches(regex) =>
         Valid
       case _                         =>
         Invalid(errorKey, regex)
     }
-
-  protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
+  private val lineLength                                                                   = 35
+  protected def maxLength(errorKey: String, maximum: Int = lineLength): Constraint[String] =
     Constraint {
       case str if str.length <= maximum =>
         Valid

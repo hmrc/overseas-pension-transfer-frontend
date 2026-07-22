@@ -23,12 +23,12 @@ import play.api.data.Form
 import javax.inject.Inject
 
 class SchemeManagerOrganisationNameFormProvider @Inject() extends Mappings with Regex {
-
+  private val lineLength    = 160
   def apply(): Form[String] =
     Form(
       "organisationName" -> text("organisationName.error.required")
         .transform[String](input => input.trim, identity)
-        .verifying(maxLength(160, "organisationName.error.length"))
+        .verifying(maxLength("organisationName.error.length", lineLength))
         .verifying(regexp(nameRegex, "organisationName.error.pattern"))
     )
 }

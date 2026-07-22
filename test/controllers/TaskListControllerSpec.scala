@@ -24,6 +24,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import viewmodels.govuk.SummaryListFluency
 
+import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+import scala.concurrent.Future
+
 class TaskListControllerSpec extends AnyFreeSpec with SpecBase with SummaryListFluency with MockitoSugar {
 
   "TaskListController" - {
@@ -44,6 +48,7 @@ class TaskListControllerSpec extends AnyFreeSpec with SpecBase with SummaryListF
 
     "fromDashboard" - {
       "must redirect to TaskList onPageLoad and set new session data" in {
+        when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
         val app =
           applicationBuilder()

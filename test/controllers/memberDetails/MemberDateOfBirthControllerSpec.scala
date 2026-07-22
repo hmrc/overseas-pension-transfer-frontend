@@ -32,7 +32,7 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.UserAnswersService
 import views.html.memberDetails.MemberDateOfBirthView
 
@@ -98,7 +98,6 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to the members current address when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
@@ -107,7 +106,6 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -141,7 +139,6 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
@@ -149,7 +146,6 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

@@ -22,12 +22,12 @@ import play.api.data._
 import javax.inject.Inject
 
 class SchemeManagersEmailFormProvider @Inject() extends Mappings {
-
+  private val lineLength    = 254
   def apply(): Form[String] =
     Form(
       "emailAddress" -> text("schemeManagersEmail.error.required")
         .transform[String](input => input.trim, identity)
-        .verifying(maxLength(254, "schemeManagersEmail.error.length"))
+        .verifying(maxLength("schemeManagersEmail.error.length", lineLength))
         .verifying(validEmail("schemeManagersEmail.error.format"))
     )
 }

@@ -29,7 +29,7 @@ import play.api.i18n.Messages
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.UserAnswersService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsSummary
@@ -45,13 +45,11 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       .url
 
   private val mockUserAnswersService = mock[UserAnswersService]
-  private val mockSessionRepository  = mock[SessionRepository]
 
   private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)
       .overrides(
-        bind[UserAnswersService].toInstance(mockUserAnswersService),
-        bind[SessionRepository].toInstance(mockSessionRepository)
+        bind[UserAnswersService].toInstance(mockUserAnswersService)
       )
       .build()
 

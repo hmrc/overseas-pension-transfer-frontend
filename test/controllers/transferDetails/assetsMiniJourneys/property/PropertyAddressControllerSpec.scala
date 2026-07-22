@@ -31,7 +31,7 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.{AddressService, CountryService}
 import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
@@ -90,7 +90,6 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockCountryService.countries).thenReturn(testCountries)
@@ -101,7 +100,6 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService)
           )
           .build()
@@ -125,14 +123,11 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService)
           )
           .build()

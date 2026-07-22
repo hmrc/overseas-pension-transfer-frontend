@@ -21,7 +21,8 @@ import models.address.{Countries, PropertyAddress}
 import models.assets.TypeOfAsset
 import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
-import models.{AllTransfersItem, IndividualDetails, MinimalDetails, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import models.*
+import org.mockito.Mockito.mock
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -29,7 +30,7 @@ import pages.memberDetails.MemberNamePage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
 import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassPage, QuotedSharesCompanyNamePage, QuotedSharesNumberPage, QuotedSharesValuePage}
-import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
+import pages.transferDetails.assetsMiniJourneys.unquotedShares.*
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
@@ -37,14 +38,85 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
+import repositories.*
+import uk.gov.hmrc.mongo.play.PlayMongoModule
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import uk.gov.hmrc.mongo.lock.MongoLockRepository
 import utils.DateTimeFormats.localDateTimeFormatter
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
 import scala.util.Random
 
-trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
+trait SpecBase extends Matchers with OptionValues with ScalaFutures with IntegrationPatience with TestData {
+
+  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+
+  lazy val mockDashboardSessionRepository: DashboardSessionRepository = mock(classOf[DashboardSessionRepository])
+  lazy val mockEnhancedLockRepository: EnhancedLockRepository         = mock(classOf[EnhancedLockRepository])
+  lazy val mockSessionRepository: SessionRepository                   = mock(classOf[SessionRepository])
+  lazy val mockMongoLockRepository: MongoLockRepository               = mock(classOf[MongoLockRepository])
+  protected def applicationBuilder(
+    userAnswers: UserAnswers = emptyUserAnswers,
+    sessionData: SessionData = sessionDataMemberNameQtNumber
+  ): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .disable[PlayMongoModule]
+      .overrides(
+        bind[MongoLockRepository].toInstance(mockMongoLockRepository),
+        bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
+        bind[EnhancedLockRepository].toInstance(mockEnhancedLockRepository),
+        bind[SessionRepository].toInstance(mockSessionRepository),
+        bind[IdentifierAction].to[FakeIdentifierAction],
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
+        bind[SchemeDataAction].to[FakeSchemeDataAction]
+      )
+
+  def fakeIdentifierRequest[A](
+    fakeRequest: FakeRequest[A],
+    authenticatedUser: AuthenticatedUser = psaUser
+  ): IdentifierRequest[A] =
+    IdentifierRequest(fakeRequest, authenticatedUser)
+
+  implicit val testIdentifierRequest: IdentifierRequest[_] =
+    IdentifierRequest(FakeRequest(), psaUser)
+
+  def fakeSchemeRequest[A](
+    fakeRequest: FakeRequest[A],
+    authenticatedUser: AuthenticatedUser = psaUser,
+    schemeDetails: PensionSchemeDetails = schemeDetails
+  ): SchemeRequest[A] =
+    SchemeRequest(fakeRequest, authenticatedUser, schemeDetails)
+
+  def fakeDisplayRequest[A](
+    fakeRequest: FakeRequest[A],
+    userAnswers: UserAnswers = emptyUserAnswers,
+    sessionData: SessionData = emptySessionData
+  ): DisplayRequest[A] =
+    DisplayRequest(
+      request = fakeRequest,
+      authenticatedUser = psaUser,
+      userAnswers = userAnswers,
+      sessionData = sessionData,
+      memberName = testMemberName.fullName,
+      qtNumber = testQtNumber,
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
+    )
+
+  implicit val testDisplayRequest: DisplayRequest[_] =
+    DisplayRequest(
+      request = FakeRequest(),
+      authenticatedUser = psaUser,
+      userAnswers = emptyUserAnswers,
+      sessionData = emptySessionData,
+      memberName = testMemberName.fullName,
+      qtNumber = testQtNumber,
+      dateTransferSubmitted = formattedTestDateTransferSubmitted
+    )
+
+}
+
+trait TestData extends TryValues {
 
   protected final val minYear: Int  = 1901
   private val clockMillis: Long     = 1718118467838L
@@ -119,61 +191,6 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
 
   def userAnswersMemberNameQtNumberTransferSubmitted: UserAnswers =
     userAnswersMemberNameQtNumber.set(DateSubmittedQuery, now).success.value
-
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
-
-  protected def applicationBuilder(
-    userAnswers: UserAnswers = emptyUserAnswers,
-    sessionData: SessionData = sessionDataMemberNameQtNumber
-  ): GuiceApplicationBuilder =
-    new GuiceApplicationBuilder()
-      .overrides(
-        bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
-        bind[SchemeDataAction].to[FakeSchemeDataAction]
-      )
-
-  def fakeIdentifierRequest[A](
-    fakeRequest: FakeRequest[A],
-    authenticatedUser: AuthenticatedUser = psaUser
-  ): IdentifierRequest[A] =
-    IdentifierRequest(fakeRequest, authenticatedUser)
-
-  implicit val testIdentifierRequest: IdentifierRequest[_] =
-    IdentifierRequest(FakeRequest(), psaUser)
-
-  def fakeSchemeRequest[A](
-    fakeRequest: FakeRequest[A],
-    authenticatedUser: AuthenticatedUser = psaUser,
-    schemeDetails: PensionSchemeDetails = schemeDetails
-  ): SchemeRequest[A] =
-    SchemeRequest(fakeRequest, authenticatedUser, schemeDetails)
-
-  def fakeDisplayRequest[A](
-    fakeRequest: FakeRequest[A],
-    userAnswers: UserAnswers = emptyUserAnswers,
-    sessionData: SessionData = emptySessionData
-  ): DisplayRequest[A] =
-    DisplayRequest(
-      request = fakeRequest,
-      authenticatedUser = psaUser,
-      userAnswers = userAnswers,
-      sessionData = sessionData,
-      memberName = testMemberName.fullName,
-      qtNumber = testQtNumber,
-      dateTransferSubmitted = formattedTestDateTransferSubmitted
-    )
-
-  implicit val testDisplayRequest: DisplayRequest[_] =
-    DisplayRequest(
-      request = FakeRequest(),
-      authenticatedUser = psaUser,
-      userAnswers = emptyUserAnswers,
-      sessionData = emptySessionData,
-      memberName = testMemberName.fullName,
-      qtNumber = testQtNumber,
-      dateTransferSubmitted = formattedTestDateTransferSubmitted
-    )
 
   def userAnswersWithAssets(assetsCount: Int = 1): UserAnswers =
     (0 until assetsCount).foldLeft(

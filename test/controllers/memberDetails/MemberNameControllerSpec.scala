@@ -30,7 +30,7 @@ import pages.memberDetails.MemberNamePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.UserAnswersService
 import views.html.memberDetails.MemberNameView
 
@@ -85,7 +85,6 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
     "must redirect to the members nino page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
       when(mockUserAnswersService.setExternalUserAnswers(any(), any())(any()))
         .thenReturn(Future.successful(Right(Done)))
@@ -93,7 +92,6 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -132,7 +130,6 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -141,7 +138,6 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       val application = applicationBuilder(userAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

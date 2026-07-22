@@ -34,7 +34,7 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
+
 import services.{AddressService, CountryService, UserAnswersService}
 import viewmodels.CountrySelectViewModel
 import views.html.memberDetails.MembersCurrentAddressView
@@ -147,7 +147,6 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
     "must redirect to the member is UK resident when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockCountryService.countries).thenReturn(testCountries)
@@ -161,7 +160,6 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
@@ -264,7 +262,6 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -273,7 +270,6 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       val application = applicationBuilder(emptyUserAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

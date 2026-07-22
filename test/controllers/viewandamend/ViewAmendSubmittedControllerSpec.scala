@@ -27,7 +27,6 @@ import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
 import viewmodels.checkAnswers.memberDetails.MemberDetailsSummary
@@ -45,7 +44,6 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockLockService        = mock[LockService]
-  private val mockSessionRepository  = mock[SessionRepository]
   private val qtStatus               = QtStatus.Submitted
   private val versionNumber          = "007"
 
@@ -183,8 +181,7 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val app = applicationBuilder()
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
-            bind[LockService].toInstance(mockLockService),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[LockService].toInstance(mockLockService)
           )
           .build()
 

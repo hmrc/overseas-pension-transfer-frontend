@@ -29,7 +29,6 @@ import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks.*
 import org.scalatestplus.mockito.MockitoSugar
-import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -41,9 +40,7 @@ class MoreAssetCompletionServiceSpec
     with SpecBase
     with BeforeAndAfterEach {
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  private val mockSessionRepository  = mock[SessionRepository]
+  implicit val hc: HeaderCarrier     = HeaderCarrier()
   private val mockUserAnswersService = mock[UserAnswersService]
 
   private val service = new MoreAssetCompletionService(

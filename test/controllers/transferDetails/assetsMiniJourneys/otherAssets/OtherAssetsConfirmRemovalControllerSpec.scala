@@ -39,7 +39,7 @@ class OtherAssetsConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase 
 
   private val formProvider = new OtherAssetsConfirmRemovalFormProvider()
   private val form         = formProvider()
-
+  when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
   "OtherAssetsConfirmRemoval Controller" - {
 
     "must return OK and the correct view for a GET" in {

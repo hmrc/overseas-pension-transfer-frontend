@@ -20,23 +20,25 @@ import base.SpecBase
 import config.FrontendAppConfig
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.UserAnswersService
-
+import org.mockito.Mockito.reset
 import java.net.URLEncoder
 import scala.concurrent.Future
 
-class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
-
+class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with BeforeAndAfterEach {
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockSessionRepository)
+  }
   "signOut" - {
     "must clear session-data and redirect to sign out, specifying the exit survey as the continue URL" in {
 
-      val mockSessionRepository  = mock[SessionRepository]
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
@@ -45,7 +47,6 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
       val application =
         applicationBuilder(emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -65,8 +66,7 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
     }
 
     "must clear empty-user-answers on sign out" in {
-
-      val mockSessionRepository  = mock[SessionRepository]
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       val mockUserAnswersService = mock[UserAnswersService]
 
       when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))
@@ -75,7 +75,6 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
       val application =
         applicationBuilder(emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()

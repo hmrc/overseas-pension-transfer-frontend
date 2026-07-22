@@ -23,7 +23,8 @@ import models.responses.UserAnswersErrorResponse
 import models.{AmendCheckMode, NormalMode, UserAnswers}
 import org.apache.pekko.Done
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar
 import pages.DiscardTransferConfirmPage
@@ -31,13 +32,12 @@ import play.api.inject.bind
 import play.api.libs.json.{JsObject, JsString}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import repositories.SessionRepository
 import services.{LockService, UserAnswersService}
 import views.html.DiscardTransferConfirmView
 
 import scala.concurrent.Future
 
-class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   private val formProvider = new DiscardTransferConfirmFormProvider()
   private val form         = formProvider()
@@ -53,6 +53,10 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         "002"
       )
       .url
+  override protected def beforeEach(): Unit     = {
+    super.beforeEach()
+    reset(mockSessionRepository)
+  }
 
   "DiscardTransferConfirm Controller" - {
 
@@ -98,9 +102,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         }
 
         "must release lock and redirect + clear answers when YES selected" in {
-          val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
-
-          val mockSessionRepository  = mock[SessionRepository]
+          val userAnswers            = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
           val mockUserAnswersService = mock[UserAnswersService]
           val mockLockService        = mock[LockService]
 
@@ -112,7 +114,6 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           val application =
             applicationBuilder(userAnswers = userAnswers)
               .overrides(
-                bind[SessionRepository].toInstance(mockSessionRepository),
                 bind[UserAnswersService].toInstance(mockUserAnswersService),
                 bind[LockService].toInstance(mockLockService)
               )
@@ -167,9 +168,7 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
         }
 
         "must return Internal Server Error when clearUserAnswers returns a Left(DeleteFailed)" in {
-          val userAnswers = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
-
-          val mockSessionRepository  = mock[SessionRepository]
+          val userAnswers            = emptyUserAnswers.set(DiscardTransferConfirmPage, true).success.value
           val mockUserAnswersService = mock[UserAnswersService]
           val mockLockService        = mock[LockService]
 
@@ -182,7 +181,6 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           val application =
             applicationBuilder(userAnswers = userAnswers)
               .overrides(
-                bind[SessionRepository].toInstance(mockSessionRepository),
                 bind[UserAnswersService].toInstance(mockUserAnswersService),
                 bind[LockService].toInstance(mockLockService)
               )

@@ -26,11 +26,14 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.otherAssets.OtherAssetsAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.otherAssets.MoreOtherAssetsDeclarationView
-
+import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.any
+import scala.concurrent.Future
 class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
   private val formProvider = new MoreOtherAssetsDeclarationFormProvider()
   private val form         = formProvider()
+  when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
   private lazy val moreOtherAssetsDeclarationRoute =
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController
