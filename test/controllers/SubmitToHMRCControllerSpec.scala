@@ -31,8 +31,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
+import repositories.*
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
+import uk.gov.hmrc.mongo.lock.MongoLockRepository
+import uk.gov.hmrc.mongo.play.PlayMongoModule
 import views.html.SubmitToHMRCView
 
 import scala.concurrent.Future
@@ -134,7 +136,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     "must redirect to PSA declaration screen for PSA when value is true" in {
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
+      val application = applicationBuilder().build()
 
       running(application) {
         val request: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -159,7 +161,12 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
         new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
       val application = new GuiceApplicationBuilder()
+        .disable[PlayMongoModule]
         .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
+          bind[EnhancedLockRepository].toInstance(mockEnhancedLockRepository),
+          bind[MongoLockRepository].toInstance(mockMongoLockRepository),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
           bind[DataRetrievalAction]
             .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
@@ -192,6 +199,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
       val application = new GuiceApplicationBuilder()
         .overrides(
+          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
           bind[DataRetrievalAction]
             .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),

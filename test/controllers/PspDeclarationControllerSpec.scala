@@ -34,9 +34,11 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-
+import repositories.*
 import services.{EmailSentSuccess, EmailService, UserAnswersService}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.mongo.lock.MongoLockRepository
+import uk.gov.hmrc.mongo.play.PlayMongoModule
 import views.html.PspDeclarationView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -58,7 +60,12 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
+      .disable[PlayMongoModule]
       .overrides(
+        bind[SessionRepository].toInstance(mockSessionRepository),
+        bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
+        bind[EnhancedLockRepository].toInstance(mockEnhancedLockRepository),
+        bind[MongoLockRepository].toInstance(mockMongoLockRepository),
         bind[IdentifierAction].toInstance(fakeIdentifierAction),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionDataMemberNameQtNumber)),
         bind[SchemeDataAction].to[FakeSchemeDataAction]
