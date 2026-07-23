@@ -197,7 +197,8 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val fakeIdentifierAction =
         new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-      val application = new GuiceApplicationBuilder().disable[PlayMongoModule]
+      val application = new GuiceApplicationBuilder()
+        .disable[PlayMongoModule]
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
