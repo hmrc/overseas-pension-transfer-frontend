@@ -33,7 +33,6 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
 
   private val formProvider = new MoreOtherAssetsDeclarationFormProvider()
   private val form         = formProvider()
-  when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
   private lazy val moreOtherAssetsDeclarationRoute =
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MoreOtherAssetsDeclarationController
@@ -53,6 +52,7 @@ class MoreOtherAssetsDeclarationControllerSpec extends AnyFreeSpec with SpecBase
   "MoreOtherAssetsDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
       running(application) {
         val request = FakeRequest(GET, moreOtherAssetsDeclarationRoute)

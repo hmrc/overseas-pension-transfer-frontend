@@ -49,11 +49,11 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
     controllers.transferDetails.assetsMiniJourneys.AssetsMiniJourneysRoutes.MorePropertyDeclarationController
       .onPageLoad(FinalCheckMode)
       .url
-  when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
   "MorePropertyDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
       running(application) {
         val request = FakeRequest(GET, morePropertyDeclarationRoute)

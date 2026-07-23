@@ -16,7 +16,7 @@
 
 package services
 
-import base.SpecBase
+import base.TestData
 import handlers.AssetThresholdHandler
 import models.assets.TypeOfAsset
 import models.{SessionData, UserAnswers}
@@ -29,6 +29,7 @@ import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.prop.TableDrivenPropertyChecks.*
 import org.scalatestplus.mockito.MockitoSugar
+import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -37,13 +38,12 @@ class MoreAssetCompletionServiceSpec
     extends AsyncFreeSpec
     with Matchers
     with MockitoSugar
-    with SpecBase
-    with BeforeAndAfterEach {
-
+    with BeforeAndAfterEach
+    with TestData {
   implicit val hc: HeaderCarrier     = HeaderCarrier()
   private val mockUserAnswersService = mock[UserAnswersService]
-
-  private val service = new MoreAssetCompletionService(
+  private val mockSessionRepository  = mock[SessionRepository]
+  private val service                = new MoreAssetCompletionService(
     mockSessionRepository,
     mockUserAnswersService
   )

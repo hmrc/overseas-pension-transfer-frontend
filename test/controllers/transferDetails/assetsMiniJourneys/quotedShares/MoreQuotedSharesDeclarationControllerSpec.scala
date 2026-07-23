@@ -31,7 +31,7 @@ import views.html.transferDetails.assetsMiniJourneys.quotedShares.MoreQuotedShar
 
 import scala.concurrent.Future
 
-class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
+class MoreQuotedSharesDeclarationControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new MoreQuotedSharesDeclarationFormProvider()
   private val form         = formProvider()
@@ -51,11 +51,10 @@ class MoreQuotedSharesDeclarationControllerSpec extends AnyFreeSpec with SpecBas
       .onPageLoad(FinalCheckMode)
       .url
 
-  when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
-
   "MoreQuotedSharesDeclaration Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
       running(application) {
         val request = FakeRequest(GET, moreQuotedSharesDeclarationRoute)

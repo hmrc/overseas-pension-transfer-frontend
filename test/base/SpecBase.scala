@@ -22,10 +22,11 @@ import models.assets.TypeOfAsset
 import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import models.*
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.{mock, reset}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.{BeforeAndAfterAll, OptionValues, TryValues}
 import pages.memberDetails.MemberNamePage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
@@ -48,7 +49,14 @@ import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
 import scala.util.Random
 
-trait SpecBase extends Matchers with OptionValues with ScalaFutures with IntegrationPatience with TestData {
+trait SpecBase
+    extends AnyFreeSpec
+    with Matchers
+    with OptionValues
+    with ScalaFutures
+    with IntegrationPatience
+    with TestData
+    with BeforeAndAfterAll {
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
@@ -56,6 +64,7 @@ trait SpecBase extends Matchers with OptionValues with ScalaFutures with Integra
   lazy val mockEnhancedLockRepository: EnhancedLockRepository         = mock(classOf[EnhancedLockRepository])
   lazy val mockSessionRepository: SessionRepository                   = mock(classOf[SessionRepository])
   lazy val mockMongoLockRepository: MongoLockRepository               = mock(classOf[MongoLockRepository])
+
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
     sessionData: SessionData = sessionDataMemberNameQtNumber
@@ -113,6 +122,14 @@ trait SpecBase extends Matchers with OptionValues with ScalaFutures with Integra
       qtNumber = testQtNumber,
       dateTransferSubmitted = formattedTestDateTransferSubmitted
     )
+
+  override def beforeAll(): Unit = {
+    super.beforeAll()
+    reset(mockSessionRepository)
+    reset(mockDashboardSessionRepository)
+    reset(mockMongoLockRepository)
+    reset(mockEnhancedLockRepository)
+  }
 
 }
 
