@@ -197,9 +197,12 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val fakeIdentifierAction =
         new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-      val application = new GuiceApplicationBuilder()
+      val application = new GuiceApplicationBuilder().disable[PlayMongoModule]
         .overrides(
           bind[SessionRepository].toInstance(mockSessionRepository),
+          bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
+          bind[EnhancedLockRepository].toInstance(mockEnhancedLockRepository),
+          bind[MongoLockRepository].toInstance(mockMongoLockRepository),
           bind[IdentifierAction].toInstance(fakeIdentifierAction),
           bind[DataRetrievalAction]
             .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
