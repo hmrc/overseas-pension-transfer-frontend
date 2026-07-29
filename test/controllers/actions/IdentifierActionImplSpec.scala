@@ -44,11 +44,13 @@ class IdentifierActionImplSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
   private val application = new GuiceApplicationBuilder()
     .overrides(
-    bind[MongoLockRepository].toInstance(mockMongoLockRepository),
-    bind[EnhancedLockRepository].toInstance(mockEnhancedLockRepository),
-    bind[SessionRepository].toInstance(mockSessionRepository),
-    bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository)
-    ).disable[PlayMongoModule].build()
+      bind[MongoLockRepository].toInstance(mockMongoLockRepository),
+      bind[EnhancedLockRepository].toInstance(mockEnhancedLockRepository),
+      bind[SessionRepository].toInstance(mockSessionRepository),
+      bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository)
+    )
+    .disable[PlayMongoModule]
+    .build()
 
   private val bodyParsers       = application.injector.instanceOf[BodyParsers.Default]
   private val appConfig         = application.injector.instanceOf[FrontendAppConfig]

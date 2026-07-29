@@ -21,16 +21,14 @@ import forms.transferDetails.assetsMiniJourneys.property.PropertyAddressFormProv
 import models.NormalMode
 import play.api.Application
 import play.api.data.FormError
-import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.mongo.play.PlayMongoModule
 import viewmodels.CountrySelectViewModel
 import views.html.transferDetails.assetsMiniJourneys.property.PropertyAddressView
 import views.utils.ViewBaseSpec
 
 class PropertyAddressViewSpec extends ViewBaseSpec {
 
-  val application: Application =     new GuiceApplicationBuilder()
-    .disable[PlayMongoModule].build()
+  val application: Application = applicationBuilder()
+    .build()
 
   private val view                   = application.injector.instanceOf[PropertyAddressView]
   private val formProvider           = application.injector.instanceOf[PropertyAddressFormProvider]

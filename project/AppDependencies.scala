@@ -3,7 +3,7 @@ import sbt.*
 object AppDependencies {
 
   private val bootstrapVersion = "10.7.0"
-  private val hmrcMongoVersion = "2.12.0"
+  private val hmrcMongoVersion = "2.13.0"
   private val PekkoVersion = "1.4.0"
 
   val compile: Seq[ModuleID] = Seq(
@@ -12,7 +12,7 @@ object AppDependencies {
     "uk.gov.hmrc"                  %% "bootstrap-frontend-play-30" % bootstrapVersion,
     "uk.gov.hmrc.mongo"            %% "hmrc-mongo-play-30"         % hmrcMongoVersion,
     "org.typelevel"                %% "cats-core"                  % "2.13.0",
-    "com.googlecode.libphonenumber" % "libphonenumber"             % "9.0.21",
+    "com.googlecode.libphonenumber" % "libphonenumber"             % "9.0.35",
     "io.github.samueleresca"       %% "pekko-quartz-scheduler"     % "1.3.0-pekko-1.1.x" withSources(),
     
     // Explicit pekko dependencies to ensure version alignment

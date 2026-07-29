@@ -50,13 +50,13 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
 
     "must return OK and render the submitted transfer view" in {
 
-      val application =
+      val application                     =
         applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
-      val appConfig = application.injector.instanceOf[FrontendAppConfig]
+      val appConfig                       = application.injector.instanceOf[FrontendAppConfig]
       implicit val testMessages: Messages = messages(application)
 
       when(mockSessionRepository.get(any()))
