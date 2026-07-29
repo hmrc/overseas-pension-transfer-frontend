@@ -25,7 +25,6 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.i18n.Messages
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 
@@ -45,8 +44,6 @@ import scala.concurrent.Future
 
 class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
 
-  private val application            = new GuiceApplicationBuilder().build()
-  private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
   private val mockUserAnswersService = mock[UserAnswersService]
 
   "TransferSubmitted Controller" - {
@@ -59,7 +56,7 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
-
+      val appConfig = application.injector.instanceOf[FrontendAppConfig]
       implicit val testMessages: Messages = messages(application)
 
       when(mockSessionRepository.get(any()))

@@ -25,7 +25,6 @@ import org.mockito.Mockito.when
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 
@@ -42,7 +41,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockConnector          = mock[MinimalDetailsConnector]
-  private val application            = new GuiceApplicationBuilder().build()
+  private val application            = applicationBuilder().build()
   private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
