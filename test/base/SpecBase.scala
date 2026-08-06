@@ -124,25 +124,24 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-  protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
-  protected val mockEnhancedLockRepository: EnhancedLockRepository = mock[EnhancedLockRepository]
-  protected val mockSessionRepository: SessionRepository = mock[SessionRepository]
+//  protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
+//  protected val mockEnhancedLockRepository: EnhancedLockRepository         = mock[EnhancedLockRepository]
+//  protected val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
 
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
     sessionData: SessionData = sessionDataMemberNameQtNumber
-  ): GuiceApplicationBuilder = {
+  ): GuiceApplicationBuilder =
 
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
-        bind[SchemeDataAction].to[FakeSchemeDataAction],
-        bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
-        bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
-        bind[SessionRepository].to(mockSessionRepository)
+        bind[SchemeDataAction].to[FakeSchemeDataAction] // ,
+//        bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
+//        bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
+//        bind[SessionRepository].to(mockSessionRepository)
       )
-  }
 
   def fakeIdentifierRequest[A](
     fakeRequest: FakeRequest[A],
