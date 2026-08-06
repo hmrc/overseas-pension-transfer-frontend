@@ -25,6 +25,7 @@ import models.{AllTransfersItem, IndividualDetails, MinimalDetails, PensionSchem
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.memberDetails.MemberNamePage
 import pages.transferDetails.assetsMiniJourneys.otherAssets.{OtherAssetsDescriptionPage, OtherAssetsValuePage}
 import pages.transferDetails.assetsMiniJourneys.property.{PropertyAddressPage, PropertyDescriptionPage, PropertyValuePage}
@@ -37,6 +38,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
 import queries.{DateSubmittedQuery, QtNumberQuery}
+import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.DateTimeFormats.localDateTimeFormatter
 
@@ -122,16 +124,25 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
+  protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
+  protected val mockEnhancedLockRepository: EnhancedLockRepository = mock[EnhancedLockRepository]
+  protected val mockSessionRepository: SessionRepository = mock[SessionRepository]
+
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
     sessionData: SessionData = sessionDataMemberNameQtNumber
-  ): GuiceApplicationBuilder =
+  ): GuiceApplicationBuilder = {
+
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
-        bind[SchemeDataAction].to[FakeSchemeDataAction]
+        bind[SchemeDataAction].to[FakeSchemeDataAction],
+        bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
+        bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
+        bind[SessionRepository].to(mockSessionRepository)
       )
+  }
 
   def fakeIdentifierRequest[A](
     fakeRequest: FakeRequest[A],
