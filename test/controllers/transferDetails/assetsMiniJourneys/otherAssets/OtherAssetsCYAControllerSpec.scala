@@ -45,7 +45,6 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       .url
 
   private val mockUserAnswersService = mock[UserAnswersService]
-  private val mockSessionRepository  = mock[SessionRepository]
 
   private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)

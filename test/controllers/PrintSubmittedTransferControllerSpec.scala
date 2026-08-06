@@ -45,7 +45,6 @@ import scala.concurrent.Future
 
 class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
 
-  private val mockSessionRepository  = mock[SessionRepository]
   private val application            = new GuiceApplicationBuilder().build()
   private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
   private val mockUserAnswersService = mock[UserAnswersService]

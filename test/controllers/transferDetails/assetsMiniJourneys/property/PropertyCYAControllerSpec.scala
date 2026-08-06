@@ -42,7 +42,6 @@ class PropertyCYAControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
     controllers.transferDetails.assetsMiniJourneys.property.routes.PropertyCYAController.onPageLoad(NormalMode, 0).url
 
   private val mockUserAnswersService = mock[UserAnswersService]
-  private val mockSessionRepository  = mock[SessionRepository]
 
   private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)

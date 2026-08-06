@@ -36,7 +36,6 @@ class KeepAliveControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       "must keep the answers alive and return OK" in {
 
-        val mockSessionRepository = mock[SessionRepository]
         when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
 
         val application =

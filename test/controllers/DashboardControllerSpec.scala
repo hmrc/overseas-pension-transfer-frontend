@@ -55,10 +55,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must render the dashboard data successfully" in {
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
       val mockService                    = mock[TransferService]
-      val mockSessionRepository          = mock[SessionRepository]
-      val mockLock                       = mock[EnhancedLockRepository]
-      val mockView                       = mock[DashboardView]
-      val mockLockService                = mock[LockService]
+
+      val mockLock        = mock[EnhancedLockRepository]
+      val mockView        = mock[DashboardView]
+      val mockLockService = mock[LockService]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
       val transferItem  = AllTransfersItem(
@@ -129,8 +129,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must acquire lock when accessing an InProgress transfer (onTransferClick) and redirect" in {
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
       val mockService                    = mock[TransferService]
-      val mockSessionRepository          = mock[SessionRepository]
-      val mockLockRepository             = mock[EnhancedLockRepository]
+
+      val mockLockRepository = mock[EnhancedLockRepository]
 
       when(mockLockRepository.takeLock(any(), any(), any())).thenReturn(Future.successful(Some(mock[Lock])))
 
@@ -162,8 +162,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must show warning when trying to access a locked record (takeLock returns None)" in {
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
       val mockService                    = mock[TransferService]
-      val mockSessionRepository          = mock[SessionRepository]
-      val mockLockRepository             = mock[EnhancedLockRepository]
+
+      val mockLockRepository = mock[EnhancedLockRepository]
 
       when(mockLockRepository.takeLock(any(), any(), any())).thenReturn(Future.successful(None)) // lock already taken
 
@@ -199,9 +199,9 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must releaseLock for items in TransfersOverviewQuery when dashboard loads" in {
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
       val mockService                    = mock[TransferService]
-      val mockSessionRepository          = mock[SessionRepository]
-      val mockLockRepository             = mock[EnhancedLockRepository]
-      val mockView                       = mock[DashboardView]
+
+      val mockLockRepository = mock[EnhancedLockRepository]
+      val mockView           = mock[DashboardView]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S111"), PstrNumber("PSTR111"), "SchemeX")
 
@@ -298,8 +298,8 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must be able to acquire lock after a release (simulate unlock then access)" in {
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
       val mockService                    = mock[TransferService]
-      val mockSessionRepository          = mock[SessionRepository]
-      val mockLockRepository             = mock[EnhancedLockRepository]
+
+      val mockLockRepository = mock[EnhancedLockRepository]
 
       when(mockLockRepository.takeLock(any[String], any[String], any[Duration]))
         .thenReturn(Future.successful(Some(mock[Lock])))
@@ -332,7 +332,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must render the search bar when dashboard search feature is enabled" in {
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
       val mockService                    = mock[TransferService]
-      val mockSessionRepository          = mock[SessionRepository]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
       val transferItem  = AllTransfersItem(
@@ -392,7 +391,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must filter transfers when a search term is provided and render the clear link" in {
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
       val mockService                    = mock[TransferService]
-      val mockSessionRepository          = mock[SessionRepository]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
@@ -481,7 +479,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     "must show all transfers again when search term is cleared" in {
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
       val mockService                    = mock[TransferService]
-      val mockSessionRepository          = mock[SessionRepository]
 
       val pensionScheme = PensionSchemeDetails(SrnNumber("S1234567"), PstrNumber("12345678AB"), "Scheme Name")
 
@@ -562,10 +559,10 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
       val mockService                    = mock[TransferService]
-      val mockSessionRepository          = mock[SessionRepository]
-      val mockLockService                = mock[LockService]
-      val mockUserAnswersSvc             = mock[UserAnswersService]
-      val mockAuditService               = mock[AuditService]
+
+      val mockLockService    = mock[LockService]
+      val mockUserAnswersSvc = mock[UserAnswersService]
+      val mockAuditService   = mock[AuditService]
 
       val transferId = TransferId("QT654321")
       val owner      = "A123456"
@@ -630,7 +627,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
   "clearAndExit" - {
     "must clear repositories and redirect to specified URL" in {
       val mockDashboardSessionRepository = mock[DashboardSessionRepository]
-      val mockSessionRepository          = mock[SessionRepository]
 
       when(mockDashboardSessionRepository.clear(any())).thenReturn(Future.successful(true))
       when(mockSessionRepository.clear(any())).thenReturn(Future.successful(true))

@@ -88,8 +88,6 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
@@ -137,7 +135,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to PSA declaration screen for PSA when value is true" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder(userAnswers = emptyUserAnswers).build()
@@ -155,7 +153,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to PSP declaration screen for PSP when value is true" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)
@@ -189,7 +187,7 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
     }
 
     "must redirect to task list when value is false, regardless of user type" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val pspUser = PspUser(PspId("A123456"), "userInternalId", affinityGroup = Individual)

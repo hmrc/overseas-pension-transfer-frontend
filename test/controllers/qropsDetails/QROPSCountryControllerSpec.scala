@@ -109,7 +109,6 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -169,7 +168,6 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 

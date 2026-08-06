@@ -42,7 +42,6 @@ class UserAnswersServiceSpec extends AnyFreeSpec with SpecBase with MockitoSugar
 
   private val mockUserAnswersConnector = mock[UserAnswersConnector]
   private val mockAuthService          = mock[AuthorisingPsaService]
-  private val mockSessionRepository    = mock[SessionRepository]
 
   val service: UserAnswersService =
     new UserAnswersService(mockUserAnswersConnector, mockAuthService, mockSessionRepository)

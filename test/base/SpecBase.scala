@@ -126,7 +126,7 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
 
 //  protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
 //  protected val mockEnhancedLockRepository: EnhancedLockRepository         = mock[EnhancedLockRepository]
-//  protected val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
+  protected val mockSessionRepository: SessionRepository = mock[SessionRepository]
 
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
@@ -137,10 +137,10 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
       .overrides(
         bind[IdentifierAction].to[FakeIdentifierAction],
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
-        bind[SchemeDataAction].to[FakeSchemeDataAction] // ,
+        bind[SchemeDataAction].to[FakeSchemeDataAction],
 //        bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
 //        bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
-//        bind[SessionRepository].to(mockSessionRepository)
+        bind[SessionRepository].to(mockSessionRepository)
       )
 
   def fakeIdentifierRequest[A](

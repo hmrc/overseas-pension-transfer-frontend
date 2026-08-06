@@ -87,8 +87,8 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockUserAnswersService      = mock[UserAnswersService]
-      val mockSessionRepository       = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
       val mockEmailService            = mock[EmailService]
 

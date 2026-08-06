@@ -88,8 +88,6 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val mockSessionRepository = mock[SessionRepository]
-
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
@@ -114,8 +112,6 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
     }
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-
-      val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 

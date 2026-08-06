@@ -92,7 +92,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must return OK for a GET in CheckMode and save completion" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(1)
@@ -109,7 +109,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to the page's nextPageWith when valid data 'Yes' is submitted in NormalMode" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(2)
@@ -135,7 +135,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to the page's nextPageWith when valid data 'No' is submitted in NormalMode" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(0)
@@ -161,7 +161,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to CYA when valid data is submitted in CheckMode" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(3)
@@ -187,7 +187,7 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to Final CYA when valid data is submitted in FinalCheckMode" in {
-      val mockSessionRepository = mock[SessionRepository]
+
       when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val userAnswers = uaWithProperties(3)
@@ -214,8 +214,6 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
     }
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-
-      val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 

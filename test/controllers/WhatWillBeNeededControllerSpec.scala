@@ -54,7 +54,7 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
   "onSubmit" - {
     "must initialise UserAnswers, persist once, audit, and redirect" in {
-      val mockSessionRepository                       = mock[SessionRepository]
+
       val mockUserAnswerSvc                           = mock[UserAnswersService]
       val mockAuditService                            = mock[AuditService]
       val eventCaptor: ArgumentCaptor[JsonAuditModel] = ArgumentCaptor.forClass(classOf[JsonAuditModel])
@@ -89,8 +89,8 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
     }
 
     "must redirect to JourneyRecovery when persistence fails" in {
-      val mockSessionRepository = mock[SessionRepository]
-      val mockUserAnswerSvc     = mock[UserAnswersService]
+
+      val mockUserAnswerSvc = mock[UserAnswersService]
 
       when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any()))
         .thenReturn(Future.successful(Right(Done)))

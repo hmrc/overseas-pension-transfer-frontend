@@ -36,7 +36,6 @@ class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
   private val mockUserAnswersService = mock[UserAnswersService]
   private val mockLockService        = mock[LockService]
-  private val mockSessionRepository  = mock[SessionRepository]
 
   private val qtReference   = QtNumber("QT112233")
   override val pstr         = PstrNumber("87654321AB")

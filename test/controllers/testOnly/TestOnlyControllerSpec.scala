@@ -36,7 +36,6 @@ import scala.concurrent.Future
 class TestOnlyControllerSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   val mockUserAnswersConnector: UserAnswersConnector = mock[UserAnswersConnector]
-  val mockSessionRepository: SessionRepository       = mock[SessionRepository]
 
   val application: Application = applicationBuilder(emptyUserAnswers)
     .overrides(

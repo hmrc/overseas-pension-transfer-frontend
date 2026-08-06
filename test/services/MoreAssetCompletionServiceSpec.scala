@@ -43,7 +43,6 @@ class MoreAssetCompletionServiceSpec
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val mockSessionRepository  = mock[SessionRepository]
   private val mockUserAnswersService = mock[UserAnswersService]
 
   private val service = new MoreAssetCompletionService(

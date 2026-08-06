@@ -88,8 +88,8 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must redirect to the next page when valid data is submitted" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
-      val ua                     = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
+
+      val ua = emptyUserAnswers.set(WhyTransferIsTaxablePage, TransferExceedsOTCAllowance).success.value
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -116,8 +116,6 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
     }
 
     "must redirect to the next page when valid data is submitted in AmendCheckMode" in {
-
-      val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
@@ -165,7 +163,6 @@ class WhyTransferIsTaxableControllerSpec extends AnyFreeSpec with SpecBase with 
 
     "must redirect to JourneyRecovery for a POST when userAnswersService returns a Left" in {
       val mockUserAnswersService = mock[UserAnswersService]
-      val mockSessionRepository  = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 

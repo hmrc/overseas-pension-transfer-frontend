@@ -44,7 +44,6 @@ class UnquotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Moc
       .url
 
   private val mockUserAnswersService = mock[UserAnswersService]
-  private val mockSessionRepository  = mock[SessionRepository]
 
   private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)

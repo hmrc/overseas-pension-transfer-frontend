@@ -41,10 +41,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
   private val mockUserAnswersService = mock[UserAnswersService]
-  private val mockSessionRepository  = mock[SessionRepository]
-  private val mockConnector          = mock[MinimalDetailsConnector]
-  private val application            = new GuiceApplicationBuilder().build()
-  private val appConfig              = application.injector.instanceOf[FrontendAppConfig]
+
+  private val mockConnector = mock[MinimalDetailsConnector]
+  private val application   = new GuiceApplicationBuilder().build()
+  private val appConfig     = application.injector.instanceOf[FrontendAppConfig]
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

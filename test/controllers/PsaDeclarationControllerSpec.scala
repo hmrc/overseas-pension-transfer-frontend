@@ -60,8 +60,8 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
     }
 
     "must redirect to the next page when submitted" in {
-      val mockUserAnswersService      = mock[UserAnswersService]
-      val mockSessionRepository       = mock[SessionRepository]
+      val mockUserAnswersService = mock[UserAnswersService]
+
       val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
       val mockEmailService            = mock[EmailService]
 
@@ -129,7 +129,6 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
       val mockUserAnswersService      = mock[UserAnswersService]
       val mockMinimalDetailsConnector = mock[MinimalDetailsConnector]
       val mockEmailService            = mock[EmailService]
-      val mockSessionRepository       = mock[SessionRepository]
 
       val qtNumber = QtNumber("QT123456")
 
