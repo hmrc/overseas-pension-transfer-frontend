@@ -92,9 +92,6 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -117,9 +114,6 @@ class UnquotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with 
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

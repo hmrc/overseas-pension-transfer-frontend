@@ -45,8 +45,7 @@ class ViewAmendSelectorControllerSpec extends AnyFreeSpec with SpecBase with Moc
   private def buildApp = applicationBuilder(userAnswers = emptyUserAnswers)
     .overrides(
       bind[UserAnswersService].toInstance(mockUserAnswersService),
-      bind[LockService].toInstance(mockLockService),
-      bind[SessionRepository].toInstance(mockSessionRepository)
+      bind[LockService].toInstance(mockLockService)
     )
     .build()
 

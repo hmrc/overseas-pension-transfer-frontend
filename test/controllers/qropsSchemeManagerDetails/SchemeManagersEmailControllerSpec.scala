@@ -89,7 +89,6 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -136,7 +135,6 @@ class SchemeManagersEmailControllerSpec extends AnyFreeSpec with SpecBase with M
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

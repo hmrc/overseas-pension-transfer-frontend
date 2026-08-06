@@ -89,9 +89,6 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -112,9 +109,6 @@ class ApplicableTaxExclusionsControllerSpec extends AnyFreeSpec with SpecBase wi
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

@@ -97,7 +97,6 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application = applicationBuilder(ua)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -120,9 +119,6 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -166,7 +162,6 @@ class IsTransferTaxableControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

@@ -98,7 +98,6 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
       val userAnswers = uaWithProperties(1)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -115,7 +114,6 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
       val userAnswers = uaWithProperties(2)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -141,7 +139,6 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
       val userAnswers = uaWithProperties(0)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -167,7 +164,6 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
       val userAnswers = uaWithProperties(3)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -193,7 +189,6 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
       val userAnswers = uaWithProperties(3)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -220,9 +215,6 @@ class PropertyAmendContinueControllerSpec extends AnyFreeSpec with AddressBase w
       val userAnswers = uaWithProperties(2)
       val application =
         applicationBuilder(userAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

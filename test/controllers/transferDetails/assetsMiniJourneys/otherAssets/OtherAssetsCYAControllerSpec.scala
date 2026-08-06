@@ -48,10 +48,7 @@ class OtherAssetsCYAControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
   private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)
-      .overrides(
-        bind[UserAnswersService].toInstance(mockUserAnswersService),
-        bind[SessionRepository].toInstance(mockSessionRepository)
-      )
+      .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
       .build()
 
   "OtherAssetsCYA Controller" - {

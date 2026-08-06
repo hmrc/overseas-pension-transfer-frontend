@@ -39,7 +39,6 @@ class TestOnlyControllerSpec extends AnyFreeSpec with Matchers with SpecBase {
 
   val application: Application = applicationBuilder(emptyUserAnswers)
     .overrides(
-      bind[SessionRepository].toInstance(mockSessionRepository),
       bind[UserAnswersConnector].toInstance(mockUserAnswersConnector)
     )
     .build()

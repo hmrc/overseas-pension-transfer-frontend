@@ -88,7 +88,6 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
         applicationBuilder()
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
             bind[EmailService].toInstance(mockEmailService)
           )
@@ -146,8 +145,7 @@ class PsaDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
             bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
-            bind[EmailService].toInstance(mockEmailService),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[EmailService].toInstance(mockEmailService)
           )
           .build()
 

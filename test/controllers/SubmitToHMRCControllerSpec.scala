@@ -92,9 +92,6 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

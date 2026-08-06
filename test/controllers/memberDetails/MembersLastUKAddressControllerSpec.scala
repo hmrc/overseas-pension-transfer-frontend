@@ -66,7 +66,6 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
 
       val application = applicationBuilder(emptyUserAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -112,7 +111,6 @@ class MembersLastUKAddressControllerSpec extends AnyFreeSpec with SpecBase with 
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

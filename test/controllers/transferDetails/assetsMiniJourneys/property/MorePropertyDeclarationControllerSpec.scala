@@ -26,6 +26,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import viewmodels.checkAnswers.transferDetails.assetsMiniJourneys.property.PropertyAmendContinueSummary
 import views.html.transferDetails.assetsMiniJourneys.property.MorePropertyDeclarationView
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import scala.concurrent.Future
 
 class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -89,7 +92,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must redirect to CYA page when valid data is submitted" in {
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       running(application) {
         val request =
           FakeRequest(POST, morePropertyDeclarationRoute)
@@ -106,7 +109,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must redirect to CYA page when mode = CheckMode" in {
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       running(application) {
         val request =
           FakeRequest(POST, morePropertyDeclarationRouteCheckMode)
@@ -123,7 +126,7 @@ class MorePropertyDeclarationControllerSpec extends AnyFreeSpec with SpecBase wi
 
     "must redirect to Final CYA page when mode = FinalCheckMode" in {
       val application = applicationBuilder(userAnswers = userAnswersWithAssets(assetsCount = 5)).build()
-
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       running(application) {
         val request =
           FakeRequest(POST, morePropertyDeclarationRouteFinalCheckMode)

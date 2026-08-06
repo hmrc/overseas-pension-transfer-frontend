@@ -93,7 +93,6 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -140,7 +139,6 @@ class MemberNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSug
 
       val application = applicationBuilder(userAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

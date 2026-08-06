@@ -93,9 +93,6 @@ class TypeOfAssetControllerSpec extends AnyFreeSpec with SpecBase with MockitoSu
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

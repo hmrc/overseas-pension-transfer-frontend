@@ -52,7 +52,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
       val application =
         applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -133,7 +132,6 @@ class PrintSubmittedTransferControllerSpec extends AnyFreeSpec with SpecBase {
     "redirect to JourneyRecovery page when the sessionRepo is empty" in {
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

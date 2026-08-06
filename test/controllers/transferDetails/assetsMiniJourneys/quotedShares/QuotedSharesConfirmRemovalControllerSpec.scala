@@ -27,6 +27,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import queries.assets.QuotedSharesQuery
 import views.html.transferDetails.assetsMiniJourneys.quotedShares.QuotedSharesConfirmRemovalView
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import scala.concurrent.Future
 
 class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
 
@@ -52,6 +55,7 @@ class QuotedSharesConfirmRemovalControllerSpec extends AnyFreeSpec with SpecBase
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
       val entries     = List(QuotedSharesEntry("Company", 1000, 20, "Preferred"))
       val userAnswers = emptyUserAnswers.set(QuotedSharesQuery, entries).success.value
 

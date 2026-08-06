@@ -97,7 +97,6 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -173,7 +172,6 @@ class WhyTransferIsNotTaxableControllerSpec extends AnyFreeSpec with SpecBase wi
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

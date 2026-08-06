@@ -92,9 +92,6 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       val application =
         applicationBuilder(sessionData = sessionDataMemberNameQtNumber)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -117,9 +114,6 @@ class QuotedSharesNumberControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

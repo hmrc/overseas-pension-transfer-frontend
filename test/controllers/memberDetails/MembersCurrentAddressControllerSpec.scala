@@ -161,7 +161,6 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
@@ -272,7 +271,6 @@ class MembersCurrentAddressControllerSpec extends AnyFreeSpec with MockitoSugar 
 
       val application = applicationBuilder(emptyUserAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

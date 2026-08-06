@@ -104,7 +104,6 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -147,7 +146,6 @@ class MemberDateOfLeavingUKControllerSpec extends AnyFreeSpec with SpecBase with
 
       val application = applicationBuilder(emptyUserAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

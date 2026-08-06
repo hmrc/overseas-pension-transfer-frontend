@@ -91,9 +91,6 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -116,9 +113,6 @@ class CashAmountInTransferControllerSpec extends AnyFreeSpec with SpecBase with 
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

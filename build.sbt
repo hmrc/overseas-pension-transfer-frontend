@@ -73,3 +73,5 @@ lazy val it =
     .enablePlugins(PlayScala)
     .dependsOn(microservice % "test->test")
     .settings(scalacOptions ++= commonSettings)
+
+Test / parallelExecution := false      

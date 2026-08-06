@@ -90,7 +90,6 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
       val application =
         applicationBuilder()
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -113,9 +112,6 @@ class OtherAssetsDescriptionControllerSpec extends AnyFreeSpec with SpecBase wit
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

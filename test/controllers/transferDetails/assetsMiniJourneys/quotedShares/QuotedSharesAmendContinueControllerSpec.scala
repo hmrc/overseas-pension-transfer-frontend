@@ -93,7 +93,6 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
       val userAnswers = uaWithQuotedShares(1)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -111,7 +110,6 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
       val userAnswers = uaWithQuotedShares(2)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -138,7 +136,6 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
       val userAnswers = uaWithQuotedShares(0)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -165,7 +162,6 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
       val userAnswers = uaWithQuotedShares(3)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -192,7 +188,6 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
       val userAnswers = uaWithQuotedShares(3)
       val application =
         applicationBuilder(userAnswers = userAnswers)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -219,9 +214,6 @@ class QuotedSharesAmendContinueControllerSpec extends AnyFreeSpec with SpecBase 
       val userAnswers = uaWithQuotedShares(2)
       val application =
         applicationBuilder(userAnswers)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

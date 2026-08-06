@@ -44,7 +44,6 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
       val application =
         applicationBuilder(emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -73,7 +72,6 @@ class AuthControllerSpec extends AnyFreeSpec with SpecBase with MockitoSugar {
       val application =
         applicationBuilder(emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()

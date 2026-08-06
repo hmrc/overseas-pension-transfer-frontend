@@ -100,7 +100,6 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService)
           )
           .build()
@@ -129,7 +128,6 @@ class PropertyAddressControllerSpec extends AnyFreeSpec with MockitoSugar with A
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService)
           )
           .build()

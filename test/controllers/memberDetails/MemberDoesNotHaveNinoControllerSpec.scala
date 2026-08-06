@@ -95,7 +95,6 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -143,7 +142,6 @@ class MemberDoesNotHaveNinoControllerSpec extends AnyFreeSpec with SpecBase with
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

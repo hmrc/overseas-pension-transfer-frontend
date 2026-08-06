@@ -111,7 +111,6 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           val application =
             applicationBuilder(userAnswers = userAnswers)
               .overrides(
-                bind[SessionRepository].toInstance(mockSessionRepository),
                 bind[UserAnswersService].toInstance(mockUserAnswersService),
                 bind[LockService].toInstance(mockLockService)
               )
@@ -180,7 +179,6 @@ class DiscardTransferConfirmControllerSpec extends AnyFreeSpec with SpecBase wit
           val application =
             applicationBuilder(userAnswers = userAnswers)
               .overrides(
-                bind[SessionRepository].toInstance(mockSessionRepository),
                 bind[UserAnswersService].toInstance(mockUserAnswersService),
                 bind[LockService].toInstance(mockLockService)
               )

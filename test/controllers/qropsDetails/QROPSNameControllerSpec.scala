@@ -95,7 +95,6 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -145,7 +144,6 @@ class QROPSNameControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

@@ -98,7 +98,6 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -125,7 +124,6 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -175,7 +173,6 @@ class AmountOfTransferControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

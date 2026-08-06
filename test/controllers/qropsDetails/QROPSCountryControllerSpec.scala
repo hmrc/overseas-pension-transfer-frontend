@@ -117,7 +117,6 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -176,7 +175,6 @@ class QROPSCountryControllerSpec extends AnyFreeSpec with AddressBase with Mocki
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

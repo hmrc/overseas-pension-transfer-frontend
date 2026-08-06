@@ -128,7 +128,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       val application = applicationBuilder(emptyUserAnswers)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[CountryService].toInstance(mockCountryService)
         )
@@ -195,7 +194,6 @@ class QROPSAddressControllerSpec extends AnyFreeSpec with MockitoSugar with Addr
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[CountryService].toInstance(mockCountryService)
         )

@@ -98,7 +98,6 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -127,7 +126,6 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -179,7 +177,6 @@ class OverseasTransferAllowanceControllerSpec extends AnyFreeSpec with SpecBase 
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

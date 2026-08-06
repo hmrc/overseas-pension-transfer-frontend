@@ -90,9 +90,6 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -113,9 +110,6 @@ class AmountOfTaxDeductedControllerSpec extends AnyFreeSpec with SpecBase with M
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

@@ -47,10 +47,7 @@ class QuotedSharesCYAControllerSpec extends AnyFreeSpec with SpecBase with Mocki
 
   private def applicationWithMocks(userAnswers: UserAnswers) =
     applicationBuilder(userAnswers = userAnswers)
-      .overrides(
-        bind[UserAnswersService].toInstance(mockUserAnswersService),
-        bind[SessionRepository].toInstance(mockSessionRepository)
-      )
+      .overrides(bind[UserAnswersService].toInstance(mockUserAnswersService))
       .build()
 
   "QuotedSharesCYA Controller" - {

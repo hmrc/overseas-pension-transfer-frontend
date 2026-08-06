@@ -110,7 +110,6 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
 
       val application = applicationBuilderPsp(userAnswers = ua)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[MinimalDetailsConnector].toInstance(mockMinimalDetailsConnector),
           bind[EmailService].toInstance(mockEmailService)

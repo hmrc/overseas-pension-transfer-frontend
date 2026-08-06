@@ -106,7 +106,6 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -147,7 +146,6 @@ class MemberDateOfBirthControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

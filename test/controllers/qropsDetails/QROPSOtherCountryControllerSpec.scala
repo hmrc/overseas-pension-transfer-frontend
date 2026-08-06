@@ -94,7 +94,6 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -145,7 +144,6 @@ class QROPSOtherCountryControllerSpec extends AnyFreeSpec with SpecBase with Moc
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()

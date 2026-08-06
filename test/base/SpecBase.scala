@@ -22,6 +22,7 @@ import models.assets.TypeOfAsset
 import models.authentication.*
 import models.requests.{DisplayRequest, IdentifierRequest, SchemeRequest}
 import models.{AllTransfersItem, IndividualDetails, MinimalDetails, PensionSchemeDetails, PersonName, PstrNumber, QtNumber, QtStatus, SessionData, SrnNumber, TransferNumber, UserAnswers}
+import org.mockito.Mockito.reset
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
@@ -41,13 +42,23 @@ import queries.{DateSubmittedQuery, QtNumberQuery}
 import repositories.{DashboardSessionRepository, EnhancedLockRepository, SessionRepository}
 import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.DateTimeFormats.localDateTimeFormatter
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.freespec.AnyFreeSpec
 
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
 import scala.util.Random
 
-trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
-
+trait SpecBase
+    extends AnyFreeSpec
+    with Matchers
+    with TryValues
+    with OptionValues
+    with ScalaFutures
+    with IntegrationPatience
+    with BeforeAndAfterEach {
+//with EitherValues with Matchers with FutureAwaits with DefaultAwaitTimeout
+//    with WireMockSupport with GuiceOneServerPerSuite with BeforeAndAfterEach
   protected final val minYear: Int  = 1901
   private val clockMillis: Long     = 1718118467838L
   val clock: Clock                  = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
@@ -128,6 +139,9 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
 //  protected val mockEnhancedLockRepository: EnhancedLockRepository         = mock[EnhancedLockRepository]
   protected val mockSessionRepository: SessionRepository = mock[SessionRepository]
 
+  override protected def beforeEach(): Unit =
+    reset(mockSessionRepository)
+
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
     sessionData: SessionData = sessionDataMemberNameQtNumber,
@@ -141,7 +155,6 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
     }
 
     val bindings = Seq(
-      bind[IdentifierAction].to[FakeIdentifierAction],
       bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
       bind[SchemeDataAction].to[FakeSchemeDataAction],
       //        bind[DashboardSessionRepository].to(mockDashboardSessionRepository),

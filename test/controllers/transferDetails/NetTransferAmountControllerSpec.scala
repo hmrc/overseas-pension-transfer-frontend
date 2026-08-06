@@ -89,9 +89,6 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -112,9 +109,6 @@ class NetTransferAmountControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

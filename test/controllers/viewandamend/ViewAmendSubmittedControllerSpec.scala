@@ -183,8 +183,7 @@ class ViewAmendSubmittedControllerSpec extends AnyFreeSpec with SpecBase with Mo
         val app = applicationBuilder()
           .overrides(
             bind[UserAnswersService].toInstance(mockUserAnswersService),
-            bind[LockService].toInstance(mockLockService),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[LockService].toInstance(mockLockService)
           )
           .build()
 

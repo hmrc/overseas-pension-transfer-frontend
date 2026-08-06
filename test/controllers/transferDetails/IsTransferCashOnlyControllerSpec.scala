@@ -96,7 +96,6 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
       val application =
         applicationBuilder(userAnswers = ua)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
           .build()
@@ -119,9 +118,6 @@ class IsTransferCashOnlyControllerSpec extends AnyFreeSpec with SpecBase with Mo
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

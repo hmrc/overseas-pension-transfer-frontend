@@ -40,7 +40,6 @@ class KeepAliveControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
         val application =
           applicationBuilder(emptyUserAnswers)
-            .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
         running(application) {

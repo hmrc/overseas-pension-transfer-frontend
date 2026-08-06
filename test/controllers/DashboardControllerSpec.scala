@@ -101,7 +101,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
           bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[EnhancedLockRepository].toInstance(mockLock),
           bind[DashboardView].toInstance(mockView),
           bind[ExecutionContext].toInstance(global),
@@ -138,7 +137,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
           bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[EnhancedLockRepository].toInstance(mockLockRepository)
         )
         .build()
@@ -171,7 +169,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
           bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[EnhancedLockRepository].toInstance(mockLockRepository)
         )
         .build()
@@ -273,7 +270,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application = applicationBuilder()
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[TransferService].toInstance(mockService),
           bind[EnhancedLockRepository].toInstance(mockLockRepository),
           bind[DashboardView].toInstance(mockView)
@@ -307,7 +303,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application = applicationBuilder()
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[TransferService].toInstance(mockService),
           bind[EnhancedLockRepository].toInstance(mockLockRepository)
         )
@@ -371,8 +366,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application = applicationBuilder()
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
-          bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSessionRepository)
+          bind[TransferService].toInstance(mockService)
         )
         .build()
 
@@ -444,8 +438,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application = applicationBuilder()
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
-          bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSessionRepository)
+          bind[TransferService].toInstance(mockService)
         )
         .build()
 
@@ -532,8 +525,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application = applicationBuilder()
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
-          bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSessionRepository)
+          bind[TransferService].toInstance(mockService)
         )
         .build()
 
@@ -593,7 +585,6 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         .overrides(
           bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
           bind[TransferService].toInstance(mockService),
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[LockService].toInstance(mockLockService),
           bind[UserAnswersService].toInstance(mockUserAnswersSvc),
           bind[AuditService].toInstance(mockAuditService)
@@ -633,8 +624,7 @@ class DashboardControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
 
       val application = applicationBuilder()
         .overrides(
-          bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
-          bind[SessionRepository].toInstance(mockSessionRepository)
+          bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository)
         )
         .build()
 

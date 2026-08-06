@@ -92,9 +92,6 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application =
         applicationBuilder(sessionData = sessionDataMemberNameQtNumber)
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {
@@ -115,9 +112,6 @@ class QuotedSharesValueControllerSpec extends AnyFreeSpec with SpecBase with Moc
 
       val application =
         applicationBuilder()
-          .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
           .build()
 
       running(application) {

@@ -126,7 +126,6 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[CountryService].toInstance(mockCountryService),
             bind[UserAnswersService].toInstance(mockUserAnswersService)
           )
@@ -192,7 +191,6 @@ class SchemeManagersAddressControllerSpec extends AnyFreeSpec with SpecBase with
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[CountryService].toInstance(mockCountryService)
         )

@@ -95,7 +95,6 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()
@@ -147,7 +146,6 @@ class SchemeManagerOrganisationNameControllerSpec extends AnyFreeSpec with SpecB
 
       val application = applicationBuilder(userAnswersMemberNameQtNumber)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService)
         )
         .build()

@@ -66,7 +66,6 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswerSvc),
             bind[AuditService].toInstance(mockAuditService)
           )
@@ -99,7 +98,6 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswerSvc)
           )
           .build()

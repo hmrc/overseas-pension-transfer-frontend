@@ -53,7 +53,6 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
     "must return OK and the correct view for a GET" in {
       val application  = applicationBuilder(userAnswers = userAnswersMemberNameQtNumberTransferSubmitted)
         .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
           bind[UserAnswersService].toInstance(mockUserAnswersService),
           bind[MinimalDetailsConnector].toInstance(mockConnector)
         )
@@ -103,9 +102,6 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
 
     "redirect to JourneyRecovery page when the sessionRepo is empty" in {
       val application = applicationBuilder(sessionData = sessionDataMemberNameQtNumberTransferSubmitted)
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository)
-        )
         .build()
 
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
