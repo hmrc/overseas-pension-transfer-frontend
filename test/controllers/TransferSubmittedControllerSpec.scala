@@ -43,7 +43,7 @@ class TransferSubmittedControllerSpec extends AnyFreeSpec with SpecBase {
   private val mockUserAnswersService = mock[UserAnswersService]
 
   private val mockConnector = mock[MinimalDetailsConnector]
-  private val application   = new GuiceApplicationBuilder().build()
+  private val application   = applicationBuilder().build()
   private val appConfig     = application.injector.instanceOf[FrontendAppConfig]
 
   implicit val hc: HeaderCarrier = HeaderCarrier()

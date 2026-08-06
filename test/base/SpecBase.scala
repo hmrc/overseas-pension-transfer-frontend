@@ -33,7 +33,7 @@ import pages.transferDetails.assetsMiniJourneys.quotedShares.{QuotedSharesClassP
 import pages.transferDetails.assetsMiniJourneys.unquotedShares.{UnquotedSharesClassPage, UnquotedSharesCompanyNamePage, UnquotedSharesNumberPage, UnquotedSharesValuePage}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
+import play.api.inject.{Binding, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.FakeRequest
@@ -130,18 +130,27 @@ trait SpecBase extends Matchers with TryValues with OptionValues with ScalaFutur
 
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
-    sessionData: SessionData = sessionDataMemberNameQtNumber
-  ): GuiceApplicationBuilder =
+    sessionData: SessionData = sessionDataMemberNameQtNumber,
+    identifierAction: Option[IdentifierAction] = None,
+    schemeDataAction: Option[SchemeDataAction] = None
+  ): GuiceApplicationBuilder = {
 
-    new GuiceApplicationBuilder()
-      .overrides(
-        bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
-        bind[SchemeDataAction].to[FakeSchemeDataAction],
-//        bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
-//        bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
-        bind[SessionRepository].to(mockSessionRepository)
-      )
+    val identifierActionBinding: Binding[IdentifierAction] = identifierAction match {
+      case None     => bind[IdentifierAction].to[FakeIdentifierAction]
+      case Some(ia) => bind[IdentifierAction].toInstance(ia)
+    }
+
+    val bindings = Seq(
+      bind[IdentifierAction].to[FakeIdentifierAction],
+      bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
+      bind[SchemeDataAction].to[FakeSchemeDataAction],
+      //        bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
+      //        bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
+      bind[SessionRepository].to(mockSessionRepository)
+    ) :+ identifierActionBinding
+
+    new GuiceApplicationBuilder().overrides(bindings)
+  }
 
   def fakeIdentifierRequest[A](
     fakeRequest: FakeRequest[A],

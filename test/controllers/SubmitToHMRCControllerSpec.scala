@@ -163,15 +163,8 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val fakeIdentifierAction =
         new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-      val application = new GuiceApplicationBuilder()
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRetrievalAction]
-            .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
-          bind[SchemeDataAction].to[FakeSchemeDataAction]
-        )
-        .build()
+      val application =
+        applicationBuilder(emptyUserAnswers, sessionDataMemberNameQtNumber, Some(fakeIdentifierAction)).build()
 
       running(application) {
         val request: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -197,15 +190,8 @@ class SubmitToHMRCControllerSpec extends AnyFreeSpec with SpecBase with MockitoS
       val fakeIdentifierAction =
         new FakeIdentifierActionWithUserType(pspUser, cc.parsers.defaultBodyParser)(cc.executionContext)
 
-      val application = new GuiceApplicationBuilder()
-        .overrides(
-          bind[SessionRepository].toInstance(mockSessionRepository),
-          bind[IdentifierAction].toInstance(fakeIdentifierAction),
-          bind[DataRetrievalAction]
-            .toInstance(new FakeDataRetrievalAction(emptyUserAnswers, sessionDataMemberNameQtNumber)),
-          bind[SchemeDataAction].to[FakeSchemeDataAction]
-        )
-        .build()
+      val application =
+        applicationBuilder(emptyUserAnswers, sessionDataMemberNameQtNumber, Some(fakeIdentifierAction)).build()
 
       running(application) {
         val request: FakeRequest[AnyContentAsFormUrlEncoded] =

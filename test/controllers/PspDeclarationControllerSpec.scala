@@ -57,12 +57,7 @@ class PspDeclarationControllerSpec extends AnyFreeSpec with SpecBase with Mockit
   )
 
   def applicationBuilderPsp(userAnswers: UserAnswers = emptyUserAnswers): GuiceApplicationBuilder =
-    new GuiceApplicationBuilder()
-      .overrides(
-        bind[IdentifierAction].toInstance(fakeIdentifierAction),
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionDataMemberNameQtNumber)),
-        bind[SchemeDataAction].to[FakeSchemeDataAction]
-      )
+    applicationBuilder(userAnswers, sessionDataMemberNameQtNumber, Some(fakeIdentifierAction))
 
   "PspDeclaration Controller" - {
 
