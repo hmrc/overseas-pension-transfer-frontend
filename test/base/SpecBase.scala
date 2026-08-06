@@ -44,7 +44,9 @@ import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import utils.DateTimeFormats.localDateTimeFormatter
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.freespec.AnyFreeSpec
-
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.PlayMongoModule
+import uk.gov.hmrc.mongo.lock.MongoLockRepository
 import java.time.{Clock, Instant, LocalDate, ZoneId}
 import java.util.UUID
 import scala.util.Random
@@ -57,8 +59,6 @@ trait SpecBase
     with ScalaFutures
     with IntegrationPatience
     with BeforeAndAfterEach {
-//with EitherValues with Matchers with FutureAwaits with DefaultAwaitTimeout
-//    with WireMockSupport with GuiceOneServerPerSuite with BeforeAndAfterEach
   protected final val minYear: Int  = 1901
   private val clockMillis: Long     = 1718118467838L
   val clock: Clock                  = Clock.fixed(Instant.ofEpochMilli(clockMillis), ZoneId.of("UTC"))
@@ -135,12 +135,15 @@ trait SpecBase
 
   def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
-//  protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
-//  protected val mockEnhancedLockRepository: EnhancedLockRepository         = mock[EnhancedLockRepository]
-  protected val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  protected val mockDashboardSessionRepository: DashboardSessionRepository = mock[DashboardSessionRepository]
+  protected val mockEnhancedLockRepository: EnhancedLockRepository         = mock[EnhancedLockRepository]
+  protected val mockSessionRepository: SessionRepository                   = mock[SessionRepository]
+  protected val mockMongoLockRepository: MongoLockRepository               = mock[MongoLockRepository]
 
-  override protected def beforeEach(): Unit =
+  override protected def beforeEach(): Unit = {
     reset(mockSessionRepository)
+    reset(mockEnhancedLockRepository)
+  }
 
   protected def applicationBuilder(
     userAnswers: UserAnswers = emptyUserAnswers,
@@ -155,14 +158,15 @@ trait SpecBase
     }
 
     val bindings = Seq(
+      bind[MongoLockRepository].toInstance(mockMongoLockRepository),
       bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionData)),
       bind[SchemeDataAction].to[FakeSchemeDataAction],
-      //        bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
-      //        bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
+      bind[DashboardSessionRepository].to(mockDashboardSessionRepository),
+      bind[EnhancedLockRepository].to(mockEnhancedLockRepository),
       bind[SessionRepository].to(mockSessionRepository)
     ) :+ identifierActionBinding
 
-    new GuiceApplicationBuilder().overrides(bindings)
+    new GuiceApplicationBuilder().disable[PlayMongoModule].overrides(bindings)
   }
 
   def fakeIdentifierRequest[A](

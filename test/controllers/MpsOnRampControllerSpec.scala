@@ -37,8 +37,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
   "MpsOnRampController onRamp" - {
 
     "must store PensionSchemeDetails in dashboard cache and redirect to next page" in {
-      val mockDashboardSessionRepository = mock[DashboardSessionRepository]
-      val mockConnector                  = mock[PensionSchemeConnector]
+      val mockConnector = mock[PensionSchemeConnector]
 
       val srn = "S1234567"
       val psd = PensionSchemeDetails(SrnNumber(srn), PstrNumber("12345678AB"), "SchemeName")
@@ -49,7 +48,6 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
             bind[PensionSchemeConnector].toInstance(mockConnector)
           )
           .build()
@@ -71,8 +69,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must redirect to Journey Recovery when the repo fails to set data" in {
-      val mockDashboardSessionRepository = mock[DashboardSessionRepository]
-      val mockConnector                  = mock[PensionSchemeConnector]
+      val mockConnector = mock[PensionSchemeConnector]
 
       val srn = "S2400000040"
       val psr = PensionSchemeResponse(PstrNumber("24000040IN"), "Open Scheme Overview API Test")
@@ -86,7 +83,6 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
             bind[PensionSchemeConnector].toInstance(mockConnector)
           )
           .build()
@@ -101,8 +97,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must redirect to Journey Recovery when persisting to the repo throws an exception" in {
-      val mockDashboardSessionRepository = mock[DashboardSessionRepository]
-      val mockConnector                  = mock[PensionSchemeConnector]
+      val mockConnector = mock[PensionSchemeConnector]
 
       val srn = "S2400000040"
       val psr = PensionSchemeResponse(PstrNumber("24000040IN"), "Open Scheme Overview API Test")
@@ -116,7 +111,6 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
             bind[PensionSchemeConnector].toInstance(mockConnector)
           )
           .build()
