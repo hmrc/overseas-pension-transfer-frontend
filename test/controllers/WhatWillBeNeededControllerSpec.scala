@@ -54,19 +54,19 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
 
   "onSubmit" - {
     "must initialise UserAnswers, persist once, audit, and redirect" in {
-      val mockRepo                                    = mock[SessionRepository]
+      val mockSessionRepository                       = mock[SessionRepository]
       val mockUserAnswerSvc                           = mock[UserAnswersService]
       val mockAuditService                            = mock[AuditService]
       val eventCaptor: ArgumentCaptor[JsonAuditModel] = ArgumentCaptor.forClass(classOf[JsonAuditModel])
 
       when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any()))
         .thenReturn(Future.successful(Right(Done)))
-      when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(true))
+      when(mockSessionRepository.set(any[SessionData])).thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockRepo),
+            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswerSvc),
             bind[AuditService].toInstance(mockAuditService)
           )
@@ -79,7 +79,7 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustBe controllers.routes.TaskListController.onPageLoad().url
 
-        verify(mockRepo, times(1)).set(any[SessionData])
+        verify(mockSessionRepository, times(1)).set(any[SessionData])
         verify(mockAuditService, times(1)).audit(eventCaptor.capture())(any())
 
         val auditModel = eventCaptor.getValue.asInstanceOf[ReportStartedAuditModel]
@@ -89,17 +89,17 @@ class WhatWillBeNeededControllerSpec extends AnyFreeSpec with SpecBase with Mock
     }
 
     "must redirect to JourneyRecovery when persistence fails" in {
-      val mockRepo          = mock[SessionRepository]
-      val mockUserAnswerSvc = mock[UserAnswersService]
+      val mockSessionRepository = mock[SessionRepository]
+      val mockUserAnswerSvc     = mock[UserAnswersService]
 
       when(mockUserAnswerSvc.setExternalUserAnswers(any[UserAnswers], any())(any()))
         .thenReturn(Future.successful(Right(Done)))
-      when(mockRepo.set(any[SessionData])).thenReturn(Future.successful(false))
+      when(mockSessionRepository.set(any[SessionData])).thenReturn(Future.successful(false))
 
       val application =
         applicationBuilder()
           .overrides(
-            bind[SessionRepository].toInstance(mockRepo),
+            bind[SessionRepository].toInstance(mockSessionRepository),
             bind[UserAnswersService].toInstance(mockUserAnswerSvc)
           )
           .build()

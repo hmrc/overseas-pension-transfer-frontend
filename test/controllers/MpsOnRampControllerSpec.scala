@@ -37,19 +37,19 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
   "MpsOnRampController onRamp" - {
 
     "must store PensionSchemeDetails in dashboard cache and redirect to next page" in {
-      val mockRepo      = mock[DashboardSessionRepository]
-      val mockConnector = mock[PensionSchemeConnector]
+      val mockDashboardSessionRepository = mock[DashboardSessionRepository]
+      val mockConnector                  = mock[PensionSchemeConnector]
 
       val srn = "S1234567"
       val psd = PensionSchemeDetails(SrnNumber(srn), PstrNumber("12345678AB"), "SchemeName")
 
-      when(mockRepo.set(any[DashboardData]))
+      when(mockDashboardSessionRepository.set(any[DashboardData]))
         .thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[DashboardSessionRepository].toInstance(mockRepo),
+            bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
             bind[PensionSchemeConnector].toInstance(mockConnector)
           )
           .build()
@@ -61,7 +61,7 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
         status(result) mustBe SEE_OTHER
 
         val captor               = ArgumentCaptor.forClass(classOf[DashboardData])
-        verify(mockRepo, times(1)).set(captor.capture())
+        verify(mockDashboardSessionRepository, times(1)).set(captor.capture())
         val saved: DashboardData = captor.getValue
 
         saved.get(PensionSchemeDetailsQuery) mustBe Some(psd)
@@ -71,8 +71,8 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must redirect to Journey Recovery when the repo fails to set data" in {
-      val mockRepo      = mock[DashboardSessionRepository]
-      val mockConnector = mock[PensionSchemeConnector]
+      val mockDashboardSessionRepository = mock[DashboardSessionRepository]
+      val mockConnector                  = mock[PensionSchemeConnector]
 
       val srn = "S2400000040"
       val psr = PensionSchemeResponse(PstrNumber("24000040IN"), "Open Scheme Overview API Test")
@@ -80,13 +80,13 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockConnector.getSchemeDetails(eqTo(srn), any())(any()))
         .thenReturn(Future.successful(Right(psr)))
 
-      when(mockRepo.set(any[DashboardData]))
+      when(mockDashboardSessionRepository.set(any[DashboardData]))
         .thenReturn(Future.successful(false))
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[DashboardSessionRepository].toInstance(mockRepo),
+            bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
             bind[PensionSchemeConnector].toInstance(mockConnector)
           )
           .build()
@@ -101,8 +101,8 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
     }
 
     "must redirect to Journey Recovery when persisting to the repo throws an exception" in {
-      val mockRepo      = mock[DashboardSessionRepository]
-      val mockConnector = mock[PensionSchemeConnector]
+      val mockDashboardSessionRepository = mock[DashboardSessionRepository]
+      val mockConnector                  = mock[PensionSchemeConnector]
 
       val srn = "S2400000040"
       val psr = PensionSchemeResponse(PstrNumber("24000040IN"), "Open Scheme Overview API Test")
@@ -110,13 +110,13 @@ class MpsOnRampControllerSpec extends AnyFreeSpec with SpecBase with MockitoSuga
       when(mockConnector.getSchemeDetails(eqTo(srn), any())(any()))
         .thenReturn(Future.successful(Right(psr)))
 
-      when(mockRepo.set(any[DashboardData]))
+      when(mockDashboardSessionRepository.set(any[DashboardData]))
         .thenReturn(Future.failed(new RuntimeException("boom")))
 
       val application =
         applicationBuilder(userAnswers = emptyUserAnswers)
           .overrides(
-            bind[DashboardSessionRepository].toInstance(mockRepo),
+            bind[DashboardSessionRepository].toInstance(mockDashboardSessionRepository),
             bind[PensionSchemeConnector].toInstance(mockConnector)
           )
           .build()
